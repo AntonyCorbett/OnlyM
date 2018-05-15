@@ -1,6 +1,6 @@
 # OnlyM
 
-Windows Meeting Media player using C# and WPF
+Windows Meeting Media player using C# and WPF. Currently in the early stages of development. Please don't send feature requests or bug reports at this stage.
 
 ### Download
 
