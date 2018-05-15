@@ -1,0 +1,163 @@
+﻿<UserControl x:Class="OnlyM.Windows.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OnlyM.Windows"
+             mc:Ignorable="d" 
+             DataContext="{Binding Settings, Mode=OneWay, Source={StaticResource Locator}}"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="15"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             d:DesignHeight="1450" d:DesignWidth="600">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="SettingsButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedLightButton}">
+                <Setter Property="Margin" Value="0,5,0,5"/>
+                <Setter Property="Width" Value="200"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+
+            <Style x:Key="SettingsComboBoxStyle" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignComboBox}">
+                <Setter Property="Margin" Value="0,5,0,5"/>
+                <Setter Property="MinWidth" Value="420"/>
+                <Setter Property="MaxWidth" Value="600"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+
+            <Style x:Key="SettingsCheckBoxStyle" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignCheckBox}">
+                <Setter Property="Margin" Value="0,5,0,5"/>
+            </Style>
+
+            <Style x:Key="SettingsGroupBoxStyle" TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignGroupBox}">
+                <Setter Property="Margin" Value="10,6" />
+                <Setter Property="Padding" Value="10" />
+            </Style>
+
+            <Style x:Key="SettingsTextBoxStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                <Setter Property="Margin" Value="0,5,0,5"/>
+                <Setter Property="MinWidth" Value="420"/>
+                <Setter Property="MaxWidth" Value="600"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="UserControl.Loaded">
+            <BeginStoryboard>
+                <Storyboard >
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:1" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <StackPanel Orientation="Vertical">
+        <GroupBox Header="Main" Style="{StaticResource SettingsGroupBoxStyle}">
+            <StackPanel Orientation="Vertical">
+               
+                <ComboBox ItemsSource="{Binding Monitors}"
+                          Style="{StaticResource SettingsComboBoxStyle}" 
+                          materialDesign:HintAssist.IsFloating="True"
+                          materialDesign:HintAssist.Hint="Media Monitor"
+                          SelectedValuePath="MonitorId" 
+                          DisplayMemberPath="MonitorName"
+                          SelectedValue="{Binding MonitorId, Mode=TwoWay}"/>
+
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="Media Files" Style="{StaticResource SettingsGroupBoxStyle}">
+            <StackPanel Orientation="Vertical">
+
+                <TextBox
+                    Style="{StaticResource SettingsTextBoxStyle}" Text="{Binding MediaFolder}"
+                    IsReadOnly="{Binding IsMediaActive}"
+                    materialDesign:HintAssist.IsFloating="True"
+                    materialDesign:HintAssist.Hint="Media Folder">
+                </TextBox>
+
+                <Button 
+                    Style="{StaticResource SettingsButtonStyle}" 
+                    Command="{Binding PurgeThumbnailCacheCommand}"
+                    Content="Purge Thumbnail Cache" />
+
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="Images" Style="{StaticResource SettingsGroupBoxStyle}">
+            <StackPanel Orientation="Vertical">
+
+                <ComboBox ItemsSource="{Binding ImageFadeTypes}"
+                          Style="{StaticResource SettingsComboBoxStyle}" 
+                          materialDesign:HintAssist.IsFloating="True"
+                          materialDesign:HintAssist.Hint="Fading"
+                          SelectedValuePath="Fade" 
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding ImageFadeType, Mode=TwoWay}"/>
+
+                <ComboBox ItemsSource="{Binding FadeSpeedTypes}"
+                          Style="{StaticResource SettingsComboBoxStyle}" 
+                          materialDesign:HintAssist.IsFloating="True"
+                          materialDesign:HintAssist.Hint="Fading"
+                          SelectedValuePath="Speed" 
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding FadeSpeedType, Mode=TwoWay}"/>
+
+                <CheckBox IsChecked="{Binding CacheImages, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Cache images (better performance but more memory)
+                </CheckBox>
+
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="Miscellaneous" Style="{StaticResource SettingsGroupBoxStyle}">
+            <StackPanel Orientation="Vertical">
+
+                <TextBlock Text="{Binding AppVersionStr}" 
+                           FontSize="12"
+                           Margin="0,0,0,15"
+                           Foreground="{StaticResource MaterialDesignDarkBackground}" />
+
+                <CheckBox IsChecked="{Binding AlwaysOnTop, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Main window always on top
+                </CheckBox>
+
+                <ComboBox ItemsSource="{Binding LoggingLevels}"
+                          Style="{StaticResource SettingsComboBoxStyle}" 
+                          materialDesign:HintAssist.IsFloating="True"
+                          materialDesign:HintAssist.Hint="Logging Level"
+                          SelectedValuePath="Level" 
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding LogEventLevel, Mode=TwoWay}"/>
+
+            </StackPanel>
+        </GroupBox>
+
+    </StackPanel>
+           
+</UserControl>
+
+
+
+ 
+
+
+

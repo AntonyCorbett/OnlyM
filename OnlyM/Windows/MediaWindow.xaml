@@ -1,0 +1,26 @@
+﻿<Window x:Class="OnlyM.Windows.MediaWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
+        xmlns:local="clr-namespace:OnlyM.Windows"
+        DataContext="{Binding Media, Mode=OneWay, Source={StaticResource Locator}}"
+        WindowStyle="None" 
+        Background="Black" 
+        ShowInTaskbar="False" 
+        ResizeMode="NoResize" 
+        mc:Ignorable="d"
+        Title="MediaWindow" Height="450" Width="800" Loaded="WindowLoaded" Closing="WindowClosing">
+    
+    <Grid>
+        <ffme:MediaElement x:Name="VideoElement" 
+                           Background="Black" 
+                           LoadedBehavior="Play" 
+                           UnloadedBehavior="Manual" />
+
+        <Image x:Name="Image1Element"></Image>
+
+        <Image x:Name="Image2Element"></Image>
+    </Grid>
+</Window>
