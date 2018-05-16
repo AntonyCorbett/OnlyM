@@ -13,7 +13,7 @@
 
             try
             {
-                using (TagLib.File tf = TagLib.File.Create(mediaItemFilePath))
+                using (var tf = TagLib.File.Create(mediaItemFilePath))
                 {
                     tf.Mode = TagLib.File.AccessMode.Read;
 

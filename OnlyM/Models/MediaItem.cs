@@ -11,6 +11,10 @@
         private static readonly SolidColorBrush AudioIconBrush = new SolidColorBrush(Colors.CornflowerBlue);
         private static readonly SolidColorBrush VideoIconBrush = new SolidColorBrush(Colors.Chocolate);
         private static readonly SolidColorBrush UnknownIconBrush = new SolidColorBrush(Colors.Crimson);
+        private static readonly SolidColorBrush GreenBrush = new SolidColorBrush(Colors.DarkGreen);
+        private static readonly SolidColorBrush BlackBrush = new SolidColorBrush(Colors.Black);
+        private static readonly SolidColorBrush GrayBrush = new SolidColorBrush(Colors.DarkGray);
+
 
         public Guid Id { get; set; }
 
@@ -20,6 +24,30 @@
 
         public long LastChanged { get; set; }
 
+        private bool _isPaused;
+
+        public bool IsPaused
+        {
+            get => _isPaused;
+
+            set
+            {
+                if (_isPaused != value)
+                {
+                    _isPaused = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(PauseIconKind));
+                    RaisePropertyChanged(nameof(HasDurationAndIsPlaying));
+                    RaisePropertyChanged(nameof(HasDurationAndIsNotPlaying));
+                }
+            }
+        }
+
+        public string PauseIconKind =>
+            IsPaused
+                ? "Play"
+                : "Pause";
+        
         public SupportedMediaType MediaType { get; set; }
 
         private ImageSource _thumbnailImageSource;
@@ -49,7 +77,10 @@
                     _isMediaActive = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(HasDurationAndIsPlaying));
+                    RaisePropertyChanged(nameof(HasDurationAndIsPlayingOrPaused));
                     RaisePropertyChanged(nameof(HasDurationAndIsNotPlaying));
+                    RaisePropertyChanged(nameof(PlaybackTimeColorBrush));
+                    RaisePropertyChanged(nameof(DurationColorBrush));
                 }
             }
         }
@@ -88,9 +119,11 @@
             MediaType.Classification == MediaClassification.Audio ||
             MediaType.Classification == MediaClassification.Video;
 
-        public bool HasDurationAndIsPlaying => HasDuration && IsMediaActive;
+        public bool HasDurationAndIsPlaying => HasDuration && IsMediaActive && !IsPaused;
 
-        public bool HasDurationAndIsNotPlaying => HasDuration && !IsMediaActive;
+        public bool HasDurationAndIsPlayingOrPaused => HasDuration && IsMediaActive;
+
+        public bool HasDurationAndIsNotPlaying => HasDuration && (!IsMediaActive || IsPaused);
 
 
         private int _playbackPositionDeciseconds;
@@ -143,6 +176,16 @@
                 }
             }
         }
+
+        public Brush PlaybackTimeColorBrush =>
+            IsMediaActive
+                ? GreenBrush
+                : GrayBrush;
+
+        public Brush DurationColorBrush =>
+            IsMediaActive
+                ? BlackBrush
+                : GrayBrush;
 
         public Brush IconBrush
         {

@@ -79,6 +79,11 @@
                           DisplayMemberPath="MonitorName"
                           SelectedValue="{Binding MonitorId, Mode=TwoWay}"/>
 
+                <CheckBox IsChecked="{Binding PermanentBackdrop, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Permanent backdrop
+                </CheckBox>
+
             </StackPanel>
         </GroupBox>
 

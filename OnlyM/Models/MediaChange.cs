@@ -6,6 +6,7 @@
         Stopping,
         Starting,
         Stopped,
-        Started
+        Started,
+        Paused
     }
 }

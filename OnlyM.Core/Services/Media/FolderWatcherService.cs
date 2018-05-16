@@ -11,14 +11,17 @@
     public sealed class FolderWatcherService : IFolderWatcherService
     {
         private readonly IOptionsService _optionsService;
+        private readonly IMediaProviderService _mediaProviderService;
         private readonly ManualResetEventSlim _signalFolderChange = new ManualResetEventSlim(false);
         private FileSystemWatcher _watcher;
         private int _changeVersion;
 
         public event EventHandler ChangesFoundEvent;
 
-        public FolderWatcherService(IOptionsService optionsService)
+        public FolderWatcherService(IOptionsService optionsService, IMediaProviderService mediaProviderService)
         {
+            _mediaProviderService = mediaProviderService;
+
             _optionsService = optionsService;
             _optionsService.MediaFolderChangedEvent += HandleMediaFolderChangedEvent;
 
@@ -90,6 +93,19 @@
 
         private void HandleContentModified(object sender, FileSystemEventArgs e)
         {
+            switch (e.ChangeType)
+            {
+                case WatcherChangeTypes.Created:
+                case WatcherChangeTypes.Deleted:
+                    if (!_mediaProviderService.IsFileExtensionSupported(Path.GetExtension(e.FullPath)))
+                    {
+                        // not a relevant file.
+                        return;
+                    }
+
+                    break;
+            }
+
             Interlocked.Increment(ref _changeVersion);
             _signalFolderChange.Set();
         }

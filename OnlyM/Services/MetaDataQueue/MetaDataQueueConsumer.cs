@@ -59,13 +59,18 @@ namespace OnlyM.Services.MetaDataQueue
         private void PopulateMetaData(MediaItem mediaItem)
         {
             var md = _metaDataService.GetMetaData(mediaItem.FilePath, mediaItem.MediaType.Classification);
-            if (md != null)
+
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                if (md != null)
                 {
                     mediaItem.DurationDeciseconds = (int)md.Duration.TotalMilliseconds / 10;
-                });
-            }
+                }
+                else
+                {
+                    mediaItem.DurationDeciseconds = 0;
+                }
+            });
         }
 
         private void PopulateThumbnail(MediaItem mediaItem)

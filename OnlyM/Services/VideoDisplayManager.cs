@@ -23,21 +23,44 @@
             _mediaElement.MediaClosed += HandleMediaClosed;
             _mediaElement.MediaEnded += HandleMediaEnded;
             _mediaElement.MediaFailed += HandleMediaFailed;
-
+            
             _mediaElement.RenderingSubtitles += HandleRenderingSubtitles;
             
             _mediaElement.PositionChanged += HandlePositionChanged;
         }
 
-        public void ShowVideo(string mediaItemFilePath, Guid mediaItemId, TimeSpan startOffset, bool showSubtitles)
+        public async Task ShowVideo(
+            string mediaItemFilePath, 
+            Guid mediaItemId, 
+            TimeSpan startOffset, 
+            bool showSubtitles, 
+            bool startFromPaused)
         {
             _mediaItemId = mediaItemId;
             _showSubtitles = showSubtitles;
 
-            OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Starting });
-
             _startPosition = startOffset;
-            _mediaElement.Source = new Uri(mediaItemFilePath);
+
+            if (startFromPaused)
+            {
+                _mediaElement.Position = _startPosition;
+                await _mediaElement.Play();
+                OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Started });
+            }
+            else
+            {
+                OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Starting });
+                _mediaElement.Source = new Uri(mediaItemFilePath);
+            }
+        }
+
+        public async Task PauseVideoAsync(Guid mediaItemId)
+        {
+            if (_mediaItemId == mediaItemId)
+            {
+                await _mediaElement.Pause();
+                OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Paused });
+            }
         }
 
         public async Task HideVideoAsync(Guid mediaItemId)

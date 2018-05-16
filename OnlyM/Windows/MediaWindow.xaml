@@ -7,15 +7,16 @@
         xmlns:local="clr-namespace:OnlyM.Windows"
         DataContext="{Binding Media, Mode=OneWay, Source={StaticResource Locator}}"
         WindowStyle="None" 
-        Background="Black" 
+        Background="Transparent" 
         ShowInTaskbar="False" 
         ResizeMode="NoResize" 
+        AllowsTransparency="True"
         mc:Ignorable="d"
         Title="MediaWindow" Height="450" Width="800" Loaded="WindowLoaded" Closing="WindowClosing">
     
     <Grid>
         <ffme:MediaElement x:Name="VideoElement" 
-                           Background="Black" 
+                           Background="Transparent"
                            LoadedBehavior="Play" 
                            UnloadedBehavior="Manual" />
 

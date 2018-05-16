@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Threading.Tasks;
     using System.Windows;
     using CommonServiceLocator;
@@ -46,7 +47,11 @@
             set => _imageDisplayManager.ImageFadeSpeed = value;
         }
 
-        public void StartMedia(MediaItem mediaItemToStart, MediaItem currentMediaItem, bool showSubtitles)
+        public async Task StartMedia(
+            MediaItem mediaItemToStart, 
+            MediaItem currentMediaItem, 
+            bool showSubtitles, 
+            bool startFromPaused)
         {
             switch (mediaItemToStart.MediaType.Classification)
             {
@@ -56,7 +61,7 @@
 
                 case MediaClassification.Video:
                 case MediaClassification.Audio:
-                    ShowVideo(mediaItemToStart, currentMediaItem, showSubtitles);
+                    await ShowVideo(mediaItemToStart, currentMediaItem, showSubtitles, startFromPaused);
                     break;
             }
         }
@@ -81,6 +86,21 @@
             }
         }
 
+        public async Task PauseMediaAsync(MediaItem mediaItem)
+        {
+            Debug.Assert(
+                mediaItem.MediaType.Classification == MediaClassification.Audio ||
+                mediaItem.MediaType.Classification == MediaClassification.Video,
+                "Expecting audio or video media item");
+                         
+            await PauseVideoAsync(mediaItem);
+        }
+
+        private async Task PauseVideoAsync(MediaItem mediaItem)
+        {
+            await _videoDisplayManager.PauseVideoAsync(mediaItem.Id);
+        }
+
         private async Task HideVideoAsync(MediaItem mediaItem)
         {
             await _videoDisplayManager.HideVideoAsync(mediaItem.Id);
@@ -99,12 +119,22 @@
             _imageDisplayManager.ShowImage(mediaItem.FilePath, mediaItem.Id);
         }
 
-        private void ShowVideo(MediaItem mediaItemToStart, MediaItem currentMediaItem, bool showSubtitles)
+        private async Task ShowVideo(
+            MediaItem mediaItemToStart, 
+            MediaItem currentMediaItem, 
+            bool showSubtitles, 
+            bool startFromPaused)
         {
             HideImage(currentMediaItem);
 
             var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 10);
-            _videoDisplayManager.ShowVideo(mediaItemToStart.FilePath, mediaItemToStart.Id, startPosition, showSubtitles);
+
+            await _videoDisplayManager.ShowVideo(
+                mediaItemToStart.FilePath, 
+                mediaItemToStart.Id, 
+                startPosition, 
+                showSubtitles, 
+                startFromPaused);
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)

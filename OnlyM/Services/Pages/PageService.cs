@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Forms;
+    using System.Windows.Media;
     using Core.Models;
     using Core.Services.Monitors;
     using Core.Services.Options;
@@ -46,6 +47,7 @@
             _optionsService.ImageFadeTypeChangedEvent += HandleImageFadeTypeChangedEvent;
             _optionsService.ImageFadeSpeedChangedEvent += HandleImageFadeSpeedChangedEvent;
             _optionsService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
+            _optionsService.PermanentBackdropChangedEvent += HandlePermanentBackdropChangedEvent;
 
             _systemDpi = WindowPlacement.GetDpiSettings();
 
@@ -83,14 +85,19 @@
             throw new ArgumentOutOfRangeException(nameof(pageName));
         }
 
-        public void OpenMediaWindow()
+        public void OpenMediaWindow(bool includeBackdrop)
         {
             try
             {
                 var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
                 if (targetMonitor != null)
                 {
-                    ShowWindowFullScreenOnTop(_mediaWindow.Value, targetMonitor);
+                    AdjustMediaWindowTransparency(includeBackdrop);
+
+                    LocateWindowAtOrigin(_mediaWindow.Value, targetMonitor.Monitor);
+
+                    _mediaWindow.Value.Topmost = true;
+                    _mediaWindow.Value.Show();
                 }
             }
             catch (Exception ex)
@@ -115,16 +122,17 @@
             }
         }
 
-        public void StartMedia(MediaItem mediaItemToStart, MediaItem currentMediaItem)
+        public async Task StartMedia(MediaItem mediaItemToStart, MediaItem currentMediaItem, bool startFromPaused)
         {
             try
             {
-                OpenMediaWindow();
+                OpenMediaWindow(includeBackdrop: true);
                 
-                _mediaWindow.Value.StartMedia(
+                await _mediaWindow.Value.StartMedia(
                     mediaItemToStart, 
                     currentMediaItem, 
-                    _optionsService.Options.ShowVideoSubtitles);
+                    _optionsService.Options.ShowVideoSubtitles,
+                    startFromPaused);
             }
             catch (Exception ex)
             {
@@ -139,16 +147,16 @@
                 await _mediaWindow.Value.StopMediaAsync(mediaItem);
             }
         }
-        
-        public bool IsMediaWindowVisible => _mediaWindow.IsValueCreated && _mediaWindow.Value.IsVisible;
 
-        private void ShowWindowFullScreenOnTop(Window window, SystemMonitor monitor)
+        public async Task PauseMediaAsync(MediaItem mediaItem)
         {
-            LocateWindowAtOrigin(window, monitor.Monitor);
-
-            window.Topmost = true;
-            window.Show();
+            if (_mediaWindow.IsValueCreated)
+            {
+                await _mediaWindow.Value.PauseMediaAsync(mediaItem);
+            }
         }
+
+        public bool IsMediaWindowVisible => _mediaWindow.IsValueCreated && _mediaWindow.Value.IsVisible;
 
         private void LocateWindowAtOrigin(Window window, Screen monitor)
         {
@@ -207,7 +215,8 @@
             }
             else
             {
-                OpenMediaWindow();
+                bool showingBackdrop = Equals(_mediaWindow.Value.Background, Brushes.Black);
+                OpenMediaWindow(includeBackdrop: showingBackdrop);
             }
         }
 
@@ -311,6 +320,20 @@
             {
                 Log.Logger.Error(ex, "Could not change monitor");
             }
+        }
+
+        private void HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
+        {
+            // todo:
+        }
+
+        private void AdjustMediaWindowTransparency(bool includeBackdrop)
+        {
+            _mediaWindow.Value.Background = includeBackdrop
+                ? Brushes.Black
+                : Brushes.Transparent;
+
+            _mediaWindow.Value.AllowsTransparency = !includeBackdrop;
         }
     }
 }

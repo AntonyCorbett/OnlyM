@@ -20,6 +20,8 @@
 
         public event EventHandler MediaMonitorChangedEvent;
 
+        public event EventHandler PermanentBackdropChangedEvent;
+
 
         public Options()
         {
@@ -31,6 +33,7 @@
             ImageFadeSpeed = FadeSpeed.Normal;
             CacheImages = true;
             ShowVideoSubtitles = true;
+            PermanentBackdrop = true;
         }
 
         private string _mediaMonitorId;
@@ -44,6 +47,21 @@
                 {
                     _mediaMonitorId = value;
                     OnMediaMonitorChangedEvent();
+                }
+            }
+        }
+
+        private bool _permanentBackdrop;
+
+        public bool PermanentBackdrop
+        {
+            get => _permanentBackdrop;
+            set
+            {
+                if (_permanentBackdrop != value)
+                {
+                    _permanentBackdrop = value;
+                    OnPermanentBackdropChangedEvent();
                 }
             }
         }
@@ -171,6 +189,11 @@
         private void OnMediaMonitorChangedEvent()
         {
             MediaMonitorChangedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnPermanentBackdropChangedEvent()
+        {
+            PermanentBackdropChangedEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

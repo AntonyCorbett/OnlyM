@@ -26,15 +26,17 @@
 
         FrameworkElement GetPage(string pageName);
         
-        void OpenMediaWindow();
+        void OpenMediaWindow(bool includeBackdrop);
 
         bool ApplicationIsClosing { get; }
 
         bool IsMediaWindowVisible { get; }
         
-        void StartMedia(MediaItem mediaItemToStart, MediaItem currentMediaItem);
+        Task StartMedia(MediaItem mediaItemToStart, MediaItem currentMediaItem, bool startFromPaused);
 
         Task StopMediaAsync(MediaItem mediaItem);
+
+        Task PauseMediaAsync(MediaItem mediaItem);
 
         void CacheImageItem(MediaItem mediaItem);
 

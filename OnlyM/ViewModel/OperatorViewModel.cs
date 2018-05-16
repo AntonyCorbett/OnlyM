@@ -153,6 +153,7 @@
 
                 case MediaChange.Stopping:
                     mediaItem.IsMediaActive = false;
+                    mediaItem.IsPaused = false;
                     mediaItem.IsMediaChanging = true;
                     _changingMediaItems.Add(mediaItem.Id);
                     break;
@@ -160,6 +161,7 @@
                 case MediaChange.Started:
                     mediaItem.IsMediaActive = true;
                     mediaItem.IsMediaChanging = false;
+                    mediaItem.IsPaused = false;
                     _changingMediaItems.Remove(mediaItem.Id);
                     break;
 
@@ -168,6 +170,10 @@
                     mediaItem.IsMediaChanging = false;
                     mediaItem.PlaybackPositionDeciseconds = 0;
                     _changingMediaItems.Remove(mediaItem.Id);
+                    break;
+
+                case MediaChange.Paused:
+                    mediaItem.IsPaused = true;
                     break;
             }
 
@@ -180,6 +186,44 @@
             {
                 await MediaControl1(mediaItemId);
             });
+
+            MediaControlPauseCommand = new RelayCommand<Guid>(async (mediaItemId) =>
+            {
+                await MediaPauseControl(mediaItemId);
+            });
+        }
+
+        private bool IsVideoOrAudio(MediaItem mediaItem)
+        {
+            return
+                mediaItem.MediaType.Classification == MediaClassification.Audio ||
+                mediaItem.MediaType.Classification == MediaClassification.Video;
+        }
+
+        private async Task MediaPauseControl(Guid mediaItemId)
+        {
+            // only allow pause media when nothing is changing.
+            if (_changingMediaItems.Count == 0)
+            {
+                var mediaItem = GetMediaItem(mediaItemId);
+                if (mediaItem == null || !IsVideoOrAudio(mediaItem))
+                {
+                    Log.Error($"Media Item not found (id = {mediaItemId})");
+                    return;
+                }
+
+                if (mediaItem.IsMediaActive)
+                {
+                    if (mediaItem.IsPaused)
+                    {
+                        await _pageService.StartMedia(mediaItem, GetCurrentMediaItem(), true);
+                    }
+                    else
+                    {
+                        await _pageService.PauseMediaAsync(mediaItem);
+                    }
+                }
+            }
         }
 
         private async Task MediaControl1(Guid mediaItemId)
@@ -203,7 +247,7 @@
                     // prevent start media if a video is active (videos must be stopped manually first).
                     if (!VideoOrAudioIsActive())
                     {
-                        _pageService.StartMedia(mediaItem, GetCurrentMediaItem());
+                        await _pageService.StartMedia(mediaItem, GetCurrentMediaItem(), false);
 
                         // when displaying an item we ensure that the next image item is cached.
                         _pageService.CacheImageItem(GetNextImageItem(mediaItem));
@@ -229,10 +273,8 @@
             {
                 return false;
             }
-                
-            return 
-                currentItem.MediaType.Classification == MediaClassification.Video ||
-                currentItem.MediaType.Classification == MediaClassification.Audio;
+
+            return IsVideoOrAudio(currentItem);
         }
 
         private MediaItem GetNextImageItem(MediaItem currentMediaItem)
@@ -360,5 +402,7 @@
         public ObservableCollection<MediaItem> MediaItems { get; } = new ObservableCollection<MediaItem>();
 
         public RelayCommand<Guid> MediaControlCommand1 { get; set; }
+
+        public RelayCommand<Guid> MediaControlPauseCommand { get; set; }
     }
 }

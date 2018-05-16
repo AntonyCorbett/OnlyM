@@ -89,6 +89,19 @@
                 }
             }
         }
+
+        public bool PermanentBackdrop
+        {
+            get => _optionsService.Options.PermanentBackdrop;
+            set
+            {
+                if (_optionsService.Options.PermanentBackdrop != value)
+                {
+                    _optionsService.Options.PermanentBackdrop = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
         
         public bool ShowVideoSubtitles
         {

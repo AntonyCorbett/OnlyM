@@ -19,5 +19,7 @@
         event EventHandler AlwaysOnTopChangedEvent;
 
         event EventHandler MediaMonitorChangedEvent;
+
+        event EventHandler PermanentBackdropChangedEvent;
     }
 }

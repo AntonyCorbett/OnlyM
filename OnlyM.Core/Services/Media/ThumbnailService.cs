@@ -1,15 +1,12 @@
-﻿using OnlyM.Core.Services.Options;
-
-namespace OnlyM.Core.Services.Media
+﻿namespace OnlyM.Core.Services.Media
 {
     using System;
-    using System.Data.SQLite;
     using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
-    using System.Text;
     using Database;
     using Models;
+    using Options;
     using Serilog;
     using Utils;
 
@@ -18,13 +15,21 @@ namespace OnlyM.Core.Services.Media
         private const int MaxPixelDimension = 180;
         private readonly IDatabaseService _databaseService;
         private readonly IOptionsService _optionsService;
+
         private readonly Lazy<byte[]> _standardAudioThumbnail = new Lazy<byte[]>(() =>
         {
             var bmp = Properties.Resources.Audio;
             var converter = new ImageConverter();
             return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
         });
-        
+
+        private readonly Lazy<byte[]> _standardUnknownThumbnail = new Lazy<byte[]>(() =>
+        {
+            var bmp = Properties.Resources.Unknown;
+            var converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+        });
+
         public event EventHandler ThumbnailsPurgedEvent;
 
         public ThumbnailService(IDatabaseService databaseService, IOptionsService optionsService)
@@ -50,7 +55,16 @@ namespace OnlyM.Core.Services.Media
                 return result;
             }
 
-            result = GenerateThumbnail(originalPath, ffmpegFolder, mediaClassification);
+            try
+            {
+                result = GenerateThumbnail(originalPath, ffmpegFolder, mediaClassification);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, $"Could not get a thumbnail for {originalPath}");
+                result = _standardUnknownThumbnail.Value;
+            }
+
             if (result != null)
             {
                 _databaseService.AddThumbnailToCache(originalPath, originalLastChanged, result);
@@ -72,6 +86,7 @@ namespace OnlyM.Core.Services.Media
             MediaClassification mediaClassification)
         {
             Log.Logger.Debug("Generating thumbnail");
+            
             switch (mediaClassification)
             {
                 case MediaClassification.Image:

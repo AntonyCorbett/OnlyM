@@ -68,8 +68,7 @@
                         <Grid Grid.Column="1" Margin="10,0,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
-                                <RowDefinition Height="18" />
-                                <RowDefinition Height="18" />
+                                <RowDefinition Height="36" />
                                 <RowDefinition Height="28" />
                             </Grid.RowDefinitions>
                             
@@ -77,21 +76,49 @@
                                        TextTrimming="CharacterEllipsis" 
                                        Style="{StaticResource MaterialDesignTitleTextBlock}"
                                        Text="{Binding Name}"/>
-                            <TextBlock Grid.Row="1" 
-                                       Style="{StaticResource MaterialDesignBody1TextBlock}"
-                                       Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                       FontSize="16"
-                                       Text="{Binding DurationString}"/>
-                            <TextBlock Grid.Row="2" 
-                                       Style="{StaticResource MaterialDesignBody1TextBlock}"
-                                       Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                       FontSize="16"
-                                       Text="{Binding PlaybackTimeString}"/>
-                            <ProgressBar Grid.Row="3" 
+                            <Grid Grid.Row="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*" />
+                                    <RowDefinition Height="1*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="95"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0"
+                                           Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                           Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                           FontSize="16"
+                                           Foreground="{Binding DurationColorBrush}"
+                                           Text="{Binding DurationString}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0"
+                                           Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                           Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                           FontSize="16"
+                                           Foreground="{Binding PlaybackTimeColorBrush}"
+                                           Text="{Binding PlaybackTimeString}"/>
+                                <Button Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Width="50"
+                                        VerticalAlignment="Stretch"
+                                        Command="{Binding Path=DataContext.MediaControlPauseCommand, ElementName=OnlyMOperatorPage}"
+                                        CommandParameter="{Binding Id}"
+                                        Visibility="{Binding Path=HasDurationAndIsPlayingOrPaused, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        HorizontalAlignment="Left"
+                                        Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
+
+                                    <materialDesign:PackIcon 
+                                        Kind="{Binding PauseIconKind}"
+                                        HorizontalAlignment="Center"
+                                        Height="24"
+                                        Width="24" />
+
+                                </Button>
+                            </Grid>
+                            <ProgressBar Grid.Row="2" 
                                        Visibility="{Binding Path=HasDurationAndIsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
                                        Value="{Binding PlaybackPositionDeciseconds, Mode=OneWay}" 
                                        Maximum="{Binding DurationDeciseconds}"/>
-                            <Slider Grid.Row="3" 
+                            <Slider Grid.Row="2" 
                                        Orientation="Horizontal"
                                        TickFrequency="1"
                                        Margin="0,5,0,0"

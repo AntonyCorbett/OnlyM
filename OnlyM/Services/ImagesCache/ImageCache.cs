@@ -27,24 +27,31 @@
                     return null;
                 }
 
-                var image = GraphicsUtils.Downsize(fullPath, MaxImageWidth, MaxImageHeight);
-                if (image != null)
+                try
                 {
-                    result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow };
+                    var image = GraphicsUtils.Downsize(fullPath, MaxImageWidth, MaxImageHeight);
+                    if (image != null)
+                    {
+                        result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow };
 
-                    _cache.AddOrUpdate(
-                        fullPath, 
-                        result, 
-                        (s, value) =>
-                        {
-                            value.LastUsedUtc = DateTime.UtcNow;
-                            return value;
-                        }); 
+                        _cache.AddOrUpdate(
+                            fullPath,
+                            result,
+                            (s, value) =>
+                            {
+                                value.LastUsedUtc = DateTime.UtcNow;
+                                return value;
+                            });
+                    }
+
+                    if (_cache.Count > MaxItemCount)
+                    {
+                        RemoveOldImages();
+                    }
                 }
-
-                if (_cache.Count > MaxItemCount)
+                catch (Exception ex)
                 {
-                    RemoveOldImages();
+                    Log.Logger.Error(ex, $"Could not cache image {fullPath}");
                 }
             }
             else

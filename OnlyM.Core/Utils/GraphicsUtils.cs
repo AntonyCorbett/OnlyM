@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Core.Utils
+﻿using OnlyM.Core.Properties;
+
+namespace OnlyM.Core.Utils
 {
     using System;
     using System.Diagnostics;
@@ -43,7 +45,7 @@
                         ? new SizeF(maxPixelDimension, maxPixelDimension * (float)srcBmp.Height / srcBmp.Width)
                         : new SizeF(maxPixelDimension * (float)srcBmp.Width / srcBmp.Height, maxPixelDimension);
 
-                    using (var target = new Bitmap((int)newSize.Width, (int)newSize.Height))
+                    using (var target = new Bitmap((int)newSize.Width, (int) newSize.Height))
                     {
                         using (var graphics = Graphics.FromImage(target))
                         {

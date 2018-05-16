@@ -25,7 +25,10 @@
         public event EventHandler AlwaysOnTopChangedEvent;
 
         public event EventHandler MediaMonitorChangedEvent;
-        
+
+        public event EventHandler PermanentBackdropChangedEvent;
+
+
         public OptionsService(ILogLevelSwitchService logLevelSwitchService)
         {
             _logLevelSwitchService = logLevelSwitchService;
@@ -110,10 +113,16 @@
                     _options.LogEventLevelChangedEvent += HandleLogEventLevelChangedEvent;
                     _options.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
                     _options.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
+                    _options.PermanentBackdropChangedEvent += HandlePermanentBackdropChangedEvent;
 
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
+        {
+            PermanentBackdropChangedEvent?.Invoke(this, e);
         }
 
         private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)

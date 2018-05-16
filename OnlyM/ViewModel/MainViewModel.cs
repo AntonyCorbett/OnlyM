@@ -32,7 +32,7 @@ namespace OnlyM.ViewModel
 
             if (!IsInDesignMode)
             {
-                _pageService.OpenMediaWindow();
+                _pageService.OpenMediaWindow(includeBackdrop: _optionsService.Options.PermanentBackdrop);
             }
         }
 
