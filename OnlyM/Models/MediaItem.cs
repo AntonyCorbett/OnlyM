@@ -81,7 +81,62 @@
                 }
             }
         }
-        
+
+        public bool HasDuration =>
+            MediaType.Classification == MediaClassification.Audio ||
+            MediaType.Classification == MediaClassification.Video;
+
+        private int _playbackPositionDeciseconds;
+
+        public int PlaybackPositionDeciseconds
+        {
+            get => _playbackPositionDeciseconds;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_playbackPositionDeciseconds != value)
+                {
+                    _playbackPositionDeciseconds = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(PlaybackTimeString));
+                }
+            }
+        }
+
+        public string PlaybackTimeString
+        {
+            get
+            {
+                var ts = TimeSpan.FromMilliseconds(PlaybackPositionDeciseconds * 10);
+                return ts.ToString(@"hh\:mm\:ss\.ff");
+            }
+        }
+
+        public string DurationString
+        {
+            get
+            {
+                var ts = TimeSpan.FromMilliseconds(DurationDeciseconds * 10);
+                return ts.ToString(@"hh\:mm\:ss\.ff");
+            }
+        }
+
+        private int _durationDeciseconds;
+
+        public int DurationDeciseconds
+        {
+            get => _durationDeciseconds;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_durationDeciseconds != value)
+                {
+                    _durationDeciseconds = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public Brush IconBrush
         {
             get

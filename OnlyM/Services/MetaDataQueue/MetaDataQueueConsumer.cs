@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Services.ThumbnailQueue
+﻿using OnlyM.Core.Models;
+
+namespace OnlyM.Services.MetaDataQueue
 {
     using System;
     using System.Collections.Concurrent;
@@ -10,19 +12,23 @@
     using Models;
     using Serilog;
 
-    internal class ThumbnailQueueConsumer
+    internal class MetaDataQueueConsumer
     {
         private readonly IThumbnailService _thumbnailService;
+        private readonly IMediaMetaDataService _metaDataService;
         private readonly BlockingCollection<MediaItem> _collection;
         private readonly CancellationToken _cancellationToken;
 
-        public ThumbnailQueueConsumer(
+        public MetaDataQueueConsumer(
             IThumbnailService thumbnailService,
-            BlockingCollection<MediaItem> thumbnailProducerCollection,
+            IMediaMetaDataService metaDataService,
+            BlockingCollection<MediaItem> metaDataProducerCollection,
             CancellationToken cancellationToken)
         {
             _thumbnailService = thumbnailService;
-            _collection = thumbnailProducerCollection;
+            _metaDataService = metaDataService;
+
+            _collection = metaDataProducerCollection;
             _cancellationToken = cancellationToken;
         }
 
@@ -37,16 +43,29 @@
                         {
                             var nextItem = _collection.Take(_cancellationToken);
                             PopulateThumbnail(nextItem);
+                            PopulateMetaData(nextItem);
 
-                            Log.Logger.Verbose("Thumbs queue size (consumer) = {QueueSize}", _collection.Count);
+                            Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _collection.Count);
                         }
                     }
-                    catch (OperationCanceledException ex)
+                    catch (OperationCanceledException)
                     {
-                        Log.Logger.Error(ex, "thumbnail consumer cancelled");
+                        Log.Logger.Information("Metadata consumer closed");
                     }
                 }, 
                 _cancellationToken);
+        }
+
+        private void PopulateMetaData(MediaItem mediaItem)
+        {
+            var md = _metaDataService.GetMetaData(mediaItem.FilePath, mediaItem.MediaType.Classification);
+            if (md != null)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    mediaItem.DurationDeciseconds = (int)md.Duration.TotalMilliseconds / 10;
+                });
+            }
         }
 
         private void PopulateThumbnail(MediaItem mediaItem)

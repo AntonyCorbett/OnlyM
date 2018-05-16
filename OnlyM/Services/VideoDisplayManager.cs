@@ -12,6 +12,8 @@
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
+        public event EventHandler<Unosquare.FFME.Events.PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
+
         public VideoDisplayManager(MediaElement mediaElement)
         {
             _mediaElement = mediaElement;
@@ -19,6 +21,8 @@
             _mediaElement.MediaClosed += HandleMediaClosed;
             _mediaElement.MediaEnded += HandleMediaEnded;
             _mediaElement.MediaFailed += HandleMediaFailed;
+            
+            _mediaElement.PositionChanged += HandlePositionChanged;
         }
 
         public void ShowVideo(string mediaItemFilePath, Guid mediaItemId)
@@ -48,7 +52,11 @@
 
         private void HandleMediaOpened(object sender, System.Windows.RoutedEventArgs e)
         {
-            OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Started });
+            OnMediaChangeEvent(new MediaEventArgs
+            {
+                MediaItemId = _mediaItemId,
+                Change = MediaChange.Started
+            });
         }
 
         private void HandleMediaClosed(object sender, System.Windows.RoutedEventArgs e)
@@ -64,6 +72,11 @@
         private void HandleMediaFailed(object sender, System.Windows.ExceptionRoutedEventArgs e)
         {
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
+        }
+
+        private void HandlePositionChanged(object sender, Unosquare.FFME.Events.PositionChangedRoutedEventArgs e)
+        {
+            MediaPositionChangedEvent?.Invoke(this, e);
         }
     }
 }

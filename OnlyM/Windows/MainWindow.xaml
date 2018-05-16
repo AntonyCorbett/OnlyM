@@ -28,8 +28,8 @@
         <ResourceDictionary>
             <Style x:Key="SystemButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatButton}">
                 <Setter Property="Padding" Value="0" />
-                <Setter Property="Height" Value="34" />
-                <Setter Property="Margin" Value="0,-6,0,0" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="Margin" Value="0,-8,0,0" />
                 <Setter Property="Foreground" Value="White" />
             </Style>
 
@@ -117,67 +117,63 @@
     <Border BorderBrush="#FF512DA8" BorderThickness="1">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="32"/>
-                <RowDefinition Height="10"/>
+                <RowDefinition Height="38"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="10"/>
                 <RowDefinition Height="74"/>
             </Grid.RowDefinitions>
 
-            <materialDesign:ColorZone
-                Grid.Row="0"
+            <Border Grid.Row="0">
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF512DA8" Offset="1"/>
+                        <GradientStop Color="#FFB39DDB"/>
+                        <GradientStop Color="#FFB39DDB" Offset="0.821"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <ContentControl
                 VerticalAlignment="Stretch"
-                Padding="4"
                 MouseDoubleClick="OnMouseDoubleClickTitleBar"
-                MouseLeftButtonDown="OnMouseLeftButtonDownTitleBar"
-                Mode="PrimaryLight">
-                <!--<i:Interaction.Triggers>
+                MouseLeftButtonDown="OnMouseLeftButtonDownTitleBar" >
+                    <!--<i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick">
                         <command:EventToCommand Command="{Binding MaximizeOrRestoreCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>-->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="33"/>
-                        <ColumnDefinition Width="33"/>
-                        <ColumnDefinition Width="33"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Foreground="White" 
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="33"/>
+                            <ColumnDefinition Width="33"/>
+                            <ColumnDefinition Width="33"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Foreground="White" 
+                               VerticalAlignment="Center"
                                Margin="6"
                                Grid.Column="0">O N L Y - M</TextBlock>
 
-                    <Button Grid.Column="1" 
+                        <Button Grid.Column="1" 
                             Style="{StaticResource SystemButtonStyle}"
                             Content="{materialDesign:PackIcon WindowMinimize}" 
                             Click="MinimizeClick">
-                    </Button>
+                        </Button>
 
-                    <Button Grid.Column="2" x:Name="MaxRestoreBtn"
+                        <Button Grid.Column="2" x:Name="MaxRestoreBtn"
                             Style="{StaticResource SystemButtonStyle}"
                             Content="{materialDesign:PackIcon WindowMaximize}" 
                             Click="MaximizeRestoreClick">
-                    </Button>
+                        </Button>
 
-                    <Button Grid.Column="3" 
+                        <Button Grid.Column="3" 
                             Style="{StaticResource SystemButtonStyle}"
                             Content="{materialDesign:PackIcon WindowClose}" 
                             Click="CloseClick">
-                    </Button>
+                        </Button>
 
-                </Grid>
-            </materialDesign:ColorZone>
-
-            <Border Grid.Row="1">
-                <Border.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF694D9B" Offset="1"/>
-                        <GradientStop Color="#FFB39DDB"/>
-                    </LinearGradientBrush>
-                </Border.Background>
+                    </Grid>
+                </ContentControl>
             </Border>
 
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="1">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <ContentControl Content="{Binding CurrentPage}" />
                 </ScrollViewer>
@@ -191,24 +187,20 @@
                 </Rectangle>
             </Grid>
 
-            <Border Grid.Row="3">
+            <Border Grid.Row="2">
                 <Border.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFB39DDB" Offset="0"/>
                         <GradientStop Color="#FFB39DDB" Offset="1"/>
-                        <GradientStop Color="#FFFAFAFA" Offset="0.325"/>
-                        <GradientStop Color="#FFAB98CE"/>
+                        <GradientStop Color="#FFFDFCFD" Offset="0.047"/>
+                        <GradientStop Color="#FFB39DDB" Offset="0.087"/>
                     </LinearGradientBrush>
                 </Border.Background>
-            </Border>
-
-            <materialDesign:ColorZone
+                <ContentControl
             x:Name="BottomColorZone"
-            Grid.Row="4"
             VerticalAlignment="Stretch"
-            Padding="10"
-            Mode="PrimaryLight">
-
-                <Grid Margin="10,0,10,0">
+            Padding="10">
+                    <Grid Margin="10,0,10,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="50"/>
@@ -271,9 +263,11 @@
                     </Button>
                 </Grid>
 
-            </materialDesign:ColorZone>
+            </ContentControl>
+            </Border>
 
         </Grid>
     </Border>
 
 </Window>
+

@@ -22,6 +22,8 @@
 
         public event EventHandler ImageFadeSpeedChangedEvent;
 
+        public event EventHandler AlwaysOnTopChangedEvent;
+        
         public OptionsService(ILogLevelSwitchService logLevelSwitchService)
         {
             _logLevelSwitchService = logLevelSwitchService;
@@ -104,10 +106,16 @@
                     _options.ImageFadeTypeChangedEvent += HandleImageFadeTypeChangedEvent;
                     _options.ImageFadeSpeedChangedEvent += HandleImageFadeSpeedChangedEvent;
                     _options.LogEventLevelChangedEvent += HandleLogEventLevelChangedEvent;
+                    _options.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
                     
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void HandleAlwaysOnTopChangedEvent(object sender, EventArgs e)
+        {
+            OnAlwaysOnTopChangedEvent();
         }
 
         private void HandleImageFadeSpeedChangedEvent(object sender, EventArgs e)
@@ -185,6 +193,11 @@
         private void OnImageFadeSpeedChangedEvent()
         {
             ImageFadeSpeedChangedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnAlwaysOnTopChangedEvent()
+        {
+            AlwaysOnTopChangedEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

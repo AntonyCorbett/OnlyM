@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using System.Windows;
     using Models;
+    using Unosquare.FFME.Events;
 
     internal interface IPageService
     {
@@ -12,6 +13,8 @@
         event EventHandler MediaMonitorChangedEvent;
 
         event EventHandler<MediaEventArgs> MediaChangeEvent;
+
+        event EventHandler<PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
 
         string OperatorPageName { get; }
 

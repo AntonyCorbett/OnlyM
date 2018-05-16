@@ -15,5 +15,7 @@
         event EventHandler ImageFadeTypeChangedEvent;
 
         event EventHandler ImageFadeSpeedChangedEvent;
+
+        event EventHandler AlwaysOnTopChangedEvent;
     }
 }

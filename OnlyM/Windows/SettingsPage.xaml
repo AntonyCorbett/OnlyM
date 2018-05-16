@@ -92,6 +92,11 @@
                     materialDesign:HintAssist.Hint="Media Folder">
                 </TextBox>
 
+                <CheckBox IsChecked="{Binding EmbeddedThumbnails, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Use embedded thumbnails where available
+                </CheckBox>
+
                 <Button 
                     Style="{StaticResource SettingsButtonStyle}" 
                     Command="{Binding PurgeThumbnailCacheCommand}"
@@ -106,7 +111,7 @@
                 <ComboBox ItemsSource="{Binding ImageFadeTypes}"
                           Style="{StaticResource SettingsComboBoxStyle}" 
                           materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="Fading"
+                          materialDesign:HintAssist.Hint="Fading Style"
                           SelectedValuePath="Fade" 
                           DisplayMemberPath="Name"
                           SelectedValue="{Binding ImageFadeType, Mode=TwoWay}"/>
@@ -114,7 +119,7 @@
                 <ComboBox ItemsSource="{Binding FadeSpeedTypes}"
                           Style="{StaticResource SettingsComboBoxStyle}" 
                           materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="Fading"
+                          materialDesign:HintAssist.Hint="Fading Speed"
                           SelectedValuePath="Speed" 
                           DisplayMemberPath="Name"
                           SelectedValue="{Binding FadeSpeedType, Mode=TwoWay}"/>

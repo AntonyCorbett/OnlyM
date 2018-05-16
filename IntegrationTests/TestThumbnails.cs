@@ -1,4 +1,4 @@
-﻿using OnlyM.Core.Models;
+﻿using OnlyM.Core.Services.Options;
 
 namespace IntegrationTests
 {
@@ -6,6 +6,8 @@ namespace IntegrationTests
     using System.Drawing.Imaging;
     using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using OnlyM.Core.Models;
+    using OnlyM.Core.Services.Database;
     using OnlyM.Core.Services.Media;
     using OnlyM.Core.Utils;
 
@@ -15,8 +17,11 @@ namespace IntegrationTests
         [TestMethod]
         public void TestMethod1()
         {
-            IThumbnailService service = new ThumbnailService();
-            service.ClearCache();
+            ILogLevelSwitchService logSwitchService = new LogLevelSwitchService();
+            IDatabaseService db = new DatabaseService();
+            IOptionsService optionsService = new OptionsService(logSwitchService);
+            IThumbnailService service = new ThumbnailService(db, optionsService);
+            service.ClearThumbCache();
 
             var folder = Path.Combine(FileUtils.GetSystemTempFolder(), "OnlyMIntegrationTests");
             FileUtils.CreateDirectory(folder);
@@ -44,7 +49,7 @@ namespace IntegrationTests
             Assert.IsNotNull(thumb3);
             Assert.IsFalse(foundInCache);
 
-            service.ClearCache();
+            service.ClearThumbCache();
         }
     }
 }

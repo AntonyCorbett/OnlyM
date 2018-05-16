@@ -65,7 +65,33 @@
                             </Grid>
                         </Border>
 
-                        <TextBlock Grid.Column="1" TextTrimming="CharacterEllipsis" Text="{Binding Name}"/>
+                        <Grid Grid.Column="1" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18" />
+                                <RowDefinition Height="18" />
+                                <RowDefinition Height="10" />
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" 
+                                       TextTrimming="CharacterEllipsis" 
+                                       Style="{StaticResource MaterialDesignTitleTextBlock}"
+                                       Text="{Binding Name}"/>
+                            <TextBlock Grid.Row="1" 
+                                       Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                       Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       FontSize="16"
+                                       Text="{Binding DurationString}"/>
+                            <TextBlock Grid.Row="2" 
+                                       Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                       Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       FontSize="16"
+                                       Text="{Binding PlaybackTimeString}"/>
+                            <ProgressBar Grid.Row="3" 
+                                       Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Value="{Binding PlaybackPositionDeciseconds}" 
+                                       Maximum="{Binding DurationDeciseconds}"/>
+                        </Grid>
 
                         <Button
                             Width="50"

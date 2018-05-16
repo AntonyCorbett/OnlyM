@@ -16,6 +16,9 @@
 
         public event EventHandler LogEventLevelChangedEvent;
 
+        public event EventHandler AlwaysOnTopChangedEvent;
+        
+
         public Options()
         {
             // defaults
@@ -29,7 +32,20 @@
 
         public string MediaMonitorId { get; set; }
 
-        public bool AlwaysOnTop { get; set; }
+        private bool _alwaysOnTop;
+
+        public bool AlwaysOnTop
+        {
+            get => _alwaysOnTop;
+            set
+            {
+                if (_alwaysOnTop != value)
+                {
+                    _alwaysOnTop = value;
+                    OnAlwaysOnTopChangedEvent();
+                }
+            }
+        }
         
         public string AppWindowPlacement { get; set; }
 
@@ -93,7 +109,9 @@
                 }
             }
         }
-        
+
+        public bool EmbeddedThumbnails { get; set; }
+
         public bool CacheImages { get; set; }
 
         /// <summary>
@@ -125,6 +143,11 @@
         private void OnLogEventLevelChangedEvent()
         {
             LogEventLevelChangedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnAlwaysOnTopChangedEvent()
+        {
+            AlwaysOnTopChangedEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

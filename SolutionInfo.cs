@@ -7,4 +7,4 @@
 [assembly: AssemblyCulture("")]
 
 
-[assembly: AssemblyVersion("1.0.0.1")]
+[assembly: AssemblyVersion("1.0.0.2")]

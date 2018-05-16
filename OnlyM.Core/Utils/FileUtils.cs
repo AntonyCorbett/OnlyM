@@ -70,12 +70,12 @@
         }
 
         /// <summary>
-        /// Gets the application's Thumbnails folder, e.g. "...MyDocuments\OnlyM\Thumbs"
+        /// Gets the application's database folder, e.g. "...MyDocuments\OnlyM\Database"
         /// </summary>
         /// <returns>Folder path</returns>
-        public static string GetOnlyMThumbnailFolder()
+        public static string GetOnlyMDatabaseFolder()
         {
-            var folder = Path.Combine(GetOnlyMMyDocsFolder(), "Thumbs");
+            var folder = Path.Combine(GetOnlyMMyDocsFolder(), "Database");
             CreateDirectory(folder);
             return folder;
         }

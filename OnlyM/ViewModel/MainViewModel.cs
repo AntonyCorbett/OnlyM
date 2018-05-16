@@ -1,9 +1,8 @@
-using System;
-using System.Diagnostics;
-using System.IO;
-
 namespace OnlyM.ViewModel
 {
+    using System;
+    using System.Diagnostics;
+    using System.IO;
     using System.Windows;
     using Core.Services.Options;
     using GalaSoft.MvvmLight;
@@ -25,6 +24,7 @@ namespace OnlyM.ViewModel
             _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
 
             _optionsService = optionsService;
+            _optionsService.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
 
             _pageService.GotoOperatorPage();
 
@@ -34,6 +34,11 @@ namespace OnlyM.ViewModel
             {
                 _pageService.OpenMediaWindow();
             }
+        }
+
+        private void HandleAlwaysOnTopChangedEvent(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(AlwaysOnTop));
         }
 
         private void HandlePageNavigationEvent(object sender, NavigationEventArgs e)

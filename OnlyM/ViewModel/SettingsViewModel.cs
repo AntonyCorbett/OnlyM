@@ -1,12 +1,11 @@
-﻿using OnlyM.Core.Models;
-
-namespace OnlyM.ViewModel
+﻿namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using AutoUpdates;
     using Core.Extensions;
+    using Core.Models;
     using Core.Services.Media;
     using Core.Services.Monitors;
     using Core.Services.Options;
@@ -69,7 +68,7 @@ namespace OnlyM.ViewModel
 
         private void PurgeThumbnailCache()
         {
-            _thumbnailService.ClearCache();
+            _thumbnailService.ClearThumbCache();
         }
 
         private void InitSubscriptions()
@@ -103,6 +102,20 @@ namespace OnlyM.ViewModel
                 {
                     _isMediaActive = value;
                     RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool EmbeddedThumbnails
+        {
+            get => _optionsService.Options.EmbeddedThumbnails;
+            set
+            {
+                if (_optionsService.Options.EmbeddedThumbnails != value)
+                {
+                    _optionsService.Options.EmbeddedThumbnails = value;
+                    RaisePropertyChanged();
+                    PurgeThumbnailCache();
                 }
             }
         }

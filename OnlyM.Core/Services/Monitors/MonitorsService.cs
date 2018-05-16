@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace OnlyM.Core.Services.Monitors
+﻿namespace OnlyM.Core.Services.Monitors
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Forms;
@@ -11,7 +10,7 @@ namespace OnlyM.Core.Services.Monitors
     /// <summary>
     /// Service to get display device information
     /// </summary>
-    // ReSharper disable once UnusedMember.Global
+    // ReSharper disable once ClassNeverInstantiated.Global
     public sealed class MonitorsService : IMonitorsService
     {
         /// <summary>
@@ -28,12 +27,12 @@ namespace OnlyM.Core.Services.Monitors
 
             foreach (var screen in Screen.AllScreens)
             {
-                Log.Logger.Information($"Screen: {screen.DeviceName}");
+                Log.Logger.Verbose($"Screen: {screen.DeviceName}");
                 
                 DisplayDeviceData deviceData = GetDeviceMatchingScreen(devices, screen);
                 if (deviceData != null)
                 {
-                    Log.Logger.Information($"Matching device: {deviceData.DeviceString}, {deviceData.DeviceId}");
+                    Log.Logger.Verbose($"Matching device: {deviceData.DeviceString}, {deviceData.DeviceId}");
                     
                     result.Add(new SystemMonitor
                     {

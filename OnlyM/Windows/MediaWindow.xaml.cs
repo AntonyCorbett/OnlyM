@@ -1,6 +1,4 @@
-﻿using OnlyM.Core.Services.Options;
-
-namespace OnlyM.Windows
+﻿namespace OnlyM.Windows
 {
     using System;
     using System.ComponentModel;
@@ -8,9 +6,11 @@ namespace OnlyM.Windows
     using System.Windows;
     using CommonServiceLocator;
     using Core.Models;
+    using Core.Services.Options;
     using Models;
     using Services;
     using Services.Pages;
+    using Unosquare.FFME.Events;
 
     /// <summary>
     /// Interaction logic for MediaWindow.xaml
@@ -22,6 +22,8 @@ namespace OnlyM.Windows
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
+        public event EventHandler<PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
+
         public MediaWindow(IOptionsService optionsService)
         {
             InitializeComponent();
@@ -31,6 +33,7 @@ namespace OnlyM.Windows
 
             _videoDisplayManager = new VideoDisplayManager(VideoElement);
             _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
+            _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
         }
 
         public ImageFadeType ImageFadeType
@@ -114,14 +117,14 @@ namespace OnlyM.Windows
             e.Cancel = !pageService.ApplicationIsClosing;
         }
 
-        private void OnMediaChangeEvent(MediaEventArgs e)
+        private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
         {
             MediaChangeEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
+        private void HandleMediaPositionChangedEvent(object sender, PositionChangedRoutedEventArgs e)
         {
-            OnMediaChangeEvent(e);
+            MediaPositionChangedEvent?.Invoke(this, e);
         }
     }
 }

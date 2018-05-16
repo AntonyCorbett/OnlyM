@@ -17,29 +17,31 @@
     using Models;
     using PubSubMessages;
     using Serilog;
+    using Services.MetaDataQueue;
     using Services.Pages;
-    using Services.ThumbnailQueue;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class OperatorViewModel : ViewModelBase
     {
         private readonly IMediaProviderService _mediaProviderService;
         private readonly IThumbnailService _thumbnailService;
+        private readonly IMediaMetaDataService _metaDataService;
         private readonly IOptionsService _optionsService;
         private readonly IPageService _pageService;
-        private readonly object _mediaItemsCollectionLock = new object();
+
         private readonly HashSet<Guid> _changingMediaItems = new HashSet<Guid>();
-        private readonly ThumbnailQueueProducer _thumbnailProducer = new ThumbnailQueueProducer();
+        private readonly MetaDataQueueProducer _metaDataProducer = new MetaDataQueueProducer();
         private readonly CancellationTokenSource _thumbnailCancellationTokenSource = new CancellationTokenSource();
 
-        private ThumbnailQueueConsumer _thumbnailConsumer;
+        private MetaDataQueueConsumer _metaDataConsumer;
 
         public OperatorViewModel(
             IMediaProviderService mediaProviderService,
             IThumbnailService thumbnailService,
             IOptionsService optionsService,
             IPageService pageService,
-            IFolderWatcherService folderWatcherService)
+            IFolderWatcherService folderWatcherService,
+            IMediaMetaDataService metaDataService)
         {
             _mediaProviderService = mediaProviderService;
 
@@ -48,12 +50,15 @@
 
             _optionsService = optionsService;
             _optionsService.MediaFolderChangedEvent += HandleMediaFolderChangedEvent;
-
+            
             folderWatcherService.ChangesFoundEvent += HandleFileChangesFoundEvent;
 
             _pageService = pageService;
             _pageService.MediaChangeEvent += HandleMediaChangeEvent;
             _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
+            _pageService.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
+
+            _metaDataService = metaDataService;
 
             LoadMediaItems();
             InitCommands();
@@ -61,6 +66,15 @@
             LaunchThumbnailQueueConsumer();
 
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+        }
+
+        private void HandleMediaPositionChangedEvent(object sender, Unosquare.FFME.Events.PositionChangedRoutedEventArgs e)
+        {
+            var item = GetCurrentMediaItem();
+            if (item != null)
+            {
+                item.PlaybackPositionDeciseconds = (int)(e.Position.TotalMilliseconds / 10);
+            }
         }
 
         private void OnShutDown(ShutDownMessage message)
@@ -71,12 +85,13 @@
 
         private void LaunchThumbnailQueueConsumer()
         {
-            _thumbnailConsumer = new ThumbnailQueueConsumer(
+            _metaDataConsumer = new MetaDataQueueConsumer(
                 _thumbnailService,
-                _thumbnailProducer.Collection,
+                _metaDataService,
+                _metaDataProducer.Queue,
                 _thumbnailCancellationTokenSource.Token);
 
-            _thumbnailConsumer.Execute();
+            _metaDataConsumer.Execute();
         }
 
         private void HandleFileChangesFoundEvent(object sender, EventArgs e)
@@ -151,6 +166,7 @@
                 case MediaChange.Stopped:
                     mediaItem.IsMediaActive = false;
                     mediaItem.IsMediaChanging = false;
+                    mediaItem.PlaybackPositionDeciseconds = 0;
                     _changingMediaItems.Remove(mediaItem.Id);
                     break;
             }
@@ -255,14 +271,7 @@
 
         private void HandleThumbnailsPurgedEvent(object sender, EventArgs e)
         {
-            var copyOfMediaList = new List<MediaItem>();
-
-            lock (_mediaItemsCollectionLock)
-            {
-                copyOfMediaList.AddRange(MediaItems);
-            }
-
-            foreach (var item in copyOfMediaList)
+            foreach (var item in MediaItems)
             {
                 item.ThumbnailImageSource = null;
             }
@@ -321,37 +330,18 @@
 
                     MediaItems.Add(item);
 
-                    _thumbnailProducer.Add(item);
+                    _metaDataProducer.Add(item);
                 }
             }
 
             ChangePlayButtonEnabledStatus();
-
-            //int id = 100;
-            //foreach (var file in files)
-            //{
-            //    var item = new MediaItem
-            //    {
-            //        MediaType = file.MediaType,
-            //        Id = id++,
-            //        Name = Path.GetFileNameWithoutExtension(file.FullPath),
-            //        FilePath = file.FullPath,
-            //        LastChanged = file.LastChanged
-            //    };
-
-            //    MediaItems.Add(item);
-
-            //    _thumbnailProducer.Add(item);
-            //}
-
-            //FillThumbnails();
         }
         
         private void FillThumbnails()
         {
             foreach (var item in MediaItems)
             {
-                _thumbnailProducer.Add(item);
+                _metaDataProducer.Add(item);
             }
         }
 

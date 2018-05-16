@@ -86,25 +86,38 @@
         /// </summary>
         /// <param name="originalPath">The original vidoe path.</param>
         /// <param name="ffmpegFolder">The ffmpeg installation folder.</param>
+        /// <param name="useEmbeddedWhereAvailable">Use an embedded thumbnail if available.</param>
         /// <returns>The temporary thumbnail image file.</returns>
         public static string CreateThumbnailForVideo(
             string originalPath, 
-            string ffmpegFolder)
+            string ffmpegFolder,
+            bool useEmbeddedWhereAvailable)
         {
-            try
-            {
-                return CreateNativeThumbnailForVideo(originalPath, ffmpegFolder);
-            }
-            catch (Exception)
+            if (useEmbeddedWhereAvailable)
             {
                 try
                 {
-                    return CreateFFMpegThumbnailForVideo(originalPath, ffmpegFolder);
+                    var result = CreateEmbeddedThumbnailForVideo(originalPath, ffmpegFolder);
+                    if (result != null)
+                    {
+                        return result;
+                    }
+
+                    Log.Logger.Information($"Embedded thumbnail unavailable for video: {originalPath}");
                 }
                 catch (Exception ex)
                 {
-                    Log.Logger.Error(ex, $"Could not create thumbnail for video: {originalPath}");
+                    Log.Logger.Error(ex, $"Embedded thumbnail unavailable for video: {originalPath}");
                 }
+            }
+
+            try
+            {
+                return CreateFFMpegThumbnailForVideo(originalPath, ffmpegFolder);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, $"Could not create thumbnail for video: {originalPath}");
             }
 
             return null;
@@ -132,7 +145,7 @@
                 : null;
         }
 
-        private static string CreateNativeThumbnailForVideo(string originalPath, string ffmpegFolder)
+        private static string CreateEmbeddedThumbnailForVideo(string originalPath, string ffmpegFolder)
         {
             var tempThumbnailPath = GetTempVideoThumbnailFileName(originalPath);
 
@@ -185,29 +198,6 @@
             }
 
             return Path.Combine(tempThumbnailFolder, Path.ChangeExtension(origFileName, ".png"));
-        }
-
-        private static BitmapSource Convert(Bitmap bmp)
-        {
-            var bitmapData = bmp.LockBits(
-                new Rectangle(0, 0, bmp.Width, bmp.Height),
-                ImageLockMode.ReadOnly, 
-                bmp.PixelFormat);
-
-            var bitmapSource = BitmapSource.Create(
-                bitmapData.Width, 
-                bitmapData.Height, 
-                96, 
-                96, 
-                PixelFormats.Bgr24, 
-                null,
-                bitmapData.Scan0, 
-                bitmapData.Stride * bitmapData.Height, 
-                bitmapData.Stride);
-
-            bmp.UnlockBits(bitmapData);
-
-            return bitmapSource;
         }
     }
 }

@@ -11,6 +11,7 @@
     using Models;
     using PubSubMessages;
     using Serilog;
+    using Unosquare.FFME.Events;
     using Windows;
     using WindowsPositioning;
 
@@ -30,6 +31,8 @@
         public event EventHandler<NavigationEventArgs> NavigationEvent;
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
+
+        public event EventHandler<PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
 
         public PageService(
             IMonitorsService monitorsService,
@@ -237,7 +240,13 @@
             };
 
             result.MediaChangeEvent += HandleMediaChangeEvent;
+            result.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             return result;
+        }
+
+        private void HandleMediaPositionChangedEvent(object sender, Unosquare.FFME.Events.PositionChangedRoutedEventArgs e)
+        {
+            MediaPositionChangedEvent?.Invoke(this, e);
         }
 
         private void HandleMediaChangeEvent(object sender, MediaEventArgs e)

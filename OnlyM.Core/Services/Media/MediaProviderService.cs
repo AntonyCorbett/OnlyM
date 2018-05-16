@@ -1,13 +1,11 @@
-﻿using OnlyM.Core.Services.Options;
-
-namespace OnlyM.Core.Services.Media
+﻿namespace OnlyM.Core.Services.Media
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using Models;
-    using Utils;
+    using Options;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MediaProviderService : IMediaProviderService
@@ -15,9 +13,13 @@ namespace OnlyM.Core.Services.Media
         private readonly SupportedMediaType[] _supportedMediaTypes =
         {
             new SupportedMediaType { Name = "MP4 Video", Classification = MediaClassification.Video, FileExtension = ".mp4" },
+            new SupportedMediaType { Name = "M4V Video", Classification = MediaClassification.Video, FileExtension = ".m4v" },
+            new SupportedMediaType { Name = "MKV Video", Classification = MediaClassification.Video, FileExtension = ".mkv" },
+
             new SupportedMediaType { Name = "JPG Image", Classification = MediaClassification.Image, FileExtension = ".jpg" },
             new SupportedMediaType { Name = "JPEG Image", Classification = MediaClassification.Image, FileExtension = ".jpeg" },
             new SupportedMediaType { Name = "PNG Image", Classification = MediaClassification.Image, FileExtension = ".png" },
+
             new SupportedMediaType { Name = "MP3 Audio", Classification = MediaClassification.Audio, FileExtension = ".mp3" },
             new SupportedMediaType { Name = "WMA Audio", Classification = MediaClassification.Audio, FileExtension = ".wma" }
         };

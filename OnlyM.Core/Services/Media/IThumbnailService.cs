@@ -12,7 +12,7 @@
             long originalLastChanged, 
             out bool foundInCache);
 
-        void ClearCache();
+        void ClearThumbCache();
 
         event EventHandler ThumbnailsPurgedEvent;
     }

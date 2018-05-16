@@ -1,3 +1,5 @@
+using OnlyM.Core.Services.Database;
+
 namespace OnlyM.ViewModel
 {
     using CommonServiceLocator;
@@ -29,6 +31,8 @@ namespace OnlyM.ViewModel
             SimpleIoc.Default.Register<IOptionsService, OptionsService>();
             SimpleIoc.Default.Register<ILogLevelSwitchService, LogLevelSwitchService>();
             SimpleIoc.Default.Register<IFolderWatcherService, FolderWatcherService>();
+            SimpleIoc.Default.Register<IDatabaseService, DatabaseService>();
+            SimpleIoc.Default.Register<IMediaMetaDataService, MediaMetaDataService>();
 
             // view models.
             SimpleIoc.Default.Register<MainViewModel>();
