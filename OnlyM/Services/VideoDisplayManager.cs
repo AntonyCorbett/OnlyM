@@ -10,6 +10,7 @@
         private readonly MediaElement _mediaElement;
         private Guid _mediaItemId;
         private TimeSpan _startPosition;
+        private bool _showSubtitles;
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
@@ -22,13 +23,16 @@
             _mediaElement.MediaClosed += HandleMediaClosed;
             _mediaElement.MediaEnded += HandleMediaEnded;
             _mediaElement.MediaFailed += HandleMediaFailed;
+
+            _mediaElement.RenderingSubtitles += HandleRenderingSubtitles;
             
             _mediaElement.PositionChanged += HandlePositionChanged;
         }
 
-        public void ShowVideo(string mediaItemFilePath, Guid mediaItemId, TimeSpan startOffset)
+        public void ShowVideo(string mediaItemFilePath, Guid mediaItemId, TimeSpan startOffset, bool showSubtitles)
         {
             _mediaItemId = mediaItemId;
+            _showSubtitles = showSubtitles;
 
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Starting });
 
@@ -80,6 +84,11 @@
         private void HandlePositionChanged(object sender, Unosquare.FFME.Events.PositionChangedRoutedEventArgs e)
         {
             MediaPositionChangedEvent?.Invoke(this, e);
+        }
+
+        private void HandleRenderingSubtitles(object sender, Unosquare.FFME.Events.RenderingSubtitlesEventArgs e)
+        {
+            e.Cancel = !_showSubtitles;
         }
     }
 }

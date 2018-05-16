@@ -89,6 +89,19 @@
                 }
             }
         }
+        
+        public bool ShowVideoSubtitles
+        {
+            get => _optionsService.Options.ShowVideoSubtitles;
+            set
+            {
+                if (_optionsService.Options.ShowVideoSubtitles != value)
+                {
+                    _optionsService.Options.ShowVideoSubtitles = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         private bool _isMediaActive;
 

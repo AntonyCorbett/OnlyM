@@ -42,6 +42,7 @@
             _optionsService = optionsService;
 
             _mediaWindow = new Lazy<MediaWindow>(MediaWindowCreation);
+
             _optionsService.ImageFadeTypeChangedEvent += HandleImageFadeTypeChangedEvent;
             _optionsService.ImageFadeSpeedChangedEvent += HandleImageFadeSpeedChangedEvent;
             _optionsService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
@@ -120,7 +121,10 @@
             {
                 OpenMediaWindow();
                 
-                _mediaWindow.Value.StartMedia(mediaItemToStart, currentMediaItem);
+                _mediaWindow.Value.StartMedia(
+                    mediaItemToStart, 
+                    currentMediaItem, 
+                    _optionsService.Options.ShowVideoSubtitles);
             }
             catch (Exception ex)
             {
@@ -145,13 +149,15 @@
             window.Topmost = true;
             window.Show();
         }
-        
+
         private void LocateWindowAtOrigin(Window window, Screen monitor)
         {
             var area = monitor.WorkingArea;
 
             var left = (area.Left * 96) / _systemDpi.dpiX;
             var top = (area.Top * 96) / _systemDpi.dpiY;
+
+            Log.Logger.Verbose($"Monitor = {monitor.DeviceName} Left = {left}, top = {top}");
 
             // these seemingly redundant sizing statements are required!
             window.Left = 0;
@@ -220,10 +226,17 @@
 
             result.MediaChangeEvent += HandleMediaChangeEvent;
             result.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
+            result.Loaded += HandleLoaded;
+
             return result;
         }
 
-        private void HandleMediaPositionChangedEvent(object sender, Unosquare.FFME.Events.PositionChangedRoutedEventArgs e)
+        private void HandleLoaded(object sender, RoutedEventArgs e)
+        {
+            ((Window)sender).WindowState = WindowState.Maximized;
+        }
+
+        private void HandleMediaPositionChangedEvent(object sender, PositionChangedRoutedEventArgs e)
         {
             MediaPositionChangedEvent?.Invoke(this, e);
         }

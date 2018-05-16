@@ -46,7 +46,7 @@
             set => _imageDisplayManager.ImageFadeSpeed = value;
         }
 
-        public void StartMedia(MediaItem mediaItemToStart, MediaItem currentMediaItem)
+        public void StartMedia(MediaItem mediaItemToStart, MediaItem currentMediaItem, bool showSubtitles)
         {
             switch (mediaItemToStart.MediaType.Classification)
             {
@@ -56,7 +56,7 @@
 
                 case MediaClassification.Video:
                 case MediaClassification.Audio:
-                    ShowVideo(mediaItemToStart, currentMediaItem);
+                    ShowVideo(mediaItemToStart, currentMediaItem, showSubtitles);
                     break;
             }
         }
@@ -99,12 +99,12 @@
             _imageDisplayManager.ShowImage(mediaItem.FilePath, mediaItem.Id);
         }
 
-        private void ShowVideo(MediaItem mediaItemToStart, MediaItem currentMediaItem)
+        private void ShowVideo(MediaItem mediaItemToStart, MediaItem currentMediaItem, bool showSubtitles)
         {
             HideImage(currentMediaItem);
 
             var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 10);
-            _videoDisplayManager.ShowVideo(mediaItemToStart.FilePath, mediaItemToStart.Id, startPosition);
+            _videoDisplayManager.ShowVideo(mediaItemToStart.FilePath, mediaItemToStart.Id, startPosition, showSubtitles);
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)

@@ -132,6 +132,17 @@
             </StackPanel>
         </GroupBox>
 
+        <GroupBox Header="Videos" Style="{StaticResource SettingsGroupBoxStyle}">
+            <StackPanel Orientation="Vertical">
+
+                <CheckBox IsChecked="{Binding ShowVideoSubtitles, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Show subtitles if available
+                </CheckBox>
+
+            </StackPanel>
+        </GroupBox>
+
         <GroupBox Header="Miscellaneous" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 

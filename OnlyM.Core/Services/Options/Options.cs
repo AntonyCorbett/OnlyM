@@ -30,6 +30,7 @@
             ImageFadeType = ImageFadeType.CrossFade;
             ImageFadeSpeed = FadeSpeed.Normal;
             CacheImages = true;
+            ShowVideoSubtitles = true;
         }
 
         private string _mediaMonitorId;
@@ -46,6 +47,8 @@
                 }
             }
         }
+
+        public bool ShowVideoSubtitles { get; set; }
 
         private bool _alwaysOnTop;
 
