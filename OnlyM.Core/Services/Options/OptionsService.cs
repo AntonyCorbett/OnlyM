@@ -23,6 +23,8 @@
         public event EventHandler ImageFadeSpeedChangedEvent;
 
         public event EventHandler AlwaysOnTopChangedEvent;
+
+        public event EventHandler MediaMonitorChangedEvent;
         
         public OptionsService(ILogLevelSwitchService logLevelSwitchService)
         {
@@ -107,20 +109,26 @@
                     _options.ImageFadeSpeedChangedEvent += HandleImageFadeSpeedChangedEvent;
                     _options.LogEventLevelChangedEvent += HandleLogEventLevelChangedEvent;
                     _options.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
-                    
+                    _options.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
+
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
         }
 
+        private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)
+        {
+            MediaMonitorChangedEvent?.Invoke(this, e);
+        }
+
         private void HandleAlwaysOnTopChangedEvent(object sender, EventArgs e)
         {
-            OnAlwaysOnTopChangedEvent();
+            AlwaysOnTopChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void HandleImageFadeSpeedChangedEvent(object sender, EventArgs e)
         {
-            OnImageFadeSpeedChangedEvent();
+            ImageFadeSpeedChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void HandleLogEventLevelChangedEvent(object sender, EventArgs e)
@@ -130,12 +138,12 @@
 
         private void HandleImageFadeTypeChangedEvent(object sender, EventArgs e)
         {
-            OnImageFadeTypeChangedEvent();
+            ImageFadeTypeChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void HandleMediaFolderChangedEvent(object sender, EventArgs e)
         {
-            OnMediaFolderChangedEvent();
+            MediaFolderChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private string GetOptionsSignature(Options options)
@@ -178,26 +186,6 @@
                     _originalOptionsSignature = GetOptionsSignature(_options);
                 }
             }
-        }
-
-        private void OnMediaFolderChangedEvent()
-        {
-            MediaFolderChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnImageFadeTypeChangedEvent()
-        {
-            ImageFadeTypeChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnImageFadeSpeedChangedEvent()
-        {
-            ImageFadeSpeedChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnAlwaysOnTopChangedEvent()
-        {
-            AlwaysOnTopChangedEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

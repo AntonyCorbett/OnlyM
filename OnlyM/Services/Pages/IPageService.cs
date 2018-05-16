@@ -32,8 +32,6 @@
 
         bool IsMediaWindowVisible { get; }
         
-        void UpdateMediaMonitor();
-
         void StartMedia(MediaItem mediaItemToStart, MediaItem currentMediaItem);
 
         Task StopMediaAsync(MediaItem mediaItem);

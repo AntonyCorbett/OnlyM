@@ -48,6 +48,8 @@
                 {
                     _isMediaActive = value;
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(HasDurationAndIsPlaying));
+                    RaisePropertyChanged(nameof(HasDurationAndIsNotPlaying));
                 }
             }
         }
@@ -85,6 +87,11 @@
         public bool HasDuration =>
             MediaType.Classification == MediaClassification.Audio ||
             MediaType.Classification == MediaClassification.Video;
+
+        public bool HasDurationAndIsPlaying => HasDuration && IsMediaActive;
+
+        public bool HasDurationAndIsNotPlaying => HasDuration && !IsMediaActive;
+
 
         private int _playbackPositionDeciseconds;
 

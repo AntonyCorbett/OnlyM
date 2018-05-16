@@ -334,9 +334,21 @@
                 }
             }
 
+            SortMediaItems();
+            
             ChangePlayButtonEnabledStatus();
         }
-        
+
+        private void SortMediaItems()
+        {
+            List<MediaItem> sorted = MediaItems.OrderBy(x => x.Name).ToList();
+
+            for (int n = 0; n < sorted.Count; ++n)
+            {
+                MediaItems.Move(MediaItems.IndexOf(sorted[n]), n);
+            }
+        }
+
         private void FillThumbnails()
         {
             foreach (var item in MediaItems)

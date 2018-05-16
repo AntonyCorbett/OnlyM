@@ -65,12 +65,12 @@
                             </Grid>
                         </Border>
 
-                        <Grid Grid.Column="1" >
+                        <Grid Grid.Column="1" Margin="10,0,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="18" />
                                 <RowDefinition Height="18" />
-                                <RowDefinition Height="10" />
+                                <RowDefinition Height="28" />
                             </Grid.RowDefinitions>
                             
                             <TextBlock Grid.Row="0" 
@@ -88,8 +88,15 @@
                                        FontSize="16"
                                        Text="{Binding PlaybackTimeString}"/>
                             <ProgressBar Grid.Row="3" 
-                                       Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                       Value="{Binding PlaybackPositionDeciseconds}" 
+                                       Visibility="{Binding Path=HasDurationAndIsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Value="{Binding PlaybackPositionDeciseconds, Mode=OneWay}" 
+                                       Maximum="{Binding DurationDeciseconds}"/>
+                            <Slider Grid.Row="3" 
+                                       Orientation="Horizontal"
+                                       TickFrequency="1"
+                                       Margin="0,5,0,0"
+                                       Visibility="{Binding Path=HasDurationAndIsNotPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Value="{Binding PlaybackPositionDeciseconds, Mode=TwoWay}" 
                                        Maximum="{Binding DurationDeciseconds}"/>
                         </Grid>
 

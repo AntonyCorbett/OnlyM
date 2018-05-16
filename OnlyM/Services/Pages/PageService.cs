@@ -44,6 +44,7 @@
             _mediaWindow = new Lazy<MediaWindow>(MediaWindowCreation);
             _optionsService.ImageFadeTypeChangedEvent += HandleImageFadeTypeChangedEvent;
             _optionsService.ImageFadeSpeedChangedEvent += HandleImageFadeSpeedChangedEvent;
+            _optionsService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
 
             _systemDpi = WindowPlacement.GetDpiSettings();
 
@@ -110,28 +111,6 @@
             if (_mediaWindow.IsValueCreated && mediaItem != null)
             {
                 _mediaWindow.Value.CacheImageItem(mediaItem);
-            }
-        }
-
-        public void UpdateMediaMonitor()
-        {
-            try
-            {
-                if (_optionsService.IsMediaMonitorSpecified)
-                {
-                    RelocateMediaWindow();
-                }
-                else
-                {
-                    HideMediaWindow();
-                }
-
-                OnMediaMonitorChangedEvent();
-                System.Windows.Application.Current.MainWindow?.Activate();
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not change monitor");
             }
         }
 
@@ -289,9 +268,36 @@
             }
         }
 
+        private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)
+        {
+            UpdateMediaMonitor();
+        }
+
         private void OnMediaChangeEvent(MediaEventArgs e)
         {
             MediaChangeEvent?.Invoke(this, e);
+        }
+
+        private void UpdateMediaMonitor()
+        {
+            try
+            {
+                if (_optionsService.IsMediaMonitorSpecified)
+                {
+                    RelocateMediaWindow();
+                }
+                else
+                {
+                    HideMediaWindow();
+                }
+
+                OnMediaMonitorChangedEvent();
+                System.Windows.Application.Current.MainWindow?.Activate();
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not change monitor");
+            }
         }
     }
 }

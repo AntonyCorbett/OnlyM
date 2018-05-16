@@ -9,6 +9,7 @@
     {
         private readonly MediaElement _mediaElement;
         private Guid _mediaItemId;
+        private TimeSpan _startPosition;
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
@@ -25,12 +26,13 @@
             _mediaElement.PositionChanged += HandlePositionChanged;
         }
 
-        public void ShowVideo(string mediaItemFilePath, Guid mediaItemId)
+        public void ShowVideo(string mediaItemFilePath, Guid mediaItemId, TimeSpan startOffset)
         {
             _mediaItemId = mediaItemId;
 
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Starting });
 
+            _startPosition = startOffset;
             _mediaElement.Source = new Uri(mediaItemFilePath);
         }
 
@@ -52,6 +54,7 @@
 
         private void HandleMediaOpened(object sender, System.Windows.RoutedEventArgs e)
         {
+            _mediaElement.Position = _startPosition;
             OnMediaChangeEvent(new MediaEventArgs
             {
                 MediaItemId = _mediaItemId,

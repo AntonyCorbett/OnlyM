@@ -29,7 +29,6 @@
         private readonly ImageFade[] _fadingTypes;
         private readonly ImageFadeSpeed[] _fadingSpeeds;
 
-
         public SettingsViewModel(
             IPageService pageService, 
             IMonitorsService monitorsService,
@@ -198,7 +197,6 @@
                 {
                     _optionsService.Options.MediaMonitorId = value;
                     RaisePropertyChanged();
-                    _pageService.UpdateMediaMonitor();
                 }
             }
         }
@@ -225,7 +223,6 @@
 
             return result;
         }
-
 
         public IEnumerable<ImageFade> ImageFadeTypes => _fadingTypes;
 
@@ -278,4 +275,3 @@
         public RelayCommand PurgeThumbnailCacheCommand { get; set; }
     }
 }
-

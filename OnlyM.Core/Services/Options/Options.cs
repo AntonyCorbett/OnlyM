@@ -17,7 +17,9 @@
         public event EventHandler LogEventLevelChangedEvent;
 
         public event EventHandler AlwaysOnTopChangedEvent;
-        
+
+        public event EventHandler MediaMonitorChangedEvent;
+
 
         public Options()
         {
@@ -30,7 +32,20 @@
             CacheImages = true;
         }
 
-        public string MediaMonitorId { get; set; }
+        private string _mediaMonitorId;
+
+        public string MediaMonitorId
+        {
+            get => _mediaMonitorId;
+            set
+            {
+                if (_mediaMonitorId != value)
+                {
+                    _mediaMonitorId = value;
+                    OnMediaMonitorChangedEvent();
+                }
+            }
+        }
 
         private bool _alwaysOnTop;
 
@@ -148,6 +163,11 @@
         private void OnAlwaysOnTopChangedEvent()
         {
             AlwaysOnTopChangedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnMediaMonitorChangedEvent()
+        {
+            MediaMonitorChangedEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

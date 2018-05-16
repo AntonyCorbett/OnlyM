@@ -102,7 +102,9 @@
         private void ShowVideo(MediaItem mediaItemToStart, MediaItem currentMediaItem)
         {
             HideImage(currentMediaItem);
-            _videoDisplayManager.ShowVideo(mediaItemToStart.FilePath, mediaItemToStart.Id);
+
+            var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 10);
+            _videoDisplayManager.ShowVideo(mediaItemToStart.FilePath, mediaItemToStart.Id, startPosition);
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)

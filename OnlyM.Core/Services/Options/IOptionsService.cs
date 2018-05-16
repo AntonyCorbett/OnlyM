@@ -17,5 +17,7 @@
         event EventHandler ImageFadeSpeedChangedEvent;
 
         event EventHandler AlwaysOnTopChangedEvent;
+
+        event EventHandler MediaMonitorChangedEvent;
     }
 }
