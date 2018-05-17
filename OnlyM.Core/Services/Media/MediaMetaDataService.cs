@@ -24,6 +24,10 @@
                     };
                 }
             }
+            catch (System.IO.IOException)
+            {
+                Log.Logger.Error($"Could not get metadata from file: {mediaItemFilePath} (in use)");
+            }
             catch (Exception ex)
             {
                 Log.Logger.Error(ex, $"Could not get metadata from file: {mediaItemFilePath}");
