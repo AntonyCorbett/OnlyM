@@ -46,6 +46,7 @@
                     return TimeSpan.FromMinutes(3);
 
                 default:
+                // ReSharper disable once RedundantCaseLabel
                 case MediaClassification.Audio:
                     return TimeSpan.Zero;
             }

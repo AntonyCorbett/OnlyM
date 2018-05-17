@@ -128,12 +128,19 @@
                                        Maximum="{Binding DurationDeciseconds}"/>
                         </Grid>
 
+                        <ProgressBar
+                            Grid.Column="2"
+                            Visibility="{Binding Path=IsWaitingAnimationVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Value="0"
+                            IsIndeterminate="True" />
+
                         <Button
                             Width="50"
                             Height="50"
                             Grid.Column="2"
                             IsEnabled="{Binding IsPlayButtonEnabled}"
-                            Visibility="{Binding Path=IsMediaActive, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"
+                            Visibility="{Binding Path=IsPlayButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
                             CommandParameter="{Binding Id}"
                             Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
@@ -147,7 +154,7 @@
                             Width="50"
                             Height="50"
                             Grid.Column="2"
-                            Visibility="{Binding Path=IsMediaActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Visibility="{Binding Path=IsStopButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
                             CommandParameter="{Binding Id}"
                             materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsMediaChanging}"

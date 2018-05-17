@@ -20,6 +20,7 @@
                     return Resources.FADE_SPEED_SUPER_FAST;
 
                 default:
+                // ReSharper disable once RedundantCaseLabel
                 case FadeSpeed.Normal:
                     return Resources.FADE_SPEED_NORMAL;
             }
@@ -45,6 +46,7 @@
                     return Resources.LOG_LEVEL_WARNING;
 
                 default:
+                // ReSharper disable once RedundantCaseLabel
                 case LogEventLevel.Information:
                     return Resources.LOG_LEVEL_INFORMATION;
             }
@@ -67,6 +69,7 @@
                     return Resources.FADE_IN_OUT;
 
                 default:
+                // ReSharper disable once RedundantCaseLabel
                 case ImageFadeType.CrossFade:
                     return Resources.FADE_CROSS;
             }

@@ -98,7 +98,7 @@
                 try
                 {
                     var result = CreateEmbeddedThumbnailForVideo(originalPath, ffmpegFolder);
-                    if (result != null)
+                    if (result != null && File.Exists(result))
                     {
                         return result;
                     }
@@ -135,7 +135,7 @@
             arguments.Append("\"");
             arguments.Append(originalPath);
             arguments.Append("\" ");
-            arguments.Append("-vf \"thumbnail,scale=640:360\" -y -frames:v 1 ");
+            arguments.Append("-vf \"thumbnail,scale=320:180\" -y -frames:v 1 ");
             arguments.Append("\"");
             arguments.Append(tempThumbnailPath);
             arguments.Append("\" ");

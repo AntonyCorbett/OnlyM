@@ -5,8 +5,5 @@
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class MediaViewModel : ViewModelBase
     {
-        public MediaViewModel()
-        {
-        }
     }
 }

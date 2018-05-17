@@ -38,7 +38,6 @@
 
         public event EventHandler MediaWindowClosedEvent;
 
-
         public PageService(
             IMonitorsService monitorsService,
             IOptionsService optionsService)

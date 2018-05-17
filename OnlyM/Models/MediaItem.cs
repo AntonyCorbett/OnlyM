@@ -17,6 +17,11 @@
 
         public event EventHandler PlaybackPositionChangedEvent;
 
+        public MediaItem()
+        {
+            IsWaitingAnimationVisible = true;
+        }
+
         public Guid Id { get; set; }
 
         public string Name { get; set; }
@@ -61,10 +66,32 @@
                 if (_thumbnailImageSource == null || !_thumbnailImageSource.Equals(value))
                 {
                     _thumbnailImageSource = value;
+                    IsWaitingAnimationVisible = value == null;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsPlayButtonVisible));
+                    RaisePropertyChanged(nameof(IsStopButtonVisible));
+                }
+            }
+        }
+
+        private bool _isWaitingAnimationVisible;
+
+        public bool IsWaitingAnimationVisible
+        {
+            get => _isWaitingAnimationVisible;
+            set
+            {
+                if (_isWaitingAnimationVisible != value)
+                {
+                    _isWaitingAnimationVisible = value;
                     RaisePropertyChanged();
                 }
             }
         }
+
+        public bool IsPlayButtonVisible => !IsMediaActive && !IsWaitingAnimationVisible;
+
+        public bool IsStopButtonVisible => IsMediaActive && !IsWaitingAnimationVisible;
 
         private bool _isMediaActive;
 
@@ -79,6 +106,8 @@
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(HasDurationAndIsPlaying));
                     RaisePropertyChanged(nameof(IsPauseButtonVisible));
+                    RaisePropertyChanged(nameof(IsPlayButtonVisible));
+                    RaisePropertyChanged(nameof(IsStopButtonVisible));
                     RaisePropertyChanged(nameof(IsSliderVisible));
                     RaisePropertyChanged(nameof(PlaybackTimeColorBrush));
                     RaisePropertyChanged(nameof(DurationColorBrush));
@@ -207,6 +236,7 @@
                 {
                     _durationDeciseconds = value;
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(DurationString));
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿namespace OnlyM.WindowsPositioning
 {
+    // ReSharper disable UnusedMember.Global
     // ReSharper disable InconsistentNaming
     // ReSharper disable StyleCop.SA1602
     // ReSharper disable StyleCop.SA1121

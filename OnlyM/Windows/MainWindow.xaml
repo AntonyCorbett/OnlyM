@@ -187,7 +187,6 @@
                     </LinearGradientBrush>
                 </Border.Background>
                 <ContentControl
-            x:Name="BottomColorZone"
             VerticalAlignment="Stretch"
             Padding="10">
                     <Grid Margin="10,0,10,0">
@@ -202,6 +201,7 @@
                     <Button
                         HorizontalAlignment="Left"
                         Command="{Binding GotoOperatorCommand}"
+                        ToolTip="Media page"
                         Visibility="{Binding Path=IsSettingsPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
                         <materialDesign:PackIcon
@@ -211,8 +211,10 @@
                     </Button>
 
                     <Button
+                        Command="{Binding LaunchReleasePageCommand}"
                         Grid.Column="1"
-                        Visibility="Hidden"
+                        ToolTip="New version available!"
+                        Visibility="{Binding Path=ShowNewVersionButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}">
                         <materialDesign:PackIcon
                             Kind="Download"
@@ -223,6 +225,7 @@
                     <Button
                         Command="{Binding LaunchMediaFolderCommand}"
                         Grid.Column="2"
+                        ToolTip="Open media folder"
                         Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
                         <materialDesign:PackIcon
@@ -232,7 +235,9 @@
                     </Button>
 
                     <Button
+                        Command="{Binding LaunchHelpPageCommand}"
                         Grid.Column="3"
+                        ToolTip="Display help"
                         Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
                         <materialDesign:PackIcon
@@ -245,6 +250,7 @@
                         Command="{Binding GotoSettingsCommand}"
                         Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Grid.Column="4"
+                        ToolTip="Settings page"
                         Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
                         <materialDesign:PackIcon
                             Kind="Settings"
@@ -260,4 +266,6 @@
     </Border>
 
 </Window>
+
+
 

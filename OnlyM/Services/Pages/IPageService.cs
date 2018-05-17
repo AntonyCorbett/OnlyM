@@ -20,7 +20,6 @@
 
         event EventHandler MediaWindowClosedEvent;
 
-
         bool AllowMediaWindowToClose { get; }
 
         string OperatorPageName { get; }

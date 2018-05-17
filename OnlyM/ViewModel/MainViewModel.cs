@@ -3,7 +3,9 @@ namespace OnlyM.ViewModel
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.Threading.Tasks;
     using System.Windows;
+    using AutoUpdates;
     using Core.Services.Options;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
@@ -40,6 +42,8 @@ namespace OnlyM.ViewModel
             {
                 _pageService.OpenMediaWindow();
             }
+
+            GetVersionData();
         }
 
         private void OnMediaListUpdated(MediaListUpdatedMessage message)
@@ -82,6 +86,7 @@ namespace OnlyM.ViewModel
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(IsSettingsPageActive));
                     RaisePropertyChanged(nameof(IsOperatorPageActive));
+                    RaisePropertyChanged(nameof(ShowNewVersionButton));
                 }
             }
         }
@@ -90,6 +95,28 @@ namespace OnlyM.ViewModel
         {
             RaisePropertyChanged(nameof(AlwaysOnTop));
         }
+
+        private void GetVersionData()
+        {
+            Task.Delay(2000).ContinueWith(_ =>
+            {
+                var latestVersion = VersionDetection.GetLatestReleaseVersion();
+                if (latestVersion != null)
+                {
+                    if (latestVersion != VersionDetection.GetCurrentVersion())
+                    {
+                        // there is a new version....
+                        _newVersionAvailable = true;
+                        RaisePropertyChanged(nameof(ShowNewVersionButton));
+                    }
+                }
+            });
+        }
+
+
+        private bool _newVersionAvailable;
+
+        public bool ShowNewVersionButton => _newVersionAvailable && IsOperatorPageActive;
 
         public bool AlwaysOnTop => _optionsService.Options.AlwaysOnTop || _pageService.IsMediaWindowVisible;
 
@@ -119,11 +146,27 @@ namespace OnlyM.ViewModel
 
         public RelayCommand LaunchMediaFolderCommand { get; set; }
 
+        public RelayCommand LaunchHelpPageCommand { get; set; }
+
+        public RelayCommand LaunchReleasePageCommand { get; set; }
+
         private void InitCommands()
         {
             GotoSettingsCommand = new RelayCommand(NavigateSettings);
             GotoOperatorCommand = new RelayCommand(NavigateOperator);
             LaunchMediaFolderCommand = new RelayCommand(LaunchMediaFolder);
+            LaunchHelpPageCommand = new RelayCommand(LaunchHelpPage);
+            LaunchReleasePageCommand = new RelayCommand(LaunchReleasePage);
+        }
+        
+        private void LaunchReleasePage()
+        {
+            Process.Start(VersionDetection.LatestReleaseUrl);
+        }
+
+        private void LaunchHelpPage()
+        {
+            Process.Start(@"https://github.com/AntonyCorbett/OnlyM/wiki");
         }
 
         private void LaunchMediaFolder()

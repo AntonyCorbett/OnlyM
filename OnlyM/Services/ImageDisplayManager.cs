@@ -175,6 +175,7 @@
                         return 0.2;
 
                     default:
+                    // ReSharper disable once RedundantCaseLabel
                     case FadeSpeed.Normal:
                         return 1.0;
                 }

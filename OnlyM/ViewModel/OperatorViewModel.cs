@@ -387,7 +387,8 @@
                         FilePath = file.FullPath,
                         LastChanged = file.LastChanged,
                         AllowPause = _optionsService.Options.AllowVideoPause,
-                        AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking
+                        AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking,
+                        IsWaitingAnimationVisible = true
                     };
 
                     MediaItems.Add(item);

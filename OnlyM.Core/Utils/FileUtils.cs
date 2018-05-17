@@ -108,21 +108,5 @@
             Directory.CreateDirectory(folder);
             return folder;
         }
-
-        private static bool DirectoryIsAvailable(string dir)
-        {
-            if (string.IsNullOrEmpty(dir))
-            {
-                return false;
-            }
-
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-                return Directory.Exists(dir);
-            }
-
-            return true;
-        }
     }
 }

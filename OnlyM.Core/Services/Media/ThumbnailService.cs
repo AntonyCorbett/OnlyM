@@ -58,18 +58,17 @@
             try
             {
                 result = GenerateThumbnail(originalPath, ffmpegFolder, mediaClassification);
+                if (result != null)
+                {
+                    _databaseService.AddThumbnailToCache(originalPath, originalLastChanged, result);
+                }
             }
             catch (Exception ex)
             {
                 Log.Logger.Error(ex, $"Could not get a thumbnail for {originalPath}");
                 result = _standardUnknownThumbnail.Value;
             }
-
-            if (result != null)
-            {
-                _databaseService.AddThumbnailToCache(originalPath, originalLastChanged, result);
-            }
-
+            
             foundInCache = false;
             return result;
         }

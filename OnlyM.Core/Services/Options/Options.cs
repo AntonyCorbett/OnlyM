@@ -28,7 +28,6 @@
 
         public event EventHandler ShowSubtitlesChangedEvent;
 
-
         public Options()
         {
             // defaults
@@ -183,7 +182,6 @@
                 }
             }
         }
-
 
         private FadeSpeed _fadeSpeed;
 
