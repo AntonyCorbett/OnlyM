@@ -19,7 +19,7 @@
         /// <returns>Collection of SystemMonitor</returns>
         public IEnumerable<SystemMonitor> GetSystemMonitors()
         {
-            Log.Logger.Information("Getting system monitors");
+            Log.Logger.Debug("Getting system monitors");
             
             List<SystemMonitor> result = new List<SystemMonitor>();
 

@@ -9,6 +9,7 @@
     using Core.Models;
     using Core.Services.Options;
     using Models;
+    using Serilog;
     using Services;
     using Services.Pages;
     using Unosquare.FFME.Events;
@@ -20,20 +21,28 @@
     {
         private readonly ImageDisplayManager _imageDisplayManager;
         private readonly VideoDisplayManager _videoDisplayManager;
+        private readonly IOptionsService _optionsService;
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
         public event EventHandler<PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
 
+        public event EventHandler FinishedWithWindowEvent;
+
+        private bool _finishingWithImageDisplay;
+
         public MediaWindow(IOptionsService optionsService)
         {
             InitializeComponent();
 
-            _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, optionsService);
-            _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
+            _optionsService = optionsService;
+            _optionsService.ShowSubtitlesChangedEvent += HandleShowSubtitlesChangedEvent;
+
+            _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
+            _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEventForImages;
 
             _videoDisplayManager = new VideoDisplayManager(VideoElement);
-            _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
+            _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEventForVideoAndAudio;
             _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
         }
 
@@ -50,9 +59,10 @@
         public async Task StartMedia(
             MediaItem mediaItemToStart, 
             MediaItem currentMediaItem, 
-            bool showSubtitles, 
             bool startFromPaused)
         {
+            Log.Logger.Information($"Starting media {mediaItemToStart.FilePath}");
+
             switch (mediaItemToStart.MediaType.Classification)
             {
                 case MediaClassification.Image:
@@ -61,7 +71,8 @@
 
                 case MediaClassification.Video:
                 case MediaClassification.Audio:
-                    await ShowVideo(mediaItemToStart, currentMediaItem, showSubtitles, startFromPaused);
+                    mediaItemToStart.PlaybackPositionChangedEvent -= HandlePlaybackPositionChangedEvent;
+                    await ShowVideo(mediaItemToStart, currentMediaItem, startFromPaused);
                     break;
             }
         }
@@ -73,14 +84,22 @@
 
         public async Task StopMediaAsync(MediaItem mediaItem)
         {
+            Log.Logger.Information($"Stopping media {mediaItem.FilePath}");
+
             switch (mediaItem.MediaType.Classification)
             {
                 case MediaClassification.Image:
+                    _finishingWithImageDisplay = true;
                     HideImage(mediaItem);
                     break;
 
                 case MediaClassification.Video:
+                    mediaItem.PlaybackPositionChangedEvent -= HandlePlaybackPositionChangedEvent;
+                    await HideVideoAsync(mediaItem);
+                    break;
+
                 case MediaClassification.Audio:
+                    mediaItem.PlaybackPositionChangedEvent -= HandlePlaybackPositionChangedEvent;
                     await HideVideoAsync(mediaItem);
                     break;
             }
@@ -92,13 +111,26 @@
                 mediaItem.MediaType.Classification == MediaClassification.Audio ||
                 mediaItem.MediaType.Classification == MediaClassification.Video,
                 "Expecting audio or video media item");
-                         
+
+            Log.Logger.Information($"Pausing media {mediaItem.FilePath}");
+
             await PauseVideoAsync(mediaItem);
         }
 
         private async Task PauseVideoAsync(MediaItem mediaItem)
         {
             await _videoDisplayManager.PauseVideoAsync(mediaItem.Id);
+            mediaItem.PlaybackPositionChangedEvent += HandlePlaybackPositionChangedEvent;
+        }
+
+        private void HandlePlaybackPositionChangedEvent(object sender, EventArgs e)
+        {
+            if (_optionsService.Options.AllowVideoScrubbing)
+            {
+                var item = (MediaItem)sender;
+                _videoDisplayManager.SetPlaybackPosition(
+                    TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 10));
+            }
         }
 
         private async Task HideVideoAsync(MediaItem mediaItem)
@@ -122,18 +154,18 @@
         private async Task ShowVideo(
             MediaItem mediaItemToStart, 
             MediaItem currentMediaItem, 
-            bool showSubtitles, 
             bool startFromPaused)
         {
             HideImage(currentMediaItem);
 
             var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 10);
 
+            _videoDisplayManager.ShowSubtitles = _optionsService.Options.ShowVideoSubtitles;
+
             await _videoDisplayManager.ShowVideo(
                 mediaItemToStart.FilePath, 
                 mediaItemToStart.Id, 
                 startPosition, 
-                showSubtitles, 
                 startFromPaused);
         }
 
@@ -146,17 +178,43 @@
         {
             // prevent window from being closed independently of application.
             var pageService = ServiceLocator.Current.GetInstance<IPageService>();
-            e.Cancel = !pageService.ApplicationIsClosing;
+            e.Cancel = !pageService.ApplicationIsClosing && !pageService.AllowMediaWindowToClose;
         }
 
-        private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
+        private void HandleMediaChangeEventForImages(object sender, MediaEventArgs e)
         {
             MediaChangeEvent?.Invoke(this, e);
+
+            if (e.Change == MediaChange.Stopped && _finishingWithImageDisplay)
+            {
+                _finishingWithImageDisplay = false;
+                OnFinishedWithWindowEvent();
+            }
+        }
+
+        private void HandleMediaChangeEventForVideoAndAudio(object sender, MediaEventArgs e)
+        {
+            MediaChangeEvent?.Invoke(this, e);
+
+            if (e.Change == MediaChange.Stopped)
+            {
+                OnFinishedWithWindowEvent();
+            }
         }
 
         private void HandleMediaPositionChangedEvent(object sender, PositionChangedRoutedEventArgs e)
         {
             MediaPositionChangedEvent?.Invoke(this, e);
+        }
+
+        private void OnFinishedWithWindowEvent()
+        {
+            FinishedWithWindowEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void HandleShowSubtitlesChangedEvent(object sender, EventArgs e)
+        {
+            _videoDisplayManager.ShowSubtitles = _optionsService.Options.ShowVideoSubtitles;
         }
     }
 }

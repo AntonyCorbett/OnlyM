@@ -1,6 +1,4 @@
-﻿using OnlyM.Core.Models;
-
-namespace OnlyM.Services.MetaDataQueue
+﻿namespace OnlyM.Services.MetaDataQueue
 {
     using System;
     using System.Collections.Concurrent;
@@ -50,7 +48,7 @@ namespace OnlyM.Services.MetaDataQueue
                     }
                     catch (OperationCanceledException)
                     {
-                        Log.Logger.Information("Metadata consumer closed");
+                        Log.Logger.Debug("Metadata consumer closed");
                     }
                 }, 
                 _cancellationToken);

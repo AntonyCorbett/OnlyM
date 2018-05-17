@@ -5,7 +5,7 @@
     using Core.Models;
     using GalaSoft.MvvmLight;
 
-    public class MediaItem : ObservableObject
+    public sealed class MediaItem : ObservableObject
     {
         private static readonly SolidColorBrush ImageIconBrush = new SolidColorBrush(Colors.DarkGreen);
         private static readonly SolidColorBrush AudioIconBrush = new SolidColorBrush(Colors.CornflowerBlue);
@@ -15,6 +15,7 @@
         private static readonly SolidColorBrush BlackBrush = new SolidColorBrush(Colors.Black);
         private static readonly SolidColorBrush GrayBrush = new SolidColorBrush(Colors.DarkGray);
 
+        public event EventHandler PlaybackPositionChangedEvent;
 
         public Guid Id { get; set; }
 
@@ -38,7 +39,7 @@
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(PauseIconKind));
                     RaisePropertyChanged(nameof(HasDurationAndIsPlaying));
-                    RaisePropertyChanged(nameof(HasDurationAndIsNotPlaying));
+                    RaisePropertyChanged(nameof(IsSliderVisible));
                 }
             }
         }
@@ -77,8 +78,8 @@
                     _isMediaActive = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(HasDurationAndIsPlaying));
-                    RaisePropertyChanged(nameof(HasDurationAndIsPlayingOrPaused));
-                    RaisePropertyChanged(nameof(HasDurationAndIsNotPlaying));
+                    RaisePropertyChanged(nameof(IsPauseButtonVisible));
+                    RaisePropertyChanged(nameof(IsSliderVisible));
                     RaisePropertyChanged(nameof(PlaybackTimeColorBrush));
                     RaisePropertyChanged(nameof(DurationColorBrush));
                 }
@@ -121,10 +122,41 @@
 
         public bool HasDurationAndIsPlaying => HasDuration && IsMediaActive && !IsPaused;
 
-        public bool HasDurationAndIsPlayingOrPaused => HasDuration && IsMediaActive;
+        private bool _allowPositionSeeking;
 
-        public bool HasDurationAndIsNotPlaying => HasDuration && (!IsMediaActive || IsPaused);
+        public bool AllowPositionSeeking
+        {
+            get => _allowPositionSeeking;
+            set
+            {
+                if (_allowPositionSeeking != value)
+                {
+                    _allowPositionSeeking = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsSliderVisible));
+                }
+            }
+        }
 
+        private bool _allowPause;
+
+        public bool AllowPause
+        {
+            get => _allowPause;
+            set
+            {
+                if (_allowPause != value)
+                {
+                    _allowPause = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsPauseButtonVisible));
+                }
+            }
+        }
+
+        public bool IsPauseButtonVisible => HasDuration && IsMediaActive && AllowPause;
+
+        public bool IsSliderVisible => HasDuration && AllowPositionSeeking && (!IsMediaActive || IsPaused);
 
         private int _playbackPositionDeciseconds;
 
@@ -139,6 +171,8 @@
                     _playbackPositionDeciseconds = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(PlaybackTimeString));
+
+                    OnPlaybackPositionChangedEvent();
                 }
             }
         }
@@ -148,7 +182,7 @@
             get
             {
                 var ts = TimeSpan.FromMilliseconds(PlaybackPositionDeciseconds * 10);
-                return ts.ToString(@"hh\:mm\:ss\.ff");
+                return ts.ToString(@"hh\:mm\:ss");
             }
         }
 
@@ -157,7 +191,7 @@
             get
             {
                 var ts = TimeSpan.FromMilliseconds(DurationDeciseconds * 10);
-                return ts.ToString(@"hh\:mm\:ss\.ff");
+                return ts.ToString(@"hh\:mm\:ss");
             }
         }
 
@@ -227,6 +261,11 @@
                         return "Question";
                 }
             }
+        }
+
+        private void OnPlaybackPositionChangedEvent()
+        {
+            PlaybackPositionChangedEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

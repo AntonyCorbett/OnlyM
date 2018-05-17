@@ -15,22 +15,37 @@
             new SupportedMediaType { Name = "MP4 Video", Classification = MediaClassification.Video, FileExtension = ".mp4" },
             new SupportedMediaType { Name = "M4V Video", Classification = MediaClassification.Video, FileExtension = ".m4v" },
             new SupportedMediaType { Name = "MKV Video", Classification = MediaClassification.Video, FileExtension = ".mkv" },
+            new SupportedMediaType { Name = "WMV Video", Classification = MediaClassification.Video, FileExtension = ".wmv" },
+            new SupportedMediaType { Name = "MPEG Video", Classification = MediaClassification.Video, FileExtension = ".mpeg" },
+            new SupportedMediaType { Name = "AVI Video", Classification = MediaClassification.Video, FileExtension = ".avi" },
+            new SupportedMediaType { Name = "FLV Video", Classification = MediaClassification.Video, FileExtension = ".flv" },
+            new SupportedMediaType { Name = "MOV Video", Classification = MediaClassification.Video, FileExtension = ".mov" },
 
             new SupportedMediaType { Name = "JPG Image", Classification = MediaClassification.Image, FileExtension = ".jpg" },
             new SupportedMediaType { Name = "JPEG Image", Classification = MediaClassification.Image, FileExtension = ".jpeg" },
+            new SupportedMediaType { Name = "JPE Image", Classification = MediaClassification.Image, FileExtension = ".jpe" },
             new SupportedMediaType { Name = "PNG Image", Classification = MediaClassification.Image, FileExtension = ".png" },
-
+            new SupportedMediaType { Name = "BMP Image", Classification = MediaClassification.Image, FileExtension = ".bmp" },
+            new SupportedMediaType { Name = "GIF Image", Classification = MediaClassification.Image, FileExtension = ".gif" },
+            new SupportedMediaType { Name = "ICO Image", Classification = MediaClassification.Image, FileExtension = ".ico" },
+            new SupportedMediaType { Name = "TIFF Image", Classification = MediaClassification.Image, FileExtension = ".tiff" },
+            
             new SupportedMediaType { Name = "MP3 Audio", Classification = MediaClassification.Audio, FileExtension = ".mp3" },
-            new SupportedMediaType { Name = "WMA Audio", Classification = MediaClassification.Audio, FileExtension = ".wma" }
+            new SupportedMediaType { Name = "WMA Audio", Classification = MediaClassification.Audio, FileExtension = ".wma" },
+            new SupportedMediaType { Name = "WMP Image", Classification = MediaClassification.Audio, FileExtension = ".wmp" },
         };
 
-        private readonly List<string> _supportedFileExtensions = new List<string>();
+        private readonly HashSet<string> _supportedFileExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly IOptionsService _optionsService;
 
         public MediaProviderService(IOptionsService optionsService)
         {
             _optionsService = optionsService;
-            _supportedFileExtensions.AddRange(_supportedMediaTypes.Select(x => x.FileExtension));
+
+            foreach (var item in _supportedMediaTypes)
+            {
+                _supportedFileExtensions.Add(item.FileExtension);
+            }
         }
 
         public IReadOnlyCollection<MediaFile> GetMediaFiles()
@@ -76,7 +91,7 @@
                 return false;
             }
 
-            return _supportedFileExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase);
+            return _supportedFileExtensions.Contains(extension);
         }
 
         public SupportedMediaType GetSupportedMediaType(string fileName)

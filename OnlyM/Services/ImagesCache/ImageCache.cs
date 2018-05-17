@@ -56,7 +56,7 @@
             }
             else
             {
-                Log.Logger.Information($"Image in cache: {fullPath}");
+                Log.Logger.Debug($"Image in cache: {fullPath}");
                 result.LastUsedUtc = DateTime.UtcNow;
             }
 

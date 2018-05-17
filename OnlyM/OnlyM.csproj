@@ -121,7 +121,6 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="AutoUpdates\VersionDetection.cs" />
-    <Compile Include="Models\ImageDisplayStatus.cs" />
     <Compile Include="Models\ImageFade.cs" />
     <Compile Include="Models\ImageFadeSpeed.cs" />
     <Compile Include="Models\LoggingLevel.cs" />
@@ -129,7 +128,10 @@
     <Compile Include="Models\MediaItem.cs" />
     <Compile Include="Models\MediaEventArgs.cs" />
     <Compile Include="Models\MonitorItem.cs" />
+    <Compile Include="PubSubMessages\MediaListUpdatedMessage.cs" />
     <Compile Include="PubSubMessages\ShutDownMessage.cs" />
+    <Compile Include="Services\DragAndDrop\DragAndDropService.cs" />
+    <Compile Include="Services\DragAndDrop\IDragAndDropService.cs" />
     <Compile Include="Services\ImagesCache\ImageAndLastUsed.cs" />
     <Compile Include="Services\ImagesCache\ImageCache.cs" />
     <Compile Include="Services\ImageDisplayManager.cs" />

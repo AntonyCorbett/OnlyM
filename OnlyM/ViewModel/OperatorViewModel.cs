@@ -50,7 +50,9 @@
 
             _optionsService = optionsService;
             _optionsService.MediaFolderChangedEvent += HandleMediaFolderChangedEvent;
-            
+            _optionsService.AllowVideoPauseChangedEvent += HandleAllowVideoPauseChangedEvent;
+            _optionsService.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
+
             folderWatcherService.ChangesFoundEvent += HandleFileChangesFoundEvent;
 
             _pageService = pageService;
@@ -66,6 +68,22 @@
             LaunchThumbnailQueueConsumer();
 
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+        }
+
+        private void HandleAllowVideoPositionSeekingChangedEvent(object sender, EventArgs e)
+        {
+            foreach (var item in MediaItems)
+            {
+                item.AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking;
+            }
+        }
+
+        private void HandleAllowVideoPauseChangedEvent(object sender, EventArgs e)
+        {
+            foreach (var item in MediaItems)
+            {
+                item.AllowPause = _optionsService.Options.AllowVideoPause;
+            }
         }
 
         private void HandleMediaPositionChangedEvent(object sender, Unosquare.FFME.Events.PositionChangedRoutedEventArgs e)
@@ -367,7 +385,9 @@
                         Id = Guid.NewGuid(),
                         Name = Path.GetFileNameWithoutExtension(file.FullPath),
                         FilePath = file.FullPath,
-                        LastChanged = file.LastChanged
+                        LastChanged = file.LastChanged,
+                        AllowPause = _optionsService.Options.AllowVideoPause,
+                        AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking
                     };
 
                     MediaItems.Add(item);
@@ -379,8 +399,10 @@
             SortMediaItems();
             
             ChangePlayButtonEnabledStatus();
-        }
 
+            Messenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
+        }
+        
         private void SortMediaItems()
         {
             List<MediaItem> sorted = MediaItems.OrderBy(x => x.Name).ToList();

@@ -22,6 +22,12 @@
 
         public event EventHandler PermanentBackdropChangedEvent;
 
+        public event EventHandler AllowVideoPauseChangedEvent;
+
+        public event EventHandler AllowVideoPositionSeekingChangedEvent;
+
+        public event EventHandler ShowSubtitlesChangedEvent;
+
 
         public Options()
         {
@@ -33,6 +39,9 @@
             ImageFadeSpeed = FadeSpeed.Normal;
             CacheImages = true;
             ShowVideoSubtitles = true;
+            AllowVideoScrubbing = true;
+            AllowVideoPause = true;
+            AllowVideoPositionSeeking = true;
             PermanentBackdrop = true;
         }
 
@@ -66,7 +75,52 @@
             }
         }
 
-        public bool ShowVideoSubtitles { get; set; }
+        private bool _allowVideoPause;
+
+        public bool AllowVideoPause
+        {
+            get => _allowVideoPause;
+            set
+            {
+                if (_allowVideoPause != value)
+                {
+                    _allowVideoPause = value;
+                    OnAllowPauseChangedEvent();
+                }
+            }
+        }
+
+        private bool _allowVideoPositionSeeking;
+
+        public bool AllowVideoPositionSeeking
+        {
+            get => _allowVideoPositionSeeking;
+            set
+            {
+                if (_allowVideoPositionSeeking != value)
+                {
+                    _allowVideoPositionSeeking = value;
+                    OnAllowPositionSeekingChangedEvent();
+                }
+            }
+        }
+
+        private bool _showVideoSubtitles;
+
+        public bool ShowVideoSubtitles
+        {
+            get => _showVideoSubtitles;
+            set
+            {
+                if (_showVideoSubtitles != value)
+                {
+                    _showVideoSubtitles = value;
+                    OnShowSubtitlesChangedEvent();
+                }
+            }
+        }
+
+        public bool AllowVideoScrubbing { get; set; }
 
         private bool _alwaysOnTop;
 
@@ -194,6 +248,21 @@
         private void OnPermanentBackdropChangedEvent()
         {
             PermanentBackdropChangedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnAllowPauseChangedEvent()
+        {
+            AllowVideoPauseChangedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnAllowPositionSeekingChangedEvent()
+        {
+            AllowVideoPositionSeekingChangedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnShowSubtitlesChangedEvent()
+        {
+            ShowSubtitlesChangedEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

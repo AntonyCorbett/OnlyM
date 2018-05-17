@@ -7,6 +7,8 @@ namespace OnlyM.ViewModel
     using Core.Services.Options;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.Messaging;
+    using PubSubMessages;
     using Services.Pages;
 
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -22,6 +24,8 @@ namespace OnlyM.ViewModel
             _pageService = pageService;
             _pageService.NavigationEvent += HandlePageNavigationEvent;
             _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
+            _pageService.MediaWindowOpenedEvent += HandleMediaWindowOpenedEvent;
+            _pageService.MediaWindowClosedEvent += HandleMediaWindowClosedEvent;
 
             _optionsService = optionsService;
             _optionsService.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
@@ -30,10 +34,27 @@ namespace OnlyM.ViewModel
 
             InitCommands();
 
-            if (!IsInDesignMode)
+            Messenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
+
+            if (!IsInDesignMode && _optionsService.Options.PermanentBackdrop)
             {
-                _pageService.OpenMediaWindow(includeBackdrop: _optionsService.Options.PermanentBackdrop);
+                _pageService.OpenMediaWindow();
             }
+        }
+
+        private void OnMediaListUpdated(MediaListUpdatedMessage message)
+        {
+            IsMediaListEmpty = message.Count == 0;
+        }
+
+        private void HandleMediaWindowOpenedEvent(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(AlwaysOnTop));
+        }
+
+        private void HandleMediaWindowClosedEvent(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(AlwaysOnTop));
         }
 
         private void HandleAlwaysOnTopChangedEvent(object sender, EventArgs e)
@@ -65,7 +86,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleMediaMonitorChangedEvent(object sender, System.EventArgs e)
+        private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)
         {
             RaisePropertyChanged(nameof(AlwaysOnTop));
         }
@@ -76,10 +97,20 @@ namespace OnlyM.ViewModel
 
         public bool IsOperatorPageActive => _currentPageName.Equals(_pageService.OperatorPageName);
 
-        public bool IsPlaying => false; // todo: complete
+        private bool _isMediaListEmpty;
 
-        public bool IsNotPlaying => !IsPlaying;
-
+        public bool IsMediaListEmpty
+        {
+            get => _isMediaListEmpty;
+            set
+            {
+                if (_isMediaListEmpty != value)
+                {
+                    _isMediaListEmpty = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         // commands...
         public RelayCommand GotoSettingsCommand { get; set; }
@@ -90,7 +121,7 @@ namespace OnlyM.ViewModel
 
         private void InitCommands()
         {
-            GotoSettingsCommand = new RelayCommand(NavigateSettings, () => IsNotPlaying);
+            GotoSettingsCommand = new RelayCommand(NavigateSettings);
             GotoOperatorCommand = new RelayCommand(NavigateOperator);
             LaunchMediaFolderCommand = new RelayCommand(LaunchMediaFolder);
         }

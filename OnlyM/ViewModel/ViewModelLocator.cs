@@ -1,13 +1,12 @@
-using OnlyM.Core.Services.Database;
-
 namespace OnlyM.ViewModel
 {
     using CommonServiceLocator;
+    using Core.Services.Database;
     using Core.Services.Media;
     using Core.Services.Monitors;
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Ioc;
-    using Services;
+    using Services.DragAndDrop;
     using Services.Pages;
 
     /// <summary>
@@ -33,6 +32,7 @@ namespace OnlyM.ViewModel
             SimpleIoc.Default.Register<IFolderWatcherService, FolderWatcherService>();
             SimpleIoc.Default.Register<IDatabaseService, DatabaseService>();
             SimpleIoc.Default.Register<IMediaMetaDataService, MediaMetaDataService>();
+            SimpleIoc.Default.Register<IDragAndDropService, DragAndDropService>();
 
             // view models.
             SimpleIoc.Default.Register<MainViewModel>();
@@ -51,7 +51,6 @@ namespace OnlyM.ViewModel
 
         public static void Cleanup()
         {
-            // TODO Clear the ViewModels
         }
     }
 }

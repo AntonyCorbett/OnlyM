@@ -21,5 +21,11 @@
         event EventHandler MediaMonitorChangedEvent;
 
         event EventHandler PermanentBackdropChangedEvent;
+
+        event EventHandler AllowVideoPauseChangedEvent;
+
+        event EventHandler AllowVideoPositionSeekingChangedEvent;
+
+        event EventHandler ShowSubtitlesChangedEvent;
     }
 }

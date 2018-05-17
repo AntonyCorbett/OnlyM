@@ -1,10 +1,9 @@
-﻿using System.Text;
-
-namespace OnlyM.Core.Services.Database
+﻿namespace OnlyM.Core.Services.Database
 {
     using System;
     using System.Data.SQLite;
     using System.IO;
+    using System.Text;
     using Serilog;
     using Utils;
 
@@ -83,7 +82,6 @@ namespace OnlyM.Core.Services.Database
 
             return null;
         }
-
 
         private void EnsureDatabaseExists()
         {

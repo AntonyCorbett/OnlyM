@@ -16,6 +16,7 @@
     using System.Windows.Interop;
     using System.Xml;
     using System.Xml.Serialization;
+    using Serilog;
 
     // adapted from david Rickard's Tech Blog
 
@@ -89,21 +90,16 @@
                         placement = (WINDOWPLACEMENT)Serializer.Deserialize(memoryStream);
                     }
 
-                //    var adjustedDimensions = GetAdjustedWidthAndHeight(width, height);
-
                     placement.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
                     placement.flags = 0;
                     placement.showCmd = placement.showCmd == SW_SHOWMINIMIZED ? SW_SHOWNORMAL : placement.showCmd;
-                    //placement.normalPosition.Right = placement.normalPosition.Left + (int)adjustedDimensions.Item1;
-                    //placement.normalPosition.Bottom = placement.normalPosition.Top + (int)adjustedDimensions.Item2;
                     WindowsPlacementNativeMethods.SetWindowPlacement(windowHandle, ref placement);
                 }
-                catch (InvalidOperationException)
+                catch (InvalidOperationException ex)
                 {
-                    // Parsing placement XML failed. Fail silently.
+                    Log.Logger.Error(ex, "Parsing placement XML failed");
                 }
             }
-
         }
 
         public static string GetPlacement(this Window window)
@@ -122,16 +118,6 @@
             }
 
             return ((int)dpiXProperty.GetValue(null, null), (int)dpiYProperty.GetValue(null, null));
-        }
-
-        private static Tuple<double, double> GetAdjustedWidthAndHeight(double width, double height)
-        {
-            var dpi = GetDpiSettings();
-
-            var adjustedWidth = (width * dpi.Item1) / 96.0;
-            var adjustedHeight = (height * dpi.Item2) / 96.0;
-
-            return new Tuple<double, double>(adjustedWidth, adjustedHeight);
         }
 
         private static string GetPlacement(IntPtr windowHandle)

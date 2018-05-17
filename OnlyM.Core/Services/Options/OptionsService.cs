@@ -28,6 +28,11 @@
 
         public event EventHandler PermanentBackdropChangedEvent;
 
+        public event EventHandler AllowVideoPauseChangedEvent;
+
+        public event EventHandler AllowVideoPositionSeekingChangedEvent;
+
+        public event EventHandler ShowSubtitlesChangedEvent;
 
         public OptionsService(ILogLevelSwitchService logLevelSwitchService)
         {
@@ -64,7 +69,7 @@
                 {
                     // changed...
                     WriteOptions();
-                    Log.Logger.Information("Settings changed and saved");
+                    Log.Logger.Debug("Settings changed and saved");
                 }
             }
             // ReSharper disable once CatchAllClause
@@ -114,10 +119,28 @@
                     _options.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
                     _options.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
                     _options.PermanentBackdropChangedEvent += HandlePermanentBackdropChangedEvent;
+                    _options.AllowVideoPauseChangedEvent += HandleAllowVideoPauseChangedEvent;
+                    _options.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
+                    _options.ShowSubtitlesChangedEvent += HandleShowSubtitlesChangedEvent;
 
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void HandleShowSubtitlesChangedEvent(object sender, EventArgs e)
+        {
+            ShowSubtitlesChangedEvent?.Invoke(this, e);
+        }
+
+        private void HandleAllowVideoPositionSeekingChangedEvent(object sender, EventArgs e)
+        {
+            AllowVideoPositionSeekingChangedEvent?.Invoke(this, e);
+        }
+
+        private void HandleAllowVideoPauseChangedEvent(object sender, EventArgs e)
+        {
+            AllowVideoPauseChangedEvent?.Invoke(this, e);
         }
 
         private void HandlePermanentBackdropChangedEvent(object sender, EventArgs e)

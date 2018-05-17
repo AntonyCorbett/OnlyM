@@ -68,7 +68,7 @@
     </UserControl.Triggers>
 
     <StackPanel Orientation="Vertical">
-        <GroupBox Header="Main" Style="{StaticResource SettingsGroupBoxStyle}">
+        <GroupBox Header="Display" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
                
                 <ComboBox ItemsSource="{Binding Monitors}"
@@ -137,12 +137,27 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Videos" Style="{StaticResource SettingsGroupBoxStyle}">
+        <GroupBox Header="Videos and Audio" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
                 <CheckBox IsChecked="{Binding ShowVideoSubtitles, Mode=TwoWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">
                     Show subtitles if available
+                </CheckBox>
+
+                <CheckBox IsChecked="{Binding AllowVideoPositionSeeking, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Allow position seeking
+                </CheckBox>
+
+                <CheckBox IsChecked="{Binding AllowVideoScrubbing, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Allow scrubbing when paused
+                </CheckBox>
+
+                <CheckBox IsChecked="{Binding AllowVideoPause, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Allow pause
                 </CheckBox>
 
             </StackPanel>

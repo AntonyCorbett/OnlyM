@@ -48,7 +48,7 @@
             _pageService.NavigationEvent += HandleNavigationEvent;
 
             InitCommands();
-            InitSubscriptions();
+            Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
 
         private void HandleNavigationEvent(object sender, NavigationEventArgs e)
@@ -68,11 +68,6 @@
         private void PurgeThumbnailCache()
         {
             _thumbnailService.ClearThumbCache();
-        }
-
-        private void InitSubscriptions()
-        {
-            Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
 
         public string AppVersionStr => string.Format(Properties.Resources.APP_VER, VersionDetection.GetCurrentVersion());
@@ -111,6 +106,45 @@
                 if (_optionsService.Options.ShowVideoSubtitles != value)
                 {
                     _optionsService.Options.ShowVideoSubtitles = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool AllowVideoScrubbing
+        {
+            get => _optionsService.Options.AllowVideoScrubbing;
+            set
+            {
+                if (_optionsService.Options.AllowVideoScrubbing != value)
+                {
+                    _optionsService.Options.AllowVideoScrubbing = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool AllowVideoPositionSeeking
+        {
+            get => _optionsService.Options.AllowVideoPositionSeeking;
+            set
+            {
+                if (_optionsService.Options.AllowVideoPositionSeeking != value)
+                {
+                    _optionsService.Options.AllowVideoPositionSeeking = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool AllowVideoPause
+        {
+            get => _optionsService.Options.AllowVideoPause;
+            set
+            {
+                if (_optionsService.Options.AllowVideoPause != value)
+                {
+                    _optionsService.Options.AllowVideoPause = value;
                     RaisePropertyChanged();
                 }
             }

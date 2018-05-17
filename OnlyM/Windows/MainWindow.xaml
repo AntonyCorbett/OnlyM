@@ -42,12 +42,6 @@
                                 <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" Fill="Transparent" />
                                 <Border x:Name="Rectangle1" CornerRadius="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" Background="{TemplateBinding Background}" />
                             </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="Tag" Value="Horizontal">
-                                    <Setter TargetName="Rectangle1" Property="Width" Value="Auto" />
-                                    <Setter TargetName="Rectangle1" Property="Height" Value="7" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
@@ -70,10 +64,18 @@
                                         <Thumb x:Name="Thumb" Background="{TemplateBinding Foreground}" Style="{DynamicResource ScrollThumbs}" />
                                     </Track.Thumb>
                                     <Track.IncreaseRepeatButton>
-                                        <RepeatButton x:Name="PageUp" Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="false" />
+                                        <RepeatButton x:Name="PageUp" 
+                                                      Height="Auto"
+                                                      Command="ScrollBar.PageDownCommand" 
+                                                      Opacity="0" 
+                                                      Focusable="false" />
                                     </Track.IncreaseRepeatButton>
                                     <Track.DecreaseRepeatButton>
-                                        <RepeatButton x:Name="PageDown" Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="false" />
+                                        <RepeatButton x:Name="PageDown" 
+                                                      Height="Auto"
+                                                      Command="ScrollBar.PageUpCommand" 
+                                                      Opacity="0" 
+                                                      Focusable="false" />
                                     </Track.DecreaseRepeatButton>
                                 </Track>
                             </Grid>
@@ -86,23 +88,6 @@
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="false">
                                     <Setter TargetName="Thumb" Property="Visibility" Value="Collapsed" />
-                                </Trigger>
-                                <Trigger Property="Orientation" Value="Horizontal">
-                                    <Setter TargetName="GridRoot" Property="LayoutTransform">
-                                        <Setter.Value>
-                                            <RotateTransform Angle="-90" />
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Setter TargetName="PART_Track" Property="LayoutTransform">
-                                        <Setter.Value>
-                                            <RotateTransform Angle="-90" />
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Setter Property="Width" Value="Auto" />
-                                    <Setter Property="Height" Value="8" />
-                                    <Setter TargetName="Thumb" Property="Tag" Value="Horizontal" />
-                                    <Setter TargetName="PageDown" Property="Command" Value="ScrollBar.PageLeftCommand" />
-                                    <Setter TargetName="PageUp" Property="Command" Value="ScrollBar.PageRightCommand" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -131,9 +116,9 @@
                     </LinearGradientBrush>
                 </Border.Background>
                 <ContentControl
-                VerticalAlignment="Stretch"
-                MouseDoubleClick="OnMouseDoubleClickTitleBar"
-                MouseLeftButtonDown="OnMouseLeftButtonDownTitleBar" >
+                    MouseDoubleClick="OnMouseDoubleClickTitleBar"
+                    VerticalAlignment="Stretch">
+                
                     <!--<i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick">
                         <command:EventToCommand Command="{Binding MaximizeOrRestoreCommand}"/>
@@ -147,8 +132,9 @@
                             <ColumnDefinition Width="33"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Foreground="White" 
-                               VerticalAlignment="Center"
-                               Margin="6"
+                               MouseLeftButtonDown="OnMouseLeftButtonDownTitleBar"
+                               VerticalAlignment="Stretch"
+                               Padding="10"
                                Grid.Column="0">O N L Y - M</TextBlock>
 
                         <Button Grid.Column="1" 
@@ -174,9 +160,13 @@
             </Border>
 
             <Grid Grid.Row="1">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
                     <ContentControl Content="{Binding CurrentPage}" />
                 </ScrollViewer>
+                <TextBlock Visibility="{Binding Path=IsMediaListEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                           Height="20"
+                           VerticalAlignment="Top"
+                           Margin="20">Drop your media files here!</TextBlock>
                 <Rectangle Height="6" VerticalAlignment="Top">
                     <Rectangle.Fill>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

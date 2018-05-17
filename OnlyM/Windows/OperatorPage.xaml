@@ -13,6 +13,7 @@
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
              TextElement.FontSize="18"
+             AllowDrop="True"
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
@@ -102,7 +103,7 @@
                                         VerticalAlignment="Stretch"
                                         Command="{Binding Path=DataContext.MediaControlPauseCommand, ElementName=OnlyMOperatorPage}"
                                         CommandParameter="{Binding Id}"
-                                        Visibility="{Binding Path=HasDurationAndIsPlayingOrPaused, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Visibility="{Binding Path=IsPauseButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                         HorizontalAlignment="Left"
                                         Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
 
@@ -122,7 +123,7 @@
                                        Orientation="Horizontal"
                                        TickFrequency="1"
                                        Margin="0,5,0,0"
-                                       Visibility="{Binding Path=HasDurationAndIsNotPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Visibility="{Binding Path=IsSliderVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                        Value="{Binding PlaybackPositionDeciseconds, Mode=TwoWay}" 
                                        Maximum="{Binding DurationDeciseconds}"/>
                         </Grid>
@@ -175,7 +176,7 @@
             </BeginStoryboard>
         </EventTrigger>
     </UserControl.Triggers>
-
+    
         <ItemsControl ItemsSource="{Binding MediaItems}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>

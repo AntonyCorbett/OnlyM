@@ -16,7 +16,7 @@
         /// <returns>Collection of DisplayDeviceData</returns>
         public static IEnumerable<DisplayDeviceData> ReadDisplayDevices()
         {
-            Log.Logger.Information("Reading display devices");
+            Log.Logger.Debug("Reading display devices");
                 
             var result = new List<DisplayDeviceData>();
 

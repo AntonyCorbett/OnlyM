@@ -16,6 +16,13 @@
 
         event EventHandler<PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
 
+        event EventHandler MediaWindowOpenedEvent;
+
+        event EventHandler MediaWindowClosedEvent;
+
+
+        bool AllowMediaWindowToClose { get; }
+
         string OperatorPageName { get; }
 
         string SettingsPageName { get; }
@@ -26,7 +33,7 @@
 
         FrameworkElement GetPage(string pageName);
         
-        void OpenMediaWindow(bool includeBackdrop);
+        void OpenMediaWindow();
 
         bool ApplicationIsClosing { get; }
 

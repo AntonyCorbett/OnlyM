@@ -4,8 +4,6 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Forms;
-    using System.Windows.Media;
-    using Core.Models;
     using Core.Services.Monitors;
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Messaging;
@@ -21,12 +19,13 @@
     {
         private readonly Lazy<OperatorPage> _operatorPage = new Lazy<OperatorPage>(() => new OperatorPage());
         private readonly Lazy<SettingsPage> _settingsPage = new Lazy<SettingsPage>(() => new SettingsPage());
-        private readonly Lazy<MediaWindow> _mediaWindow;
-
+        
         private readonly IMonitorsService _monitorsService;
         private readonly IOptionsService _optionsService;
         private readonly (int dpiX, int dpiY) _systemDpi;
-        
+
+        private MediaWindow _mediaWindow;
+
         public event EventHandler MediaMonitorChangedEvent;
 
         public event EventHandler<NavigationEventArgs> NavigationEvent;
@@ -35,6 +34,11 @@
 
         public event EventHandler<PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
 
+        public event EventHandler MediaWindowOpenedEvent;
+
+        public event EventHandler MediaWindowClosedEvent;
+
+
         public PageService(
             IMonitorsService monitorsService,
             IOptionsService optionsService)
@@ -42,13 +46,11 @@
             _monitorsService = monitorsService;
             _optionsService = optionsService;
 
-            _mediaWindow = new Lazy<MediaWindow>(MediaWindowCreation);
-
             _optionsService.ImageFadeTypeChangedEvent += HandleImageFadeTypeChangedEvent;
             _optionsService.ImageFadeSpeedChangedEvent += HandleImageFadeSpeedChangedEvent;
             _optionsService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
             _optionsService.PermanentBackdropChangedEvent += HandlePermanentBackdropChangedEvent;
-
+            
             _systemDpi = WindowPlacement.GetDpiSettings();
 
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
@@ -84,20 +86,24 @@
 
             throw new ArgumentOutOfRangeException(nameof(pageName));
         }
-
-        public void OpenMediaWindow(bool includeBackdrop)
+        
+        public void OpenMediaWindow()
         {
+            Log.Logger.Information("Opening media window");
+
             try
             {
+                EnsureMediaWindowCreated();
+
                 var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
                 if (targetMonitor != null)
                 {
-                    AdjustMediaWindowTransparency(includeBackdrop);
+                    LocateWindowAtOrigin(_mediaWindow, targetMonitor.Monitor);
 
-                    LocateWindowAtOrigin(_mediaWindow.Value, targetMonitor.Monitor);
+                    _mediaWindow.Topmost = true;
+                    _mediaWindow.Show();
 
-                    _mediaWindow.Value.Topmost = true;
-                    _mediaWindow.Value.Show();
+                    OnMediaWindowOpened();
                 }
             }
             catch (Exception ex)
@@ -106,19 +112,31 @@
             }
         }
 
+        public bool AllowMediaWindowToClose { get; set; }
+
         public void CloseMediaWindow()
         {
-            if (_mediaWindow.IsValueCreated)
+            if (_mediaWindow != null)
             {
-                _mediaWindow.Value.Close();
+                AllowMediaWindowToClose = true;
+
+                _mediaWindow.MediaChangeEvent -= HandleMediaChangeEvent;
+                _mediaWindow.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
+                _mediaWindow.FinishedWithWindowEvent -= HandleFinishedWithWindowEvent;
+                _mediaWindow.Loaded -= HandleLoaded;
+
+                _mediaWindow.Close();
+                _mediaWindow = null;
+
+                OnMediaWindowClosed();
             }
         }
 
         public void CacheImageItem(MediaItem mediaItem)
         {
-            if (_mediaWindow.IsValueCreated && mediaItem != null)
+            if (_mediaWindow != null && mediaItem != null)
             {
-                _mediaWindow.Value.CacheImageItem(mediaItem);
+                _mediaWindow.CacheImageItem(mediaItem);
             }
         }
 
@@ -126,12 +144,11 @@
         {
             try
             {
-                OpenMediaWindow(includeBackdrop: true);
+                OpenMediaWindow();
                 
-                await _mediaWindow.Value.StartMedia(
+                await _mediaWindow.StartMedia(
                     mediaItemToStart, 
                     currentMediaItem, 
-                    _optionsService.Options.ShowVideoSubtitles,
                     startFromPaused);
             }
             catch (Exception ex)
@@ -142,21 +159,21 @@
 
         public async Task StopMediaAsync(MediaItem mediaItem)
         {
-            if (_mediaWindow.IsValueCreated)
+            if (_mediaWindow != null)
             {
-                await _mediaWindow.Value.StopMediaAsync(mediaItem);
+                await _mediaWindow.StopMediaAsync(mediaItem);
             }
         }
 
         public async Task PauseMediaAsync(MediaItem mediaItem)
         {
-            if (_mediaWindow.IsValueCreated)
+            if (_mediaWindow != null)
             {
-                await _mediaWindow.Value.PauseMediaAsync(mediaItem);
+                await _mediaWindow.PauseMediaAsync(mediaItem);
             }
         }
 
-        public bool IsMediaWindowVisible => _mediaWindow.IsValueCreated && _mediaWindow.Value.IsVisible;
+        public bool IsMediaWindowVisible => _mediaWindow != null && _mediaWindow.IsVisible;
 
         private void LocateWindowAtOrigin(Window window, Screen monitor)
         {
@@ -188,35 +205,26 @@
             CloseMediaWindow();
         }
         
-        private void HideMediaWindow()
-        {
-            if (_mediaWindow.IsValueCreated)
-            {
-                _mediaWindow.Value.Hide();
-            }
-        }
-
         private void RelocateMediaWindow()
         {
-            if (_mediaWindow.IsValueCreated)
+            if (_mediaWindow != null)
             {
                 var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
                 if (targetMonitor != null)
                 {
-                    _mediaWindow.Value.Hide();
-                    _mediaWindow.Value.WindowState = WindowState.Normal;
+                    _mediaWindow.Hide();
+                    _mediaWindow.WindowState = WindowState.Normal;
 
-                    LocateWindowAtOrigin(_mediaWindow.Value, targetMonitor.Monitor);
+                    LocateWindowAtOrigin(_mediaWindow, targetMonitor.Monitor);
 
-                    _mediaWindow.Value.Topmost = true;
-                    _mediaWindow.Value.WindowState = WindowState.Maximized;
-                    _mediaWindow.Value.Show();
+                    _mediaWindow.Topmost = true;
+                    _mediaWindow.WindowState = WindowState.Maximized;
+                    _mediaWindow.Show();
                 }
             }
-            else
+            else if (_optionsService.Options.PermanentBackdrop)
             {
-                bool showingBackdrop = Equals(_mediaWindow.Value.Background, Brushes.Black);
-                OpenMediaWindow(includeBackdrop: showingBackdrop);
+                OpenMediaWindow();
             }
         }
 
@@ -225,19 +233,28 @@
             MediaMonitorChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
-        private MediaWindow MediaWindowCreation()
+        private void CreateMediaWindow()
         {
-            var result = new MediaWindow(_optionsService)
+            AllowMediaWindowToClose = false;
+
+            _mediaWindow = new MediaWindow(_optionsService)
             {
                 ImageFadeType = _optionsService.Options.ImageFadeType,
                 ImageFadeSpeed = _optionsService.Options.ImageFadeSpeed
             };
 
-            result.MediaChangeEvent += HandleMediaChangeEvent;
-            result.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
-            result.Loaded += HandleLoaded;
+            _mediaWindow.MediaChangeEvent += HandleMediaChangeEvent;
+            _mediaWindow.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
+            _mediaWindow.FinishedWithWindowEvent += HandleFinishedWithWindowEvent;
+            _mediaWindow.Loaded += HandleLoaded;
+        }
 
-            return result;
+        private void HandleFinishedWithWindowEvent(object sender, EventArgs e)
+        {
+            if (!_optionsService.Options.PermanentBackdrop)
+            {
+                CloseMediaWindow();
+            }
         }
 
         private void HandleLoaded(object sender, RoutedEventArgs e)
@@ -276,17 +293,17 @@
 
         private void HandleImageFadeTypeChangedEvent(object sender, EventArgs e)
         {
-            if (_mediaWindow.IsValueCreated)
+            if (_mediaWindow != null)
             {
-                _mediaWindow.Value.ImageFadeType = _optionsService.Options.ImageFadeType;
+                _mediaWindow.ImageFadeType = _optionsService.Options.ImageFadeType;
             }
         }
 
         private void HandleImageFadeSpeedChangedEvent(object sender, EventArgs e)
         {
-            if (_mediaWindow.IsValueCreated)
+            if (_mediaWindow != null)
             {
-                _mediaWindow.Value.ImageFadeSpeed = _optionsService.Options.ImageFadeSpeed;
+                _mediaWindow.ImageFadeSpeed = _optionsService.Options.ImageFadeSpeed;
             }
         }
 
@@ -310,7 +327,8 @@
                 }
                 else
                 {
-                    HideMediaWindow();
+                    // media monitor = "None"
+                    CloseMediaWindow();
                 }
 
                 OnMediaMonitorChangedEvent();
@@ -324,16 +342,32 @@
 
         private void HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
         {
-            // todo:
+            if (_optionsService.Options.PermanentBackdrop)
+            {
+                OpenMediaWindow();
+            }
+            else
+            {
+                CloseMediaWindow();
+            }
         }
 
-        private void AdjustMediaWindowTransparency(bool includeBackdrop)
+        private void EnsureMediaWindowCreated()
         {
-            _mediaWindow.Value.Background = includeBackdrop
-                ? Brushes.Black
-                : Brushes.Transparent;
+            if (_mediaWindow == null)
+            {
+                CreateMediaWindow();
+            }
+        }
 
-            _mediaWindow.Value.AllowsTransparency = !includeBackdrop;
+        private void OnMediaWindowOpened()
+        {
+            MediaWindowOpenedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnMediaWindowClosed()
+        {
+            MediaWindowClosedEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

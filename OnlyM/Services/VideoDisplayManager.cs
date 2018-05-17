@@ -10,8 +10,7 @@
         private readonly MediaElement _mediaElement;
         private Guid _mediaItemId;
         private TimeSpan _startPosition;
-        private bool _showSubtitles;
-
+        
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
         public event EventHandler<Unosquare.FFME.Events.PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
@@ -29,16 +28,15 @@
             _mediaElement.PositionChanged += HandlePositionChanged;
         }
 
+        public bool ShowSubtitles { get; set; }
+
         public async Task ShowVideo(
             string mediaItemFilePath, 
             Guid mediaItemId, 
             TimeSpan startOffset, 
-            bool showSubtitles, 
             bool startFromPaused)
         {
             _mediaItemId = mediaItemId;
-            _showSubtitles = showSubtitles;
-
             _startPosition = startOffset;
 
             if (startFromPaused)
@@ -52,6 +50,13 @@
                 OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Starting });
                 _mediaElement.Source = new Uri(mediaItemFilePath);
             }
+        }
+
+        public void SetPlaybackPosition(TimeSpan position)
+        {
+            _mediaElement.PositionChanged -= HandlePositionChanged;
+            _mediaElement.Position = position;
+            _mediaElement.PositionChanged += HandlePositionChanged;
         }
 
         public async Task PauseVideoAsync(Guid mediaItemId)
@@ -111,7 +116,7 @@
 
         private void HandleRenderingSubtitles(object sender, Unosquare.FFME.Events.RenderingSubtitlesEventArgs e)
         {
-            e.Cancel = !_showSubtitles;
+            e.Cancel = !ShowSubtitles;
         }
     }
 }

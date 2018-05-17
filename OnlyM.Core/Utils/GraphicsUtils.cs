@@ -1,6 +1,4 @@
-﻿using OnlyM.Core.Properties;
-
-namespace OnlyM.Core.Utils
+﻿namespace OnlyM.Core.Utils
 {
     using System;
     using System.Diagnostics;
@@ -45,7 +43,7 @@ namespace OnlyM.Core.Utils
                         ? new SizeF(maxPixelDimension, maxPixelDimension * (float)srcBmp.Height / srcBmp.Width)
                         : new SizeF(maxPixelDimension * (float)srcBmp.Width / srcBmp.Height, maxPixelDimension);
 
-                    using (var target = new Bitmap((int)newSize.Width, (int) newSize.Height))
+                    using (var target = new Bitmap((int)newSize.Width, (int)newSize.Height))
                     {
                         using (var graphics = Graphics.FromImage(target))
                         {
@@ -105,7 +103,7 @@ namespace OnlyM.Core.Utils
                         return result;
                     }
 
-                    Log.Logger.Information($"Embedded thumbnail unavailable for video: {originalPath}");
+                    Log.Logger.Debug($"Embedded thumbnail unavailable for video: {originalPath}");
                 }
                 catch (Exception ex)
                 {
@@ -166,7 +164,6 @@ namespace OnlyM.Core.Utils
                 ? tempThumbnailPath 
                 : null;
         }
-
 
         // ReSharper disable once InconsistentNaming
         private static bool ExecuteFFMpeg(string ffmpegFolder, string arguments)

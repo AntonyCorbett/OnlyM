@@ -1,4 +1,6 @@
-﻿namespace OnlyM
+﻿using OnlyM.AutoUpdates;
+
+namespace OnlyM
 {
     using System.IO;
     using System.Threading;
@@ -81,6 +83,7 @@
                .CreateLogger();
 
             Log.Logger.Information("==== Launched ====");
+            Log.Logger.Information($"Version {VersionDetection.GetCurrentVersion()}");
         }
 
         private bool AnotherInstanceRunning()
