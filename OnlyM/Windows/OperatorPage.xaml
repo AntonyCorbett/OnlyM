@@ -184,13 +184,13 @@
         </EventTrigger>
     </UserControl.Triggers>
     
-        <ItemsControl ItemsSource="{Binding MediaItems}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+    <ItemsControl ItemsSource="{Binding MediaItems}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Vertical" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+    </ItemsControl>
 
 </UserControl>
 

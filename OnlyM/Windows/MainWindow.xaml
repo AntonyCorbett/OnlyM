@@ -163,10 +163,13 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
                     <ContentControl Content="{Binding CurrentPage}" />
                 </ScrollViewer>
-                <TextBlock Visibility="{Binding Path=IsMediaListEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                <TextBlock Visibility="{Binding Path=ShowDragAndDropHint, Converter={StaticResource BooleanToVisibilityConverter}}" 
                            Height="20"
                            VerticalAlignment="Top"
-                           Margin="20">Drop your media files here!</TextBlock>
+                           Text="Drop your media files here!"
+                           Margin="20,20,20,0">
+
+                </TextBlock>
                 <Rectangle Height="6" VerticalAlignment="Top">
                     <Rectangle.Fill>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

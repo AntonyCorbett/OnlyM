@@ -33,7 +33,7 @@ namespace OnlyM.ViewModel
             _optionsService.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
 
             _pageService.GotoOperatorPage();
-
+            
             InitCommands();
 
             Messenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
@@ -87,6 +87,7 @@ namespace OnlyM.ViewModel
                     RaisePropertyChanged(nameof(IsSettingsPageActive));
                     RaisePropertyChanged(nameof(IsOperatorPageActive));
                     RaisePropertyChanged(nameof(ShowNewVersionButton));
+                    RaisePropertyChanged(nameof(ShowDragAndDropHint));
                 }
             }
         }
@@ -124,7 +125,9 @@ namespace OnlyM.ViewModel
 
         public bool IsOperatorPageActive => _currentPageName.Equals(_pageService.OperatorPageName);
 
-        private bool _isMediaListEmpty;
+        public bool ShowDragAndDropHint => IsMediaListEmpty && IsOperatorPageActive;
+
+        private bool _isMediaListEmpty = true;
 
         public bool IsMediaListEmpty
         {
@@ -135,6 +138,7 @@ namespace OnlyM.ViewModel
                 {
                     _isMediaListEmpty = value;
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(ShowDragAndDropHint));
                 }
             }
         }
