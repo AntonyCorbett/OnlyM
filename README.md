@@ -1,10 +1,14 @@
 # OnlyM
 
-Windows Meeting Media player using C# and WPF. Currently in the early stages of development. Please don't send feature requests or bug reports at this stage.
+Windows Meeting Media player using C# and WPF. Currently in the early stages of development. Please report any problems in the Project Issues section.
 
 ### Download
 
 If you just want to install the application, please download the [OnlyMSetup.exe](https://github.com/AntonyCorbett/OnlyM/releases/latest) file.
+
+### Documentation
+
+See the [wiki](https://github.com/AntonyCorbett/OnlyM/wiki) for basic instructions.
 
 ### License, etc
 
