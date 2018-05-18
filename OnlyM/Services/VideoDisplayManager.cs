@@ -1,4 +1,7 @@
-﻿namespace OnlyM.Services
+﻿using System.Windows;
+using Serilog;
+
+namespace OnlyM.Services
 {
     using System;
     using System.Threading.Tasks;
@@ -20,7 +23,7 @@
             _mediaElement = mediaElement;
             _mediaElement.MediaOpened += HandleMediaOpened;
             _mediaElement.MediaClosed += HandleMediaClosed;
-            _mediaElement.MediaEnded += HandleMediaEnded;
+            _mediaElement.MediaEnded += async (s, e) => await HandleMediaEnded(s, e);
             _mediaElement.MediaFailed += HandleMediaFailed;
             
             _mediaElement.RenderingSubtitles += HandleRenderingSubtitles;
@@ -73,8 +76,6 @@
             if (_mediaItemId == mediaItemId)
             {
                 OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopping });
-
-                await _mediaElement.Stop();
                 await _mediaElement.Close();
             }
         }
@@ -86,6 +87,7 @@
 
         private void HandleMediaOpened(object sender, System.Windows.RoutedEventArgs e)
         {
+            Log.Logger.Information("Opened");
             _mediaElement.Position = _startPosition;
             OnMediaChangeEvent(new MediaEventArgs
             {
@@ -96,16 +98,20 @@
 
         private void HandleMediaClosed(object sender, System.Windows.RoutedEventArgs e)
         {
+            Log.Logger.Information("Closed");
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
         }
 
-        private void HandleMediaEnded(object sender, System.Windows.RoutedEventArgs e)
+        private async Task HandleMediaEnded(object sender, System.Windows.RoutedEventArgs e)
         {
+            Log.Logger.Information("Ended");
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
+            await _mediaElement.Close();
         }
 
         private void HandleMediaFailed(object sender, System.Windows.ExceptionRoutedEventArgs e)
         {
+            Log.Logger.Information("Failed");
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
         }
 
