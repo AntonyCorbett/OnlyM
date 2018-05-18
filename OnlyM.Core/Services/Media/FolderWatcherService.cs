@@ -74,10 +74,11 @@
         {
             if (_watcher == null)
             {
-                _watcher = new FileSystemWatcher();
+                _watcher = new FileSystemWatcher { IncludeSubdirectories = false };
+
                 _watcher.Created += HandleContentModified;
                 _watcher.Deleted += HandleContentModified;
-                _watcher.Renamed += HandleContentModified;
+                _watcher.Renamed += HandleContentRenamed;
             }
 
             if (Directory.Exists(pathToWatch))
@@ -89,6 +90,19 @@
             {
                 _watcher.EnableRaisingEvents = false;
             }
+        }
+
+        private void HandleContentRenamed(object sender, RenamedEventArgs e)
+        {
+            if (!_mediaProviderService.IsFileExtensionSupported(Path.GetExtension(e.OldFullPath)) &&
+                !_mediaProviderService.IsFileExtensionSupported(Path.GetExtension(e.FullPath)))
+            {
+                // not a relevant file.
+                return;
+            }
+
+            Interlocked.Increment(ref _changeVersion);
+            _signalFolderChange.Set();
         }
 
         private void HandleContentModified(object sender, FileSystemEventArgs e)

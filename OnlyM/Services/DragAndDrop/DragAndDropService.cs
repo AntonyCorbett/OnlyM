@@ -9,20 +9,24 @@
     using Core.Services.Media;
     using Core.Services.Options;
     using Serilog;
+    using Snackbar;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class DragAndDropService : IDragAndDropService
     {
         private readonly IMediaProviderService _mediaProviderService;
         private readonly IOptionsService _optionsService;
+        private readonly ISnackbarService _snackbarService;
         private bool _canDrop;
 
         public DragAndDropService(
             IMediaProviderService mediaProviderService,
-            IOptionsService optionsService)
+            IOptionsService optionsService,
+            ISnackbarService snackbarService)
         {
             _mediaProviderService = mediaProviderService;
             _optionsService = optionsService;
+            _snackbarService = snackbarService;
         }
 
         public void Init(FrameworkElement targetElement)
@@ -60,18 +64,45 @@
         {
             if (data != null)
             {
-                Task.Run(() => { InternalCopyMediaFiles(data); });
+                Task.Run(() =>
+                {
+                    int count = InternalCopyMediaFiles(data, out var someError);
+                    DisplaySnackbar(count, someError);
+                });
             }
         }
 
-        private void InternalCopyMediaFiles(IDataObject data)
+        private void DisplaySnackbar(int count, bool someError)
         {
+            if (someError)
+            {
+                _snackbarService.EnqueueWithOk(Properties.Resources.COPYING_ERROR);
+            }
+            else if (count == 0)
+            {
+                _snackbarService.EnqueueWithOk(Properties.Resources.NO_SUPPORTED_FILES);
+            }
+            else if (count == 1)
+            {
+                _snackbarService.EnqueueWithOk(Properties.Resources.FILE_COPIED);
+            }
+            else
+            {
+                _snackbarService.EnqueueWithOk(string.Format(Properties.Resources.FILES_COPIED, count));
+            }
+        }
+
+        private int InternalCopyMediaFiles(IDataObject data, out bool someError)
+        {
+            int count = 0;
+            someError = false;
+
             try
             {
                 var mediaFolder = _optionsService.Options.MediaFolder;
 
                 IEnumerable<string> files = GetSupportedFiles(data);
-
+                
                 foreach (var file in files)
                 {
                     var filename = Path.GetFileName(file);
@@ -81,6 +112,7 @@
                         if (!File.Exists(destFile))
                         {
                             File.Copy(file, destFile, false);
+                            ++count;
                         }
                     }
                 }
@@ -88,7 +120,10 @@
             catch (Exception ex)
             {
                 Log.Logger.Error(ex, "Could not copy media files");
+                someError = true;
             }
+
+            return count;
         }
 
         private bool CanDropOrPaste(IDataObject data)

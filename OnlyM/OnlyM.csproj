@@ -140,6 +140,8 @@
     <Compile Include="Services\Pages\PageService.cs" />
     <Compile Include="Services\MetaDataQueue\MetaDataQueueConsumer.cs" />
     <Compile Include="Services\MetaDataQueue\MetaDataQueueProducer.cs" />
+    <Compile Include="Services\Snackbar\ISnackbarService.cs" />
+    <Compile Include="Services\Snackbar\SnackbarService.cs" />
     <Compile Include="Services\VideoDisplayManager.cs" />
     <Compile Include="ViewModel\MediaViewModel.cs" />
     <Compile Include="ViewModel\OperatorViewModel.cs" />

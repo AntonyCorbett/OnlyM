@@ -120,7 +120,28 @@
   <data name="APP_VER" xml:space="preserve">
     <value>OnlyM software version: {0}</value>
   </data>
+  <data name="COPYING_ERROR" xml:space="preserve">
+    <value>There was an error!</value>
+  </data>
+  <data name="FILES_COPIED" xml:space="preserve">
+    <value>{0} files copied</value>
+  </data>
+  <data name="FILE_COPIED" xml:space="preserve">
+    <value>File copied</value>
+  </data>
   <data name="MONITOR_NONE" xml:space="preserve">
     <value>None</value>
+  </data>
+  <data name="NEW_UPDATE_AVAILABLE" xml:space="preserve">
+    <value>New update available!</value>
+  </data>
+  <data name="NO_SUPPORTED_FILES" xml:space="preserve">
+    <value>No supported media files!</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="VIEW" xml:space="preserve">
+    <value>VIEW</value>
   </data>
 </root>

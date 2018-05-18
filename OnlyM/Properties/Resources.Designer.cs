@@ -70,11 +70,74 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There was an error!.
+        /// </summary>
+        internal static string COPYING_ERROR {
+            get {
+                return ResourceManager.GetString("COPYING_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File copied.
+        /// </summary>
+        internal static string FILE_COPIED {
+            get {
+                return ResourceManager.GetString("FILE_COPIED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} files copied.
+        /// </summary>
+        internal static string FILES_COPIED {
+            get {
+                return ResourceManager.GetString("FILES_COPIED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         internal static string MONITOR_NONE {
             get {
                 return ResourceManager.GetString("MONITOR_NONE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New update available!.
+        /// </summary>
+        internal static string NEW_UPDATE_AVAILABLE {
+            get {
+                return ResourceManager.GetString("NEW_UPDATE_AVAILABLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No supported media files!.
+        /// </summary>
+        internal static string NO_SUPPORTED_FILES {
+            get {
+                return ResourceManager.GetString("NO_SUPPORTED_FILES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string OK {
+            get {
+                return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VIEW.
+        /// </summary>
+        internal static string VIEW {
+            get {
+                return ResourceManager.GetString("VIEW", resourceCulture);
             }
         }
     }

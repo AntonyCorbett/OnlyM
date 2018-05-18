@@ -1,3 +1,7 @@
+using System;
+using MaterialDesignThemes.Wpf;
+using OnlyM.Services.Snackbar;
+
 namespace OnlyM.ViewModel
 {
     using CommonServiceLocator;
@@ -33,6 +37,7 @@ namespace OnlyM.ViewModel
             SimpleIoc.Default.Register<IDatabaseService, DatabaseService>();
             SimpleIoc.Default.Register<IMediaMetaDataService, MediaMetaDataService>();
             SimpleIoc.Default.Register<IDragAndDropService, DragAndDropService>();
+            SimpleIoc.Default.Register<ISnackbarService, SnackbarService>();
 
             // view models.
             SimpleIoc.Default.Register<MainViewModel>();

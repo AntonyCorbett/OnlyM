@@ -170,6 +170,9 @@
                            Margin="20,20,20,0">
 
                 </TextBlock>
+
+                <materialDesign:Snackbar MessageQueue="{Binding TheSnackbarMessageQueue}"/>
+
                 <Rectangle Height="6" VerticalAlignment="Top">
                     <Rectangle.Fill>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

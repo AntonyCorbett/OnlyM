@@ -1,10 +1,12 @@
-﻿namespace OnlyM.Services.MetaDataQueue
+﻿using System.Collections.Generic;
+using System.Windows.Documents;
+
+namespace OnlyM.Services.MetaDataQueue
 {
     using System;
     using System.Collections.Concurrent;
     using System.Threading;
     using System.Threading.Tasks;
-    using Core.Models;
     using Core.Services.Media;
     using Core.Utils;
     using GalaSoft.MvvmLight.Threading;
@@ -54,7 +56,7 @@
                             Log.Logger.Debug($"Consuming item {nextItem.FilePath}");
                             if (!PopulateThumbnailAndMetaData(nextItem))
                             {
-                                // put it back in the problem queue!
+                                // put it in the problem queue!
                                 Log.Logger.Debug($"Placed in problem queue {nextItem.FilePath}");
                                 _problemFiles.Add(nextItem, _cancellationToken);
                             }

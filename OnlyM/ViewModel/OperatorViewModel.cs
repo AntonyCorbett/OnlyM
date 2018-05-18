@@ -336,7 +336,7 @@
                 item.ThumbnailImageSource = null;
             }
 
-            FillThumbnails();
+            FillThumbnailsAndMetaData();
         }
 
         private void LoadMediaItems()
@@ -348,7 +348,7 @@
 
             var itemsToRemove = new List<MediaItem>();
 
-            IReadOnlyCollection<MediaFile> files = _mediaProviderService.GetMediaFiles();
+            var files = _mediaProviderService.GetMediaFiles();
             var sourceFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var destFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -396,7 +396,7 @@
                     _metaDataProducer.Add(item);
                 }
             }
-
+            
             SortMediaItems();
             
             ChangePlayButtonEnabledStatus();
@@ -414,7 +414,7 @@
             }
         }
 
-        private void FillThumbnails()
+        private void FillThumbnailsAndMetaData()
         {
             foreach (var item in MediaItems)
             {

@@ -10,24 +10,32 @@ namespace OnlyM.ViewModel
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using GalaSoft.MvvmLight.Messaging;
+    using MaterialDesignThemes.Wpf;
     using PubSubMessages;
     using Services.Pages;
+    using Services.Snackbar;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class MainViewModel : ViewModelBase
     {
         private readonly IPageService _pageService;
         private readonly IOptionsService _optionsService;
+        private readonly ISnackbarService _snackbarService;
 
         public MainViewModel(
             IPageService pageService,
-            IOptionsService optionsService)
+            IOptionsService optionsService,
+            ISnackbarService snackbarService)
         {
+            Messenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
+            
             _pageService = pageService;
             _pageService.NavigationEvent += HandlePageNavigationEvent;
             _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
             _pageService.MediaWindowOpenedEvent += HandleMediaWindowOpenedEvent;
             _pageService.MediaWindowClosedEvent += HandleMediaWindowClosedEvent;
+
+            _snackbarService = snackbarService;
 
             _optionsService = optionsService;
             _optionsService.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
@@ -35,8 +43,6 @@ namespace OnlyM.ViewModel
             _pageService.GotoOperatorPage();
             
             InitCommands();
-
-            Messenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
 
             if (!IsInDesignMode && _optionsService.Options.PermanentBackdrop)
             {
@@ -109,12 +115,18 @@ namespace OnlyM.ViewModel
                         // there is a new version....
                         _newVersionAvailable = true;
                         RaisePropertyChanged(nameof(ShowNewVersionButton));
+
+                        _snackbarService.Enqueue(
+                            Properties.Resources.NEW_UPDATE_AVAILABLE, 
+                            Properties.Resources.VIEW, 
+                            LaunchReleasePage);
                     }
                 }
             });
         }
 
-
+        public ISnackbarMessageQueue TheSnackbarMessageQueue => _snackbarService.TheSnackbarMessageQueue;
+    
         private bool _newVersionAvailable;
 
         public bool ShowNewVersionButton => _newVersionAvailable && IsOperatorPageActive;
