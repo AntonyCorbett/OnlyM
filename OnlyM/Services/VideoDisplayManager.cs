@@ -1,11 +1,9 @@
-﻿using System.Windows;
-using Serilog;
-
-namespace OnlyM.Services
+﻿namespace OnlyM.Services
 {
     using System;
     using System.Threading.Tasks;
     using Models;
+    using Serilog;
     using Unosquare.FFME;
 
     internal sealed class VideoDisplayManager
@@ -98,20 +96,20 @@ namespace OnlyM.Services
 
         private void HandleMediaClosed(object sender, System.Windows.RoutedEventArgs e)
         {
-            Log.Logger.Information("Closed");
+            Log.Logger.Debug("Media closed");
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
         }
 
         private async Task HandleMediaEnded(object sender, System.Windows.RoutedEventArgs e)
         {
-            Log.Logger.Information("Ended");
+            Log.Logger.Debug("Media ended");
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
             await _mediaElement.Close();
         }
 
         private void HandleMediaFailed(object sender, System.Windows.ExceptionRoutedEventArgs e)
         {
-            Log.Logger.Information("Failed");
+            Log.Logger.Debug("Media failed");
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
         }
 
