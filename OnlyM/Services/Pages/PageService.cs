@@ -1,6 +1,4 @@
-﻿using OnlyM.Services.Snackbar;
-
-namespace OnlyM.Services.Pages
+﻿namespace OnlyM.Services.Pages
 {
     using System;
     using System.Threading;
@@ -13,6 +11,7 @@ namespace OnlyM.Services.Pages
     using Models;
     using PubSubMessages;
     using Serilog;
+    using Snackbar;
     using Unosquare.FFME.Events;
     using Windows;
     using WindowsPositioning;

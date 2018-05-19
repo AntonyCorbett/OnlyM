@@ -1,12 +1,11 @@
-﻿using OnlyM.AutoUpdates;
-
-namespace OnlyM
+﻿namespace OnlyM
 {
     using System.IO;
     using System.Threading;
     using System.Windows;
     using System.Windows.Interop;
     using System.Windows.Media;
+    using AutoUpdates;
     using Core.Models;
     using Core.Services.Options;
     using Core.Utils;

@@ -1,7 +1,3 @@
-using System;
-using MaterialDesignThemes.Wpf;
-using OnlyM.Services.Snackbar;
-
 namespace OnlyM.ViewModel
 {
     using CommonServiceLocator;
@@ -12,6 +8,7 @@ namespace OnlyM.ViewModel
     using GalaSoft.MvvmLight.Ioc;
     using Services.DragAndDrop;
     using Services.Pages;
+    using Services.Snackbar;
 
     /// <summary>
     /// This class contains static references to all the view models in the

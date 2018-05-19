@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Documents;
-
-namespace OnlyM.Services.MetaDataQueue
+﻿namespace OnlyM.Services.MetaDataQueue
 {
     using System;
     using System.Collections.Concurrent;

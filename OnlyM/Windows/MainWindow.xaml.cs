@@ -1,6 +1,4 @@
-﻿using OnlyM.Services.Snackbar;
-
-namespace OnlyM.Windows
+﻿namespace OnlyM.Windows
 {
     using System.Windows;
     using System.Windows.Input;
@@ -10,6 +8,7 @@ namespace OnlyM.Windows
     using MaterialDesignThemes.Wpf;
     using PubSubMessages;
     using Services.Pages;
+    using Services.Snackbar;
     using WindowsPositioning;
 
     /// <summary>
