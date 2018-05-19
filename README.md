@@ -2,6 +2,8 @@
 
 Windows Meeting Media player using C# and WPF. Currently in the early stages of development. Please report any problems in the Project Issues section.
 
+![Main Window](http://cv8.org.uk/soundbox/OnlyM/Images/MainWindow.png)
+
 ### Download
 
 If you just want to install the application, please download the [OnlyMSetup.exe](https://github.com/AntonyCorbett/OnlyM/releases/latest) file.
