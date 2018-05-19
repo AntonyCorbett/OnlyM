@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace OnlyM.Services
+﻿namespace OnlyM.Services
 {
     using System;
     using System.Windows;
@@ -213,11 +211,11 @@ namespace OnlyM.Services
                 ImageFadeType == ImageFadeType.FadeIn ||
                 ImageFadeType == ImageFadeType.FadeInOut ||
                 ImageFadeType == ImageFadeType.CrossFade;
-            
+
             imageCtrl.Source = _optionsService.Options.CacheImages
                 ? ImageCache.GetImage(imageFile)
                 : new BitmapImage(new Uri(imageFile));
-
+            
             var fadeIn = new DoubleAnimation
             {
                 Duration = TimeSpan.FromSeconds(shouldFadeIn ? FadeTime : 0.001),
