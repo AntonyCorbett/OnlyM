@@ -1,6 +1,4 @@
-﻿using OnlyM.Core.Services.Options;
-
-namespace IntegrationTests
+﻿namespace IntegrationTests
 {
     using System;
     using System.Drawing.Imaging;
@@ -9,6 +7,7 @@ namespace IntegrationTests
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Database;
     using OnlyM.Core.Services.Media;
+    using OnlyM.Core.Services.Options;
     using OnlyM.Core.Utils;
 
     [TestClass]

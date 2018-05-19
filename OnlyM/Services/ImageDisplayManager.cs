@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Services
+﻿using System.Threading;
+
+namespace OnlyM.Services
 {
     using System;
     using System.Windows;
@@ -13,7 +15,7 @@
 
     internal sealed class ImageDisplayManager
     {
-        private readonly ImageCache _imageCache = new ImageCache();
+        private static readonly ImageCache ImageCache = new ImageCache();
         private readonly IOptionsService _optionsService;
 
         private readonly Image _image1;
@@ -128,7 +130,7 @@
         {
             if (_optionsService.Options.CacheImages)
             {
-                _imageCache.GetImage(mediaFilePath);
+                ImageCache.GetImage(mediaFilePath);
             }
         }
 
@@ -213,7 +215,7 @@
                 ImageFadeType == ImageFadeType.CrossFade;
             
             imageCtrl.Source = _optionsService.Options.CacheImages
-                ? _imageCache.GetImage(imageFile)
+                ? ImageCache.GetImage(imageFile)
                 : new BitmapImage(new Uri(imageFile));
 
             var fadeIn = new DoubleAnimation
