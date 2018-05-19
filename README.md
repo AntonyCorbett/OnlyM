@@ -1,6 +1,6 @@
 # OnlyM
 
-A Media player using C# and WPF. Designed for media playback at Kingdom Halls in situations where JW Library - the recommended player - is unable to be used. Currently in the early stages of development. Please report any problems in the Project Issues section.
+A Media player using C# and WPF. Designed for media playback at Kingdom Halls in situations where JW Library - the recommended player - is unable to be used (e.g. 3rd-party images). The emphasis is on ease-of-use above advanced function. Please report any problems in the Project Issues section.
 
 ![Main Window](http://cv8.org.uk/soundbox/OnlyM/Images/MainWindow.png)
 
