@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Windows
+﻿using OnlyM.Services.Snackbar;
+
+namespace OnlyM.Windows
 {
     using System.Windows;
     using System.Windows.Input;
@@ -31,6 +33,8 @@
             if (pageService.IsMediaItemActive)
             {
                 // prevent app closing when media is active.
+                var snackbarService = ServiceLocator.Current.GetInstance<ISnackbarService>();
+                snackbarService.Enqueue(Properties.Resources.MEDIA_ACTIVE);
                 e.Cancel = true;
             }
             else

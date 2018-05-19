@@ -29,7 +29,6 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <converters:BooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" TrueValue="Collapsed" FalseValue="Visible" />
 
             <DataTemplate DataType="{x:Type models:MediaItem}">
                 <materialDesign:Card Height="120" Margin="4" Padding="4"

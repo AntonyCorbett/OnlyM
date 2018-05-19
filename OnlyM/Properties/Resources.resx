@@ -132,6 +132,9 @@
   <data name="FILE_COPIED" xml:space="preserve">
     <value>File copied</value>
   </data>
+  <data name="MEDIA_ACTIVE" xml:space="preserve">
+    <value>Media is active - cannot close!</value>
+  </data>
   <data name="MONITOR_NONE" xml:space="preserve">
     <value>None</value>
   </data>

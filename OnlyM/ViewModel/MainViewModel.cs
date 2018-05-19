@@ -59,6 +59,7 @@ namespace OnlyM.ViewModel
 
         private void HandleMediaWindowOpenedEvent(object sender, EventArgs e)
         {
+            Application.Current.MainWindow?.Activate();
             RaisePropertyChanged(nameof(AlwaysOnTop));
         }
 

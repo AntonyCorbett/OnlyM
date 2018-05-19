@@ -106,6 +106,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Media is active - cannot close!.
+        /// </summary>
+        internal static string MEDIA_ACTIVE {
+            get {
+                return ResourceManager.GetString("MEDIA_ACTIVE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         internal static string MONITOR_NONE {

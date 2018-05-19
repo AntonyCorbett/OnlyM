@@ -144,7 +144,6 @@
 
         public bool ConfirmVideoStop { get; set; }
 
-
         private LogEventLevel _logEventLevel;
 
         public LogEventLevel LogEventLevel

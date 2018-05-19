@@ -61,7 +61,7 @@ namespace OnlyM.Services.Pages
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
 
-        public bool ApplicationIsClosing { get; set; }
+        public bool ApplicationIsClosing { get; private set; }
         
         public string OperatorPageName => "OperatorPage";
 
@@ -108,9 +108,6 @@ namespace OnlyM.Services.Pages
                     _mediaWindow.Topmost = true;
 
                     _mediaWindow.Show();
-                    
-                    // ensure it shows over topmost windows of other applications.
-                    _mediaWindow.Activate();
                     
                     OnMediaWindowOpened();
                 }
