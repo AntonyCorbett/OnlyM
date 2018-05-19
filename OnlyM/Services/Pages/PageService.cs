@@ -1,6 +1,9 @@
-﻿namespace OnlyM.Services.Pages
+﻿using OnlyM.Services.Snackbar;
+
+namespace OnlyM.Services.Pages
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Forms;
@@ -22,6 +25,7 @@
         
         private readonly IMonitorsService _monitorsService;
         private readonly IOptionsService _optionsService;
+        private readonly ISnackbarService _snackbarService;
         private readonly (int dpiX, int dpiY) _systemDpi;
 
         private MediaWindow _mediaWindow;
@@ -40,10 +44,12 @@
 
         public PageService(
             IMonitorsService monitorsService,
-            IOptionsService optionsService)
+            IOptionsService optionsService,
+            ISnackbarService snackbarService)
         {
             _monitorsService = monitorsService;
             _optionsService = optionsService;
+            _snackbarService = snackbarService;
 
             _optionsService.ImageFadeTypeChangedEvent += HandleImageFadeTypeChangedEvent;
             _optionsService.ImageFadeSpeedChangedEvent += HandleImageFadeSpeedChangedEvent;
@@ -98,10 +104,14 @@
                 if (targetMonitor != null)
                 {
                     LocateWindowAtOrigin(_mediaWindow, targetMonitor.Monitor);
-
+                    
                     _mediaWindow.Topmost = true;
-                    _mediaWindow.Show();
 
+                    _mediaWindow.Show();
+                    
+                    // ensure it shows over topmost windows of other applications.
+                    _mediaWindow.Activate();
+                    
                     OnMediaWindowOpened();
                 }
             }
@@ -112,24 +122,6 @@
         }
 
         public bool AllowMediaWindowToClose { get; set; }
-
-        public void CloseMediaWindow()
-        {
-            if (_mediaWindow != null)
-            {
-                AllowMediaWindowToClose = true;
-
-                _mediaWindow.MediaChangeEvent -= HandleMediaChangeEvent;
-                _mediaWindow.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
-                _mediaWindow.FinishedWithWindowEvent -= HandleFinishedWithWindowEvent;
-                _mediaWindow.Loaded -= HandleLoaded;
-
-                _mediaWindow.Close();
-                _mediaWindow = null;
-
-                OnMediaWindowClosed();
-            }
-        }
 
         public void CacheImageItem(MediaItem mediaItem)
         {
@@ -236,7 +228,7 @@
         {
             AllowMediaWindowToClose = false;
 
-            _mediaWindow = new MediaWindow(_optionsService)
+            _mediaWindow = new MediaWindow(_optionsService, _snackbarService)
             {
                 ImageFadeType = _optionsService.Options.ImageFadeType,
                 ImageFadeSpeed = _optionsService.Options.ImageFadeSpeed
@@ -367,6 +359,30 @@
         private void OnMediaWindowClosed()
         {
             MediaWindowClosedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void CloseMediaWindow()
+        {
+            if (_mediaWindow != null)
+            {
+                AllowMediaWindowToClose = true;
+
+                if (_optionsService.Options.JwLibraryCompatibilityMode)
+                {
+                    JwLibHelper.BringToFront();
+                    Thread.Sleep(100);
+                }
+
+                _mediaWindow.MediaChangeEvent -= HandleMediaChangeEvent;
+                _mediaWindow.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
+                _mediaWindow.FinishedWithWindowEvent -= HandleFinishedWithWindowEvent;
+                _mediaWindow.Loaded -= HandleLoaded;
+
+                _mediaWindow.Close();
+                _mediaWindow = null;
+
+                OnMediaWindowClosed();
+            }
         }
     }
 }

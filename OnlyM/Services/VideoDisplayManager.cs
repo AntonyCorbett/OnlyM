@@ -60,6 +60,11 @@
             _mediaElement.PositionChanged += HandlePositionChanged;
         }
 
+        public TimeSpan GetPlaybackPosition()
+        {
+            return _mediaElement.Position;
+        }
+
         public async Task PauseVideoAsync(Guid mediaItemId)
         {
             if (_mediaItemId == mediaItemId)

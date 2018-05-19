@@ -80,10 +80,15 @@
                           SelectedValue="{Binding MonitorId, Mode=TwoWay}"/>
 
                 <CheckBox IsChecked="{Binding PermanentBackdrop, Mode=TwoWay}"
+                          IsEnabled="{Binding JwLibModeNotSet, Mode=OneWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">
                     Permanent backdrop
                 </CheckBox>
 
+                <CheckBox IsChecked="{Binding JwLibraryCompatibilityMode, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    JW Library compatibility mode
+                </CheckBox>
             </StackPanel>
         </GroupBox>
 
@@ -160,6 +165,10 @@
                     Allow pause
                 </CheckBox>
 
+                <CheckBox IsChecked="{Binding ConfirmWhenStoppingVideo, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Confirm when stopping
+                </CheckBox>
             </StackPanel>
         </GroupBox>
 

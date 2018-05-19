@@ -42,6 +42,8 @@
             AllowVideoPause = true;
             AllowVideoPositionSeeking = true;
             PermanentBackdrop = true;
+            JwLibraryCompatibilityMode = true;
+            ConfirmVideoStop = false;
         }
 
         private string _mediaMonitorId;
@@ -138,6 +140,11 @@
         
         public string AppWindowPlacement { get; set; }
 
+        public bool JwLibraryCompatibilityMode { get; set; }
+
+        public bool ConfirmVideoStop { get; set; }
+
+
         private LogEventLevel _logEventLevel;
 
         public LogEventLevel LogEventLevel
@@ -210,6 +217,11 @@
             if (!Directory.Exists(MediaFolder))
             {
                 MediaFolder = FileUtils.GetOnlyMDefaultMediaFolder();
+            }
+
+            if (JwLibraryCompatibilityMode)
+            {
+                PermanentBackdrop = false;
             }
         }
 

@@ -85,6 +85,27 @@
             }
         }
 
+        public bool JwLibModeNotSet => !JwLibraryCompatibilityMode;
+
+        public bool JwLibraryCompatibilityMode
+        {
+            get => _optionsService.Options.JwLibraryCompatibilityMode;
+            set
+            {
+                if (_optionsService.Options.JwLibraryCompatibilityMode != value)
+                {
+                    _optionsService.Options.JwLibraryCompatibilityMode = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(JwLibModeNotSet));
+
+                    if (value)
+                    {
+                        PermanentBackdrop = false;
+                    }
+                }
+            }
+        }
+
         public bool PermanentBackdrop
         {
             get => _optionsService.Options.PermanentBackdrop;
@@ -132,6 +153,19 @@
                 if (_optionsService.Options.AllowVideoPositionSeeking != value)
                 {
                     _optionsService.Options.AllowVideoPositionSeeking = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool ConfirmWhenStoppingVideo
+        {
+            get => _optionsService.Options.ConfirmVideoStop;
+            set
+            {
+                if (_optionsService.Options.ConfirmVideoStop != value)
+                {
+                    _optionsService.Options.ConfirmVideoStop = value;
                     RaisePropertyChanged();
                 }
             }

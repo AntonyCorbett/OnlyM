@@ -135,6 +135,7 @@
     <Compile Include="Services\ImagesCache\ImageAndLastUsed.cs" />
     <Compile Include="Services\ImagesCache\ImageCache.cs" />
     <Compile Include="Services\ImageDisplayManager.cs" />
+    <Compile Include="Services\JwLibHelper.cs" />
     <Compile Include="Services\Pages\IPageService.cs" />
     <Compile Include="Services\Pages\NavigationEventArgs.cs" />
     <Compile Include="Services\Pages\PageService.cs" />

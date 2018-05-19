@@ -120,6 +120,9 @@
   <data name="APP_VER" xml:space="preserve">
     <value>OnlyM software version: {0}</value>
   </data>
+  <data name="CONFIRM_STOP_MEDIA" xml:space="preserve">
+    <value>Do you want to stop playback?</value>
+  </data>
   <data name="COPYING_ERROR" xml:space="preserve">
     <value>There was an error!</value>
   </data>
@@ -143,5 +146,8 @@
   </data>
   <data name="VIEW" xml:space="preserve">
     <value>VIEW</value>
+  </data>
+  <data name="YES" xml:space="preserve">
+    <value>YES</value>
   </data>
 </root>

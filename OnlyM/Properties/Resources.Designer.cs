@@ -70,6 +70,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to stop playback?.
+        /// </summary>
+        internal static string CONFIRM_STOP_MEDIA {
+            get {
+                return ResourceManager.GetString("CONFIRM_STOP_MEDIA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error!.
         /// </summary>
         internal static string COPYING_ERROR {
@@ -138,6 +147,15 @@ namespace OnlyM.Properties {
         internal static string VIEW {
             get {
                 return ResourceManager.GetString("VIEW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to YES.
+        /// </summary>
+        internal static string YES {
+            get {
+                return ResourceManager.GetString("YES", resourceCulture);
             }
         }
     }

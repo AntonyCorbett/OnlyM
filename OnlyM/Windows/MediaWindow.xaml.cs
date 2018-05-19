@@ -12,6 +12,7 @@
     using Serilog;
     using Services;
     using Services.Pages;
+    using Services.Snackbar;
     using Unosquare.FFME.Events;
 
     /// <summary>
@@ -19,9 +20,12 @@
     /// </summary>
     public partial class MediaWindow : Window
     {
+        private const int MediaConfirmStopWindowSeconds = 3;
+
         private readonly ImageDisplayManager _imageDisplayManager;
         private readonly VideoDisplayManager _videoDisplayManager;
         private readonly IOptionsService _optionsService;
+        private readonly ISnackbarService _snackbarService;
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
@@ -31,7 +35,7 @@
 
         private bool _finishingWithImageDisplay;
 
-        public MediaWindow(IOptionsService optionsService)
+        public MediaWindow(IOptionsService optionsService, ISnackbarService snackbarService)
         {
             InitializeComponent();
 
@@ -40,6 +44,8 @@
 
             _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
             _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEventForImages;
+
+            _snackbarService = snackbarService;
 
             _videoDisplayManager = new VideoDisplayManager(VideoElement);
             _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEventForVideoAndAudio;
@@ -82,8 +88,14 @@
             _imageDisplayManager.CacheImageItem(mediaItem.FilePath);
         }
 
-        public async Task StopMediaAsync(MediaItem mediaItem)
+        public async Task StopMediaAsync(MediaItem mediaItem, bool ignoreConfirmation = false)
         {
+            if (!ignoreConfirmation && ShouldConfirmMediaStop(mediaItem))
+            {
+                ConfirmMediaStop(mediaItem);
+                return;
+            }
+
             Log.Logger.Information($"Stopping media {mediaItem.FilePath}");
 
             switch (mediaItem.MediaType.Classification)
@@ -215,6 +227,35 @@
         private void HandleShowSubtitlesChangedEvent(object sender, EventArgs e)
         {
             _videoDisplayManager.ShowSubtitles = _optionsService.Options.ShowVideoSubtitles;
+        }
+
+        private bool IsVideoOrAudio(MediaItem mediaItem)
+        {
+            return
+                mediaItem.MediaType.Classification == MediaClassification.Audio ||
+                mediaItem.MediaType.Classification == MediaClassification.Video;
+        }
+
+        private bool ShouldConfirmMediaStop(MediaItem mediaItem)
+        {
+            return
+                _optionsService.Options.ConfirmVideoStop &&
+                IsVideoOrAudio(mediaItem) &&
+                _videoDisplayManager.GetPlaybackPosition().TotalSeconds > MediaConfirmStopWindowSeconds;
+        }
+
+        private void ConfirmMediaStop(MediaItem mediaItem)
+        {
+            _snackbarService.Enqueue(
+                Properties.Resources.CONFIRM_STOP_MEDIA,
+                Properties.Resources.YES,
+                async (obj) =>
+                {
+                    await StopMediaAsync(mediaItem, ignoreConfirmation: true);
+                },
+                null,
+                promote: true,
+                neverConsiderToBeDuplicate: true);
         }
     }
 }
