@@ -74,7 +74,7 @@
 
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMINIMIZED = 2;
-
+        
         public static void SetPlacement(this Window window, string placementJson)
         {
             var windowHandle = new WindowInteropHelper(window).Handle;

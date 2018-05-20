@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using Models;
     using Newtonsoft.Json;
     using Serilog;
     using Utils;
@@ -24,7 +25,7 @@
 
         public event EventHandler AlwaysOnTopChangedEvent;
 
-        public event EventHandler MediaMonitorChangedEvent;
+        public event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
         public event EventHandler PermanentBackdropChangedEvent;
 
@@ -148,7 +149,7 @@
             PermanentBackdropChangedEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)
+        private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
         {
             MediaMonitorChangedEvent?.Invoke(this, e);
         }

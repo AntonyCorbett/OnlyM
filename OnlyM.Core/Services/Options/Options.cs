@@ -18,7 +18,7 @@
 
         public event EventHandler AlwaysOnTopChangedEvent;
 
-        public event EventHandler MediaMonitorChangedEvent;
+        public event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
         public event EventHandler PermanentBackdropChangedEvent;
 
@@ -55,8 +55,9 @@
             {
                 if (_mediaMonitorId != value)
                 {
+                    var originalMonitorId = _mediaMonitorId;
                     _mediaMonitorId = value;
-                    OnMediaMonitorChangedEvent();
+                    OnMediaMonitorChangedEvent(originalMonitorId, value);
                 }
             }
         }
@@ -249,9 +250,15 @@
             AlwaysOnTopChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
-        private void OnMediaMonitorChangedEvent()
+        private void OnMediaMonitorChangedEvent(string originalMonitorId, string newMonitorId)
         {
-            MediaMonitorChangedEvent?.Invoke(this, EventArgs.Empty);
+            MediaMonitorChangedEvent?.Invoke(
+                this, 
+                new MonitorChangedEventArgs
+                {
+                    OriginalMonitorId = originalMonitorId,
+                    NewMonitorId = newMonitorId
+                });
         }
 
         private void OnPermanentBackdropChangedEvent()

@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Forms;
+    using Core.Models;
     using Core.Services.Monitors;
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Messaging;
@@ -93,15 +94,15 @@
         
         public void OpenMediaWindow()
         {
-            Log.Logger.Information("Opening media window");
-
             try
             {
-                EnsureMediaWindowCreated();
-
                 var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
                 if (targetMonitor != null)
                 {
+                    Log.Logger.Information("Opening media window");
+
+                    EnsureMediaWindowCreated();
+
                     LocateWindowAtOrigin(_mediaWindow, targetMonitor.Monitor);
                     
                     _mediaWindow.Topmost = true;
@@ -192,7 +193,7 @@
             CloseMediaWindow();
         }
         
-        private void RelocateMediaWindow()
+        private void RelocateMediaWindow(string originalMonitorId)
         {
             if (_mediaWindow != null)
             {
@@ -205,6 +206,7 @@
                     LocateWindowAtOrigin(_mediaWindow, targetMonitor.Monitor);
 
                     _mediaWindow.Topmost = true;
+
                     _mediaWindow.WindowState = WindowState.Maximized;
                     _mediaWindow.Show();
                 }
@@ -214,6 +216,7 @@
                 OpenMediaWindow();
             }
         }
+
 
         private void OnMediaMonitorChangedEvent()
         {
@@ -294,9 +297,9 @@
             }
         }
 
-        private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)
+        private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
         {
-            UpdateMediaMonitor();
+            UpdateMediaMonitor(e.OriginalMonitorId);
         }
 
         private void OnMediaChangeEvent(MediaEventArgs e)
@@ -304,13 +307,13 @@
             MediaChangeEvent?.Invoke(this, e);
         }
 
-        private void UpdateMediaMonitor()
+        private void UpdateMediaMonitor(string originalMonitorId)
         {
             try
             {
                 if (_optionsService.IsMediaMonitorSpecified)
                 {
-                    RelocateMediaWindow();
+                    RelocateMediaWindow(originalMonitorId);
                 }
                 else
                 {

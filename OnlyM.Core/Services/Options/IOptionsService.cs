@@ -1,6 +1,7 @@
 ﻿namespace OnlyM.Core.Services.Options
 {
     using System;
+    using Models;
 
     public interface IOptionsService
     {
@@ -18,7 +19,7 @@
 
         event EventHandler AlwaysOnTopChangedEvent;
 
-        event EventHandler MediaMonitorChangedEvent;
+        event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
         event EventHandler PermanentBackdropChangedEvent;
 
