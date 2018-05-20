@@ -115,6 +115,11 @@
             }
         }
 
+        private static string GenerateTimeString(long milliseconds)
+        {
+            return TimeSpan.FromMilliseconds(milliseconds).ToString(@"hh\:mm\:ss");
+        }
+
         private bool _isMediaChanging;
 
         public bool IsMediaChanging
@@ -198,31 +203,31 @@
                 if (_playbackPositionDeciseconds != value)
                 {
                     _playbackPositionDeciseconds = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(PlaybackTimeString));
 
+                    PlaybackTimeString = GenerateTimeString(_playbackPositionDeciseconds * 10);
+
+                    RaisePropertyChanged();
                     OnPlaybackPositionChangedEvent();
                 }
             }
         }
 
+        private string _playbackTimeString = GenerateTimeString(0);
+
         public string PlaybackTimeString
         {
-            get
+            get => _playbackTimeString;
+            set
             {
-                var ts = TimeSpan.FromMilliseconds(PlaybackPositionDeciseconds * 10);
-                return ts.ToString(@"hh\:mm\:ss");
+                if (!_playbackTimeString.Equals(value))
+                {
+                    _playbackTimeString = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
-        public string DurationString
-        {
-            get
-            {
-                var ts = TimeSpan.FromMilliseconds(DurationDeciseconds * 10);
-                return ts.ToString(@"hh\:mm\:ss");
-            }
-        }
+        public string DurationString => GenerateTimeString(DurationDeciseconds * 10);
 
         private int _durationDeciseconds;
 
