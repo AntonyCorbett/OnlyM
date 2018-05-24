@@ -156,9 +156,6 @@
                             Visibility="{Binding Path=IsStopButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
                             CommandParameter="{Binding Id}"
-                            materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsMediaChanging}"
-                            materialDesign:ButtonProgressAssist.Value="-1"
-                            materialDesign:ButtonProgressAssist.IsIndeterminate="True"
                             Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
                             <materialDesign:PackIcon
                                 Kind="Stop"
