@@ -1,4 +1,6 @@
-﻿namespace OnlyM
+﻿using System.Diagnostics;
+
+namespace OnlyM
 {
     using System.IO;
     using System.Threading;
@@ -50,6 +52,8 @@
                 // disable hardware (GPU) rendering so that it's all done by the CPU...
                 RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
             }
+
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
         }
 
         private bool ForceSoftwareRendering()

@@ -3,7 +3,7 @@
 
 #define MyAppName "OnlyM"
 #define MyAppPublisher "Antony Corbett"
-#define MyAppURL "https://github.com/AntonyCorbett/OnlyM"
+#define MyAppURL "https://soundboxsoftware.com"
 #define MyAppExeName "OnlyM.exe"
 
 #define MyAppVersion GetFileVersion('d:\ProjectsPersonal\OnlyM\OnlyM\bin\Release\OnlyM.exe');
