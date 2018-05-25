@@ -14,7 +14,7 @@
         private const int PurgeCount = 6;
         private const int MaxImageWidth = 1920;
         private const int MaxImageHeight = 1080;
-        
+
         private readonly ConcurrentDictionary<string, ImageAndLastUsed> _cache = 
             new ConcurrentDictionary<string, ImageAndLastUsed>(StringComparer.OrdinalIgnoreCase);
 

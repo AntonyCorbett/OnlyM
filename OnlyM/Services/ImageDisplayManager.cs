@@ -1,4 +1,7 @@
-﻿namespace OnlyM.Services
+﻿using System.Threading.Tasks;
+using GalaSoft.MvvmLight.Threading;
+
+namespace OnlyM.Services
 {
     using System;
     using System.Windows;
@@ -212,22 +215,33 @@
                 ImageFadeType == ImageFadeType.FadeInOut ||
                 ImageFadeType == ImageFadeType.CrossFade;
 
+            imageCtrl.Opacity = 0.0;
+
             imageCtrl.Source = _optionsService.Options.CacheImages
                 ? ImageCache.GetImage(imageFile)
                 : new BitmapImage(new Uri(imageFile));
-            
-            var fadeIn = new DoubleAnimation
+
+            // This delay allows us to accommodate large images wihtout the apparent loss of fade-in animation
+            // the first time an image is loaded. There must be a better way!
+            Task.Delay(10).ContinueWith(t =>
             {
-                Duration = TimeSpan.FromSeconds(shouldFadeIn ? FadeTime : 0.001),
-                From = shouldFadeIn ? 0.0 : 1.0,
-                To = 1.0
-            };
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                { 
+                    var fadeIn = new DoubleAnimation
+                    {
+                        // not that the fade in time is longer than fade out - just seems to look better
+                        Duration = TimeSpan.FromSeconds(shouldFadeIn ? FadeTime * 1.5 : 0.001),
+                        From = shouldFadeIn ? 0.0 : 1.0,
+                        To = 1.0
+                    };
 
-            fadeIn.Completed += (sender, args) => { completed(); };
+                    fadeIn.Completed += (sender, args) => { completed(); };
 
-            imageCtrl.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                    imageCtrl.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                });
+            });
         }
-        
+
         private void OnMediaChangeEvent(MediaEventArgs e)
         {
             Log.Logger.Verbose("Media change: {Type}, {Id}", e.Change, e.MediaItemId);
