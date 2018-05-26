@@ -2,31 +2,33 @@
 {
     using System;
     using System.Threading.Tasks;
+    using MediaElementAdaption;
     using Models;
     using Serilog;
-    using Unosquare.FFME;
+    using Serilog.Events;
 
     internal sealed class VideoDisplayManager
     {
-        private readonly MediaElement _mediaElement;
+        private readonly IMediaElement _mediaElement;
         private Guid _mediaItemId;
         private TimeSpan _startPosition;
-        
+        private TimeSpan _lastPosition = TimeSpan.Zero;
+
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
-        public event EventHandler<Unosquare.FFME.Events.PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
+        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
-        public VideoDisplayManager(MediaElement mediaElement)
+        public VideoDisplayManager(IMediaElement mediaElement)
         {
             _mediaElement = mediaElement;
+
             _mediaElement.MediaOpened += HandleMediaOpened;
             _mediaElement.MediaClosed += HandleMediaClosed;
             _mediaElement.MediaEnded += async (s, e) => await HandleMediaEnded(s, e);
             _mediaElement.MediaFailed += HandleMediaFailed;
-            
             _mediaElement.RenderingSubtitles += HandleRenderingSubtitles;
-            
             _mediaElement.PositionChanged += HandlePositionChanged;
+            _mediaElement.MessageLogged += HandleMediaElementMessageLogged;
         }
 
         public bool ShowSubtitles { get; set; }
@@ -39,6 +41,7 @@
         {
             _mediaItemId = mediaItemId;
             _startPosition = startOffset;
+            _lastPosition = TimeSpan.Zero;
 
             if (startFromPaused)
             {
@@ -57,6 +60,7 @@
         {
             _mediaElement.PositionChanged -= HandlePositionChanged;
             _mediaElement.Position = position;
+            _lastPosition = TimeSpan.Zero;
             _mediaElement.PositionChanged += HandlePositionChanged;
         }
 
@@ -64,6 +68,8 @@
         {
             return _mediaElement.Position;
         }
+
+        public bool IsPaused => _mediaElement.IsPaused;
 
         public async Task PauseVideoAsync(Guid mediaItemId)
         {
@@ -118,14 +124,45 @@
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
         }
 
-        private void HandlePositionChanged(object sender, Unosquare.FFME.Events.PositionChangedRoutedEventArgs e)
+        private void HandlePositionChanged(object sender, PositionChangedEventArgs e)
         {
-            MediaPositionChangedEvent?.Invoke(this, e);
+            // only fire every 60ms
+            if ((e.Position - _lastPosition).TotalMilliseconds > 60)
+            {
+                _lastPosition = e.Position;
+                MediaPositionChangedEvent?.Invoke(this, e);
+            }
         }
 
-        private void HandleRenderingSubtitles(object sender, Unosquare.FFME.Events.RenderingSubtitlesEventArgs e)
+        private void HandleRenderingSubtitles(object sender, RenderSubtitlesEventArgs e)
         {
             e.Cancel = !ShowSubtitles;
+        }
+
+        private void HandleMediaElementMessageLogged(object sender, LogMessageEventArgs e)
+        {
+            switch (e.Level)
+            {
+                case LogEventLevel.Debug:
+                    Log.Logger.Debug(e.Message);
+                    break;
+
+                case LogEventLevel.Error:
+                    Log.Logger.Error(e.Message);
+                    break;
+
+                case LogEventLevel.Information:
+                    Log.Logger.Information(e.Message);
+                    break;
+
+                case LogEventLevel.Verbose:
+                    Log.Logger.Verbose(e.Message);
+                    break;
+
+                case LogEventLevel.Warning:
+                    Log.Logger.Warning(e.Message);
+                    break;
+            }
         }
     }
 }

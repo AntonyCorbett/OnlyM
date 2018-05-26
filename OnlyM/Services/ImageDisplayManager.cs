@@ -221,7 +221,7 @@ namespace OnlyM.Services
                 ? ImageCache.GetImage(imageFile)
                 : new BitmapImage(new Uri(imageFile));
 
-            // This delay allows us to accommodate large images wihtout the apparent loss of fade-in animation
+            // This delay allows us to accommodate large images without the apparent loss of fade-in animation
             // the first time an image is loaded. There must be a better way!
             Task.Delay(10).ContinueWith(t =>
             {

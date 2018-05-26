@@ -1,7 +1,6 @@
-﻿using System.Diagnostics;
-
-namespace OnlyM
+﻿namespace OnlyM
 {
+    using System.Diagnostics;
     using System.IO;
     using System.Threading;
     using System.Windows;
@@ -14,7 +13,8 @@ namespace OnlyM
     using GalaSoft.MvvmLight.Threading;
     using Models;
     using Serilog;
-
+    using Unosquare.FFME;
+    
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -26,7 +26,7 @@ namespace OnlyM
         public App()
         {
             DispatcherHelper.Initialize();
-            Unosquare.FFME.MediaElement.FFmpegDirectory = "FFmpeg";
+            MediaElement.FFmpegDirectory = "FFmpeg";
             RegisterMappings();
         }
 

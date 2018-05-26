@@ -8,12 +8,12 @@
     using CommonServiceLocator;
     using Core.Models;
     using Core.Services.Options;
+    using MediaElementAdaption;
     using Models;
     using Serilog;
     using Services;
     using Services.Pages;
     using Services.Snackbar;
-    using Unosquare.FFME.Events;
 
     /// <summary>
     /// Interaction logic for MediaWindow.xaml
@@ -29,7 +29,7 @@
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
-        public event EventHandler<PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
+        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
         public event EventHandler FinishedWithWindowEvent;
 
@@ -46,8 +46,9 @@
             _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEventForImages;
 
             _snackbarService = snackbarService;
-
-            _videoDisplayManager = new VideoDisplayManager(VideoElement);
+            
+            _videoDisplayManager = new VideoDisplayManager(new MediaElementUnoSquare(VideoElement));
+            
             _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEventForVideoAndAudio;
             _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
         }
@@ -214,7 +215,7 @@
             }
         }
 
-        private void HandleMediaPositionChangedEvent(object sender, PositionChangedRoutedEventArgs e)
+        private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
         {
             MediaPositionChangedEvent?.Invoke(this, e);
         }
@@ -241,6 +242,7 @@
             return
                 _optionsService.Options.ConfirmVideoStop &&
                 IsVideoOrAudio(mediaItem) &&
+                !_videoDisplayManager.IsPaused && 
                 _videoDisplayManager.GetPlaybackPosition().TotalSeconds > MediaConfirmStopWindowSeconds;
         }
 
@@ -249,10 +251,7 @@
             _snackbarService.Enqueue(
                 Properties.Resources.CONFIRM_STOP_MEDIA,
                 Properties.Resources.YES,
-                async (obj) =>
-                {
-                    await StopMediaAsync(mediaItem, ignoreConfirmation: true);
-                },
+                async (obj) => { await StopMediaAsync(mediaItem, ignoreConfirmation: true); },
                 null,
                 promote: true,
                 neverConsiderToBeDuplicate: true);

@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
-        xmlns:local="clr-namespace:OnlyM.Windows"
         DataContext="{Binding Media, Mode=OneWay, Source={StaticResource Locator}}"
         WindowStyle="None" 
         Background="Black" 
@@ -15,7 +14,7 @@
     
     <Grid>
         <ffme:MediaElement x:Name="VideoElement" 
-                           Background="Black"
+                          Background="Black"
                            LoadedBehavior="Play" 
                            UnloadedBehavior="Manual" />
 

@@ -3,8 +3,8 @@
     using System;
     using System.Threading.Tasks;
     using System.Windows;
+    using MediaElementAdaption;
     using Models;
-    using Unosquare.FFME.Events;
 
     internal interface IPageService
     {
@@ -14,7 +14,7 @@
 
         event EventHandler<MediaEventArgs> MediaChangeEvent;
 
-        event EventHandler<PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
+        event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
         event EventHandler MediaWindowOpenedEvent;
 

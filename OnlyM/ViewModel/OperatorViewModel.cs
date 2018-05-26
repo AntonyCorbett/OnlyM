@@ -15,6 +15,7 @@
     using GalaSoft.MvvmLight.Messaging;
     using GalaSoft.MvvmLight.Threading;
     using Models;
+    using OnlyM.MediaElementAdaption;
     using PubSubMessages;
     using Serilog;
     using Services.MetaDataQueue;
@@ -34,6 +35,7 @@
         private readonly CancellationTokenSource _thumbnailCancellationTokenSource = new CancellationTokenSource();
 
         private MetaDataQueueConsumer _metaDataConsumer;
+        private MediaItem _currentMediaItem;
 
         public OperatorViewModel(
             IMediaProviderService mediaProviderService,
@@ -86,9 +88,9 @@
             }
         }
 
-        private void HandleMediaPositionChangedEvent(object sender, Unosquare.FFME.Events.PositionChangedRoutedEventArgs e)
+        private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
         {
-            var item = GetCurrentMediaItem();
+            var item = _currentMediaItem;
             if (item != null)
             {
                 item.PlaybackPositionDeciseconds = (int)(e.Position.TotalMilliseconds / 10);
@@ -181,6 +183,7 @@
                     mediaItem.IsMediaChanging = false;
                     mediaItem.IsPaused = false;
                     _changingMediaItems.Remove(mediaItem.Id);
+                    _currentMediaItem = mediaItem;
                     break;
 
                 case MediaChange.Stopped:
@@ -188,6 +191,7 @@
                     mediaItem.IsMediaChanging = false;
                     mediaItem.PlaybackPositionDeciseconds = 0;
                     _changingMediaItems.Remove(mediaItem.Id);
+                    _currentMediaItem = null;
                     break;
 
                 case MediaChange.Paused:

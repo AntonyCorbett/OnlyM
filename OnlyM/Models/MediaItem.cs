@@ -199,7 +199,6 @@
             get => _playbackPositionDeciseconds;
             set
             {
-                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (_playbackPositionDeciseconds != value)
                 {
                     _playbackPositionDeciseconds = value;

@@ -9,11 +9,11 @@
     using Core.Services.Monitors;
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Messaging;
+    using MediaElementAdaption;
     using Models;
     using PubSubMessages;
     using Serilog;
     using Snackbar;
-    using Unosquare.FFME.Events;
     using Windows;
     using WindowsPositioning;
 
@@ -36,7 +36,7 @@
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
-        public event EventHandler<PositionChangedRoutedEventArgs> MediaPositionChangedEvent;
+        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
         public event EventHandler MediaWindowOpenedEvent;
 
@@ -252,7 +252,7 @@
             ((Window)sender).WindowState = WindowState.Maximized;
         }
 
-        private void HandleMediaPositionChangedEvent(object sender, PositionChangedRoutedEventArgs e)
+        private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
         {
             MediaPositionChangedEvent?.Invoke(this, e);
         }
