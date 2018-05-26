@@ -220,17 +220,17 @@ namespace OnlyM.Services
             imageCtrl.Source = _optionsService.Options.CacheImages
                 ? ImageCache.GetImage(imageFile)
                 : new BitmapImage(new Uri(imageFile));
-
+            
             // This delay allows us to accommodate large images without the apparent loss of fade-in animation
             // the first time an image is loaded. There must be a better way!
             Task.Delay(10).ContinueWith(t =>
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                { 
+                {
                     var fadeIn = new DoubleAnimation
                     {
                         // not that the fade in time is longer than fade out - just seems to look better
-                        Duration = TimeSpan.FromSeconds(shouldFadeIn ? FadeTime * 1.5 : 0.001),
+                        Duration = TimeSpan.FromSeconds(shouldFadeIn ? FadeTime * 1.2 : 0.001),
                         From = shouldFadeIn ? 0.0 : 1.0,
                         To = 1.0
                     };
@@ -239,7 +239,7 @@ namespace OnlyM.Services
 
                     imageCtrl.BeginAnimation(UIElement.OpacityProperty, fadeIn);
                 });
-            });
+            }).ConfigureAwait(false);
         }
 
         private void OnMediaChangeEvent(MediaEventArgs e)
