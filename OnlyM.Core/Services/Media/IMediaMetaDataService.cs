@@ -4,6 +4,6 @@
 
     public interface IMediaMetaDataService
     {
-        MediaMetaData GetMetaData(string mediaItemFilePath, MediaClassification mediaType);
+        MediaMetaData GetMetaData(string mediaItemFilePath);
     }
 }

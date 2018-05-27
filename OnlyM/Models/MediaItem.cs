@@ -24,7 +24,20 @@
 
         public Guid Id { get; set; }
 
-        public string Name { get; set; }
+        private string _name;
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (_name == null || !_name.Equals(value))
+                {
+                    _name = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         public string FilePath { get; set; }
 

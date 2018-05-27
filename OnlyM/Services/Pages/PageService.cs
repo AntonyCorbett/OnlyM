@@ -133,10 +133,10 @@
             try
             {
                 OpenMediaWindow();
-                
+
                 await _mediaWindow.StartMedia(
-                    mediaItemToStart, 
-                    currentMediaItem, 
+                    mediaItemToStart,
+                    currentMediaItem,
                     startFromPaused);
             }
             catch (Exception ex)

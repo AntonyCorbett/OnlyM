@@ -13,20 +13,17 @@
     internal class MetaDataQueueConsumer
     {
         private readonly IThumbnailService _thumbnailService;
-        private readonly IMediaMetaDataService _metaDataService;
         private readonly BlockingCollection<MediaItem> _collection;
         private readonly BlockingCollection<MediaItem> _problemFiles;
         private readonly CancellationToken _cancellationToken;
 
         public MetaDataQueueConsumer(
             IThumbnailService thumbnailService,
-            IMediaMetaDataService metaDataService,
             BlockingCollection<MediaItem> metaDataProducerCollection,
             CancellationToken cancellationToken)
         {
             _thumbnailService = thumbnailService;
-            _metaDataService = metaDataService;
-
+            
             _collection = metaDataProducerCollection;
             _cancellationToken = cancellationToken;
 
@@ -63,6 +60,8 @@
                             }
 
                             Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _collection.Count);
+
+                            NotifyIfEmptyMetaDataQueue();
                         }
                     }
                     catch (OperationCanceledException)
@@ -93,6 +92,8 @@
                             {
                                 Log.Logger.Debug($"Done item {nextItem.FilePath}");
                             }
+
+                            NotifyIfEmptyMetaDataQueue();
                         }
                     }
                     catch (OperationCanceledException)
@@ -103,15 +104,17 @@
                 _cancellationToken);
         }
 
+        private void NotifyIfEmptyMetaDataQueue()
+        {
+            if (_collection.Count == 0 && _problemFiles.Count == 0)
+            {
+                // raise event if needed
+            }
+        }
+
         private bool PopulateThumbnailAndMetaData(MediaItem mediaItem)
         {
             byte[] thumb = null;
-
-            var metaData = _metaDataService.GetMetaData(mediaItem.FilePath, mediaItem.MediaType.Classification);
-            if (metaData == null)
-            {
-                return false;
-            }
 
             if (mediaItem.ThumbnailImageSource == null)
             {
@@ -132,7 +135,6 @@
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 mediaItem.ThumbnailImageSource = GraphicsUtils.ByteArrayToImage(thumb);
-                mediaItem.DurationDeciseconds = (int)metaData.Duration.TotalMilliseconds / 10;
             });
 
             return true;

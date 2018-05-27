@@ -85,6 +85,19 @@
             }
         }
 
+        public bool UseInternalMediaTitles
+        {
+            get => _optionsService.Options.UseInternalMediaTitles;
+            set
+            {
+                if (_optionsService.Options.UseInternalMediaTitles != value)
+                {
+                    _optionsService.Options.UseInternalMediaTitles = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public bool JwLibModeNotSet => !JwLibraryCompatibilityMode;
 
         public bool JwLibraryCompatibilityMode

@@ -35,6 +35,8 @@
 
         public event EventHandler ShowSubtitlesChangedEvent;
 
+        public event EventHandler UseInternalMediaTitlesChangedEvent;
+
         public OptionsService(ILogLevelSwitchService logLevelSwitchService)
         {
             _logLevelSwitchService = logLevelSwitchService;
@@ -123,10 +125,16 @@
                     _options.AllowVideoPauseChangedEvent += HandleAllowVideoPauseChangedEvent;
                     _options.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
                     _options.ShowSubtitlesChangedEvent += HandleShowSubtitlesChangedEvent;
+                    _options.UseInternalMediaTitlesChangedEvent += HandleUseInternalMediaTitlesChangedEvent;
 
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void HandleUseInternalMediaTitlesChangedEvent(object sender, EventArgs e)
+        {
+            UseInternalMediaTitlesChangedEvent?.Invoke(this, e);
         }
 
         private void HandleShowSubtitlesChangedEvent(object sender, EventArgs e)

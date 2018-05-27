@@ -28,6 +28,8 @@
 
         public event EventHandler ShowSubtitlesChangedEvent;
 
+        public event EventHandler UseInternalMediaTitlesChangedEvent;
+
         public Options()
         {
             // defaults
@@ -58,6 +60,21 @@
                     var originalMonitorId = _mediaMonitorId;
                     _mediaMonitorId = value;
                     OnMediaMonitorChangedEvent(originalMonitorId, value);
+                }
+            }
+        }
+
+        private bool _useInternalMediaTitles;
+
+        public bool UseInternalMediaTitles
+        {
+            get => _useInternalMediaTitles;
+            set
+            {
+                if (_useInternalMediaTitles != value)
+                {
+                    _useInternalMediaTitles = value;
+                    OnUseInternalMediaTitlesChangedEvent();
                 }
             }
         }
@@ -279,6 +296,11 @@
         private void OnShowSubtitlesChangedEvent()
         {
             ShowSubtitlesChangedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnUseInternalMediaTitlesChangedEvent()
+        {
+            UseInternalMediaTitlesChangedEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

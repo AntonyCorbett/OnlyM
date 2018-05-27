@@ -107,6 +107,11 @@
                     Use embedded thumbnails where available
                 </CheckBox>
 
+                <CheckBox IsChecked="{Binding UseInternalMediaTitles, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Use embedded titles where available
+                </CheckBox>
+
                 <Button 
                     Style="{StaticResource SettingsButtonStyle}" 
                     Command="{Binding PurgeThumbnailCacheCommand}"

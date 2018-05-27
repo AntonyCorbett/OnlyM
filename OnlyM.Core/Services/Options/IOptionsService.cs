@@ -28,5 +28,7 @@
         event EventHandler AllowVideoPositionSeekingChangedEvent;
 
         event EventHandler ShowSubtitlesChangedEvent;
+
+        event EventHandler UseInternalMediaTitlesChangedEvent;
     }
 }

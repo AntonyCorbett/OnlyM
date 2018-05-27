@@ -54,6 +54,7 @@
             _optionsService.MediaFolderChangedEvent += HandleMediaFolderChangedEvent;
             _optionsService.AllowVideoPauseChangedEvent += HandleAllowVideoPauseChangedEvent;
             _optionsService.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
+            _optionsService.UseInternalMediaTitlesChangedEvent += HandleUseInternalMediaTitlesChangedEvent;
 
             folderWatcherService.ChangesFoundEvent += HandleFileChangesFoundEvent;
 
@@ -70,6 +71,17 @@
             LaunchThumbnailQueueConsumer();
 
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+        }
+
+        private void HandleUseInternalMediaTitlesChangedEvent(object sender, EventArgs e)
+        {
+            foreach (var item in MediaItems)
+            {
+                var metaData = _metaDataService.GetMetaData(item.FilePath);
+                item.Name = GetMediaTitle(item.FilePath, metaData);
+            }
+
+            LoadMediaItems();
         }
 
         private void HandleAllowVideoPositionSeekingChangedEvent(object sender, EventArgs e)
@@ -107,7 +119,6 @@
         {
             _metaDataConsumer = new MetaDataQueueConsumer(
                 _thumbnailService,
-                _metaDataService,
                 _metaDataProducer.Queue,
                 _thumbnailCancellationTokenSource.Token);
 
@@ -377,22 +388,25 @@
             {
                 MediaItems.Remove(item);
             }
-
+            
             // add new items.
             foreach (var file in files)
             {
                 if (!destFilePaths.Contains(file.FullPath))
                 {
+                    var metaData = _metaDataService.GetMetaData(file.FullPath);
+
                     var item = new MediaItem
                     {
                         MediaType = file.MediaType,
                         Id = Guid.NewGuid(),
-                        Name = Path.GetFileNameWithoutExtension(file.FullPath),
+                        Name = GetMediaTitle(file.FullPath, metaData),
                         FilePath = file.FullPath,
                         LastChanged = file.LastChanged,
                         AllowPause = _optionsService.Options.AllowVideoPause,
                         AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking,
-                        IsWaitingAnimationVisible = true
+                        IsWaitingAnimationVisible = true,
+                        DurationDeciseconds = GetMediaDuration(metaData)
                     };
 
                     MediaItems.Add(item);
@@ -406,6 +420,24 @@
             ChangePlayButtonEnabledStatus();
 
             Messenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
+        }
+
+        private int GetMediaDuration(MediaMetaData metaData)
+        {
+            return metaData != null ? (int)metaData.Duration.TotalMilliseconds / 10 : 0;
+        }
+        
+        private string GetMediaTitle(string filePath, MediaMetaData metaData)
+        {
+            if (_optionsService.Options.UseInternalMediaTitles && metaData != null)
+            {
+                if (!string.IsNullOrEmpty(metaData.Title))
+                {
+                    return metaData.Title;
+                }
+            }
+
+            return Path.GetFileNameWithoutExtension(filePath);
         }
         
         private void SortMediaItems()

@@ -7,7 +7,7 @@
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MediaMetaDataService : IMediaMetaDataService
     {
-        public MediaMetaData GetMetaData(string mediaItemFilePath, MediaClassification mediaType)
+        public MediaMetaData GetMetaData(string mediaItemFilePath)
         {
             MediaMetaData result = null;
 
