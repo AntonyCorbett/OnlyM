@@ -15,6 +15,7 @@
     using GalaSoft.MvvmLight.Messaging;
     using GalaSoft.MvvmLight.Threading;
     using Models;
+    using OnlyM.Core.Utils;
     using OnlyM.MediaElementAdaption;
     using PubSubMessages;
     using Serilog;
@@ -36,6 +37,7 @@
 
         private MetaDataQueueConsumer _metaDataConsumer;
         private MediaItem _currentMediaItem;
+        private string _blankScreenImagePath;
 
         public OperatorViewModel(
             IMediaProviderService mediaProviderService,
@@ -55,6 +57,10 @@
             _optionsService.AllowVideoPauseChangedEvent += HandleAllowVideoPauseChangedEvent;
             _optionsService.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
             _optionsService.UseInternalMediaTitlesChangedEvent += HandleUseInternalMediaTitlesChangedEvent;
+            _optionsService.PermanentBackdropChangedEvent += async (object sender, EventArgs e) =>
+            {
+                await HandlePermanentBackdropChangedEvent(sender, e);
+            };
 
             folderWatcherService.ChangesFoundEvent += HandleFileChangesFoundEvent;
 
@@ -71,6 +77,21 @@
             LaunchThumbnailQueueConsumer();
 
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+        }
+
+        private async Task HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
+        {
+            if (_optionsService.Options.PermanentBackdrop)
+            {
+                // before removing the blank screen item, hide it if showing.
+                var item = GetCurrentMediaItem();
+                if (item != null && item.IsBlankScreen && item.IsMediaActive)
+                {
+                    await _pageService.StopMediaAsync(item);
+                }
+            }
+
+            LoadMediaItems();
         }
 
         private void HandleUseInternalMediaTitlesChangedEvent(object sender, EventArgs e)
@@ -371,7 +392,7 @@
             {
                 sourceFilePaths.Add(file.FullPath);
             }
-
+            
             foreach (var item in MediaItems)
             {
                 if (!sourceFilePaths.Contains(item.FilePath))
@@ -416,10 +437,64 @@
             }
             
             SortMediaItems();
+
+            InsertBlankMediaItem();
             
             ChangePlayButtonEnabledStatus();
 
             Messenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
+        }
+
+        private void InsertBlankMediaItem()
+        {
+            // only add a "blank screen" item if we don't already display
+            // a permanent black backdrop.
+            if (!_optionsService.Options.PermanentBackdrop)
+            {
+                var blankScreenPath = GetBlankScreenPath();
+
+                var item = new MediaItem
+                {
+                    MediaType = _mediaProviderService.GetSupportedMediaType(blankScreenPath),
+                    Id = Guid.NewGuid(),
+                    IsBlankScreen = true,
+                    Name = Properties.Resources.BLANK_SCREEN,
+                    FilePath = blankScreenPath,
+                    IsWaitingAnimationVisible = true,
+                    LastChanged = DateTime.UtcNow.Ticks
+                };
+
+                MediaItems.Insert(0, item);
+
+                _metaDataProducer.Add(item);
+            }
+        }
+
+        private string GetBlankScreenPath()
+        {
+            if (_blankScreenImagePath == null)
+            {
+                try
+                {
+                    var tempFolder = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyM", "TempImages");
+                    FileUtils.CreateDirectory(tempFolder);
+
+                    var path = Path.Combine(tempFolder, "BlankScreen.png");
+
+                    var image = Properties.Resources.blank;
+
+                    // overwrites it each time OnlyM is launched
+                    image.Save(path);
+
+                    _blankScreenImagePath = path;
+                }
+                catch (Exception ex)
+                {
+                    Log.Logger.Error(ex, "Could not save blank screen image");
+                }
+            }
+
+            return _blankScreenImagePath;
         }
 
         private int GetMediaDuration(MediaMetaData metaData)
@@ -442,7 +517,7 @@
         
         private void SortMediaItems()
         {
-            List<MediaItem> sorted = MediaItems.OrderBy(x => x.Name).ToList();
+            List<MediaItem> sorted = MediaItems.OrderBy(x => x.AlphaNumericName).ToList();
 
             for (int n = 0; n < sorted.Count; ++n)
             {

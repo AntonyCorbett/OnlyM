@@ -259,6 +259,7 @@
       <Link>FFmpeg\ffprobe.exe</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\blank.png" />
     <Resource Include="..\FFmpeg\LICENSE.txt">
       <Link>FFmpeg\LICENSE.txt</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -70,6 +70,25 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap blank {
+            get {
+                object obj = ResourceManager.GetObject("blank", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blank Screen.
+        /// </summary>
+        internal static string BLANK_SCREEN {
+            get {
+                return ResourceManager.GetString("BLANK_SCREEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to stop playback?.
         /// </summary>
         internal static string CONFIRM_STOP_MEDIA {

@@ -83,6 +83,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\DisplayDeviceData.cs" />
     <Compile Include="Models\FadeSpeed.cs" />
     <Compile Include="Models\ImageFadeType.cs" />

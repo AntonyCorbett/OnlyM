@@ -32,7 +32,7 @@
         /// Gets system temp folder
         /// </summary>
         /// <returns>Temp folder</returns>
-        public static string GetSystemTempFolder()
+        public static string GetUsersTempFolder()
         {
             return Path.GetTempPath();
         }

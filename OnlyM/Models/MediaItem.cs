@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Models
+﻿using OnlyM.Core.Extensions;
+
+namespace OnlyM.Models
 {
     using System;
     using System.Windows.Media;
@@ -24,6 +26,8 @@
 
         public Guid Id { get; set; }
 
+        public bool IsBlankScreen { get; set; }
+
         private string _name;
 
         public string Name
@@ -35,7 +39,28 @@
                 {
                     _name = value;
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(AlphaNumericName));
                 }
+            }
+        }
+
+        public string AlphaNumericName
+        {
+            get
+            {
+                var prefix = Name.GetNumericPrefix();
+                if (string.IsNullOrEmpty(prefix))
+                {
+                    return Name;
+                }
+
+                if (!int.TryParse(prefix, out var prefixNum))
+                {
+                    return Name;
+                }
+
+                var remainder = Name.Replace(prefix, string.Empty).Trim();
+                return $"{prefixNum:D6} {remainder}";
             }
         }
 

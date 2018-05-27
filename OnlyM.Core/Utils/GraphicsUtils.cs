@@ -187,7 +187,7 @@
 
         private static string GetTempVideoThumbnailFileName(string originalFilePath)
         {
-            string tempThumbnailFolder = Path.Combine(FileUtils.GetSystemTempFolder(), "OnlyM", "TempThumbs");
+            var tempThumbnailFolder = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyM", "TempThumbs");
             FileUtils.CreateDirectory(tempThumbnailFolder);
 
             var origFileName = Path.GetFileName(originalFilePath);

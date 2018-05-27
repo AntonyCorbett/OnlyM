@@ -22,7 +22,7 @@
             IThumbnailService service = new ThumbnailService(db, optionsService);
             service.ClearThumbCache();
 
-            var folder = Path.Combine(FileUtils.GetSystemTempFolder(), "OnlyMIntegrationTests");
+            var folder = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyMIntegrationTests");
             FileUtils.CreateDirectory(folder);
 
             var filePath = Path.Combine(folder, "TestImage01.jpg");

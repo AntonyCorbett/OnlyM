@@ -161,7 +161,7 @@
 
         private void ShowImage(MediaItem mediaItem)
         {
-            _imageDisplayManager.ShowImage(mediaItem.FilePath, mediaItem.Id);
+            _imageDisplayManager.ShowImage(mediaItem.FilePath, mediaItem.Id, mediaItem.IsBlankScreen);
         }
 
         private async Task ShowVideo(

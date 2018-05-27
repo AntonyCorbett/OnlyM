@@ -1,15 +1,15 @@
-﻿using System.Threading.Tasks;
-using GalaSoft.MvvmLight.Threading;
-
-namespace OnlyM.Services
+﻿namespace OnlyM.Services
 {
     using System;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Media.Imaging;
     using Core.Models;
     using Core.Services.Options;
+    using GalaSoft.MvvmLight.Threading;
     using ImagesCache;
     using Models;
     using Serilog;
@@ -39,7 +39,7 @@ namespace OnlyM.Services
 
         public FadeSpeed ImageFadeSpeed { private get; set; }
 
-        public void ShowImage(string mediaFilePath, Guid mediaItemId)
+        public void ShowImage(string mediaFilePath, Guid mediaItemId, bool isBlankScreenImage)
         {
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = mediaItemId, Change = MediaChange.Starting });
 
@@ -55,6 +55,7 @@ namespace OnlyM.Services
                 }
 
                 ShowImageInternal(
+                    isBlankScreenImage,
                     mediaFilePath, 
                     _image1,
                     _image2, 
@@ -80,6 +81,7 @@ namespace OnlyM.Services
                 }
 
                 ShowImageInternal(
+                    isBlankScreenImage,
                     mediaFilePath,
                     _image2, 
                     _image1, 
@@ -136,6 +138,7 @@ namespace OnlyM.Services
         }
 
         private void ShowImageInternal(
+            bool isBlankScreenImage,
             string imageFile,
             Image controlToUse,
             Image otherControl,
@@ -145,6 +148,10 @@ namespace OnlyM.Services
             controlToUse.SetValue(Panel.ZIndexProperty, 1);
             otherControl.SetValue(Panel.ZIndexProperty, 0);
 
+            controlToUse.Stretch = isBlankScreenImage
+                ? Stretch.Fill
+                : Stretch.Uniform;
+            
             if (ImageFadeType == ImageFadeType.CrossFade)
             {
                 HideImageInControl(otherControl, hideCompleted);
