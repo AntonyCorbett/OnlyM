@@ -30,5 +30,7 @@
         event EventHandler ShowSubtitlesChangedEvent;
 
         event EventHandler UseInternalMediaTitlesChangedEvent;
+
+        event EventHandler IncludeBlankScreenItemChangedEvent;
     }
 }

@@ -85,6 +85,12 @@
                     Permanent backdrop
                 </CheckBox>
 
+                <CheckBox IsChecked="{Binding IncludeBlankScreenItem, Mode=TwoWay}"
+                          IsEnabled="{Binding JwLibraryCompatibilityMode, Mode=OneWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Include "Blank Screen" item
+                </CheckBox>
+
                 <CheckBox IsChecked="{Binding JwLibraryCompatibilityMode, Mode=TwoWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">
                     JW Library compatibility mode

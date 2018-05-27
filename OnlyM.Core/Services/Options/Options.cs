@@ -30,6 +30,8 @@
 
         public event EventHandler UseInternalMediaTitlesChangedEvent;
 
+        public event EventHandler IncludeBlankScreenItemChangedEvent;
+
         public Options()
         {
             // defaults
@@ -64,6 +66,21 @@
             }
         }
 
+        private bool _includeBlankScreenItem;
+
+        public bool IncludeBlanksScreenItem
+        {
+            get => _includeBlankScreenItem;
+            set
+            {
+                if (_includeBlankScreenItem != value)
+                {
+                    _includeBlankScreenItem = value;
+                    IncludeBlankScreenItemChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
         private bool _useInternalMediaTitles;
 
         public bool UseInternalMediaTitles
@@ -74,7 +91,7 @@
                 if (_useInternalMediaTitles != value)
                 {
                     _useInternalMediaTitles = value;
-                    OnUseInternalMediaTitlesChangedEvent();
+                    UseInternalMediaTitlesChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -89,7 +106,7 @@
                 if (_permanentBackdrop != value)
                 {
                     _permanentBackdrop = value;
-                    OnPermanentBackdropChangedEvent();
+                    PermanentBackdropChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -104,7 +121,7 @@
                 if (_allowVideoPause != value)
                 {
                     _allowVideoPause = value;
-                    OnAllowPauseChangedEvent();
+                    AllowVideoPauseChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -119,7 +136,7 @@
                 if (_allowVideoPositionSeeking != value)
                 {
                     _allowVideoPositionSeeking = value;
-                    OnAllowPositionSeekingChangedEvent();
+                    AllowVideoPositionSeekingChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -134,7 +151,7 @@
                 if (_showVideoSubtitles != value)
                 {
                     _showVideoSubtitles = value;
-                    OnShowSubtitlesChangedEvent();
+                    ShowSubtitlesChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -151,7 +168,7 @@
                 if (_alwaysOnTop != value)
                 {
                     _alwaysOnTop = value;
-                    OnAlwaysOnTopChangedEvent();
+                    AlwaysOnTopChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -172,7 +189,7 @@
                 if (_logEventLevel != value)
                 {
                     _logEventLevel = value;
-                    OnLogEventLevelChangedEvent();
+                    LogEventLevelChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -187,7 +204,7 @@
                 if (_mediaFolder != value)
                 {
                     _mediaFolder = value;
-                    OnMediaFolderChangedEvent();
+                    MediaFolderChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -202,7 +219,7 @@
                 if (_imageFadeType != value)
                 {
                     _imageFadeType = value;
-                    OnImageFadeTypeChangedEvent();
+                    ImageFadeTypeChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -217,7 +234,7 @@
                 if (_fadeSpeed != value)
                 {
                     _fadeSpeed = value;
-                    OnImageFadeSpeedChangedEvent();
+                    ImageFadeSpeedChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -242,31 +259,6 @@
             }
         }
 
-        private void OnMediaFolderChangedEvent()
-        {
-            MediaFolderChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnImageFadeTypeChangedEvent()
-        {
-            ImageFadeTypeChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnImageFadeSpeedChangedEvent()
-        {
-            ImageFadeSpeedChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnLogEventLevelChangedEvent()
-        {
-            LogEventLevelChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnAlwaysOnTopChangedEvent()
-        {
-            AlwaysOnTopChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
         private void OnMediaMonitorChangedEvent(string originalMonitorId, string newMonitorId)
         {
             MediaMonitorChangedEvent?.Invoke(
@@ -276,31 +268,6 @@
                     OriginalMonitorId = originalMonitorId,
                     NewMonitorId = newMonitorId
                 });
-        }
-
-        private void OnPermanentBackdropChangedEvent()
-        {
-            PermanentBackdropChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnAllowPauseChangedEvent()
-        {
-            AllowVideoPauseChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnAllowPositionSeekingChangedEvent()
-        {
-            AllowVideoPositionSeekingChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnShowSubtitlesChangedEvent()
-        {
-            ShowSubtitlesChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnUseInternalMediaTitlesChangedEvent()
-        {
-            UseInternalMediaTitlesChangedEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -37,6 +37,8 @@
 
         public event EventHandler UseInternalMediaTitlesChangedEvent;
 
+        public event EventHandler IncludeBlankScreenItemChangedEvent;
+
         public OptionsService(ILogLevelSwitchService logLevelSwitchService)
         {
             _logLevelSwitchService = logLevelSwitchService;
@@ -126,10 +128,16 @@
                     _options.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
                     _options.ShowSubtitlesChangedEvent += HandleShowSubtitlesChangedEvent;
                     _options.UseInternalMediaTitlesChangedEvent += HandleUseInternalMediaTitlesChangedEvent;
+                    _options.IncludeBlankScreenItemChangedEvent += HandleIncludeBlankScreenItemChangedEvent;
 
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void HandleIncludeBlankScreenItemChangedEvent(object sender, EventArgs e)
+        {
+            IncludeBlankScreenItemChangedEvent?.Invoke(this, e);
         }
 
         private void HandleUseInternalMediaTitlesChangedEvent(object sender, EventArgs e)

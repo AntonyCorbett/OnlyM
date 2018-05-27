@@ -98,6 +98,19 @@
             }
         }
 
+        public bool IncludeBlankScreenItem
+        {
+            get => _optionsService.Options.IncludeBlanksScreenItem;
+            set
+            {
+                if (_optionsService.Options.IncludeBlanksScreenItem != value)
+                {
+                    _optionsService.Options.IncludeBlanksScreenItem = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public bool JwLibModeNotSet => !JwLibraryCompatibilityMode;
 
         public bool JwLibraryCompatibilityMode

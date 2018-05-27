@@ -61,6 +61,10 @@
             {
                 await HandlePermanentBackdropChangedEvent(sender, e);
             };
+            _optionsService.IncludeBlankScreenItemChangedEvent += async (object sender, EventArgs e) =>
+            {
+                await HandleIncludeBlankScreenItemChangedEvent(sender, e);
+            };
 
             folderWatcherService.ChangesFoundEvent += HandleFileChangesFoundEvent;
 
@@ -79,19 +83,34 @@
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
 
+        private async Task HandleIncludeBlankScreenItemChangedEvent(object sender, EventArgs e)
+        {
+            if (!_optionsService.Options.IncludeBlanksScreenItem)
+            {
+                await RemoveBlankScreenItem();
+            }
+
+            LoadMediaItems();
+        }
+
         private async Task HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
         {
             if (_optionsService.Options.PermanentBackdrop)
             {
-                // before removing the blank screen item, hide it if showing.
-                var item = GetCurrentMediaItem();
-                if (item != null && item.IsBlankScreen && item.IsMediaActive)
-                {
-                    await _pageService.StopMediaAsync(item);
-                }
+                await RemoveBlankScreenItem();
             }
 
             LoadMediaItems();
+        }
+
+        private async Task RemoveBlankScreenItem()
+        {
+            // before removing the blank screen item, hide it if showing.
+            var item = GetCurrentMediaItem();
+            if (item != null && item.IsBlankScreen && item.IsMediaActive)
+            {
+                await _pageService.StopMediaAsync(item);
+            }
         }
 
         private void HandleUseInternalMediaTitlesChangedEvent(object sender, EventArgs e)
@@ -449,7 +468,7 @@
         {
             // only add a "blank screen" item if we don't already display
             // a permanent black backdrop.
-            if (!_optionsService.Options.PermanentBackdrop)
+            if (!_optionsService.Options.PermanentBackdrop && _optionsService.Options.IncludeBlanksScreenItem)
             {
                 var blankScreenPath = GetBlankScreenPath();
 
