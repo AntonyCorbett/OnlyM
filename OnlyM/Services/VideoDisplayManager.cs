@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using MediaElementAdaption;
     using Models;
+    using OnlyM.Core.Models;
     using Serilog;
     using Serilog.Events;
 
@@ -13,6 +14,7 @@
         private Guid _mediaItemId;
         private TimeSpan _startPosition;
         private TimeSpan _lastPosition = TimeSpan.Zero;
+        private bool _manuallySettingPlaybackPosition;
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
@@ -35,6 +37,7 @@
 
         public async Task ShowVideo(
             string mediaItemFilePath, 
+            ScreenPosition screenPosition,
             Guid mediaItemId, 
             TimeSpan startOffset, 
             bool startFromPaused)
@@ -42,6 +45,8 @@
             _mediaItemId = mediaItemId;
             _startPosition = startOffset;
             _lastPosition = TimeSpan.Zero;
+            
+            ScreenPositionHelper.SetScreenPosition(_mediaElement.FrameworkElement, screenPosition);
 
             if (startFromPaused)
             {
@@ -58,10 +63,10 @@
 
         public void SetPlaybackPosition(TimeSpan position)
         {
-            _mediaElement.PositionChanged -= HandlePositionChanged;
+            _manuallySettingPlaybackPosition = true;
             _mediaElement.Position = position;
             _lastPosition = TimeSpan.Zero;
-            _mediaElement.PositionChanged += HandlePositionChanged;
+            _manuallySettingPlaybackPosition = false;
         }
 
         public TimeSpan GetPlaybackPosition()
@@ -126,11 +131,14 @@
 
         private void HandlePositionChanged(object sender, PositionChangedEventArgs e)
         {
-            // only fire every 60ms
-            if ((e.Position - _lastPosition).TotalMilliseconds > 60)
+            if (!_manuallySettingPlaybackPosition)
             {
-                _lastPosition = e.Position;
-                MediaPositionChangedEvent?.Invoke(this, e);
+                // only fire every 60ms
+                if ((e.Position - _lastPosition).TotalMilliseconds > 60)
+                {
+                    _lastPosition = e.Position;
+                    MediaPositionChangedEvent?.Invoke(this, e);
+                }
             }
         }
 

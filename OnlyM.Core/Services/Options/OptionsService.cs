@@ -39,6 +39,10 @@
 
         public event EventHandler IncludeBlankScreenItemChangedEvent;
 
+        public event EventHandler VideoScreenPositionChangedEvent;
+
+        public event EventHandler ImageScreenPositionChangedEvent;
+
         public OptionsService(ILogLevelSwitchService logLevelSwitchService)
         {
             _logLevelSwitchService = logLevelSwitchService;
@@ -129,10 +133,22 @@
                     _options.ShowSubtitlesChangedEvent += HandleShowSubtitlesChangedEvent;
                     _options.UseInternalMediaTitlesChangedEvent += HandleUseInternalMediaTitlesChangedEvent;
                     _options.IncludeBlankScreenItemChangedEvent += HandleIncludeBlankScreenItemChangedEvent;
+                    _options.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
+                    _options.ImageScreenPositionChangedEvent += HandleImageScreenPositionChangedEvent;
 
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void HandleImageScreenPositionChangedEvent(object sender, EventArgs e)
+        {
+            ImageScreenPositionChangedEvent?.Invoke(this, e);
+        }
+
+        private void HandleVideoScreenPositionChangedEvent(object sender, EventArgs e)
+        {
+            VideoScreenPositionChangedEvent?.Invoke(this, e);
         }
 
         private void HandleIncludeBlankScreenItemChangedEvent(object sender, EventArgs e)

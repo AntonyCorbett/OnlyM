@@ -233,10 +233,23 @@
                 ImageFadeSpeed = _optionsService.Options.ImageFadeSpeed
             };
 
+            SubscribeMediaWindowEvents();
+        }
+
+        private void SubscribeMediaWindowEvents()
+        {
             _mediaWindow.MediaChangeEvent += HandleMediaChangeEvent;
             _mediaWindow.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _mediaWindow.FinishedWithWindowEvent += HandleFinishedWithWindowEvent;
             _mediaWindow.Loaded += HandleLoaded;
+        }
+
+        private void UnsubscribeMediaWindowEvents()
+        {
+            _mediaWindow.MediaChangeEvent -= HandleMediaChangeEvent;
+            _mediaWindow.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
+            _mediaWindow.FinishedWithWindowEvent -= HandleFinishedWithWindowEvent;
+            _mediaWindow.Loaded -= HandleLoaded;
         }
 
         private void HandleFinishedWithWindowEvent(object sender, EventArgs e)
@@ -336,7 +349,7 @@
             {
                 OpenMediaWindow();
             }
-            else
+            else if (!IsMediaItemActive)
             {
                 CloseMediaWindow();
             }
@@ -372,10 +385,7 @@
                     Thread.Sleep(100);
                 }
 
-                _mediaWindow.MediaChangeEvent -= HandleMediaChangeEvent;
-                _mediaWindow.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
-                _mediaWindow.FinishedWithWindowEvent -= HandleFinishedWithWindowEvent;
-                _mediaWindow.Loaded -= HandleLoaded;
+                UnsubscribeMediaWindowEvents();
 
                 _mediaWindow.Close();
                 _mediaWindow = null;

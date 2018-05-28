@@ -32,5 +32,9 @@
         event EventHandler UseInternalMediaTitlesChangedEvent;
 
         event EventHandler IncludeBlankScreenItemChangedEvent;
+
+        event EventHandler VideoScreenPositionChangedEvent;
+
+        event EventHandler ImageScreenPositionChangedEvent;
     }
 }

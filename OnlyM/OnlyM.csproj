@@ -133,6 +133,7 @@
     <Compile Include="Models\MediaItem.cs" />
     <Compile Include="Models\MediaEventArgs.cs" />
     <Compile Include="Models\MonitorItem.cs" />
+    <Compile Include="Models\ScreenMarginSide.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatedMessage.cs" />
     <Compile Include="PubSubMessages\ShutDownMessage.cs" />
     <Compile Include="Services\DragAndDrop\DragAndDropService.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Services\Pages\PageService.cs" />
     <Compile Include="Services\MetaDataQueue\MetaDataQueueConsumer.cs" />
     <Compile Include="Services\MetaDataQueue\MetaDataQueueProducer.cs" />
+    <Compile Include="Services\ScreenPositionHelper.cs" />
     <Compile Include="Services\Snackbar\ISnackbarService.cs" />
     <Compile Include="Services\Snackbar\SnackbarService.cs" />
     <Compile Include="Services\VideoDisplayManager.cs" />

@@ -39,7 +39,11 @@
 
         public FadeSpeed ImageFadeSpeed { private get; set; }
 
-        public void ShowImage(string mediaFilePath, Guid mediaItemId, bool isBlankScreenImage)
+        public void ShowImage(
+            string mediaFilePath, 
+            ScreenPosition screenPosition,
+            Guid mediaItemId, 
+            bool isBlankScreenImage)
         {
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = mediaItemId, Change = MediaChange.Starting });
 
@@ -56,6 +60,7 @@
 
                 ShowImageInternal(
                     isBlankScreenImage,
+                    screenPosition,
                     mediaFilePath, 
                     _image1,
                     _image2, 
@@ -82,6 +87,7 @@
 
                 ShowImageInternal(
                     isBlankScreenImage,
+                    screenPosition,
                     mediaFilePath,
                     _image2, 
                     _image1, 
@@ -139,6 +145,7 @@
 
         private void ShowImageInternal(
             bool isBlankScreenImage,
+            ScreenPosition screenPosition,
             string imageFile,
             Image controlToUse,
             Image otherControl,
@@ -151,7 +158,11 @@
             controlToUse.Stretch = isBlankScreenImage
                 ? Stretch.Fill
                 : Stretch.Uniform;
-            
+
+            ScreenPositionHelper.SetScreenPosition(
+                controlToUse, 
+                isBlankScreenImage ? new ScreenPosition() : screenPosition);
+
             if (ImageFadeType == ImageFadeType.CrossFade)
             {
                 HideImageInControl(otherControl, hideCompleted);

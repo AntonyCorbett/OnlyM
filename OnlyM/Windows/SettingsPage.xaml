@@ -25,6 +25,11 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <Style x:Key="SettingsMarginStackPanelStyle" TargetType="{x:Type StackPanel}">
+                <Setter Property="Margin" Value="10,0,0,0"/>
+                <Setter Property="Orientation" Value="Horizontal"/>
+            </Style>
+
             <Style x:Key="SettingsButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedLightButton}">
                 <Setter Property="Margin" Value="0,5,0,5"/>
                 <Setter Property="Width" Value="200"/>
@@ -33,8 +38,7 @@
 
             <Style x:Key="SettingsComboBoxStyle" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignComboBox}">
                 <Setter Property="Margin" Value="0,5,0,5"/>
-                <Setter Property="MinWidth" Value="420"/>
-                <Setter Property="MaxWidth" Value="600"/>
+                <Setter Property="Width" Value="420"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
@@ -49,8 +53,15 @@
 
             <Style x:Key="SettingsTextBoxStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                 <Setter Property="Margin" Value="0,5,0,5"/>
-                <Setter Property="MinWidth" Value="420"/>
-                <Setter Property="MaxWidth" Value="600"/>
+                <Setter Property="Width" Value="420"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+
+            <Style x:Key="SettingsSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignSlider}">
+                <Setter Property="Margin" Value="0,5,0,5"/>
+                <Setter Property="Width" Value="380"/>
+                <Setter Property="Minimum" Value="0"/>
+                <Setter Property="Maximum" Value="90"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
@@ -86,7 +97,7 @@
                 </CheckBox>
 
                 <CheckBox IsChecked="{Binding IncludeBlankScreenItem, Mode=TwoWay}"
-                          IsEnabled="{Binding JwLibraryCompatibilityMode, Mode=OneWay}"
+                          IsEnabled="{Binding NotPermanentBackdrop, Mode=OneWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">
                     Include "Blank Screen" item
                 </CheckBox>
@@ -180,6 +191,65 @@
                           Style="{StaticResource SettingsCheckBoxStyle}">
                     Confirm when stopping
                 </CheckBox>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="Margins" Style="{StaticResource SettingsGroupBoxStyle}">
+
+            <StackPanel>
+                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}">Video margins</TextBlock>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <Label MinWidth="30">L</Label>
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding VideoScreenLeftMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <Label MinWidth="30">T</Label>
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding VideoScreenTopMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <Label MinWidth="30">R</Label>
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding VideoScreenRightMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <Label MinWidth="30">B</Label>
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding VideoScreenBottomMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
+                           Margin="0,10,0,0">Image margins</TextBlock>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <Label MinWidth="30">L</Label>
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding ImageScreenLeftMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <Label MinWidth="30">T</Label>
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding ImageScreenTopMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <Label MinWidth="30">R</Label>
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding ImageScreenRightMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <Label MinWidth="30">B</Label>
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding ImageScreenBottomMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
             </StackPanel>
         </GroupBox>
 

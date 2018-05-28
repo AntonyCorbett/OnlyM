@@ -1,4 +1,6 @@
-﻿namespace OnlyM.MediaElementAdaption
+﻿using System.Windows;
+
+namespace OnlyM.MediaElementAdaption
 {
     using System;
     using System.Threading.Tasks;
@@ -30,5 +32,7 @@
         Uri Source { get; set; }
 
         bool IsPaused { get; }
+
+        FrameworkElement FrameworkElement { get; }
     }
 }

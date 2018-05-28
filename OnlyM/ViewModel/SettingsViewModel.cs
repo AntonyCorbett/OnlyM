@@ -15,9 +15,10 @@
     using Models;
     using PubSubMessages;
     using Serilog.Events;
+    using Services;
     using Services.Pages;
 
-    // ReSharper disable once ClassNeverInstantiated.Global
+    // ReSharper disable once UnusedMember.Global
     internal class SettingsViewModel : ViewModelBase
     {
         private readonly IPageService _pageService;
@@ -85,6 +86,175 @@
             }
         }
 
+        public int VideoScreenLeftMargin
+        {
+            get => _optionsService.Options.VideoScreenPosition.LeftMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.VideoScreenPosition.LeftMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.VideoScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Left, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.VideoScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(VideoScreenRightMargin));
+                    }
+                }
+            }
+        }
+
+        public int VideoScreenRightMargin
+        {
+            get => _optionsService.Options.VideoScreenPosition.RightMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.VideoScreenPosition.RightMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.VideoScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Right, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.VideoScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(VideoScreenLeftMargin));
+                    }
+                }
+            }
+        }
+
+        public int VideoScreenTopMargin
+        {
+            get => _optionsService.Options.VideoScreenPosition.TopMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.VideoScreenPosition.TopMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.VideoScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Top, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.VideoScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(VideoScreenBottomMargin));
+                    }
+                }
+            }
+        }
+
+        public int VideoScreenBottomMargin
+        {
+            get => _optionsService.Options.VideoScreenPosition.BottomMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.VideoScreenPosition.BottomMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.VideoScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Bottom, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.VideoScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(VideoScreenTopMargin));
+                    }
+                }
+            }
+        }
+        
+        public int ImageScreenLeftMargin
+        {
+            get => _optionsService.Options.ImageScreenPosition.LeftMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.ImageScreenPosition.LeftMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.ImageScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Left, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.ImageScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(ImageScreenRightMargin));
+                    }
+                }
+            }
+        }
+
+        public int ImageScreenRightMargin
+        {
+            get => _optionsService.Options.ImageScreenPosition.RightMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.ImageScreenPosition.RightMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.ImageScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Right, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.ImageScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(ImageScreenLeftMargin));
+                    }
+                }
+            }
+        }
+
+        public int ImageScreenTopMargin
+        {
+            get => _optionsService.Options.ImageScreenPosition.TopMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.ImageScreenPosition.TopMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.ImageScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Top, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.ImageScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(ImageScreenBottomMargin));
+                    }
+                }
+            }
+        }
+
+        public int ImageScreenBottomMargin
+        {
+            get => _optionsService.Options.ImageScreenPosition.BottomMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.ImageScreenPosition.BottomMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.ImageScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Bottom, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.ImageScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(ImageScreenTopMargin));
+                    }
+                }
+            }
+        }
+
+
         public bool UseInternalMediaTitles
         {
             get => _optionsService.Options.UseInternalMediaTitles;
@@ -141,9 +311,12 @@
                 {
                     _optionsService.Options.PermanentBackdrop = value;
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(NotPermanentBackdrop));
                 }
             }
         }
+
+        public bool NotPermanentBackdrop => !PermanentBackdrop;
         
         public bool ShowVideoSubtitles
         {

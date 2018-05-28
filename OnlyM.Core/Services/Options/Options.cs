@@ -32,6 +32,10 @@
 
         public event EventHandler IncludeBlankScreenItemChangedEvent;
 
+        public event EventHandler VideoScreenPositionChangedEvent;
+
+        public event EventHandler ImageScreenPositionChangedEvent;
+
         public Options()
         {
             // defaults
@@ -48,6 +52,9 @@
             PermanentBackdrop = true;
             JwLibraryCompatibilityMode = true;
             ConfirmVideoStop = false;
+
+            _videoScreenPosition = new ScreenPosition();
+            _imageScreenPosition = new ScreenPosition();
         }
 
         private string _mediaMonitorId;
@@ -62,6 +69,36 @@
                     var originalMonitorId = _mediaMonitorId;
                     _mediaMonitorId = value;
                     OnMediaMonitorChangedEvent(originalMonitorId, value);
+                }
+            }
+        }
+
+        private ScreenPosition _videoScreenPosition;
+
+        public ScreenPosition VideoScreenPosition
+        {
+            get => _videoScreenPosition;
+            set
+            {
+                if (!_videoScreenPosition.SamePosition(value))
+                {
+                    _videoScreenPosition = value;
+                    VideoScreenPositionChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        private ScreenPosition _imageScreenPosition;
+
+        public ScreenPosition ImageScreenPosition
+        {
+            get => _imageScreenPosition;
+            set
+            {
+                if (!_imageScreenPosition.SamePosition(value))
+                {
+                    _imageScreenPosition = value;
+                    ImageScreenPositionChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -257,6 +294,9 @@
             {
                 PermanentBackdrop = false;
             }
+
+            VideoScreenPosition.Sanitize();
+            ImageScreenPosition.Sanitize();
         }
 
         private void OnMediaMonitorChangedEvent(string originalMonitorId, string newMonitorId)

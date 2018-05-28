@@ -43,6 +43,8 @@
             set => _mediaElement.Position = value;
         }
 
+        public FrameworkElement FrameworkElement => _mediaElement;
+
         public Task Play()
         {
             return _mediaElement.Play();

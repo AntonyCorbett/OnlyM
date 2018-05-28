@@ -15,8 +15,8 @@
     using GalaSoft.MvvmLight.Messaging;
     using GalaSoft.MvvmLight.Threading;
     using Models;
-    using OnlyM.Core.Utils;
-    using OnlyM.MediaElementAdaption;
+    using Core.Utils;
+    using MediaElementAdaption;
     using PubSubMessages;
     using Serilog;
     using Services.MetaDataQueue;

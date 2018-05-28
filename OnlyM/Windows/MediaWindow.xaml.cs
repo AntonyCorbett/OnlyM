@@ -40,17 +40,14 @@
             InitializeComponent();
 
             _optionsService = optionsService;
-            _optionsService.ShowSubtitlesChangedEvent += HandleShowSubtitlesChangedEvent;
-
+            
             _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
-            _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEventForImages;
-
+            
             _snackbarService = snackbarService;
             
             _videoDisplayManager = new VideoDisplayManager(new MediaElementUnoSquare(VideoElement));
             
-            _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEventForVideoAndAudio;
-            _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
+            SubscribeEvents();
         }
 
         public ImageFadeType ImageFadeType
@@ -161,7 +158,11 @@
 
         private void ShowImage(MediaItem mediaItem)
         {
-            _imageDisplayManager.ShowImage(mediaItem.FilePath, mediaItem.Id, mediaItem.IsBlankScreen);
+            _imageDisplayManager.ShowImage(
+                mediaItem.FilePath, 
+                _optionsService.Options.ImageScreenPosition,
+                mediaItem.Id, 
+                mediaItem.IsBlankScreen);
         }
 
         private async Task ShowVideo(
@@ -177,6 +178,7 @@
 
             await _videoDisplayManager.ShowVideo(
                 mediaItemToStart.FilePath, 
+                _optionsService.Options.VideoScreenPosition,
                 mediaItemToStart.Id, 
                 startPosition, 
                 startFromPaused);
@@ -192,6 +194,35 @@
             // prevent window from being closed independently of application.
             var pageService = ServiceLocator.Current.GetInstance<IPageService>();
             e.Cancel = !pageService.ApplicationIsClosing && !pageService.AllowMediaWindowToClose;
+
+            if (!e.Cancel)
+            {
+                UnsubscribeEvents();
+            }
+        }
+
+        private void SubscribeEvents()
+        {
+            _optionsService.ShowSubtitlesChangedEvent += HandleShowSubtitlesChangedEvent;
+            _optionsService.ImageScreenPositionChangedEvent += HandleImageScreenPositionChangedEvent;
+            _optionsService.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
+
+            _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEventForImages;
+
+            _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEventForVideoAndAudio;
+            _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
+        }
+
+        private void UnsubscribeEvents()
+        {
+            _optionsService.ShowSubtitlesChangedEvent -= HandleShowSubtitlesChangedEvent;
+            _optionsService.ImageScreenPositionChangedEvent -= HandleImageScreenPositionChangedEvent;
+            _optionsService.VideoScreenPositionChangedEvent -= HandleVideoScreenPositionChangedEvent;
+
+            _imageDisplayManager.MediaChangeEvent -= HandleMediaChangeEventForImages;
+
+            _videoDisplayManager.MediaChangeEvent -= HandleMediaChangeEventForVideoAndAudio;
+            _videoDisplayManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
         }
 
         private void HandleMediaChangeEventForImages(object sender, MediaEventArgs e)
@@ -255,6 +286,17 @@
                 null,
                 promote: true,
                 neverConsiderToBeDuplicate: true);
+        }
+
+        private void HandleVideoScreenPositionChangedEvent(object sender, EventArgs e)
+        {
+            ScreenPositionHelper.SetScreenPosition(VideoElement, _optionsService.Options.VideoScreenPosition);
+        }
+
+        private void HandleImageScreenPositionChangedEvent(object sender, EventArgs e)
+        {
+            ScreenPositionHelper.SetScreenPosition(Image1Element, _optionsService.Options.ImageScreenPosition);
+            ScreenPositionHelper.SetScreenPosition(Image2Element, _optionsService.Options.ImageScreenPosition);
         }
     }
 }
