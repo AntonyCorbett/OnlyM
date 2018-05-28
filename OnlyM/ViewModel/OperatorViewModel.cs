@@ -10,13 +10,13 @@
     using Core.Models;
     using Core.Services.Media;
     using Core.Services.Options;
+    using Core.Utils;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using GalaSoft.MvvmLight.Messaging;
     using GalaSoft.MvvmLight.Threading;
-    using Models;
-    using Core.Utils;
     using MediaElementAdaption;
+    using Models;
     using PubSubMessages;
     using Serilog;
     using Services.MetaDataQueue;
@@ -57,11 +57,11 @@
             _optionsService.AllowVideoPauseChangedEvent += HandleAllowVideoPauseChangedEvent;
             _optionsService.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
             _optionsService.UseInternalMediaTitlesChangedEvent += HandleUseInternalMediaTitlesChangedEvent;
-            _optionsService.PermanentBackdropChangedEvent += async (object sender, EventArgs e) =>
+            _optionsService.PermanentBackdropChangedEvent += async (sender, e) =>
             {
                 await HandlePermanentBackdropChangedEvent(sender, e);
             };
-            _optionsService.IncludeBlankScreenItemChangedEvent += async (object sender, EventArgs e) =>
+            _optionsService.IncludeBlankScreenItemChangedEvent += async (sender, e) =>
             {
                 await HandleIncludeBlankScreenItemChangedEvent(sender, e);
             };
