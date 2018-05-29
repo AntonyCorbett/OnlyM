@@ -160,7 +160,7 @@
             </Border>
 
             <Grid Grid.Row="1">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
+                <ScrollViewer x:Name="MainScrollViewer" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
                     <ContentControl Content="{Binding CurrentPage}" />
                 </ScrollViewer>
                 <TextBlock Visibility="{Binding Path=ShowDragAndDropHint, Converter={StaticResource BooleanToVisibilityConverter}}" 

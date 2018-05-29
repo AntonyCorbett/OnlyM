@@ -20,6 +20,9 @@
         public MainWindow()
         {
             InitializeComponent();
+
+            var pageService = ServiceLocator.Current.GetInstance<IPageService>();
+            pageService.ScrollViewer = MainScrollViewer;
         }
 
         protected override void OnSourceInitialized(System.EventArgs e)

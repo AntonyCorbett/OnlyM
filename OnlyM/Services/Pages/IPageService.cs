@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Services.Pages
+﻿using System.Windows.Controls;
+
+namespace OnlyM.Services.Pages
 {
     using System;
     using System.Threading.Tasks;
@@ -49,5 +51,7 @@
         Guid CurrentMediaId { get; }
 
         bool IsMediaItemActive { get; }
+
+        ScrollViewer ScrollViewer { get; set; }
     }
 }

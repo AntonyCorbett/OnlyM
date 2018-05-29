@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Forms;
     using Core.Models;
     using Core.Services.Monitors;
@@ -29,6 +30,8 @@
         private readonly (int dpiX, int dpiY) _systemDpi;
 
         private MediaWindow _mediaWindow;
+        private double _operatorPageScrollerPosition;
+        private double _settingsPageScrollerPosition;
 
         public event EventHandler MediaMonitorChangedEvent;
 
@@ -62,18 +65,22 @@
         }
 
         public bool ApplicationIsClosing { get; private set; }
-        
+
+        public ScrollViewer ScrollViewer { get; set; }
+
         public string OperatorPageName => "OperatorPage";
 
         public string SettingsPageName => "SettingsPage";
 
         public void GotoOperatorPage()
         {
+            _settingsPageScrollerPosition = ScrollViewer?.VerticalOffset ?? 0.0;
             OnNavigationEvent(new NavigationEventArgs { PageName = OperatorPageName });
         }
 
         public void GotoSettingsPage()
         {
+            _operatorPageScrollerPosition = ScrollViewer.VerticalOffset;
             OnNavigationEvent(new NavigationEventArgs { PageName = SettingsPageName });
         }
 
@@ -185,6 +192,19 @@
         private void OnNavigationEvent(NavigationEventArgs e)
         {
             NavigationEvent?.Invoke(this, e);
+            SetScrollerPosition(e.PageName);
+        }
+
+        private void SetScrollerPosition(string pageName)
+        {
+            if (pageName.Equals(OperatorPageName))
+            {
+                ScrollViewer?.ScrollToVerticalOffset(_operatorPageScrollerPosition);
+            }
+            else if (pageName.Equals(SettingsPageName))
+            {
+                ScrollViewer?.ScrollToVerticalOffset(_settingsPageScrollerPosition);
+            }
         }
 
         private void OnShutDown(ShutDownMessage message)
