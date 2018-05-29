@@ -140,7 +140,9 @@
             arguments.Append(tempThumbnailPath);
             arguments.Append("\" ");
 
-            return ExecuteFFMpeg(ffmpegFolder, arguments.ToString())
+            ExecuteFFMpeg(ffmpegFolder, arguments.ToString());
+
+            return File.Exists(tempThumbnailPath)
                 ? tempThumbnailPath
                 : null;
         }
