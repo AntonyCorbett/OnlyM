@@ -25,22 +25,19 @@
 
             var devices = DisplayDevices.ReadDisplayDevices().ToArray();
 
+            var displayScreens = GetDisplayScreens(devices);
+            
             foreach (var screen in Screen.AllScreens)
             {
-                Log.Logger.Verbose($"Screen: {screen.DeviceName}");
-                
-                DisplayDeviceData deviceData = GetDeviceMatchingScreen(devices, screen);
-                if (deviceData != null)
+                var displayScreen = displayScreens?.SingleOrDefault(x => x.Item1.Equals(screen));
+                var deviceData = displayScreen?.Item2;
+
+                result.Add(new SystemMonitor
                 {
-                    Log.Logger.Verbose($"Matching device: {deviceData.DeviceString}, {deviceData.DeviceId}");
-                    
-                    result.Add(new SystemMonitor
-                    {
-                        Monitor = screen,
-                        MonitorName = deviceData.DeviceString,
-                        MonitorId = deviceData.DeviceId
-                    });
-                }
+                    Monitor = screen,
+                    MonitorName = deviceData?.DeviceString ?? SanitizeScreenDeviceName(screen.DeviceName),
+                    MonitorId = deviceData?.DeviceId ?? screen.DeviceName
+                });
             }
 
             return result;
@@ -61,6 +58,32 @@
         {
             var deviceName = screen.DeviceName + "\\";
             return devices.SingleOrDefault(x => x.Name.StartsWith(deviceName));
+        }
+
+        private string SanitizeScreenDeviceName(string name)
+        {
+            return name.Replace(@"\\.\", string.Empty);
+        }
+
+        private List<(Screen, DisplayDeviceData)> GetDisplayScreens(DisplayDeviceData[] devices)
+        {
+            var result = new List<(Screen, DisplayDeviceData)>();
+
+            foreach (var screen in Screen.AllScreens)
+            {
+                Log.Logger.Verbose($"Screen: {screen.DeviceName}");
+
+                var deviceData = GetDeviceMatchingScreen(devices, screen);
+                if (deviceData == null)
+                {
+                    return null;
+                }
+
+                Log.Logger.Verbose($"Matching device: {deviceData.DeviceString}, {deviceData.DeviceId}");
+                result.Add((screen, deviceData));
+            }
+
+            return result;
         }
     }
 }

@@ -236,8 +236,7 @@
                 OpenMediaWindow();
             }
         }
-
-
+        
         private void OnMediaMonitorChangedEvent()
         {
             MediaMonitorChangedEvent?.Invoke(this, EventArgs.Empty);
