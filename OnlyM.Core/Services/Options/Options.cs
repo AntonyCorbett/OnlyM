@@ -1,6 +1,9 @@
-﻿namespace OnlyM.Core.Services.Options
+﻿using System.Linq;
+
+namespace OnlyM.Core.Services.Options
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using Models;
     using Serilog.Events;
@@ -280,6 +283,8 @@
 
         public bool CacheImages { get; set; }
 
+        public List<string> RecentlyUsedMediaFolders { get; } = new List<string>();
+
         /// <summary>
         /// Validates the data, correcting automatically as required
         /// </summary>
@@ -297,6 +302,22 @@
 
             VideoScreenPosition.Sanitize();
             ImageScreenPosition.Sanitize();
+
+            if (!RecentlyUsedMediaFolders.Any())
+            {
+                RecentlyUsedMediaFolders.Add(!string.IsNullOrEmpty(MediaFolder)
+                    ? MediaFolder
+                    : FileUtils.GetOnlyMDefaultMediaFolder());
+            }
+
+            for (int n = RecentlyUsedMediaFolders.Count - 1; n >= 0; --n)
+            {
+                var folder = RecentlyUsedMediaFolders[n];
+                if (!Directory.Exists(folder))
+                {
+                    RecentlyUsedMediaFolders.RemoveAt(n);
+                }
+            }
         }
 
         private void OnMediaMonitorChangedEvent(string originalMonitorId, string newMonitorId)

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using AutoUpdates;
     using Core.Extensions;
@@ -12,11 +13,13 @@
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using GalaSoft.MvvmLight.Messaging;
+    using Microsoft.WindowsAPICodePack.Dialogs;
     using Models;
     using PubSubMessages;
     using Serilog.Events;
     using Services;
     using Services.Pages;
+    using Services.RecentMediaFolders;
 
     // ReSharper disable once UnusedMember.Global
     internal class SettingsViewModel : ViewModelBase
@@ -29,25 +32,30 @@
         private readonly LoggingLevel[] _loggingLevels;
         private readonly ImageFade[] _fadingTypes;
         private readonly ImageFadeSpeed[] _fadingSpeeds;
-
+        private readonly IRecentlyUsedMediaFolderService _recentlyUsedMediaFolderService;
+        
         public SettingsViewModel(
             IPageService pageService, 
             IMonitorsService monitorsService,
             IOptionsService optionsService,
-            IThumbnailService thumbnailService)
+            IThumbnailService thumbnailService,
+            IRecentlyUsedMediaFolderService recentlyUsedMediaFolderService)
         {
             _pageService = pageService;
             _monitorsService = monitorsService;
             _optionsService = optionsService;
             _thumbnailService = thumbnailService;
+            _recentlyUsedMediaFolderService = recentlyUsedMediaFolderService;
+            
+            _recentlyUsedMediaFolderService.Init(optionsService.Options.RecentlyUsedMediaFolders);
 
             _monitors = GetSystemMonitors().ToArray();
             _loggingLevels = GetLoggingLevels().ToArray();
             _fadingTypes = GetImageFadingTypes().ToArray();
             _fadingSpeeds = GetFadingSpeedTypes().ToArray();
-
+            
             _pageService.NavigationEvent += HandleNavigationEvent;
-
+            
             InitCommands();
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
@@ -64,8 +72,47 @@
         private void InitCommands()
         {
             PurgeThumbnailCacheCommand = new RelayCommand(PurgeThumbnailCache);
+            OpenMediaFolderCommand = new RelayCommand(OpenMediaFolder);
         }
 
+        private void OpenMediaFolder()
+        {
+            var dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                Title = Properties.Resources.MEDIA_FOLDER_BROWSE,
+                InitialDirectory = GetMediaFolderBrowsingStart(),
+                AddToMostRecentlyUsedList = false,
+                DefaultDirectory = GetMediaFolderBrowsingStart(),
+                EnsureFileExists = true,
+                EnsurePathExists = true,
+                EnsureReadOnly = false,
+                EnsureValidNames = true,
+                Multiselect = false,
+                ShowPlacesList = true
+            };
+
+            var result = dialog.ShowDialog();
+            if (result == CommonFileDialogResult.Ok)
+            {
+                _recentlyUsedMediaFolderService.Add(dialog.FileName);
+                MediaFolder = dialog.FileName;
+                RaisePropertyChanged(nameof(RecentMediaFolders));
+            }
+        }
+
+        private string GetMediaFolderBrowsingStart()
+        {
+            if (!string.IsNullOrEmpty(MediaFolder) && Directory.Exists(MediaFolder))
+            {
+                return MediaFolder;
+            }
+
+            return null;
+        }
+
+        public List<string> RecentMediaFolders => _optionsService.Options.RecentlyUsedMediaFolders;
+        
         private void PurgeThumbnailCache()
         {
             _thumbnailService.ClearThumbCache();
@@ -394,9 +441,12 @@
                 {
                     _isMediaActive = value;
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsMediaInactive));
                 }
             }
         }
+
+        public bool IsMediaInactive => !IsMediaActive;
 
         public bool EmbeddedThumbnails
         {
@@ -566,5 +616,7 @@
         }
 
         public RelayCommand PurgeThumbnailCacheCommand { get; set; }
+
+        public RelayCommand OpenMediaFolderCommand { get; set; }
     }
 }

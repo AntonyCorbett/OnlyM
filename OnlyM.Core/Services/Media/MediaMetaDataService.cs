@@ -20,7 +20,7 @@
                     result = new MediaMetaData
                     {
                         Title = StripNewLines(tf.Tag?.Title),
-                        Duration = tf.Properties.Duration
+                        Duration = tf.Properties?.Duration ?? TimeSpan.Zero
                     };
                 }
             }

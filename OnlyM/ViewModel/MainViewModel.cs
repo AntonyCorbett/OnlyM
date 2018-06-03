@@ -1,3 +1,5 @@
+using OnlyM.Services.MediaChanging;
+
 namespace OnlyM.ViewModel
 {
     using System;
@@ -21,14 +23,18 @@ namespace OnlyM.ViewModel
         private readonly IPageService _pageService;
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
+        private readonly IMediaStatusChangingService _mediaStatusChangingService;
 
         public MainViewModel(
             IPageService pageService,
             IOptionsService optionsService,
-            ISnackbarService snackbarService)
+            ISnackbarService snackbarService,
+            IMediaStatusChangingService mediaStatusChangingService)
         {
             Messenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
-            
+
+            _mediaStatusChangingService = mediaStatusChangingService;
+
             _pageService = pageService;
             _pageService.NavigationEvent += HandlePageNavigationEvent;
             _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
@@ -202,7 +208,11 @@ namespace OnlyM.ViewModel
 
         private void NavigateSettings()
         {
-            _pageService.GotoSettingsPage();
+            // prevent navigation to the settings page when media is in flux...
+            if (!_mediaStatusChangingService.IsMediaStatusChanging())
+            {
+                _pageService.GotoSettingsPage();
+            }
         }
     }
 }

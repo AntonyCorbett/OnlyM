@@ -134,6 +134,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select Media Folder.
+        /// </summary>
+        internal static string MEDIA_FOLDER_BROWSE {
+            get {
+                return ResourceManager.GetString("MEDIA_FOLDER_BROWSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         internal static string MONITOR_NONE {

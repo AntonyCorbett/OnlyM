@@ -69,6 +69,15 @@
     <Reference Include="MaterialDesignThemes.Wpf, Version=2.4.0.1044, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.2.4.0.1044\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAPICodePack-Core.1.1.0.0\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAPICodePack-Shell.1.1.0.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.ShellExtensions, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAPICodePack-Shell.1.1.0.0\lib\Microsoft.WindowsAPICodePack.ShellExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="policy.2.0.taglib-sharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
@@ -142,11 +151,15 @@
     <Compile Include="Services\ImagesCache\ImageCache.cs" />
     <Compile Include="Services\ImageDisplayManager.cs" />
     <Compile Include="Services\JwLibHelper.cs" />
+    <Compile Include="Services\MediaChanging\IMediaStatusChangingService.cs" />
+    <Compile Include="Services\MediaChanging\MediaStatusChangingService.cs" />
     <Compile Include="Services\Pages\IPageService.cs" />
     <Compile Include="Services\Pages\NavigationEventArgs.cs" />
     <Compile Include="Services\Pages\PageService.cs" />
     <Compile Include="Services\MetaDataQueue\MetaDataQueueConsumer.cs" />
     <Compile Include="Services\MetaDataQueue\MetaDataQueueProducer.cs" />
+    <Compile Include="Services\RecentMediaFolders\IRecentlyUsedMediaFolderService.cs" />
+    <Compile Include="Services\RecentMediaFolders\RecentlyUsedMediaFolderService.cs" />
     <Compile Include="Services\ScreenPositionHelper.cs" />
     <Compile Include="Services\Snackbar\ISnackbarService.cs" />
     <Compile Include="Services\Snackbar\SnackbarService.cs" />

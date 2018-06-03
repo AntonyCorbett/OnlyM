@@ -118,12 +118,22 @@
         <GroupBox Header="Media Files" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
-                <TextBox
-                    Style="{StaticResource SettingsTextBoxStyle}" Text="{Binding MediaFolder}"
-                    IsReadOnly="{Binding IsMediaActive}"
-                    materialDesign:HintAssist.IsFloating="True"
-                    materialDesign:HintAssist.Hint="Media Folder">
-                </TextBox>
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox ItemsSource="{Binding RecentMediaFolders}"
+                              Style="{StaticResource SettingsComboBoxStyle}" 
+                              Width="376"
+                              IsEnabled="{Binding IsMediaInactive}"
+                              materialDesign:HintAssist.IsFloating="True"
+                              materialDesign:HintAssist.Hint="Media Folder"
+                              SelectedValue="{Binding MediaFolder, Mode=TwoWay}"/>
+
+                    <Button Style="{StaticResource MaterialDesignRaisedLightButton}" 
+                            Command="{Binding OpenMediaFolderCommand}"
+                            IsEnabled="{Binding IsMediaInactive}"
+                            Margin="5,0,0,0"
+                            Content="{materialDesign:PackIcon FolderOpen}"/>
+
+                </StackPanel>
 
                 <CheckBox IsChecked="{Binding EmbeddedThumbnails, Mode=TwoWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">

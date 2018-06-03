@@ -6,6 +6,8 @@ namespace OnlyM.ViewModel
     using Core.Services.Monitors;
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Ioc;
+    using OnlyM.Services.MediaChanging;
+    using OnlyM.Services.RecentMediaFolders;
     using Services.DragAndDrop;
     using Services.Pages;
     using Services.Snackbar;
@@ -35,6 +37,8 @@ namespace OnlyM.ViewModel
             SimpleIoc.Default.Register<IMediaMetaDataService, MediaMetaDataService>();
             SimpleIoc.Default.Register<IDragAndDropService, DragAndDropService>();
             SimpleIoc.Default.Register<ISnackbarService, SnackbarService>();
+            SimpleIoc.Default.Register<IRecentlyUsedMediaFolderService, RecentlyUsedMediaFolderService>();
+            SimpleIoc.Default.Register<IMediaStatusChangingService, MediaStatusChangingService>();
 
             // view models.
             SimpleIoc.Default.Register<MainViewModel>();

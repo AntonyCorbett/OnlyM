@@ -19,6 +19,7 @@
     using Models;
     using PubSubMessages;
     using Serilog;
+    using Services.MediaChanging;
     using Services.MetaDataQueue;
     using Services.Pages;
 
@@ -30,8 +31,8 @@
         private readonly IMediaMetaDataService _metaDataService;
         private readonly IOptionsService _optionsService;
         private readonly IPageService _pageService;
-
-        private readonly HashSet<Guid> _changingMediaItems = new HashSet<Guid>();
+        private readonly IMediaStatusChangingService _mediaStatusChangingService;
+        
         private readonly MetaDataQueueProducer _metaDataProducer = new MetaDataQueueProducer();
         private readonly CancellationTokenSource _thumbnailCancellationTokenSource = new CancellationTokenSource();
 
@@ -45,9 +46,11 @@
             IOptionsService optionsService,
             IPageService pageService,
             IFolderWatcherService folderWatcherService,
-            IMediaMetaDataService metaDataService)
+            IMediaMetaDataService metaDataService,
+            IMediaStatusChangingService mediaStatusChangingService)
         {
             _mediaProviderService = mediaProviderService;
+            _mediaStatusChangingService = mediaStatusChangingService;
 
             _thumbnailService = thumbnailService;
             _thumbnailService.ThumbnailsPurgedEvent += HandleThumbnailsPurgedEvent;
@@ -219,21 +222,21 @@
                 case MediaChange.Starting:
                     mediaItem.IsMediaActive = true;
                     mediaItem.IsMediaChanging = true;
-                    _changingMediaItems.Add(mediaItem.Id);
+                    _mediaStatusChangingService.AddChangingItem(mediaItem.Id);
                     break;
 
                 case MediaChange.Stopping:
                     mediaItem.IsMediaActive = false;
                     mediaItem.IsPaused = false;
                     mediaItem.IsMediaChanging = true;
-                    _changingMediaItems.Add(mediaItem.Id);
+                    _mediaStatusChangingService.AddChangingItem(mediaItem.Id);
                     break;
 
                 case MediaChange.Started:
                     mediaItem.IsMediaActive = true;
                     mediaItem.IsMediaChanging = false;
                     mediaItem.IsPaused = false;
-                    _changingMediaItems.Remove(mediaItem.Id);
+                    _mediaStatusChangingService.RemoveChangingItem(mediaItem.Id);
                     _currentMediaItem = mediaItem;
                     break;
 
@@ -241,7 +244,7 @@
                     mediaItem.IsMediaActive = false;
                     mediaItem.IsMediaChanging = false;
                     mediaItem.PlaybackPositionDeciseconds = 0;
-                    _changingMediaItems.Remove(mediaItem.Id);
+                    _mediaStatusChangingService.RemoveChangingItem(mediaItem.Id);
                     _currentMediaItem = null;
                     break;
 
@@ -276,7 +279,7 @@
         private async Task MediaPauseControl(Guid mediaItemId)
         {
             // only allow pause media when nothing is changing.
-            if (_changingMediaItems.Count == 0)
+            if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
                 var mediaItem = GetMediaItem(mediaItemId);
                 if (mediaItem == null || !IsVideoOrAudio(mediaItem))
@@ -302,7 +305,7 @@
         private async Task MediaControl1(Guid mediaItemId)
         {
             // only allow start/stop media when nothing is changing.
-            if (_changingMediaItems.Count == 0)
+            if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
                 var mediaItem = GetMediaItem(mediaItemId);
                 if (mediaItem == null)

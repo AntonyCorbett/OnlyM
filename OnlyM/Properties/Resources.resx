@@ -160,4 +160,7 @@
   <data name="BLANK_SCREEN" xml:space="preserve">
     <value>Blank Screen</value>
   </data>
+  <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
+    <value>Select Media Folder</value>
+  </data>
 </root>

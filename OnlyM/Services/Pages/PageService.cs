@@ -80,6 +80,7 @@
 
         public void GotoSettingsPage()
         {
+            var _ = _settingsPage.Value;   // ensure created otherwise doesn't receive navigation event
             _operatorPageScrollerPosition = ScrollViewer.VerticalOffset;
             OnNavigationEvent(new NavigationEventArgs { PageName = SettingsPageName });
         }
