@@ -57,6 +57,8 @@
 
             _videoScreenPosition = new ScreenPosition();
             _imageScreenPosition = new ScreenPosition();
+
+            Sanitize();
         }
 
         private string _mediaMonitorId;
