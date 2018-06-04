@@ -158,8 +158,7 @@
     <Compile Include="Services\Pages\PageService.cs" />
     <Compile Include="Services\MetaDataQueue\MetaDataQueueConsumer.cs" />
     <Compile Include="Services\MetaDataQueue\MetaDataQueueProducer.cs" />
-    <Compile Include="Services\RecentMediaFolders\IRecentlyUsedMediaFolderService.cs" />
-    <Compile Include="Services\RecentMediaFolders\RecentlyUsedMediaFolderService.cs" />
+    <Compile Include="Services\RecentlyUsedFolders.cs" />
     <Compile Include="Services\ScreenPositionHelper.cs" />
     <Compile Include="Services\Snackbar\ISnackbarService.cs" />
     <Compile Include="Services\Snackbar\SnackbarService.cs" />

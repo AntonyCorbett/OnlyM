@@ -1,10 +1,9 @@
-﻿using System.Linq;
-
-namespace OnlyM.Core.Services.Options
+﻿namespace OnlyM.Core.Services.Options
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using Models;
     using Serilog.Events;
     using Utils;
@@ -283,7 +282,7 @@ namespace OnlyM.Core.Services.Options
 
         public bool CacheImages { get; set; }
 
-        public List<string> RecentlyUsedMediaFolders { get; } = new List<string>();
+        public List<string> RecentlyUsedMediaFolders { get; set; } = new List<string>();
 
         /// <summary>
         /// Validates the data, correcting automatically as required

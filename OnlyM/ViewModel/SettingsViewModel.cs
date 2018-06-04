@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
     using AutoUpdates;
@@ -19,7 +20,6 @@
     using Serilog.Events;
     using Services;
     using Services.Pages;
-    using Services.RecentMediaFolders;
 
     // ReSharper disable once UnusedMember.Global
     internal class SettingsViewModel : ViewModelBase
@@ -32,23 +32,22 @@
         private readonly LoggingLevel[] _loggingLevels;
         private readonly ImageFade[] _fadingTypes;
         private readonly ImageFadeSpeed[] _fadingSpeeds;
-        private readonly IRecentlyUsedMediaFolderService _recentlyUsedMediaFolderService;
+        private readonly RecentlyUsedFolders _recentlyUsedMediaFolders;
         
         public SettingsViewModel(
             IPageService pageService, 
             IMonitorsService monitorsService,
             IOptionsService optionsService,
-            IThumbnailService thumbnailService,
-            IRecentlyUsedMediaFolderService recentlyUsedMediaFolderService)
+            IThumbnailService thumbnailService)
         {
             _pageService = pageService;
             _monitorsService = monitorsService;
             _optionsService = optionsService;
             _thumbnailService = thumbnailService;
-            _recentlyUsedMediaFolderService = recentlyUsedMediaFolderService;
-            
-            _recentlyUsedMediaFolderService.Init(optionsService.Options.RecentlyUsedMediaFolders);
 
+            _recentlyUsedMediaFolders = new RecentlyUsedFolders();
+            InitRecentlyUsedFolders();
+            
             _monitors = GetSystemMonitors().ToArray();
             _loggingLevels = GetLoggingLevels().ToArray();
             _fadingTypes = GetImageFadingTypes().ToArray();
@@ -58,6 +57,14 @@
             
             InitCommands();
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+        }
+
+        private void InitRecentlyUsedFolders()
+        {
+            for (int n = _optionsService.Options.RecentlyUsedMediaFolders.Count - 1; n >= 0; --n)
+            {
+                _recentlyUsedMediaFolders.Add(_optionsService.Options.RecentlyUsedMediaFolders[n]);
+            }
         }
 
         private void HandleNavigationEvent(object sender, NavigationEventArgs e)
@@ -95,7 +102,7 @@
             var result = dialog.ShowDialog();
             if (result == CommonFileDialogResult.Ok)
             {
-                _recentlyUsedMediaFolderService.Add(dialog.FileName);
+                _recentlyUsedMediaFolders.Add(dialog.FileName);
                 MediaFolder = dialog.FileName;
                 RaisePropertyChanged(nameof(RecentMediaFolders));
             }
@@ -111,7 +118,7 @@
             return null;
         }
 
-        public List<string> RecentMediaFolders => _optionsService.Options.RecentlyUsedMediaFolders;
+        public ObservableCollection<string> RecentMediaFolders => _recentlyUsedMediaFolders.GetFolders();
         
         private void PurgeThumbnailCache()
         {
@@ -546,6 +553,7 @@
 
         private void OnShutDown(ShutDownMessage obj)
         {
+            _optionsService.Options.RecentlyUsedMediaFolders = _recentlyUsedMediaFolders.GetFolders().ToList();
             _optionsService.Save();
         }
 
