@@ -147,6 +147,8 @@
     <Compile Include="PubSubMessages\ShutDownMessage.cs" />
     <Compile Include="Services\DragAndDrop\DragAndDropService.cs" />
     <Compile Include="Services\DragAndDrop\IDragAndDropService.cs" />
+    <Compile Include="Services\HiddenMediaItems\HiddenMediaItemsService.cs" />
+    <Compile Include="Services\HiddenMediaItems\IHiddenMediaItemsService.cs" />
     <Compile Include="Services\ImagesCache\ImageAndLastUsed.cs" />
     <Compile Include="Services\ImagesCache\ImageCache.cs" />
     <Compile Include="Services\ImageDisplayManager.cs" />

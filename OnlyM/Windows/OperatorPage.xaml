@@ -36,7 +36,7 @@
                                          materialDesign:ShadowAssist.ShadowDepth="Depth1"
                                          materialDesign:ShadowAssist.ShadowEdges="Bottom">
 
-                    <materialDesign:DrawerHost>
+                    <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding IsCommandPanelOpen, Mode=TwoWay}">
                         <materialDesign:DrawerHost.LeftDrawerContent>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -46,13 +46,13 @@
                                 
                                 <DockPanel Grid.Column="0" Margin="10,10,30,10">
 
-                                    <Button Command="{Binding Path=DataContext.DeleteMediaItemCommand, ElementName=OnlyMOperatorPage}"
+                                    <Button Command="{Binding Path=DataContext.DeleteMediaItemCommand, Source={x:Reference OnlyMOperatorPage}}"
                                             CommandParameter="{Binding Id}"
                                             DockPanel.Dock="Top"
                                             Content="DELETE"
                                             Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
 
-                                    <Button Command="{Binding Path=DataContext.HideMediaItemCommand, ElementName=OnlyMOperatorPage}"
+                                    <Button Command="{Binding Path=DataContext.HideMediaItemCommand, Source={x:Reference OnlyMOperatorPage}}"
                                             CommandParameter="{Binding Id}"
                                             DockPanel.Dock="Bottom"
                                             VerticalAlignment="Bottom"
@@ -67,8 +67,8 @@
                                         Margin="0,0,2,0"
                                         Padding="0"
                                         HorizontalAlignment="Left"
-                                        Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
-                                        CommandParameter="{x:Static Dock.Left}">
+                                        Command="{Binding Path=DataContext.CloseCommandPanelCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                        CommandParameter="{Binding Id}">
 
                                     <materialDesign:PackIcon 
                                         Margin="-4,0,0,0"
@@ -95,8 +95,8 @@
                                     Margin="0,0,2,0"
                                     Padding="0"
                                     HorizontalAlignment="Left"
-                                    Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}"
-                                    CommandParameter="{x:Static Dock.Left}">
+                                    Command="{Binding Path=DataContext.OpenCommandPanelCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                    CommandParameter="{Binding Id}">
 
                                 <materialDesign:PackIcon 
                                     Margin="-3,0,0,0"
@@ -165,7 +165,7 @@
                                     <Button Style="{StaticResource MaterialDesignRaisedLightButton}"
                                             Width="50"
                                             VerticalAlignment="Stretch"
-                                            Command="{Binding Path=DataContext.MediaControlPauseCommand, ElementName=OnlyMOperatorPage}"
+                                            Command="{Binding Path=DataContext.MediaControlPauseCommand, Source={x:Reference OnlyMOperatorPage}}"
                                             CommandParameter="{Binding Id}"
                                             Visibility="{Binding Path=IsPauseButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                             HorizontalAlignment="Left"
@@ -205,7 +205,7 @@
                                 Grid.Column="3"
                                 IsEnabled="{Binding IsPlayButtonEnabled}"
                                 Visibility="{Binding Path=IsPlayButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
+                                Command="{Binding Path=DataContext.MediaControlCommand1, Source={x:Reference OnlyMOperatorPage}}"
                                 CommandParameter="{Binding Id}"
                                 Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
                                 <materialDesign:PackIcon
@@ -219,7 +219,7 @@
                                 Height="50"
                                 Grid.Column="3"
                                 Visibility="{Binding Path=IsStopButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
+                                Command="{Binding Path=DataContext.MediaControlCommand1, Source={x:Reference OnlyMOperatorPage}}"
                                 CommandParameter="{Binding Id}"
                                 Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
                                 <materialDesign:PackIcon

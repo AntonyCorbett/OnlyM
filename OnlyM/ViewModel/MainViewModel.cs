@@ -1,3 +1,4 @@
+using OnlyM.Services.HiddenMediaItems;
 using OnlyM.Services.MediaChanging;
 
 namespace OnlyM.ViewModel
@@ -24,16 +25,21 @@ namespace OnlyM.ViewModel
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
         private readonly IMediaStatusChangingService _mediaStatusChangingService;
+        private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
 
         public MainViewModel(
             IPageService pageService,
             IOptionsService optionsService,
             ISnackbarService snackbarService,
-            IMediaStatusChangingService mediaStatusChangingService)
+            IMediaStatusChangingService mediaStatusChangingService,
+            IHiddenMediaItemsService hiddenMediaItemsService)
         {
             Messenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
 
             _mediaStatusChangingService = mediaStatusChangingService;
+            _hiddenMediaItemsService = hiddenMediaItemsService;
+
+            _hiddenMediaItemsService.HiddenItemsChangedEvent += HandleHiddenItemsChangedEvent;
 
             _pageService = pageService;
             _pageService.NavigationEvent += HandlePageNavigationEvent;
@@ -56,6 +62,11 @@ namespace OnlyM.ViewModel
             }
 
             GetVersionData();
+        }
+
+        private void HandleHiddenItemsChangedEvent(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(IsUnhideButtonVisible));
         }
 
         private void OnMediaListUpdated(MediaListUpdatedMessage message)
@@ -83,6 +94,8 @@ namespace OnlyM.ViewModel
         {
             _currentPageName = e.PageName;
             CurrentPage = _pageService.GetPage(e.PageName);
+
+            RaisePropertyChanged(nameof(IsUnhideButtonVisible));
         }
 
         private string _currentPageName;
@@ -162,6 +175,14 @@ namespace OnlyM.ViewModel
             }
         }
 
+        public bool IsUnhideButtonVisible 
+        {
+            get
+            {
+                return IsOperatorPageActive && _hiddenMediaItemsService.SomeHiddenMediaItems();
+            }
+        }
+
         // commands...
         public RelayCommand GotoSettingsCommand { get; set; }
 
@@ -173,6 +194,8 @@ namespace OnlyM.ViewModel
 
         public RelayCommand LaunchReleasePageCommand { get; set; }
 
+        public RelayCommand UnhideCommand { get; set; }
+
         private void InitCommands()
         {
             GotoSettingsCommand = new RelayCommand(NavigateSettings);
@@ -180,8 +203,14 @@ namespace OnlyM.ViewModel
             LaunchMediaFolderCommand = new RelayCommand(LaunchMediaFolder);
             LaunchHelpPageCommand = new RelayCommand(LaunchHelpPage);
             LaunchReleasePageCommand = new RelayCommand(LaunchReleasePage);
+            UnhideCommand = new RelayCommand(UnhideAll);
         }
-        
+
+        private void UnhideAll()
+        {
+            _hiddenMediaItemsService.UnhideAllMediaItems();
+        }
+
         private void LaunchReleasePage()
         {
             Process.Start(VersionDetection.LatestReleaseUrl);

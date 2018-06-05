@@ -19,6 +19,7 @@
     using Models;
     using PubSubMessages;
     using Serilog;
+    using Services.HiddenMediaItems;
     using Services.MediaChanging;
     using Services.MetaDataQueue;
     using Services.Pages;
@@ -32,12 +33,11 @@
         private readonly IOptionsService _optionsService;
         private readonly IPageService _pageService;
         private readonly IMediaStatusChangingService _mediaStatusChangingService;
-        
+        private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
+
         private readonly MetaDataQueueProducer _metaDataProducer = new MetaDataQueueProducer();
         private readonly CancellationTokenSource _thumbnailCancellationTokenSource = new CancellationTokenSource();
-
-        private readonly HashSet<string> _hiddenItems = new HashSet<string>();
-
+        
         private MetaDataQueueConsumer _metaDataConsumer;
         private MediaItem _currentMediaItem;
         private string _blankScreenImagePath;
@@ -49,10 +49,13 @@
             IPageService pageService,
             IFolderWatcherService folderWatcherService,
             IMediaMetaDataService metaDataService,
-            IMediaStatusChangingService mediaStatusChangingService)
+            IMediaStatusChangingService mediaStatusChangingService,
+            IHiddenMediaItemsService hiddenMediaItemsService)
         {
             _mediaProviderService = mediaProviderService;
             _mediaStatusChangingService = mediaStatusChangingService;
+            _hiddenMediaItemsService = hiddenMediaItemsService;
+            _hiddenMediaItemsService.UnhideAllEvent += HandleUnhideAllEvent;
 
             _thumbnailService = thumbnailService;
             _thumbnailService.ThumbnailsPurgedEvent += HandleThumbnailsPurgedEvent;
@@ -87,6 +90,14 @@
             LaunchThumbnailQueueConsumer();
 
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+        }
+
+        private void HandleUnhideAllEvent(object sender, EventArgs e)
+        {
+            foreach (var item in MediaItems)
+            {
+                item.IsVisible = true;
+            }
         }
 
         private void HandleShowMediaItemCommandPanelChangedEvent(object sender, EventArgs e)
@@ -284,6 +295,28 @@
             HideMediaItemCommand = new RelayCommand<Guid>(HideMediaItem);
 
             DeleteMediaItemCommand = new RelayCommand<Guid>(DeleteMediaItem);
+
+            OpenCommandPanelCommand = new RelayCommand<Guid>(OpenCommandPanel);
+
+            CloseCommandPanelCommand = new RelayCommand<Guid>(CloseCommandPanel);
+        }
+
+        private void CloseCommandPanel(Guid mediaItemId)
+        {
+            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItem != null)
+            {
+                mediaItem.IsCommandPanelOpen = false;
+            }
+        }
+
+        private void OpenCommandPanel(Guid mediaItemId)
+        {
+            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItem != null)
+            {
+                mediaItem.IsCommandPanelOpen = true;
+            }
         }
 
         private void HideMediaItem(Guid mediaItemId)
@@ -291,8 +324,13 @@
             var mediaItem = GetMediaItem(mediaItemId);
             if (mediaItem != null)
             {
-                mediaItem.IsVisible = false;
-                _hiddenItems.Add(mediaItem.FilePath);
+                mediaItem.IsCommandPanelOpen = false;
+
+                Task.Delay(400).ContinueWith(t =>
+                {
+                    mediaItem.IsVisible = false;
+                    _hiddenMediaItemsService.Add(mediaItem.FilePath);
+                });
             }
         }
 
@@ -301,7 +339,10 @@
             var mediaItem = GetMediaItem(mediaItemId);
             if (mediaItem != null)
             {
-                FileUtils.SafeDeleteFile(mediaItem.FilePath);
+                if (FileUtils.SafeDeleteFile(mediaItem.FilePath))
+                {
+                    mediaItem.IsCommandPanelOpen = false;
+                }
             }
         }
 
@@ -482,9 +523,9 @@
                         MediaType = file.MediaType,
                         Id = Guid.NewGuid(),
                         Name = GetMediaTitle(file.FullPath, metaData),
-                        IsVisible = !_hiddenItems.Contains(file.FullPath),
                         CommandPanelVisible = commandPanelVisible,
                         FilePath = file.FullPath,
+                        IsVisible = true,
                         LastChanged = file.LastChanged,
                         AllowPause = _optionsService.Options.AllowVideoPause,
                         AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking,
@@ -499,6 +540,8 @@
             }
             
             SortMediaItems();
+
+            _hiddenMediaItemsService.Init(MediaItems);
 
             InsertBlankMediaItem();
             
@@ -606,5 +649,9 @@
         public RelayCommand<Guid> HideMediaItemCommand { get; set; }
 
         public RelayCommand<Guid> DeleteMediaItemCommand { get; set; }
+
+        public RelayCommand<Guid> OpenCommandPanelCommand { get; set; }
+
+        public RelayCommand<Guid> CloseCommandPanelCommand { get; set; }
     }
 }

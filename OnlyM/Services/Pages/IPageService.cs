@@ -21,7 +21,7 @@ namespace OnlyM.Services.Pages
         event EventHandler MediaWindowOpenedEvent;
 
         event EventHandler MediaWindowClosedEvent;
-
+        
         bool AllowMediaWindowToClose { get; }
 
         string OperatorPageName { get; }

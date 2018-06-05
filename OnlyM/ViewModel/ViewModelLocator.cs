@@ -1,3 +1,5 @@
+using OnlyM.Services.HiddenMediaItems;
+
 namespace OnlyM.ViewModel
 {
     using CommonServiceLocator;
@@ -37,6 +39,7 @@ namespace OnlyM.ViewModel
             SimpleIoc.Default.Register<IDragAndDropService, DragAndDropService>();
             SimpleIoc.Default.Register<ISnackbarService, SnackbarService>();
             SimpleIoc.Default.Register<IMediaStatusChangingService, MediaStatusChangingService>();
+            SimpleIoc.Default.Register<IHiddenMediaItemsService, HiddenMediaItemsService>();
 
             // view models.
             SimpleIoc.Default.Register<MainViewModel>();

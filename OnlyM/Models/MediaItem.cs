@@ -43,6 +43,21 @@
             }
         }
 
+        private bool _isCommandPanelOpen;
+
+        public bool IsCommandPanelOpen
+        {
+            get => _isCommandPanelOpen;
+            set
+            {
+                if (_isCommandPanelOpen != value)
+                {
+                    _isCommandPanelOpen = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private bool _isVisible;
 
         public bool IsVisible

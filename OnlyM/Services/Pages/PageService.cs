@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Services.Pages
+﻿using OnlyM.ViewModel;
+
+namespace OnlyM.Services.Pages
 {
     using System;
     using System.Threading;
@@ -44,7 +46,7 @@
         public event EventHandler MediaWindowOpenedEvent;
 
         public event EventHandler MediaWindowClosedEvent;
-
+        
         public PageService(
             IMonitorsService monitorsService,
             IOptionsService optionsService,

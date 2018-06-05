@@ -204,7 +204,7 @@
                         <ColumnDefinition Width="50"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button
+                    <Button Grid.Column="0"
                         HorizontalAlignment="Left"
                         Command="{Binding GotoOperatorCommand}"
                         ToolTip="Media page"
@@ -214,6 +214,15 @@
                             Kind="Backburger"
                             Height="24"
                             Width="24" />
+                    </Button>
+
+                    <Button Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        Command="{Binding UnhideCommand}"
+                        ToolTip="Unhide"
+                        Visibility="{Binding Path=IsUnhideButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource MaterialDesignRaisedAccentButton}">
+                        UNHIDE
                     </Button>
 
                     <Button
