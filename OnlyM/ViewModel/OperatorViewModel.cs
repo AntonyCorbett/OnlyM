@@ -36,6 +36,8 @@
         private readonly MetaDataQueueProducer _metaDataProducer = new MetaDataQueueProducer();
         private readonly CancellationTokenSource _thumbnailCancellationTokenSource = new CancellationTokenSource();
 
+        private readonly HashSet<string> _hiddenItems = new HashSet<string>();
+
         private MetaDataQueueConsumer _metaDataConsumer;
         private MediaItem _currentMediaItem;
         private string _blankScreenImagePath;
@@ -60,6 +62,7 @@
             _optionsService.AllowVideoPauseChangedEvent += HandleAllowVideoPauseChangedEvent;
             _optionsService.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
             _optionsService.UseInternalMediaTitlesChangedEvent += HandleUseInternalMediaTitlesChangedEvent;
+            _optionsService.ShowMediaItemCommandPanelChangedEvent += HandleShowMediaItemCommandPanelChangedEvent;
             _optionsService.PermanentBackdropChangedEvent += async (sender, e) =>
             {
                 await HandlePermanentBackdropChangedEvent(sender, e);
@@ -84,6 +87,16 @@
             LaunchThumbnailQueueConsumer();
 
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+        }
+
+        private void HandleShowMediaItemCommandPanelChangedEvent(object sender, EventArgs e)
+        {
+            var visible = _optionsService.Options.ShowMediaItemCommandPanel;
+
+            foreach (var item in MediaItems)
+            {
+                item.CommandPanelVisible = visible;
+            }
         }
 
         private async Task HandleIncludeBlankScreenItemChangedEvent(object sender, EventArgs e)
@@ -267,6 +280,29 @@
             {
                 await MediaPauseControl(mediaItemId);
             });
+
+            HideMediaItemCommand = new RelayCommand<Guid>(HideMediaItem);
+
+            DeleteMediaItemCommand = new RelayCommand<Guid>(DeleteMediaItem);
+        }
+
+        private void HideMediaItem(Guid mediaItemId)
+        {
+            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItem != null)
+            {
+                mediaItem.IsVisible = false;
+                _hiddenItems.Add(mediaItem.FilePath);
+            }
+        }
+
+        private void DeleteMediaItem(Guid mediaItemId)
+        {
+            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItem != null)
+            {
+                FileUtils.SafeDeleteFile(mediaItem.FilePath);
+            }
         }
 
         private bool IsVideoOrAudio(MediaItem mediaItem)
@@ -431,7 +467,9 @@
             {
                 MediaItems.Remove(item);
             }
-            
+
+            var commandPanelVisible = _optionsService.Options.ShowMediaItemCommandPanel;
+
             // add new items.
             foreach (var file in files)
             {
@@ -444,6 +482,8 @@
                         MediaType = file.MediaType,
                         Id = Guid.NewGuid(),
                         Name = GetMediaTitle(file.FullPath, metaData),
+                        IsVisible = !_hiddenItems.Contains(file.FullPath),
+                        CommandPanelVisible = commandPanelVisible,
                         FilePath = file.FullPath,
                         LastChanged = file.LastChanged,
                         AllowPause = _optionsService.Options.AllowVideoPause,
@@ -480,6 +520,8 @@
                     MediaType = _mediaProviderService.GetSupportedMediaType(blankScreenPath),
                     Id = Guid.NewGuid(),
                     IsBlankScreen = true,
+                    IsVisible = true,
+                    CommandPanelVisible = _optionsService.Options.ShowMediaItemCommandPanel,
                     Name = Properties.Resources.BLANK_SCREEN,
                     FilePath = blankScreenPath,
                     IsWaitingAnimationVisible = true,
@@ -560,5 +602,9 @@
         public RelayCommand<Guid> MediaControlCommand1 { get; set; }
 
         public RelayCommand<Guid> MediaControlPauseCommand { get; set; }
+
+        public RelayCommand<Guid> HideMediaItemCommand { get; set; }
+
+        public RelayCommand<Guid> DeleteMediaItemCommand { get; set; }
     }
 }

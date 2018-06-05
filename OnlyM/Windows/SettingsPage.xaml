@@ -14,7 +14,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DesignHeight="1450" d:DesignWidth="600">
+             d:DesignHeight="1650" d:DesignWidth="600">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -143,6 +143,11 @@
                 <CheckBox IsChecked="{Binding UseInternalMediaTitles, Mode=TwoWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">
                     Use embedded titles where available
+                </CheckBox>
+
+                <CheckBox IsChecked="{Binding ShowCommandPanel, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Enable command panel
                 </CheckBox>
 
                 <Button 

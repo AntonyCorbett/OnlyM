@@ -308,6 +308,18 @@
             }
         }
 
+        public bool ShowCommandPanel
+        {
+            get => _optionsService.Options.ShowMediaItemCommandPanel;
+            set
+            {
+                if (_optionsService.Options.ShowMediaItemCommandPanel != value)
+                {
+                    _optionsService.Options.ShowMediaItemCommandPanel = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         public bool UseInternalMediaTitles
         {

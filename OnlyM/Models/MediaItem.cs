@@ -1,9 +1,8 @@
-﻿using OnlyM.Core.Extensions;
-
-namespace OnlyM.Models
+﻿namespace OnlyM.Models
 {
     using System;
     using System.Windows.Media;
+    using Core.Extensions;
     using Core.Models;
     using GalaSoft.MvvmLight;
 
@@ -27,6 +26,39 @@ namespace OnlyM.Models
         public Guid Id { get; set; }
 
         public bool IsBlankScreen { get; set; }
+
+        private bool _commandPanelVisible;
+
+        public bool CommandPanelVisible
+        {
+            get => _commandPanelVisible;
+            set
+            {
+                if (_commandPanelVisible != value)
+                {
+                    _commandPanelVisible = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(CommandPanelBtnColWidth));
+                }
+            }
+        }
+
+        private bool _isVisible;
+
+        public bool IsVisible
+        {
+            get => _isVisible;
+            set
+            {
+                if (_isVisible != value)
+                {
+                    _isVisible = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool CommandPanelEnabled => !IsBlankScreen && !IsMediaActive;
 
         private string _name;
 
@@ -149,6 +181,7 @@ namespace OnlyM.Models
                     RaisePropertyChanged(nameof(IsSliderVisible));
                     RaisePropertyChanged(nameof(PlaybackTimeColorBrush));
                     RaisePropertyChanged(nameof(DurationColorBrush));
+                    RaisePropertyChanged(nameof(CommandPanelEnabled));
                 }
             }
         }
@@ -334,6 +367,8 @@ namespace OnlyM.Models
                 }
             }
         }
+
+        public int CommandPanelBtnColWidth => CommandPanelVisible ? 12 : 0;
 
         private void OnPlaybackPositionChangedEvent()
         {

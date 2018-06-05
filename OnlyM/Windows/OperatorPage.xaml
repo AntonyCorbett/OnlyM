@@ -31,139 +31,205 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
             <DataTemplate DataType="{x:Type models:MediaItem}">
-                <materialDesign:Card Height="120" Margin="4" Padding="4"
-                                     materialDesign:ShadowAssist.ShadowDepth="Depth1"
-                                     materialDesign:ShadowAssist.ShadowEdges="Bottom">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="100"/>
-                        </Grid.ColumnDefinitions>
+                    <materialDesign:Card Height="120" Margin="4" Padding="4"
+                                         Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                         materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                                         materialDesign:ShadowAssist.ShadowEdges="Bottom">
 
-                        <Border Grid.Column="0" Background="Black" Margin="0,0,5,0">
+                    <materialDesign:DrawerHost>
+                        <materialDesign:DrawerHost.LeftDrawerContent>
                             <Grid>
-                                <Image Source="{Binding ThumbnailImageSource}"></Image>
-                                <Ellipse 
-                                    Width="29" Height="29" 
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Stroke="{StaticResource MaterialDesignDarkBackground}"
-                                    Margin="3"
-                                    Fill="{StaticResource MaterialDesignPaper}">
-
-                                </Ellipse>
-
-                                <materialDesign:PackIcon 
-                                    Margin="5"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Kind="{Binding IconName}"
-                                    Foreground="{Binding IconBrush}"
-                                    Height="24"
-                                    Width="24" />
-                            </Grid>
-                        </Border>
-
-                        <Grid Grid.Column="1" Margin="10,0,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="36" />
-                                <RowDefinition Height="28" />
-                            </Grid.RowDefinitions>
-                            
-                            <TextBlock Grid.Row="0" 
-                                       TextTrimming="CharacterEllipsis" 
-                                       Style="{StaticResource MaterialDesignTitleTextBlock}"
-                                       Text="{Binding Name}"/>
-                            <Grid Grid.Row="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="1*" />
-                                    <RowDefinition Height="1*" />
-                                </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="95"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="12" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Row="0" Grid.Column="0"
-                                           Style="{StaticResource MaterialDesignBody1TextBlock}"
-                                           Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                           FontSize="16"
-                                           Foreground="{Binding DurationColorBrush}"
-                                           Text="{Binding DurationString}"/>
-                                <TextBlock Grid.Row="1" Grid.Column="0"
-                                           Style="{StaticResource MaterialDesignBody1TextBlock}"
-                                           Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                           FontSize="16"
-                                           Foreground="{Binding PlaybackTimeColorBrush}"
-                                           Text="{Binding PlaybackTimeString}"/>
-                                <Button Style="{StaticResource MaterialDesignRaisedLightButton}"
-                                        Width="50"
-                                        VerticalAlignment="Stretch"
-                                        Command="{Binding Path=DataContext.MediaControlPauseCommand, ElementName=OnlyMOperatorPage}"
-                                        CommandParameter="{Binding Id}"
-                                        Visibility="{Binding Path=IsPauseButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                
+                                <DockPanel Grid.Column="0" Margin="10,10,30,10">
+
+                                    <Button Command="{Binding Path=DataContext.DeleteMediaItemCommand, ElementName=OnlyMOperatorPage}"
+                                            CommandParameter="{Binding Id}"
+                                            DockPanel.Dock="Top"
+                                            Content="DELETE"
+                                            Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
+
+                                    <Button Command="{Binding Path=DataContext.HideMediaItemCommand, ElementName=OnlyMOperatorPage}"
+                                            CommandParameter="{Binding Id}"
+                                            DockPanel.Dock="Bottom"
+                                            VerticalAlignment="Bottom"
+                                            Content="HIDE"
+                                            Style="{StaticResource MaterialDesignRaisedLightButton}"/>
+
+                                </DockPanel>
+
+                                <Button Grid.Column="1" 
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Width="10"
+                                        Margin="0,0,2,0"
+                                        Padding="0"
                                         HorizontalAlignment="Left"
-                                        Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
+                                        Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
+                                        CommandParameter="{x:Static Dock.Left}">
 
                                     <materialDesign:PackIcon 
-                                        Kind="{Binding PauseIconKind}"
-                                        HorizontalAlignment="Center"
+                                        Margin="-4,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Kind="ArrowLeft" />
+                                </Button>
+
+                            </Grid>
+                        </materialDesign:DrawerHost.LeftDrawerContent>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding CommandPanelBtnColWidth}"/>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0" 
+                                    Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                    IsEnabled="{Binding CommandPanelEnabled}"
+                                    Width="10"
+                                    Margin="0,0,2,0"
+                                    Padding="0"
+                                    HorizontalAlignment="Left"
+                                    Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}"
+                                    CommandParameter="{x:Static Dock.Left}">
+
+                                <materialDesign:PackIcon 
+                                    Margin="-3,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Kind="ArrowRight" />
+                            </Button>
+
+                            <Border Grid.Column="1" Background="Black" Margin="0,0,5,0">
+                                <Grid>
+                                    <Image Source="{Binding ThumbnailImageSource}"></Image>
+                                    <Ellipse 
+                                        Width="29" Height="29" 
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Stroke="{StaticResource MaterialDesignDarkBackground}"
+                                        Margin="3"
+                                        Fill="{StaticResource MaterialDesignPaper}">
+
+                                    </Ellipse>
+
+                                    <materialDesign:PackIcon 
+                                        Margin="5"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Kind="{Binding IconName}"
+                                        Foreground="{Binding IconBrush}"
                                         Height="24"
                                         Width="24" />
 
-                                </Button>
+                                </Grid>
+                            </Border>
+
+                            <Grid Grid.Column="2" Margin="10,0,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="36" />
+                                    <RowDefinition Height="28" />
+                                </Grid.RowDefinitions>
+                                
+                                <TextBlock Grid.Row="0" 
+                                           TextTrimming="CharacterEllipsis" 
+                                           Style="{StaticResource MaterialDesignTitleTextBlock}"
+                                           Text="{Binding Name}"/>
+                                <Grid Grid.Row="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="1*" />
+                                        <RowDefinition Height="1*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="95"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0" Grid.Column="0"
+                                               Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                               Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                               FontSize="16"
+                                               Foreground="{Binding DurationColorBrush}"
+                                               Text="{Binding DurationString}"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="0"
+                                               Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                               Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                               FontSize="16"
+                                               Foreground="{Binding PlaybackTimeColorBrush}"
+                                               Text="{Binding PlaybackTimeString}"/>
+                                    <Button Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                            Width="50"
+                                            VerticalAlignment="Stretch"
+                                            Command="{Binding Path=DataContext.MediaControlPauseCommand, ElementName=OnlyMOperatorPage}"
+                                            CommandParameter="{Binding Id}"
+                                            Visibility="{Binding Path=IsPauseButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            HorizontalAlignment="Left"
+                                            Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
+
+                                        <materialDesign:PackIcon 
+                                            Kind="{Binding PauseIconKind}"
+                                            HorizontalAlignment="Center"
+                                            Height="24"
+                                            Width="24" />
+
+                                    </Button>
+                                </Grid>
+                                <ProgressBar Grid.Row="2" 
+                                           Visibility="{Binding Path=HasDurationAndIsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                           Value="{Binding PlaybackPositionDeciseconds, Mode=OneWay}" 
+                                           Maximum="{Binding DurationDeciseconds}"/>
+                                <Slider Grid.Row="2" 
+                                           Orientation="Horizontal"
+                                           TickFrequency="1"
+                                           Margin="0,5,0,0"
+                                           Visibility="{Binding Path=IsSliderVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                           Value="{Binding PlaybackPositionDeciseconds, Mode=TwoWay}" 
+                                           Maximum="{Binding DurationDeciseconds}"/>
                             </Grid>
-                            <ProgressBar Grid.Row="2" 
-                                       Visibility="{Binding Path=HasDurationAndIsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                       Value="{Binding PlaybackPositionDeciseconds, Mode=OneWay}" 
-                                       Maximum="{Binding DurationDeciseconds}"/>
-                            <Slider Grid.Row="2" 
-                                       Orientation="Horizontal"
-                                       TickFrequency="1"
-                                       Margin="0,5,0,0"
-                                       Visibility="{Binding Path=IsSliderVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                       Value="{Binding PlaybackPositionDeciseconds, Mode=TwoWay}" 
-                                       Maximum="{Binding DurationDeciseconds}"/>
+
+                            <ProgressBar
+                                Grid.Column="3"
+                                Visibility="{Binding Path=IsWaitingAnimationVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                Value="0"
+                                IsIndeterminate="True" />
+
+                            <Button
+                                Width="50"
+                                Height="50"
+                                Grid.Column="3"
+                                IsEnabled="{Binding IsPlayButtonEnabled}"
+                                Visibility="{Binding Path=IsPlayButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
+                                CommandParameter="{Binding Id}"
+                                Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
+                                <materialDesign:PackIcon
+                                    Kind="Play"
+                                    Height="40"
+                                    Width="40" />
+                            </Button>
+
+                            <Button
+                                Width="50"
+                                Height="50"
+                                Grid.Column="3"
+                                Visibility="{Binding Path=IsStopButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
+                                CommandParameter="{Binding Id}"
+                                Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
+                                <materialDesign:PackIcon
+                                    Kind="Stop"
+                                    Height="40"
+                                    Width="40" />
+                            </Button>
+
                         </Grid>
-
-                        <ProgressBar
-                            Grid.Column="2"
-                            Visibility="{Binding Path=IsWaitingAnimationVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Style="{StaticResource MaterialDesignCircularProgressBar}"
-                            Value="0"
-                            IsIndeterminate="True" />
-
-                        <Button
-                            Width="50"
-                            Height="50"
-                            Grid.Column="2"
-                            IsEnabled="{Binding IsPlayButtonEnabled}"
-                            Visibility="{Binding Path=IsPlayButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
-                            CommandParameter="{Binding Id}"
-                            Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
-                            <materialDesign:PackIcon
-                                Kind="Play"
-                                Height="40"
-                                Width="40" />
-                        </Button>
-
-                        <Button
-                            Width="50"
-                            Height="50"
-                            Grid.Column="2"
-                            Visibility="{Binding Path=IsStopButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
-                            CommandParameter="{Binding Id}"
-                            Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
-                            <materialDesign:PackIcon
-                                Kind="Stop"
-                                Height="40"
-                                Width="40" />
-                        </Button>
-
-                    </Grid>
+                    </materialDesign:DrawerHost>
                 </materialDesign:Card>
             </DataTemplate>
 

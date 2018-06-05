@@ -38,6 +38,9 @@
 
         public event EventHandler ImageScreenPositionChangedEvent;
 
+        public event EventHandler ShowMediaItemCommandPanelChangedEvent;
+
+
         public Options()
         {
             // defaults
@@ -59,6 +62,21 @@
             _imageScreenPosition = new ScreenPosition();
 
             Sanitize();
+        }
+
+        private bool _showMediaItemCommandPanel;
+
+        public bool ShowMediaItemCommandPanel
+        {
+            get => _showMediaItemCommandPanel;
+            set
+            {
+                if (_showMediaItemCommandPanel != value)
+                {
+                    _showMediaItemCommandPanel = value;
+                    ShowMediaItemCommandPanelChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
 
         private string _mediaMonitorId;

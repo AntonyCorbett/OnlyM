@@ -36,5 +36,7 @@
         event EventHandler VideoScreenPositionChangedEvent;
 
         event EventHandler ImageScreenPositionChangedEvent;
+
+        event EventHandler ShowMediaItemCommandPanelChangedEvent;
     }
 }

@@ -43,6 +43,8 @@
 
         public event EventHandler ImageScreenPositionChangedEvent;
 
+        public event EventHandler ShowMediaItemCommandPanelChangedEvent;
+
         public OptionsService(ILogLevelSwitchService logLevelSwitchService)
         {
             _logLevelSwitchService = logLevelSwitchService;
@@ -135,10 +137,16 @@
                     _options.IncludeBlankScreenItemChangedEvent += HandleIncludeBlankScreenItemChangedEvent;
                     _options.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
                     _options.ImageScreenPositionChangedEvent += HandleImageScreenPositionChangedEvent;
+                    _options.ShowMediaItemCommandPanelChangedEvent += HandleShowMediaItemCommandPanelChangedEvent;
 
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void HandleShowMediaItemCommandPanelChangedEvent(object sender, EventArgs e)
+        {
+            ShowMediaItemCommandPanelChangedEvent?.Invoke(this, e);
         }
 
         private void HandleImageScreenPositionChangedEvent(object sender, EventArgs e)

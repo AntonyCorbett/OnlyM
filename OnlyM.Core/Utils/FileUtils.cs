@@ -108,5 +108,18 @@
             Directory.CreateDirectory(folder);
             return folder;
         }
+
+        public static bool SafeDeleteFile(string path)
+        {
+            try
+            {
+                File.Delete(path);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
