@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class PositionChangedEventArgs
+    public class PositionChangedEventArgs : EventArgs
     {
         public TimeSpan Position { get; }
         

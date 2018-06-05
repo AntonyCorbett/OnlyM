@@ -14,10 +14,11 @@
     using Models;
     using Serilog;
     using Unosquare.FFME;
-    
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Singleton")]
     public partial class App : Application
     {
         private readonly string _appString = "OnlyMMeetingMedia";

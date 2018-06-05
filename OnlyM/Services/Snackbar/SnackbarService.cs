@@ -4,7 +4,7 @@
     using MaterialDesignThemes.Wpf;
 
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class SnackbarService : ISnackbarService
+    public sealed class SnackbarService : ISnackbarService, IDisposable
     {
         public ISnackbarMessageQueue TheSnackbarMessageQueue { get; } = new SnackbarMessageQueue(TimeSpan.FromSeconds(4));
 
@@ -38,6 +38,11 @@
         public void EnqueueWithOk(object content)
         {
             TheSnackbarMessageQueue.Enqueue(content, Properties.Resources.OK, () => { });
+        }
+
+        public void Dispose()
+        {
+            ((SnackbarMessageQueue)TheSnackbarMessageQueue)?.Dispose();
         }
     }
 }

@@ -10,7 +10,7 @@
     using Models;
     using Serilog;
 
-    internal class MetaDataQueueConsumer
+    internal sealed class MetaDataQueueConsumer : IDisposable
     {
         private readonly IThumbnailService _thumbnailService;
         private readonly BlockingCollection<MediaItem> _collection;
@@ -34,6 +34,17 @@
         {
             RunMainCollectionConsumer();
             RunProblemFilesConsumer();
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", 
+            "CA2213:DisposableFieldsShouldBeDisposed", 
+            MessageId = "_problemFiles",
+            Justification = "False Positive")]
+        public void Dispose()
+        {
+            _collection?.Dispose();
+            _problemFiles?.Dispose();
         }
 
         private void RunMainCollectionConsumer()

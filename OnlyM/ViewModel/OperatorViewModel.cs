@@ -25,7 +25,7 @@
     using Services.Pages;
 
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class OperatorViewModel : ViewModelBase
+    internal sealed class OperatorViewModel : ViewModelBase, IDisposable
     {
         private readonly IMediaProviderService _mediaProviderService;
         private readonly IThumbnailService _thumbnailService;
@@ -90,6 +90,16 @@
             LaunchThumbnailQueueConsumer();
 
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_thumbnailCancellationTokenSource", Justification = "False Positive")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataProducer", Justification = "False Positive")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataConsumer", Justification = "False Positive")]
+        public void Dispose()
+        {
+            _metaDataProducer?.Dispose();
+            _thumbnailCancellationTokenSource?.Dispose();
+            _metaDataConsumer?.Dispose();
         }
 
         private void HandleUnhideAllEvent(object sender, EventArgs e)

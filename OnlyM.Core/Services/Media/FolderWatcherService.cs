@@ -8,7 +8,7 @@
     using Serilog;
 
     // ReSharper disable once ClassNeverInstantiated.Global
-    public sealed class FolderWatcherService : IFolderWatcherService
+    public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
     {
         private readonly IOptionsService _optionsService;
         private readonly IMediaProviderService _mediaProviderService;
@@ -28,6 +28,16 @@
             Task.Run(CollationFunction);
 
             InitWatcher(_optionsService.Options.MediaFolder);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", 
+            "CA2213:DisposableFieldsShouldBeDisposed", 
+            MessageId = "_signalFolderChange", Justification = "False Positive")]
+        public void Dispose()
+        {
+            _signalFolderChange?.Dispose();
+            _watcher?.Dispose();
         }
 
         private Task CollationFunction()
