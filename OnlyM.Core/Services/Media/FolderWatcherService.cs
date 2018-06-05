@@ -4,6 +4,7 @@
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
+    using Models;
     using Options;
     using Serilog;
 
@@ -15,6 +16,7 @@
         private readonly ManualResetEventSlim _signalFolderChange = new ManualResetEventSlim(false);
         private FileSystemWatcher _watcher;
         private int _changeVersion;
+        private MediaFolders _foldersToWatch;
 
         public event EventHandler ChangesFoundEvent;
 
@@ -27,13 +29,10 @@
 
             Task.Run(CollationFunction);
 
-            InitWatcher(_optionsService.Options.MediaFolder);
+            InitWatcher();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", 
-            "CA2213:DisposableFieldsShouldBeDisposed", 
-            MessageId = "_signalFolderChange", Justification = "False Positive")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_signalFolderChange", Justification = "False Positive")]
         public void Dispose()
         {
             _signalFolderChange?.Dispose();
@@ -80,20 +79,20 @@
             }
         }
 
-        private void InitWatcher(string pathToWatch)
+        private void InitWatcher(MediaFolders mediaFolders)
         {
             if (_watcher == null)
             {
-                _watcher = new FileSystemWatcher { IncludeSubdirectories = false };
+                _watcher = new FileSystemWatcher { IncludeSubdirectories = true };
 
                 _watcher.Created += HandleContentModified;
                 _watcher.Deleted += HandleContentModified;
                 _watcher.Renamed += HandleContentRenamed;
             }
-
-            if (Directory.Exists(pathToWatch))
+            
+            if (Directory.Exists(mediaFolders.MediaFolder))
             {
-                _watcher.Path = pathToWatch;
+                _watcher.Path = mediaFolders.MediaFolder;
                 _watcher.EnableRaisingEvents = true;
             }
             else
@@ -111,8 +110,27 @@
                 return;
             }
 
+            if (!IsWatchingFilesFolder(e.OldFullPath) && !IsWatchingFilesFolder(e.FullPath))
+            {
+                return;
+            }
+
             Interlocked.Increment(ref _changeVersion);
             _signalFolderChange.Set();
+        }
+
+        private bool IsWatchingFilesFolder(string path)
+        {
+            var directory = Path.GetDirectoryName(path);
+
+            if (directory == null)
+            {
+                return false;
+            }
+
+            return 
+                directory.Equals(_foldersToWatch.MediaFolder) || 
+                (_foldersToWatch.DatedSubFolder != null && directory.Equals(_foldersToWatch.DatedSubFolder));
         }
 
         private void HandleContentModified(object sender, FileSystemEventArgs e)
@@ -130,19 +148,30 @@
                     break;
             }
 
+            if (!IsWatchingFilesFolder(e.FullPath))
+            {
+                return;
+            }
+            
             Interlocked.Increment(ref _changeVersion);
             _signalFolderChange.Set();
         }
 
         private void HandleMediaFolderChangedEvent(object sender, EventArgs e)
         {
-            InitWatcher(_optionsService.Options.MediaFolder);
+            InitWatcher();
         }
 
         private void OnChangesFoundEvent()
         {
             Log.Logger.Verbose("Folder changes");
             ChangesFoundEvent?.Invoke(this, EventArgs.Empty);
+        }
+        
+        private void InitWatcher()
+        {
+            _foldersToWatch = _mediaProviderService.GetMediaFolders(_optionsService.Options.MediaCalendarDate);
+            InitWatcher(_foldersToWatch);
         }
     }
 }

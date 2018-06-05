@@ -152,6 +152,7 @@
     <Compile Include="Services\ImagesCache\ImageAndLastUsed.cs" />
     <Compile Include="Services\ImagesCache\ImageCache.cs" />
     <Compile Include="Services\ImageDisplayManager.cs" />
+    <Compile Include="Services\JwLibHelperNativeMethods.cs" />
     <Compile Include="Services\JwLibHelper.cs" />
     <Compile Include="Services\MediaChanging\IMediaStatusChangingService.cs" />
     <Compile Include="Services\MediaChanging\MediaStatusChangingService.cs" />

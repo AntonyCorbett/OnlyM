@@ -48,33 +48,30 @@
             }
         }
 
+        public MediaFolders GetMediaFolders(DateTime theDate)
+        {
+            var result = new MediaFolders();
+
+            var mediaFolder = _optionsService.Options.MediaFolder;
+            result.MediaFolder = mediaFolder;
+            
+            var subFolder = DatedSubFolders.GetDatedSubFolder(mediaFolder, theDate);
+            if (subFolder != null)
+            {
+                result.DatedSubFolder = subFolder;
+            }
+
+            return result;
+        }
+
         public IReadOnlyCollection<MediaFile> GetMediaFiles()
         {
             var result = new List<MediaFile>();
 
-            var mediaFolder = _optionsService.Options.MediaFolder;
+            var folders = GetMediaFolders(_optionsService.Options.MediaCalendarDate);
 
-            if (!Directory.Exists(mediaFolder))
-            {
-                return result;
-            }
-
-            var files = Directory.GetFiles(mediaFolder);
-            foreach (var file in files)
-            {
-                var mediaType = GetSupportedMediaType(file);
-                var lastChanged = File.GetLastWriteTimeUtc(file);
-
-                if (mediaType != null)
-                { 
-                    result.Add(new MediaFile
-                    {
-                        FullPath = file,
-                        MediaType = mediaType,
-                        LastChanged = lastChanged.Ticks
-                    });
-                }
-            }
+            result.AddRange(GetMediaFilesInFolder(folders.MediaFolder));
+            result.AddRange(GetMediaFilesInFolder(folders.DatedSubFolder));
 
             return result;
         }
@@ -104,6 +101,35 @@
             var extension = Path.GetExtension(fileName);
             return _supportedMediaTypes.SingleOrDefault(x =>
                 x.FileExtension.Equals(extension, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private IReadOnlyCollection<MediaFile> GetMediaFilesInFolder(string folder)
+        {
+            var result = new List<MediaFile>();
+
+            if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
+            {
+                return result;
+            }
+
+            var files = Directory.GetFiles(folder);
+            foreach (var file in files)
+            {
+                var mediaType = GetSupportedMediaType(file);
+                var lastChanged = File.GetLastWriteTimeUtc(file);
+
+                if (mediaType != null)
+                {
+                    result.Add(new MediaFile
+                    {
+                        FullPath = file,
+                        MediaType = mediaType,
+                        LastChanged = lastChanged.Ticks
+                    });
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -15,8 +15,8 @@
     {
         public static BitmapSource Downsize(string imageFilePath, int maxImageWidth, int maxImageHeight)
         {
-            var image = new BitmapImage(new Uri(imageFilePath));
-
+            var image = GetBitmapImageWithCacheOnLoad(imageFilePath);
+                        
             var factorWidth = maxImageWidth / image.Width;
             var factorHeight = maxImageHeight / image.Height;
 
@@ -79,6 +79,20 @@
             img.EndInit();
 
             return img;
+        }
+
+        public static BitmapImage GetBitmapImageWithCacheOnLoad(string imageFile)
+        {
+            var bmp = new BitmapImage();
+
+            // BitmapCacheOption.OnLoad prevents the source image file remaining
+            // in use when the bitmap is used as an ImageSource.
+            bmp.BeginInit();
+            bmp.UriSource = new Uri(imageFile);
+            bmp.CacheOption = BitmapCacheOption.OnLoad;
+            bmp.EndInit();
+
+            return bmp;
         }
 
         /// <summary>

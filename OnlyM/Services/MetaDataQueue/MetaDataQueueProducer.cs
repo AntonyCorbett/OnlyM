@@ -22,11 +22,7 @@ namespace OnlyM.Services.MetaDataQueue
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", 
-            "CA2213:DisposableFieldsShouldBeDisposed", 
-            MessageId = "<Queue>k__BackingField",
-            Justification = "False Positive")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "<Queue>k__BackingField", Justification = "False Positive")]
         public void Dispose()
         {
             Queue?.Dispose();

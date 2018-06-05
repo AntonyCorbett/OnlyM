@@ -226,6 +226,18 @@
             imageCtrl.BeginAnimation(UIElement.OpacityProperty, fadeOut);
         }
 
+        private BitmapImage GetBitmapImageWithCacheOnLoad(string imageFile)
+        {
+            var bmp = new BitmapImage();
+
+            bmp.BeginInit();
+            bmp.UriSource = new Uri(imageFile);
+            bmp.CacheOption = BitmapCacheOption.OnLoad;
+            bmp.EndInit();
+
+            return bmp;
+        }
+
         private void ShowImageInControl(string imageFile, Image imageCtrl, Action completed)
         {
             var shouldFadeIn =
@@ -235,10 +247,14 @@
 
             imageCtrl.Opacity = 0.0;
 
+            //imageCtrl.Source = _optionsService.Options.CacheImages
+            //    ? ImageCache.GetImage(imageFile)
+            //    : new BitmapImage(new Uri(imageFile));
+
             imageCtrl.Source = _optionsService.Options.CacheImages
                 ? ImageCache.GetImage(imageFile)
-                : new BitmapImage(new Uri(imageFile));
-            
+                : GetBitmapImageWithCacheOnLoad(imageFile);
+
             // This delay allows us to accommodate large images without the apparent loss of fade-in animation
             // the first time an image is loaded. There must be a better way!
             Task.Delay(10).ContinueWith(t =>

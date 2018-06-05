@@ -95,6 +95,20 @@
             }
         }
 
+        private DateTime _mediaCalendarDate;
+
+        public DateTime MediaCalendarDate
+        {
+            get => _mediaCalendarDate.Date;
+            set
+            {
+                if (_mediaCalendarDate.Date != value.Date)
+                {
+                    _mediaCalendarDate = value.Date;
+                }
+            }
+        }
+
         private ScreenPosition _videoScreenPosition;
 
         public ScreenPosition VideoScreenPosition
@@ -336,6 +350,11 @@
                 {
                     RecentlyUsedMediaFolders.RemoveAt(n);
                 }
+            }
+
+            if (_mediaCalendarDate == default(DateTime))
+            {
+                _mediaCalendarDate = DateTime.Today;
             }
         }
 

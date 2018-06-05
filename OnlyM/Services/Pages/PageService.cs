@@ -1,6 +1,4 @@
-﻿using OnlyM.ViewModel;
-
-namespace OnlyM.Services.Pages
+﻿namespace OnlyM.Services.Pages
 {
     using System;
     using System.Threading;
@@ -114,11 +112,11 @@ namespace OnlyM.Services.Pages
                     EnsureMediaWindowCreated();
 
                     LocateWindowAtOrigin(_mediaWindow, targetMonitor.Monitor);
-                    
+
                     _mediaWindow.Topmost = true;
 
                     _mediaWindow.Show();
-                    
+
                     OnMediaWindowOpened();
                 }
             }

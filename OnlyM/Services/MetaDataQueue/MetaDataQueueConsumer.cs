@@ -36,11 +36,7 @@
             RunProblemFilesConsumer();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", 
-            "CA2213:DisposableFieldsShouldBeDisposed", 
-            MessageId = "_problemFiles",
-            Justification = "False Positive")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_problemFiles", Justification = "False Positive")]
         public void Dispose()
         {
             _collection?.Dispose();

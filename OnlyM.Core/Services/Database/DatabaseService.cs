@@ -29,6 +29,7 @@
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
         public void AddThumbnailToCache(string originalPath, long originalLastChanged, byte[] thumbnail)
         {
             using (var c = CreateConnection())
@@ -135,6 +136,7 @@
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
         private void SetDatabaseSchemaVersion(SQLiteConnection connection, int version)
         {
             using (var cmd = connection.CreateCommand())
@@ -160,6 +162,7 @@
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
         private void DeleteThumbRow(SQLiteConnection connection, int id)
         {
             using (var cmd = connection.CreateCommand())
@@ -171,6 +174,7 @@
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
         private void CreateThumbTable(SQLiteConnection connection)
         {
             using (var cmd = connection.CreateCommand())

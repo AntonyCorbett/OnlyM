@@ -16,34 +16,37 @@
 
         public static string GetLatestReleaseVersion()
         {
-            string version = null;
-
             try
             {
                 using (var client = new HttpClient())
                 {
                     var response = client.GetAsync(LatestReleaseUrl).Result;
-                    if (response.IsSuccessStatusCode)
+                    if (!response.IsSuccessStatusCode)
                     {
-                        var latestVersionUri = response.RequestMessage.RequestUri;
-                        if (latestVersionUri != null)
-                        {
-                            var segments = latestVersionUri.Segments;
-                            if (segments.Any())
-                            {
-                                version = segments[segments.Length - 1];
-                            }
-                        }
+                        return null;
                     }
+
+                    var latestVersionUri = response.RequestMessage.RequestUri;
+                    if (latestVersionUri == null)
+                    {
+                        return null;
+                    }
+
+                    var segments = latestVersionUri.Segments;
+                    if (!segments.Any())
+                    {
+                        return null;
+                    }
+
+                    return segments[segments.Length - 1];
                 }
             }
             // ReSharper disable once CatchAllClause
             catch (Exception ex)
             {
                 Log.Logger.Error(ex, "Getting latest release version");
+                return null;
             }
-
-            return version;
         }
 
         public static string GetCurrentVersion()
