@@ -26,6 +26,7 @@
 
             _optionsService = optionsService;
             _optionsService.MediaFolderChangedEvent += HandleMediaFolderChangedEvent;
+            _optionsService.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
 
             Task.Run(CollationFunction);
 
@@ -159,6 +160,14 @@
 
         private void HandleMediaFolderChangedEvent(object sender, EventArgs e)
         {
+            // Main Media Folder has changed.
+            InitWatcher();
+        }
+
+        private void HandleOperatingDateChangedEvent(object sender, EventArgs e)
+        {
+            // Operating date has changed (so we may need to watch
+            // a different Calendar folder).
             InitWatcher();
         }
 
