@@ -8,6 +8,7 @@ namespace OnlyM.ViewModel
     using System.IO;
     using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Threading;
     using AutoUpdates;
     using Core.Services.Options;
     using GalaSoft.MvvmLight;
@@ -34,6 +35,7 @@ namespace OnlyM.ViewModel
             IMediaStatusChangingService mediaStatusChangingService,
             IHiddenMediaItemsService hiddenMediaItemsService)
         {
+            Messenger.Default.Register<MediaListUpdatingMessage>(this, OnMediaListUpdating);
             Messenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
 
             _mediaStatusChangingService = mediaStatusChangingService;
@@ -69,8 +71,29 @@ namespace OnlyM.ViewModel
             RaisePropertyChanged(nameof(IsUnhideButtonVisible));
         }
 
+        private bool _isMediaListLoading;
+
+        public bool IsMediaListLoading
+        {
+            get => _isMediaListLoading;
+            set
+            {
+                if (_isMediaListLoading != value)
+                {
+                    _isMediaListLoading = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private void OnMediaListUpdating(MediaListUpdatingMessage message)
+        {
+            IsMediaListLoading = true;
+        }
+
         private void OnMediaListUpdated(MediaListUpdatedMessage message)
         {
+            IsMediaListLoading = false;
             IsMediaListEmpty = message.Count == 0;
         }
 

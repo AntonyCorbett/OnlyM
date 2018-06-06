@@ -38,5 +38,9 @@
         event EventHandler ImageScreenPositionChangedEvent;
 
         event EventHandler ShowMediaItemCommandPanelChangedEvent;
+
+        event EventHandler OperatingDateChangedEvent;
+
+        event EventHandler MaxItemCountChangedEvent;
     }
 }

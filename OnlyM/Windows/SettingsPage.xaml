@@ -150,8 +150,14 @@
                     Enable command panel
                 </CheckBox>
 
+                <TextBox
+                    materialDesign:HintAssist.Hint="Maximum number of items"
+                    Text="{Binding MaxItemCount, Mode=TwoWay}"
+                    Style="{StaticResource SettingsTextBoxStyle}" />
+
                 <Button 
                     Style="{StaticResource SettingsButtonStyle}" 
+                    Margin="0,10,0,0"
                     Command="{Binding PurgeThumbnailCacheCommand}"
                     Content="Purge Thumbnail Cache" />
 
@@ -282,6 +288,16 @@
                            FontSize="12"
                            Margin="0,0,0,15"
                            Foreground="{StaticResource MaterialDesignDarkBackground}" />
+
+                <DatePicker
+                    HorizontalAlignment="Left"
+                    Name="LocaleDatePicker"
+                    IsEnabled="{Binding IsMediaInactive}"
+                    Margin="0,0,0,10"
+                    SelectedDate="{Binding MediaCalendarDate}"
+                    SelectedDateFormat="Long"
+                    Width="200"
+                    materialDesign:HintAssist.Hint="Current date" />
 
                 <CheckBox IsChecked="{Binding AlwaysOnTop, Mode=TwoWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">

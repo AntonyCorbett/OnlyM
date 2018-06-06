@@ -5,11 +5,15 @@
     using System.IO;
     using System.Linq;
     using Models;
+    using Newtonsoft.Json;
     using Serilog.Events;
     using Utils;
 
     public sealed class Options
     {
+        private const int AbsoluteMaxItemCount = 200;
+        private const int DefaultMaxItemCount = 50;
+
         public event EventHandler MediaFolderChangedEvent;
 
         public event EventHandler ImageFadeTypeChangedEvent;
@@ -40,6 +44,10 @@
 
         public event EventHandler ShowMediaItemCommandPanelChangedEvent;
 
+        public event EventHandler OperatingDateChangedEvent;
+
+        public event EventHandler MaxItemCountChangedEvent;
+
 
         public Options()
         {
@@ -57,6 +65,7 @@
             PermanentBackdrop = true;
             JwLibraryCompatibilityMode = true;
             ConfirmVideoStop = false;
+            MaxItemCount = DefaultMaxItemCount;
 
             _videoScreenPosition = new ScreenPosition();
             _imageScreenPosition = new ScreenPosition();
@@ -95,16 +104,33 @@
             }
         }
 
-        private DateTime _mediaCalendarDate;
+        private DateTime _operatingDate;
 
-        public DateTime MediaCalendarDate
+        [JsonIgnore]
+        public DateTime OperatingDate
         {
-            get => _mediaCalendarDate.Date;
+            get => _operatingDate.Date;
             set
             {
-                if (_mediaCalendarDate.Date != value.Date)
+                if (_operatingDate.Date != value.Date)
                 {
-                    _mediaCalendarDate = value.Date;
+                    _operatingDate = value.Date;
+                    OperatingDateChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        private int _maxItemCount;
+
+        public int MaxItemCount
+        {
+            get => _maxItemCount;
+            set
+            {
+                if (_maxItemCount != value)
+                {
+                    _maxItemCount = value;
+                    MaxItemCountChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -352,9 +378,18 @@
                 }
             }
 
-            if (_mediaCalendarDate == default(DateTime))
+            // media calendar date is always set to today
+            // on startup.
+            _operatingDate = DateTime.Today;
+
+            if (MaxItemCount > AbsoluteMaxItemCount)
             {
-                _mediaCalendarDate = DateTime.Today;
+                MaxItemCount = AbsoluteMaxItemCount;
+            }
+
+            if (MaxItemCount <= 0)
+            {
+                MaxItemCount = 1;
             }
         }
 

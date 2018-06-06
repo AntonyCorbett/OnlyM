@@ -144,6 +144,7 @@
     <Compile Include="Models\MonitorItem.cs" />
     <Compile Include="Models\ScreenMarginSide.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatedMessage.cs" />
+    <Compile Include="PubSubMessages\MediaListUpdatingMessage.cs" />
     <Compile Include="PubSubMessages\ShutDownMessage.cs" />
     <Compile Include="Services\DragAndDrop\DragAndDropService.cs" />
     <Compile Include="Services\DragAndDrop\IDragAndDropService.cs" />

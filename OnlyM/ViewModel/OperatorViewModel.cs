@@ -41,6 +41,7 @@
         private MetaDataQueueConsumer _metaDataConsumer;
         private MediaItem _currentMediaItem;
         private string _blankScreenImagePath;
+        private bool _pendingLoadMediaItems;
 
         public OperatorViewModel(
             IMediaProviderService mediaProviderService,
@@ -66,6 +67,8 @@
             _optionsService.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
             _optionsService.UseInternalMediaTitlesChangedEvent += HandleUseInternalMediaTitlesChangedEvent;
             _optionsService.ShowMediaItemCommandPanelChangedEvent += HandleShowMediaItemCommandPanelChangedEvent;
+            _optionsService.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
+            _optionsService.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
             _optionsService.PermanentBackdropChangedEvent += async (sender, e) =>
             {
                 await HandlePermanentBackdropChangedEvent(sender, e);
@@ -81,6 +84,7 @@
             _pageService.MediaChangeEvent += HandleMediaChangeEvent;
             _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
             _pageService.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
+            _pageService.NavigationEvent += HandleNavigationEvent;
 
             _metaDataService = metaDataService;
 
@@ -100,6 +104,28 @@
             _metaDataProducer?.Dispose();
             _thumbnailCancellationTokenSource?.Dispose();
             _metaDataConsumer?.Dispose();
+        }
+
+        private void HandleMaxItemCountChangedEvent(object sender, EventArgs e)
+        {
+            _pendingLoadMediaItems = true;
+        }
+
+        private void HandleNavigationEvent(object sender, NavigationEventArgs e)
+        {
+            if (e.PageName.Equals(_pageService.OperatorPageName))
+            {
+                if (_pendingLoadMediaItems)
+                {
+                    _pendingLoadMediaItems = false;
+                    LoadMediaItems();
+                }
+            }
+        }
+
+        private void HandleOperatingDateChangedEvent(object sender, EventArgs e)
+        {
+            _pendingLoadMediaItems = true;
         }
 
         private void HandleUnhideAllEvent(object sender, EventArgs e)
@@ -127,7 +153,7 @@
                 await RemoveBlankScreenItem();
             }
 
-            LoadMediaItems();
+            _pendingLoadMediaItems = true;
         }
 
         private async Task HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
@@ -137,7 +163,7 @@
                 await RemoveBlankScreenItem();
             }
 
-            LoadMediaItems();
+            _pendingLoadMediaItems = true;
         }
 
         private async Task RemoveBlankScreenItem()
@@ -158,7 +184,7 @@
                 item.Name = GetMediaTitle(item.FilePath, metaData);
             }
 
-            LoadMediaItems();
+            _pendingLoadMediaItems = true;
         }
 
         private void HandleAllowVideoPositionSeekingChangedEvent(object sender, EventArgs e)
@@ -471,7 +497,7 @@
 
         private void HandleMediaFolderChangedEvent(object sender, EventArgs e)
         {
-            LoadMediaItems();
+            _pendingLoadMediaItems = true;
         }
 
         private void HandleThumbnailsPurgedEvent(object sender, EventArgs e)
@@ -491,8 +517,24 @@
                 return;
             }
 
-            var itemsToRemove = new List<MediaItem>();
+            Log.Logger.Debug("Loading media items");
+            
+            Messenger.Default.Send(new MediaListUpdatingMessage());
 
+            using (new ObservableCollectionSupression<MediaItem>(MediaItems))
+            {
+                LoadMediaItemsInternal();
+            }
+
+            ChangePlayButtonEnabledStatus();
+
+            Messenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
+            
+            Log.Logger.Debug("Completed loading media items");
+        }
+
+        private void LoadMediaItemsInternal()
+        {
             var files = _mediaProviderService.GetMediaFiles();
             var sourceFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var destFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -501,7 +543,9 @@
             {
                 sourceFilePaths.Add(file.FullPath);
             }
-            
+
+            var itemsToRemove = new List<MediaItem>();
+
             foreach (var item in MediaItems)
             {
                 if (!sourceFilePaths.Contains(item.FilePath))
@@ -518,46 +562,54 @@
             {
                 MediaItems.Remove(item);
             }
-
-            var commandPanelVisible = _optionsService.Options.ShowMediaItemCommandPanel;
-
+            
             // add new items.
             foreach (var file in files)
             {
                 if (!destFilePaths.Contains(file.FullPath))
                 {
-                    var metaData = _metaDataService.GetMetaData(file.FullPath);
-
-                    var item = new MediaItem
-                    {
-                        MediaType = file.MediaType,
-                        Id = Guid.NewGuid(),
-                        Name = GetMediaTitle(file.FullPath, metaData),
-                        CommandPanelVisible = commandPanelVisible,
-                        FilePath = file.FullPath,
-                        IsVisible = true,
-                        LastChanged = file.LastChanged,
-                        AllowPause = _optionsService.Options.AllowVideoPause,
-                        AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking,
-                        IsWaitingAnimationVisible = true,
-                        DurationDeciseconds = GetMediaDuration(metaData)
-                    };
+                    var item = CreateNewMediaItem(file);
 
                     MediaItems.Add(item);
-
                     _metaDataProducer.Add(item);
                 }
             }
-            
+
             SortMediaItems();
 
+            TruncateMediaItemsToMaxCount();
+            
             _hiddenMediaItemsService.Init(MediaItems);
 
             InsertBlankMediaItem();
-            
-            ChangePlayButtonEnabledStatus();
+        }
 
-            Messenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
+        private void TruncateMediaItemsToMaxCount()
+        {
+            while (MediaItems.Count > _optionsService.Options.MaxItemCount)
+            {
+                MediaItems.RemoveAt(MediaItems.Count - 1);
+            }
+        }
+
+        private MediaItem CreateNewMediaItem(MediaFile file)
+        {
+            var metaData = _metaDataService.GetMetaData(file.FullPath);
+            
+            return new MediaItem
+            {
+                MediaType = file.MediaType,
+                Id = Guid.NewGuid(),
+                Name = GetMediaTitle(file.FullPath, metaData),
+                CommandPanelVisible = _optionsService.Options.ShowMediaItemCommandPanel,
+                FilePath = file.FullPath,
+                IsVisible = true,
+                LastChanged = file.LastChanged,
+                AllowPause = _optionsService.Options.AllowVideoPause,
+                AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking,
+                IsWaitingAnimationVisible = true,
+                DurationDeciseconds = GetMediaDuration(metaData)
+            };
         }
 
         private void InsertBlankMediaItem()
@@ -650,7 +702,7 @@
             }
         }
 
-        public ObservableCollection<MediaItem> MediaItems { get; } = new ObservableCollection<MediaItem>();
+        public ObservableCollectionEx<MediaItem> MediaItems { get; } = new ObservableCollectionEx<MediaItem>();
 
         public RelayCommand<Guid> MediaControlCommand1 { get; set; }
 

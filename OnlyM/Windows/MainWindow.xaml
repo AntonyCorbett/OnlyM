@@ -204,13 +204,13 @@
                         <ColumnDefinition Width="50"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0"
+                        <Button Grid.Column="0"
                         HorizontalAlignment="Left"
                         Command="{Binding GotoOperatorCommand}"
                         ToolTip="Media page"
                         Visibility="{Binding Path=IsSettingsPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
-                        <materialDesign:PackIcon
+                            <materialDesign:PackIcon
                             Kind="Backburger"
                             Height="24"
                             Width="24" />

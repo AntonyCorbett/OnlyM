@@ -170,7 +170,7 @@
         
         private void InitWatcher()
         {
-            _foldersToWatch = _mediaProviderService.GetMediaFolders(_optionsService.Options.MediaCalendarDate);
+            _foldersToWatch = _mediaProviderService.GetMediaFolders(_optionsService.Options.OperatingDate);
             InitWatcher(_foldersToWatch);
         }
     }

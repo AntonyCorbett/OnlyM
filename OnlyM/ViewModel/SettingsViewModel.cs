@@ -127,6 +127,35 @@
 
         public string AppVersionStr => string.Format(Properties.Resources.APP_VER, VersionDetection.GetCurrentVersion());
 
+        public string MaxItemCount
+        {
+            get => _optionsService.Options.MaxItemCount.ToString();
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && !_optionsService.Options.MaxItemCount.ToString().Equals(value))
+                {
+                    if (int.TryParse(value, out var count))
+                    {
+                        _optionsService.Options.MaxItemCount = count;
+                        RaisePropertyChanged();
+                    }
+                }
+            }
+        }
+
+        public DateTime MediaCalendarDate
+        {
+            get => _optionsService.Options.OperatingDate;
+            set
+            {
+                if (_optionsService.Options.OperatingDate != value)
+                {
+                    _optionsService.Options.OperatingDate = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public bool AlwaysOnTop
         {
             get => _optionsService.Options.AlwaysOnTop;

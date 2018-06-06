@@ -45,6 +45,10 @@
 
         public event EventHandler ShowMediaItemCommandPanelChangedEvent;
 
+        public event EventHandler OperatingDateChangedEvent;
+
+        public event EventHandler MaxItemCountChangedEvent;
+
         public OptionsService(ILogLevelSwitchService logLevelSwitchService)
         {
             _logLevelSwitchService = logLevelSwitchService;
@@ -138,10 +142,22 @@
                     _options.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
                     _options.ImageScreenPositionChangedEvent += HandleImageScreenPositionChangedEvent;
                     _options.ShowMediaItemCommandPanelChangedEvent += HandleShowMediaItemCommandPanelChangedEvent;
+                    _options.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
+                    _options.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
 
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void HandleMaxItemCountChangedEvent(object sender, EventArgs e)
+        {
+            MaxItemCountChangedEvent?.Invoke(this, e);
+        }
+
+        private void HandleOperatingDateChangedEvent(object sender, EventArgs e)
+        {
+            OperatingDateChangedEvent?.Invoke(this, e);
         }
 
         private void HandleShowMediaItemCommandPanelChangedEvent(object sender, EventArgs e)

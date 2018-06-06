@@ -68,7 +68,7 @@
         {
             var result = new List<MediaFile>();
 
-            var folders = GetMediaFolders(_optionsService.Options.MediaCalendarDate);
+            var folders = GetMediaFolders(_optionsService.Options.OperatingDate);
 
             result.AddRange(GetMediaFilesInFolder(folders.MediaFolder));
             result.AddRange(GetMediaFilesInFolder(folders.DatedSubFolder));
