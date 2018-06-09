@@ -28,8 +28,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
             <DataTemplate DataType="{x:Type models:MediaItem}">
                 <materialDesign:Card Height="120" Margin="4" Padding="4"
                                          Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -121,9 +119,9 @@
                                     Kind="ArrowRight" />
                             </Button>
 
-                            <Border Grid.Column="1" Background="Black" Margin="0,0,5,0">
+                            <Border Grid.Column="1" Background="Black" Margin="0,0,5,0" BorderThickness="1" BorderBrush="Black">
                                 <Grid>
-                                    <Image Source="{Binding ThumbnailImageSource}"></Image>
+                                    <Image Source="{Binding ThumbnailImageSource}" />
 
                                     <Ellipse 
                                         Width="29" Height="29" 
@@ -144,23 +142,17 @@
                                         Height="24"
                                         Width="24" />
 
-                                    <Grid Visibility="{Binding PauseOnLastFrame, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                          ToolTip="Will pause on final frame">
-                                        <Ellipse 
-                                        Width="29" Height="29" 
+                                    <Border BorderThickness="1" 
+                                            Visibility="{Binding PauseOnLastFrame, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            ToolTip="Will pause on final frame"
+                                            BorderBrush="Black">
+                                    <Image 
                                         HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        Stroke="{StaticResource MaterialDesignDarkBackground}"
-                                        Margin="3" Fill="#FFC8FDFB" />
-
-                                    <materialDesign:PackIcon 
-                                        Margin="5"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        Kind="Pause"
-                                        Height="24"
-                                        Width="24" />
-                                    </Grid>
+                                        Opacity="0.9"
+                                        Width="12"
+                                        Stretch="Fill"
+                                        Source="../Images/freeze2.png" />
+                                    </Border>
 
                                 </Grid>
                             </Border>
