@@ -48,6 +48,8 @@
 
         public event EventHandler MaxItemCountChangedEvent;
 
+        public event EventHandler ShowFreezeCommandChangedEvent;
+
 
         public Options()
         {
@@ -87,6 +89,22 @@
                 }
             }
         }
+
+        private bool _showFreezeCommand;
+
+        public bool ShowFreezeCommand
+        {
+            get => _showFreezeCommand;
+            set
+            {
+                if (_showFreezeCommand != value)
+                {
+                    _showFreezeCommand = value;
+                    ShowFreezeCommandChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
 
         private string _mediaMonitorId;
 
@@ -277,7 +295,7 @@
         public bool JwLibraryCompatibilityMode { get; set; }
 
         public bool ConfirmVideoStop { get; set; }
-
+        
         private LogEventLevel _logEventLevel;
 
         public LogEventLevel LogEventLevel

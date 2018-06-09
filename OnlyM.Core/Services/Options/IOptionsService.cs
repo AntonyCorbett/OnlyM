@@ -42,5 +42,7 @@
         event EventHandler OperatingDateChangedEvent;
 
         event EventHandler MaxItemCountChangedEvent;
+
+        event EventHandler ShowFreezeCommandChangedEvent;
     }
 }

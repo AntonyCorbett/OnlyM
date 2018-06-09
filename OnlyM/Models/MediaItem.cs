@@ -41,11 +41,47 @@
                     _commandPanelVisible = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(CommandPanelBtnColWidth));
+
+                    if (!_commandPanelVisible && IsCommandPanelOpen)
+                    {
+                        IsCommandPanelOpen = false;
+                    }
                 }
             }
         }
 
-        public bool PauseOnLastFrame { get; set; }
+        private bool _pauseOnLastFrame;
+
+        public bool PauseOnLastFrame
+        {
+            get => _pauseOnLastFrame;
+            set
+            {
+                if (_pauseOnLastFrame != value)
+                {
+                    _pauseOnLastFrame = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool _allowFreezeCommand;
+
+        public bool AllowFreezeCommand
+        {
+            get => _allowFreezeCommand;
+            set
+            {
+                if (_allowFreezeCommand != value)
+                {
+                    _allowFreezeCommand = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(ShouldDisplayFreezeCommand));
+                }
+            }
+        }
+
+        public bool ShouldDisplayFreezeCommand => IsVideo && AllowFreezeCommand;
 
         private bool _isCommandPanelOpen;
 

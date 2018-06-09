@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -18,6 +19,7 @@
     using Models;
     using PubSubMessages;
     using Serilog;
+    using Services.FrozenVideoItems;
     using Services.HiddenMediaItems;
     using Services.MediaChanging;
     using Services.MetaDataQueue;
@@ -33,6 +35,7 @@
         private readonly IPageService _pageService;
         private readonly IMediaStatusChangingService _mediaStatusChangingService;
         private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
+        private readonly IFrozenVideosService _frozenVideosService;
 
         private readonly MetaDataQueueProducer _metaDataProducer = new MetaDataQueueProducer();
         private readonly CancellationTokenSource _thumbnailCancellationTokenSource = new CancellationTokenSource();
@@ -50,12 +53,16 @@
             IFolderWatcherService folderWatcherService,
             IMediaMetaDataService metaDataService,
             IMediaStatusChangingService mediaStatusChangingService,
-            IHiddenMediaItemsService hiddenMediaItemsService)
+            IHiddenMediaItemsService hiddenMediaItemsService,
+            IFrozenVideosService frozenVideosService)
         {
             _mediaProviderService = mediaProviderService;
             _mediaStatusChangingService = mediaStatusChangingService;
+
             _hiddenMediaItemsService = hiddenMediaItemsService;
             _hiddenMediaItemsService.UnhideAllEvent += HandleUnhideAllEvent;
+
+            _frozenVideosService = frozenVideosService;
 
             _thumbnailService = thumbnailService;
             _thumbnailService.ThumbnailsPurgedEvent += HandleThumbnailsPurgedEvent;
@@ -66,6 +73,7 @@
             _optionsService.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
             _optionsService.UseInternalMediaTitlesChangedEvent += HandleUseInternalMediaTitlesChangedEvent;
             _optionsService.ShowMediaItemCommandPanelChangedEvent += HandleShowMediaItemCommandPanelChangedEvent;
+            _optionsService.ShowFreezeCommandChangedEvent += HandleShowFreezeCommandChangedEvent;
             _optionsService.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
             _optionsService.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
             _optionsService.PermanentBackdropChangedEvent += async (sender, e) =>
@@ -146,6 +154,16 @@
             foreach (var item in MediaItems)
             {
                 item.CommandPanelVisible = visible;
+            }
+        }
+
+        private void HandleShowFreezeCommandChangedEvent(object sender, EventArgs e)
+        {
+            var allow = _optionsService.Options.ShowFreezeCommand;
+
+            foreach (var item in MediaItems)
+            {
+                item.AllowFreezeCommand = allow;
             }
         }
 
@@ -350,6 +368,28 @@
             OpenCommandPanelCommand = new RelayCommand<Guid>(OpenCommandPanel);
 
             CloseCommandPanelCommand = new RelayCommand<Guid>(CloseCommandPanel);
+
+            FreezeVideoCommand = new RelayCommand<Guid>(FreezeVideoOnLastFrame);
+        }
+
+        private void FreezeVideoOnLastFrame(Guid mediaItemId)
+        {
+            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItem != null)
+            {
+                Debug.Assert(
+                    mediaItem.MediaType.Classification == MediaClassification.Video, 
+                    "mediaItem.MediaType.Classification == MediaClassification.Video");
+
+                if (mediaItem.PauseOnLastFrame)
+                {
+                    _frozenVideosService.Add(mediaItem.FilePath);
+                }
+                else
+                {
+                    _frozenVideosService.Remove(mediaItem.FilePath);
+                }
+            }
         }
 
         private void CloseCommandPanel(Guid mediaItemId)
@@ -595,6 +635,7 @@
             TruncateMediaItemsToMaxCount();
             
             _hiddenMediaItemsService.Init(MediaItems);
+            _frozenVideosService.Init(MediaItems);
 
             InsertBlankMediaItem();
         }
@@ -616,6 +657,7 @@
                 MediaType = file.MediaType,
                 Id = Guid.NewGuid(),
                 Name = GetMediaTitle(file.FullPath, metaData),
+                AllowFreezeCommand = _optionsService.Options.ShowFreezeCommand,
                 CommandPanelVisible = _optionsService.Options.ShowMediaItemCommandPanel,
                 FilePath = file.FullPath,
                 IsVisible = true,
@@ -641,6 +683,7 @@
                     Id = Guid.NewGuid(),
                     IsBlankScreen = true,
                     IsVisible = true,
+                    AllowFreezeCommand = _optionsService.Options.ShowFreezeCommand,
                     CommandPanelVisible = _optionsService.Options.ShowMediaItemCommandPanel,
                     Name = Properties.Resources.BLANK_SCREEN,
                     FilePath = blankScreenPath,
@@ -730,5 +773,7 @@
         public RelayCommand<Guid> OpenCommandPanelCommand { get; set; }
 
         public RelayCommand<Guid> CloseCommandPanelCommand { get; set; }
+
+        public RelayCommand<Guid> FreezeVideoCommand { get; set; }
     }
 }

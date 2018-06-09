@@ -31,7 +31,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
             <DataTemplate DataType="{x:Type models:MediaItem}">
-                    <materialDesign:Card Height="120" Margin="4" Padding="4"
+                <materialDesign:Card Height="120" Margin="4" Padding="4"
                                          Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                          materialDesign:ShadowAssist.ShadowDepth="Depth1"
                                          materialDesign:ShadowAssist.ShadowEdges="Bottom">
@@ -43,7 +43,7 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="12" />
                                 </Grid.ColumnDefinitions>
-                                
+
                                 <Grid Grid.Column="0" Margin="10,10,30,10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
@@ -67,9 +67,12 @@
                                             Style="{StaticResource MaterialDesignRaisedLightButton}"/>
 
                                     <CheckBox Grid.Column="1" Grid.Row="1"
-                                            Visibility="{Binding IsVideo, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            Visibility="{Binding ShouldDisplayFreezeCommand, Converter={StaticResource BooleanToVisibilityConverter}}"
                                             Margin="10,0,0,0"
-                                            IsChecked="{Binding PauseOnLastFrame, Mode=OneWayToSource}"
+                                            ToolTip="Pause on final frame"
+                                            IsChecked="{Binding PauseOnLastFrame, Mode=TwoWay}"
+                                            Command="{Binding Path=DataContext.FreezeVideoCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                            CommandParameter="{Binding Id}"
                                             Content="Freeze" />
 
                                 </Grid>
@@ -121,6 +124,7 @@
                             <Border Grid.Column="1" Background="Black" Margin="0,0,5,0">
                                 <Grid>
                                     <Image Source="{Binding ThumbnailImageSource}"></Image>
+
                                     <Ellipse 
                                         Width="29" Height="29" 
                                         HorizontalAlignment="Left"
@@ -140,6 +144,24 @@
                                         Height="24"
                                         Width="24" />
 
+                                    <Grid Visibility="{Binding PauseOnLastFrame, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                          ToolTip="Will pause on final frame">
+                                        <Ellipse 
+                                        Width="29" Height="29" 
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Stroke="{StaticResource MaterialDesignDarkBackground}"
+                                        Margin="3" Fill="#FFC8FDFB" />
+
+                                    <materialDesign:PackIcon 
+                                        Margin="5"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Kind="Pause"
+                                        Height="24"
+                                        Width="24" />
+                                    </Grid>
+
                                 </Grid>
                             </Border>
 
@@ -149,7 +171,7 @@
                                     <RowDefinition Height="36" />
                                     <RowDefinition Height="28" />
                                 </Grid.RowDefinitions>
-                                
+
                                 <TextBlock Grid.Row="0" 
                                            TextTrimming="CharacterEllipsis" 
                                            Style="{StaticResource MaterialDesignTitleTextBlock}"
@@ -258,7 +280,7 @@
             </BeginStoryboard>
         </EventTrigger>
     </UserControl.Triggers>
-    
+
     <ItemsControl ItemsSource="{Binding MediaItems}">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>

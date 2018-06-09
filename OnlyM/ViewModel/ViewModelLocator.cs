@@ -1,3 +1,4 @@
+using OnlyM.Services.FrozenVideoItems;
 using OnlyM.Services.HiddenMediaItems;
 
 namespace OnlyM.ViewModel
@@ -40,6 +41,7 @@ namespace OnlyM.ViewModel
             SimpleIoc.Default.Register<ISnackbarService, SnackbarService>();
             SimpleIoc.Default.Register<IMediaStatusChangingService, MediaStatusChangingService>();
             SimpleIoc.Default.Register<IHiddenMediaItemsService, HiddenMediaItemsService>();
+            SimpleIoc.Default.Register<IFrozenVideosService, FrozenVideosService>();
 
             // view models.
             SimpleIoc.Default.Register<MainViewModel>();

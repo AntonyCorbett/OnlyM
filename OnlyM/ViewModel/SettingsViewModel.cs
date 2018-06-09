@@ -478,6 +478,19 @@
             }
         }
 
+        public bool ShowFreezeCommand
+        {
+            get => _optionsService.Options.ShowFreezeCommand;
+            set
+            {
+                if (_optionsService.Options.ShowFreezeCommand != value)
+                {
+                    _optionsService.Options.ShowFreezeCommand = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private bool _isMediaActive;
 
         public bool IsMediaActive

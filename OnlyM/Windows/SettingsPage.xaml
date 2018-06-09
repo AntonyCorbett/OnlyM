@@ -147,7 +147,7 @@
 
                 <CheckBox IsChecked="{Binding ShowCommandPanel, Mode=TwoWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">
-                    Enable command panel
+                    Enable Command Panel
                 </CheckBox>
 
                 <TextBox
@@ -212,6 +212,11 @@
                 <CheckBox IsChecked="{Binding AllowVideoPause, Mode=TwoWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">
                     Allow pause
+                </CheckBox>
+
+                <CheckBox IsChecked="{Binding ShowFreezeCommand, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Show 'Freeze' command in Command Panel
                 </CheckBox>
 
                 <CheckBox IsChecked="{Binding ConfirmWhenStoppingVideo, Mode=TwoWay}"

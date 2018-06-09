@@ -49,6 +49,8 @@
 
         public event EventHandler MaxItemCountChangedEvent;
 
+        public event EventHandler ShowFreezeCommandChangedEvent;
+
         public OptionsService(ILogLevelSwitchService logLevelSwitchService)
         {
             _logLevelSwitchService = logLevelSwitchService;
@@ -144,10 +146,16 @@
                     _options.ShowMediaItemCommandPanelChangedEvent += HandleShowMediaItemCommandPanelChangedEvent;
                     _options.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
                     _options.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
+                    _options.ShowFreezeCommandChangedEvent += HandleShowFreezeCommandChangedEvent;
 
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void HandleShowFreezeCommandChangedEvent(object sender, EventArgs e)
+        {
+            ShowFreezeCommandChangedEvent?.Invoke(this, e);
         }
 
         private void HandleMaxItemCountChangedEvent(object sender, EventArgs e)
