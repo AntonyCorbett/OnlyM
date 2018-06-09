@@ -25,6 +25,8 @@
 
         public Guid Id { get; set; }
 
+        public bool IsVideo => MediaType.Classification == MediaClassification.Video; 
+
         public bool IsBlankScreen { get; set; }
 
         private bool _commandPanelVisible;
@@ -42,6 +44,8 @@
                 }
             }
         }
+
+        public bool PauseOnLastFrame { get; set; }
 
         private bool _isCommandPanelOpen;
 

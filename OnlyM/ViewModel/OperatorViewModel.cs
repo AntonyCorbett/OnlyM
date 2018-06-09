@@ -83,6 +83,10 @@
             _pageService.MediaChangeEvent += HandleMediaChangeEvent;
             _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
             _pageService.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
+            _pageService.MediaNearEndEvent += async (sender, e) =>
+            {
+                await HandleMediaNearEndEvent(sender, e);
+            };
             _pageService.NavigationEvent += HandleNavigationEvent;
 
             _metaDataService = metaDataService;
@@ -199,6 +203,18 @@
             foreach (var item in MediaItems)
             {
                 item.AllowPause = _optionsService.Options.AllowVideoPause;
+            }
+        }
+
+        private async Task HandleMediaNearEndEvent(object sender, EventArgs e)
+        {
+            var item = _currentMediaItem;
+            if (item != null)
+            {
+                if (item.PauseOnLastFrame)
+                {
+                    await MediaPauseControl(item.Id);
+                }
             }
         }
 

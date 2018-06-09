@@ -1,10 +1,9 @@
-﻿using System.Windows.Controls;
-
-namespace OnlyM.Services.Pages
+﻿namespace OnlyM.Services.Pages
 {
     using System;
     using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Controls;
     using MediaElementAdaption;
     using Models;
 
@@ -21,7 +20,9 @@ namespace OnlyM.Services.Pages
         event EventHandler MediaWindowOpenedEvent;
 
         event EventHandler MediaWindowClosedEvent;
-        
+
+        event EventHandler MediaNearEndEvent;
+
         bool AllowMediaWindowToClose { get; }
 
         string OperatorPageName { get; }

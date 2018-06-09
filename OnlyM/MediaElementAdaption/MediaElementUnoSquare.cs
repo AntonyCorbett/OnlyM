@@ -43,6 +43,8 @@
             set => _mediaElement.Position = value;
         }
 
+        public Duration NaturalDuration => _mediaElement.NaturalDuration;
+
         public FrameworkElement FrameworkElement => _mediaElement;
 
         public Task Play()

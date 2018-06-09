@@ -10,15 +10,20 @@
 
     internal sealed class VideoDisplayManager
     {
+        private const int FreezeMillisecsFromEnd = 250;
+
         private readonly IMediaElement _mediaElement;
         private Guid _mediaItemId;
         private TimeSpan _startPosition;
         private TimeSpan _lastPosition = TimeSpan.Zero;
         private bool _manuallySettingPlaybackPosition;
+        private bool _firedNearEndEvent;
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
         public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
+
+        public event EventHandler MediaNearEndEvent;
 
         public VideoDisplayManager(IMediaElement mediaElement)
         {
@@ -102,6 +107,9 @@
         private void HandleMediaOpened(object sender, System.Windows.RoutedEventArgs e)
         {
             Log.Logger.Information("Opened");
+
+            _firedNearEndEvent = false;
+
             _mediaElement.Position = _startPosition;
             OnMediaChangeEvent(new MediaEventArgs
             {
@@ -113,6 +121,9 @@
         private void HandleMediaClosed(object sender, System.Windows.RoutedEventArgs e)
         {
             Log.Logger.Debug("Media closed");
+
+            _firedNearEndEvent = false;
+
             OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
         }
 
@@ -138,6 +149,14 @@
                 {
                     _lastPosition = e.Position;
                     MediaPositionChangedEvent?.Invoke(this, e);
+
+                    if (!_firedNearEndEvent &&
+                        _mediaElement.NaturalDuration.HasTimeSpan &&
+                        (_mediaElement.NaturalDuration.TimeSpan - e.Position).TotalMilliseconds < FreezeMillisecsFromEnd)
+                    {
+                        _firedNearEndEvent = true;
+                        MediaNearEndEvent?.Invoke(this, EventArgs.Empty);
+                    }
                 }
             }
         }

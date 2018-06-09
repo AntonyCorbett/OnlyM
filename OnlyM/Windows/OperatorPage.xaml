@@ -44,22 +44,35 @@
                                     <ColumnDefinition Width="12" />
                                 </Grid.ColumnDefinitions>
                                 
-                                <DockPanel Grid.Column="0" Margin="10,10,30,10">
+                                <Grid Grid.Column="0" Margin="10,10,30,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="1*" />
+                                        <RowDefinition Height="1*" />
+                                    </Grid.RowDefinitions>
 
-                                    <Button Command="{Binding Path=DataContext.DeleteMediaItemCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                    <Button Grid.Column="0" Grid.Row="0"
+                                            Command="{Binding Path=DataContext.DeleteMediaItemCommand, Source={x:Reference OnlyMOperatorPage}}"
                                             CommandParameter="{Binding Id}"
-                                            DockPanel.Dock="Top"
                                             Content="DELETE"
                                             Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
 
-                                    <Button Command="{Binding Path=DataContext.HideMediaItemCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                    <Button Grid.Column="0" Grid.Row="1"
+                                            Command="{Binding Path=DataContext.HideMediaItemCommand, Source={x:Reference OnlyMOperatorPage}}"
                                             CommandParameter="{Binding Id}"
-                                            DockPanel.Dock="Bottom"
-                                            VerticalAlignment="Bottom"
                                             Content="HIDE"
                                             Style="{StaticResource MaterialDesignRaisedLightButton}"/>
 
-                                </DockPanel>
+                                    <CheckBox Grid.Column="1" Grid.Row="1"
+                                            Visibility="{Binding IsVideo, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            Margin="10,0,0,0"
+                                            IsChecked="{Binding PauseOnLastFrame, Mode=OneWayToSource}"
+                                            Content="Freeze" />
+
+                                </Grid>
 
                                 <Button Grid.Column="1" 
                                         Style="{StaticResource MaterialDesignRaisedLightButton}"

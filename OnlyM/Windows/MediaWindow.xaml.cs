@@ -31,6 +31,8 @@
 
         public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
+        public event EventHandler MediaNearEndEvent;
+
         public event EventHandler FinishedWithWindowEvent;
 
         private bool _finishingWithImageDisplay;
@@ -59,7 +61,7 @@
         {
             set => _imageDisplayManager.ImageFadeSpeed = value;
         }
-
+        
         public async Task StartMedia(
             MediaItem mediaItemToStart, 
             MediaItem currentMediaItem, 
@@ -211,6 +213,7 @@
 
             _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEventForVideoAndAudio;
             _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
+            _videoDisplayManager.MediaNearEndEvent += HandleMediaNearEndEvent;
         }
 
         private void UnsubscribeEvents()
@@ -223,6 +226,7 @@
 
             _videoDisplayManager.MediaChangeEvent -= HandleMediaChangeEventForVideoAndAudio;
             _videoDisplayManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
+            _videoDisplayManager.MediaNearEndEvent -= HandleMediaNearEndEvent;
         }
 
         private void HandleMediaChangeEventForImages(object sender, MediaEventArgs e)
@@ -249,6 +253,11 @@
         private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
         {
             MediaPositionChangedEvent?.Invoke(this, e);
+        }
+
+        private void HandleMediaNearEndEvent(object sender, EventArgs e)
+        {
+            MediaNearEndEvent?.Invoke(this, e);
         }
 
         private void OnFinishedWithWindowEvent()

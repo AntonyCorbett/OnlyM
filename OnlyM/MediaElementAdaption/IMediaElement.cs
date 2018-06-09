@@ -23,6 +23,8 @@ namespace OnlyM.MediaElementAdaption
 
         TimeSpan Position { get; set; }
 
+        Duration NaturalDuration { get; }
+    
         Task Play();
 
         Task Pause();

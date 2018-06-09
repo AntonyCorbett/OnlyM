@@ -7,10 +7,17 @@
     internal static class JwLibHelper
     {
         private const string JwLibProcessName = "JWLibrary";
+        private const string JwLibSignLanguageProcessName = "JWLibrary.Forms.UWP";
 
         public static void BringToFront()
         {
-            var p = Process.GetProcessesByName(JwLibProcessName).FirstOrDefault();
+            BringToFront(JwLibProcessName);
+            BringToFront(JwLibSignLanguageProcessName);
+        }
+
+        private static void BringToFront(string processName)
+        {
+            var p = Process.GetProcessesByName(processName).FirstOrDefault();
             if (p == null)
             {
                 return;

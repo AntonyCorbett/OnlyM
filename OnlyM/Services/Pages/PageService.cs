@@ -44,7 +44,9 @@
         public event EventHandler MediaWindowOpenedEvent;
 
         public event EventHandler MediaWindowClosedEvent;
-        
+
+        public event EventHandler MediaNearEndEvent;
+
         public PageService(
             IMonitorsService monitorsService,
             IOptionsService optionsService,
@@ -261,6 +263,7 @@
             _mediaWindow.MediaChangeEvent += HandleMediaChangeEvent;
             _mediaWindow.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _mediaWindow.FinishedWithWindowEvent += HandleFinishedWithWindowEvent;
+            _mediaWindow.MediaNearEndEvent += HandleMediaNearEndEvent;
             _mediaWindow.Loaded += HandleLoaded;
         }
 
@@ -269,6 +272,7 @@
             _mediaWindow.MediaChangeEvent -= HandleMediaChangeEvent;
             _mediaWindow.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
             _mediaWindow.FinishedWithWindowEvent -= HandleFinishedWithWindowEvent;
+            _mediaWindow.MediaNearEndEvent -= HandleMediaNearEndEvent;
             _mediaWindow.Loaded -= HandleLoaded;
         }
 
@@ -288,6 +292,11 @@
         private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
         {
             MediaPositionChangedEvent?.Invoke(this, e);
+        }
+
+        private void HandleMediaNearEndEvent(object sender, EventArgs e)
+        {
+            MediaNearEndEvent?.Invoke(this, e);
         }
 
         private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
