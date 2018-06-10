@@ -225,6 +225,18 @@
                         UNHIDE
                     </Button>
 
+                    <materialDesign:Card
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        UniformCornerRadius="14"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding Path=ShowProgressBar, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Padding="4">
+                        <ProgressBar
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Value="{Binding ProgressPercentage}" />
+                    </materialDesign:Card>
+
                     <Button
                         Command="{Binding LaunchReleasePageCommand}"
                         Grid.Column="1"
@@ -237,7 +249,7 @@
                             Width="24" />
                     </Button>
 
-                    <Button
+                        <Button
                         Command="{Binding LaunchMediaFolderCommand}"
                         Grid.Column="2"
                         ToolTip="Open media folder"

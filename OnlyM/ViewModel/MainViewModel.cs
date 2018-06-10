@@ -1,6 +1,3 @@
-using OnlyM.Services.HiddenMediaItems;
-using OnlyM.Services.MediaChanging;
-
 namespace OnlyM.ViewModel
 {
     using System;
@@ -8,7 +5,6 @@ namespace OnlyM.ViewModel
     using System.IO;
     using System.Threading.Tasks;
     using System.Windows;
-    using System.Windows.Threading;
     using AutoUpdates;
     using Core.Services.Options;
     using GalaSoft.MvvmLight;
@@ -16,6 +12,9 @@ namespace OnlyM.ViewModel
     using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
     using PubSubMessages;
+    using Services.DragAndDrop;
+    using Services.HiddenMediaItems;
+    using Services.MediaChanging;
     using Services.Pages;
     using Services.Snackbar;
 
@@ -33,7 +32,8 @@ namespace OnlyM.ViewModel
             IOptionsService optionsService,
             ISnackbarService snackbarService,
             IMediaStatusChangingService mediaStatusChangingService,
-            IHiddenMediaItemsService hiddenMediaItemsService)
+            IHiddenMediaItemsService hiddenMediaItemsService,
+            IDragAndDropService dragAndDropService)
         {
             Messenger.Default.Register<MediaListUpdatingMessage>(this, OnMediaListUpdating);
             Messenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
@@ -50,12 +50,14 @@ namespace OnlyM.ViewModel
             _pageService.MediaWindowClosedEvent += HandleMediaWindowClosedEvent;
 
             _snackbarService = snackbarService;
-
+            
             _optionsService = optionsService;
             _optionsService.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
 
             _pageService.GotoOperatorPage();
-            
+
+            dragAndDropService.CopyingFilesProgressEvent += HandleCopyingFilesProgressEvent;
+
             InitCommands();
 
             if (!IsInDesignMode && _optionsService.Options.PermanentBackdrop)
@@ -64,6 +66,28 @@ namespace OnlyM.ViewModel
             }
 
             GetVersionData();
+        }
+
+        private void HandleCopyingFilesProgressEvent(object sender, Models.FilesCopyProgressEventArgs e)
+        {
+            ProgressPercentage = e.PercentageComplete;
+        }
+
+        private double _progressPercentage;
+
+        public double ProgressPercentage
+        {
+            get => _progressPercentage;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_progressPercentage != value)
+                {
+                    _progressPercentage = value;
+                    RaisePropertyChanged();
+                    ShowProgressBar = value > 0.0;
+                }
+            }
         }
 
         private void HandleHiddenItemsChangedEvent(object sender, EventArgs e)
@@ -198,11 +222,23 @@ namespace OnlyM.ViewModel
             }
         }
 
-        public bool IsUnhideButtonVisible 
+        public bool IsUnhideButtonVisible => 
+            IsInDesignMode || (IsOperatorPageActive && !ShowProgressBar && _hiddenMediaItemsService.SomeHiddenMediaItems());
+
+
+        private bool _showProgressBar;
+
+        public bool ShowProgressBar
         {
-            get
+            get => _showProgressBar;
+            set
             {
-                return IsOperatorPageActive && _hiddenMediaItemsService.SomeHiddenMediaItems();
+                if (_showProgressBar != value)
+                {
+                    _showProgressBar = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsUnhideButtonVisible));
+                }
             }
         }
 

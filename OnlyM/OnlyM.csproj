@@ -135,6 +135,8 @@
     <Compile Include="MediaElementAdaption\MediaElementUnoSquare.cs" />
     <Compile Include="MediaElementAdaption\PositionChangedEventArgs.cs" />
     <Compile Include="MediaElementAdaption\RenderSubtitlesEventArgs.cs" />
+    <Compile Include="Models\FileCopyStatus.cs" />
+    <Compile Include="Models\FilesCopyProgressEventArgs.cs" />
     <Compile Include="Models\ImageFade.cs" />
     <Compile Include="Models\ImageFadeSpeed.cs" />
     <Compile Include="Models\LoggingLevel.cs" />

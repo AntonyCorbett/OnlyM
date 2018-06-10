@@ -1,4 +1,8 @@
-﻿namespace OnlyM.Core.Services.Options
+﻿using System.Linq;
+using CommonServiceLocator;
+using OnlyM.Core.Services.Monitors;
+
+namespace OnlyM.Core.Services.Options
 {
     using System;
     using System.IO;
@@ -269,6 +273,11 @@
         private void WriteDefaultOptions()
         {
             _options = new Options();
+
+            // first time launched so set the monitor to the first one we find
+            var monitorService = ServiceLocator.Current.GetInstance<IMonitorsService>();
+            _options.MediaMonitorId = monitorService.GetSystemMonitors().First().MonitorId;
+
             WriteOptions();
         }
 

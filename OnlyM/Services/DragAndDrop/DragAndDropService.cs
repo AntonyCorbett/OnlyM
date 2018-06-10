@@ -8,16 +8,19 @@
     using System.Windows;
     using Core.Services.Media;
     using Core.Services.Options;
+    using Models;
     using Serilog;
     using Snackbar;
 
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class DragAndDropService : IDragAndDropService
+    internal sealed class DragAndDropService : IDragAndDropService
     {
         private readonly IMediaProviderService _mediaProviderService;
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
         private bool _canDrop;
+
+        public event EventHandler<FilesCopyProgressEventArgs> CopyingFilesProgressEvent;
 
         public DragAndDropService(
             IMediaProviderService mediaProviderService,
@@ -94,25 +97,48 @@
 
         private int InternalCopyMediaFiles(IDataObject data, out bool someError)
         {
-            int count = 0;
+            var count = 0;
             someError = false;
 
             try
             {
                 var mediaFolder = _optionsService.Options.MediaFolder;
 
-                IEnumerable<string> files = GetSupportedFiles(data);
-                
-                foreach (var file in files)
+                var files = GetSupportedFiles(data).ToArray();
+                if (!files.Any())
                 {
+                    return 0;
+                }
+
+                int totalCount = files.Length;
+                double partialIncrement = 50.0 / totalCount;
+
+                for (int n = 0; n < totalCount; ++n)
+                {
+                    var file = files[n];
+
                     var filename = Path.GetFileName(file);
                     if (!string.IsNullOrEmpty(filename))
                     {
                         var destFile = Path.Combine(mediaFolder, filename);
                         if (!File.Exists(destFile))
                         {
+                            OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
+                            {
+                                FilePath = destFile,
+                                Status = FileCopyStatus.StartingCopy,
+                                PercentageComplete = ((n * 100.0) / totalCount) + partialIncrement
+                            });
+
                             File.Copy(file, destFile, false);
                             ++count;
+
+                            OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
+                            {
+                                FilePath = destFile,
+                                Status = FileCopyStatus.FinishedCopy,
+                                PercentageComplete = ((n + 1) * 100.0) / totalCount
+                            });
                         }
                     }
                 }
@@ -121,6 +147,14 @@
             {
                 Log.Logger.Error(ex, "Could not copy media files");
                 someError = true;
+            }
+            finally
+            {
+                OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
+                {
+                    Status = FileCopyStatus.FinishedCopy,
+                    PercentageComplete = 0
+                });
             }
 
             return count;
@@ -148,10 +182,25 @@
                 
                 foreach (var file in files)
                 {
-                    var ext = Path.GetExtension(file);
-                    if (!string.IsNullOrEmpty(ext) && _mediaProviderService.IsFileExtensionSupported(ext))
+                    if (Directory.Exists(file))
                     {
-                        result.Add(file);
+                        // a folder rather than a file.
+                        foreach (var fileInFolder in Directory.GetFiles(file))
+                        {
+                            var fileToAdd = GetSupportedFile(fileInFolder);
+                            if (fileToAdd != null)
+                            {
+                                result.Add(fileToAdd);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var fileToAdd = GetSupportedFile(file);
+                        if (fileToAdd != null)
+                        {
+                            result.Add(fileToAdd);
+                        }
                     }
                 }
             }
@@ -159,6 +208,22 @@
             Log.Logger.Verbose($"Found {result.Count} supported files in drag-and-drop operation");
 
             return result;
+        }
+
+        private string GetSupportedFile(string file)
+        {
+            var ext = Path.GetExtension(file);
+            if (string.IsNullOrEmpty(ext) || !_mediaProviderService.IsFileExtensionSupported(ext))
+            {
+                return null;
+            }
+
+            return file;
+        }
+
+        private void OnCopyingFilesProgressEvent(FilesCopyProgressEventArgs e)
+        {
+            CopyingFilesProgressEvent?.Invoke(this, e);
         }
     }
 }
