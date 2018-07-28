@@ -53,11 +53,11 @@
             var optionsService = ServiceLocator.Current.GetInstance<IOptionsService>();
             if (!string.IsNullOrEmpty(optionsService.Options.AppWindowPlacement))
             {
-                this.SetPlacement(optionsService.Options.AppWindowPlacement);
-
                 ResizeMode = WindowState == WindowState.Maximized
                     ? ResizeMode.NoResize
                     : ResizeMode.CanResizeWithGrip;
+
+                this.SetPlacement(optionsService.Options.AppWindowPlacement);
             }
         }
 

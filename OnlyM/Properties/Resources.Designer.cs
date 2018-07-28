@@ -179,6 +179,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot deselect monitor when media is active.
+        /// </summary>
+        internal static string NO_DESELECT_MONITOR {
+            get {
+                return ResourceManager.GetString("NO_DESELECT_MONITOR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No supported media files!.
         /// </summary>
         internal static string NO_SUPPORTED_FILES {

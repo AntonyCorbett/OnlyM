@@ -87,14 +87,15 @@
     <StackPanel Orientation="Vertical">
         <GroupBox Header="Display" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
-               
+
                 <ComboBox ItemsSource="{Binding Monitors}"
                           Style="{StaticResource SettingsComboBoxStyle}" 
                           materialDesign:HintAssist.IsFloating="True"
                           materialDesign:HintAssist.Hint="Media Monitor"
                           SelectedValuePath="MonitorId" 
                           DisplayMemberPath="MonitorName"
-                          SelectedValue="{Binding MonitorId, Mode=TwoWay}"/>
+                          SelectedValue="{Binding MonitorId, Mode=TwoWay}">
+                </ComboBox>
 
                 <CheckBox IsChecked="{Binding PermanentBackdrop, Mode=TwoWay}"
                           IsEnabled="{Binding JwLibModeNotSet, Mode=OneWay}"

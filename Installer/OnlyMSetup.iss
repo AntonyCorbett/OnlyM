@@ -44,6 +44,7 @@ Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\CommonServiceLocator.dll"; De
 Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\ffme.common.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\ffme.win.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\FFmpeg.AutoGen.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\FluentCommandLineParser.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\GalaSoft.MvvmLight.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\GalaSoft.MvvmLight.Extras.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\GalaSoft.MvvmLight.Platform.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -62,6 +63,7 @@ Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\Serilog.Sinks.Console.dll"; D
 Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\Serilog.Sinks.File.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\Serilog.Sinks.RollingFile.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\System.Data.SQLite.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\System.ValueTuple.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\System.Windows.Interactivity.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "\ProjectsPersonal\OnlyM\OnlyM\bin\Release\taglib-sharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 

@@ -1,4 +1,6 @@
-﻿namespace OnlyM.ViewModel
+﻿using OnlyM.Services.Snackbar;
+
+namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -30,6 +32,7 @@
         private readonly IOptionsService _optionsService;
         private readonly IThumbnailService _thumbnailService;
         private readonly IActiveMediaItemsService _activeMediaItemsService;
+        private readonly ISnackbarService _snackbarService;
         private readonly MonitorItem[] _monitors;
         private readonly LoggingLevel[] _loggingLevels;
         private readonly ImageFade[] _fadingTypes;
@@ -41,13 +44,15 @@
             IMonitorsService monitorsService,
             IOptionsService optionsService,
             IActiveMediaItemsService activeMediaItemsService,
-            IThumbnailService thumbnailService)
+            IThumbnailService thumbnailService,
+            ISnackbarService snackbarService)
         {
             _pageService = pageService;
             _monitorsService = monitorsService;
             _optionsService = optionsService;
             _thumbnailService = thumbnailService;
             _activeMediaItemsService = activeMediaItemsService;
+            _snackbarService = snackbarService;
 
             _recentlyUsedMediaFolders = new RecentlyUsedFolders();
             InitRecentlyUsedFolders();
@@ -603,8 +608,16 @@
             {
                 if (_optionsService.Options.MediaMonitorId != value)
                 {
-                    _optionsService.Options.MediaMonitorId = value;
-                    RaisePropertyChanged();
+                    if (value == null && IsMediaActive)
+                    {
+                        // prevent selection on "none" when media is active.
+                        _snackbarService.EnqueueWithOk(Properties.Resources.NO_DESELECT_MONITOR);
+                    }
+                    else
+                    {
+                        _optionsService.Options.MediaMonitorId = value;
+                        RaisePropertyChanged();
+                    }
                 }
             }
         }

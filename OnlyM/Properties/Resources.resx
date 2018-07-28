@@ -175,4 +175,7 @@
   <data name="FOLDER_DISABLED" xml:space="preserve">
     <value>Media folder disabled by administrator!</value>
   </data>
+  <data name="NO_DESELECT_MONITOR" xml:space="preserve">
+    <value>Cannot deselect monitor when media is active</value>
+  </data>
 </root>
