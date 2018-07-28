@@ -259,7 +259,7 @@
                 {
                     var fadeIn = new DoubleAnimation
                     {
-                        // not that the fade in time is longer than fade out - just seems to look better
+                        // note that the fade in time is longer than fade out - just seems to look better
                         Duration = TimeSpan.FromSeconds(shouldFadeIn ? FadeTime * 1.2 : 0.001),
                         From = shouldFadeIn ? 0.0 : 1.0,
                         To = 1.0
