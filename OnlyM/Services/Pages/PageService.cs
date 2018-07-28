@@ -106,13 +106,13 @@
         {
             try
             {
+                EnsureMediaWindowCreated();
+
                 var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
                 if (targetMonitor != null)
                 {
                     Log.Logger.Information("Opening media window");
-
-                    EnsureMediaWindowCreated();
-
+                    
                     LocateWindowAtOrigin(_mediaWindow, targetMonitor.Monitor);
 
                     _mediaWindow.Topmost = true;

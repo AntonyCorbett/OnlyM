@@ -6,6 +6,7 @@
     using System.Drawing.Drawing2D;
     using System.Drawing.Imaging;
     using System.IO;
+    using System.Linq;
     using System.Text;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
@@ -13,6 +14,49 @@
 
     public static class GraphicsUtils
     {
+        private const int ExifOrientationId = 0x112; // 274
+
+        // todo: make optional use of this
+        public static void ExifRotate(this Image img)
+        {
+            if (!img.PropertyIdList.Contains(ExifOrientationId))
+            {
+                return;
+            }
+            
+            var prop = img.GetPropertyItem(ExifOrientationId);
+            int val = BitConverter.ToUInt16(prop.Value, 0);
+            var rot = RotateFlipType.RotateNoneFlipNone;
+
+            switch (val)
+            {
+                case 3:
+                case 4:
+                    rot = RotateFlipType.Rotate180FlipNone;
+                    break;
+
+                case 5:
+                case 6:
+                    rot = RotateFlipType.Rotate90FlipNone;
+                    break;
+
+                case 7:
+                case 8:
+                    rot = RotateFlipType.Rotate270FlipNone;
+                    break;
+            }
+
+            if (val == 2 || val == 4 || val == 5 || val == 7)
+            {
+                rot |= RotateFlipType.RotateNoneFlipX;
+            }
+
+            if (rot != RotateFlipType.RotateNoneFlipNone)
+            {
+                img.RotateFlip(rot);
+            }
+        }
+
         public static BitmapSource Downsize(string imageFilePath, int maxImageWidth, int maxImageHeight)
         {
             var image = GetBitmapImageWithCacheOnLoad(imageFilePath);

@@ -31,7 +31,7 @@
         {
             _image1 = image1;
             _image2 = image2;
-
+            
             _optionsService = optionsService;
         }
 
@@ -246,10 +246,6 @@
                 ImageFadeType == ImageFadeType.CrossFade;
 
             imageCtrl.Opacity = 0.0;
-
-            //imageCtrl.Source = _optionsService.Options.CacheImages
-            //    ? ImageCache.GetImage(imageFile)
-            //    : new BitmapImage(new Uri(imageFile));
 
             imageCtrl.Source = _optionsService.Options.CacheImages
                 ? ImageCache.GetImage(imageFile)
