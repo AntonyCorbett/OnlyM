@@ -36,12 +36,12 @@
         private readonly IMediaStatusChangingService _mediaStatusChangingService;
         private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
         private readonly IFrozenVideosService _frozenVideosService;
+        private readonly IActiveMediaItemsService _activeMediaItemsService;
 
         private readonly MetaDataQueueProducer _metaDataProducer = new MetaDataQueueProducer();
         private readonly CancellationTokenSource _thumbnailCancellationTokenSource = new CancellationTokenSource();
         
         private MetaDataQueueConsumer _metaDataConsumer;
-        private MediaItem _currentMediaItem;
         private string _blankScreenImagePath;
         private bool _pendingLoadMediaItems;
 
@@ -54,6 +54,7 @@
             IMediaMetaDataService metaDataService,
             IMediaStatusChangingService mediaStatusChangingService,
             IHiddenMediaItemsService hiddenMediaItemsService,
+            IActiveMediaItemsService activeMediaItemsService,
             IFrozenVideosService frozenVideosService)
         {
             _mediaProviderService = mediaProviderService;
@@ -62,6 +63,7 @@
             _hiddenMediaItemsService = hiddenMediaItemsService;
             _hiddenMediaItemsService.UnhideAllEvent += HandleUnhideAllEvent;
 
+            _activeMediaItemsService = activeMediaItemsService;
             _frozenVideosService = frozenVideosService;
 
             _thumbnailService = thumbnailService;
@@ -190,11 +192,17 @@
         private async Task RemoveBlankScreenItem()
         {
             // before removing the blank screen item, hide it if showing.
-            var item = GetCurrentMediaItem();
-            if (item != null && item.IsBlankScreen && item.IsMediaActive)
+            var blankScreenItem = GetActiveBlankScreenItem();
+            if (blankScreenItem != null)
             {
-                await _pageService.StopMediaAsync(item);
+                await _pageService.StopMediaAsync(blankScreenItem);
             }
+        }
+
+        private MediaItem GetActiveBlankScreenItem()
+        {
+            var items = GetCurrentMediaItems();
+            return items?.SingleOrDefault(x => x.IsBlankScreen && x.IsMediaActive);
         }
 
         private void HandleUseInternalMediaTitlesChangedEvent(object sender, EventArgs e)
@@ -224,9 +232,9 @@
             }
         }
 
-        private async Task HandleMediaNearEndEvent(object sender, EventArgs e)
+        private async Task HandleMediaNearEndEvent(object sender, MediaNearEndEventArgs e)
         {
-            var item = _currentMediaItem;
+            var item = GetMediaItem(e.MediaItemId);
             if (item != null)
             {
                 if (item.PauseOnLastFrame)
@@ -238,7 +246,7 @@
 
         private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
         {
-            var item = _currentMediaItem;
+            var item = GetMediaItem(e.MediaItemId);
             if (item != null)
             {
                 item.PlaybackPositionDeciseconds = (int)(e.Position.TotalMilliseconds / 10);
@@ -275,14 +283,15 @@
         {
             var monitorSpecified = _optionsService.IsMediaMonitorSpecified;
             var videoOrAudioIsActive = VideoOrAudioIsActive();
-            
+            var videoIsActive = VideoIsActive();
+
             foreach (var item in MediaItems)
             {
                 switch (item.MediaType.Classification)
                 {
                     case MediaClassification.Image:
                         // cannot show an image if video or audio is playing.
-                        item.IsPlayButtonEnabled = monitorSpecified && !videoOrAudioIsActive;
+                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive;
                         break;
 
                     case MediaClassification.Audio:
@@ -330,7 +339,6 @@
                     mediaItem.IsMediaChanging = false;
                     mediaItem.IsPaused = false;
                     _mediaStatusChangingService.RemoveChangingItem(mediaItem.Id);
-                    _currentMediaItem = mediaItem;
                     break;
 
                 case MediaChange.Stopped:
@@ -338,7 +346,6 @@
                     mediaItem.IsMediaChanging = false;
                     mediaItem.PlaybackPositionDeciseconds = 0;
                     _mediaStatusChangingService.RemoveChangingItem(mediaItem.Id);
-                    _currentMediaItem = null;
                     break;
 
                 case MediaChange.Paused:
@@ -444,6 +451,11 @@
                 mediaItem.MediaType.Classification == MediaClassification.Video;
         }
 
+        private bool IsVideo(MediaItem mediaItem)
+        {
+            return mediaItem.MediaType.Classification == MediaClassification.Video;
+        }
+
         private async Task MediaPauseControl(Guid mediaItemId)
         {
             // only allow pause media when nothing is changing.
@@ -460,7 +472,7 @@
                 {
                     if (mediaItem.IsPaused)
                     {
-                        await _pageService.StartMedia(mediaItem, GetCurrentMediaItem(), true);
+                        await _pageService.StartMedia(mediaItem, GetCurrentMediaItems(), true);
                     }
                     else
                     {
@@ -488,10 +500,9 @@
                 }
                 else
                 {
-                    // prevent start media if a video is active (videos must be stopped manually first).
-                    if (!VideoOrAudioIsActive())
+                    if (CanStartMedia(mediaItem))
                     {
-                        await _pageService.StartMedia(mediaItem, GetCurrentMediaItem(), false);
+                        await _pageService.StartMedia(mediaItem, GetCurrentMediaItems(), false);
 
                         // when displaying an item we ensure that the next image item is cached.
                         _pageService.CacheImageItem(GetNextImageItem(mediaItem));
@@ -500,25 +511,55 @@
             }
         }
 
-        private MediaItem GetCurrentMediaItem()
+        private bool CanStartMedia(MediaItem item)
         {
-            if (_pageService.CurrentMediaId == Guid.Empty)
+            switch (item.MediaType.Classification)
+            {
+                case MediaClassification.Audio:
+                    return !VideoOrAudioIsActive();
+
+                case MediaClassification.Image:
+                    return !VideoIsActive();
+
+                case MediaClassification.Video:
+                    return !VideoOrAudioIsActive();
+
+                default:
+                case MediaClassification.Unknown:
+                    return false;
+            }
+        }
+
+        private IReadOnlyCollection<MediaItem> GetCurrentMediaItems()
+        {
+            if (!_activeMediaItemsService.Any())
             {
                 return null;
             }
 
-            return GetMediaItem(_pageService.CurrentMediaId);
+            return _activeMediaItemsService.GetMediaItemIds().Select(GetMediaItem).ToList();
         }
         
         private bool VideoOrAudioIsActive()
         {
-            var currentItem = GetCurrentMediaItem();
-            if (currentItem == null)
+            var currentItems = GetCurrentMediaItems();
+            if (currentItems == null)
             {
                 return false;
             }
 
-            return IsVideoOrAudio(currentItem);
+            return currentItems.Any(IsVideoOrAudio);
+        }
+
+        private bool VideoIsActive()
+        {
+            var currentItems = GetCurrentMediaItems();
+            if (currentItems == null)
+            {
+                return false;
+            }
+
+            return currentItems.Any(IsVideo);
         }
 
         private MediaItem GetNextImageItem(MediaItem currentMediaItem)

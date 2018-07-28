@@ -9,6 +9,7 @@
     internal class MediaElementUnoSquare : IMediaElement
     {
         private readonly Unosquare.FFME.MediaElement _mediaElement;
+        private Guid _currentMediaItemId;
 
         public MediaElementUnoSquare(Unosquare.FFME.MediaElement mediaElement)
         {
@@ -47,8 +48,9 @@
 
         public FrameworkElement FrameworkElement => _mediaElement;
 
-        public Task Play()
+        public Task Play(Guid mediaItemId)
         {
+            _currentMediaItemId = mediaItemId;
             return _mediaElement.Play();
         }
 
@@ -99,12 +101,12 @@
 
         private void HandlePositionChanged(object sender, Unosquare.FFME.Events.PositionChangedRoutedEventArgs e)
         {
-            PositionChanged?.Invoke(sender, new PositionChangedEventArgs(e.OldPosition, e.Position));
+            PositionChanged?.Invoke(sender, new PositionChangedEventArgs(_currentMediaItemId, e.OldPosition, e.Position));
         }
 
         private void HandleMessageLogged(object sender, Unosquare.FFME.Events.MediaLogMessageEventArgs e)
         {
-            Serilog.Events.LogEventLevel level = LogEventLevel.Information;
+            var level = LogEventLevel.Information;
 
             switch (e.MessageType)
             {

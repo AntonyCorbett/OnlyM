@@ -7,6 +7,7 @@
     using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
     using PubSubMessages;
+    using Services.MediaChanging;
     using Services.Pages;
     using Services.Snackbar;
     using WindowsPositioning;
@@ -32,8 +33,8 @@
 
         private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var pageService = ServiceLocator.Current.GetInstance<IPageService>();
-            if (pageService.IsMediaItemActive)
+            var activeMediaService = ServiceLocator.Current.GetInstance<IActiveMediaItemsService>();
+            if (activeMediaService.Any())
             {
                 // prevent app closing when media is active.
                 var snackbarService = ServiceLocator.Current.GetInstance<ISnackbarService>();

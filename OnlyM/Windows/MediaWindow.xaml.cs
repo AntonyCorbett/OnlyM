@@ -1,8 +1,10 @@
 ﻿namespace OnlyM.Windows
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
     using CommonServiceLocator;
@@ -26,23 +28,19 @@
         private readonly VideoDisplayManager _videoDisplayManager;
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
-
+        
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
         public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
-        public event EventHandler MediaNearEndEvent;
-
-        public event EventHandler FinishedWithWindowEvent;
-
-        private bool _finishingWithImageDisplay;
+        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
         public MediaWindow(IOptionsService optionsService, ISnackbarService snackbarService)
         {
             InitializeComponent();
 
             _optionsService = optionsService;
-            
+
             _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
             
             _snackbarService = snackbarService;
@@ -63,8 +61,8 @@
         }
         
         public async Task StartMedia(
-            MediaItem mediaItemToStart, 
-            MediaItem currentMediaItem, 
+            MediaItem mediaItemToStart,
+            IReadOnlyCollection<MediaItem> currentMediaItems,
             bool startFromPaused)
         {
             Log.Logger.Information($"Starting media {mediaItemToStart.FilePath}");
@@ -78,7 +76,7 @@
                 case MediaClassification.Video:
                 case MediaClassification.Audio:
                     mediaItemToStart.PlaybackPositionChangedEvent -= HandlePlaybackPositionChangedEvent;
-                    await ShowVideo(mediaItemToStart, currentMediaItem, startFromPaused);
+                    await ShowVideoOrPlayAudio(mediaItemToStart, currentMediaItems, startFromPaused);
                     break;
             }
         }
@@ -88,7 +86,9 @@
             _imageDisplayManager.CacheImageItem(mediaItem.FilePath);
         }
 
-        public async Task StopMediaAsync(MediaItem mediaItem, bool ignoreConfirmation = false)
+        public async Task StopMediaAsync(
+            MediaItem mediaItem,
+            bool ignoreConfirmation = false)
         {
             if (!ignoreConfirmation && ShouldConfirmMediaStop(mediaItem))
             {
@@ -101,7 +101,6 @@
             switch (mediaItem.MediaType.Classification)
             {
                 case MediaClassification.Image:
-                    _finishingWithImageDisplay = true;
                     HideImage(mediaItem);
                     break;
 
@@ -150,6 +149,15 @@
             await _videoDisplayManager.HideVideoAsync(mediaItem.Id);
         }
 
+        private void HideImage(IReadOnlyCollection<MediaItem> mediaItems)
+        {
+            var imageItem = mediaItems?.SingleOrDefault(x => x.MediaType.Classification == MediaClassification.Image);
+            if (imageItem != null)
+            {
+                _imageDisplayManager.HideImage(imageItem.Id);
+            }
+        }
+
         private void HideImage(MediaItem mediaItem)
         {
             if (mediaItem != null)
@@ -167,21 +175,25 @@
                 mediaItem.IsBlankScreen);
         }
 
-        private async Task ShowVideo(
-            MediaItem mediaItemToStart, 
-            MediaItem currentMediaItem, 
+        private async Task ShowVideoOrPlayAudio(
+            MediaItem mediaItemToStart,
+            IReadOnlyCollection<MediaItem> currentMediaItems,
             bool startFromPaused)
         {
-            HideImage(currentMediaItem);
+            if (mediaItemToStart.MediaType.Classification != MediaClassification.Audio)
+            {
+                HideImage(currentMediaItems);
+            }
 
             var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 10);
 
             _videoDisplayManager.ShowSubtitles = _optionsService.Options.ShowVideoSubtitles;
 
-            await _videoDisplayManager.ShowVideo(
+            await _videoDisplayManager.ShowVideoOrPlayAudio(
                 mediaItemToStart.FilePath, 
                 _optionsService.Options.VideoScreenPosition,
-                mediaItemToStart.Id, 
+                mediaItemToStart.Id,
+                mediaItemToStart.MediaType.Classification,
                 startPosition, 
                 startFromPaused);
         }
@@ -209,9 +221,9 @@
             _optionsService.ImageScreenPositionChangedEvent += HandleImageScreenPositionChangedEvent;
             _optionsService.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
 
-            _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEventForImages;
+            _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
 
-            _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEventForVideoAndAudio;
+            _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
             _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent += HandleMediaNearEndEvent;
         }
@@ -222,32 +234,16 @@
             _optionsService.ImageScreenPositionChangedEvent -= HandleImageScreenPositionChangedEvent;
             _optionsService.VideoScreenPositionChangedEvent -= HandleVideoScreenPositionChangedEvent;
 
-            _imageDisplayManager.MediaChangeEvent -= HandleMediaChangeEventForImages;
+            _imageDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
 
-            _videoDisplayManager.MediaChangeEvent -= HandleMediaChangeEventForVideoAndAudio;
+            _videoDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
             _videoDisplayManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent -= HandleMediaNearEndEvent;
         }
 
-        private void HandleMediaChangeEventForImages(object sender, MediaEventArgs e)
+        private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
         {
             MediaChangeEvent?.Invoke(this, e);
-
-            if (e.Change == MediaChange.Stopped && _finishingWithImageDisplay)
-            {
-                _finishingWithImageDisplay = false;
-                OnFinishedWithWindowEvent();
-            }
-        }
-
-        private void HandleMediaChangeEventForVideoAndAudio(object sender, MediaEventArgs e)
-        {
-            MediaChangeEvent?.Invoke(this, e);
-
-            if (e.Change == MediaChange.Stopped)
-            {
-                OnFinishedWithWindowEvent();
-            }
         }
 
         private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
@@ -255,14 +251,9 @@
             MediaPositionChangedEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaNearEndEvent(object sender, EventArgs e)
+        private void HandleMediaNearEndEvent(object sender, MediaNearEndEventArgs e)
         {
             MediaNearEndEvent?.Invoke(this, e);
-        }
-
-        private void OnFinishedWithWindowEvent()
-        {
-            FinishedWithWindowEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void HandleShowSubtitlesChangedEvent(object sender, EventArgs e)

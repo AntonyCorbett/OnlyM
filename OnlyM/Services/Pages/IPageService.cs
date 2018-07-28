@@ -1,6 +1,7 @@
 ﻿namespace OnlyM.Services.Pages
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
@@ -21,7 +22,7 @@
 
         event EventHandler MediaWindowClosedEvent;
 
-        event EventHandler MediaNearEndEvent;
+        event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
         bool AllowMediaWindowToClose { get; }
 
@@ -35,23 +36,19 @@
 
         FrameworkElement GetPage(string pageName);
         
-        void OpenMediaWindow();
+        void OpenMediaWindow(bool requiresVisibleWindow);
 
         bool ApplicationIsClosing { get; }
 
         bool IsMediaWindowVisible { get; }
         
-        Task StartMedia(MediaItem mediaItemToStart, MediaItem currentMediaItem, bool startFromPaused);
+        Task StartMedia(MediaItem mediaItemToStart, IReadOnlyCollection<MediaItem> currentMediaItems, bool startFromPaused);
 
         Task StopMediaAsync(MediaItem mediaItem);
 
         Task PauseMediaAsync(MediaItem mediaItem);
 
         void CacheImageItem(MediaItem mediaItem);
-
-        Guid CurrentMediaId { get; }
-
-        bool IsMediaItemActive { get; }
 
         ScrollViewer ScrollViewer { get; set; }
     }

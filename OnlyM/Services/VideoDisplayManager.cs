@@ -14,6 +14,7 @@
 
         private readonly IMediaElement _mediaElement;
         private Guid _mediaItemId;
+        private MediaClassification _mediaClassification;
         private TimeSpan _startPosition;
         private TimeSpan _lastPosition = TimeSpan.Zero;
         private bool _manuallySettingPlaybackPosition;
@@ -23,7 +24,7 @@
 
         public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
-        public event EventHandler MediaNearEndEvent;
+        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
         public VideoDisplayManager(IMediaElement mediaElement)
         {
@@ -40,14 +41,16 @@
 
         public bool ShowSubtitles { get; set; }
 
-        public async Task ShowVideo(
+        public async Task ShowVideoOrPlayAudio(
             string mediaItemFilePath, 
             ScreenPosition screenPosition,
-            Guid mediaItemId, 
+            Guid mediaItemId,
+            MediaClassification mediaClassification,
             TimeSpan startOffset, 
             bool startFromPaused)
         {
             _mediaItemId = mediaItemId;
+            _mediaClassification = mediaClassification;
             _startPosition = startOffset;
             _lastPosition = TimeSpan.Zero;
             
@@ -56,12 +59,12 @@
             if (startFromPaused)
             {
                 _mediaElement.Position = _startPosition;
-                await _mediaElement.Play();
-                OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Started });
+                await _mediaElement.Play(mediaItemId);
+                OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
             }
             else
             {
-                OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Starting });
+                OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
                 _mediaElement.Source = new Uri(mediaItemFilePath);
             }
         }
@@ -86,7 +89,7 @@
             if (_mediaItemId == mediaItemId)
             {
                 await _mediaElement.Pause();
-                OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Paused });
+                OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Paused));
             }
         }
 
@@ -94,7 +97,7 @@
         {
             if (_mediaItemId == mediaItemId)
             {
-                OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopping });
+                OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopping));
                 await _mediaElement.Close();
             }
         }
@@ -111,11 +114,7 @@
             _firedNearEndEvent = false;
 
             _mediaElement.Position = _startPosition;
-            OnMediaChangeEvent(new MediaEventArgs
-            {
-                MediaItemId = _mediaItemId,
-                Change = MediaChange.Started
-            });
+            OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
         }
 
         private void HandleMediaClosed(object sender, System.Windows.RoutedEventArgs e)
@@ -124,20 +123,20 @@
 
             _firedNearEndEvent = false;
 
-            OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
+            OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
         }
 
         private async Task HandleMediaEnded(object sender, System.Windows.RoutedEventArgs e)
         {
             Log.Logger.Debug("Media ended");
-            OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
+            OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
             await _mediaElement.Close();
         }
 
         private void HandleMediaFailed(object sender, System.Windows.ExceptionRoutedEventArgs e)
         {
             Log.Logger.Debug("Media failed");
-            OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _mediaItemId, Change = MediaChange.Stopped });
+            OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
         }
 
         private void HandlePositionChanged(object sender, PositionChangedEventArgs e)
@@ -155,7 +154,7 @@
                         (_mediaElement.NaturalDuration.TimeSpan - e.Position).TotalMilliseconds < FreezeMillisecsFromEnd)
                     {
                         _firedNearEndEvent = true;
-                        MediaNearEndEvent?.Invoke(this, EventArgs.Empty);
+                        MediaNearEndEvent?.Invoke(this, new MediaNearEndEventArgs { MediaItemId = _mediaItemId });
                     }
                 }
             }
@@ -190,6 +189,16 @@
                     Log.Logger.Warning(e.Message);
                     break;
             }
+        }
+
+        private MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
+        {
+            return new MediaEventArgs
+            {
+                MediaItemId = id,
+                Classification = _mediaClassification,
+                Change = change
+            };
         }
     }
 }

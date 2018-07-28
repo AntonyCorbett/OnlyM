@@ -45,9 +45,9 @@
             Guid mediaItemId, 
             bool isBlankScreenImage)
         {
-            OnMediaChangeEvent(new MediaEventArgs { MediaItemId = mediaItemId, Change = MediaChange.Starting });
-
-            bool mustHide = !Image1Populated
+            OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Starting));
+        
+            var mustHide = !Image1Populated
                 ? Image2Populated
                 : Image1Populated;
 
@@ -55,7 +55,7 @@
             {
                 if (mustHide)
                 {
-                    OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _image2MediaItemId, Change = MediaChange.Stopping });
+                    OnMediaChangeEvent(CreateMediaEventArgs(_image2MediaItemId, MediaChange.Stopping));
                 }
 
                 ShowImageInternal(
@@ -68,21 +68,21 @@
                     {
                         if (mustHide)
                         {
-                            OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _image2MediaItemId, Change = MediaChange.Stopped });
+                            OnMediaChangeEvent(CreateMediaEventArgs(_image2MediaItemId, MediaChange.Stopped));
                             _image2MediaItemId = Guid.Empty;
                         }
                     }, 
                     () =>
                     {
                         _image1MediaItemId = mediaItemId;
-                        OnMediaChangeEvent(new MediaEventArgs { MediaItemId = mediaItemId, Change = MediaChange.Started });
+                        OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Started));
                     });
             }
             else if (!Image2Populated)
             {
                 if (mustHide)
                 {
-                    OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _image1MediaItemId, Change = MediaChange.Stopping });
+                    OnMediaChangeEvent(CreateMediaEventArgs(_image1MediaItemId, MediaChange.Stopping));
                 }
 
                 ShowImageInternal(
@@ -95,14 +95,14 @@
                     {
                         if (mustHide)
                         {
-                            OnMediaChangeEvent(new MediaEventArgs { MediaItemId = _image1MediaItemId, Change = MediaChange.Stopped });
+                            OnMediaChangeEvent(CreateMediaEventArgs(_image1MediaItemId, MediaChange.Stopped));
                             _image1MediaItemId = Guid.Empty;
                         }
                     }, 
                     () =>
                     {
                         _image2MediaItemId = mediaItemId;
-                        OnMediaChangeEvent(new MediaEventArgs { MediaItemId = mediaItemId, Change = MediaChange.Started });
+                        OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Started));
                     });
             }
         }
@@ -111,25 +111,23 @@
         {
             if (_image1MediaItemId == mediaItemId)
             {
-                OnMediaChangeEvent(new MediaEventArgs { MediaItemId = mediaItemId, Change = MediaChange.Stopping });
-
+                OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Stopping));
                 HideImageInControl(
                     _image1, 
                     () =>
                     {
-                        OnMediaChangeEvent(new MediaEventArgs { MediaItemId = mediaItemId, Change = MediaChange.Stopped });
+                        OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Stopped));
                         _image1MediaItemId = Guid.Empty;
                     });
             }
             else if (_image2MediaItemId == mediaItemId)
             {
-                OnMediaChangeEvent(new MediaEventArgs { MediaItemId = mediaItemId, Change = MediaChange.Stopping });
-
+                OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Stopping));
                 HideImageInControl(
                     _image2,
                     () =>
                     {
-                        OnMediaChangeEvent(new MediaEventArgs { MediaItemId = mediaItemId, Change = MediaChange.Stopped });
+                        OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Stopped));
                         _image2MediaItemId = Guid.Empty;
                     });
             }
@@ -282,5 +280,15 @@
         private bool Image1Populated => _image1.Source != null;
 
         private bool Image2Populated => _image2.Source != null;
+
+        private MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
+        {
+            return new MediaEventArgs
+            {
+                MediaItemId = id,
+                Classification = MediaClassification.Image,
+                Change = change
+            };
+        }
     }
 }

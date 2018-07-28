@@ -43,6 +43,7 @@ namespace OnlyM.ViewModel
             SimpleIoc.Default.Register<IHiddenMediaItemsService, HiddenMediaItemsService>();
             SimpleIoc.Default.Register<IFrozenVideosService, FrozenVideosService>();
             SimpleIoc.Default.Register<ICommandLineService, CommandLineService>();
+            SimpleIoc.Default.Register<IActiveMediaItemsService, ActiveMediaItemsService>();
 
             // view models.
             SimpleIoc.Default.Register<MainViewModel>();

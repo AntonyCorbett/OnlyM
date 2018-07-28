@@ -75,7 +75,7 @@ namespace OnlyM.ViewModel
 
             if (!IsInDesignMode && _optionsService.Options.PermanentBackdrop)
             {
-                _pageService.OpenMediaWindow();
+                _pageService.OpenMediaWindow(requiresVisibleWindow: true);
             }
 
             GetVersionData();

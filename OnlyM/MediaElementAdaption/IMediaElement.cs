@@ -1,9 +1,8 @@
-﻿using System.Windows;
-
-namespace OnlyM.MediaElementAdaption
+﻿namespace OnlyM.MediaElementAdaption
 {
     using System;
     using System.Threading.Tasks;
+    using System.Windows;
 
     internal interface IMediaElement
     {
@@ -25,7 +24,7 @@ namespace OnlyM.MediaElementAdaption
 
         Duration NaturalDuration { get; }
     
-        Task Play();
+        Task Play(Guid mediaItemId);
 
         Task Pause();
 

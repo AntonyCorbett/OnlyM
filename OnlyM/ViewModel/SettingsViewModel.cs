@@ -19,6 +19,7 @@
     using PubSubMessages;
     using Serilog.Events;
     using Services;
+    using Services.MediaChanging;
     using Services.Pages;
 
     // ReSharper disable once UnusedMember.Global
@@ -28,6 +29,7 @@
         private readonly IMonitorsService _monitorsService;
         private readonly IOptionsService _optionsService;
         private readonly IThumbnailService _thumbnailService;
+        private readonly IActiveMediaItemsService _activeMediaItemsService;
         private readonly MonitorItem[] _monitors;
         private readonly LoggingLevel[] _loggingLevels;
         private readonly ImageFade[] _fadingTypes;
@@ -38,12 +40,14 @@
             IPageService pageService, 
             IMonitorsService monitorsService,
             IOptionsService optionsService,
+            IActiveMediaItemsService activeMediaItemsService,
             IThumbnailService thumbnailService)
         {
             _pageService = pageService;
             _monitorsService = monitorsService;
             _optionsService = optionsService;
             _thumbnailService = thumbnailService;
+            _activeMediaItemsService = activeMediaItemsService;
 
             _recentlyUsedMediaFolders = new RecentlyUsedFolders();
             InitRecentlyUsedFolders();
@@ -72,7 +76,7 @@
             if (e.PageName.Equals(_pageService.SettingsPageName))
             {
                 // when Settings page is shown.
-                IsMediaActive = _pageService.IsMediaItemActive;
+                IsMediaActive = _activeMediaItemsService.Any();
             }
         }
 

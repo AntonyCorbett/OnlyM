@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace OnlyM.Services.MetaDataQueue
+﻿namespace OnlyM.Services.MetaDataQueue
 {
+    using System;
     using System.Collections.Concurrent;
     using System.Linq;
     using Models;

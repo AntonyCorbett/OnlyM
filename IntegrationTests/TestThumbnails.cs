@@ -1,12 +1,11 @@
-﻿using OnlyM.Core.Services.CommandLine;
-
-namespace IntegrationTests
+﻿namespace IntegrationTests
 {
     using System;
     using System.Drawing.Imaging;
     using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using OnlyM.Core.Models;
+    using OnlyM.Core.Services.CommandLine;
     using OnlyM.Core.Services.Database;
     using OnlyM.Core.Services.Media;
     using OnlyM.Core.Services.Options;

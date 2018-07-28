@@ -149,6 +149,7 @@
     <Compile Include="Models\MediaChange.cs" />
     <Compile Include="Models\MediaItem.cs" />
     <Compile Include="Models\MediaEventArgs.cs" />
+    <Compile Include="Models\MediaNearEndEventArgs.cs" />
     <Compile Include="Models\MonitorItem.cs" />
     <Compile Include="Models\ScreenMarginSide.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatedMessage.cs" />
@@ -165,6 +166,8 @@
     <Compile Include="Services\ImageDisplayManager.cs" />
     <Compile Include="Services\JwLibHelperNativeMethods.cs" />
     <Compile Include="Services\JwLibHelper.cs" />
+    <Compile Include="Services\MediaChanging\ActiveMediaItemsService.cs" />
+    <Compile Include="Services\MediaChanging\IActiveMediaItemsService.cs" />
     <Compile Include="Services\MediaChanging\IMediaStatusChangingService.cs" />
     <Compile Include="Services\MediaChanging\MediaStatusChangingService.cs" />
     <Compile Include="Services\Pages\IPageService.cs" />

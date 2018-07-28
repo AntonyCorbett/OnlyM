@@ -1,15 +1,20 @@
 ﻿namespace OnlyM.Services.Pages
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Forms;
+    
     using Core.Models;
     using Core.Services.Monitors;
     using Core.Services.Options;
+
     using GalaSoft.MvvmLight.Messaging;
+
+    using MediaChanging;
     using MediaElementAdaption;
     using Models;
     using PubSubMessages;
@@ -27,12 +32,13 @@
         private readonly IMonitorsService _monitorsService;
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
+        private readonly IActiveMediaItemsService _activeMediaItemsService;
         private readonly (int dpiX, int dpiY) _systemDpi;
 
         private MediaWindow _mediaWindow;
         private double _operatorPageScrollerPosition;
         private double _settingsPageScrollerPosition;
-
+        
         public event EventHandler MediaMonitorChangedEvent;
 
         public event EventHandler<NavigationEventArgs> NavigationEvent;
@@ -45,16 +51,18 @@
 
         public event EventHandler MediaWindowClosedEvent;
 
-        public event EventHandler MediaNearEndEvent;
+        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
         public PageService(
             IMonitorsService monitorsService,
             IOptionsService optionsService,
+            IActiveMediaItemsService activeMediaItemsService,
             ISnackbarService snackbarService)
         {
             _monitorsService = monitorsService;
             _optionsService = optionsService;
             _snackbarService = snackbarService;
+            _activeMediaItemsService = activeMediaItemsService;
 
             _optionsService.ImageFadeTypeChangedEvent += HandleImageFadeTypeChangedEvent;
             _optionsService.ImageFadeSpeedChangedEvent += HandleImageFadeSpeedChangedEvent;
@@ -102,24 +110,27 @@
             throw new ArgumentOutOfRangeException(nameof(pageName));
         }
         
-        public void OpenMediaWindow()
+        public void OpenMediaWindow(bool requiresVisibleWindow)
         {
             try
             {
                 EnsureMediaWindowCreated();
 
-                var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
-                if (targetMonitor != null)
+                if (requiresVisibleWindow)
                 {
-                    Log.Logger.Information("Opening media window");
-                    
-                    LocateWindowAtOrigin(_mediaWindow, targetMonitor.Monitor);
+                    var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
+                    if (targetMonitor != null)
+                    {
+                        Log.Logger.Information("Opening media window");
 
-                    _mediaWindow.Topmost = true;
+                        LocateWindowAtOrigin(_mediaWindow, targetMonitor.Monitor);
 
-                    _mediaWindow.Show();
+                        _mediaWindow.Topmost = true;
 
-                    OnMediaWindowOpened();
+                        _mediaWindow.Show();
+
+                        OnMediaWindowOpened();
+                    }
                 }
             }
             catch (Exception ex)
@@ -138,15 +149,19 @@
             }
         }
 
-        public async Task StartMedia(MediaItem mediaItemToStart, MediaItem currentMediaItem, bool startFromPaused)
+        public async Task StartMedia(
+            MediaItem mediaItemToStart, 
+            IReadOnlyCollection<MediaItem> currentMediaItems, 
+            bool startFromPaused)
         {
             try
             {
-                OpenMediaWindow();
+                bool requiresVisibleWindow = mediaItemToStart.MediaType.Classification != MediaClassification.Audio;
+                OpenMediaWindow(requiresVisibleWindow);
 
                 await _mediaWindow.StartMedia(
                     mediaItemToStart,
-                    currentMediaItem,
+                    currentMediaItems,
                     startFromPaused);
             }
             catch (Exception ex)
@@ -236,7 +251,7 @@
             }
             else if (_optionsService.Options.PermanentBackdrop)
             {
-                OpenMediaWindow();
+                OpenMediaWindow(requiresVisibleWindow: true);
             }
         }
         
@@ -262,7 +277,6 @@
         {
             _mediaWindow.MediaChangeEvent += HandleMediaChangeEvent;
             _mediaWindow.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
-            _mediaWindow.FinishedWithWindowEvent += HandleFinishedWithWindowEvent;
             _mediaWindow.MediaNearEndEvent += HandleMediaNearEndEvent;
             _mediaWindow.Loaded += HandleLoaded;
         }
@@ -271,16 +285,16 @@
         {
             _mediaWindow.MediaChangeEvent -= HandleMediaChangeEvent;
             _mediaWindow.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
-            _mediaWindow.FinishedWithWindowEvent -= HandleFinishedWithWindowEvent;
             _mediaWindow.MediaNearEndEvent -= HandleMediaNearEndEvent;
             _mediaWindow.Loaded -= HandleLoaded;
         }
 
-        private void HandleFinishedWithWindowEvent(object sender, EventArgs e)
+        private void BringJwlToFront()
         {
-            if (!_optionsService.Options.PermanentBackdrop)
+            if (_optionsService.Options.JwLibraryCompatibilityMode)
             {
-                CloseMediaWindow();
+                JwLibHelper.BringToFront();
+                Thread.Sleep(100);
             }
         }
 
@@ -294,7 +308,7 @@
             MediaPositionChangedEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaNearEndEvent(object sender, EventArgs e)
+        private void HandleMediaNearEndEvent(object sender, MediaNearEndEventArgs e)
         {
             MediaNearEndEvent?.Invoke(this, e);
         }
@@ -303,25 +317,32 @@
         {
             switch (e.Change)
             {
-                case MediaChange.Started:
-                    CurrentMediaId = e.MediaItemId;
+                case MediaChange.Starting:
+                    _activeMediaItemsService.Add(e.MediaItemId, e.Classification);
                     break;
 
                 case MediaChange.Stopped:
-                    if (e.MediaItemId == CurrentMediaId)
-                    {
-                        CurrentMediaId = Guid.Empty;
-                    }
-
+                    _activeMediaItemsService.Remove(e.MediaItemId);
+                    ManageMediaWindowVisibility();
                     break;
             }
 
             OnMediaChangeEvent(e);
         }
 
-        public Guid CurrentMediaId { get; private set; }
+        private void ManageMediaWindowVisibility()
+        {
+            if (!_optionsService.Options.PermanentBackdrop && !AnyActiveMediaRequiringVisibleMediaWindow())
+            {
+                _mediaWindow?.Hide();
+                BringJwlToFront();
+            }
+        }
 
-        public bool IsMediaItemActive => CurrentMediaId != Guid.Empty;
+        private bool AnyActiveMediaRequiringVisibleMediaWindow()
+        {
+            return _activeMediaItemsService.Any(MediaClassification.Image, MediaClassification.Video);
+        }
 
         private void HandleImageFadeTypeChangedEvent(object sender, EventArgs e)
         {
@@ -376,9 +397,9 @@
         {
             if (_optionsService.Options.PermanentBackdrop)
             {
-                OpenMediaWindow();
+                OpenMediaWindow(requiresVisibleWindow: true);
             }
-            else if (!IsMediaItemActive)
+            else if (!_activeMediaItemsService.Any())
             {
                 CloseMediaWindow();
             }
@@ -401,18 +422,14 @@
         {
             MediaWindowClosedEvent?.Invoke(this, EventArgs.Empty);
         }
-
+        
         private void CloseMediaWindow()
         {
             if (_mediaWindow != null)
             {
                 AllowMediaWindowToClose = true;
 
-                if (_optionsService.Options.JwLibraryCompatibilityMode)
-                {
-                    JwLibHelper.BringToFront();
-                    Thread.Sleep(100);
-                }
+                BringJwlToFront();
 
                 UnsubscribeMediaWindowEvents();
 
