@@ -1,12 +1,13 @@
-﻿using System.Linq;
-using CommonServiceLocator;
-using OnlyM.Core.Services.Monitors;
+﻿using OnlyM.Core.Services.CommandLine;
 
 namespace OnlyM.Core.Services.Options
 {
     using System;
     using System.IO;
+    using System.Linq;
+    using CommonServiceLocator;
     using Models;
+    using Monitors;
     using Newtonsoft.Json;
     using Serilog;
     using Utils;
@@ -15,12 +16,13 @@ namespace OnlyM.Core.Services.Options
     public sealed class OptionsService : IOptionsService
     {
         private readonly ILogLevelSwitchService _logLevelSwitchService;
+        private readonly ICommandLineService _commandLineService;
 
         private readonly int _optionsVersion = 1;
         private Options _options;
         private string _optionsFilePath;
         private string _originalOptionsSignature;
-        
+       
         public event EventHandler MediaFolderChangedEvent;
 
         public event EventHandler ImageFadeTypeChangedEvent;
@@ -55,9 +57,12 @@ namespace OnlyM.Core.Services.Options
 
         public event EventHandler ShowFreezeCommandChangedEvent;
 
-        public OptionsService(ILogLevelSwitchService logLevelSwitchService)
+        public OptionsService(
+            ILogLevelSwitchService logLevelSwitchService,
+            ICommandLineService commandLineService)
         {
             _logLevelSwitchService = logLevelSwitchService;
+            _commandLineService = commandLineService;
         }
 
         public Options Options
@@ -106,7 +111,7 @@ namespace OnlyM.Core.Services.Options
             {
                 try
                 {
-                    string commandLineIdentifier = CommandLineParser.Instance.GetId();
+                    string commandLineIdentifier = _commandLineService.OptionsIdentifier;
                     _optionsFilePath = FileUtils.GetUserOptionsFilePath(commandLineIdentifier, _optionsVersion);
                     var path = Path.GetDirectoryName(_optionsFilePath);
                     if (path != null)

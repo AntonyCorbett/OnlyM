@@ -1,16 +1,16 @@
-using OnlyM.Services.FrozenVideoItems;
-using OnlyM.Services.HiddenMediaItems;
-
 namespace OnlyM.ViewModel
 {
     using CommonServiceLocator;
+    using Core.Services.CommandLine;
     using Core.Services.Database;
     using Core.Services.Media;
     using Core.Services.Monitors;
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Ioc;
-    using OnlyM.Services.MediaChanging;
     using Services.DragAndDrop;
+    using Services.FrozenVideoItems;
+    using Services.HiddenMediaItems;
+    using Services.MediaChanging;
     using Services.Pages;
     using Services.Snackbar;
 
@@ -42,6 +42,7 @@ namespace OnlyM.ViewModel
             SimpleIoc.Default.Register<IMediaStatusChangingService, MediaStatusChangingService>();
             SimpleIoc.Default.Register<IHiddenMediaItemsService, HiddenMediaItemsService>();
             SimpleIoc.Default.Register<IFrozenVideosService, FrozenVideosService>();
+            SimpleIoc.Default.Register<ICommandLineService, CommandLineService>();
 
             // view models.
             SimpleIoc.Default.Register<MainViewModel>();

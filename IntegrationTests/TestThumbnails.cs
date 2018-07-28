@@ -1,4 +1,6 @@
-﻿namespace IntegrationTests
+﻿using OnlyM.Core.Services.CommandLine;
+
+namespace IntegrationTests
 {
     using System;
     using System.Drawing.Imaging;
@@ -17,8 +19,9 @@
         public void TestMethod1()
         {
             ILogLevelSwitchService logSwitchService = new LogLevelSwitchService();
+            ICommandLineService commandLineService = new CommandLineService();
             IDatabaseService db = new DatabaseService();
-            IOptionsService optionsService = new OptionsService(logSwitchService);
+            IOptionsService optionsService = new OptionsService(logSwitchService, commandLineService);
             IThumbnailService service = new ThumbnailService(db, optionsService);
             service.ClearThumbCache();
 

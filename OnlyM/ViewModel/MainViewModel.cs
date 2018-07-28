@@ -5,7 +5,10 @@ namespace OnlyM.ViewModel
     using System.IO;
     using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Interop;
+    using System.Windows.Media;
     using AutoUpdates;
+    using Core.Services.CommandLine;
     using Core.Services.Options;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
@@ -26,6 +29,7 @@ namespace OnlyM.ViewModel
         private readonly ISnackbarService _snackbarService;
         private readonly IMediaStatusChangingService _mediaStatusChangingService;
         private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
+        private readonly ICommandLineService _commandLineService;
 
         public MainViewModel(
             IPageService pageService,
@@ -33,8 +37,17 @@ namespace OnlyM.ViewModel
             ISnackbarService snackbarService,
             IMediaStatusChangingService mediaStatusChangingService,
             IHiddenMediaItemsService hiddenMediaItemsService,
+            ICommandLineService commandLineService,
             IDragAndDropService dragAndDropService)
         {
+            _commandLineService = commandLineService;
+
+            if (commandLineService.NoGpu || ForceSoftwareRendering())
+            {
+                // disable hardware (GPU) rendering so that it's all done by the CPU...
+                RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            }
+
             Messenger.Default.Register<MediaListUpdatingMessage>(this, OnMediaListUpdating);
             Messenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
 
@@ -204,6 +217,20 @@ namespace OnlyM.ViewModel
 
         public bool IsOperatorPageActive => _currentPageName.Equals(_pageService.OperatorPageName);
 
+        public bool IsSettingsEnabled => !_commandLineService.NoSettings;
+
+        public bool IsFolderEnabled => !_commandLineService.NoFolder;
+
+        public string SettingsHint =>
+            _commandLineService.NoSettings
+                ? Properties.Resources.SETTINGS_DISABLED
+                : Properties.Resources.SETTINGS;
+
+        public string FolderHint =>
+            _commandLineService.NoFolder
+                ? Properties.Resources.FOLDER_DISABLED
+                : Properties.Resources.FOLDER;
+
         public bool ShowDragAndDropHint => IsMediaListEmpty && IsOperatorPageActive;
 
         private bool _isMediaListEmpty = true;
@@ -301,6 +328,23 @@ namespace OnlyM.ViewModel
             {
                 _pageService.GotoSettingsPage();
             }
+        }
+
+        private bool ForceSoftwareRendering()
+        {
+            // https://blogs.msdn.microsoft.com/jgoldb/2010/06/22/software-rendering-usage-in-wpf/
+            // renderingTier values:
+            // 0 => No graphics hardware acceleration available for the application on the device
+            //      and DirectX version level is less than version 7.0
+            // 1 => Partial graphics hardware acceleration available on the video card. This 
+            //      corresponds to a DirectX version that is greater than or equal to 7.0 and 
+            //      less than 9.0.
+            // 2 => A rendering tier value of 2 means that most of the graphics features of WPF 
+            //      should use hardware acceleration provided the necessary system resources have 
+            //      not been exhausted. This corresponds to a DirectX version that is greater 
+            //      than or equal to 9.0.
+            int renderingTier = RenderCapability.Tier >> 16;
+            return renderingTier == 0;
         }
     }
 }

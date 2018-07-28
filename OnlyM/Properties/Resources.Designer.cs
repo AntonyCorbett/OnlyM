@@ -125,6 +125,24 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open media folder.
+        /// </summary>
+        internal static string FOLDER {
+            get {
+                return ResourceManager.GetString("FOLDER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Media folder disabled by administrator!.
+        /// </summary>
+        internal static string FOLDER_DISABLED {
+            get {
+                return ResourceManager.GetString("FOLDER_DISABLED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Media is active - cannot close!.
         /// </summary>
         internal static string MEDIA_ACTIVE {
@@ -175,6 +193,24 @@ namespace OnlyM.Properties {
         internal static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        internal static string SETTINGS {
+            get {
+                return ResourceManager.GetString("SETTINGS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings disabled by administrator!.
+        /// </summary>
+        internal static string SETTINGS_DISABLED {
+            get {
+                return ResourceManager.GetString("SETTINGS_DISABLED", resourceCulture);
             }
         }
         

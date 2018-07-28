@@ -249,10 +249,12 @@
                             Width="24" />
                     </Button>
 
-                        <Button
+                    <Button
                         Command="{Binding LaunchMediaFolderCommand}"
                         Grid.Column="2"
-                        ToolTip="Open media folder"
+                        ToolTip="{Binding FolderHint}"
+                        IsEnabled ="{Binding Path=IsFolderEnabled}"
+                        ToolTipService.ShowOnDisabled="True"
                         Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
                         <materialDesign:PackIcon
@@ -277,7 +279,9 @@
                         Command="{Binding GotoSettingsCommand}"
                         Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Grid.Column="4"
-                        ToolTip="Settings page"
+                        IsEnabled ="{Binding Path=IsSettingsEnabled}"
+                        ToolTip="{Binding SettingsHint}"
+                        ToolTipService.ShowOnDisabled="True"
                         Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
                         <materialDesign:PackIcon
                             Kind="Settings"

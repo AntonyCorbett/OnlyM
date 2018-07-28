@@ -163,4 +163,16 @@
   <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
     <value>Select Media Folder</value>
   </data>
+  <data name="SETTINGS" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SETTINGS_DISABLED" xml:space="preserve">
+    <value>Settings disabled by administrator!</value>
+  </data>
+  <data name="FOLDER" xml:space="preserve">
+    <value>Open media folder</value>
+  </data>
+  <data name="FOLDER_DISABLED" xml:space="preserve">
+    <value>Media folder disabled by administrator!</value>
+  </data>
 </root>
