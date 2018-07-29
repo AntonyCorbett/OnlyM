@@ -56,10 +56,12 @@
             
             ScreenPositionHelper.SetScreenPosition(_mediaElement.FrameworkElement, screenPosition);
 
+            _mediaElement.MediaItemId = mediaItemId;
+
             if (startFromPaused)
             {
                 _mediaElement.Position = _startPosition;
-                await _mediaElement.Play(mediaItemId);
+                await _mediaElement.Play();
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
             }
             else

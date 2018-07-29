@@ -104,12 +104,8 @@
                     HideImage(mediaItem);
                     break;
 
-                case MediaClassification.Video:
-                    mediaItem.PlaybackPositionChangedEvent -= HandlePlaybackPositionChangedEvent;
-                    await HideVideoAsync(mediaItem);
-                    break;
-
                 case MediaClassification.Audio:
+                case MediaClassification.Video:
                     mediaItem.PlaybackPositionChangedEvent -= HandlePlaybackPositionChangedEvent;
                     await HideVideoAsync(mediaItem);
                     break;

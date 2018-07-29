@@ -24,7 +24,7 @@
 
         Duration NaturalDuration { get; }
     
-        Task Play(Guid mediaItemId);
+        Task Play();
 
         Task Pause();
 
@@ -35,5 +35,7 @@
         bool IsPaused { get; }
 
         FrameworkElement FrameworkElement { get; }
+
+        Guid MediaItemId { get; set; }
     }
 }
