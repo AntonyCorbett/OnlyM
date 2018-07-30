@@ -119,11 +119,6 @@
                     MouseDoubleClick="OnMouseDoubleClickTitleBar"
                     VerticalAlignment="Stretch">
                 
-                    <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseDoubleClick">
-                        <command:EventToCommand Command="{Binding MaximizeOrRestoreCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>-->
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -160,7 +155,9 @@
             </Border>
 
             <Grid Grid.Row="1">
-                <ScrollViewer x:Name="MainScrollViewer" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
+                <ScrollViewer x:Name="MainScrollViewer" 
+                              VerticalScrollBarVisibility="Auto" 
+                              PanningMode="VerticalOnly">
                     <ContentControl Content="{Binding CurrentPage}" />
                 </ScrollViewer>
                 <TextBlock Visibility="{Binding Path=ShowDragAndDropHint, Converter={StaticResource BooleanToVisibilityConverter}}" 
