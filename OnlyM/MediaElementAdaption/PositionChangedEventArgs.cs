@@ -8,12 +8,9 @@
 
         public TimeSpan Position { get; }
         
-        public TimeSpan OldPosition { get; }
-
-        public PositionChangedEventArgs(Guid mediaItemId, TimeSpan oldPosition, TimeSpan position)
+        public PositionChangedEventArgs(Guid mediaItemId, TimeSpan position)
         {
             MediaItemId = mediaItemId;
-            OldPosition = oldPosition;
             Position = position;
         }
     }

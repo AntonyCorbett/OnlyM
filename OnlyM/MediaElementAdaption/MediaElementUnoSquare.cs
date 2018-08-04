@@ -101,7 +101,7 @@
 
         private void HandlePositionChanged(object sender, Unosquare.FFME.Events.PositionChangedRoutedEventArgs e)
         {
-            PositionChanged?.Invoke(sender, new PositionChangedEventArgs(MediaItemId, e.OldPosition, e.Position));
+            PositionChanged?.Invoke(sender, new PositionChangedEventArgs(MediaItemId, e.Position));
         }
 
         private void HandleMessageLogged(object sender, Unosquare.FFME.Events.MediaLogMessageEventArgs e)
