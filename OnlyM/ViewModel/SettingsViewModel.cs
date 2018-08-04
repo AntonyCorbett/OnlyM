@@ -516,6 +516,8 @@ namespace OnlyM.ViewModel
             }
         }
 
+        public bool IsMediaFolderOverriden => _optionsService.Options.IsCommandLineMediaFolderSpecified();
+
         public bool IsMediaInactive => !IsMediaActive;
 
         public bool EmbeddedThumbnails

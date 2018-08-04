@@ -9,5 +9,7 @@
         bool NoSettings { get; set; }
 
         bool NoFolder { get; set; }
+
+        string SourceFolder { get; set; }
     }
 }

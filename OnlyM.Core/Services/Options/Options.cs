@@ -75,6 +75,18 @@
             Sanitize();
         }
 
+        private string _commandLineMediaFolder;
+
+        public void SetCommandLineMediaFolder(string folder)
+        {
+            _commandLineMediaFolder = folder;
+        }
+
+        public bool IsCommandLineMediaFolderSpecified()
+        {
+            return _commandLineMediaFolder != null;
+        }
+
         private bool _showMediaItemCommandPanel;
 
         public bool ShowMediaItemCommandPanel
@@ -315,7 +327,7 @@
 
         public string MediaFolder
         {
-            get => _mediaFolder;
+            get => _commandLineMediaFolder ?? _mediaFolder;
             set
             {
                 if (_mediaFolder != value)

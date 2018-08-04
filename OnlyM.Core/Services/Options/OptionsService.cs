@@ -1,10 +1,9 @@
-﻿using OnlyM.Core.Services.CommandLine;
-
-namespace OnlyM.Core.Services.Options
+﻿namespace OnlyM.Core.Services.Options
 {
     using System;
     using System.IO;
     using System.Linq;
+    using CommandLine;
     using CommonServiceLocator;
     using Models;
     using Monitors;
@@ -90,6 +89,8 @@ namespace OnlyM.Core.Services.Options
         {
             try
             {
+                ClearCommandLineMediaFolderOverride();
+
                 var newSignature = GetOptionsSignature(_options);
                 if (_originalOptionsSignature != newSignature)
                 {
@@ -102,6 +103,10 @@ namespace OnlyM.Core.Services.Options
             catch (Exception ex)
             {
                 Log.Logger.Error(ex, "Could not save settings");
+            }
+            finally
+            {
+                SetCommandLineMediaFolderOverride();
             }
         }
 
@@ -124,10 +129,12 @@ namespace OnlyM.Core.Services.Options
                     {
                         _options = new Options();
                     }
-
+                    
                     // store the original settings so that we can determine if they have changed
                     // when we come to save them
                     _originalOptionsSignature = GetOptionsSignature(_options);
+                    
+                    SetCommandLineMediaFolderOverride();
                 }
                 // ReSharper disable once CatchAllClause
                 catch (Exception ex)
@@ -160,6 +167,20 @@ namespace OnlyM.Core.Services.Options
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void SetCommandLineMediaFolderOverride()
+        {
+            string commandLineMediaFolder = _commandLineService.SourceFolder;
+            if (!string.IsNullOrEmpty(commandLineMediaFolder) && Directory.Exists(commandLineMediaFolder))
+            {
+                _options.SetCommandLineMediaFolder(commandLineMediaFolder);
+            }
+        }
+
+        private void ClearCommandLineMediaFolderOverride()
+        {
+            _options.SetCommandLineMediaFolder(null);
         }
 
         private void HandleShowFreezeCommandChangedEvent(object sender, EventArgs e)

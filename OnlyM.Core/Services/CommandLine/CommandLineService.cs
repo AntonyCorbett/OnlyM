@@ -22,6 +22,9 @@
             p.Setup<bool>("nofolder")
                 .Callback(s => { NoFolder = s; }).SetDefault(false);
 
+            p.Setup<string>("source")
+                .Callback(s => { SourceFolder = s; }).SetDefault(null);
+
             p.Parse(Environment.GetCommandLineArgs());
         }
 
@@ -32,5 +35,7 @@
         public bool NoSettings { get; set; }
 
         public bool NoFolder { get; set; }
+
+        public string SourceFolder { get; set; }
     }
 }
