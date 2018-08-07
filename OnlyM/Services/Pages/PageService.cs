@@ -51,6 +51,8 @@
 
         public event EventHandler MediaWindowClosedEvent;
 
+        public event EventHandler<WindowVisibilityChangedEventArgs> MediaWindowVisibilityChanged;
+        
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
         public PageService(
@@ -129,7 +131,7 @@
 
                         _mediaWindow.Show();
 
-                        OnMediaWindowOpened();
+                        MediaWindowOpenedEvent?.Invoke(this, EventArgs.Empty);
                     }
                 }
             }
@@ -186,7 +188,9 @@
             }
         }
 
-        public bool IsMediaWindowVisible => _mediaWindow != null && _mediaWindow.IsVisible;
+        public bool IsMediaWindowVisible => _mediaWindow != null && 
+                                            _mediaWindow.IsVisible && 
+                                            _mediaWindow.Visibility == Visibility.Visible;
 
         private void LocateWindowAtOrigin(Window window, Screen monitor)
         {
@@ -278,7 +282,13 @@
             _mediaWindow.MediaChangeEvent += HandleMediaChangeEvent;
             _mediaWindow.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _mediaWindow.MediaNearEndEvent += HandleMediaNearEndEvent;
+            _mediaWindow.IsVisibleChanged += HandleMediaWindowVisibility;
             _mediaWindow.Loaded += HandleLoaded;
+        }
+
+        private void HandleMediaWindowVisibility(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            MediaWindowVisibilityChanged?.Invoke(this, new WindowVisibilityChangedEventArgs { Visible = _mediaWindow.Visibility == Visibility.Visible });
         }
 
         private void UnsubscribeMediaWindowEvents()
@@ -286,6 +296,7 @@
             _mediaWindow.MediaChangeEvent -= HandleMediaChangeEvent;
             _mediaWindow.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
             _mediaWindow.MediaNearEndEvent -= HandleMediaNearEndEvent;
+            _mediaWindow.IsVisibleChanged -= HandleMediaWindowVisibility;
             _mediaWindow.Loaded -= HandleLoaded;
         }
 
@@ -413,16 +424,6 @@
             }
         }
 
-        private void OnMediaWindowOpened()
-        {
-            MediaWindowOpenedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void OnMediaWindowClosed()
-        {
-            MediaWindowClosedEvent?.Invoke(this, EventArgs.Empty);
-        }
-        
         private void CloseMediaWindow()
         {
             if (_mediaWindow != null)
@@ -436,7 +437,7 @@
                 _mediaWindow.Close();
                 _mediaWindow = null;
 
-                OnMediaWindowClosed();
+                MediaWindowClosedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }

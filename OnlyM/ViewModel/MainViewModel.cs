@@ -1,3 +1,5 @@
+using OnlyM.Models;
+
 namespace OnlyM.ViewModel
 {
     using System;
@@ -59,9 +61,8 @@ namespace OnlyM.ViewModel
             _pageService = pageService;
             _pageService.NavigationEvent += HandlePageNavigationEvent;
             _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
-            _pageService.MediaWindowOpenedEvent += HandleMediaWindowOpenedEvent;
-            _pageService.MediaWindowClosedEvent += HandleMediaWindowClosedEvent;
-
+            _pageService.MediaWindowVisibilityChanged += HandleMediaWindowVisibilityChangedEvent;
+            
             _snackbarService = snackbarService;
             
             _optionsService = optionsService;
@@ -134,14 +135,13 @@ namespace OnlyM.ViewModel
             IsMediaListEmpty = message.Count == 0;
         }
 
-        private void HandleMediaWindowOpenedEvent(object sender, EventArgs e)
+        private void HandleMediaWindowVisibilityChangedEvent(object sender, WindowVisibilityChangedEventArgs e)
         {
-            Application.Current.MainWindow?.Activate();
-            RaisePropertyChanged(nameof(AlwaysOnTop));
-        }
+            if (e.Visible)
+            {
+                Application.Current.MainWindow?.Activate();
+            }
 
-        private void HandleMediaWindowClosedEvent(object sender, EventArgs e)
-        {
             RaisePropertyChanged(nameof(AlwaysOnTop));
         }
 

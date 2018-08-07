@@ -22,6 +22,8 @@
 
         event EventHandler MediaWindowClosedEvent;
 
+        event EventHandler<WindowVisibilityChangedEventArgs> MediaWindowVisibilityChanged;
+        
         event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
         bool AllowMediaWindowToClose { get; }
