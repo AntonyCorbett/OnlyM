@@ -239,6 +239,8 @@
         {
             if (_mediaWindow != null)
             {
+                var isVisible = _mediaWindow.IsVisible;
+
                 var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
                 if (targetMonitor != null)
                 {
@@ -250,7 +252,13 @@
                     _mediaWindow.Topmost = true;
 
                     _mediaWindow.WindowState = WindowState.Maximized;
+
                     _mediaWindow.Show();
+
+                    if (!isVisible)
+                    {
+                        _mediaWindow.Hide();
+                    }
                 }
             }
             else if (_optionsService.Options.PermanentBackdrop)
