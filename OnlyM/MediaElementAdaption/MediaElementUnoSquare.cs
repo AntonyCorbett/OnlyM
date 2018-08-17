@@ -9,6 +9,7 @@
     internal class MediaElementUnoSquare : IMediaElement
     {
         private readonly Unosquare.FFME.MediaElement _mediaElement;
+        private bool _isPaused;
         
         public MediaElementUnoSquare(Unosquare.FFME.MediaElement mediaElement)
         {
@@ -51,16 +52,19 @@
 
         public Task Play()
         {
+            _isPaused = false;
             return _mediaElement.Play();
         }
 
         public Task Pause()
         {
+            _isPaused = true;
             return _mediaElement.Pause();
         }
 
         public Task Close()
         {
+            _isPaused = false;
             return _mediaElement.Close();
         }
 
@@ -70,7 +74,7 @@
             set => _mediaElement.Source = value;
         }
 
-        public bool IsPaused => _mediaElement.IsPaused;
+        public bool IsPaused => _isPaused;
 
         private void HandleMediaOpened(object sender, RoutedEventArgs e)
         {

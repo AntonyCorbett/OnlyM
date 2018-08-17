@@ -74,6 +74,7 @@
         public void SetPlaybackPosition(TimeSpan position)
         {
             _manuallySettingPlaybackPosition = true;
+
             _mediaElement.Position = position;
             _lastPosition = TimeSpan.Zero;
             _manuallySettingPlaybackPosition = false;
@@ -131,8 +132,12 @@
         private async Task HandleMediaEnded(object sender, System.Windows.RoutedEventArgs e)
         {
             Log.Logger.Debug("Media ended");
-            OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
-            await _mediaElement.Close();
+
+            if (!_mediaElement.IsPaused)
+            {
+                OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
+                await _mediaElement.Close();
+            }
         }
 
         private void HandleMediaFailed(object sender, System.Windows.ExceptionRoutedEventArgs e)
