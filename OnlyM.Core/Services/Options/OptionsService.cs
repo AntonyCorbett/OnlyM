@@ -32,6 +32,8 @@
 
         public event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
+        public event EventHandler RenderingMethodChangedEvent;
+
         public event EventHandler PermanentBackdropChangedEvent;
 
         public event EventHandler AllowVideoPauseChangedEvent;
@@ -151,6 +153,7 @@
                     _options.LogEventLevelChangedEvent += HandleLogEventLevelChangedEvent;
                     _options.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
                     _options.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
+                    _options.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
                     _options.PermanentBackdropChangedEvent += HandlePermanentBackdropChangedEvent;
                     _options.AllowVideoPauseChangedEvent += HandleAllowVideoPauseChangedEvent;
                     _options.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
@@ -246,6 +249,11 @@
         private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
         {
             MediaMonitorChangedEvent?.Invoke(this, e);
+        }
+
+        private void HandleRenderingMethodChangedEvent(object sender, EventArgs e)
+        {
+            RenderingMethodChangedEvent?.Invoke(this, e);
         }
 
         private void HandleAlwaysOnTopChangedEvent(object sender, EventArgs e)

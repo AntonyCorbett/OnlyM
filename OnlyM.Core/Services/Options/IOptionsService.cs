@@ -21,6 +21,8 @@
 
         event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
+        event EventHandler RenderingMethodChangedEvent;
+
         event EventHandler PermanentBackdropChangedEvent;
 
         event EventHandler AllowVideoPauseChangedEvent;

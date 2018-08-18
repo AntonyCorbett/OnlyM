@@ -13,9 +13,15 @@
         Title="MediaWindow" Height="450" Width="800" Loaded="WindowLoaded" Closing="WindowClosing">
     
     <Grid>
-        <ffme:MediaElement x:Name="VideoElement" 
-                          Background="Black"
-                           LoadedBehavior="Play" 
+        <MediaElement x:Name="VideoElementMediaFoundation"
+                      Visibility="{Binding Path=EngineIsMediaFoundation, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      LoadedBehavior="Manual"
+                      UnloadedBehavior="Manual" />
+
+        <ffme:MediaElement x:Name="VideoElementFfmpeg" 
+                           Visibility="{Binding Path=EngineIsFfmpeg, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Background="Black"
+                           LoadedBehavior="Manual" 
                            UnloadedBehavior="Manual" />
 
         <Image x:Name="Image1Element"></Image>

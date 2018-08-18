@@ -6,13 +6,13 @@
 
     internal interface IMediaElement
     {
-        event EventHandler<System.Windows.RoutedEventArgs> MediaOpened;
+        event EventHandler<RoutedEventArgs> MediaOpened;
 
-        event EventHandler<System.Windows.RoutedEventArgs> MediaClosed;
+        event EventHandler<RoutedEventArgs> MediaClosed;
 
-        event EventHandler<System.Windows.RoutedEventArgs> MediaEnded;
+        event EventHandler<RoutedEventArgs> MediaEnded;
 
-        event EventHandler<System.Windows.ExceptionRoutedEventArgs> MediaFailed;
+        event EventHandler<ExceptionRoutedEventArgs> MediaFailed;
 
         event EventHandler<RenderSubtitlesEventArgs> RenderingSubtitles;
 
@@ -24,14 +24,12 @@
 
         Duration NaturalDuration { get; }
     
-        Task Play();
+        Task Play(Uri mediaPath);
 
         Task Pause();
 
         Task Close();
-
-        Uri Source { get; set; }
-
+        
         bool IsPaused { get; }
 
         FrameworkElement FrameworkElement { get; }

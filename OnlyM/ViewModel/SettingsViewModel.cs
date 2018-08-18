@@ -1,6 +1,4 @@
-﻿using OnlyM.Services.Snackbar;
-
-namespace OnlyM.ViewModel
+﻿namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -23,6 +21,7 @@ namespace OnlyM.ViewModel
     using Services;
     using Services.MediaChanging;
     using Services.Pages;
+    using Services.Snackbar;
 
     // ReSharper disable once UnusedMember.Global
     internal class SettingsViewModel : ViewModelBase
@@ -34,6 +33,7 @@ namespace OnlyM.ViewModel
         private readonly IActiveMediaItemsService _activeMediaItemsService;
         private readonly ISnackbarService _snackbarService;
         private readonly MonitorItem[] _monitors;
+        private readonly RenderingMethodItem[] _renderingMethods;
         private readonly LoggingLevel[] _loggingLevels;
         private readonly ImageFade[] _fadingTypes;
         private readonly ImageFadeSpeed[] _fadingSpeeds;
@@ -61,6 +61,7 @@ namespace OnlyM.ViewModel
             _loggingLevels = GetLoggingLevels().ToArray();
             _fadingTypes = GetImageFadingTypes().ToArray();
             _fadingSpeeds = GetFadingSpeedTypes().ToArray();
+            _renderingMethods = GetRenderingMethods().ToArray();
             
             _pageService.NavigationEvent += HandleNavigationEvent;
             
@@ -600,7 +601,22 @@ namespace OnlyM.ViewModel
                 }
             }
         }
-        
+
+        public IEnumerable<RenderingMethodItem> RenderingMethods => _renderingMethods;
+
+        public RenderingMethod RenderingMethod
+        {
+            get => _optionsService.Options.RenderingMethod;
+            set
+            {
+                if (_optionsService.Options.RenderingMethod != value)
+                {
+                    _optionsService.Options.RenderingMethod = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public IEnumerable<MonitorItem> Monitors => _monitors;
 
         public string MonitorId
@@ -612,7 +628,7 @@ namespace OnlyM.ViewModel
                 {
                     if (value == null && IsMediaActive)
                     {
-                        // prevent selection on "none" when media is active.
+                        // prevent selection of "none" when media is active.
                         _snackbarService.EnqueueWithOk(Properties.Resources.NO_DESELECT_MONITOR);
                     }
                     else
@@ -680,6 +696,16 @@ namespace OnlyM.ViewModel
             }
 
             return result;
+        }
+
+        private IEnumerable<RenderingMethodItem> GetRenderingMethods()
+        {
+            // don't localize these strings!
+            return new List<RenderingMethodItem>
+            {
+                new RenderingMethodItem { Method = RenderingMethod.MediaFoundation, Name = "Media Foundation" },
+                new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = "Ffmpeg" }
+            };
         }
 
         private IEnumerable<MonitorItem> GetSystemMonitors()

@@ -14,7 +14,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DesignHeight="1650" d:DesignWidth="600">
+             d:DesignHeight="1850" d:DesignWidth="600">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -161,7 +161,7 @@
                 </CheckBox>
 
                 <TextBox
-                    materialDesign:HintAssist.Hint="Maximum number of items"
+                    materialDesign:HintAssist.Hint="Maximum Number of Items"
                     Text="{Binding MaxItemCount, Mode=TwoWay}"
                     Style="{StaticResource SettingsTextBoxStyle}" />
 
@@ -204,6 +204,16 @@
         <GroupBox Header="Videos and Audio" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
+                <ComboBox ItemsSource="{Binding RenderingMethods}"
+                          IsEnabled="{Binding IsMediaInactive}"
+                          Style="{StaticResource SettingsComboBoxStyle}" 
+                          materialDesign:HintAssist.IsFloating="True"
+                          materialDesign:HintAssist.Hint="Rendering Engine"
+                          SelectedValuePath="Method" 
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding RenderingMethod, Mode=TwoWay}">
+                </ComboBox>
+
                 <CheckBox IsChecked="{Binding ShowVideoSubtitles, Mode=TwoWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">
                     Show subtitles if available
@@ -240,7 +250,7 @@
 
             <StackPanel Margin="0,0,0,30">
                 <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
-                           Margin="0,0,0,-20">Video margins</TextBlock>
+                           Margin="0,0,0,-20">Video Margins</TextBlock>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                     <Label Style="{StaticResource SettingsMarginLabelStyle}">L</Label>
@@ -267,7 +277,7 @@
                 </StackPanel>
 
                 <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
-                           Margin="0,40,0,-20">Image margins</TextBlock>
+                           Margin="0,40,0,-20">Image Margins</TextBlock>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                     <Label Style="{StaticResource SettingsMarginLabelStyle}">L</Label>
@@ -312,7 +322,7 @@
                     SelectedDate="{Binding MediaCalendarDate}"
                     SelectedDateFormat="Long"
                     Width="200"
-                    materialDesign:HintAssist.Hint="Current date" />
+                    materialDesign:HintAssist.Hint="Current Date" />
 
                 <CheckBox IsChecked="{Binding AlwaysOnTop, Mode=TwoWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">

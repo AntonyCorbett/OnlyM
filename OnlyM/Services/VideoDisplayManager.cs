@@ -42,18 +42,18 @@
         public bool ShowSubtitles { get; set; }
 
         public async Task ShowVideoOrPlayAudio(
-            string mediaItemFilePath, 
+            string mediaItemFilePath,
             ScreenPosition screenPosition,
             Guid mediaItemId,
             MediaClassification mediaClassification,
-            TimeSpan startOffset, 
+            TimeSpan startOffset,
             bool startFromPaused)
         {
             _mediaItemId = mediaItemId;
             _mediaClassification = mediaClassification;
             _startPosition = startOffset;
             _lastPosition = TimeSpan.Zero;
-            
+
             ScreenPositionHelper.SetScreenPosition(_mediaElement.FrameworkElement, screenPosition);
 
             _mediaElement.MediaItemId = mediaItemId;
@@ -61,13 +61,13 @@
             if (startFromPaused)
             {
                 _mediaElement.Position = _startPosition;
-                await _mediaElement.Play();
+                await _mediaElement.Play(new Uri(mediaItemFilePath));
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
             }
             else
             {
+                await _mediaElement.Play(new Uri(mediaItemFilePath));
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
-                _mediaElement.Source = new Uri(mediaItemFilePath);
             }
         }
 

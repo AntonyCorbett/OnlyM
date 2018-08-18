@@ -70,7 +70,8 @@
             _optionsService.ImageFadeSpeedChangedEvent += HandleImageFadeSpeedChangedEvent;
             _optionsService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
             _optionsService.PermanentBackdropChangedEvent += HandlePermanentBackdropChangedEvent;
-            
+            _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
+
             _systemDpi = WindowPlacement.GetDpiSettings();
 
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
@@ -447,6 +448,11 @@
 
                 MediaWindowClosedEvent?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        private void HandleRenderingMethodChangedEvent(object sender, EventArgs e)
+        {
+            _mediaWindow?.UpdateRenderingMethod();
         }
     }
 }

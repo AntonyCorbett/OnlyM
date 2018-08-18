@@ -26,6 +26,8 @@
 
         public event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
+        public event EventHandler RenderingMethodChangedEvent;
+
         public event EventHandler PermanentBackdropChangedEvent;
 
         public event EventHandler AllowVideoPauseChangedEvent;
@@ -117,7 +119,6 @@
             }
         }
 
-
         private string _mediaMonitorId;
 
         public string MediaMonitorId
@@ -130,6 +131,21 @@
                     var originalMonitorId = _mediaMonitorId;
                     _mediaMonitorId = value;
                     OnMediaMonitorChangedEvent(originalMonitorId, value);
+                }
+            }
+        }
+
+        private RenderingMethod _renderingMethod;
+
+        public RenderingMethod RenderingMethod
+        {
+            get => _renderingMethod;
+            set
+            {
+                if (_renderingMethod != value)
+                {
+                    _renderingMethod = value;
+                    RenderingMethodChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }

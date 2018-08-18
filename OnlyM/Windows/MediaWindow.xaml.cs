@@ -25,10 +25,13 @@
         private const int MediaConfirmStopWindowSeconds = 3;
 
         private readonly ImageDisplayManager _imageDisplayManager;
-        private readonly VideoDisplayManager _videoDisplayManager;
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
-        
+
+        private VideoDisplayManager _videoDisplayManager;
+        private IMediaElement _videoElement;
+        private RenderingMethod _currentRenderingMethod;
+
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
         public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
@@ -44,10 +47,18 @@
             _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
             
             _snackbarService = snackbarService;
-            
-            _videoDisplayManager = new VideoDisplayManager(new MediaElementUnoSquare(VideoElement));
-            
+
+            InitRenderingMethod();
+
             SubscribeEvents();
+        }
+
+        public void UpdateRenderingMethod()
+        {
+            if (_optionsService.Options.RenderingMethod != _currentRenderingMethod)
+            {
+                InitRenderingMethod();
+            }
         }
 
         public ImageFadeType ImageFadeType
@@ -219,6 +230,11 @@
 
             _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
 
+            SubscribeVideoDisplayManagerEvents();
+        }
+
+        private void SubscribeVideoDisplayManagerEvents()
+        {
             _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
             _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent += HandleMediaNearEndEvent;
@@ -232,6 +248,11 @@
 
             _imageDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
 
+            UnsubscribeVideoDisplayManagerEvents();
+        }
+
+        private void UnsubscribeVideoDisplayManagerEvents()
+        {
             _videoDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
             _videoDisplayManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent -= HandleMediaNearEndEvent;
@@ -286,13 +307,39 @@
 
         private void HandleVideoScreenPositionChangedEvent(object sender, EventArgs e)
         {
-            ScreenPositionHelper.SetScreenPosition(VideoElement, _optionsService.Options.VideoScreenPosition);
+            ScreenPositionHelper.SetScreenPosition(_videoElement.FrameworkElement, _optionsService.Options.VideoScreenPosition);
         }
 
         private void HandleImageScreenPositionChangedEvent(object sender, EventArgs e)
         {
             ScreenPositionHelper.SetScreenPosition(Image1Element, _optionsService.Options.ImageScreenPosition);
             ScreenPositionHelper.SetScreenPosition(Image2Element, _optionsService.Options.ImageScreenPosition);
+        }
+
+        private void InitRenderingMethod()
+        {
+            switch (_optionsService.Options.RenderingMethod)
+            {
+                case RenderingMethod.Ffmpeg:
+                    _videoElement = new MediaElementUnoSquare(VideoElementFfmpeg);
+                    break;
+
+                default:
+                case RenderingMethod.MediaFoundation:
+                    _videoElement = new MediaElementMediaFoundation(VideoElementMediaFoundation, _optionsService);
+                    break;
+            }
+
+            _currentRenderingMethod = _optionsService.Options.RenderingMethod;
+
+            if (_videoDisplayManager != null)
+            {
+                UnsubscribeVideoDisplayManagerEvents();
+            }
+
+            _videoDisplayManager = new VideoDisplayManager(_videoElement);
+
+            SubscribeVideoDisplayManagerEvents();
         }
     }
 }

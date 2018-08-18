@@ -98,6 +98,7 @@
     <Compile Include="Models\MediaFolders.cs" />
     <Compile Include="Models\MediaMetaData.cs" />
     <Compile Include="Models\MonitorChangedEventArgs.cs" />
+    <Compile Include="Models\RenderingMethod.cs" />
     <Compile Include="Models\ScreenPosition.cs" />
     <Compile Include="Models\SupportedMediaType.cs" />
     <Compile Include="Models\SystemMonitor.cs" />

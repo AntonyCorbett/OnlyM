@@ -138,6 +138,7 @@
     <Compile Include="AutoUpdates\VersionDetection.cs" />
     <Compile Include="MediaElementAdaption\IMediaElement.cs" />
     <Compile Include="MediaElementAdaption\LogMessageEventArgs.cs" />
+    <Compile Include="MediaElementAdaption\MediaElementMediaFoundation.cs" />
     <Compile Include="MediaElementAdaption\MediaElementUnoSquare.cs" />
     <Compile Include="MediaElementAdaption\PositionChangedEventArgs.cs" />
     <Compile Include="MediaElementAdaption\RenderSubtitlesEventArgs.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Models\MediaEventArgs.cs" />
     <Compile Include="Models\MediaNearEndEventArgs.cs" />
     <Compile Include="Models\MonitorItem.cs" />
+    <Compile Include="Models\RenderingMethodItem.cs" />
     <Compile Include="Models\ScreenMarginSide.cs" />
     <Compile Include="Models\WindowVisibilityChangedEventArgs.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatedMessage.cs" />
