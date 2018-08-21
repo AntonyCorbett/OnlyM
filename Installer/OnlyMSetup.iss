@@ -22,6 +22,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\OnlyM
 DefaultGroupName={#MyAppName}
+OutputDir="..\Installer\Output"
 OutputBaseFilename=OnlyMSetup
 SetupIconFile=icon.ico
 SourceDir={#MySource}
