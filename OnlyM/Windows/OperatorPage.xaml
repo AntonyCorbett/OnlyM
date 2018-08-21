@@ -221,7 +221,7 @@
 
                             <ProgressBar
                                 Grid.Column="3"
-                                Visibility="{Binding Path=IsWaitingAnimationVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Visibility="{Binding Path=IsPreparingMedia, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 Style="{StaticResource MaterialDesignCircularProgressBar}"
                                 Value="0"
                                 IsIndeterminate="True" />

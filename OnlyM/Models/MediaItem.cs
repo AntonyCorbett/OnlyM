@@ -18,11 +18,6 @@
 
         public event EventHandler PlaybackPositionChangedEvent;
 
-        public MediaItem()
-        {
-            IsWaitingAnimationVisible = true;
-        }
-
         public Guid Id { get; set; }
 
         public bool IsVideo => MediaType.Classification == MediaClassification.Video; 
@@ -191,32 +186,22 @@
                 if (_thumbnailImageSource == null || !_thumbnailImageSource.Equals(value))
                 {
                     _thumbnailImageSource = value;
-                    IsWaitingAnimationVisible = value == null;
+
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(IsPlayButtonVisible));
                     RaisePropertyChanged(nameof(IsStopButtonVisible));
+                    RaisePropertyChanged(nameof(IsPreparingMedia));
                 }
             }
         }
 
-        private bool _isWaitingAnimationVisible;
+        public bool IsPreparingMedia =>
+            _thumbnailImageSource == null ||
+            (HasDuration && DurationDeciseconds == 0);
 
-        public bool IsWaitingAnimationVisible
-        {
-            get => _isWaitingAnimationVisible;
-            set
-            {
-                if (_isWaitingAnimationVisible != value)
-                {
-                    _isWaitingAnimationVisible = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
+        public bool IsPlayButtonVisible => !IsMediaActive && !IsPreparingMedia;
 
-        public bool IsPlayButtonVisible => !IsMediaActive && !IsWaitingAnimationVisible;
-
-        public bool IsStopButtonVisible => IsMediaActive && !IsWaitingAnimationVisible;
+        public bool IsStopButtonVisible => IsMediaActive && !IsPreparingMedia;
 
         private bool _isMediaActive;
 
@@ -316,7 +301,10 @@
 
         public bool IsPauseButtonVisible => HasDuration && IsMediaActive && AllowPause;
 
-        public bool IsSliderVisible => HasDuration && AllowPositionSeeking && (!IsMediaActive || IsPaused);
+        public bool IsSliderVisible => 
+            HasDuration && 
+            AllowPositionSeeking && 
+            (!IsMediaActive || IsPaused);
 
         private int _playbackPositionDeciseconds;
 
@@ -367,6 +355,8 @@
                     _durationDeciseconds = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(DurationString));
+                    RaisePropertyChanged(nameof(IsPreparingMedia));
+                    RaisePropertyChanged(nameof(IsPlayButtonVisible));
                 }
             }
         }

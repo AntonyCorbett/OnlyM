@@ -231,7 +231,8 @@
                         Padding="4">
                         <ProgressBar
                             Style="{StaticResource MaterialDesignCircularProgressBar}"
-                            Value="{Binding ProgressPercentage}" />
+                            Value="0" 
+                            IsIndeterminate="True"/>
                     </materialDesign:Card>
 
                     <Button

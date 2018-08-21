@@ -7,7 +7,5 @@
         public string FilePath { get; set; }
 
         public FileCopyStatus Status { get; set; }
-
-        public double PercentageComplete { get; set; }
     }
 }

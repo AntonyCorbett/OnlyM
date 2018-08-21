@@ -83,22 +83,22 @@ namespace OnlyM.ViewModel
 
         private void HandleCopyingFilesProgressEvent(object sender, Models.FilesCopyProgressEventArgs e)
         {
-            ProgressPercentage = e.PercentageComplete;
+            IsBusy = e.Status == FileCopyStatus.StartingCopy;
         }
 
-        private double _progressPercentage;
+        private bool _isBusy;
 
-        public double ProgressPercentage
+        public bool IsBusy
         {
-            get => _progressPercentage;
+            get => _isBusy;
             set
             {
-                // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (_progressPercentage != value)
+                if (_isBusy != value)
                 {
-                    _progressPercentage = value;
+                    _isBusy = value;
                     RaisePropertyChanged();
-                    ShowProgressBar = value > 0.0;
+                    RaisePropertyChanged(nameof(IsUnhideButtonVisible));
+                    RaisePropertyChanged(nameof(ShowProgressBar));
                 }
             }
         }
@@ -251,22 +251,7 @@ namespace OnlyM.ViewModel
         public bool IsUnhideButtonVisible => 
             IsInDesignMode || (IsOperatorPageActive && !ShowProgressBar && _hiddenMediaItemsService.SomeHiddenMediaItems());
 
-
-        private bool _showProgressBar;
-
-        public bool ShowProgressBar
-        {
-            get => _showProgressBar;
-            set
-            {
-                if (_showProgressBar != value)
-                {
-                    _showProgressBar = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsUnhideButtonVisible));
-                }
-            }
-        }
+        public bool ShowProgressBar => IsBusy;
 
         // commands...
         public RelayCommand GotoSettingsCommand { get; set; }

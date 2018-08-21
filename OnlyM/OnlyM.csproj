@@ -173,6 +173,7 @@
     <Compile Include="Services\MediaChanging\IActiveMediaItemsService.cs" />
     <Compile Include="Services\MediaChanging\IMediaStatusChangingService.cs" />
     <Compile Include="Services\MediaChanging\MediaStatusChangingService.cs" />
+    <Compile Include="Services\MetaDataQueue\ItemMetaDataPopulatedEventArgs.cs" />
     <Compile Include="Services\Pages\IPageService.cs" />
     <Compile Include="Services\Pages\NavigationEventArgs.cs" />
     <Compile Include="Services\Pages\PageService.cs" />

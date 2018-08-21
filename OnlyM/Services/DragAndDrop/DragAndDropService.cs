@@ -110,14 +110,10 @@
                     return 0;
                 }
 
-                int totalCount = files.Length;
-                double partialIncrement = 50.0 / totalCount;
-
-                for (int n = 0; n < totalCount; ++n)
+                foreach (var file in files)
                 {
-                    var file = files[n];
-
                     var filename = Path.GetFileName(file);
+
                     if (!string.IsNullOrEmpty(filename))
                     {
                         var destFile = Path.Combine(mediaFolder, filename);
@@ -126,8 +122,7 @@
                             OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
                             {
                                 FilePath = destFile,
-                                Status = FileCopyStatus.StartingCopy,
-                                PercentageComplete = ((n * 100.0) / totalCount) + partialIncrement
+                                Status = FileCopyStatus.StartingCopy
                             });
 
                             File.Copy(file, destFile, false);
@@ -136,8 +131,7 @@
                             OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
                             {
                                 FilePath = destFile,
-                                Status = FileCopyStatus.FinishedCopy,
-                                PercentageComplete = ((n + 1) * 100.0) / totalCount
+                                Status = FileCopyStatus.FinishedCopy
                             });
                         }
                     }
@@ -152,8 +146,7 @@
             {
                 OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
                 {
-                    Status = FileCopyStatus.FinishedCopy,
-                    PercentageComplete = 0
+                    Status = FileCopyStatus.FinishedCopy
                 });
             }
 
