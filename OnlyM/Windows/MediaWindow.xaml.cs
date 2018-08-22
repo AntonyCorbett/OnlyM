@@ -147,7 +147,7 @@
             {
                 var item = (MediaItem)sender;
                 _videoDisplayManager.SetPlaybackPosition(
-                    TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 10));
+                    TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
             }
         }
 
@@ -192,7 +192,7 @@
                 HideImage(currentMediaItems);
             }
 
-            var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 10);
+            var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 100);
 
             _videoDisplayManager.ShowSubtitles = _optionsService.Options.ShowVideoSubtitles;
 

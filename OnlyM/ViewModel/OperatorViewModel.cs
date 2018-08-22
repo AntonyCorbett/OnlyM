@@ -250,7 +250,7 @@
             var item = GetMediaItem(e.MediaItemId);
             if (item != null)
             {
-                item.PlaybackPositionDeciseconds = (int)(e.Position.TotalMilliseconds / 10);
+                item.PlaybackPositionDeciseconds = (int)(e.Position.TotalMilliseconds / 100);
             }
         }
 
@@ -675,6 +675,7 @@
                 if (!destFilePaths.Contains(file.FullPath))
                 {
                     var item = CreateNewMediaItem(file);
+
                     MediaItems.Add(item);
 
                     _metaDataProducer.Add(item);

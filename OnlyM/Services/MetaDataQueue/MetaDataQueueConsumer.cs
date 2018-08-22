@@ -131,7 +131,7 @@
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
-                        mediaItem.DurationDeciseconds = (int) (metaData.Duration.TotalSeconds * 10);
+                        mediaItem.DurationDeciseconds = (int)(metaData.Duration.TotalSeconds * 10);
                         mediaItem.Name = GetMediaTitle(mediaItem.FilePath, metaData);
                     });
                 }

@@ -317,7 +317,7 @@
                 {
                     _playbackPositionDeciseconds = value;
 
-                    PlaybackTimeString = GenerateTimeString(_playbackPositionDeciseconds * 10);
+                    PlaybackTimeString = GenerateTimeString(_playbackPositionDeciseconds * 100);
 
                     RaisePropertyChanged();
                     OnPlaybackPositionChangedEvent();
@@ -340,7 +340,7 @@
             }
         }
 
-        public string DurationString => GenerateTimeString(DurationDeciseconds * 10);
+        public string DurationString => GenerateTimeString(_durationDeciseconds * 100);
 
         private int _durationDeciseconds;
 

@@ -16,12 +16,13 @@
     {
         private const int ExifOrientationId = 0x112; // 274
 
-        // todo: make optional use of this
-        public static void ExifRotate(this Image img)
+        // todo: make optional use of this (but RotateFlip seems to corrupt meta data!)
+
+        public static bool ExifRotate(this Image img)
         {
             if (!img.PropertyIdList.Contains(ExifOrientationId))
             {
-                return;
+                return false;
             }
             
             var prop = img.GetPropertyItem(ExifOrientationId);
@@ -54,7 +55,10 @@
             if (rot != RotateFlipType.RotateNoneFlipNone)
             {
                 img.RotateFlip(rot);
+                return true;
             }
+
+            return false;
         }
 
         public static BitmapSource Downsize(string imageFilePath, int maxImageWidth, int maxImageHeight)
