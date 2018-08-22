@@ -13,6 +13,8 @@
 
         event EventHandler MediaFolderChangedEvent;
 
+        event EventHandler AutoRotateChangedEvent;
+
         event EventHandler ImageFadeTypeChangedEvent;
 
         event EventHandler ImageFadeSpeedChangedEvent;

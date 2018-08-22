@@ -16,6 +16,8 @@
 
         public event EventHandler MediaFolderChangedEvent;
 
+        public event EventHandler AutoRotateChangedEvent;
+
         public event EventHandler ImageFadeTypeChangedEvent;
 
         public event EventHandler ImageFadeSpeedChangedEvent;
@@ -335,6 +337,21 @@
                 {
                     _logEventLevel = value;
                     LogEventLevelChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        private bool _autoRotateImages;
+
+        public bool AutoRotateImages
+        {
+            get => _autoRotateImages;
+            set
+            {
+                if (_autoRotateImages != value)
+                {
+                    _autoRotateImages = value;
+                    AutoRotateChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }

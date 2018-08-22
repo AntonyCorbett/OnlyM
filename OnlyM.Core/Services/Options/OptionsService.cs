@@ -24,6 +24,8 @@
        
         public event EventHandler MediaFolderChangedEvent;
 
+        public event EventHandler AutoRotateChangedEvent;
+
         public event EventHandler ImageFadeTypeChangedEvent;
 
         public event EventHandler ImageFadeSpeedChangedEvent;
@@ -148,6 +150,7 @@
                 if (_options != null)
                 {
                     _options.MediaFolderChangedEvent += HandleMediaFolderChangedEvent;
+                    _options.AutoRotateChangedEvent += HandleAutoRotateChangedEvent;
                     _options.ImageFadeTypeChangedEvent += HandleImageFadeTypeChangedEvent;
                     _options.ImageFadeSpeedChangedEvent += HandleImageFadeSpeedChangedEvent;
                     _options.LogEventLevelChangedEvent += HandleLogEventLevelChangedEvent;
@@ -170,6 +173,11 @@
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void HandleAutoRotateChangedEvent(object sender, EventArgs e)
+        {
+            AutoRotateChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void SetCommandLineMediaFolderOverride()

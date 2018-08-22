@@ -73,6 +73,7 @@
 
             _optionsService = optionsService;
             _optionsService.MediaFolderChangedEvent += HandleMediaFolderChangedEvent;
+            _optionsService.AutoRotateChangedEvent += HandleAutoRotateChangedEvent;
             _optionsService.AllowVideoPauseChangedEvent += HandleAllowVideoPauseChangedEvent;
             _optionsService.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
             _optionsService.UseInternalMediaTitlesChangedEvent += HandleUseInternalMediaTitlesChangedEvent;
@@ -107,6 +108,40 @@
             LaunchThumbnailQueueConsumer();
 
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+        }
+
+        private void HandleAutoRotateChangedEvent(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                if (_optionsService.Options.AutoRotateImages)
+                {
+                    foreach (var item in MediaItems)
+                    {
+                        AutoRotateImageIfRequired(item);
+                    }
+                }
+
+                _pendingLoadMediaItems = true;
+            });
+        }
+
+        private bool AutoRotateImageIfRequired(MediaItem item)
+        {
+            if (item.MediaType.Classification == MediaClassification.Image)
+            {
+                if (GraphicsUtils.AutoRotateIfRequired(item.FilePath))
+                {
+                    // auto-rotated so refresh the thumbnail...
+                    item.ThumbnailImageSource = null;
+                    item.LastChanged = DateTime.UtcNow.Ticks;
+                    _metaDataProducer.Add(item);
+
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_thumbnailCancellationTokenSource", Justification = "False Positive")]
@@ -277,6 +312,11 @@
         private void HandleItemCompletedEvent(object sender, ItemMetaDataPopulatedEventArgs e)
         {
             var item = e.MediaItem;
+            
+            if (_optionsService.Options.AutoRotateImages)
+            {
+                AutoRotateImageIfRequired(item);
+            }
         }
 
         private void HandleFileChangesFoundEvent(object sender, EventArgs e)

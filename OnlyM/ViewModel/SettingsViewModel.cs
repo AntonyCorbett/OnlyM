@@ -548,6 +548,19 @@
             }
         }
 
+        public bool AutoRotateImages
+        {
+            get => _optionsService.Options.AutoRotateImages;
+            set
+            {
+                if (_optionsService.Options.AutoRotateImages != value)
+                {
+                    _optionsService.Options.AutoRotateImages = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public string MediaFolder
         {
             get => _optionsService.Options.MediaFolder;

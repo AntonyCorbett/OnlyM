@@ -13,7 +13,7 @@
             out bool foundInCache);
 
         void ClearThumbCache();
-
+        
         event EventHandler ThumbnailsPurgedEvent;
     }
 }

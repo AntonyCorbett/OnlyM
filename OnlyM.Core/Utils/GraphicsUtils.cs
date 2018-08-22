@@ -6,56 +6,40 @@
     using System.Drawing.Drawing2D;
     using System.Drawing.Imaging;
     using System.IO;
-    using System.Linq;
     using System.Text;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
+    using ImageProcessor;
     using Serilog;
+    using TagLib.Image;
 
     public static class GraphicsUtils
     {
-        private const int ExifOrientationId = 0x112; // 274
-
-        // todo: make optional use of this (but RotateFlip seems to corrupt meta data!)
-
-        public static bool ExifRotate(this Image img)
+        public static bool AutoRotateIfRequired(string itemFilePath)
         {
-            if (!img.PropertyIdList.Contains(ExifOrientationId))
+            try
             {
-                return false;
+                if (ImageRequiresRotation(itemFilePath))
+                {
+                    byte[] photoBytes = System.IO.File.ReadAllBytes(itemFilePath);
+
+                    using (var inStream = new MemoryStream(photoBytes))
+                    {
+                        using (var imageFactory = new ImageFactory())
+                        {
+                            imageFactory
+                                .Load(inStream)
+                                .AutoRotate()
+                                .Save(itemFilePath);
+
+                            return true;
+                        }
+                    }
+                }
             }
-            
-            var prop = img.GetPropertyItem(ExifOrientationId);
-            int val = BitConverter.ToUInt16(prop.Value, 0);
-            var rot = RotateFlipType.RotateNoneFlipNone;
-
-            switch (val)
+            catch (Exception ex)
             {
-                case 3:
-                case 4:
-                    rot = RotateFlipType.Rotate180FlipNone;
-                    break;
-
-                case 5:
-                case 6:
-                    rot = RotateFlipType.Rotate90FlipNone;
-                    break;
-
-                case 7:
-                case 8:
-                    rot = RotateFlipType.Rotate270FlipNone;
-                    break;
-            }
-
-            if (val == 2 || val == 4 || val == 5 || val == 7)
-            {
-                rot |= RotateFlipType.RotateNoneFlipX;
-            }
-
-            if (rot != RotateFlipType.RotateNoneFlipNone)
-            {
-                img.RotateFlip(rot);
-                return true;
+                Log.Logger.Error(ex, $"Could not auto-rotate image {itemFilePath}");
             }
 
             return false;
@@ -83,7 +67,7 @@
         {
             byte[] result = null;
 
-            if (File.Exists(path))
+            if (System.IO.File.Exists(path))
             {
                 using (var srcBmp = new Bitmap(path))
                 {
@@ -160,7 +144,7 @@
                 try
                 {
                     var result = CreateEmbeddedThumbnailForVideo(originalPath, ffmpegFolder);
-                    if (result != null && File.Exists(result))
+                    if (result != null && System.IO.File.Exists(result))
                     {
                         return result;
                     }
@@ -204,7 +188,7 @@
 
             ExecuteFFMpeg(ffmpegFolder, arguments.ToString());
 
-            return File.Exists(tempThumbnailPath)
+            return System.IO.File.Exists(tempThumbnailPath)
                 ? tempThumbnailPath
                 : null;
         }
@@ -261,6 +245,30 @@
             }
 
             return Path.Combine(tempThumbnailFolder, Path.ChangeExtension(origFileName, ".png"));
+        }
+
+        private static bool ImageRequiresRotation(string imageFilePath)
+        {
+            using (var tf = TagLib.File.Create(imageFilePath))
+            {
+                tf.Mode = TagLib.File.AccessMode.Read;
+
+                using (var imageFile = tf as TagLib.Image.File)
+                {
+                    if (imageFile != null)
+                    {
+                        // see here for Exif discussion:
+                        // http://sylvana.net/jpegcrop/exif_orientation.html
+                        // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
+                        var orientation = imageFile.ImageTag.Orientation;
+
+                        return orientation != ImageOrientation.None &&
+                               orientation != ImageOrientation.TopLeft;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -78,7 +78,7 @@
             _databaseService.ClearThumbCache();
             OnThumbnailsPurgedEvent();
         }
-        
+
         private byte[] GenerateThumbnail(
             string originalPath,
             string ffmpegFolder,

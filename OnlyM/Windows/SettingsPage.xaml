@@ -198,6 +198,11 @@
                     Cache images (better performance but more memory)
                 </CheckBox>
 
+                <CheckBox IsChecked="{Binding AutoRotateImages, Mode=TwoWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}">
+                    Auto-rotate
+                </CheckBox>
+
             </StackPanel>
         </GroupBox>
 
