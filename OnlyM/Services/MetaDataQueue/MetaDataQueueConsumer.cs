@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Services.MetaDataQueue
+﻿using System.Collections.Generic;
+
+namespace OnlyM.Services.MetaDataQueue
 {
     using System;
     using System.Collections.Concurrent;
@@ -52,38 +54,38 @@
 
         private void RunConsumer()
         {
-            Task.Run(
-                () =>
+            Task.Run(() => { RunConsumerTask(); }, _cancellationToken);
+        }
+
+        private void RunConsumerTask()
+        {
+            try
+            {
+                while (!_cancellationToken.IsCancellationRequested)
                 {
-                    try
+                    var nextItem = _collection.Take(_cancellationToken);
+
+                    Log.Logger.Debug($"Consuming item {nextItem.FilePath}");
+                    PopulateThumbnailAndMetaData(nextItem);
+
+                    if (!IsPopulated(nextItem))
                     {
-                        while (!_cancellationToken.IsCancellationRequested)
-                        {
-                            var nextItem = _collection.Take(_cancellationToken);
-
-                            Log.Logger.Debug($"Consuming item {nextItem.FilePath}");
-                            PopulateThumbnailAndMetaData(nextItem);
-
-                            if (!IsPopulated(nextItem))
-                            {
-                                // put it back in the queue!
-                                ReplaceInQueue(nextItem);
-                            }
-                            else
-                            {
-                                Log.Logger.Debug($"Done item {nextItem.FilePath}");
-                                ItemCompletedEvent?.Invoke(this, new ItemMetaDataPopulatedEventArgs { MediaItem = nextItem });
-                            }
-
-                            Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _collection.Count);
-                        }
+                        // put it back in the queue!
+                        ReplaceInQueue(nextItem);
                     }
-                    catch (OperationCanceledException)
+                    else
                     {
-                        Log.Logger.Debug("Metadata consumer closed");
+                        Log.Logger.Debug($"Done item {nextItem.FilePath}");
+                        ItemCompletedEvent?.Invoke(this, new ItemMetaDataPopulatedEventArgs { MediaItem = nextItem });
                     }
-                },
-                _cancellationToken);
+
+                    Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _collection.Count);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Log.Logger.Debug("Metadata consumer closed");
+            }
         }
 
         private void ReplaceInQueue(MediaItem mediaItem)

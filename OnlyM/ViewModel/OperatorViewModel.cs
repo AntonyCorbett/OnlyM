@@ -110,40 +110,6 @@
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
 
-        private void HandleAutoRotateChangedEvent(object sender, EventArgs e)
-        {
-            Task.Run(() =>
-            {
-                if (_optionsService.Options.AutoRotateImages)
-                {
-                    foreach (var item in MediaItems)
-                    {
-                        AutoRotateImageIfRequired(item);
-                    }
-                }
-
-                _pendingLoadMediaItems = true;
-            });
-        }
-
-        private bool AutoRotateImageIfRequired(MediaItem item)
-        {
-            if (item.MediaType.Classification == MediaClassification.Image)
-            {
-                if (GraphicsUtils.AutoRotateIfRequired(item.FilePath))
-                {
-                    // auto-rotated so refresh the thumbnail...
-                    item.ThumbnailImageSource = null;
-                    item.LastChanged = DateTime.UtcNow.Ticks;
-                    _metaDataProducer.Add(item);
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_thumbnailCancellationTokenSource", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataProducer", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataConsumer", Justification = "False Positive")]
@@ -843,5 +809,39 @@
         public RelayCommand<Guid> CloseCommandPanelCommand { get; set; }
 
         public RelayCommand<Guid> FreezeVideoCommand { get; set; }
+
+        private bool AutoRotateImageIfRequired(MediaItem item)
+        {
+            if (item.MediaType.Classification == MediaClassification.Image)
+            {
+                if (GraphicsUtils.AutoRotateIfRequired(item.FilePath))
+                {
+                    // auto-rotated so refresh the thumbnail...
+                    item.ThumbnailImageSource = null;
+                    item.LastChanged = DateTime.UtcNow.Ticks;
+                    _metaDataProducer.Add(item);
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void HandleAutoRotateChangedEvent(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                if (_optionsService.Options.AutoRotateImages)
+                {
+                    foreach (var item in MediaItems)
+                    {
+                        AutoRotateImageIfRequired(item);
+                    }
+                }
+
+                _pendingLoadMediaItems = true;
+            });
+        }
     }
 }
