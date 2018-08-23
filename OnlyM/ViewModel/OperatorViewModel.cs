@@ -12,7 +12,7 @@
     using Core.Services.Options;
     using Core.Utils;
     using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using GalaSoft.MvvmLight.Messaging;
     using GalaSoft.MvvmLight.Threading;
     using MediaElementAdaption;

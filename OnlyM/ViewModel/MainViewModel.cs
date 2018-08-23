@@ -11,7 +11,7 @@ namespace OnlyM.ViewModel
     using Core.Services.CommandLine;
     using Core.Services.Options;
     using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
     using Models;
