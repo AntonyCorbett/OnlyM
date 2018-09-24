@@ -39,7 +39,7 @@
         private readonly IActiveMediaItemsService _activeMediaItemsService;
 
         private readonly MetaDataQueueProducer _metaDataProducer = new MetaDataQueueProducer();
-        private readonly CancellationTokenSource _metaDataCancellatonTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _metaDataCancellationTokenSource = new CancellationTokenSource();
         
         private MetaDataQueueConsumer _metaDataConsumer;
         private string _blankScreenImagePath;
@@ -116,7 +116,7 @@
         public void Dispose()
         {
             _metaDataProducer?.Dispose();
-            _metaDataCancellatonTokenSource?.Dispose();
+            _metaDataCancellationTokenSource?.Dispose();
             _metaDataConsumer?.Dispose();
         }
 
@@ -258,7 +258,7 @@
         private void OnShutDown(ShutDownMessage message)
         {
             // cancel the thumbnail consumer thread.
-            _metaDataCancellatonTokenSource.Cancel();
+            _metaDataCancellationTokenSource.Cancel();
         }
 
         private void LaunchThumbnailQueueConsumer()
@@ -268,7 +268,8 @@
                 _metaDataService,
                 _optionsService,
                 _metaDataProducer.Queue,
-                _metaDataCancellatonTokenSource.Token);
+                App.FMpegFolderName,
+                _metaDataCancellationTokenSource.Token);
 
             _metaDataConsumer.ItemCompletedEvent += HandleItemCompletedEvent;
 

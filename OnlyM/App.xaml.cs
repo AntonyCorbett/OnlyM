@@ -4,8 +4,6 @@
     using System.IO;
     using System.Threading;
     using System.Windows;
-    using System.Windows.Interop;
-    using System.Windows.Media;
     using AutoUpdates;
     using Core.Models;
     using Core.Services.Options;
@@ -21,13 +19,14 @@
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Singleton")]
     public partial class App : Application
     {
+        public static string FMpegFolderName { get; } = "FFmpeg";
         private readonly string _appString = "OnlyMMeetingMedia";
         private Mutex _appMutex;
 
         public App()
         {
             DispatcherHelper.Initialize();
-            MediaElement.FFmpegDirectory = "FFmpeg";
+            MediaElement.FFmpegDirectory = FMpegFolderName;
             RegisterMappings();
         }
 

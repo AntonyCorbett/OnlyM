@@ -4,6 +4,9 @@
 
     public interface IMediaMetaDataService
     {
-        MediaMetaData GetMetaData(string mediaItemFilePath);
+        MediaMetaData GetMetaData(
+            string mediaItemFilePath, 
+            SupportedMediaType mediaType,
+            string ffmpegFolder);
     }
 }

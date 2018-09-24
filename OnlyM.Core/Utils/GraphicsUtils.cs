@@ -130,7 +130,7 @@
         /// <summary>
         /// Creates the thumbnail for the specified video.
         /// </summary>
-        /// <param name="originalPath">The original vidoe path.</param>
+        /// <param name="originalPath">The original videoe path.</param>
         /// <param name="ffmpegFolder">The ffmpeg installation folder.</param>
         /// <param name="useEmbeddedWhereAvailable">Use an embedded thumbnail if available.</param>
         /// <returns>The temporary thumbnail image file.</returns>

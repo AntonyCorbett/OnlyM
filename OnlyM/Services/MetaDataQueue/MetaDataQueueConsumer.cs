@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace OnlyM.Services.MetaDataQueue
+﻿namespace OnlyM.Services.MetaDataQueue
 {
     using System;
     using System.Collections.Concurrent;
@@ -23,6 +21,7 @@ namespace OnlyM.Services.MetaDataQueue
 
         private readonly BlockingCollection<MediaItem> _collection;
         private readonly CancellationToken _cancellationToken;
+        private readonly string _ffmpegFolder;
 
         public event EventHandler<ItemMetaDataPopulatedEventArgs> ItemCompletedEvent;
 
@@ -31,11 +30,14 @@ namespace OnlyM.Services.MetaDataQueue
             IMediaMetaDataService metaDataService,
             IOptionsService optionsService,
             BlockingCollection<MediaItem> metaDataProducerCollection,
+            string ffmpegFolder,
             CancellationToken cancellationToken)
         {
             _thumbnailService = thumbnailService;
             _metaDataService = metaDataService;
             _optionsService = optionsService;
+            
+            _ffmpegFolder = ffmpegFolder;
 
             _collection = metaDataProducerCollection;
             _cancellationToken = cancellationToken;
@@ -128,7 +130,9 @@ namespace OnlyM.Services.MetaDataQueue
         {
             if (!IsDurationAndNamePopulated(mediaItem))
             {
-                var metaData = _metaDataService.GetMetaData(mediaItem.FilePath);
+                var metaData = _metaDataService.GetMetaData(
+                    mediaItem.FilePath, mediaItem.MediaType, _ffmpegFolder);
+
                 if (metaData != null)
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
