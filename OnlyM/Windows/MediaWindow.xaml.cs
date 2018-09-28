@@ -182,7 +182,7 @@
                 mediaItem.IsBlankScreen);
         }
 
-        private async Task ShowVideoOrPlayAudio(
+        private Task ShowVideoOrPlayAudio(
             MediaItem mediaItemToStart,
             IReadOnlyCollection<MediaItem> currentMediaItems,
             bool startFromPaused)
@@ -196,7 +196,7 @@
 
             _videoDisplayManager.ShowSubtitles = _optionsService.Options.ShowVideoSubtitles;
 
-            await _videoDisplayManager.ShowVideoOrPlayAudio(
+            return _videoDisplayManager.ShowVideoOrPlayAudio(
                 mediaItemToStart.FilePath, 
                 _optionsService.Options.VideoScreenPosition,
                 mediaItemToStart.Id,

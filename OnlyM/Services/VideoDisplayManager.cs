@@ -66,7 +66,7 @@
             }
             else
             {
-                await _mediaElement.Play(new Uri(mediaItemFilePath));
+                await _mediaElement.Play(new Uri(mediaItemFilePath)).ConfigureAwait(true);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
             }
         }
