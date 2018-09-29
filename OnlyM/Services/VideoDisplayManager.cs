@@ -50,6 +50,9 @@
             bool startFromPaused)
         {
             _mediaItemId = mediaItemId;
+
+            Log.Debug($"ShowVideoOrPlayAudio - Media Id = {_mediaItemId}");
+
             _mediaClassification = mediaClassification;
             _startPosition = startOffset;
             _lastPosition = TimeSpan.Zero;
@@ -66,6 +69,7 @@
             }
             else
             {
+                Log.Debug($"Firing Started - Media Id = {_mediaItemId}");
                 await _mediaElement.Play(new Uri(mediaItemFilePath)).ConfigureAwait(true);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
             }

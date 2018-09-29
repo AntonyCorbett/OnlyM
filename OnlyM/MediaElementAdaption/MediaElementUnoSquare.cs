@@ -9,13 +9,13 @@
     internal sealed class MediaElementUnoSquare : IMediaElement
     {
         private readonly Unosquare.FFME.MediaElement _mediaElement;
-
+        
         public MediaElementUnoSquare(Unosquare.FFME.MediaElement mediaElement)
         {
             _mediaElement = mediaElement;
             _mediaElement.Volume = 1.0;
-
-            _mediaElement.MediaOpened += async (s, e) => await HandleMediaOpened(s, e);
+            
+            _mediaElement.MediaOpened += HandleMediaOpened;
             _mediaElement.MediaClosed += HandleMediaClosed;
             _mediaElement.MediaEnded += HandleMediaEnded;
             _mediaElement.MediaFailed += HandleMediaFailed;
@@ -78,7 +78,18 @@
 
         public bool IsPaused { get; private set; }
 
-        private async Task HandleMediaOpened(object sender, RoutedEventArgs e)
+        public void UnsubscribeEvents()
+        {
+            _mediaElement.MediaOpened -= HandleMediaOpened;
+            _mediaElement.MediaClosed -= HandleMediaClosed;
+            _mediaElement.MediaEnded -= HandleMediaEnded;
+            _mediaElement.MediaFailed -= HandleMediaFailed;
+            _mediaElement.RenderingSubtitles -= HandleRenderingSubtitles;
+            _mediaElement.PositionChanged -= HandlePositionChanged;
+            _mediaElement.MessageLogged -= HandleMessageLogged;
+        }
+
+        private async void HandleMediaOpened(object sender, RoutedEventArgs e)
         {
             await _mediaElement.Play();
             MediaOpened?.Invoke(sender, e);

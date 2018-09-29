@@ -35,5 +35,7 @@
         FrameworkElement FrameworkElement { get; }
 
         Guid MediaItemId { get; set; }
+
+        void UnsubscribeEvents();
     }
 }

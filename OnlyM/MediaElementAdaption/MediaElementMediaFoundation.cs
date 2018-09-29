@@ -97,6 +97,14 @@
 
         public Guid MediaItemId { get; set; }
 
+        public void UnsubscribeEvents()
+        {
+            _mediaElement.MediaOpened -= HandleMediaOpened;
+            _mediaElement.MediaEnded -= HandleMediaEnded;
+            _mediaElement.MediaFailed -= HandleMediaFailed;
+            _timer.Tick -= TimerFire;
+        }
+
         private void HandleMediaOpened(object sender, RoutedEventArgs e)
         {
             MediaOpened?.Invoke(sender, e);

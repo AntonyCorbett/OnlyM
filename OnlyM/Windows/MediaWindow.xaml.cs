@@ -318,6 +318,8 @@
 
         private void InitRenderingMethod()
         {
+            _videoElement?.UnsubscribeEvents();
+            
             switch (_optionsService.Options.RenderingMethod)
             {
                 case RenderingMethod.Ffmpeg:

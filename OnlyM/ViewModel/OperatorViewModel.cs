@@ -330,11 +330,15 @@
 
         private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
         {
+            Log.Debug($"HandleMediaChangeEvent (id = {e.MediaItemId}, change = {e.Change})");
+
             var mediaItem = GetMediaItem(e.MediaItemId);
             if (mediaItem == null)
             {
                 return;
             }
+
+            Log.Debug(mediaItem.Name);
 
             switch (e.Change)
             {
@@ -504,6 +508,8 @@
             // only allow start/stop media when nothing is changing.
             if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
+                Log.Debug($"MediaControl1 (id = {mediaItemId})");
+
                 var mediaItem = GetMediaItem(mediaItemId);
                 if (mediaItem == null)
                 {
