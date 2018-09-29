@@ -72,9 +72,7 @@
             }
 
             _mediaElement.Play();
-            
-            _timer.Start();
-            return Task.CompletedTask;
+            return Task.Run(() => { _timer.Start(); });
         }
 
         public Task Pause()
