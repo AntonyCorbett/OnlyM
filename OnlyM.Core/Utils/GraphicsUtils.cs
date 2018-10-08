@@ -48,9 +48,9 @@
         public static BitmapSource Downsize(string imageFilePath, int maxImageWidth, int maxImageHeight)
         {
             var image = GetBitmapImageWithCacheOnLoad(imageFilePath);
-                        
-            var factorWidth = maxImageWidth / image.Width;
-            var factorHeight = maxImageHeight / image.Height;
+
+            var factorWidth = (double)maxImageWidth / image.PixelWidth;
+            var factorHeight = (double)maxImageHeight / image.PixelHeight;
 
             if (factorHeight >= 1 && factorWidth >= 1)
             {
@@ -116,7 +116,7 @@
         public static BitmapImage GetBitmapImageWithCacheOnLoad(string imageFile)
         {
             var bmp = new BitmapImage();
-
+            
             // BitmapCacheOption.OnLoad prevents the source image file remaining
             // in use when the bitmap is used as an ImageSource.
             bmp.BeginInit();
