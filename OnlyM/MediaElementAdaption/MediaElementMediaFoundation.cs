@@ -4,19 +4,33 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Media;
     using System.Windows.Threading;
     using Core.Services.Options;
+    using OnlyM.Core.Models;
 
     internal sealed class MediaElementMediaFoundation : IMediaElement
     {
+        // note that _audioPlayer is used for audio-only playback (e.g. MP3 files);
+        // videos are rendered using _mediaElement. It should be possible to use MediaElement
+        // exclusively, but it must be part of the visual tree in order to work correctly
+        // and we want to be able to play audio without the need to create the MediaWindow.
+        private readonly Lazy<MediaPlayer> _audioPlayer;
         private readonly MediaElement _mediaElement;
         private readonly DispatcherTimer _timer;
-
+        private readonly IOptionsService _optionsService;
+        private MediaClassification _currentMediaClassification;
 
         public MediaElementMediaFoundation(
             MediaElement mediaElement,
             IOptionsService optionsService)
         {
+            _currentMediaClassification = MediaClassification.Unknown;
+
+            _optionsService = optionsService;
+
+            _audioPlayer = new Lazy<MediaPlayer>(MediaPlayerFactory);
+
             _mediaElement = mediaElement;
             _mediaElement.Volume = 1.0;
 
@@ -56,36 +70,100 @@
 
         public TimeSpan Position
         {
-            get => _mediaElement.Position;
-            set => _mediaElement.Position = value;
+            get
+            {
+                if (_currentMediaClassification == MediaClassification.Audio)
+                {
+                    return _audioPlayer.Value.Position;
+                }
+
+                return _mediaElement.Position;
+            }
+            set
+            {
+                if (_currentMediaClassification == MediaClassification.Audio)
+                {
+                    _audioPlayer.Value.Position = value;
+                }
+                else
+                {
+                    _mediaElement.Position = value;
+                }
+            } 
         }
 
-        public Duration NaturalDuration => _mediaElement.NaturalDuration;
-
-        public Task Play(Uri mediaPath)
+        public Duration NaturalDuration
         {
-            IsPaused = false;
-
-            if (_mediaElement.Source != mediaPath)
+            get
             {
-                _mediaElement.Source = mediaPath;
+                if (_currentMediaClassification == MediaClassification.Audio)
+                {
+                    return _audioPlayer.Value.NaturalDuration;
+                }
+
+                return _mediaElement.NaturalDuration;
+            }
+        } 
+
+        public Task Play(Uri mediaPath, MediaClassification mediaClassification)
+        {
+            _currentMediaClassification = mediaClassification;
+
+            if (_currentMediaClassification == MediaClassification.Audio)
+            {
+                if (!IsPaused)
+                {
+                    _audioPlayer.Value.Open(mediaPath);
+                }
+
+                IsPaused = false;
+                _audioPlayer.Value.Play();
+            }
+            else
+            {
+                IsPaused = false;
+
+                if (_mediaElement.Source != mediaPath)
+                {
+                    _mediaElement.Source = mediaPath;
+                }
+
+                _mediaElement.Play();
             }
 
-            _mediaElement.Play();
-            return Task.Run(() => { _timer.Start(); });
+            _timer.Start();
+
+            return Task.CompletedTask;
         }
 
         public Task Pause()
         {
             IsPaused = true;
-            _mediaElement.Pause();
+
+            if (_currentMediaClassification == MediaClassification.Audio)
+            {
+                _audioPlayer.Value.Pause();
+            }
+            else
+            {
+                _mediaElement.Pause();
+            }
+                
             return Task.CompletedTask;
         }
 
         public Task Close()
         {
             _timer.Stop();
-            _mediaElement.Close();
+
+            if (_currentMediaClassification == MediaClassification.Audio)
+            {
+                _audioPlayer.Value.Close();
+            }
+            else
+            {
+                _mediaElement.Close();
+            }
 
             MediaClosed?.Invoke(this, null);
             return Task.CompletedTask;
@@ -102,6 +180,14 @@
             _mediaElement.MediaOpened -= HandleMediaOpened;
             _mediaElement.MediaEnded -= HandleMediaEnded;
             _mediaElement.MediaFailed -= HandleMediaFailed;
+
+            if (_audioPlayer.IsValueCreated)
+            {
+                _audioPlayer.Value.MediaOpened -= HandleMediaOpened2;
+                _audioPlayer.Value.MediaEnded -= HandleMediaEnded2;
+                _audioPlayer.Value.MediaFailed -= HandleMediaFailed2;
+            }
+
             _timer.Tick -= TimerFire;
         }
 
@@ -123,6 +209,36 @@
         private void TimerFire(object sender, EventArgs e)
         {
             PositionChanged?.Invoke(this, new PositionChangedEventArgs(MediaItemId, Position));
+        }
+
+        private MediaPlayer MediaPlayerFactory()
+        {
+            var result = new MediaPlayer
+            {
+                Volume = 1.0,
+                ScrubbingEnabled = _optionsService.Options.AllowVideoScrubbing
+            };
+
+            result.MediaOpened += HandleMediaOpened2;
+            result.MediaEnded += HandleMediaEnded2;
+            result.MediaFailed += HandleMediaFailed2;
+            
+            return result;
+        }
+
+        private void HandleMediaFailed2(object sender, ExceptionEventArgs e)
+        {
+            HandleMediaFailed(sender, null);
+        }
+
+        private void HandleMediaEnded2(object sender, EventArgs e)
+        {
+            HandleMediaEnded(sender, null);
+        }
+
+        private void HandleMediaOpened2(object sender, EventArgs e)
+        {
+            HandleMediaOpened(sender, null);
         }
     }
 }

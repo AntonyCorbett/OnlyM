@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using System.Windows;
+    using OnlyM.Core.Models;
 
     internal interface IMediaElement
     {
@@ -24,7 +25,7 @@
 
         Duration NaturalDuration { get; }
     
-        Task Play(Uri mediaPath);
+        Task Play(Uri mediaPath, MediaClassification mediaClassification);
 
         Task Pause();
 

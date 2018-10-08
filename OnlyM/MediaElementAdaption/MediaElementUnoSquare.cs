@@ -1,4 +1,6 @@
-﻿namespace OnlyM.MediaElementAdaption
+﻿using OnlyM.Core.Models;
+
+namespace OnlyM.MediaElementAdaption
 {
     using System;
     using System.Threading.Tasks;
@@ -50,7 +52,7 @@
 
         public Guid MediaItemId { get; set; }
 
-        public async Task Play(Uri mediaPath)
+        public async Task Play(Uri mediaPath, MediaClassification mediaClassification)
         {
             IsPaused = false;
 
