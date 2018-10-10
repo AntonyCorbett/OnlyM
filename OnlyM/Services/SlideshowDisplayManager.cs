@@ -22,9 +22,10 @@
         private readonly Image _image2;
         private readonly double _fadeTime;
         private readonly string _stagingFolder;
-        private Guid _mediaItemId;
-        
+
+        private Image _activeImageControl;
         private int _currentImageIndex;
+        private Guid _mediaItemId = Guid.Empty;
         private List<SlideData> _slides;
         
         public SlideshowDisplayManager(Image image1, Image image2, IOptionsService optionsService)
@@ -33,7 +34,7 @@
 
             _image1 = image1;
             _image2 = image2;
-
+            
             _fadeTime = optionsService.Options.ImageFadeSpeed.GetFadeSpeedSeconds();
 
             _stagingFolder = FileUtils.GetUsersTempStagingFolder();
@@ -49,12 +50,48 @@
 
         public void Start(string mediaItemFilePath, Guid mediaItemId)
         {
-            _mediaItemId = mediaItemId;
             _currentImageIndex = 0;
+            _mediaItemId = mediaItemId;
 
             InitFromSlideshowFile(mediaItemFilePath);
             
             DisplayCurrentSlide();
+        }
+
+        public void Stop()
+        {
+            var currentSlide = GetCurrentSlide();
+
+            var fadeType = currentSlide.FadeOut ? ImageFadeType.FadeOut : ImageFadeType.None;
+
+            if (_image1 == _activeImageControl)
+            {
+                OnMediaChangeEvent(CreateMediaEventArgs(MediaChange.Stopping));
+                _imageControlHelper.HideImageInControl(
+                    _image1,
+                    fadeType,
+                    _fadeTime,
+                    () =>
+                    {
+                        OnMediaChangeEvent(CreateMediaEventArgs(MediaChange.Stopped));
+                        _mediaItemId = Guid.Empty;
+                        _activeImageControl = null;
+                    });
+            }
+            else if (_image2 == _activeImageControl)
+            {
+                OnMediaChangeEvent(CreateMediaEventArgs(MediaChange.Stopping));
+                _imageControlHelper.HideImageInControl(
+                    _image2,
+                    fadeType,
+                    _fadeTime,
+                    () =>
+                    {
+                        OnMediaChangeEvent(CreateMediaEventArgs(MediaChange.Stopped));
+                        _mediaItemId = Guid.Empty;
+                        _activeImageControl = null;
+                    });
+            }
         }
 
         public void Next()
@@ -65,7 +102,7 @@
 
         private void DisplayCurrentSlide()
         {
-            DisplaySlide(_slides[_currentImageIndex]);
+            DisplaySlide(GetCurrentSlide());
         }
 
         private void OnMediaChangeEvent(MediaEventArgs e)
@@ -93,7 +130,7 @@
 
             var imageFilePath = Path.Combine(_stagingFolder, slide.ArchiveEntryName);
 
-            if (!Image1Populated)
+            if (_image1 != _activeImageControl)
             {
                 _imageControlHelper.ShowImage(
                     false,
@@ -104,9 +141,13 @@
                     fadeType,
                     _fadeTime,
                     null,
-                    () => { OnMediaChangeEvent(CreateMediaEventArgs(MediaChange.Started)); });
+                    () =>
+                    {
+                        _activeImageControl = _image1;
+                        OnMediaChangeEvent(CreateMediaEventArgs(MediaChange.Started)); 
+                    });
             }
-            else if (!Image2Populated)
+            else if (_image2 != _activeImageControl)
             {
                 _imageControlHelper.ShowImage(
                     false,
@@ -117,7 +158,11 @@
                     fadeType,
                     _fadeTime,
                     null,
-                    () => { OnMediaChangeEvent(CreateMediaEventArgs(MediaChange.Started)); });
+                    () =>
+                    {
+                        _activeImageControl = _image2;
+                        OnMediaChangeEvent(CreateMediaEventArgs(MediaChange.Started)); 
+                    });
             }
         }
 
@@ -132,6 +177,11 @@
             sf.ExtractImages(_stagingFolder);
 
             _slides = sf.GetSlides(includeBitmapImage: false).ToList();
+        }
+
+        private SlideData GetCurrentSlide()
+        {
+            return _slides[_currentImageIndex];
         }
     }
 }

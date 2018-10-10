@@ -63,8 +63,6 @@ namespace OnlyM.Slides
             {
                 foreach (var slide in _config.Slides)
                 {
-                    var entry = zip.GetEntry(slide.ArchiveEntryName);
-
                     var image = includeBitmapImage
                         ? ReadBackgroundImage(zip, slide.ArchiveEntryName)
                         : null;

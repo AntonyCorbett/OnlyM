@@ -129,7 +129,7 @@
                     break;
 
                 case MediaClassification.Slideshow:
-                    // todo:
+                    StopSlideshow();
                     break;
             }
         }
@@ -198,6 +198,11 @@
             _slideshowDisplayManager.Start(mediaItem.FilePath, mediaItem.Id);
         }
 
+        private void StopSlideshow()
+        {
+            _slideshowDisplayManager.Stop();
+        }
+
         private Task ShowVideoOrPlayAudio(
             MediaItem mediaItemToStart,
             IReadOnlyCollection<MediaItem> currentMediaItems,
@@ -245,6 +250,7 @@
             _optionsService.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
 
             _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
+            _slideshowDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
 
             SubscribeVideoDisplayManagerEvents();
         }
@@ -263,6 +269,7 @@
             _optionsService.VideoScreenPositionChangedEvent -= HandleVideoScreenPositionChangedEvent;
 
             _imageDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
+            _slideshowDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
 
             UnsubscribeVideoDisplayManagerEvents();
         }
