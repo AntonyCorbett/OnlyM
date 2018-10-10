@@ -14,10 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlyM.Slides", "OnlyM.Slides\OnlyM.Slides.csproj", "{4D79789C-5626-4C86-A31F-75B78385DC2A}"
+EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -35,12 +34,19 @@ Global
 		{EE384D4B-3A3B-4D9B-B2B6-CC71A6F87A97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE384D4B-3A3B-4D9B-B2B6-CC71A6F87A97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE384D4B-3A3B-4D9B-B2B6-CC71A6F87A97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D79789C-5626-4C86-A31F-75B78385DC2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D79789C-5626-4C86-A31F-75B78385DC2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D79789C-5626-4C86-A31F-75B78385DC2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D79789C-5626-4C86-A31F-75B78385DC2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C1DB1EC2-CB14-421C-A5AA-2E83C827D815}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

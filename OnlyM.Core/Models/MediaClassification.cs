@@ -20,6 +20,11 @@
         /// <summary>
         /// An audio file.
         /// </summary>
-        Audio
+        Audio,
+
+        /// <summary>
+        /// A slideshow file.
+        /// </summary>
+        Slideshow
     }
 }
