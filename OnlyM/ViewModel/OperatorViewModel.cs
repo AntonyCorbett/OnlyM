@@ -110,6 +110,22 @@
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
 
+        public ObservableCollectionEx<MediaItem> MediaItems { get; } = new ObservableCollectionEx<MediaItem>();
+
+        public RelayCommand<Guid> MediaControlCommand1 { get; set; }
+
+        public RelayCommand<Guid> MediaControlPauseCommand { get; set; }
+
+        public RelayCommand<Guid> HideMediaItemCommand { get; set; }
+
+        public RelayCommand<Guid> DeleteMediaItemCommand { get; set; }
+
+        public RelayCommand<Guid> OpenCommandPanelCommand { get; set; }
+
+        public RelayCommand<Guid> CloseCommandPanelCommand { get; set; }
+
+        public RelayCommand<Guid> FreezeVideoCommand { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_thumbnailCancellationTokenSource", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataProducer", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataConsumer", Justification = "False Positive")]
@@ -800,22 +816,6 @@
                 _metaDataProducer.Add(item);
             }
         }
-
-        public ObservableCollectionEx<MediaItem> MediaItems { get; } = new ObservableCollectionEx<MediaItem>();
-
-        public RelayCommand<Guid> MediaControlCommand1 { get; set; }
-
-        public RelayCommand<Guid> MediaControlPauseCommand { get; set; }
-
-        public RelayCommand<Guid> HideMediaItemCommand { get; set; }
-
-        public RelayCommand<Guid> DeleteMediaItemCommand { get; set; }
-
-        public RelayCommand<Guid> OpenCommandPanelCommand { get; set; }
-
-        public RelayCommand<Guid> CloseCommandPanelCommand { get; set; }
-
-        public RelayCommand<Guid> FreezeVideoCommand { get; set; }
 
         private bool AutoRotateImageIfRequired(MediaItem item)
         {

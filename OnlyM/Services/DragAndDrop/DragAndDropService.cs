@@ -20,8 +20,6 @@
         private readonly ISnackbarService _snackbarService;
         private bool _canDrop;
 
-        public event EventHandler<FilesCopyProgressEventArgs> CopyingFilesProgressEvent;
-
         public DragAndDropService(
             IMediaProviderService mediaProviderService,
             IOptionsService optionsService,
@@ -31,6 +29,8 @@
             _optionsService = optionsService;
             _snackbarService = snackbarService;
         }
+
+        public event EventHandler<FilesCopyProgressEventArgs> CopyingFilesProgressEvent;
 
         public void Init(FrameworkElement targetElement)
         {

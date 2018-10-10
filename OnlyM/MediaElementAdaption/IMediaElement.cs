@@ -24,19 +24,19 @@
         TimeSpan Position { get; set; }
 
         Duration NaturalDuration { get; }
-    
+
+        bool IsPaused { get; }
+
+        Guid MediaItemId { get; set; }
+
+        FrameworkElement FrameworkElement { get; }
+
         Task Play(Uri mediaPath, MediaClassification mediaClassification);
 
         Task Pause();
 
         Task Close();
         
-        bool IsPaused { get; }
-
-        FrameworkElement FrameworkElement { get; }
-
-        Guid MediaItemId { get; set; }
-
         void UnsubscribeEvents();
     }
 }

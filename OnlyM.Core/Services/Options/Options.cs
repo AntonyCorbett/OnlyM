@@ -14,6 +14,52 @@
         private const int AbsoluteMaxItemCount = 200;
         private const int DefaultMaxItemCount = 50;
 
+        private string _commandLineMediaFolder;
+        private bool _showMediaItemCommandPanel;
+        private bool _showFreezeCommand;
+        private string _mediaMonitorId;
+        private RenderingMethod _renderingMethod;
+        private DateTime _operatingDate;
+        private int _maxItemCount;
+        private ScreenPosition _videoScreenPosition;
+        private ScreenPosition _imageScreenPosition;
+        private bool _includeBlankScreenItem;
+        private bool _useInternalMediaTitles;
+        private bool _permanentBackdrop;
+        private bool _allowVideoPause;
+        private bool _allowVideoPositionSeeking;
+        private bool _showVideoSubtitles;
+        private LogEventLevel _logEventLevel;
+        private bool _alwaysOnTop;
+        private bool _autoRotateImages;
+        private string _mediaFolder;
+        private ImageFadeType _imageFadeType;
+        private FadeSpeed _fadeSpeed;
+
+        public Options()
+        {
+            // defaults
+            AlwaysOnTop = true;
+            LogEventLevel = LogEventLevel.Information;
+            MediaFolder = FileUtils.GetOnlyMDefaultMediaFolder();
+            ImageFadeType = ImageFadeType.CrossFade;
+            ImageFadeSpeed = FadeSpeed.Normal;
+            CacheImages = true;
+            ShowVideoSubtitles = true;
+            AllowVideoScrubbing = true;
+            AllowVideoPause = true;
+            AllowVideoPositionSeeking = true;
+            PermanentBackdrop = true;
+            JwLibraryCompatibilityMode = true;
+            ConfirmVideoStop = false;
+            MaxItemCount = DefaultMaxItemCount;
+
+            _videoScreenPosition = new ScreenPosition();
+            _imageScreenPosition = new ScreenPosition();
+
+            Sanitize();
+        }
+
         public event EventHandler MediaFolderChangedEvent;
 
         public event EventHandler AutoRotateChangedEvent;
@@ -54,45 +100,6 @@
 
         public event EventHandler ShowFreezeCommandChangedEvent;
 
-
-        public Options()
-        {
-            // defaults
-            AlwaysOnTop = true;
-            LogEventLevel = LogEventLevel.Information;
-            MediaFolder = FileUtils.GetOnlyMDefaultMediaFolder();
-            ImageFadeType = ImageFadeType.CrossFade;
-            ImageFadeSpeed = FadeSpeed.Normal;
-            CacheImages = true;
-            ShowVideoSubtitles = true;
-            AllowVideoScrubbing = true;
-            AllowVideoPause = true;
-            AllowVideoPositionSeeking = true;
-            PermanentBackdrop = true;
-            JwLibraryCompatibilityMode = true;
-            ConfirmVideoStop = false;
-            MaxItemCount = DefaultMaxItemCount;
-
-            _videoScreenPosition = new ScreenPosition();
-            _imageScreenPosition = new ScreenPosition();
-
-            Sanitize();
-        }
-
-        private string _commandLineMediaFolder;
-
-        public void SetCommandLineMediaFolder(string folder)
-        {
-            _commandLineMediaFolder = folder;
-        }
-
-        public bool IsCommandLineMediaFolderSpecified()
-        {
-            return _commandLineMediaFolder != null;
-        }
-
-        private bool _showMediaItemCommandPanel;
-
         public bool ShowMediaItemCommandPanel
         {
             get => _showMediaItemCommandPanel;
@@ -105,9 +112,7 @@
                 }
             }
         }
-
-        private bool _showFreezeCommand;
-
+        
         public bool ShowFreezeCommand
         {
             get => _showFreezeCommand;
@@ -120,8 +125,6 @@
                 }
             }
         }
-
-        private string _mediaMonitorId;
 
         public string MediaMonitorId
         {
@@ -137,8 +140,6 @@
             }
         }
 
-        private RenderingMethod _renderingMethod;
-
         public RenderingMethod RenderingMethod
         {
             get => _renderingMethod;
@@ -151,9 +152,7 @@
                 }
             }
         }
-
-        private DateTime _operatingDate;
-
+        
         [JsonIgnore]
         public DateTime OperatingDate
         {
@@ -168,8 +167,6 @@
             }
         }
 
-        private int _maxItemCount;
-
         public int MaxItemCount
         {
             get => _maxItemCount;
@@ -183,8 +180,6 @@
             }
         }
 
-        private ScreenPosition _videoScreenPosition;
-
         public ScreenPosition VideoScreenPosition
         {
             get => _videoScreenPosition;
@@ -197,9 +192,7 @@
                 }
             }
         }
-
-        private ScreenPosition _imageScreenPosition;
-
+        
         public ScreenPosition ImageScreenPosition
         {
             get => _imageScreenPosition;
@@ -212,8 +205,6 @@
                 }
             }
         }
-
-        private bool _includeBlankScreenItem;
 
         public bool IncludeBlanksScreenItem
         {
@@ -228,8 +219,6 @@
             }
         }
 
-        private bool _useInternalMediaTitles;
-
         public bool UseInternalMediaTitles
         {
             get => _useInternalMediaTitles;
@@ -242,9 +231,7 @@
                 }
             }
         }
-
-        private bool _permanentBackdrop;
-
+        
         public bool PermanentBackdrop
         {
             get => _permanentBackdrop;
@@ -257,9 +244,7 @@
                 }
             }
         }
-
-        private bool _allowVideoPause;
-
+        
         public bool AllowVideoPause
         {
             get => _allowVideoPause;
@@ -272,9 +257,7 @@
                 }
             }
         }
-
-        private bool _allowVideoPositionSeeking;
-
+        
         public bool AllowVideoPositionSeeking
         {
             get => _allowVideoPositionSeeking;
@@ -287,9 +270,7 @@
                 }
             }
         }
-
-        private bool _showVideoSubtitles;
-
+        
         public bool ShowVideoSubtitles
         {
             get => _showVideoSubtitles;
@@ -304,8 +285,6 @@
         }
 
         public bool AllowVideoScrubbing { get; set; }
-
-        private bool _alwaysOnTop;
 
         public bool AlwaysOnTop
         {
@@ -326,8 +305,6 @@
 
         public bool ConfirmVideoStop { get; set; }
         
-        private LogEventLevel _logEventLevel;
-
         public LogEventLevel LogEventLevel
         {
             get => _logEventLevel;
@@ -341,8 +318,6 @@
             }
         }
 
-        private bool _autoRotateImages;
-
         public bool AutoRotateImages
         {
             get => _autoRotateImages;
@@ -355,9 +330,7 @@
                 }
             }
         }
-
-        private string _mediaFolder;
-
+        
         public string MediaFolder
         {
             get => _commandLineMediaFolder ?? _mediaFolder;
@@ -370,9 +343,7 @@
                 }
             }
         }
-
-        private ImageFadeType _imageFadeType;
-
+        
         public ImageFadeType ImageFadeType
         {
             get => _imageFadeType;
@@ -385,9 +356,7 @@
                 }
             }
         }
-
-        private FadeSpeed _fadeSpeed;
-
+        
         public FadeSpeed ImageFadeSpeed
         {
             get => _fadeSpeed;
@@ -406,6 +375,16 @@
         public bool CacheImages { get; set; }
 
         public List<string> RecentlyUsedMediaFolders { get; set; } = new List<string>();
+
+        public void SetCommandLineMediaFolder(string folder)
+        {
+            _commandLineMediaFolder = folder;
+        }
+
+        public bool IsCommandLineMediaFolderSpecified()
+        {
+            return _commandLineMediaFolder != null;
+        }
 
         /// <summary>
         /// Validates the data, correcting automatically as required

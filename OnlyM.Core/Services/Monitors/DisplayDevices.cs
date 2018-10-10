@@ -20,11 +20,11 @@
                 
             var result = new List<DisplayDeviceData>();
 
-            for (uint id = 0;; id++)
+            for (uint id = 0; ; id++)
             {
                 Log.Logger.Verbose($"Seeking device {id}");
                 
-                EnumDisplayNativeMethods.DISPLAY_DEVICE device1 = new EnumDisplayNativeMethods.DISPLAY_DEVICE();
+                EnumDisplayNativeMethods.DISPLAY_DEVICE device1 = default(EnumDisplayNativeMethods.DISPLAY_DEVICE);
                 device1.cb = Marshal.SizeOf(device1);
 
                 bool rv = EnumDisplayNativeMethods.EnumDisplayDevices(null, id, ref device1, 0);
@@ -41,7 +41,7 @@
                 {
                     Log.Logger.Verbose("Device attached to desktop");
                     
-                    EnumDisplayNativeMethods.DISPLAY_DEVICE device2 = new EnumDisplayNativeMethods.DISPLAY_DEVICE();
+                    EnumDisplayNativeMethods.DISPLAY_DEVICE device2 = default(EnumDisplayNativeMethods.DISPLAY_DEVICE);
                     device2.cb = Marshal.SizeOf(device2);
 
                     rv = EnumDisplayNativeMethods.EnumDisplayDevices(device1.DeviceName, 0, ref device2, 0);

@@ -18,8 +18,6 @@
         private int _changeVersion;
         private MediaFolders _foldersToWatch;
 
-        public event EventHandler ChangesFoundEvent;
-
         public FolderWatcherService(IOptionsService optionsService, IMediaProviderService mediaProviderService)
         {
             _mediaProviderService = mediaProviderService;
@@ -33,35 +31,7 @@
             InitWatcher();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_signalFolderChange", Justification = "False Positive")]
-        public void Dispose()
-        {
-            _signalFolderChange?.Dispose();
-            _watcher?.Dispose();
-        }
-
-        private Task CollationFunction()
-        {
-            var currentChangeVersion = _changeVersion;
-            
-            for (;;)
-            {
-                _signalFolderChange.Wait();
-
-                // some change activity.
-                while (_changeVersion > currentChangeVersion)
-                {
-                    // delay until no further changes for at least 500ms.
-                    currentChangeVersion = _changeVersion;
-                    Thread.Sleep(500);
-                }
-
-                OnChangesFoundEvent();
-                _signalFolderChange.Reset();
-            }
-
-            // ReSharper disable once FunctionNeverReturns
-        }
+        public event EventHandler ChangesFoundEvent;
 
         public bool IsEnabled
         {
@@ -78,6 +48,36 @@
                     _watcher.EnableRaisingEvents = value;
                 }
             }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_signalFolderChange", Justification = "False Positive")]
+        public void Dispose()
+        {
+            _signalFolderChange?.Dispose();
+            _watcher?.Dispose();
+        }
+
+        private Task CollationFunction()
+        {
+            var currentChangeVersion = _changeVersion;
+            
+            for (; ;)
+            {
+                _signalFolderChange.Wait();
+
+                // some change activity.
+                while (_changeVersion > currentChangeVersion)
+                {
+                    // delay until no further changes for at least 500ms.
+                    currentChangeVersion = _changeVersion;
+                    Thread.Sleep(500);
+                }
+
+                OnChangesFoundEvent();
+                _signalFolderChange.Reset();
+            }
+
+            // ReSharper disable once FunctionNeverReturns
         }
 
         private void InitWatcher(MediaFolders mediaFolders)

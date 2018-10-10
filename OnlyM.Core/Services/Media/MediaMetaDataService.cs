@@ -1,8 +1,7 @@
-﻿using System.IO;
-
-namespace OnlyM.Core.Services.Media
+﻿namespace OnlyM.Core.Services.Media
 {
     using System;
+    using System.IO;
     using Models;
     using Serilog;
 

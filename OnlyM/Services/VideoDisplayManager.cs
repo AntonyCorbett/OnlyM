@@ -1,6 +1,4 @@
-﻿using System.Windows.Media;
-
-namespace OnlyM.Services
+﻿namespace OnlyM.Services
 {
     using System;
     using System.Threading.Tasks;
@@ -22,12 +20,6 @@ namespace OnlyM.Services
         private bool _manuallySettingPlaybackPosition;
         private bool _firedNearEndEvent;
 
-        public event EventHandler<MediaEventArgs> MediaChangeEvent;
-
-        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
-
-        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
-
         public VideoDisplayManager(IMediaElement mediaElement)
         {
             _mediaElement = mediaElement;
@@ -41,7 +33,15 @@ namespace OnlyM.Services
             _mediaElement.MessageLogged += HandleMediaElementMessageLogged;
         }
 
+        public event EventHandler<MediaEventArgs> MediaChangeEvent;
+
+        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
+
+        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
+
         public bool ShowSubtitles { get; set; }
+
+        public bool IsPaused => _mediaElement.IsPaused;
 
         public async Task ShowVideoOrPlayAudio(
             string mediaItemFilePath,
@@ -90,8 +90,6 @@ namespace OnlyM.Services
         {
             return _mediaElement.Position;
         }
-
-        public bool IsPaused => _mediaElement.IsPaused;
 
         public async Task PauseVideoAsync(Guid mediaItemId)
         {

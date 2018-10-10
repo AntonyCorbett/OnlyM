@@ -41,7 +41,6 @@
                     return segments[segments.Length - 1];
                 }
             }
-            // ReSharper disable once CatchAllClause
             catch (Exception ex)
             {
                 Log.Logger.Error(ex, "Getting latest release version");

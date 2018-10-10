@@ -32,12 +32,6 @@
         private IMediaElement _videoElement;
         private RenderingMethod _currentRenderingMethod;
 
-        public event EventHandler<MediaEventArgs> MediaChangeEvent;
-
-        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
-
-        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
-
         public MediaWindow(IOptionsService optionsService, ISnackbarService snackbarService)
         {
             InitializeComponent();
@@ -53,13 +47,11 @@
             SubscribeEvents();
         }
 
-        public void UpdateRenderingMethod()
-        {
-            if (_optionsService.Options.RenderingMethod != _currentRenderingMethod)
-            {
-                InitRenderingMethod();
-            }
-        }
+        public event EventHandler<MediaEventArgs> MediaChangeEvent;
+
+        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
+
+        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
         public ImageFadeType ImageFadeType
         {
@@ -70,7 +62,15 @@
         {
             set => _imageDisplayManager.ImageFadeSpeed = value;
         }
-        
+
+        public void UpdateRenderingMethod()
+        {
+            if (_optionsService.Options.RenderingMethod != _currentRenderingMethod)
+            {
+                InitRenderingMethod();
+            }
+        }
+
         public async Task StartMedia(
             MediaItem mediaItemToStart,
             IReadOnlyCollection<MediaItem> currentMediaItems,

@@ -32,6 +32,12 @@
 
         string SettingsPageName { get; }
 
+        bool ApplicationIsClosing { get; }
+
+        bool IsMediaWindowVisible { get; }
+
+        ScrollViewer ScrollViewer { get; set; }
+
         void GotoOperatorPage();
 
         void GotoSettingsPage();
@@ -39,10 +45,6 @@
         FrameworkElement GetPage(string pageName);
         
         void OpenMediaWindow(bool requiresVisibleWindow);
-
-        bool ApplicationIsClosing { get; }
-
-        bool IsMediaWindowVisible { get; }
         
         Task StartMedia(MediaItem mediaItemToStart, IReadOnlyCollection<MediaItem> currentMediaItems, bool startFromPaused);
 
@@ -51,7 +53,5 @@
         Task PauseMediaAsync(MediaItem mediaItem);
 
         void CacheImageItem(MediaItem mediaItem);
-
-        ScrollViewer ScrollViewer { get; set; }
     }
 }

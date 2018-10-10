@@ -21,7 +21,15 @@
         private Options _options;
         private string _optionsFilePath;
         private string _originalOptionsSignature;
-       
+
+        public OptionsService(
+            ILogLevelSwitchService logLevelSwitchService,
+            ICommandLineService commandLineService)
+        {
+            _logLevelSwitchService = logLevelSwitchService;
+            _commandLineService = commandLineService;
+        }
+
         public event EventHandler MediaFolderChangedEvent;
 
         public event EventHandler AutoRotateChangedEvent;
@@ -60,14 +68,6 @@
 
         public event EventHandler ShowFreezeCommandChangedEvent;
 
-        public OptionsService(
-            ILogLevelSwitchService logLevelSwitchService,
-            ICommandLineService commandLineService)
-        {
-            _logLevelSwitchService = logLevelSwitchService;
-            _commandLineService = commandLineService;
-        }
-
         public Options Options
         {
             get
@@ -103,7 +103,6 @@
                     Log.Logger.Debug("Settings changed and saved");
                 }
             }
-            // ReSharper disable once CatchAllClause
             catch (Exception ex)
             {
                 Log.Logger.Error(ex, "Could not save settings");
@@ -140,7 +139,6 @@
                     
                     SetCommandLineMediaFolderOverride();
                 }
-                // ReSharper disable once CatchAllClause
                 catch (Exception ex)
                 {
                     Log.Logger.Error(ex, "Could not read options file");

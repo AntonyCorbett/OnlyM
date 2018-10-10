@@ -32,6 +32,13 @@ namespace OnlyM.ViewModel
         private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
         private readonly ICommandLineService _commandLineService;
 
+        private bool _isBusy;
+        private bool _isMediaListLoading;
+        private string _currentPageName;
+        private FrameworkElement _currentPage;
+        private bool _newVersionAvailable;
+        private bool _isMediaListEmpty = true;
+
         public MainViewModel(
             IPageService pageService,
             IOptionsService optionsService,
@@ -81,12 +88,63 @@ namespace OnlyM.ViewModel
             GetVersionData();
         }
 
-        private void HandleCopyingFilesProgressEvent(object sender, Models.FilesCopyProgressEventArgs e)
+        // commands...
+        public RelayCommand GotoSettingsCommand { get; set; }
+
+        public RelayCommand GotoOperatorCommand { get; set; }
+
+        public RelayCommand LaunchMediaFolderCommand { get; set; }
+
+        public RelayCommand LaunchHelpPageCommand { get; set; }
+
+        public RelayCommand LaunchReleasePageCommand { get; set; }
+
+        public RelayCommand UnhideCommand { get; set; }
+
+        public ISnackbarMessageQueue TheSnackbarMessageQueue => _snackbarService.TheSnackbarMessageQueue;
+
+        public bool ShowNewVersionButton => _newVersionAvailable && IsOperatorPageActive;
+
+        public bool AlwaysOnTop => _optionsService.Options.AlwaysOnTop || _pageService.IsMediaWindowVisible;
+
+        public bool IsSettingsPageActive => _currentPageName.Equals(_pageService.SettingsPageName);
+
+        public bool IsOperatorPageActive => _currentPageName.Equals(_pageService.OperatorPageName);
+
+        public bool IsSettingsEnabled => !_commandLineService.NoSettings;
+
+        public bool IsFolderEnabled => !_commandLineService.NoFolder;
+
+        public string SettingsHint =>
+            _commandLineService.NoSettings
+                ? Properties.Resources.SETTINGS_DISABLED
+                : Properties.Resources.SETTINGS;
+
+        public string FolderHint =>
+            _commandLineService.NoFolder
+                ? Properties.Resources.FOLDER_DISABLED
+                : Properties.Resources.FOLDER;
+
+        public bool IsMediaListEmpty
         {
-            IsBusy = e.Status == FileCopyStatus.StartingCopy;
+            get => _isMediaListEmpty;
+            set
+            {
+                if (_isMediaListEmpty != value)
+                {
+                    _isMediaListEmpty = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(ShowDragAndDropHint));
+                }
+            }
         }
 
-        private bool _isBusy;
+        public bool IsUnhideButtonVisible =>
+            IsInDesignMode || (IsOperatorPageActive && !ShowProgressBar && _hiddenMediaItemsService.SomeHiddenMediaItems());
+
+        public bool ShowProgressBar => IsBusy;
+
+        public bool ShowDragAndDropHint => IsMediaListEmpty && IsOperatorPageActive;
 
         public bool IsBusy
         {
@@ -103,12 +161,22 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleHiddenItemsChangedEvent(object sender, EventArgs e)
+        public FrameworkElement CurrentPage
         {
-            RaisePropertyChanged(nameof(IsUnhideButtonVisible));
+            get => _currentPage;
+            set
+            {
+                if (_currentPage == null || !_currentPage.Equals(value))
+                {
+                    _currentPage = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsSettingsPageActive));
+                    RaisePropertyChanged(nameof(IsOperatorPageActive));
+                    RaisePropertyChanged(nameof(ShowNewVersionButton));
+                    RaisePropertyChanged(nameof(ShowDragAndDropHint));
+                }
+            }
         }
-
-        private bool _isMediaListLoading;
 
         public bool IsMediaListLoading
         {
@@ -157,26 +225,6 @@ namespace OnlyM.ViewModel
             RaisePropertyChanged(nameof(IsUnhideButtonVisible));
         }
 
-        private string _currentPageName;
-        private FrameworkElement _currentPage;
-
-        public FrameworkElement CurrentPage
-        {
-            get => _currentPage;
-            set
-            {
-                if (_currentPage == null || !_currentPage.Equals(value))
-                {
-                    _currentPage = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsSettingsPageActive));
-                    RaisePropertyChanged(nameof(IsOperatorPageActive));
-                    RaisePropertyChanged(nameof(ShowNewVersionButton));
-                    RaisePropertyChanged(nameof(ShowDragAndDropHint));
-                }
-            }
-        }
-
         private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)
         {
             RaisePropertyChanged(nameof(AlwaysOnTop));
@@ -203,68 +251,6 @@ namespace OnlyM.ViewModel
                 }
             });
         }
-
-        public ISnackbarMessageQueue TheSnackbarMessageQueue => _snackbarService.TheSnackbarMessageQueue;
-    
-        private bool _newVersionAvailable;
-
-        public bool ShowNewVersionButton => _newVersionAvailable && IsOperatorPageActive;
-
-        public bool AlwaysOnTop => _optionsService.Options.AlwaysOnTop || _pageService.IsMediaWindowVisible;
-
-        public bool IsSettingsPageActive => _currentPageName.Equals(_pageService.SettingsPageName);
-
-        public bool IsOperatorPageActive => _currentPageName.Equals(_pageService.OperatorPageName);
-
-        public bool IsSettingsEnabled => !_commandLineService.NoSettings;
-
-        public bool IsFolderEnabled => !_commandLineService.NoFolder;
-
-        public string SettingsHint =>
-            _commandLineService.NoSettings
-                ? Properties.Resources.SETTINGS_DISABLED
-                : Properties.Resources.SETTINGS;
-
-        public string FolderHint =>
-            _commandLineService.NoFolder
-                ? Properties.Resources.FOLDER_DISABLED
-                : Properties.Resources.FOLDER;
-
-        public bool ShowDragAndDropHint => IsMediaListEmpty && IsOperatorPageActive;
-
-        private bool _isMediaListEmpty = true;
-
-        public bool IsMediaListEmpty
-        {
-            get => _isMediaListEmpty;
-            set
-            {
-                if (_isMediaListEmpty != value)
-                {
-                    _isMediaListEmpty = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(ShowDragAndDropHint));
-                }
-            }
-        }
-
-        public bool IsUnhideButtonVisible => 
-            IsInDesignMode || (IsOperatorPageActive && !ShowProgressBar && _hiddenMediaItemsService.SomeHiddenMediaItems());
-
-        public bool ShowProgressBar => IsBusy;
-
-        // commands...
-        public RelayCommand GotoSettingsCommand { get; set; }
-
-        public RelayCommand GotoOperatorCommand { get; set; }
-
-        public RelayCommand LaunchMediaFolderCommand { get; set; }
-
-        public RelayCommand LaunchHelpPageCommand { get; set; }
-
-        public RelayCommand LaunchReleasePageCommand { get; set; }
-
-        public RelayCommand UnhideCommand { get; set; }
 
         private void InitCommands()
         {
@@ -329,6 +315,16 @@ namespace OnlyM.ViewModel
             //      than or equal to 9.0.
             int renderingTier = RenderCapability.Tier >> 16;
             return renderingTier == 0;
+        }
+
+        private void HandleCopyingFilesProgressEvent(object sender, FilesCopyProgressEventArgs e)
+        {
+            IsBusy = e.Status == FileCopyStatus.StartingCopy;
+        }
+
+        private void HandleHiddenItemsChangedEvent(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(IsUnhideButtonVisible));
         }
     }
 }

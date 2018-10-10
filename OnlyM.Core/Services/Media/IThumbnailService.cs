@@ -5,6 +5,8 @@
 
     public interface IThumbnailService
     {
+        event EventHandler ThumbnailsPurgedEvent;
+
         byte[] GetThumbnail(
             string originalPath, 
             string ffmpegFolder,
@@ -13,7 +15,5 @@
             out bool foundInCache);
 
         void ClearThumbCache();
-        
-        event EventHandler ThumbnailsPurgedEvent;
     }
 }

@@ -38,7 +38,9 @@
         private readonly ImageFade[] _fadingTypes;
         private readonly ImageFadeSpeed[] _fadingSpeeds;
         private readonly RecentlyUsedFolders _recentlyUsedMediaFolders;
-        
+
+        private bool _isMediaActive;
+
         public SettingsViewModel(
             IPageService pageService, 
             IMonitorsService monitorsService,
@@ -69,73 +71,17 @@
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
 
-        private void InitRecentlyUsedFolders()
-        {
-            for (int n = _optionsService.Options.RecentlyUsedMediaFolders.Count - 1; n >= 0; --n)
-            {
-                _recentlyUsedMediaFolders.Add(_optionsService.Options.RecentlyUsedMediaFolders[n]);
-            }
-        }
+        public RelayCommand PurgeThumbnailCacheCommand { get; set; }
 
-        private void HandleNavigationEvent(object sender, NavigationEventArgs e)
-        {
-            if (e.PageName.Equals(_pageService.SettingsPageName))
-            {
-                // when Settings page is shown.
-                IsMediaActive = _activeMediaItemsService.Any();
-            }
-        }
-
-        private void InitCommands()
-        {
-            PurgeThumbnailCacheCommand = new RelayCommand(PurgeThumbnailCache);
-            OpenMediaFolderCommand = new RelayCommand(OpenMediaFolder);
-        }
-
-        private void OpenMediaFolder()
-        {
-            var dialog = new CommonOpenFileDialog
-            {
-                IsFolderPicker = true,
-                Title = Properties.Resources.MEDIA_FOLDER_BROWSE,
-                InitialDirectory = GetMediaFolderBrowsingStart(),
-                AddToMostRecentlyUsedList = false,
-                DefaultDirectory = GetMediaFolderBrowsingStart(),
-                EnsureFileExists = true,
-                EnsurePathExists = true,
-                EnsureReadOnly = false,
-                EnsureValidNames = true,
-                Multiselect = false,
-                ShowPlacesList = true
-            };
-
-            var result = dialog.ShowDialog();
-            if (result == CommonFileDialogResult.Ok)
-            {
-                _recentlyUsedMediaFolders.Add(dialog.FileName);
-                MediaFolder = dialog.FileName;
-                RaisePropertyChanged(nameof(RecentMediaFolders));
-            }
-        }
-
-        private string GetMediaFolderBrowsingStart()
-        {
-            if (!string.IsNullOrEmpty(MediaFolder) && Directory.Exists(MediaFolder))
-            {
-                return MediaFolder;
-            }
-
-            return null;
-        }
+        public RelayCommand OpenMediaFolderCommand { get; set; }
 
         public ObservableCollection<string> RecentMediaFolders => _recentlyUsedMediaFolders.GetFolders();
-        
-        private void PurgeThumbnailCache()
-        {
-            _thumbnailService.ClearThumbCache();
-        }
 
         public string AppVersionStr => string.Format(Properties.Resources.APP_VER, VersionDetection.GetCurrentVersion());
+
+        public IEnumerable<ImageFadeSpeed> FadeSpeedTypes => _fadingSpeeds;
+
+        public IEnumerable<ImageFade> ImageFadeTypes => _fadingTypes;
 
         public string MaxItemCount
         {
@@ -501,8 +447,6 @@
             }
         }
 
-        private bool _isMediaActive;
-
         public bool IsMediaActive
         {
             get => _isMediaActive;
@@ -658,9 +602,7 @@
             _optionsService.Options.RecentlyUsedMediaFolders = _recentlyUsedMediaFolders.GetFolders().ToList();
             _optionsService.Save();
         }
-
-        public IEnumerable<ImageFadeSpeed> FadeSpeedTypes => _fadingSpeeds;
-
+        
         private IEnumerable<ImageFadeSpeed> GetFadingSpeedTypes()
         {
             var result = new List<ImageFadeSpeed>();
@@ -676,9 +618,7 @@
 
             return result;
         }
-
-        public IEnumerable<ImageFade> ImageFadeTypes => _fadingTypes;
-
+        
         private IEnumerable<ImageFade> GetImageFadingTypes()
         {
             var result = new List<ImageFade>();
@@ -735,8 +675,68 @@
             return result;
         }
 
-        public RelayCommand PurgeThumbnailCacheCommand { get; set; }
+        private void InitRecentlyUsedFolders()
+        {
+            for (int n = _optionsService.Options.RecentlyUsedMediaFolders.Count - 1; n >= 0; --n)
+            {
+                _recentlyUsedMediaFolders.Add(_optionsService.Options.RecentlyUsedMediaFolders[n]);
+            }
+        }
 
-        public RelayCommand OpenMediaFolderCommand { get; set; }
+        private void HandleNavigationEvent(object sender, NavigationEventArgs e)
+        {
+            if (e.PageName.Equals(_pageService.SettingsPageName))
+            {
+                // when Settings page is shown.
+                IsMediaActive = _activeMediaItemsService.Any();
+            }
+        }
+
+        private void InitCommands()
+        {
+            PurgeThumbnailCacheCommand = new RelayCommand(PurgeThumbnailCache);
+            OpenMediaFolderCommand = new RelayCommand(OpenMediaFolder);
+        }
+
+        private void OpenMediaFolder()
+        {
+            var dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                Title = Properties.Resources.MEDIA_FOLDER_BROWSE,
+                InitialDirectory = GetMediaFolderBrowsingStart(),
+                AddToMostRecentlyUsedList = false,
+                DefaultDirectory = GetMediaFolderBrowsingStart(),
+                EnsureFileExists = true,
+                EnsurePathExists = true,
+                EnsureReadOnly = false,
+                EnsureValidNames = true,
+                Multiselect = false,
+                ShowPlacesList = true
+            };
+
+            var result = dialog.ShowDialog();
+            if (result == CommonFileDialogResult.Ok)
+            {
+                _recentlyUsedMediaFolders.Add(dialog.FileName);
+                MediaFolder = dialog.FileName;
+                RaisePropertyChanged(nameof(RecentMediaFolders));
+            }
+        }
+
+        private string GetMediaFolderBrowsingStart()
+        {
+            if (!string.IsNullOrEmpty(MediaFolder) && Directory.Exists(MediaFolder))
+            {
+                return MediaFolder;
+            }
+
+            return null;
+        }
+
+        private void PurgeThumbnailCache()
+        {
+            _thumbnailService.ClearThumbCache();
+        }
     }
 }

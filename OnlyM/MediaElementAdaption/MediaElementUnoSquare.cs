@@ -1,10 +1,9 @@
-﻿using OnlyM.Core.Models;
-
-namespace OnlyM.MediaElementAdaption
+﻿namespace OnlyM.MediaElementAdaption
 {
     using System;
     using System.Threading.Tasks;
     using System.Windows;
+    using OnlyM.Core.Models;
     using Serilog.Events;
     using Unosquare.FFME.Shared;
 
@@ -52,6 +51,8 @@ namespace OnlyM.MediaElementAdaption
 
         public Guid MediaItemId { get; set; }
 
+        public bool IsPaused { get; private set; }
+
         public async Task Play(Uri mediaPath, MediaClassification mediaClassification)
         {
             IsPaused = false;
@@ -77,8 +78,6 @@ namespace OnlyM.MediaElementAdaption
             IsPaused = false;
             return _mediaElement.Close();
         }
-
-        public bool IsPaused { get; private set; }
 
         public void UnsubscribeEvents()
         {

@@ -1,5 +1,7 @@
 ﻿namespace OnlyM.WindowsPositioning
 {
+    // ReSharper disable CommentTypo
+    // ReSharper disable IdentifierTypo
     // ReSharper disable InconsistentNaming
     // ReSharper disable StyleCop.SA1307
     // ReSharper disable MemberCanBePrivate.Global
@@ -18,63 +20,18 @@
     using System.Xml.Serialization;
     using Serilog;
 
-    // adapted from david Rickard's Tech Blog
-
-    // RECT structure required by WINDOWPLACEMENT structure
-    [Serializable]
-    [StructLayout(LayoutKind.Sequential)]
-    public struct RECT
-    {
-        public int Left;
-        public int Top;
-        public int Right;
-        public int Bottom;
-
-        public RECT(int left, int top, int right, int bottom)
-        {
-            Left = left;
-            Top = top;
-            Right = right;
-            Bottom = bottom;
-        }
-    }
-
-    // POINT structure required by WINDOWPLACEMENT structure
-    [Serializable]
-    [StructLayout(LayoutKind.Sequential)]
-    public struct POINT
-    {
-        public int X;
-        public int Y;
-
-        public POINT(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-    }
-
-    // WINDOWPLACEMENT stores the position, size, and state of a window
-    [Serializable]
-    [StructLayout(LayoutKind.Sequential)]
-    public struct WINDOWPLACEMENT
-    {
-        public int length;
-        public int flags;
-        public int showCmd;
-        public POINT minPosition;
-        public POINT maxPosition;
-        public RECT normalPosition;
-    }
+    //// adapted from david Rickard's Tech Blog
 
     public static class WindowPlacement
     {
+#pragma warning disable SA1310 // Field names must not contain underscore
+        private const int SW_SHOWNORMAL = 1;
+        private const int SW_SHOWMINIMIZED = 2;
+#pragma warning restore SA1310 // Field names must not contain underscore
+
         private static readonly Encoding Encoding = new UTF8Encoding();
         private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(WINDOWPLACEMENT));
 
-        private const int SW_SHOWNORMAL = 1;
-        private const int SW_SHOWMINIMIZED = 2;
-        
         public static void SetPlacement(this Window window, string placementJson)
         {
             var windowHandle = new WindowInteropHelper(window).Handle;
@@ -85,7 +42,7 @@
                 try
                 {
                     WINDOWPLACEMENT placement;
-                    using (MemoryStream memoryStream = new MemoryStream(xmlBytes))
+                    using (var memoryStream = new MemoryStream(xmlBytes))
                     {
                         placement = (WINDOWPLACEMENT)Serializer.Deserialize(memoryStream);
                     }
@@ -132,5 +89,56 @@
                 return Encoding.GetString(xmlBytes);
             }
         }
+    }
+
+    // RECT structure required by WINDOWPLACEMENT structure
+    [Serializable]
+    [StructLayout(LayoutKind.Sequential)]
+#pragma warning disable SA1201 // Elements must appear in the correct order
+    public struct RECT
+#pragma warning restore SA1201 // Elements must appear in the correct order
+    {
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+
+        public RECT(int left, int top, int right, int bottom)
+        {
+            Left = left;
+            Top = top;
+            Right = right;
+            Bottom = bottom;
+        }
+    }
+
+    // POINT structure required by WINDOWPLACEMENT structure
+    [Serializable]
+    [StructLayout(LayoutKind.Sequential)]
+    public struct POINT
+    {
+        public int X;
+        public int Y;
+
+        public POINT(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+    }
+
+    // WINDOWPLACEMENT stores the position, size, and state of a window
+    [Serializable]
+    [StructLayout(LayoutKind.Sequential)]
+    public struct WINDOWPLACEMENT
+    {
+#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
+        public int length;
+        public int flags;
+        public int showCmd;
+        public POINT minPosition;
+        public POINT maxPosition;
+        public RECT normalPosition;
+#pragma warning restore SA1307 // Accessible fields must begin with upper-case letter
     }
 }

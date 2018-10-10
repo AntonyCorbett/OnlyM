@@ -15,14 +15,14 @@
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
         }
 
+        public bool EngineIsMediaFoundation => _optionsService.Options.RenderingMethod == RenderingMethod.MediaFoundation;
+
+        public bool EngineIsFfmpeg => _optionsService.Options.RenderingMethod == RenderingMethod.Ffmpeg;
+
         private void HandleRenderingMethodChangedEvent(object sender, System.EventArgs e)
         {
             RaisePropertyChanged(nameof(EngineIsFfmpeg));
             RaisePropertyChanged(nameof(EngineIsMediaFoundation));
         }
-
-        public bool EngineIsMediaFoundation => _optionsService.Options.RenderingMethod == RenderingMethod.MediaFoundation;
-
-        public bool EngineIsFfmpeg => _optionsService.Options.RenderingMethod == RenderingMethod.Ffmpeg;
     }
 }

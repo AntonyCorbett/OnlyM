@@ -13,13 +13,6 @@
     /// </summary>
     internal static class EnumDisplayNativeMethods
     {
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern bool EnumDisplayDevices(
-            string lpDevice, 
-            uint iDevNum, 
-            ref DISPLAY_DEVICE lpDisplayDevice, 
-            uint dwFlags);
-
         [Flags]
         public enum DisplayDeviceStateFlags
         {
@@ -47,6 +40,13 @@
 
             Disconnect = 0x2000000
         }
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern bool EnumDisplayDevices(
+            string lpDevice,
+            uint iDevNum,
+            ref DISPLAY_DEVICE lpDisplayDevice,
+            uint dwFlags);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct DISPLAY_DEVICE

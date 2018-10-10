@@ -4,8 +4,8 @@
 
     public interface IFolderWatcherService
     {
-        bool IsEnabled { get; set; }
-
         event EventHandler ChangesFoundEvent;
+
+        bool IsEnabled { get; set; }
     }
 }

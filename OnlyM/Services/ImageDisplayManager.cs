@@ -25,8 +25,6 @@
         private Guid _image1MediaItemId;
         private Guid _image2MediaItemId;
 
-        public event EventHandler<MediaEventArgs> MediaChangeEvent;
-
         public ImageDisplayManager(Image image1, Image image2, IOptionsService optionsService)
         {
             _image1 = image1;
@@ -35,9 +33,38 @@
             _optionsService = optionsService;
         }
 
+        public event EventHandler<MediaEventArgs> MediaChangeEvent;
+
         public ImageFadeType ImageFadeType { private get; set; }
 
         public FadeSpeed ImageFadeSpeed { private get; set; }
+
+        private bool Image1Populated => _image1.Source != null;
+
+        private bool Image2Populated => _image2.Source != null;
+
+        private double FadeTime
+        {
+            get
+            {
+                switch (ImageFadeSpeed)
+                {
+                    case FadeSpeed.Slow:
+                        return 2.0;
+
+                    case FadeSpeed.Fast:
+                        return 0.75;
+
+                    case FadeSpeed.SuperFast:
+                        return 0.2;
+
+                    default:
+                    // ReSharper disable once RedundantCaseLabel
+                    case FadeSpeed.Normal:
+                        return 1.0;
+                }
+            }
+        }
 
         public void ShowImage(
             string mediaFilePath, 
@@ -178,29 +205,6 @@
             }
         }
 
-        private double FadeTime
-        {
-            get
-            {
-                switch (ImageFadeSpeed)
-                {
-                    case FadeSpeed.Slow:
-                        return 2.0;
-
-                    case FadeSpeed.Fast:
-                        return 0.75;
-
-                    case FadeSpeed.SuperFast:
-                        return 0.2;
-
-                    default:
-                    // ReSharper disable once RedundantCaseLabel
-                    case FadeSpeed.Normal:
-                        return 1.0;
-                }
-            }
-        }
-
         private void HideImageInControl(Image imageCtrl, Action completed)
         {
             var shouldFadeOut = imageCtrl.Source != null &&
@@ -276,10 +280,6 @@
 
             MediaChangeEvent?.Invoke(this, e);
         }
-
-        private bool Image1Populated => _image1.Source != null;
-
-        private bool Image2Populated => _image2.Source != null;
 
         private MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
         {

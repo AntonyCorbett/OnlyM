@@ -15,7 +15,6 @@
 
         public event EventHandler UnhideAllEvent;
 
-
         public void Init(IEnumerable<MediaItem> items)
         {
             _hiddenItemsInCurrentMediaFolder.Clear();

@@ -68,6 +68,12 @@
             remove { }
         }
 
+        public bool IsPaused { get; private set; }
+
+        public FrameworkElement FrameworkElement => _mediaElement;
+
+        public Guid MediaItemId { get; set; }
+
         public TimeSpan Position
         {
             get
@@ -79,6 +85,7 @@
 
                 return _mediaElement.Position;
             }
+
             set
             {
                 if (_currentMediaClassification == MediaClassification.Audio)
@@ -168,12 +175,6 @@
             MediaClosed?.Invoke(this, null);
             return Task.CompletedTask;
         }
-
-        public bool IsPaused { get; private set; }
-
-        public FrameworkElement FrameworkElement => _mediaElement;
-
-        public Guid MediaItemId { get; set; }
 
         public void UnsubscribeEvents()
         {

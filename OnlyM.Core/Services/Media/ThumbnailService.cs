@@ -30,13 +30,13 @@
             return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
         });
 
-        public event EventHandler ThumbnailsPurgedEvent;
-
         public ThumbnailService(IDatabaseService databaseService, IOptionsService optionsService)
         {
             _databaseService = databaseService;
             _optionsService = optionsService;
         }
+
+        public event EventHandler ThumbnailsPurgedEvent;
 
         public byte[] GetThumbnail(
             string originalPath, 

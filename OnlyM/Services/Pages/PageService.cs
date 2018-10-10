@@ -39,22 +39,6 @@
         private double _operatorPageScrollerPosition;
         private double _settingsPageScrollerPosition;
         
-        public event EventHandler MediaMonitorChangedEvent;
-
-        public event EventHandler<NavigationEventArgs> NavigationEvent;
-
-        public event EventHandler<MediaEventArgs> MediaChangeEvent;
-
-        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
-
-        public event EventHandler MediaWindowOpenedEvent;
-
-        public event EventHandler MediaWindowClosedEvent;
-
-        public event EventHandler<WindowVisibilityChangedEventArgs> MediaWindowVisibilityChanged;
-        
-        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
-
         public PageService(
             IMonitorsService monitorsService,
             IOptionsService optionsService,
@@ -77,6 +61,22 @@
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
 
+        public event EventHandler MediaMonitorChangedEvent;
+
+        public event EventHandler<NavigationEventArgs> NavigationEvent;
+
+        public event EventHandler<MediaEventArgs> MediaChangeEvent;
+
+        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
+
+        public event EventHandler MediaWindowOpenedEvent;
+
+        public event EventHandler MediaWindowClosedEvent;
+
+        public event EventHandler<WindowVisibilityChangedEventArgs> MediaWindowVisibilityChanged;
+
+        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
+
         public bool ApplicationIsClosing { get; private set; }
 
         public ScrollViewer ScrollViewer { get; set; }
@@ -84,6 +84,12 @@
         public string OperatorPageName => "OperatorPage";
 
         public string SettingsPageName => "SettingsPage";
+
+        public bool AllowMediaWindowToClose { get; set; }
+
+        public bool IsMediaWindowVisible => _mediaWindow != null &&
+                                            _mediaWindow.IsVisible &&
+                                            _mediaWindow.Visibility == Visibility.Visible;
 
         public void GotoOperatorPage()
         {
@@ -93,7 +99,10 @@
 
         public void GotoSettingsPage()
         {
+#pragma warning disable SA1312 // Variable names must begin with lower-case letter
             var _ = _settingsPage.Value;   // ensure created otherwise doesn't receive navigation event
+#pragma warning restore SA1312 // Variable names must begin with lower-case letter
+
             _operatorPageScrollerPosition = ScrollViewer.VerticalOffset;
             OnNavigationEvent(new NavigationEventArgs { PageName = SettingsPageName });
         }
@@ -142,8 +151,6 @@
             }
         }
 
-        public bool AllowMediaWindowToClose { get; set; }
-
         public void CacheImageItem(MediaItem mediaItem)
         {
             if (_mediaWindow != null && mediaItem != null)
@@ -188,10 +195,6 @@
                 await _mediaWindow.PauseMediaAsync(mediaItem);
             }
         }
-
-        public bool IsMediaWindowVisible => _mediaWindow != null && 
-                                            _mediaWindow.IsVisible && 
-                                            _mediaWindow.Visibility == Visibility.Visible;
 
         private void LocateWindowAtOrigin(Window window, Screen monitor)
         {

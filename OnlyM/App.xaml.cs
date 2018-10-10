@@ -19,7 +19,6 @@
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Singleton")]
     public partial class App : Application
     {
-        public static string FMpegFolderName { get; } = "FFmpeg";
         private readonly string _appString = "OnlyMMeetingMedia";
         private Mutex _appMutex;
 
@@ -29,6 +28,8 @@
             MediaElement.FFmpegDirectory = FMpegFolderName;
             RegisterMappings();
         }
+
+        public static string FMpegFolderName { get; } = @"FFmpeg";
 
         protected override void OnExit(ExitEventArgs e)
         {

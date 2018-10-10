@@ -23,8 +23,6 @@
         private readonly CancellationToken _cancellationToken;
         private readonly string _ffmpegFolder;
 
-        public event EventHandler<ItemMetaDataPopulatedEventArgs> ItemCompletedEvent;
-
         public MetaDataQueueConsumer(
             IThumbnailService thumbnailService,
             IMediaMetaDataService metaDataService,
@@ -42,6 +40,8 @@
             _collection = metaDataProducerCollection;
             _cancellationToken = cancellationToken;
         }
+
+        public event EventHandler<ItemMetaDataPopulatedEventArgs> ItemCompletedEvent;
 
         public void Execute()
         {

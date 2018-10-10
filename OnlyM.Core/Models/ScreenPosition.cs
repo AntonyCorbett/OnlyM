@@ -4,14 +4,6 @@
 
     public class ScreenPosition : ICloneable
     {
-        public int LeftMarginPercentage { get; set; }
-
-        public int TopMarginPercentage { get; set; }
-
-        public int RightMarginPercentage { get; set; }
-
-        public int BottomMarginPercentage { get; set; }
-
         public ScreenPosition()
         {
         }
@@ -23,6 +15,14 @@
             RightMarginPercentage = right;
             BottomMarginPercentage = bottom;
         }
+
+        public int LeftMarginPercentage { get; set; }
+
+        public int TopMarginPercentage { get; set; }
+
+        public int RightMarginPercentage { get; set; }
+
+        public int BottomMarginPercentage { get; set; }
 
         public bool IsFullScreen()
         {
