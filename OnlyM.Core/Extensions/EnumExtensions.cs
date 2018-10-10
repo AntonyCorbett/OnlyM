@@ -6,6 +6,26 @@
 
     public static class EnumExtensions
     {
+        public static double GetFadeSpeedSeconds(this FadeSpeed speed)
+        {
+            switch (speed)
+            {
+                case FadeSpeed.Slow:
+                    return 2.0;
+
+                case FadeSpeed.Fast:
+                    return 0.75;
+
+                case FadeSpeed.SuperFast:
+                    return 0.2;
+
+                default:
+                // ReSharper disable once RedundantCaseLabel
+                case FadeSpeed.Normal:
+                    return 1.0;
+            }
+        }
+
         public static string GetDescriptiveName(this FadeSpeed speed)
         {
             switch (speed)

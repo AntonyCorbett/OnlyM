@@ -25,10 +25,11 @@
         private const int MediaConfirmStopWindowSeconds = 3;
 
         private readonly ImageDisplayManager _imageDisplayManager;
+        private readonly SlideshowDisplayManager _slideshowDisplayManager;
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
-
         private VideoDisplayManager _videoDisplayManager;
+
         private IMediaElement _videoElement;
         private RenderingMethod _currentRenderingMethod;
 
@@ -39,7 +40,9 @@
             _optionsService = optionsService;
 
             _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
-            
+
+            _slideshowDisplayManager = new SlideshowDisplayManager(Image1Element, Image2Element, _optionsService);
+
             _snackbarService = snackbarService;
 
             InitRenderingMethod();
@@ -91,7 +94,7 @@
                     break;
 
                 case MediaClassification.Slideshow:
-                    // todo:
+                    StartSlideshow(mediaItemToStart);
                     break;
             }
         }
@@ -188,6 +191,11 @@
                 _optionsService.Options.ImageScreenPosition,
                 mediaItem.Id, 
                 mediaItem.IsBlankScreen);
+        }
+
+        private void StartSlideshow(MediaItem mediaItem)
+        {
+            _slideshowDisplayManager.Start(mediaItem.FilePath, mediaItem.Id);
         }
 
         private Task ShowVideoOrPlayAudio(

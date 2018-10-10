@@ -38,6 +38,15 @@
         }
 
         /// <summary>
+        /// Gets temp staging folder for slideshows
+        /// </summary>
+        /// <returns>Temp folder</returns>
+        public static string GetUsersTempStagingFolder()
+        {
+            return Path.Combine(Path.GetTempPath(), AppNamePathSegment, @"Slideshows");
+        }
+
+        /// <summary>
         /// Gets the log folder
         /// </summary>
         /// <returns>Log folder</returns>

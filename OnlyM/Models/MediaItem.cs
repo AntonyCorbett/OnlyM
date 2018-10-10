@@ -11,7 +11,7 @@
         private static readonly SolidColorBrush ImageIconBrush = new SolidColorBrush(Colors.DarkGreen);
         private static readonly SolidColorBrush AudioIconBrush = new SolidColorBrush(Colors.CornflowerBlue);
         private static readonly SolidColorBrush VideoIconBrush = new SolidColorBrush(Colors.Chocolate);
-        private static readonly SolidColorBrush SlideshowIconBrush = new SolidColorBrush(Colors.Plum);
+        private static readonly SolidColorBrush SlideshowIconBrush = new SolidColorBrush(Colors.BlueViolet);
         private static readonly SolidColorBrush UnknownIconBrush = new SolidColorBrush(Colors.Crimson);
         private static readonly SolidColorBrush GreenBrush = new SolidColorBrush(Colors.DarkGreen);
         private static readonly SolidColorBrush BlackBrush = new SolidColorBrush(Colors.Black);

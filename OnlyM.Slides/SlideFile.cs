@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Slides
+﻿using System.Collections.Generic;
+
+namespace OnlyM.Slides
 {
     using System;
     using System.IO;
@@ -27,7 +29,7 @@
 
         public int SlideCount => _config.SlideCount;
 
-        public SlideData GetSlide(int index)
+        public SlideData GetSlide(int index, bool includeBitmapImage = true)
         {
             if (index < 0 || index > SlideCount - 1)
             {
@@ -38,7 +40,9 @@
 
             using (var zip = ZipFile.OpenRead(_zipPath))
             {
-                var image = ReadBackgroundImage(zip, slide.ArchiveEntryName);
+                var image = includeBitmapImage
+                    ? ReadBackgroundImage(zip, slide.ArchiveEntryName)
+                    : null;
 
                 return new SlideData
                 {
@@ -48,6 +52,48 @@
                     DwellTimeMilliseconds = slide.DwellTimeMilliseconds,
                     Image = image
                 };
+            }
+        }
+
+        public IReadOnlyCollection<SlideData> GetSlides(bool includeBitmapImage)
+        {
+            var result = new List<SlideData>();
+
+            using (var zip = ZipFile.OpenRead(_zipPath))
+            {
+                foreach (var slide in _config.Slides)
+                {
+                    var entry = zip.GetEntry(slide.ArchiveEntryName);
+
+                    var image = includeBitmapImage
+                        ? ReadBackgroundImage(zip, slide.ArchiveEntryName)
+                        : null;
+
+                    result.Add(new SlideData
+                    {
+                        ArchiveEntryName = slide.ArchiveEntryName,
+                        FadeIn = slide.FadeIn,
+                        FadeOut = slide.FadeOut,
+                        DwellTimeMilliseconds = slide.DwellTimeMilliseconds,
+                        Image = image
+                    });
+                }
+            }
+
+            return result;
+        }
+
+        public void ExtractImages(string folder)
+        {
+            Directory.CreateDirectory(folder);
+
+            using (var zip = ZipFile.OpenRead(_zipPath))
+            {
+                foreach (var slide in _config.Slides)
+                {
+                    var entry = zip.GetEntry(slide.ArchiveEntryName);
+                    entry.ExtractToFile(Path.Combine(folder, slide.ArchiveEntryName), overwrite: true);
+                }
             }
         }
 

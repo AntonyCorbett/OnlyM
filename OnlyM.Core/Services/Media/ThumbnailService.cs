@@ -1,6 +1,4 @@
-﻿using OnlyM.Slides;
-
-namespace OnlyM.Core.Services.Media
+﻿namespace OnlyM.Core.Services.Media
 {
     using System;
     using System.Drawing;
@@ -8,6 +6,7 @@ namespace OnlyM.Core.Services.Media
     using System.IO;
     using Database;
     using Models;
+    using OnlyM.Slides;
     using Options;
     using Serilog;
     using Utils;
