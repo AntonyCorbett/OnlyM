@@ -265,7 +265,7 @@
         private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
         {
             var item = GetMediaItem(e.MediaItemId);
-            if (item != null)
+            if (item != null && !item.IsPaused)
             {
                 item.PlaybackPositionDeciseconds = (int)(e.Position.TotalMilliseconds / 100);
             }

@@ -83,6 +83,7 @@
 
             _mediaElement.Position = position;
             _lastPosition = TimeSpan.Zero;
+
             _manuallySettingPlaybackPosition = false;
         }
 
