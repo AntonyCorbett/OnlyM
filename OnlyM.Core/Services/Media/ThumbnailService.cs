@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Core.Services.Media
+﻿using OnlyM.Slides;
+
+namespace OnlyM.Core.Services.Media
 {
     using System;
     using System.Drawing;
@@ -107,9 +109,24 @@
                 case MediaClassification.Audio:
                     return _standardAudioThumbnail.Value;
 
+                case MediaClassification.Slideshow:
+                    return GetSlideshowThumbnail(originalPath);
+
                 default:
                     return null;
             }
+        }
+
+        private byte[] GetSlideshowThumbnail(string originalPath)
+        {
+            var file = new SlideFile(originalPath);
+            if (file.SlideCount == 0)
+            {
+                return _standardUnknownThumbnail.Value;
+            }
+
+            var slide = file.GetSlide(0);
+            return GraphicsUtils.CreateThumbnailOfImage(slide.Image, MaxPixelDimension);
         }
 
         private void OnThumbnailsPurgedEvent()

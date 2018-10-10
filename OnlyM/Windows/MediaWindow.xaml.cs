@@ -89,6 +89,10 @@
                     mediaItemToStart.PlaybackPositionChangedEvent -= HandlePlaybackPositionChangedEvent;
                     await ShowVideoOrPlayAudio(mediaItemToStart, currentMediaItems, startFromPaused);
                     break;
+
+                case MediaClassification.Slideshow:
+                    // todo:
+                    break;
             }
         }
 
@@ -119,6 +123,10 @@
                 case MediaClassification.Video:
                     mediaItem.PlaybackPositionChangedEvent -= HandlePlaybackPositionChangedEvent;
                     await HideVideoAsync(mediaItem);
+                    break;
+
+                case MediaClassification.Slideshow:
+                    // todo:
                     break;
             }
         }

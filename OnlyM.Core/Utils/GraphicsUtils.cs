@@ -96,6 +96,37 @@
             return result;
         }
 
+        public static byte[] CreateThumbnailOfImage(BitmapImage srcBmp, int maxPixelDimension)
+        {
+            var factorWidth = (double)maxPixelDimension / srcBmp.PixelWidth;
+            var factorHeight = (double)maxPixelDimension / srcBmp.PixelHeight;
+
+            if (factorHeight >= 1 && factorWidth >= 1)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    BitmapEncoder encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(srcBmp));
+
+                    encoder.Save(memoryStream);
+                    return memoryStream.ToArray();
+                }
+            }
+
+            var factor = Math.Min(factorWidth, factorHeight);
+
+            var t = new TransformedBitmap(srcBmp, new ScaleTransform(factor, factor));
+
+            using (var memoryStream = new MemoryStream())
+            {
+                BitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(t));
+
+                encoder.Save(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+
         public static ImageSource ByteArrayToImage(byte[] imageData)
         {
             if (imageData == null)

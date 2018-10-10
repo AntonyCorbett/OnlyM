@@ -323,7 +323,7 @@
                 switch (item.MediaType.Classification)
                 {
                     case MediaClassification.Image:
-                        // cannot show an image if video or audio is playing.
+                        // cannot show an image if video is playing.
                         item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive;
                         break;
 
@@ -335,6 +335,11 @@
                     case MediaClassification.Video:
                         // cannot play a video if another video or audio is playing.
                         item.IsPlayButtonEnabled = monitorSpecified && !videoOrAudioIsActive;
+                        break;
+
+                    case MediaClassification.Slideshow:
+                        // cannot play a slideshow if video is playing.
+                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive;
                         break;
 
                     default:
@@ -562,6 +567,9 @@
 
                 case MediaClassification.Video:
                     return !VideoOrAudioIsActive();
+
+                case MediaClassification.Slideshow:
+                    return !VideoIsActive();
 
                 default:
                 case MediaClassification.Unknown:
