@@ -1,6 +1,4 @@
-﻿using OnlyM.Properties;
-
-namespace OnlyM.Models
+﻿namespace OnlyM.Models
 {
     using System;
     using System.Windows.Media;
@@ -36,7 +34,8 @@ namespace OnlyM.Models
         private string _playbackTimeString = GenerateTimeString(0);
         private int _durationDeciseconds;
         private int _currentSlideshowIndex;
-        
+        private int _slideshowCount;
+
         public event EventHandler PlaybackPositionChangedEvent;
 
         public Guid Id { get; set; }
@@ -257,8 +256,20 @@ namespace OnlyM.Models
                 }
             }
         }
-        
-        public int SlideshowCount { get; set; }
+
+        public int SlideshowCount
+        {
+            get => _slideshowCount;
+            set
+            {
+                if (_slideshowCount != value)
+                {
+                    _slideshowCount = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(SlideshowProgressString));
+                }
+            }
+        }
 
         public bool SlideshowLoop { get; set; }
 

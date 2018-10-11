@@ -201,6 +201,7 @@
 
         private void StartSlideshow(MediaItem mediaItem)
         {
+            mediaItem.CurrentSlideshowIndex = 0;
             _imageDisplayManager.StartSlideshow(mediaItem.FilePath, mediaItem.Id);
         }
 

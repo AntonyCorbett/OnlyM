@@ -116,7 +116,7 @@
 
         private void PopulateSlideData(MediaItem mediaItem)
         {
-            if (mediaItem.MediaType.Classification == MediaClassification.Slideshow)
+            if (!IsSlideDataPopulated(mediaItem))
             {
                 var sf = new SlideFile(mediaItem.FilePath);
                 mediaItem.SlideshowCount = sf.SlideCount;
@@ -127,7 +127,8 @@
         private bool IsPopulated(MediaItem mediaItem)
         {
             return IsThumbnailPopulated(mediaItem) &&
-                   IsDurationAndNamePopulated(mediaItem);
+                   IsDurationAndNamePopulated(mediaItem) &&
+                   IsSlideDataPopulated(mediaItem);
         }
 
         private bool IsThumbnailPopulated(MediaItem mediaItem)
@@ -140,6 +141,11 @@
             return 
                 (!mediaItem.HasDuration || mediaItem.DurationDeciseconds > 0) &&
                 !string.IsNullOrEmpty(mediaItem.Name);
+        }
+
+        private bool IsSlideDataPopulated(MediaItem mediaItem)
+        {
+            return !mediaItem.IsSlideshow || mediaItem.SlideshowCount > 0;
         }
 
         private void PopulateDurationAndName(MediaItem mediaItem)
