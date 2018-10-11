@@ -374,6 +374,7 @@
 
                 case SlideTransition.Finished:
                     mediaItem.IsMediaChanging = false;
+                    mediaItem.CurrentSlideshowIndex = e.NewSlideIndex;
                     break;
             }
         }

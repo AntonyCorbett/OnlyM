@@ -98,6 +98,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (contains {0} rolling slides).
+        /// </summary>
+        internal static string CONTAINS_X_ROLLING_SLIDES {
+            get {
+                return ResourceManager.GetString("CONTAINS_X_ROLLING_SLIDES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (contains {0} slides).
         /// </summary>
         internal static string CONTAINS_X_SLIDES {
@@ -211,6 +220,15 @@ namespace OnlyM.Properties {
         internal static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to rolling slide {0} of {1}.
+        /// </summary>
+        internal static string ROLLING_SLIDE_X_OF_Y {
+            get {
+                return ResourceManager.GetString("ROLLING_SLIDE_X_OF_Y", resourceCulture);
             }
         }
         

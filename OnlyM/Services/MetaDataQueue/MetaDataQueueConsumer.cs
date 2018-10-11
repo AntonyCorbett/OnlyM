@@ -128,6 +128,7 @@
                 var sf = new SlideFile(mediaItem.FilePath);
                 mediaItem.SlideshowCount = sf.SlideCount;
                 mediaItem.SlideshowLoop = sf.Loop;
+                mediaItem.IsRollingSlideshow = sf.AutoPlay;
             }
         }
 

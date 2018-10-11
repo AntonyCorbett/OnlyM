@@ -23,7 +23,7 @@
 
             fb.Loop = true;
             fb.AutoPlay = true;
-            fb.DwellTimeMilliseconds = 1000;
+            fb.DwellTimeMilliseconds = 5000;
 
             fb.Build(slideFilePath, true);
 

@@ -35,6 +35,7 @@
         private int _durationDeciseconds;
         private int _currentSlideshowIndex;
         private int _slideshowCount;
+        private bool _isRollingSlideshow;
 
         public event EventHandler PlaybackPositionChangedEvent;
 
@@ -271,6 +272,20 @@
             }
         }
 
+        public bool IsRollingSlideshow
+        {
+            get => _isRollingSlideshow;
+            set
+            {
+                if (_isRollingSlideshow != value)
+                {
+                    _isRollingSlideshow = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(SlideshowProgressString));
+                }
+            }
+        }
+
         public bool SlideshowLoop { get; set; }
 
         public int CurrentSlideshowIndex
@@ -353,10 +368,19 @@
 
                 if (!IsMediaActive)
                 {
-                    return string.Format(Properties.Resources.CONTAINS_X_SLIDES, SlideshowCount);
+                    return string.Format(
+                        IsRollingSlideshow
+                            ? Properties.Resources.CONTAINS_X_ROLLING_SLIDES
+                            : Properties.Resources.CONTAINS_X_SLIDES,
+                        SlideshowCount);
                 }
 
-                return string.Format(Properties.Resources.SLIDE_X_OF_Y, CurrentSlideshowIndex + 1, SlideshowCount);
+                return string.Format(
+                    IsRollingSlideshow
+                        ? Properties.Resources.ROLLING_SLIDE_X_OF_Y
+                        : Properties.Resources.SLIDE_X_OF_Y, 
+                    CurrentSlideshowIndex + 1, 
+                    SlideshowCount);
             }
         }
 

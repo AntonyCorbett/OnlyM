@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -10,6 +11,7 @@
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Media.Imaging;
+    using System.Windows.Threading;
     using Core.Models;
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Threading;
@@ -27,7 +29,8 @@
         private readonly IOptionsService _optionsService;
 
         private readonly string _slideshowStagingFolder;
-        
+        private readonly DispatcherTimer _slideshowTimer = new DispatcherTimer();
+
         private readonly Image _image1;
         private readonly Image _image2;
 
@@ -40,7 +43,9 @@
         private int _currentSlideshowImageIndex;
         private List<SlideData> _slides;
         private bool _shouldLoopSlideshow;
-
+        private bool _autoPlaySlideshow;
+        private int _autoPlaySlideshowDwellTime;
+        
         public ImageDisplayManager(Image image1, Image image2, IOptionsService optionsService)
         {
             _optionsService = optionsService;
@@ -52,6 +57,8 @@
             _image2.Name = "Img2";
 
             _slideshowStagingFolder = FileUtils.GetUsersTempStagingFolder();
+
+            _slideshowTimer.Tick += HandleSlideshowTimerTick;
         }
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
@@ -121,13 +128,16 @@
             _currentSlideshowImageIndex = 0;
             
             InitFromSlideshowFile(mediaItemFilePath);
+            
+            DisplaySlide(GetCurrentSlide(), mediaItemId, null, 0, _currentSlideshowImageIndex);
 
-            DisplaySlide(GetCurrentSlide(), mediaItemId);
+            ConfigureSlideshowAutoPlayTimer();
         }
 
         public int GotoPreviousSlide()
         {
             var oldSlide = GetCurrentSlide();
+            var oldIndex = _currentSlideshowImageIndex;
 
             --_currentSlideshowImageIndex;
 
@@ -144,7 +154,7 @@
 
                 if (mediaId != Guid.Empty)
                 {
-                    DisplaySlide(newSlide, mediaId, oldSlide);
+                    DisplaySlide(newSlide, mediaId, oldSlide, oldIndex, _currentSlideshowImageIndex);
                 }
             }
 
@@ -154,6 +164,7 @@
         public int GotoNextSlide()
         {
             var oldSlide = GetCurrentSlide();
+            var oldIndex = _currentSlideshowImageIndex;
 
             ++_currentSlideshowImageIndex;
 
@@ -170,7 +181,7 @@
 
                 if (mediaId != Guid.Empty)
                 {
-                    DisplaySlide(newSlide, mediaId, oldSlide);
+                    DisplaySlide(newSlide, mediaId, oldSlide, oldIndex, _currentSlideshowImageIndex);
                 }
             }
 
@@ -179,6 +190,8 @@
 
         public void StopSlideshow(Guid mediaItemId)
         {
+            _slideshowTimer.Stop();
+
             var currentSlide = GetCurrentSlide();
 
             var fadeType = currentSlide.FadeOut ? ImageFadeType.FadeOut : ImageFadeType.None;
@@ -242,12 +255,14 @@
             };
         }
 
-        private SlideTransitionEventArgs CreateSlideTransitionEventArgs(Guid id, SlideTransition change)
+        private SlideTransitionEventArgs CreateSlideTransitionEventArgs(Guid id, SlideTransition change, int oldIndex, int newIndex)
         {
             return new SlideTransitionEventArgs
             {
                 MediaItemId = id,
-                Transition = change
+                Transition = change,
+                OldSlideIndex = oldIndex,
+                NewSlideIndex = newIndex
             };
         }
 
@@ -375,9 +390,45 @@
 
             _slides = sf.GetSlides(includeBitmapImage: false).ToList();
             _shouldLoopSlideshow = sf.Loop;
+            _autoPlaySlideshow = sf.AutoPlay;
+            _autoPlaySlideshowDwellTime = sf.DwellTimeMilliseconds;
         }
 
-        private void DisplaySlide(SlideData slide, Guid mediaItemId, SlideData previousSlide = null)
+        private void ConfigureSlideshowAutoPlayTimer()
+        {
+            if (_autoPlaySlideshow)
+            {
+                var slide = GetCurrentSlide();
+
+                var dwellTimeMillisecs = slide.DwellTimeMilliseconds == 0
+                    ? _autoPlaySlideshowDwellTime
+                    : slide.DwellTimeMilliseconds;
+
+                _slideshowTimer.Interval = TimeSpan.FromMilliseconds(dwellTimeMillisecs);
+                _slideshowTimer.Start();
+            }
+        }
+
+        private void HandleSlideshowTimerTick(object sender, EventArgs e)
+        {
+            _slideshowTimer.Stop();
+            
+            var currentSlideIndex = _currentSlideshowImageIndex;
+            var newSlideIndex = GotoNextSlide();
+
+            Debug.WriteLine($"Timer fire, index = {_currentSlideshowImageIndex}");
+
+            if (currentSlideIndex == newSlideIndex)
+            {
+                // reached the end and no looping...
+            }
+            else
+            {
+                ConfigureSlideshowAutoPlayTimer();
+            }
+        }
+
+        private void DisplaySlide(SlideData slide, Guid mediaItemId, SlideData previousSlide, int oldIndex, int newIndex)
         {
             var fadeType = GetSlideFadeType(slide, previousSlide);
             
@@ -398,7 +449,7 @@
                     }
                     else
                     {
-                        OnSlideTransitionEvent(CreateSlideTransitionEventArgs(mediaItemId, SlideTransition.Started));
+                        OnSlideTransitionEvent(CreateSlideTransitionEventArgs(mediaItemId, SlideTransition.Started, oldIndex, newIndex));
                     }
                 },
                 (hiddenMediaId, hiddenMediaClassification) =>
@@ -426,7 +477,7 @@
                     }
                     else
                     {
-                        OnSlideTransitionEvent(CreateSlideTransitionEventArgs(mediaItemId, SlideTransition.Finished));
+                        OnSlideTransitionEvent(CreateSlideTransitionEventArgs(mediaItemId, SlideTransition.Finished, oldIndex, newIndex));
                     }
                 });
         }
