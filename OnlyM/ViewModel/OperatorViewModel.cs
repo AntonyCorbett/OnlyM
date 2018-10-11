@@ -328,14 +328,15 @@
             var monitorSpecified = _optionsService.IsMediaMonitorSpecified;
             var videoOrAudioIsActive = VideoOrAudioIsActive();
             var videoIsActive = VideoIsActive();
-            
+            var rollingSlideshowIsActive = RollingSlideshowIsActive();
+
             foreach (var item in MediaItems)
             {
                 switch (item.MediaType.Classification)
                 {
                     case MediaClassification.Image:
-                        // cannot show an image if video is playing.
-                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive;
+                        // cannot show an image if video or rolling slideshow is playing.
+                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive && !rollingSlideshowIsActive;
                         break;
 
                     case MediaClassification.Audio:
@@ -344,13 +345,13 @@
                         break;
 
                     case MediaClassification.Video:
-                        // cannot play a video if another video or audio is playing.
-                        item.IsPlayButtonEnabled = monitorSpecified && !videoOrAudioIsActive;
+                        // cannot play a video if another video or audio or rolling slideshow is playing.
+                        item.IsPlayButtonEnabled = monitorSpecified && !videoOrAudioIsActive && !rollingSlideshowIsActive;
                         break;
 
                     case MediaClassification.Slideshow:
-                        // cannot play a slideshow if video is playing.
-                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive;
+                        // cannot play a slideshow if video or a rolling slideshow is playing.
+                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive && !rollingSlideshowIsActive;
                         break;
 
                     default:
@@ -556,6 +557,11 @@
             return mediaItem.MediaType.Classification == MediaClassification.Video;
         }
 
+        private bool IsRollingSlideshow(MediaItem mediaItem)
+        {
+            return mediaItem.IsRollingSlideshow;
+        }
+
         private async Task MediaPauseControl(Guid mediaItemId)
         {
             // only allow pause media when nothing is changing.
@@ -665,6 +671,17 @@
             }
 
             return currentItems.Any(IsVideo);
+        }
+
+        private bool RollingSlideshowIsActive()
+        {
+            var currentItems = GetCurrentMediaItems();
+            if (currentItems == null)
+            {
+                return false;
+            }
+
+            return currentItems.Any(IsRollingSlideshow);
         }
 
         private MediaItem GetNextImageItem(MediaItem currentMediaItem)
