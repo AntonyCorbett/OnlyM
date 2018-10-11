@@ -94,6 +94,7 @@
 
             _pageService = pageService;
             _pageService.MediaChangeEvent += HandleMediaChangeEvent;
+            _pageService.SlideTransitionEvent += HandleSlideTransitionEvent;
             _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
             _pageService.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _pageService.MediaNearEndEvent += async (sender, e) =>
@@ -292,8 +293,14 @@
                 _metaDataCancellationTokenSource.Token);
 
             _metaDataConsumer.ItemCompletedEvent += HandleItemCompletedEvent;
+            _metaDataConsumer.AllItemsCompletedEvent += HandleAllItemsCompletedEvent;
 
             _metaDataConsumer.Execute();
+        }
+
+        private void HandleAllItemsCompletedEvent(object sender, EventArgs e)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(SortMediaItems);
         }
 
         private void HandleItemCompletedEvent(object sender, ItemMetaDataPopulatedEventArgs e)
@@ -350,6 +357,24 @@
                         item.IsPlayButtonEnabled = false;
                         break;
                 }
+            }
+        }
+
+        private void HandleSlideTransitionEvent(object sender, SlideTransitionEventArgs e)
+        {
+            Log.Debug($"HandleSlideTransitionEvent (id = {e.MediaItemId}, change = {e.Transition})");
+
+            var mediaItem = GetMediaItem(e.MediaItemId);
+
+            switch (e.Transition)
+            {
+                case SlideTransition.Started:
+                    mediaItem.IsMediaChanging = true;
+                    break;
+
+                case SlideTransition.Finished:
+                    mediaItem.IsMediaChanging = false;
+                    break;
             }
         }
 
@@ -472,7 +497,10 @@
             if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
                 var mediaItem = GetMediaItem(mediaItemId);
-                mediaItem.CurrentSlideshowIndex = _pageService.GotoPreviousSlide();
+                if (!mediaItem.IsMediaChanging)
+                {
+                    mediaItem.CurrentSlideshowIndex = _pageService.GotoPreviousSlide();
+                }
             }
         }
 
@@ -481,7 +509,10 @@
             if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
                 var mediaItem = GetMediaItem(mediaItemId);
-                mediaItem.CurrentSlideshowIndex = _pageService.GotoNextSlide();
+                if (!mediaItem.IsMediaChanging)
+                {
+                    mediaItem.CurrentSlideshowIndex = _pageService.GotoNextSlide();
+                }
             }
         }
 
@@ -744,9 +775,7 @@
                     _metaDataProducer.Add(item);
                 }
             }
-
-            SortMediaItems();
-
+            
             TruncateMediaItemsToMaxCount();
             
             _hiddenMediaItemsService.Init(MediaItems);

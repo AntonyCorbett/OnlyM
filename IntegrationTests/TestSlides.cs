@@ -17,6 +17,14 @@
             fb.AddSlide(@"TestImages\002.jpg", true, true);
             fb.AddSlide(@"TestImages\003.jpg", true, true);
 
+            fb.AddSlide(@"TestImages\001.jpg", false, false);
+            fb.AddSlide(@"TestImages\002.jpg", false, false);
+            fb.AddSlide(@"TestImages\003.jpg", false, false);
+
+            fb.Loop = true;
+            fb.AutoPlay = true;
+            fb.DwellTimeMilliseconds = 1000;
+
             fb.Build(slideFilePath, true);
 
             var file = new SlideFile(slideFilePath);

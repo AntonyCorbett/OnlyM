@@ -44,6 +44,8 @@
 
         public event EventHandler<ItemMetaDataPopulatedEventArgs> ItemCompletedEvent;
 
+        public event EventHandler AllItemsCompletedEvent;
+
         public void Execute()
         {
             RunConsumer();
@@ -86,6 +88,11 @@
                         }
 
                         Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _collection.Count);
+
+                        if (_collection.Count == 0)
+                        {
+                            AllItemsCompletedEvent?.Invoke(this, EventArgs.Empty);
+                        }
                     }
                 }
             }

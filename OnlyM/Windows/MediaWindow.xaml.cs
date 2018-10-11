@@ -50,6 +50,8 @@
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
+        public event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
+
         public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
@@ -176,7 +178,7 @@
                 switch (imageItem.MediaType.Classification)
                 {
                     case MediaClassification.Image:
-                        _imageDisplayManager.HideImage(imageItem.Id);
+                        _imageDisplayManager.HideSingleImage(imageItem.Id);
                         break;
 
                     case MediaClassification.Slideshow:
@@ -190,13 +192,13 @@
         {
             if (mediaItem != null)
             {
-                _imageDisplayManager.HideImage(mediaItem.Id);
+                _imageDisplayManager.HideSingleImage(mediaItem.Id);
             }
         }
 
         private void ShowImage(MediaItem mediaItem)
         {
-            _imageDisplayManager.ShowImage(mediaItem.FilePath, mediaItem.Id, mediaItem.MediaType.Classification, mediaItem.IsBlankScreen);
+            _imageDisplayManager.ShowSingleImage(mediaItem.FilePath, mediaItem.Id, mediaItem.IsBlankScreen);
         }
 
         private void StartSlideshow(MediaItem mediaItem)
@@ -257,7 +259,8 @@
             _optionsService.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
 
             _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
-            
+            _imageDisplayManager.SlideTransitionEvent += HandleSlideTransitionEvent;
+
             SubscribeVideoDisplayManagerEvents();
         }
 
@@ -275,6 +278,7 @@
             _optionsService.VideoScreenPositionChangedEvent -= HandleVideoScreenPositionChangedEvent;
 
             _imageDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
+            _imageDisplayManager.SlideTransitionEvent -= HandleSlideTransitionEvent;
 
             UnsubscribeVideoDisplayManagerEvents();
         }
@@ -289,6 +293,11 @@
         private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
         {
             MediaChangeEvent?.Invoke(this, e);
+        }
+
+        private void HandleSlideTransitionEvent(object sender, SlideTransitionEventArgs e)
+        {
+            SlideTransitionEvent?.Invoke(this, e);
         }
 
         private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)

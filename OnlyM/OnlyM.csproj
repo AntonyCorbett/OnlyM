@@ -160,6 +160,8 @@
     <Compile Include="Models\MonitorItem.cs" />
     <Compile Include="Models\RenderingMethodItem.cs" />
     <Compile Include="Models\ScreenMarginSide.cs" />
+    <Compile Include="Models\SlideTransition.cs" />
+    <Compile Include="Models\SlideTransitionEventArgs.cs" />
     <Compile Include="Models\WindowVisibilityChangedEventArgs.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatedMessage.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatingMessage.cs" />

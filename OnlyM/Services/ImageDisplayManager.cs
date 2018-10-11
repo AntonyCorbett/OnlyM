@@ -48,29 +48,72 @@
             _image1 = image1;
             _image2 = image2;
 
+            _image1.Name = "Img1";
+            _image2.Name = "Img2";
+
             _slideshowStagingFolder = FileUtils.GetUsersTempStagingFolder();
         }
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
+        public event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
+
         private bool Image1Populated => _image1.Source != null;
 
         private bool Image2Populated => _image2.Source != null;
 
-        public void ShowImage(
+        public void ShowSingleImage(
             string mediaFilePath, 
             Guid mediaItemId, 
-            MediaClassification mediaClassification,
             bool isBlankScreenImage)
         {
             var fadeType = _optionsService.Options.ImageFadeType;
-            PlaceImage(mediaItemId, mediaClassification, mediaFilePath, isBlankScreenImage, fadeType);
+
+            PlaceImage(
+                mediaItemId, 
+                MediaClassification.Image, 
+                mediaFilePath, 
+                isBlankScreenImage, 
+                fadeType,
+                (newMediaId, newMediaClassification) =>
+                {
+                    // starting...
+                    OnMediaChangeEvent(CreateMediaEventArgs(newMediaId, newMediaClassification, MediaChange.Starting));
+                },
+                (hiddenMediaId, hiddenMediaClassification) =>
+                {
+                    // stopping...
+                    OnMediaChangeEvent(CreateMediaEventArgs(hiddenMediaId, hiddenMediaClassification, MediaChange.Stopping));
+                },
+                (hiddenMediaId, hiddenMediaClassification) =>
+                {
+                    // stopped...
+                    OnMediaChangeEvent(CreateMediaEventArgs(hiddenMediaId, hiddenMediaClassification, MediaChange.Stopped));
+                },
+                (newMediaId, newMediaClassification) =>
+                {
+                    // started...
+                    OnMediaChangeEvent(CreateMediaEventArgs(newMediaId, newMediaClassification, MediaChange.Started));
+                });
         }
 
-        public void HideImage(Guid mediaItemId)
+        public void HideSingleImage(Guid mediaItemId)
         {
             var fadeType = _optionsService.Options.ImageFadeType;
-            UnplaceImage(mediaItemId, MediaClassification.Image, fadeType);
+            UnplaceImage(
+                mediaItemId,
+                MediaClassification.Image,
+                fadeType,
+                (mediaId, mediaClassification) =>
+                {
+                    // stopping...
+                    OnMediaChangeEvent(CreateMediaEventArgs(mediaId, mediaClassification, MediaChange.Stopping));
+                },
+                (mediaId, mediaClassification) =>
+                {
+                    // stopped...
+                    OnMediaChangeEvent(CreateMediaEventArgs(mediaId, mediaClassification, MediaChange.Stopped));
+                });
         }
 
         public void StartSlideshow(string mediaItemFilePath, Guid mediaItemId)
@@ -139,7 +182,21 @@
             var currentSlide = GetCurrentSlide();
 
             var fadeType = currentSlide.FadeOut ? ImageFadeType.FadeOut : ImageFadeType.None;
-            UnplaceImage(mediaItemId, MediaClassification.Slideshow, fadeType);
+
+            UnplaceImage(
+                mediaItemId, 
+                MediaClassification.Slideshow, 
+                fadeType,
+                (mediaId, mediaClassification) =>
+                {
+                    // stopping...
+                    OnMediaChangeEvent(CreateMediaEventArgs(mediaId, mediaClassification, MediaChange.Stopping));
+                },
+                (mediaId, mediaClassification) =>
+                {
+                    // stopped...
+                    OnMediaChangeEvent(CreateMediaEventArgs(mediaId, mediaClassification, MediaChange.Stopped));
+                });
 
             _currentSlideshowImageIndex = 0;
             _slides.Clear();
@@ -155,13 +212,28 @@
 
         private void OnMediaChangeEvent(MediaEventArgs e)
         {
-            Log.Logger.Verbose("Media change: {Type}, {Id}", e.Change, e.MediaItemId);
+            if (e != null)
+            {
+                Log.Logger.Verbose("Media change: {Type}, {Id}", e.Change, e.MediaItemId);
 
-            MediaChangeEvent?.Invoke(this, e);
+                MediaChangeEvent?.Invoke(this, e);
+            }
+        }
+
+        private void OnSlideTransitionEvent(SlideTransitionEventArgs e)
+        {
+            Log.Logger.Verbose("Slide change: {Type}, {Id}", e.Transition, e.MediaItemId);
+
+            SlideTransitionEvent?.Invoke(this, e);
         }
 
         private MediaEventArgs CreateMediaEventArgs(Guid id, MediaClassification mediaClassification, MediaChange change)
         {
+            if (id == Guid.Empty)
+            {
+                return null;
+            }
+
             return new MediaEventArgs
             {
                 MediaItemId = id,
@@ -169,7 +241,16 @@
                 Change = change
             };
         }
-        
+
+        private SlideTransitionEventArgs CreateSlideTransitionEventArgs(Guid id, SlideTransition change)
+        {
+            return new SlideTransitionEventArgs
+            {
+                MediaItemId = id,
+                Transition = change
+            };
+        }
+
         private void ShowImageInternal(
             bool isBlankScreenImage,
             ScreenPosition screenPosition,
@@ -242,7 +323,6 @@
                 fadeType == ImageFadeType.CrossFade;
 
             imageCtrl.Opacity = 0.0;
-
             imageCtrl.Source = _optionsService.Options.CacheImages
                 ? ImageCache.GetImage(imageFile)
                 : GetBitmapImageWithCacheOnLoad(imageFile);
@@ -299,8 +379,6 @@
 
         private void DisplaySlide(SlideData slide, Guid mediaItemId, SlideData previousSlide = null)
         {
-            OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaClassification.Slideshow, MediaChange.Starting));
-            
             var fadeType = GetSlideFadeType(slide, previousSlide);
             
             var imageFilePath = Path.Combine(_slideshowStagingFolder, slide.ArchiveEntryName);
@@ -310,7 +388,47 @@
                 MediaClassification.Slideshow,
                 imageFilePath,
                 false,
-                fadeType);
+                fadeType,
+                (newMediaId, newMediaClassification) =>
+                {
+                    // starting...
+                    if (previousSlide == null)
+                    {
+                        OnMediaChangeEvent(CreateMediaEventArgs(newMediaId, newMediaClassification, MediaChange.Starting));
+                    }
+                    else
+                    {
+                        OnSlideTransitionEvent(CreateSlideTransitionEventArgs(mediaItemId, SlideTransition.Started));
+                    }
+                },
+                (hiddenMediaId, hiddenMediaClassification) =>
+                {
+                    // stopping...
+                    if (previousSlide == null)
+                    {
+                        OnMediaChangeEvent(CreateMediaEventArgs(hiddenMediaId, hiddenMediaClassification, MediaChange.Stopping));
+                    }
+                },
+                (hiddenMediaId, hiddenMediaClassification) =>
+                {
+                    // stopped...
+                    if (previousSlide == null)
+                    {
+                        OnMediaChangeEvent(CreateMediaEventArgs(hiddenMediaId, hiddenMediaClassification, MediaChange.Stopped));
+                    }
+                },
+                (newMediaId, newMediaClassification) =>
+                {
+                    // started...
+                    if (previousSlide == null)
+                    {
+                        OnMediaChangeEvent(CreateMediaEventArgs(newMediaId, newMediaClassification, MediaChange.Started));
+                    }
+                    else
+                    {
+                        OnSlideTransitionEvent(CreateSlideTransitionEventArgs(mediaItemId, SlideTransition.Finished));
+                    }
+                });
         }
 
         private ImageFadeType GetSlideFadeType(SlideData slide, SlideData previousSlide)
@@ -343,6 +461,11 @@
                 return ImageFadeType.CrossFade;
             }
 
+            if (previousSlide.FadeOut)
+            {
+                return ImageFadeType.FadeOut;
+            }
+
             return thisSlideFadeType;
         }
 
@@ -356,22 +479,19 @@
             MediaClassification mediaClassification, 
             string imageFilePath,
             bool isBlankScreenImage,
-            ImageFadeType fadeType)
+            ImageFadeType fadeType,
+            Action<Guid, MediaClassification> onStarting,
+            Action<Guid, MediaClassification> onStopping,
+            Action<Guid, MediaClassification> onStopped,
+            Action<Guid, MediaClassification> onStarted)
         {
-            var mustHide = !Image1Populated
-                ? Image2Populated && _image2MediaItemId != mediaItemId
-                : Image1Populated && _image1MediaItemId != mediaItemId;
-
             var fadeTime = _optionsService.Options.ImageFadeSpeed.GetFadeSpeedSeconds();
+
+            onStarting?.Invoke(mediaItemId, mediaClassification);
 
             if (!Image1Populated)
             {
-                OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, mediaClassification, MediaChange.Starting));
-
-                if (mustHide)
-                {
-                    OnMediaChangeEvent(CreateMediaEventArgs(_image2MediaItemId, _mediaClassification2, MediaChange.Stopping));
-                }
+                onStopping?.Invoke(_image2MediaItemId, _mediaClassification2);
 
                 ShowImageInternal(
                     isBlankScreenImage,
@@ -383,28 +503,20 @@
                     fadeTime,
                     () =>
                     {
-                        if (mustHide)
-                        {
-                            OnMediaChangeEvent(CreateMediaEventArgs(_image2MediaItemId, _mediaClassification2, MediaChange.Stopped));
-                            _image2MediaItemId = Guid.Empty;
-                            _mediaClassification2 = MediaClassification.Unknown;
-                        }
+                        onStopped?.Invoke(_image2MediaItemId, _mediaClassification2);
+                        _image2MediaItemId = Guid.Empty;
+                        _mediaClassification2 = MediaClassification.Unknown;
                     },
                     () =>
                     {
                         _image1MediaItemId = mediaItemId;
                         _mediaClassification1 = mediaClassification;
-                        OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, mediaClassification, MediaChange.Started));
+                        onStarted?.Invoke(_image1MediaItemId, _mediaClassification1);
                     });
             }
             else if (!Image2Populated)
             {
-                OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, mediaClassification, MediaChange.Starting));
-
-                if (mustHide)
-                {
-                    OnMediaChangeEvent(CreateMediaEventArgs(_image1MediaItemId, _mediaClassification1, MediaChange.Stopping));
-                }
+                onStopping?.Invoke(_image1MediaItemId, _mediaClassification1);
 
                 ShowImageInternal(
                     isBlankScreenImage,
@@ -416,18 +528,15 @@
                     fadeTime,
                     () =>
                     {
-                        if (mustHide)
-                        {
-                            OnMediaChangeEvent(CreateMediaEventArgs(_image1MediaItemId, _mediaClassification1, MediaChange.Stopped));
-                            _image1MediaItemId = Guid.Empty;
-                            _mediaClassification1 = MediaClassification.Unknown;
-                        }
+                        onStopped?.Invoke(_image1MediaItemId, _mediaClassification1);
+                        _image1MediaItemId = Guid.Empty;
+                        _mediaClassification1 = MediaClassification.Unknown;
                     },
                     () =>
                     {
                         _image2MediaItemId = mediaItemId;
                         _mediaClassification2 = mediaClassification;
-                        OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, mediaClassification, MediaChange.Started));
+                        onStarted?.Invoke(_image2MediaItemId, _mediaClassification2);
                     });
             }
         }
@@ -435,12 +544,14 @@
         private void UnplaceImage(
             Guid mediaItemId, 
             MediaClassification mediaClassification,
-            ImageFadeType fadeType)
+            ImageFadeType fadeType,
+            Action<Guid, MediaClassification> stopping,
+            Action<Guid, MediaClassification> stopped)
         {
             var fadeTime = _optionsService.Options.ImageFadeSpeed.GetFadeSpeedSeconds();
 
-            OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, mediaClassification, MediaChange.Stopping));
-
+            stopping?.Invoke(mediaItemId, mediaClassification);
+            
             if (_image1MediaItemId == mediaItemId)
             {
                 if ((int)_image1.GetValue(Panel.ZIndexProperty) == 1)
@@ -451,7 +562,7 @@
                         fadeTime,
                         () =>
                         {
-                            OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, mediaClassification, MediaChange.Stopped));
+                            stopped?.Invoke(mediaItemId, mediaClassification);
                             _image1MediaItemId = Guid.Empty;
                             _mediaClassification1 = MediaClassification.Unknown;
                         });
@@ -462,14 +573,13 @@
             {
                 if ((int)_image2.GetValue(Panel.ZIndexProperty) == 1)
                 {
-                    OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, mediaClassification, MediaChange.Stopping));
                     HideImageInControl(
                         _image2,
                         fadeType,
                         fadeTime,
                         () =>
                         {
-                            OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, mediaClassification, MediaChange.Stopped));
+                            stopped?.Invoke(mediaItemId, mediaClassification);
                             _image2MediaItemId = Guid.Empty;
                             _mediaClassification2 = MediaClassification.Unknown;
                         });

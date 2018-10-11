@@ -16,6 +16,8 @@
 
         event EventHandler<MediaEventArgs> MediaChangeEvent;
 
+        event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
+
         event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
         event EventHandler MediaWindowOpenedEvent;

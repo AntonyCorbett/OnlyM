@@ -65,6 +65,8 @@
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
+        public event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
+
         public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
         public event EventHandler MediaWindowOpenedEvent;
@@ -279,11 +281,6 @@
             }
         }
         
-        private void OnMediaMonitorChangedEvent()
-        {
-            MediaMonitorChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
         private void CreateMediaWindow()
         {
             AllowMediaWindowToClose = false;
@@ -296,6 +293,7 @@
         private void SubscribeMediaWindowEvents()
         {
             _mediaWindow.MediaChangeEvent += HandleMediaChangeEvent;
+            _mediaWindow.SlideTransitionEvent += HandleSlideTransitionEvent;
             _mediaWindow.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _mediaWindow.MediaNearEndEvent += HandleMediaNearEndEvent;
             _mediaWindow.IsVisibleChanged += HandleMediaWindowVisibility;
@@ -310,6 +308,7 @@
         private void UnsubscribeMediaWindowEvents()
         {
             _mediaWindow.MediaChangeEvent -= HandleMediaChangeEvent;
+            _mediaWindow.SlideTransitionEvent -= HandleSlideTransitionEvent;
             _mediaWindow.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
             _mediaWindow.MediaNearEndEvent -= HandleMediaNearEndEvent;
             _mediaWindow.IsVisibleChanged -= HandleMediaWindowVisibility;
@@ -340,6 +339,11 @@
             MediaNearEndEvent?.Invoke(this, e);
         }
 
+        private void HandleSlideTransitionEvent(object sender, SlideTransitionEventArgs e)
+        {
+            SlideTransitionEvent?.Invoke(this, e);
+        }
+
         private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
         {
             switch (e.Change)
@@ -354,7 +358,7 @@
                     break;
             }
 
-            OnMediaChangeEvent(e);
+            MediaChangeEvent?.Invoke(this, e);
         }
 
         private void ManageMediaWindowVisibility()
@@ -376,11 +380,6 @@
             UpdateMediaMonitor(e.OriginalMonitorId);
         }
 
-        private void OnMediaChangeEvent(MediaEventArgs e)
-        {
-            MediaChangeEvent?.Invoke(this, e);
-        }
-
         private void UpdateMediaMonitor(string originalMonitorId)
         {
             try
@@ -395,7 +394,7 @@
                     CloseMediaWindow();
                 }
 
-                OnMediaMonitorChangedEvent();
+                MediaMonitorChangedEvent?.Invoke(this, EventArgs.Empty);
                 System.Windows.Application.Current.MainWindow?.Activate();
             }
             catch (Exception ex)
