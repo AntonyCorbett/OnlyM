@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace OnlyM.Slides
+﻿namespace OnlyM.Slides
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.IO.Compression;
     using System.Windows.Media.Imaging;

@@ -170,7 +170,6 @@
     <Compile Include="Services\FrozenVideoItems\IFrozenVideosService.cs" />
     <Compile Include="Services\HiddenMediaItems\HiddenMediaItemsService.cs" />
     <Compile Include="Services\HiddenMediaItems\IHiddenMediaItemsService.cs" />
-    <Compile Include="Services\ImageControlHelper.cs" />
     <Compile Include="Services\ImagesCache\ImageAndLastUsed.cs" />
     <Compile Include="Services\ImagesCache\ImageCache.cs" />
     <Compile Include="Services\ImageDisplayManager.cs" />
@@ -188,7 +187,6 @@
     <Compile Include="Services\MetaDataQueue\MetaDataQueueProducer.cs" />
     <Compile Include="Services\RecentlyUsedFolders.cs" />
     <Compile Include="Services\ScreenPositionHelper.cs" />
-    <Compile Include="Services\SlideshowDisplayManager.cs" />
     <Compile Include="Services\Snackbar\ISnackbarService.cs" />
     <Compile Include="Services\Snackbar\SnackbarService.cs" />
     <Compile Include="Services\VideoDisplayManager.cs" />

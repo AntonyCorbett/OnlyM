@@ -25,7 +25,7 @@
         private const int MediaConfirmStopWindowSeconds = 3;
 
         private readonly ImageDisplayManager _imageDisplayManager;
-        private readonly SlideshowDisplayManager _slideshowDisplayManager;
+        
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
         private VideoDisplayManager _videoDisplayManager;
@@ -40,9 +40,7 @@
             _optionsService = optionsService;
 
             _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
-
-            _slideshowDisplayManager = new SlideshowDisplayManager(Image1Element, Image2Element, _optionsService);
-
+            
             _snackbarService = snackbarService;
 
             InitRenderingMethod();
@@ -55,16 +53,6 @@
         public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
-
-        public ImageFadeType ImageFadeType
-        {
-            set => _imageDisplayManager.ImageFadeType = value;
-        }
-
-        public FadeSpeed ImageFadeSpeed
-        {
-            set => _imageDisplayManager.ImageFadeSpeed = value;
-        }
 
         public void UpdateRenderingMethod()
         {
@@ -129,7 +117,7 @@
                     break;
 
                 case MediaClassification.Slideshow:
-                    StopSlideshow();
+                    StopSlideshow(mediaItem);
                     break;
             }
         }
@@ -186,17 +174,17 @@
 
         private void ShowImage(MediaItem mediaItem)
         {
-            _imageDisplayManager.ShowImage(mediaItem.FilePath, mediaItem.Id, mediaItem.IsBlankScreen);
+            _imageDisplayManager.ShowImage(mediaItem.FilePath, mediaItem.Id, mediaItem.MediaType.Classification, mediaItem.IsBlankScreen);
         }
 
         private void StartSlideshow(MediaItem mediaItem)
         {
-            _slideshowDisplayManager.Start(mediaItem.FilePath, mediaItem.Id);
+            _imageDisplayManager.StartSlideshow(mediaItem.FilePath, mediaItem.Id);
         }
 
-        private void StopSlideshow()
+        private void StopSlideshow(MediaItem mediaItem)
         {
-            _slideshowDisplayManager.Stop();
+            _imageDisplayManager.StopSlideshow(mediaItem.Id);
         }
 
         private Task ShowVideoOrPlayAudio(
@@ -246,8 +234,7 @@
             _optionsService.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
 
             _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
-            _slideshowDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
-
+            
             SubscribeVideoDisplayManagerEvents();
         }
 
@@ -265,7 +252,6 @@
             _optionsService.VideoScreenPositionChangedEvent -= HandleVideoScreenPositionChangedEvent;
 
             _imageDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
-            _slideshowDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
 
             UnsubscribeVideoDisplayManagerEvents();
         }

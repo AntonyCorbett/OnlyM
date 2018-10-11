@@ -49,9 +49,7 @@
             _optionsService = optionsService;
             _snackbarService = snackbarService;
             _activeMediaItemsService = activeMediaItemsService;
-
-            _optionsService.ImageFadeTypeChangedEvent += HandleImageFadeTypeChangedEvent;
-            _optionsService.ImageFadeSpeedChangedEvent += HandleImageFadeSpeedChangedEvent;
+            
             _optionsService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
             _optionsService.PermanentBackdropChangedEvent += HandlePermanentBackdropChangedEvent;
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
@@ -280,11 +278,7 @@
         {
             AllowMediaWindowToClose = false;
 
-            _mediaWindow = new MediaWindow(_optionsService, _snackbarService)
-            {
-                ImageFadeType = _optionsService.Options.ImageFadeType,
-                ImageFadeSpeed = _optionsService.Options.ImageFadeSpeed
-            };
+            _mediaWindow = new MediaWindow(_optionsService, _snackbarService);
 
             SubscribeMediaWindowEvents();
         }
@@ -364,23 +358,7 @@
 
         private bool AnyActiveMediaRequiringVisibleMediaWindow()
         {
-            return _activeMediaItemsService.Any(MediaClassification.Image, MediaClassification.Video);
-        }
-
-        private void HandleImageFadeTypeChangedEvent(object sender, EventArgs e)
-        {
-            if (_mediaWindow != null)
-            {
-                _mediaWindow.ImageFadeType = _optionsService.Options.ImageFadeType;
-            }
-        }
-
-        private void HandleImageFadeSpeedChangedEvent(object sender, EventArgs e)
-        {
-            if (_mediaWindow != null)
-            {
-                _mediaWindow.ImageFadeSpeed = _optionsService.Options.ImageFadeSpeed;
-            }
+            return _activeMediaItemsService.Any(MediaClassification.Image, MediaClassification.Video, MediaClassification.Slideshow);
         }
 
         private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
