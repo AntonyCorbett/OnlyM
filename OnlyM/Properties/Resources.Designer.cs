@@ -98,6 +98,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (contains {0} slides).
+        /// </summary>
+        internal static string CONTAINS_X_SLIDES {
+            get {
+                return ResourceManager.GetString("CONTAINS_X_SLIDES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error!.
         /// </summary>
         internal static string COPYING_ERROR {
@@ -220,6 +229,15 @@ namespace OnlyM.Properties {
         internal static string SETTINGS_DISABLED {
             get {
                 return ResourceManager.GetString("SETTINGS_DISABLED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to slide {0} of {1}.
+        /// </summary>
+        internal static string SLIDE_X_OF_Y {
+            get {
+                return ResourceManager.GetString("SLIDE_X_OF_Y", resourceCulture);
             }
         }
         

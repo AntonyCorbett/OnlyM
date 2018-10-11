@@ -178,4 +178,10 @@
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
     <value>Cannot deselect monitor when media is active</value>
   </data>
+  <data name="CONTAINS_X_SLIDES" xml:space="preserve">
+    <value>(contains {0} slides)</value>
+  </data>
+  <data name="SLIDE_X_OF_Y" xml:space="preserve">
+    <value>slide {0} of {1}</value>
+  </data>
 </root>

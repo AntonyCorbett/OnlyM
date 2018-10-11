@@ -251,6 +251,12 @@
                                            Visibility="{Binding Path=IsSliderVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                            Value="{Binding PlaybackPositionDeciseconds, Mode=TwoWay}" 
                                            Maximum="{Binding DurationDeciseconds}"/>
+                                <TextBlock Grid.Row="2"
+                                           Text="{Binding SlideshowProgressString}"
+                                           FontSize="12"
+                                           VerticalAlignment="Bottom"
+                                           Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                </TextBlock>
                             </Grid>
 
                             <ProgressBar

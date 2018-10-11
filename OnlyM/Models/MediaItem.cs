@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Models
+﻿using OnlyM.Properties;
+
+namespace OnlyM.Models
 {
     using System;
     using System.Windows.Media;
@@ -225,6 +227,7 @@
                     RaisePropertyChanged(nameof(CommandPanelEnabled));
                     RaisePropertyChanged(nameof(IsPreviousSlideButtonEnabled));
                     RaisePropertyChanged(nameof(IsNextSlideButtonEnabled));
+                    RaisePropertyChanged(nameof(SlideshowProgressString));
                 }
             }
         }
@@ -270,6 +273,7 @@
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(IsPreviousSlideButtonEnabled));
                     RaisePropertyChanged(nameof(IsNextSlideButtonEnabled));
+                    RaisePropertyChanged(nameof(SlideshowProgressString));
                 }
             }
         }
@@ -326,6 +330,24 @@
             HasDuration && 
             AllowPositionSeeking && 
             (!IsMediaActive || IsPaused);
+
+        public string SlideshowProgressString
+        {
+            get
+            {
+                if (!IsSlideshow)
+                {
+                    return null;
+                }
+
+                if (!IsMediaActive)
+                {
+                    return string.Format(Properties.Resources.CONTAINS_X_SLIDES, SlideshowCount);
+                }
+
+                return string.Format(Properties.Resources.SLIDE_X_OF_Y, CurrentSlideshowIndex + 1, SlideshowCount);
+            }
+        }
 
         public int PlaybackPositionDeciseconds
         {
