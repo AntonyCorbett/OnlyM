@@ -134,6 +134,16 @@
             await PauseVideoAsync(mediaItem);
         }
 
+        public int GotoPreviousSlide()
+        {
+            return _imageDisplayManager.GotoPreviousSlide();
+        }
+
+        public int GotoNextSlide()
+        {
+            return _imageDisplayManager.GotoNextSlide();
+        }
+
         private async Task PauseVideoAsync(MediaItem mediaItem)
         {
             await _videoDisplayManager.PauseVideoAsync(mediaItem.Id);

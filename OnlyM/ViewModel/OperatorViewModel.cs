@@ -126,6 +126,10 @@
 
         public RelayCommand<Guid> FreezeVideoCommand { get; set; }
 
+        public RelayCommand<Guid> PreviousSlideCommand { get; set; }
+
+        public RelayCommand<Guid> NextSlideCommand { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_thumbnailCancellationTokenSource", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataProducer", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataConsumer", Justification = "False Positive")]
@@ -419,6 +423,10 @@
             CloseCommandPanelCommand = new RelayCommand<Guid>(CloseCommandPanel);
 
             FreezeVideoCommand = new RelayCommand<Guid>(FreezeVideoOnLastFrame);
+
+            PreviousSlideCommand = new RelayCommand<Guid>(GotoPreviousSlide);
+
+            NextSlideCommand = new RelayCommand<Guid>(GotoNextSlide);
         }
 
         private void FreezeVideoOnLastFrame(Guid mediaItemId)
@@ -456,6 +464,24 @@
             if (mediaItem != null)
             {
                 mediaItem.IsCommandPanelOpen = true;
+            }
+        }
+
+        private void GotoPreviousSlide(Guid mediaItemId)
+        {
+            if (!_mediaStatusChangingService.IsMediaStatusChanging())
+            {
+                var mediaItem = GetMediaItem(mediaItemId);
+                mediaItem.CurrentSlideshowIndex = _pageService.GotoPreviousSlide();
+            }
+        }
+
+        private void GotoNextSlide(Guid mediaItemId)
+        {
+            if (!_mediaStatusChangingService.IsMediaStatusChanging())
+            {
+                var mediaItem = GetMediaItem(mediaItemId);
+                mediaItem.CurrentSlideshowIndex = _pageService.GotoNextSlide();
             }
         }
 
@@ -739,7 +765,7 @@
 
         private MediaItem CreateNewMediaItem(MediaFile file)
         {
-            return new MediaItem
+            var result = new MediaItem
             {
                 MediaType = file.MediaType,
                 Id = Guid.NewGuid(),
@@ -751,6 +777,8 @@
                 AllowPause = _optionsService.Options.AllowVideoPause,
                 AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking
             };
+
+            return result;
         }
 
         private void InsertBlankMediaItem()

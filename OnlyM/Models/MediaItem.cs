@@ -33,7 +33,8 @@
         private bool _allowPause;
         private string _playbackTimeString = GenerateTimeString(0);
         private int _durationDeciseconds;
-
+        private int _currentSlideshowIndex;
+        
         public event EventHandler PlaybackPositionChangedEvent;
 
         public Guid Id { get; set; }
@@ -222,6 +223,8 @@
                     RaisePropertyChanged(nameof(PlaybackTimeColorBrush));
                     RaisePropertyChanged(nameof(DurationColorBrush));
                     RaisePropertyChanged(nameof(CommandPanelEnabled));
+                    RaisePropertyChanged(nameof(IsPreviousSlideButtonEnabled));
+                    RaisePropertyChanged(nameof(IsNextSlideButtonEnabled));
                 }
             }
         }
@@ -251,6 +254,35 @@
                 }
             }
         }
+        
+        public int SlideshowCount { get; set; }
+
+        public bool SlideshowLoop { get; set; }
+
+        public int CurrentSlideshowIndex
+        {
+            get => _currentSlideshowIndex;
+            set
+            {
+                if (_currentSlideshowIndex != value)
+                {
+                    _currentSlideshowIndex = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsPreviousSlideButtonEnabled));
+                    RaisePropertyChanged(nameof(IsNextSlideButtonEnabled));
+                }
+            }
+        }
+        
+        public bool IsPreviousSlideButtonEnabled => 
+            MediaType.Classification == MediaClassification.Slideshow && 
+            IsMediaActive &&
+            (SlideshowLoop || CurrentSlideshowIndex > 0);
+
+        public bool IsNextSlideButtonEnabled => 
+            MediaType.Classification == MediaClassification.Slideshow && 
+            IsMediaActive &&
+            (SlideshowLoop || CurrentSlideshowIndex < SlideshowCount - 1);
 
         public bool HasDuration =>
             MediaType.Classification == MediaClassification.Audio ||
@@ -287,6 +319,8 @@
         }
 
         public bool IsPauseButtonVisible => HasDuration && IsMediaActive && AllowPause;
+
+        public bool IsSlideshow => MediaType.Classification == MediaClassification.Slideshow;
 
         public bool IsSliderVisible => 
             HasDuration && 

@@ -28,6 +28,10 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <Style x:Key="SlideshowButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedLightButton}">
+                <Setter Property="Width" Value="70"/>
+            </Style>
+
             <DataTemplate DataType="{x:Type models:MediaItem}">
                 <materialDesign:Card Height="120" Margin="4" Padding="4"
                                          Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -124,7 +128,7 @@
                                     <Image Source="{Binding ThumbnailImageSource}" />
 
                                     <Ellipse 
-                                        Width="29" Height="29" 
+                                        Width="33" Height="33" 
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
                                         Stroke="{StaticResource MaterialDesignDarkBackground}"
@@ -134,7 +138,7 @@
                                     </Ellipse>
 
                                     <materialDesign:PackIcon 
-                                        Margin="5"
+                                        Margin="7"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
                                         Kind="{Binding IconName}"
@@ -203,8 +207,38 @@
                                             HorizontalAlignment="Center"
                                             Height="24"
                                             Width="24" />
-
                                     </Button>
+
+                                    <StackPanel Orientation="Horizontal" 
+                                                Grid.Column="0"
+                                                Grid.ColumnSpan="2"
+                                                Grid.Row="0"
+                                                Grid.RowSpan="2">
+                                        <Button Style="{StaticResource SlideshowButtonStyle}"
+                                                IsEnabled="{Binding IsPreviousSlideButtonEnabled}"
+                                                Command="{Binding Path=DataContext.PreviousSlideCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                                CommandParameter="{Binding Id}"
+                                                Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                                            <materialDesign:PackIcon 
+                                                Kind="StepBackward"
+                                                Height="24"
+                                                Width="24" />
+
+                                        </Button>
+                                        <Button Style="{StaticResource SlideshowButtonStyle}"
+                                                IsEnabled="{Binding IsNextSlideButtonEnabled}"
+                                                Command="{Binding Path=DataContext.NextSlideCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                                CommandParameter="{Binding Id}"
+                                                Margin="6,0,0,0"
+                                                Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                                            <materialDesign:PackIcon 
+                                                Kind="StepForward"
+                                                Height="24"
+                                                Width="24" />
+                                        </Button>
+                                    </StackPanel>
                                 </Grid>
                                 <ProgressBar Grid.Row="2" 
                                            Visibility="{Binding Path=HasDurationAndIsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"

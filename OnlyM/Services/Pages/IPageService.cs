@@ -53,5 +53,9 @@
         Task PauseMediaAsync(MediaItem mediaItem);
 
         void CacheImageItem(MediaItem mediaItem);
+
+        int GotoPreviousSlide();
+
+        int GotoNextSlide();
     }
 }

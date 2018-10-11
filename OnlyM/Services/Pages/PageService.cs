@@ -157,6 +157,16 @@
             }
         }
 
+        public int GotoPreviousSlide()
+        {
+            return _mediaWindow.GotoPreviousSlide();
+        }
+
+        public int GotoNextSlide()
+        {
+            return _mediaWindow.GotoNextSlide();
+        }
+
         public async Task StartMedia(
             MediaItem mediaItemToStart, 
             IReadOnlyCollection<MediaItem> currentMediaItems, 

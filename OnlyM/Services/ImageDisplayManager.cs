@@ -39,6 +39,7 @@
 
         private int _currentSlideshowImageIndex;
         private List<SlideData> _slides;
+        private bool _shouldLoopSlideshow;
 
         public ImageDisplayManager(Image image1, Image image2, IOptionsService optionsService)
         {
@@ -79,6 +80,58 @@
             InitFromSlideshowFile(mediaItemFilePath);
 
             DisplaySlide(GetCurrentSlide(), mediaItemId);
+        }
+
+        public int GotoPreviousSlide()
+        {
+            var oldSlide = GetCurrentSlide();
+
+            --_currentSlideshowImageIndex;
+
+            if (_currentSlideshowImageIndex < 0)
+            {
+                _currentSlideshowImageIndex = _shouldLoopSlideshow ? _slides.Count - 1 : 0;
+            }
+            
+            var newSlide = GetCurrentSlide();
+
+            if (oldSlide != newSlide)
+            {
+                var mediaId = GetSlideshowMediaId();
+
+                if (mediaId != Guid.Empty)
+                {
+                    DisplaySlide(newSlide, mediaId, oldSlide);
+                }
+            }
+
+            return _currentSlideshowImageIndex;
+        }
+
+        public int GotoNextSlide()
+        {
+            var oldSlide = GetCurrentSlide();
+
+            ++_currentSlideshowImageIndex;
+
+            if (_currentSlideshowImageIndex > _slides.Count - 1)
+            {
+                _currentSlideshowImageIndex = _shouldLoopSlideshow ? 0 : _slides.Count - 1;
+            }
+
+            var newSlide = GetCurrentSlide();
+
+            if (oldSlide != newSlide)
+            {
+                var mediaId = GetSlideshowMediaId();
+
+                if (mediaId != Guid.Empty)
+                {
+                    DisplaySlide(newSlide, mediaId, oldSlide);
+                }
+            }
+
+            return _currentSlideshowImageIndex;
         }
 
         public void StopSlideshow(Guid mediaItemId)
@@ -241,6 +294,7 @@
             sf.ExtractImages(_slideshowStagingFolder);
 
             _slides = sf.GetSlides(includeBitmapImage: false).ToList();
+            _shouldLoopSlideshow = sf.Loop;
         }
 
         private void DisplaySlide(SlideData slide, Guid mediaItemId, SlideData previousSlide = null)
@@ -413,6 +467,21 @@
                         _mediaClassification2 = MediaClassification.Unknown;
                     });
             }
+        }
+
+        private Guid GetSlideshowMediaId()
+        {
+            var mediaItemId = Guid.Empty;
+            if (Image1Populated && _mediaClassification1 == MediaClassification.Slideshow)
+            {
+                mediaItemId = _image1MediaItemId;
+            }
+            else if (Image2Populated && _mediaClassification2 == MediaClassification.Slideshow)
+            {
+                mediaItemId = _image2MediaItemId;
+            }
+
+            return mediaItemId;
         }
     }
 }
