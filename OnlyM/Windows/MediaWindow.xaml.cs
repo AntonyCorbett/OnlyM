@@ -155,12 +155,24 @@
             await _videoDisplayManager.HideVideoAsync(mediaItem.Id);
         }
 
-        private void HideImage(IReadOnlyCollection<MediaItem> mediaItems)
+        private void HideImageOrSlideshow(IReadOnlyCollection<MediaItem> mediaItems)
         {
-            var imageItem = mediaItems?.SingleOrDefault(x => x.MediaType.Classification == MediaClassification.Image);
+            var imageItem = mediaItems?.SingleOrDefault(
+                x => x.MediaType.Classification == MediaClassification.Image ||
+                     x.MediaType.Classification == MediaClassification.Slideshow);
+
             if (imageItem != null)
             {
-                _imageDisplayManager.HideImage(imageItem.Id);
+                switch (imageItem.MediaType.Classification)
+                {
+                    case MediaClassification.Image:
+                        _imageDisplayManager.HideImage(imageItem.Id);
+                        break;
+
+                    case MediaClassification.Slideshow:
+                        _imageDisplayManager.StopSlideshow(imageItem.Id);
+                        break;
+                }
             }
         }
 
@@ -194,7 +206,7 @@
         {
             if (mediaItemToStart.MediaType.Classification != MediaClassification.Audio)
             {
-                HideImage(currentMediaItems);
+                HideImageOrSlideshow(currentMediaItems);
             }
 
             var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 100);

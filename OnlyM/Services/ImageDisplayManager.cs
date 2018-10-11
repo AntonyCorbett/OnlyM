@@ -78,7 +78,7 @@
             
             InitFromSlideshowFile(mediaItemFilePath);
 
-            DisplayCurrentSlide(mediaItemId);
+            DisplaySlide(GetCurrentSlide(), mediaItemId);
         }
 
         public void StopSlideshow(Guid mediaItemId)
@@ -243,16 +243,11 @@
             _slides = sf.GetSlides(includeBitmapImage: false).ToList();
         }
 
-        private void DisplayCurrentSlide(Guid mediaItemId)
-        {
-            DisplaySlide(GetCurrentSlide(), mediaItemId);
-        }
-
-        private void DisplaySlide(SlideData slide, Guid mediaItemId)
+        private void DisplaySlide(SlideData slide, Guid mediaItemId, SlideData previousSlide = null)
         {
             OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaClassification.Slideshow, MediaChange.Starting));
-
-            var fadeType = slide.FadeIn ? ImageFadeType.FadeIn : ImageFadeType.None;
+            
+            var fadeType = GetSlideFadeType(slide, previousSlide);
             
             var imageFilePath = Path.Combine(_slideshowStagingFolder, slide.ArchiveEntryName);
 
@@ -262,6 +257,39 @@
                 imageFilePath,
                 false,
                 fadeType);
+        }
+
+        private ImageFadeType GetSlideFadeType(SlideData slide, SlideData previousSlide)
+        {
+            var thisSlideFadeType = slide.FadeIn ? ImageFadeType.FadeIn : ImageFadeType.None;
+
+            if (previousSlide == null)
+            {
+                // previous image (if any) is a regular image _not_ a slide
+                var regularImageFadeType = _optionsService.Options.ImageFadeType;
+                switch (regularImageFadeType)
+                {
+                    case ImageFadeType.CrossFade:
+                    case ImageFadeType.FadeInOut:
+                    case ImageFadeType.FadeOut:
+                        if (slide.FadeIn)
+                        {
+                            return ImageFadeType.CrossFade;
+                        }
+
+                        return thisSlideFadeType;
+
+                    default:
+                        return thisSlideFadeType;
+                }
+            }
+
+            if (slide.FadeIn && previousSlide.FadeOut)
+            {
+                return ImageFadeType.CrossFade;
+            }
+
+            return thisSlideFadeType;
         }
 
         private SlideData GetCurrentSlide()

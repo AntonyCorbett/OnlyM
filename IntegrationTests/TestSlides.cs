@@ -13,9 +13,9 @@
             const string slideFilePath = "test.omslide";
 
             var fb = new SlideFileBuilder();
-            fb.AddSlide(@"TestImages\001.jpg", false, false);
-            fb.AddSlide(@"TestImages\002.jpg", false, false);
-            fb.AddSlide(@"TestImages\003.jpg", false, false);
+            fb.AddSlide(@"TestImages\001.jpg", true, true);
+            fb.AddSlide(@"TestImages\002.jpg", true, true);
+            fb.AddSlide(@"TestImages\003.jpg", true, true);
 
             fb.Build(slideFilePath, true);
 
