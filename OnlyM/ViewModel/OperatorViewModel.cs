@@ -317,7 +317,7 @@
             var monitorSpecified = _optionsService.IsMediaMonitorSpecified;
             var videoOrAudioIsActive = VideoOrAudioIsActive();
             var videoIsActive = VideoIsActive();
-
+            
             foreach (var item in MediaItems)
             {
                 switch (item.MediaType.Classification)

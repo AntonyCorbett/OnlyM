@@ -12,6 +12,7 @@
     internal sealed class ImageDisplayManager
     {
         private readonly ImageControlHelper _imageControlHelper;
+        private readonly IOptionsService _optionsService;
 
         private readonly Image _image1;
         private readonly Image _image2;
@@ -21,6 +22,8 @@
 
         public ImageDisplayManager(Image image1, Image image2, IOptionsService optionsService)
         {
+            _optionsService = optionsService;
+
             _image1 = image1;
             _image2 = image2;
 
@@ -41,7 +44,6 @@
         
         public void ShowImage(
             string mediaFilePath, 
-            ScreenPosition screenPosition,
             Guid mediaItemId, 
             bool isBlankScreenImage)
         {
@@ -60,7 +62,7 @@
 
                 _imageControlHelper.ShowImage(
                     isBlankScreenImage,
-                    screenPosition,
+                    _optionsService.Options.ImageScreenPosition,
                     mediaFilePath, 
                     _image1,
                     _image2, 
@@ -89,7 +91,7 @@
 
                 _imageControlHelper.ShowImage(
                     isBlankScreenImage,
-                    screenPosition,
+                    _optionsService.Options.ImageScreenPosition,
                     mediaFilePath,
                     _image2, 
                     _image1, 

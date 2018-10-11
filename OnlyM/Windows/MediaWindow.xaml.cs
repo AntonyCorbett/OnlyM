@@ -186,11 +186,7 @@
 
         private void ShowImage(MediaItem mediaItem)
         {
-            _imageDisplayManager.ShowImage(
-                mediaItem.FilePath, 
-                _optionsService.Options.ImageScreenPosition,
-                mediaItem.Id, 
-                mediaItem.IsBlankScreen);
+            _imageDisplayManager.ShowImage(mediaItem.FilePath, mediaItem.Id, mediaItem.IsBlankScreen);
         }
 
         private void StartSlideshow(MediaItem mediaItem)
