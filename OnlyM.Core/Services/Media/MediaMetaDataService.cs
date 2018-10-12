@@ -20,8 +20,12 @@
                     case MediaClassification.Video:
                         return GetVideoMetaData(mediaItemFilePath, ffmpegFolder);
 
-                    default:
+                    case MediaClassification.Audio:
+                    case MediaClassification.Image:
                         return GetNonVideoMetaData(mediaItemFilePath);
+
+                    case MediaClassification.Slideshow:
+                        return null;
                 }
             }
             catch (System.IO.IOException)
