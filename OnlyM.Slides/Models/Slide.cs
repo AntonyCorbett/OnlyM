@@ -6,9 +6,13 @@
 
         public string OriginalFilePath { get; set; }
 
-        public bool FadeIn { get; set; }
+        public bool FadeInForward { get; set; }
 
-        public bool FadeOut { get; set; }
+        public bool FadeInReverse { get; set; }
+
+        public bool FadeOutForward { get; set; }
+
+        public bool FadeOutReverse { get; set; }
 
         public int DwellTimeMilliseconds { get; set; }
     }

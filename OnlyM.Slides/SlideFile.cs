@@ -46,8 +46,10 @@
                 return new SlideData
                 {
                     ArchiveEntryName = slide.ArchiveEntryName,
-                    FadeIn = slide.FadeIn,
-                    FadeOut = slide.FadeOut,
+                    FadeInForward = slide.FadeInForward,
+                    FadeInReverse = slide.FadeInReverse,
+                    FadeOutForward = slide.FadeOutForward,
+                    FadeOutReverse = slide.FadeOutReverse,
                     DwellTimeMilliseconds = slide.DwellTimeMilliseconds,
                     Image = image
                 };
@@ -69,8 +71,10 @@
                     result.Add(new SlideData
                     {
                         ArchiveEntryName = slide.ArchiveEntryName,
-                        FadeIn = slide.FadeIn,
-                        FadeOut = slide.FadeOut,
+                        FadeInForward = slide.FadeInForward,
+                        FadeInReverse = slide.FadeInReverse,
+                        FadeOutForward = slide.FadeOutForward,
+                        FadeOutReverse = slide.FadeOutReverse,
                         DwellTimeMilliseconds = slide.DwellTimeMilliseconds,
                         Image = image
                     });

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -9,6 +10,7 @@
     using Core.Services.Media;
     using Core.Services.Options;
     using Models;
+    using OnlyM.Slides;
     using Serilog;
     using Snackbar;
 
@@ -99,7 +101,7 @@
         {
             var count = 0;
             someError = false;
-
+            
             try
             {
                 var mediaFolder = _optionsService.Options.MediaFolder;
@@ -110,32 +112,11 @@
                     return 0;
                 }
 
-                foreach (var file in files)
-                {
-                    var filename = Path.GetFileName(file);
+                bool shouldCreateSlideshow = DataIsFromOnlyV(data) && files.Length > 1;
 
-                    if (!string.IsNullOrEmpty(filename))
-                    {
-                        var destFile = Path.Combine(mediaFolder, filename);
-                        if (!File.Exists(destFile))
-                        {
-                            OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
-                            {
-                                FilePath = destFile,
-                                Status = FileCopyStatus.StartingCopy
-                            });
-
-                            File.Copy(file, destFile, false);
-                            ++count;
-
-                            OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
-                            {
-                                FilePath = destFile,
-                                Status = FileCopyStatus.FinishedCopy
-                            });
-                        }
-                    }
-                }
+                count = shouldCreateSlideshow 
+                    ? CopyAsSlideshow(mediaFolder, data, files) 
+                    : CopyAsIndividualFiles(mediaFolder, files);
             }
             catch (Exception ex)
             {
@@ -153,10 +134,85 @@
             return count;
         }
 
+        private int CopyAsSlideshow(string mediaFolder, IDataObject data, string[] files)
+        {
+            var title = GetOnlyVTitle(data);
+            if (!string.IsNullOrEmpty(title))
+            {
+                var sfb = new SlideFileBuilder { AutoPlay = false, Loop = false };
+
+                for (int n = 0; n < files.Length; ++n)
+                {
+                    var file = files[n];
+                    sfb.AddSlide(file, n == 0, false, n == file.Length - 1, false);
+                }
+
+                var destFilename = Path.Combine(mediaFolder, title + ".omslide");
+                sfb.Build(destFilename, overwrite: true);
+                
+                return 1;
+            }
+
+            return 0;
+        }
+
+        private int CopyAsIndividualFiles(string mediaFolder, string[] files)
+        {
+            int count = 0;
+
+            foreach (var file in files)
+            {
+                var filename = Path.GetFileName(file);
+
+                if (!string.IsNullOrEmpty(filename))
+                {
+                    var destFile = Path.Combine(mediaFolder, filename);
+                    if (!File.Exists(destFile))
+                    {
+                        OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
+                        {
+                            FilePath = destFile,
+                            Status = FileCopyStatus.StartingCopy
+                        });
+
+                        File.Copy(file, destFile, false);
+                        ++count;
+
+                        OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
+                        {
+                            FilePath = destFile,
+                            Status = FileCopyStatus.FinishedCopy
+                        });
+                    }
+                }
+            }
+
+            return count;
+        }
+
         private bool CanDropOrPaste(IDataObject data)
         {
-            IEnumerable<string> files = GetSupportedFiles(data);
-            return files.Any();
+            return GetSupportedFiles(data).Any();
+        }
+
+        private bool DataIsFromOnlyV(IDataObject data)
+        {
+            if (data.GetDataPresent(DataFormats.StringFormat))
+            {
+                var s = (string)data.GetData(DataFormats.StringFormat);
+                if (s != null && s.StartsWith("OnlyV|", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private string GetOnlyVTitle(IDataObject data)
+        {
+            var s = (string)data.GetData(DataFormats.StringFormat);
+            return s?.Split('|')[1];
         }
 
         private IEnumerable<string> GetSupportedFiles(IDataObject data)
@@ -199,6 +255,8 @@
             }
 
             Log.Logger.Verbose($"Found {result.Count} supported files in drag-and-drop operation");
+
+            result.Sort();
 
             return result;
         }

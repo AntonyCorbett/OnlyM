@@ -29,7 +29,13 @@
             set => _config.Loop = value;
         }
         
-        public void AddSlide(string bitmapPath, bool fadeIn, bool fadeOut, int dwellTimeMilliseconds = 0)
+        public void AddSlide(
+            string bitmapPath, 
+            bool fadeInForward,
+            bool fadeInReverse,
+            bool fadeOutForward,
+            bool fadeOutReverse,
+            int dwellTimeMilliseconds = 0)
         {
             if (!File.Exists(bitmapPath))
             {
@@ -46,8 +52,10 @@
             {
                 ArchiveEntryName = archiveEntryName,
                 OriginalFilePath = bitmapPath,
-                FadeIn = fadeIn,
-                FadeOut = fadeOut,
+                FadeInForward = fadeInForward,
+                FadeInReverse = fadeInReverse,
+                FadeOutForward = fadeOutForward,
+                FadeOutReverse = fadeOutReverse,
                 DwellTimeMilliseconds = dwellTimeMilliseconds
             };
 

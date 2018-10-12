@@ -191,15 +191,11 @@
         public void StopSlideshow(Guid mediaItemId)
         {
             _slideshowTimer.Stop();
-
-            var currentSlide = GetCurrentSlide();
-
-            var fadeType = currentSlide.FadeOut ? ImageFadeType.FadeOut : ImageFadeType.None;
-
+            
             UnplaceImage(
                 mediaItemId, 
-                MediaClassification.Slideshow, 
-                fadeType,
+                MediaClassification.Slideshow,
+                ImageFadeType.FadeOut,
                 (mediaId, mediaClassification) =>
                 {
                     // stopping...
@@ -293,6 +289,11 @@
                 HideImageInControl(otherControl, fadeType, fadeTime, hideCompleted);
                 ShowImageInControl(imageFile, controlToUse, fadeType, fadeTime, showCompleted);
             }
+            else if (fadeType == ImageFadeType.None)
+            {
+                ShowImageInControl(imageFile, controlToUse, fadeType, fadeTime, showCompleted);
+                HideImageInControl(otherControl, fadeType, fadeTime, hideCompleted);
+            }
             else
             {
                 HideImageInControl(
@@ -314,20 +315,31 @@
                                  fadeType == ImageFadeType.FadeInOut ||
                                  fadeType == ImageFadeType.CrossFade);
 
-            var fadeOut = new DoubleAnimation
+            if (!shouldFadeOut)
             {
-                Duration = TimeSpan.FromSeconds(shouldFadeOut ? fadeTime : 0.001),
-                From = shouldFadeOut ? 1.0 : 0.0,
-                To = 0.0
-            };
-
-            fadeOut.Completed += (sender, args) =>
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    completed?.Invoke();
+                    imageCtrl.Source = null;
+                });
+            }
+            else
             {
-                completed?.Invoke();
-                imageCtrl.Source = null;
-            };
+                var fadeOut = new DoubleAnimation
+                {
+                    Duration = TimeSpan.FromSeconds(fadeTime),
+                    From = 1.0,
+                    To = 0.0
+                };
 
-            imageCtrl.BeginAnimation(UIElement.OpacityProperty, fadeOut);
+                fadeOut.Completed += (sender, args) =>
+                {
+                    completed?.Invoke();
+                    imageCtrl.Source = null;
+                };
+
+                imageCtrl.BeginAnimation(UIElement.OpacityProperty, fadeOut);
+            }
         }
 
         private void ShowImageInControl(string imageFile, Image imageCtrl, ImageFadeType fadeType, double fadeTime, Action completed)
@@ -337,33 +349,48 @@
                 fadeType == ImageFadeType.FadeInOut ||
                 fadeType == ImageFadeType.CrossFade;
 
-            imageCtrl.Opacity = 0.0;
-            imageCtrl.Source = _optionsService.Options.CacheImages
+            var imageSrc = _optionsService.Options.CacheImages
                 ? ImageCache.GetImage(imageFile)
                 : GetBitmapImageWithCacheOnLoad(imageFile);
 
-            // This delay allows us to accommodate large images without the apparent loss of fade-in animation
-            // the first time an image is loaded. There must be a better way!
-            Task.Delay(10).ContinueWith(t =>
+            if (!shouldFadeIn)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    var fadeIn = new DoubleAnimation
-                    {
-                        // note that the fade in time is longer than fade out - just seems to look better
-                        Duration = TimeSpan.FromSeconds(shouldFadeIn ? fadeTime * 1.2 : 0.001),
-                        From = shouldFadeIn ? 0.0 : 1.0,
-                        To = 1.0
-                    };
-
-                    if (completed != null)
-                    {
-                        fadeIn.Completed += (sender, args) => { completed(); };
-                    }
-
-                    imageCtrl.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                    imageCtrl.BeginAnimation(UIElement.OpacityProperty, null);
+                    imageCtrl.Opacity = 1.0;
+                    imageCtrl.Source = imageSrc;
+                    completed?.Invoke();
                 });
-            }).ConfigureAwait(false);
+            }
+            else
+            {
+                imageCtrl.Opacity = 0.0;
+                imageCtrl.Source = imageSrc;
+
+                // This delay allows us to accommodate large images without the apparent loss of fade-in animation
+                // the first time an image is loaded. There must be a better way!
+                Task.Delay(10).ContinueWith(t =>
+                {
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        var fadeIn = new DoubleAnimation
+                        {
+                            // note that the fade in time is longer than fade out - just seems to look better
+                            Duration = TimeSpan.FromSeconds(fadeTime * 1.2),
+                            From = 0.0,
+                            To = 1.0
+                        };
+
+                        if (completed != null)
+                        {
+                            fadeIn.Completed += (sender, args) => { completed(); };
+                        }
+
+                        imageCtrl.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                    });
+                }).ConfigureAwait(false);
+            }
         }
 
         private BitmapImage GetBitmapImageWithCacheOnLoad(string imageFile)
@@ -430,7 +457,9 @@
 
         private void DisplaySlide(SlideData slide, Guid mediaItemId, SlideData previousSlide, int oldIndex, int newIndex)
         {
-            var fadeType = GetSlideFadeType(slide, previousSlide);
+            var direction = newIndex >= oldIndex ? SlideDirection.Forward : SlideDirection.Reverse;
+
+            var fadeType = GetSlideFadeType(slide, previousSlide, direction);
             
             var imageFilePath = Path.Combine(_slideshowStagingFolder, slide.ArchiveEntryName);
 
@@ -482,9 +511,11 @@
                 });
         }
 
-        private ImageFadeType GetSlideFadeType(SlideData slide, SlideData previousSlide)
+        private ImageFadeType GetSlideFadeType(SlideData slide, SlideData previousSlide, SlideDirection direction)
         {
-            var thisSlideFadeType = slide.FadeIn ? ImageFadeType.FadeIn : ImageFadeType.None;
+            var thisSlideFadeInType = direction == SlideDirection.Forward
+                ? slide.FadeInForward ? ImageFadeType.FadeIn : ImageFadeType.None
+                : slide.FadeInReverse ? ImageFadeType.FadeIn : ImageFadeType.None;
 
             if (previousSlide == null)
             {
@@ -495,29 +526,33 @@
                     case ImageFadeType.CrossFade:
                     case ImageFadeType.FadeInOut:
                     case ImageFadeType.FadeOut:
-                        if (slide.FadeIn)
+                        if (thisSlideFadeInType == ImageFadeType.FadeIn)
                         {
                             return ImageFadeType.CrossFade;
                         }
 
-                        return thisSlideFadeType;
+                        return thisSlideFadeInType;
 
                     default:
-                        return thisSlideFadeType;
+                        return thisSlideFadeInType;
                 }
             }
 
-            if (slide.FadeIn && previousSlide.FadeOut)
+            var previousSlideFadeOutType = direction == SlideDirection.Forward
+                ? previousSlide.FadeOutForward ? ImageFadeType.FadeOut : ImageFadeType.None
+                : previousSlide.FadeOutReverse ? ImageFadeType.FadeOut : ImageFadeType.None;
+
+            if (thisSlideFadeInType == ImageFadeType.FadeIn && previousSlideFadeOutType == ImageFadeType.FadeOut)
             {
                 return ImageFadeType.CrossFade;
             }
 
-            if (previousSlide.FadeOut)
+            if (previousSlideFadeOutType == ImageFadeType.FadeOut)
             {
                 return ImageFadeType.FadeOut;
             }
 
-            return thisSlideFadeType;
+            return thisSlideFadeInType;
         }
 
         private SlideData GetCurrentSlide()
