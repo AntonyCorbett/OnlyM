@@ -21,13 +21,8 @@
                         return GetVideoMetaData(mediaItemFilePath, ffmpegFolder);
 
                     default:
-                    case MediaClassification.Audio:
-                    case MediaClassification.Image:
                         return GetNonVideoMetaData(mediaItemFilePath);
                 }
-                //return mediaType.Classification == MediaClassification.Video 
-                //    ? GetVideoMetaData(mediaItemFilePath, ffmpegFolder) 
-                //    : GetNonVideoMetaData(mediaItemFilePath);
             }
             catch (System.IO.IOException)
             {
