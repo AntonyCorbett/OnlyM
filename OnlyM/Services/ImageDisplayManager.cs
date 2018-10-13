@@ -284,12 +284,8 @@
                 controlToUse,
                 isBlankScreenImage ? new ScreenPosition() : screenPosition);
 
-            if (fadeType == ImageFadeType.CrossFade)
-            {
-                HideImageInControl(otherControl, fadeType, fadeTime, hideCompleted);
-                ShowImageInControl(imageFile, controlToUse, fadeType, fadeTime, showCompleted);
-            }
-            else if (fadeType == ImageFadeType.None)
+            if (fadeType == ImageFadeType.CrossFade || 
+                fadeType == ImageFadeType.None)
             {
                 ShowImageInControl(imageFile, controlToUse, fadeType, fadeTime, showCompleted);
                 HideImageInControl(otherControl, fadeType, fadeTime, hideCompleted);
@@ -308,6 +304,12 @@
             }
         }
 
+        private void RemoveAnimation(Image imageControl)
+        {
+            imageControl.BeginAnimation(UIElement.OpacityProperty, null);
+            imageControl.Opacity = 1.0;
+        }
+
         private void HideImageInControl(Image imageCtrl, ImageFadeType fadeType, double fadeTime, Action completed)
         {
             var shouldFadeOut = imageCtrl.Source != null &&
@@ -321,6 +323,7 @@
                 {
                     completed?.Invoke();
                     imageCtrl.Source = null;
+                    RemoveAnimation(imageCtrl);
                 });
             }
             else
@@ -357,8 +360,7 @@
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    imageCtrl.BeginAnimation(UIElement.OpacityProperty, null);
-                    imageCtrl.Opacity = 1.0;
+                    RemoveAnimation(imageCtrl);
                     imageCtrl.Source = imageSrc;
                     completed?.Invoke();
                 });
@@ -442,8 +444,6 @@
             
             var currentSlideIndex = _currentSlideshowImageIndex;
             var newSlideIndex = GotoNextSlide();
-
-            Debug.WriteLine($"Timer fire, index = {_currentSlideshowImageIndex}");
 
             if (currentSlideIndex == newSlideIndex)
             {

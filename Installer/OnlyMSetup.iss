@@ -61,6 +61,7 @@ Source: "bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversio
 Source: "bin\Release\OnlyM.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\OnlyM.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\OnlyM.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\OnlyM.Slides.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\policy.2.0.taglib-sharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\Serilog.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\Serilog.Sinks.Console.dll"; DestDir: "{app}"; Flags: ignoreversion
