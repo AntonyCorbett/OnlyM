@@ -278,6 +278,7 @@
             return Path.Combine(tempThumbnailFolder, Path.ChangeExtension(origFileName, ".png"));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "trust taglib objects behave properly")]
         private static bool ImageRequiresRotation(string imageFilePath)
         {
             using (var tf = TagLib.File.Create(imageFilePath))

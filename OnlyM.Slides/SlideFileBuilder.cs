@@ -62,6 +62,7 @@
             _config.Slides.Add(slide);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "trust streams behave properly")]
         public void Build(string path, bool overwrite)
         {
             if (File.Exists(path) && !overwrite)

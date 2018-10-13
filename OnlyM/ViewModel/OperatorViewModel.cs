@@ -131,7 +131,7 @@
 
         public RelayCommand<Guid> NextSlideCommand { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_thumbnailCancellationTokenSource", Justification = "False Positive")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataCancellationTokenSource", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataProducer", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataConsumer", Justification = "False Positive")]
         public void Dispose()
@@ -739,7 +739,7 @@
             
             Messenger.Default.Send(new MediaListUpdatingMessage());
 
-            using (new ObservableCollectionSupression<MediaItem>(MediaItems))
+            using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
             {
                 LoadMediaItemsInternal();
             }

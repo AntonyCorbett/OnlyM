@@ -98,6 +98,7 @@
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "trust streams behave properly")]
         private SlidesConfig Load()
         {
             using (var zip = ZipFile.OpenRead(_zipPath))

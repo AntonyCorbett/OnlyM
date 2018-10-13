@@ -2,11 +2,11 @@
 {
     using System;
 
-    public class ObservableCollectionSupression<T> : IDisposable
+    public sealed class ObservableCollectionSuppression<T> : IDisposable
     {
         private readonly ObservableCollectionEx<T> _collection;
 
-        public ObservableCollectionSupression(ObservableCollectionEx<T> collection)
+        public ObservableCollectionSuppression(ObservableCollectionEx<T> collection)
         {
             _collection = collection;
             _collection.SupressNotification = true;

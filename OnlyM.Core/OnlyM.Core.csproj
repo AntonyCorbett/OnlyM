@@ -140,7 +140,7 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\GraphicsUtils.cs" />
     <Compile Include="Utils\ObservableCollectionEx.cs" />
-    <Compile Include="Utils\ObservableCollectionSupression.cs" />
+    <Compile Include="Utils\ObservableCollectionSuppression.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
