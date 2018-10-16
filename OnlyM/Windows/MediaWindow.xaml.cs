@@ -135,7 +135,7 @@
 
             Log.Logger.Information($"Pausing media {mediaItem.FilePath}");
 
-            await PauseVideoAsync(mediaItem);
+            await PauseVideoOrAudioAsync(mediaItem);
         }
 
         public int GotoPreviousSlide()
@@ -148,9 +148,9 @@
             return _imageDisplayManager.GotoNextSlide();
         }
 
-        private async Task PauseVideoAsync(MediaItem mediaItem)
+        private async Task PauseVideoOrAudioAsync(MediaItem mediaItem)
         {
-            await _videoDisplayManager.PauseVideoAsync(mediaItem.Id);
+            await _videoDisplayManager.PauseVideoOrAudioAsync(mediaItem.Id);
             mediaItem.PlaybackPositionChangedEvent += HandlePlaybackPositionChangedEvent;
         }
 

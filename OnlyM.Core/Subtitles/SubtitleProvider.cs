@@ -7,11 +7,12 @@
     {
         private readonly SubtitleFile _file;
         private readonly DispatcherTimer _timer;
+        private readonly DateTime _videoStartTime;
 
         private SubtitleEntry _currentSubtitle;
-        private DateTime _videoStartTime;
         private SubtitleStatus _currentStatus;
-        
+        private bool _stopped;
+
         public SubtitleProvider(string srtFilePath, TimeSpan videoPlayHead)
         {
             if (!string.IsNullOrEmpty(srtFilePath))
@@ -35,6 +36,11 @@
         public event EventHandler<SubtitleEventArgs> SubtitleEvent;
 
         public int Count => _file?.Count ?? 0;
+
+        public void Stop()
+        {
+            _stopped = true;
+        }
 
         private void QueueNextSubtitle()
         {
@@ -102,8 +108,11 @@
 
         private void OnSubtitleEvent(SubtitleStatus status, string subtitleText)
         {
-            _currentStatus = status;
-            SubtitleEvent?.Invoke(this, new SubtitleEventArgs { Status = status, Text = subtitleText });
+            if (!_stopped || status == SubtitleStatus.NotShowing)
+            {
+                _currentStatus = status;
+                SubtitleEvent?.Invoke(this, new SubtitleEventArgs {Status = status, Text = subtitleText});
+            }
         }
     }
 }

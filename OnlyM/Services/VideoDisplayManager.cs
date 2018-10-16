@@ -1,10 +1,8 @@
 ﻿namespace OnlyM.Services
 {
     using System;
-    using System.Diagnostics;
     using System.IO;
     using System.Threading.Tasks;
-    using System.Windows;
     using System.Windows.Controls;
     using MediaElementAdaption;
     using Models;
@@ -109,12 +107,14 @@
             return _mediaElement.Position;
         }
 
-        public async Task PauseVideoAsync(Guid mediaItemId)
+        public async Task PauseVideoOrAudioAsync(Guid mediaItemId)
         {
             if (_mediaItemId == mediaItemId)
             {
                 await _mediaElement.Pause();
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Paused));
+
+                _subTitleProvider?.Stop();
             }
         }
 
@@ -124,6 +124,8 @@
             {
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopping));
                 await _mediaElement.Close();
+
+                _subTitleProvider?.Stop();
             }
         }
 
@@ -265,7 +267,10 @@
         {
             // only used in MediaFoundation as the other engines have their own
             // internal subtitle processing...
-            SubtitleEvent?.Invoke(sender, e);
+            if (e.Status == SubtitleStatus.NotShowing || ShowSubtitles)
+            {
+                SubtitleEvent?.Invoke(sender, e);
+            }
         }
 
         private void CreateSubtitleProvider(string mediaItemFilePath, TimeSpan videoHeadPosition)
@@ -276,8 +281,7 @@
                 _subTitleProvider = null;
             }
 
-            if (ShowSubtitles &&
-                _mediaClassification == MediaClassification.Video &&
+            if (_mediaClassification == MediaClassification.Video &&
                 _mediaElement is MediaElementMediaFoundation)
             {
                 var srtFile = GenerateSubtitlesFile(mediaItemFilePath);
