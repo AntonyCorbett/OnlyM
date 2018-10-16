@@ -79,17 +79,15 @@
                 _mediaElement.Position = _startPosition;
                 await _mediaElement.Play(new Uri(mediaItemFilePath), _mediaClassification);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
-                
-                CreateSubtitleProvider(mediaItemFilePath, _startPosition);
             }
             else
             {
                 Log.Debug($"Firing Started - Media Id = {_mediaItemId}");
                 await _mediaElement.Play(new Uri(mediaItemFilePath), _mediaClassification).ConfigureAwait(true);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
-
-                CreateSubtitleProvider(mediaItemFilePath, TimeSpan.Zero);
             }
+
+            CreateSubtitleProvider(mediaItemFilePath, startOffset);
         }
 
         public void SetPlaybackPosition(TimeSpan position)
@@ -232,37 +230,6 @@
             };
         }
 
-        private string GenerateSubtitlesFile(string mediaItemFilePath)
-        {
-            var ffmpegFolder = Unosquare.FFME.MediaElement.FFmpegDirectory;
-
-            var destFolder = Path.GetDirectoryName(mediaItemFilePath);
-            if (destFolder == null)
-            {
-                return null;
-            }
-
-            var srtFileName = Path.GetFileNameWithoutExtension(mediaItemFilePath);
-            if (srtFileName == null)
-            {
-                return null;
-            }
-
-            var srtFile = Path.Combine(destFolder, Path.ChangeExtension(srtFileName, ".srt"));
-            if (!File.Exists(srtFile))
-            {
-                if (!GraphicsUtils.GenerateSubtitleFile(
-                    ffmpegFolder,
-                    mediaItemFilePath,
-                    srtFile))
-                {
-                    return null;
-                }
-            }
-
-            return srtFile;
-        }
-
         private void HandleSubtitleEvent(object sender, SubtitleEventArgs e)
         {
             // only used in MediaFoundation as the other engines have their own
@@ -284,7 +251,7 @@
             if (_mediaClassification == MediaClassification.Video &&
                 _mediaElement is MediaElementMediaFoundation)
             {
-                var srtFile = GenerateSubtitlesFile(mediaItemFilePath);
+                var srtFile = SubtitleFileGenerator.Generate(mediaItemFilePath);
                 _subTitleProvider = new SubtitleProvider(srtFile, videoHeadPosition);
                 _subTitleProvider.SubtitleEvent += HandleSubtitleEvent;
             }

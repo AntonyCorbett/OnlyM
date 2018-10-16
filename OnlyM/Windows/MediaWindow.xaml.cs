@@ -366,6 +366,7 @@
         private void HandleVideoScreenPositionChangedEvent(object sender, EventArgs e)
         {
             ScreenPositionHelper.SetScreenPosition(_videoElement.FrameworkElement, _optionsService.Options.VideoScreenPosition);
+            ScreenPositionHelper.SetSubtitleBlockScreenPosition(SubtitleBlock, _optionsService.Options.VideoScreenPosition);
         }
 
         private void HandleImageScreenPositionChangedEvent(object sender, EventArgs e)

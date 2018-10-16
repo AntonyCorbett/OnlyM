@@ -40,6 +40,7 @@
         public void Stop()
         {
             _stopped = true;
+            OnSubtitleEvent(SubtitleStatus.NotShowing, null);
         }
 
         private void QueueNextSubtitle()
