@@ -51,6 +51,7 @@ Source: "bin\Release\FluentCommandLineParser.dll"; DestDir: "{app}"; Flags: igno
 Source: "bin\Release\GalaSoft.MvvmLight.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\GalaSoft.MvvmLight.Extras.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\GalaSoft.MvvmLight.Platform.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\HtmlAgilityPack.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\ImageProcessor.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\MaterialDesignColors.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\MaterialDesignThemes.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
