@@ -2,6 +2,7 @@
 {
     using System;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Media;
     using Models;
     using OnlyM.Core.Models;
@@ -25,6 +26,31 @@
                     double bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
 
                     element.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin);
+                }
+            }
+        }
+
+        public static void SetSubtitleBlockScreenPosition(TextBlock element, ScreenPosition position)
+        {
+            var parent = GetParentWindow(element);
+            if (parent != null)
+            {
+                if (position.IsFullScreen())
+                {
+                    element.Margin = new Thickness(0, 0, 0, parent.ActualHeight / 10);
+                    element.FontSize = parent.ActualHeight / 22;
+                }
+                else
+                {
+                    double leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
+                    double topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
+                    double rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
+                    double bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
+
+                    var displayHeight = parent.ActualHeight - topMargin - bottomMargin;
+
+                    element.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin + (displayHeight / 10));
+                    element.FontSize = displayHeight / 22;
                 }
             }
         }

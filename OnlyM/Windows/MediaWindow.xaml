@@ -18,6 +18,17 @@
                       LoadedBehavior="Manual"
                       UnloadedBehavior="Manual" />
 
+        <TextBlock x:Name="SubtitleBlock" 
+                   VerticalAlignment="Bottom" 
+                   Foreground="White"
+                   Background="#7F000000"
+                   Padding="15"
+                   Visibility="{Binding Path=SubTitleTextIsNotEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   FontSize="50"
+                   TextAlignment="Center"
+                   Text="{Binding SubTitleText}"
+                   HorizontalAlignment="Center" />
+
         <ffme:MediaElement x:Name="VideoElementFfmpeg" 
                            Visibility="{Binding Path=EngineIsFfmpeg, Converter={StaticResource BooleanToVisibilityConverter}}"
                            Background="Black"

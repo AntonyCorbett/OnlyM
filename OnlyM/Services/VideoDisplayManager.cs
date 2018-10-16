@@ -1,10 +1,16 @@
 ﻿namespace OnlyM.Services
 {
     using System;
+    using System.Diagnostics;
+    using System.IO;
     using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Controls;
     using MediaElementAdaption;
     using Models;
     using OnlyM.Core.Models;
+    using OnlyM.Core.Subtitles;
+    using OnlyM.Core.Utils;
     using Serilog;
     using Serilog.Events;
 
@@ -13,16 +19,20 @@
         private const int FreezeMillisecsFromEnd = 250;
 
         private readonly IMediaElement _mediaElement;
+        private readonly TextBlock _subtitleBlock;
+
         private Guid _mediaItemId;
         private MediaClassification _mediaClassification;
         private TimeSpan _startPosition;
         private TimeSpan _lastPosition = TimeSpan.Zero;
         private bool _manuallySettingPlaybackPosition;
         private bool _firedNearEndEvent;
-
-        public VideoDisplayManager(IMediaElement mediaElement)
+        private SubtitleProvider _subTitleProvider;
+        
+        public VideoDisplayManager(IMediaElement mediaElement, TextBlock subtitleBlock)
         {
             _mediaElement = mediaElement;
+            _subtitleBlock = subtitleBlock;
 
             _mediaElement.MediaOpened += HandleMediaOpened;
             _mediaElement.MediaClosed += HandleMediaClosed;
@@ -39,6 +49,8 @@
 
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
+        public event EventHandler<SubtitleEventArgs> SubtitleEvent;
+
         public bool ShowSubtitles { get; set; }
 
         public bool IsPaused => _mediaElement.IsPaused;
@@ -54,13 +66,14 @@
             _mediaItemId = mediaItemId;
             
             Log.Debug($"ShowVideoOrPlayAudio - Media Id = {_mediaItemId}");
-
+            
             _mediaClassification = mediaClassification;
             _startPosition = startOffset;
             _lastPosition = TimeSpan.Zero;
 
             ScreenPositionHelper.SetScreenPosition(_mediaElement.FrameworkElement, screenPosition);
-
+            ScreenPositionHelper.SetSubtitleBlockScreenPosition(_subtitleBlock, screenPosition);
+            
             _mediaElement.MediaItemId = mediaItemId;
 
             if (startFromPaused)
@@ -68,12 +81,16 @@
                 _mediaElement.Position = _startPosition;
                 await _mediaElement.Play(new Uri(mediaItemFilePath), _mediaClassification);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
+                
+                CreateSubtitleProvider(mediaItemFilePath, _startPosition);
             }
             else
             {
                 Log.Debug($"Firing Started - Media Id = {_mediaItemId}");
                 await _mediaElement.Play(new Uri(mediaItemFilePath), _mediaClassification).ConfigureAwait(true);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
+
+                CreateSubtitleProvider(mediaItemFilePath, TimeSpan.Zero);
             }
         }
 
@@ -211,6 +228,62 @@
                 Classification = _mediaClassification,
                 Change = change
             };
+        }
+
+        private string GenerateSubtitlesFile(string mediaItemFilePath)
+        {
+            var ffmpegFolder = Unosquare.FFME.MediaElement.FFmpegDirectory;
+
+            var destFolder = Path.GetDirectoryName(mediaItemFilePath);
+            if (destFolder == null)
+            {
+                return null;
+            }
+
+            var srtFileName = Path.GetFileNameWithoutExtension(mediaItemFilePath);
+            if (srtFileName == null)
+            {
+                return null;
+            }
+
+            var srtFile = Path.Combine(destFolder, Path.ChangeExtension(srtFileName, ".srt"));
+            if (!File.Exists(srtFile))
+            {
+                if (!GraphicsUtils.GenerateSubtitleFile(
+                    ffmpegFolder,
+                    mediaItemFilePath,
+                    srtFile))
+                {
+                    return null;
+                }
+            }
+
+            return srtFile;
+        }
+
+        private void HandleSubtitleEvent(object sender, SubtitleEventArgs e)
+        {
+            // only used in MediaFoundation as the other engines have their own
+            // internal subtitle processing...
+            SubtitleEvent?.Invoke(sender, e);
+        }
+
+        private void CreateSubtitleProvider(string mediaItemFilePath, TimeSpan videoHeadPosition)
+        {
+            if (_subTitleProvider != null)
+            {
+                _subTitleProvider.SubtitleEvent -= HandleSubtitleEvent;
+                _subTitleProvider = null;
+            }
+
+            if (ShowSubtitles &&
+                _mediaClassification == MediaClassification.Video &&
+                _mediaElement is MediaElementMediaFoundation)
+            {
+                var srtFile = GenerateSubtitlesFile(mediaItemFilePath);
+                _subTitleProvider = new SubtitleProvider(srtFile, videoHeadPosition);
+                _subTitleProvider.SubtitleEvent += HandleSubtitleEvent;
+            }
         }
     }
 }

@@ -161,7 +161,7 @@
         /// <summary>
         /// Creates the thumbnail for the specified video.
         /// </summary>
-        /// <param name="originalPath">The original videoe path.</param>
+        /// <param name="originalPath">The original video path.</param>
         /// <param name="ffmpegFolder">The ffmpeg installation folder.</param>
         /// <param name="useEmbeddedWhereAvailable">Use an embedded thumbnail if available.</param>
         /// <returns>The temporary thumbnail image file.</returns>
@@ -198,6 +198,33 @@
             }
 
             return null;
+        }
+
+        public static bool GenerateSubtitleFile(string ffmpegFolder, string videoFilePath, string destinationSrtFilePath)
+        {
+            try
+            {
+                var arguments = new StringBuilder();
+
+                arguments.Append("-i ");
+                arguments.Append("\"");
+                arguments.Append(videoFilePath);
+                arguments.Append("\" ");
+                arguments.Append("-map 0:s:0 ");
+                arguments.Append("\"");
+                arguments.Append(destinationSrtFilePath);
+                arguments.Append("\" ");
+
+                ExecuteFFMpeg(ffmpegFolder, arguments.ToString());
+
+                return System.IO.File.Exists(destinationSrtFilePath);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, $"Could not create subtitle file for video: {videoFilePath}");
+            }
+
+            return false;
         }
 
         // ReSharper disable once InconsistentNaming

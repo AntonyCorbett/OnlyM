@@ -51,6 +51,9 @@
     <Reference Include="FluentCommandLineParser, Version=1.4.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentCommandLineParser.1.4.3\lib\net35\FluentCommandLineParser.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.8.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.8.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="ImageProcessor, Version=2.6.2.25, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ImageProcessor.2.6.2.25\lib\net452\ImageProcessor.dll</HintPath>
     </Reference>
@@ -137,10 +140,16 @@
     <Compile Include="Services\Options\LogLevelSwitchService.cs" />
     <Compile Include="Services\Options\Options.cs" />
     <Compile Include="Services\Options\OptionsService.cs" />
+    <Compile Include="Subtitles\SubtitleEntry.cs" />
+    <Compile Include="Subtitles\SubtitleEventArgs.cs" />
+    <Compile Include="Subtitles\SubtitleProvider.cs" />
+    <Compile Include="Subtitles\SubtitleStatus.cs" />
+    <Compile Include="Subtitles\SubtitleTiming.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\GraphicsUtils.cs" />
     <Compile Include="Utils\ObservableCollectionEx.cs" />
     <Compile Include="Utils\ObservableCollectionSuppression.cs" />
+    <Compile Include="Subtitles\SubtitleFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

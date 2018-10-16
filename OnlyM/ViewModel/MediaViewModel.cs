@@ -8,6 +8,7 @@
     internal class MediaViewModel : ViewModelBase
     {
         private readonly IOptionsService _optionsService;
+        private string _subtitleText;
 
         public MediaViewModel(IOptionsService optionsService)
         {
@@ -19,6 +20,22 @@
 
         public bool EngineIsFfmpeg => _optionsService.Options.RenderingMethod == RenderingMethod.Ffmpeg;
 
+        public string SubTitleText
+        {
+            get => _subtitleText;
+            set
+            {
+                if (_subtitleText != value)
+                {
+                    _subtitleText = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(SubTitleTextIsNotEmpty));
+                }
+            }
+        }
+
+        public bool SubTitleTextIsNotEmpty => !string.IsNullOrEmpty(SubTitleText);
+    
         private void HandleRenderingMethodChangedEvent(object sender, System.EventArgs e)
         {
             RaisePropertyChanged(nameof(EngineIsFfmpeg));

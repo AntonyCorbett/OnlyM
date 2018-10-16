@@ -1,0 +1,22 @@
+1
+00:00:01,351 --> 00:00:06,356
+<font face="Serif" size="18">‎Welcome, one and all,
+to the Sample SRT! </font>
+
+2
+00:00:06,356 --> 00:00:08,358
+<font face="Serif" size="18">‎In this edition,</font>
+
+3
+00:00:08,358 --> 00:00:12,362
+<font face="Serif" size="18">‎we’ll check the timings of
+all segments. </font>
+
+4
+00:00:12,362 --> 00:00:14,364
+<font face="Serif" size="18">‎For example:</font>
+
+5
+00:00:14,364 --> 00:00:17,500
+<font face="Serif" size="18">‎What is the start and end time
+of this segment?</font>

@@ -12,6 +12,7 @@
     using Core.Services.Options;
     using MediaElementAdaption;
     using Models;
+    using OnlyM.ViewModel;
     using Serilog;
     using Services;
     using Services.Pages;
@@ -273,6 +274,20 @@
             _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
             _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent += HandleMediaNearEndEvent;
+            _videoDisplayManager.SubtitleEvent += HandleMediaFoundationSubtitleEvent;
+        }
+
+        private void HandleMediaFoundationSubtitleEvent(object sender, Core.Subtitles.SubtitleEventArgs e)
+        {
+            var vm = (MediaViewModel)DataContext;
+            if (e.Text == null)
+            {
+                vm.SubTitleText = null;
+            }
+            else
+            {
+                vm.SubTitleText = string.Join(Environment.NewLine, e.Text);
+            }
         }
 
         private void UnsubscribeOptionsEvents()
@@ -293,6 +308,7 @@
             _videoDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
             _videoDisplayManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent -= HandleMediaNearEndEvent;
+            _videoDisplayManager.SubtitleEvent -= HandleMediaFoundationSubtitleEvent;
         }
 
         private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
@@ -381,8 +397,8 @@
                 UnsubscribeVideoEvents();
             }
 
-            _videoDisplayManager = new VideoDisplayManager(_videoElement);
-
+            _videoDisplayManager = new VideoDisplayManager(_videoElement, SubtitleBlock);
+            
             SubscribeVideoEvents();
         }
     }
