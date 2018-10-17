@@ -1,14 +1,12 @@
 ﻿namespace OnlyM.Services
 {
     using System;
-    using System.IO;
     using System.Threading.Tasks;
     using System.Windows.Controls;
     using MediaElementAdaption;
     using Models;
     using OnlyM.Core.Models;
     using OnlyM.Core.Subtitles;
-    using OnlyM.Core.Utils;
     using Serilog;
     using Serilog.Events;
 
