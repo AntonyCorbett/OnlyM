@@ -130,7 +130,7 @@
                                MouseLeftButtonDown="OnMouseLeftButtonDownTitleBar"
                                VerticalAlignment="Stretch"
                                Padding="10"
-                               Grid.Column="0">O N L Y - M</TextBlock>
+                               Grid.Column="0">O N L Y M</TextBlock>
 
                         <Button Grid.Column="1" 
                             Style="{StaticResource SystemButtonStyle}"
