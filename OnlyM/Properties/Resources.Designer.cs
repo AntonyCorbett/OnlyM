@@ -61,7 +61,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only-M software version: {0}.
+        ///   Looks up a localized string similar to OnlyM software version: {0}.
         /// </summary>
         internal static string APP_VER {
             get {

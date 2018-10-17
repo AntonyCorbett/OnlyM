@@ -22,7 +22,7 @@
         MinWidth="500"
         MinHeight="500"
         Topmost="{Binding AlwaysOnTop, Mode=OneWay}"
-        Title="O N L Y - M" Height="650" Width="500" Closing="WindowClosing">
+        Title="O N L Y M" Height="650" Width="500" Closing="WindowClosing">
 
     <Window.Resources>
         <ResourceDictionary>

@@ -26,6 +26,7 @@
         private bool _manuallySettingPlaybackPosition;
         private bool _firedNearEndEvent;
         private SubtitleProvider _subTitleProvider;
+        private string _mediaItemFilePath;
         
         public VideoDisplayManager(IMediaElement mediaElement, TextBlock subtitleBlock)
         {
@@ -62,7 +63,8 @@
             bool startFromPaused)
         {
             _mediaItemId = mediaItemId;
-            
+            _mediaItemFilePath = mediaItemFilePath;
+
             Log.Debug($"ShowVideoOrPlayAudio - Media Id = {_mediaItemId}");
             
             _mediaClassification = mediaClassification;
@@ -73,12 +75,14 @@
             ScreenPositionHelper.SetSubtitleBlockScreenPosition(_subtitleBlock, screenPosition);
             
             _mediaElement.MediaItemId = mediaItemId;
-
+            
             if (startFromPaused)
             {
                 _mediaElement.Position = _startPosition;
                 await _mediaElement.Play(new Uri(mediaItemFilePath), _mediaClassification);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
+
+                CreateSubtitleProvider(mediaItemFilePath, startOffset);
             }
             else
             {
@@ -86,8 +90,6 @@
                 await _mediaElement.Play(new Uri(mediaItemFilePath), _mediaClassification).ConfigureAwait(true);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
             }
-
-            CreateSubtitleProvider(mediaItemFilePath, startOffset);
         }
 
         public void SetPlaybackPosition(TimeSpan position)
@@ -140,6 +142,8 @@
 
             _mediaElement.Position = _startPosition;
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
+
+            CreateSubtitleProvider(_mediaItemFilePath, _startPosition);
         }
 
         private void HandleMediaClosed(object sender, System.Windows.RoutedEventArgs e)
