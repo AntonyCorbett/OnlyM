@@ -44,8 +44,15 @@ Source: "bin\Release\x64\*"; DestDir: "{app}\x64"; Flags: ignoreversion
 Source: "bin\Release\x86\*"; DestDir: "{app}\x86"; Flags: ignoreversion
 Source: "bin\Release\AutoMapper.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\CommonServiceLocator.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\ffme.common.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\ffme.win.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+; temp inclusion of updated ffme assemblies to correct subtitle bug
+Source: "D:\ProjectsMisc\ffmediaelement-master\Unosquare.FFME.Windows.Sample\bin\Release\ffme.common.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\ProjectsMisc\ffmediaelement-master\Unosquare.FFME.Windows.Sample\bin\Release\ffme.win.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+;Source: "bin\Release\ffme.common.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "bin\Release\ffme.win.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+
 Source: "bin\Release\FFmpeg.AutoGen.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\FluentCommandLineParser.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\GalaSoft.MvvmLight.dll"; DestDir: "{app}"; Flags: ignoreversion

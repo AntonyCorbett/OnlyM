@@ -237,7 +237,7 @@ namespace OnlyM.ViewModel
                 var latestVersion = VersionDetection.GetLatestReleaseVersion();
                 if (latestVersion != null)
                 {
-                    if (latestVersion != VersionDetection.GetCurrentVersion())
+                    if (latestVersion > VersionDetection.GetCurrentVersion())
                     {
                         // there is a new version....
                         _newVersionAvailable = true;
