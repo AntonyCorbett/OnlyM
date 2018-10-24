@@ -7,6 +7,7 @@
              mc:Ignorable="d" 
              DataContext="{Binding Settings, Mode=OneWay, Source={StaticResource Locator}}"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:resx="clr-namespace:OnlyM.Properties"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
              TextElement.FontSize="15"
@@ -93,13 +94,13 @@
     </UserControl.Triggers>
 
     <StackPanel Orientation="Vertical">
-        <GroupBox Header="Display" Style="{StaticResource SettingsGroupBoxStyle}">
+        <GroupBox Header="{x:Static resx:Resources.SECTION_DISPLAY}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
                 <ComboBox ItemsSource="{Binding Monitors}"
                           Style="{StaticResource SettingsComboBoxStyle}" 
                           materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="Media Monitor"
+                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.MEDIA_MONITOR}"
                           SelectedValuePath="MonitorId" 
                           DisplayMemberPath="MonitorName"
                           SelectedValue="{Binding MonitorId, Mode=TwoWay}">
@@ -124,7 +125,7 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Media Files" Style="{StaticResource SettingsGroupBoxStyle}">
+        <GroupBox Header="{x:Static resx:Resources.SECTION_MEDIA_FILES}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
                 <StackPanel Orientation="Horizontal">
@@ -134,7 +135,7 @@
                               Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource InverseBoolToVisConverter}}"
                               IsEnabled="{Binding IsMediaInactive}"
                               materialDesign:HintAssist.IsFloating="True"
-                              materialDesign:HintAssist.Hint="Media Folder"
+                              materialDesign:HintAssist.Hint="{x:Static resx:Resources.MEDIA_FOLDER}"
                               SelectedValue="{Binding MediaFolder, Mode=TwoWay}"/>
 
                     <Button Style="{StaticResource MaterialDesignRaisedLightButton}" 
@@ -148,7 +149,7 @@
 
                 <TextBlock Margin="0,10,0,0" Style="{StaticResource MaterialDesignCaptionTextBlock}"
                            Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource BooleanToVisibilityConverter}}"
-                           Text ="Media folder specified on command-line:" />
+                           Text ="{x:Static resx:Resources.MEDIA_FOLDER_CMDLINE}" />
                 <TextBlock Margin="0,5,0,10" 
                            Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource BooleanToVisibilityConverter}}"
                            Text ="{Binding MediaFolder}" />
@@ -169,7 +170,7 @@
                 </CheckBox>
 
                 <TextBox
-                    materialDesign:HintAssist.Hint="Maximum Number of Items"
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.MAX_ITEMS}"
                     Text="{Binding MaxItemCount, Mode=TwoWay}"
                     Style="{StaticResource SettingsTextBoxStyle}" />
 
@@ -177,18 +178,18 @@
                     Style="{StaticResource SettingsButtonStyle}" 
                     Margin="0,10,0,0"
                     Command="{Binding PurgeThumbnailCacheCommand}"
-                    Content="Purge Thumbnail Cache" />
+                    Content="{x:Static resx:Resources.PURGE_THUMBS}" />
 
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Images" Style="{StaticResource SettingsGroupBoxStyle}">
+        <GroupBox Header="{x:Static resx:Resources.SECTION_IMAGES}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
                 <ComboBox ItemsSource="{Binding ImageFadeTypes}"
                           Style="{StaticResource SettingsComboBoxStyle}" 
                           materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="Fading Style"
+                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.FADING_STYLE}"
                           SelectedValuePath="Fade" 
                           DisplayMemberPath="Name"
                           SelectedValue="{Binding ImageFadeType, Mode=TwoWay}"/>
@@ -196,15 +197,14 @@
                 <ComboBox ItemsSource="{Binding FadeSpeedTypes}"
                           Style="{StaticResource SettingsComboBoxStyle}" 
                           materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="Fading Speed"
+                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.FADING_SPEED}"
                           SelectedValuePath="Speed" 
                           DisplayMemberPath="Name"
                           SelectedValue="{Binding FadeSpeedType, Mode=TwoWay}"/>
 
                 <CheckBox IsChecked="{Binding CacheImages, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Cache images (better performance but more memory)
-                </CheckBox>
+                          Content="{x:Static resx:Resources.CACHE_IMAGES}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding AutoRotateImages, Mode=TwoWay}"
                           Style="{StaticResource SettingsCheckBoxStyle}">
@@ -214,104 +214,108 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Videos and Audio" Style="{StaticResource SettingsGroupBoxStyle}">
+        <GroupBox Header="{x:Static resx:Resources.SECTION_VIDEO_AUDIO}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
                 <ComboBox ItemsSource="{Binding RenderingMethods}"
                           IsEnabled="{Binding IsMediaInactive}"
                           Style="{StaticResource SettingsComboBoxStyle}" 
                           materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="Rendering Engine"
+                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.RENDERING_ENGINE}"
                           SelectedValuePath="Method" 
                           DisplayMemberPath="Name"
                           SelectedValue="{Binding RenderingMethod, Mode=TwoWay}">
                 </ComboBox>
 
                 <CheckBox IsChecked="{Binding ShowVideoSubtitles, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Show subtitles if available
-                </CheckBox>
+                          Content="{x:Static resx:Resources.SHOW_SUBTITLES}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding AllowVideoPositionSeeking, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Allow position seeking
-                </CheckBox>
+                          Content="{x:Static resx:Resources.ALLOW_SEEK}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding AllowVideoScrubbing, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Allow scrubbing when paused
-                </CheckBox>
+                          Content="{x:Static resx:Resources.ALLOW_SCRUB}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding AllowVideoPause, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Allow pause
-                </CheckBox>
+                          Content="{x:Static resx:Resources.ALLOW_PAUSE}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding ShowFreezeCommand, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Show 'Freeze' command in Command Panel
-                </CheckBox>
+                          Content="{x:Static resx:Resources.SHOW_FREEZE}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding ConfirmWhenStoppingVideo, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Confirm when stopping
-                </CheckBox>
+                          Content="{x:Static resx:Resources.CONFIRM_STOP}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Margins (as percentage of screen size)" Style="{StaticResource SettingsGroupBoxStyle}">
+        <GroupBox Header="{x:Static resx:Resources.SECTION_MARGINS}" Style="{StaticResource SettingsGroupBoxStyle}">
 
             <StackPanel Margin="0,0,0,30">
                 <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
-                           Margin="0,0,0,-20">Video Margins</TextBlock>
+                           Text="{x:Static resx:Resources.VIDEO_MARGINS}"
+                           Margin="0,0,0,-20"/>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}">L</Label>
+                    <Label Style="{StaticResource SettingsMarginLabelStyle}" 
+                           Content="{x:Static resx:Resources.LEFT_CHAR}"/>
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding VideoScreenLeftMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}">T</Label>
+                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
+                           Content="{x:Static resx:Resources.TOP_CHAR}"/>
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding VideoScreenTopMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}">R</Label>
+                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
+                           Content="{x:Static resx:Resources.RIGHT_CHAR}"/>
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding VideoScreenRightMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}">B</Label>
+                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
+                           Content="{x:Static resx:Resources.BOTTOM_CHAR}"/>
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding VideoScreenBottomMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
-                           Margin="0,40,0,-20">Image Margins</TextBlock>
+                           Text="{x:Static resx:Resources.IMAGE_MARGINS}"
+                           Margin="0,40,0,-20"/>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}">L</Label>
+                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
+                           Content="{x:Static resx:Resources.LEFT_CHAR}"/>
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding ImageScreenLeftMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}">T</Label>
+                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
+                           Content="{x:Static resx:Resources.TOP_CHAR}"/>
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding ImageScreenTopMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}">R</Label>
+                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
+                           Content="{x:Static resx:Resources.RIGHT_CHAR}"/>
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding ImageScreenRightMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}">B</Label>
+                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
+                           Content="{x:Static resx:Resources.BOTTOM_CHAR}"/>
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding ImageScreenBottomMargin, Mode=TwoWay}"/>
                 </StackPanel>
@@ -319,7 +323,7 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Miscellaneous" Style="{StaticResource SettingsGroupBoxStyle}">
+        <GroupBox Header="{x:Static resx:Resources.SECTION_MISC}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
                 <TextBlock Text="{Binding AppVersionStr}" 
@@ -335,17 +339,16 @@
                     SelectedDate="{Binding MediaCalendarDate}"
                     SelectedDateFormat="Long"
                     Width="200"
-                    materialDesign:HintAssist.Hint="Current Date" />
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.CURRENT_DATE}" />
 
                 <CheckBox IsChecked="{Binding AlwaysOnTop, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Main window always on top
-                </CheckBox>
+                          Content="{x:Static resx:Resources.ON_TOP}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <ComboBox ItemsSource="{Binding LoggingLevels}"
                           Style="{StaticResource SettingsComboBoxStyle}" 
                           materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="Logging Level"
+                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.LOGGING_LEVEL}"
                           SelectedValuePath="Level" 
                           DisplayMemberPath="Name"
                           SelectedValue="{Binding LogEventLevel, Mode=TwoWay}"/>

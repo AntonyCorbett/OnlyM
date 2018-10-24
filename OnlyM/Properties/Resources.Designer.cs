@@ -22,7 +22,7 @@ namespace OnlyM.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace OnlyM.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OnlyM.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace OnlyM.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,36 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow pause.
+        /// </summary>
+        public static string ALLOW_PAUSE {
+            get {
+                return ResourceManager.GetString("ALLOW_PAUSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow scrubbing when paused.
+        /// </summary>
+        public static string ALLOW_SCRUB {
+            get {
+                return ResourceManager.GetString("ALLOW_SCRUB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow position seeking.
+        /// </summary>
+        public static string ALLOW_SEEK {
+            get {
+                return ResourceManager.GetString("ALLOW_SEEK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OnlyM software version: {0}.
         /// </summary>
-        internal static string APP_VER {
+        public static string APP_VER {
             get {
                 return ResourceManager.GetString("APP_VER", resourceCulture);
             }
@@ -72,7 +99,7 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap blank {
+        public static System.Drawing.Bitmap blank {
             get {
                 object obj = ResourceManager.GetObject("blank", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -82,16 +109,43 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Blank Screen.
         /// </summary>
-        internal static string BLANK_SCREEN {
+        public static string BLANK_SCREEN {
             get {
                 return ResourceManager.GetString("BLANK_SCREEN", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to B.
+        /// </summary>
+        public static string BOTTOM_CHAR {
+            get {
+                return ResourceManager.GetString("BOTTOM_CHAR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cache images (better performance but more memory).
+        /// </summary>
+        public static string CACHE_IMAGES {
+            get {
+                return ResourceManager.GetString("CACHE_IMAGES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm when stopping.
+        /// </summary>
+        public static string CONFIRM_STOP {
+            get {
+                return ResourceManager.GetString("CONFIRM_STOP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to stop playback?.
         /// </summary>
-        internal static string CONFIRM_STOP_MEDIA {
+        public static string CONFIRM_STOP_MEDIA {
             get {
                 return ResourceManager.GetString("CONFIRM_STOP_MEDIA", resourceCulture);
             }
@@ -100,7 +154,7 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to (contains {0} rolling slides).
         /// </summary>
-        internal static string CONTAINS_X_ROLLING_SLIDES {
+        public static string CONTAINS_X_ROLLING_SLIDES {
             get {
                 return ResourceManager.GetString("CONTAINS_X_ROLLING_SLIDES", resourceCulture);
             }
@@ -109,7 +163,7 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to (contains {0} slides).
         /// </summary>
-        internal static string CONTAINS_X_SLIDES {
+        public static string CONTAINS_X_SLIDES {
             get {
                 return ResourceManager.GetString("CONTAINS_X_SLIDES", resourceCulture);
             }
@@ -118,16 +172,43 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to There was an error!.
         /// </summary>
-        internal static string COPYING_ERROR {
+        public static string COPYING_ERROR {
             get {
                 return ResourceManager.GetString("COPYING_ERROR", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Current date.
+        /// </summary>
+        public static string CURRENT_DATE {
+            get {
+                return ResourceManager.GetString("CURRENT_DATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fading speed.
+        /// </summary>
+        public static string FADING_SPEED {
+            get {
+                return ResourceManager.GetString("FADING_SPEED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fading style.
+        /// </summary>
+        public static string FADING_STYLE {
+            get {
+                return ResourceManager.GetString("FADING_STYLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File copied.
         /// </summary>
-        internal static string FILE_COPIED {
+        public static string FILE_COPIED {
             get {
                 return ResourceManager.GetString("FILE_COPIED", resourceCulture);
             }
@@ -136,7 +217,7 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} files copied.
         /// </summary>
-        internal static string FILES_COPIED {
+        public static string FILES_COPIED {
             get {
                 return ResourceManager.GetString("FILES_COPIED", resourceCulture);
             }
@@ -145,7 +226,7 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Open media folder.
         /// </summary>
-        internal static string FOLDER {
+        public static string FOLDER {
             get {
                 return ResourceManager.GetString("FOLDER", resourceCulture);
             }
@@ -154,34 +235,97 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Media folder disabled by administrator!.
         /// </summary>
-        internal static string FOLDER_DISABLED {
+        public static string FOLDER_DISABLED {
             get {
                 return ResourceManager.GetString("FOLDER_DISABLED", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Image Margins.
+        /// </summary>
+        public static string IMAGE_MARGINS {
+            get {
+                return ResourceManager.GetString("IMAGE_MARGINS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to L.
+        /// </summary>
+        public static string LEFT_CHAR {
+            get {
+                return ResourceManager.GetString("LEFT_CHAR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logging Level.
+        /// </summary>
+        public static string LOGGING_LEVEL {
+            get {
+                return ResourceManager.GetString("LOGGING_LEVEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum Number of Items.
+        /// </summary>
+        public static string MAX_ITEMS {
+            get {
+                return ResourceManager.GetString("MAX_ITEMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Media is active - cannot close!.
         /// </summary>
-        internal static string MEDIA_ACTIVE {
+        public static string MEDIA_ACTIVE {
             get {
                 return ResourceManager.GetString("MEDIA_ACTIVE", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Media folder.
+        /// </summary>
+        public static string MEDIA_FOLDER {
+            get {
+                return ResourceManager.GetString("MEDIA_FOLDER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Media Folder.
         /// </summary>
-        internal static string MEDIA_FOLDER_BROWSE {
+        public static string MEDIA_FOLDER_BROWSE {
             get {
                 return ResourceManager.GetString("MEDIA_FOLDER_BROWSE", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Media folder specified on command-line:.
+        /// </summary>
+        public static string MEDIA_FOLDER_CMDLINE {
+            get {
+                return ResourceManager.GetString("MEDIA_FOLDER_CMDLINE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Media monitor.
+        /// </summary>
+        public static string MEDIA_MONITOR {
+            get {
+                return ResourceManager.GetString("MEDIA_MONITOR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
-        internal static string MONITOR_NONE {
+        public static string MONITOR_NONE {
             get {
                 return ResourceManager.GetString("MONITOR_NONE", resourceCulture);
             }
@@ -190,7 +334,7 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to New update available!.
         /// </summary>
-        internal static string NEW_UPDATE_AVAILABLE {
+        public static string NEW_UPDATE_AVAILABLE {
             get {
                 return ResourceManager.GetString("NEW_UPDATE_AVAILABLE", resourceCulture);
             }
@@ -199,7 +343,7 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Cannot deselect monitor when media is active.
         /// </summary>
-        internal static string NO_DESELECT_MONITOR {
+        public static string NO_DESELECT_MONITOR {
             get {
                 return ResourceManager.GetString("NO_DESELECT_MONITOR", resourceCulture);
             }
@@ -208,7 +352,7 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No supported media files!.
         /// </summary>
-        internal static string NO_SUPPORTED_FILES {
+        public static string NO_SUPPORTED_FILES {
             get {
                 return ResourceManager.GetString("NO_SUPPORTED_FILES", resourceCulture);
             }
@@ -217,25 +361,115 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
-        internal static string OK {
+        public static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Main window always on top.
+        /// </summary>
+        public static string ON_TOP {
+            get {
+                return ResourceManager.GetString("ON_TOP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PURGE THUMBNAIL CACHE.
+        /// </summary>
+        public static string PURGE_THUMBS {
+            get {
+                return ResourceManager.GetString("PURGE_THUMBS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rendering engine.
+        /// </summary>
+        public static string RENDERING_ENGINE {
+            get {
+                return ResourceManager.GetString("RENDERING_ENGINE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to R.
+        /// </summary>
+        public static string RIGHT_CHAR {
+            get {
+                return ResourceManager.GetString("RIGHT_CHAR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to rolling slide {0} of {1}.
         /// </summary>
-        internal static string ROLLING_SLIDE_X_OF_Y {
+        public static string ROLLING_SLIDE_X_OF_Y {
             get {
                 return ResourceManager.GetString("ROLLING_SLIDE_X_OF_Y", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DISPLAY.
+        /// </summary>
+        public static string SECTION_DISPLAY {
+            get {
+                return ResourceManager.GetString("SECTION_DISPLAY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IMAGES.
+        /// </summary>
+        public static string SECTION_IMAGES {
+            get {
+                return ResourceManager.GetString("SECTION_IMAGES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MARGINS (as percentage of screen size).
+        /// </summary>
+        public static string SECTION_MARGINS {
+            get {
+                return ResourceManager.GetString("SECTION_MARGINS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MEDIA FILES.
+        /// </summary>
+        public static string SECTION_MEDIA_FILES {
+            get {
+                return ResourceManager.GetString("SECTION_MEDIA_FILES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MISCELLANEOUS.
+        /// </summary>
+        public static string SECTION_MISC {
+            get {
+                return ResourceManager.GetString("SECTION_MISC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VIDEOS &amp; AUDIO.
+        /// </summary>
+        public static string SECTION_VIDEO_AUDIO {
+            get {
+                return ResourceManager.GetString("SECTION_VIDEO_AUDIO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
-        internal static string SETTINGS {
+        public static string SETTINGS {
             get {
                 return ResourceManager.GetString("SETTINGS", resourceCulture);
             }
@@ -244,25 +478,61 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Settings disabled by administrator!.
         /// </summary>
-        internal static string SETTINGS_DISABLED {
+        public static string SETTINGS_DISABLED {
             get {
                 return ResourceManager.GetString("SETTINGS_DISABLED", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show &apos;Freeze&apos; command in Command Panel.
+        /// </summary>
+        public static string SHOW_FREEZE {
+            get {
+                return ResourceManager.GetString("SHOW_FREEZE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show subtitles if available.
+        /// </summary>
+        public static string SHOW_SUBTITLES {
+            get {
+                return ResourceManager.GetString("SHOW_SUBTITLES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to slide {0} of {1}.
         /// </summary>
-        internal static string SLIDE_X_OF_Y {
+        public static string SLIDE_X_OF_Y {
             get {
                 return ResourceManager.GetString("SLIDE_X_OF_Y", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to T.
+        /// </summary>
+        public static string TOP_CHAR {
+            get {
+                return ResourceManager.GetString("TOP_CHAR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video Margins.
+        /// </summary>
+        public static string VIDEO_MARGINS {
+            get {
+                return ResourceManager.GetString("VIDEO_MARGINS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to VIEW.
         /// </summary>
-        internal static string VIEW {
+        public static string VIEW {
             get {
                 return ResourceManager.GetString("VIEW", resourceCulture);
             }
@@ -271,7 +541,7 @@ namespace OnlyM.Properties {
         /// <summary>
         ///   Looks up a localized string similar to YES.
         /// </summary>
-        internal static string YES {
+        public static string YES {
             get {
                 return ResourceManager.GetString("YES", resourceCulture);
             }

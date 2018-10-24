@@ -190,4 +190,94 @@
   <data name="ROLLING_SLIDE_X_OF_Y" xml:space="preserve">
     <value>rolling slide {0} of {1}</value>
   </data>
+  <data name="MEDIA_MONITOR" xml:space="preserve">
+    <value>Media monitor</value>
+  </data>
+  <data name="SECTION_DISPLAY" xml:space="preserve">
+    <value>DISPLAY</value>
+  </data>
+  <data name="MEDIA_FOLDER" xml:space="preserve">
+    <value>Media folder</value>
+  </data>
+  <data name="SECTION_MEDIA_FILES" xml:space="preserve">
+    <value>MEDIA FILES</value>
+  </data>
+  <data name="MAX_ITEMS" xml:space="preserve">
+    <value>Maximum Number of Items</value>
+  </data>
+  <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
+    <value>Media folder specified on command-line:</value>
+  </data>
+  <data name="ALLOW_PAUSE" xml:space="preserve">
+    <value>Allow pause</value>
+  </data>
+  <data name="ALLOW_SCRUB" xml:space="preserve">
+    <value>Allow scrubbing when paused</value>
+  </data>
+  <data name="ALLOW_SEEK" xml:space="preserve">
+    <value>Allow position seeking</value>
+  </data>
+  <data name="BOTTOM_CHAR" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="CACHE_IMAGES" xml:space="preserve">
+    <value>Cache images (better performance but more memory)</value>
+  </data>
+  <data name="CONFIRM_STOP" xml:space="preserve">
+    <value>Confirm when stopping</value>
+  </data>
+  <data name="CURRENT_DATE" xml:space="preserve">
+    <value>Current date</value>
+  </data>
+  <data name="FADING_SPEED" xml:space="preserve">
+    <value>Fading speed</value>
+  </data>
+  <data name="FADING_STYLE" xml:space="preserve">
+    <value>Fading style</value>
+  </data>
+  <data name="IMAGE_MARGINS" xml:space="preserve">
+    <value>Image Margins</value>
+  </data>
+  <data name="LEFT_CHAR" xml:space="preserve">
+    <value>L</value>
+  </data>
+  <data name="LOGGING_LEVEL" xml:space="preserve">
+    <value>Logging Level</value>
+  </data>
+  <data name="ON_TOP" xml:space="preserve">
+    <value>Main window always on top</value>
+  </data>
+  <data name="PURGE_THUMBS" xml:space="preserve">
+    <value>PURGE THUMBNAIL CACHE</value>
+  </data>
+  <data name="RENDERING_ENGINE" xml:space="preserve">
+    <value>Rendering engine</value>
+  </data>
+  <data name="RIGHT_CHAR" xml:space="preserve">
+    <value>R</value>
+  </data>
+  <data name="SECTION_IMAGES" xml:space="preserve">
+    <value>IMAGES</value>
+  </data>
+  <data name="SECTION_MARGINS" xml:space="preserve">
+    <value>MARGINS (as percentage of screen size)</value>
+  </data>
+  <data name="SECTION_MISC" xml:space="preserve">
+    <value>MISCELLANEOUS</value>
+  </data>
+  <data name="SECTION_VIDEO_AUDIO" xml:space="preserve">
+    <value>VIDEOS &amp; AUDIO</value>
+  </data>
+  <data name="SHOW_FREEZE" xml:space="preserve">
+    <value>Show 'Freeze' command in Command Panel</value>
+  </data>
+  <data name="SHOW_SUBTITLES" xml:space="preserve">
+    <value>Show subtitles if available</value>
+  </data>
+  <data name="TOP_CHAR" xml:space="preserve">
+    <value>T</value>
+  </data>
+  <data name="VIDEO_MARGINS" xml:space="preserve">
+    <value>Video Margins</value>
+  </data>
 </root>
