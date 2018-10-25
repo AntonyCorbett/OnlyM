@@ -885,6 +885,12 @@
         private void SortMediaItems()
         {
             List<MediaItem> sorted = MediaItems.OrderBy(x => x.AlphaNumericName).ToList();
+            var blank = sorted.SingleOrDefault(x => x.IsBlankScreen);
+            if (blank != null && blank != sorted.First())
+            {
+                sorted.Remove(blank);
+                sorted.Insert(0, blank);
+            }
 
             for (int n = 0; n < sorted.Count; ++n)
             {

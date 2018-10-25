@@ -38,7 +38,7 @@
 
             <Style x:Key="SettingsButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedLightButton}">
                 <Setter Property="Margin" Value="0,5,0,5"/>
-                <Setter Property="Width" Value="200"/>
+                <Setter Property="Width" Value="250"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
