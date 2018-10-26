@@ -1,6 +1,7 @@
 ﻿namespace OnlyM.Services
 {
     using System;
+    using System.Diagnostics;
     using System.Threading.Tasks;
     using System.Windows.Controls;
     using MediaElementAdaption;
@@ -253,7 +254,11 @@
             if (_mediaClassification == MediaClassification.Video &&
                 _mediaElement is MediaElementMediaFoundation)
             {
+                // accommodate any latency introduced by creation of srt file
+                var sw = Stopwatch.StartNew();
                 var srtFile = SubtitleFileGenerator.Generate(mediaItemFilePath);
+                videoHeadPosition += sw.Elapsed;
+
                 _subTitleProvider = new SubtitleProvider(srtFile, videoHeadPosition);
                 _subTitleProvider.SubtitleEvent += HandleSubtitleEvent;
             }

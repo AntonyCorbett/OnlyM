@@ -287,8 +287,18 @@
                 }
             };
 
-            p.Start();
-            return p.WaitForExit(5000);
+            using (p)
+            {
+                p.Start();
+
+                bool rv = p.WaitForExit(5000);
+                if (!p.HasExited)
+                {
+                    p.Kill();
+                }
+
+                return rv;
+            }
         }
 
         private static string GetTempVideoThumbnailFileName(string originalFilePath)
