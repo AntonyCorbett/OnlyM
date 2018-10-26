@@ -135,6 +135,7 @@
     <Compile Include="Services\Monitors\EnumDisplayNativeMethods.cs" />
     <Compile Include="Services\Monitors\IMonitorsService.cs" />
     <Compile Include="Services\Monitors\MonitorsService.cs" />
+    <Compile Include="Services\Monitors\ScreenQuery.cs" />
     <Compile Include="Services\Options\ILogLevelSwitchService.cs" />
     <Compile Include="Services\Options\IOptionsService.cs" />
     <Compile Include="Services\Options\LogLevelSwitchService.cs" />
