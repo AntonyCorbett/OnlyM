@@ -112,7 +112,7 @@
             if (!_stopped || status == SubtitleStatus.NotShowing)
             {
                 _currentStatus = status;
-                SubtitleEvent?.Invoke(this, new SubtitleEventArgs {Status = status, Text = subtitleText});
+                SubtitleEvent?.Invoke(this, new SubtitleEventArgs { Status = status, Text = subtitleText });
             }
         }
     }
