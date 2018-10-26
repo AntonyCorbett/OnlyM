@@ -280,4 +280,59 @@
   <data name="VIDEO_MARGINS" xml:space="preserve">
     <value>Video Margins</value>
   </data>
+  <data name="AUTO_ROTATE" xml:space="preserve">
+    <value>Auto-rotate</value>
+  </data>
+  <data name="INCLUDE_BLANK" xml:space="preserve">
+    <value>Include "Blank Screen" item</value>
+  </data>
+  <data name="JW_COMPAT_MODE" xml:space="preserve">
+    <value>JW Library compatibility mode</value>
+  </data>
+  <data name="PERMANENT_BACKDROP" xml:space="preserve">
+    <value>Permanent backdrop</value>
+  </data>
+  <data name="USE_CMD_PANEL" xml:space="preserve">
+    <value>Enable Command Panel</value>
+  </data>
+  <data name="USE_THUMBS" xml:space="preserve">
+    <value>Use embedded thumbnails where available</value>
+  </data>
+  <data name="USE_TITLES" xml:space="preserve">
+    <value>Use embedded titles where available</value>
+  </data>
+  <data name="DROP_HERE" xml:space="preserve">
+    <value>Drop your media files here!</value>
+  </data>
+  <data name="MEDIA_PAGE" xml:space="preserve">
+    <value>Media page</value>
+  </data>
+  <data name="UNHIDE" xml:space="preserve">
+    <value>Unhide</value>
+  </data>
+  <data name="DISPLAY_HELP" xml:space="preserve">
+    <value>Display help</value>
+  </data>
+  <data name="NEW_VERSION" xml:space="preserve">
+    <value>New version available!</value>
+  </data>
+  <data name="DELETE" xml:space="preserve">
+    <value>DELETE</value>
+    <comment>Button label in Command panel</comment>
+  </data>
+  <data name="FREEZE" xml:space="preserve">
+    <value>Freeze</value>
+    <comment>Button label in Command panel</comment>
+  </data>
+  <data name="HIDE" xml:space="preserve">
+    <value>HIDE</value>
+    <comment>Button label in Command panel</comment>
+  </data>
+  <data name="PAUSE_FINAL_FRAME" xml:space="preserve">
+    <value>Pause on final frame</value>
+    <comment>Tooltip on Freeze button in Command panel</comment>
+  </data>
+  <data name="WILL_PAUSE" xml:space="preserve">
+    <value>Will pause on final frame</value>
+  </data>
 </root>

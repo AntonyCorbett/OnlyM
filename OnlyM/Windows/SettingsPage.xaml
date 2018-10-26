@@ -108,20 +108,17 @@
 
                 <CheckBox IsChecked="{Binding PermanentBackdrop, Mode=TwoWay}"
                           IsEnabled="{Binding JwLibModeNotSet, Mode=OneWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Permanent backdrop
-                </CheckBox>
+                          Content="{x:Static resx:Resources.PERMANENT_BACKDROP}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding IncludeBlankScreenItem, Mode=TwoWay}"
                           IsEnabled="{Binding NotPermanentBackdrop, Mode=OneWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Include "Blank Screen" item
-                </CheckBox>
+                          Content="{x:Static resx:Resources.INCLUDE_BLANK}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding JwLibraryCompatibilityMode, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    JW Library compatibility mode
-                </CheckBox>
+                          Content="{x:Static resx:Resources.JW_COMPAT_MODE}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
             </StackPanel>
         </GroupBox>
 
@@ -155,19 +152,18 @@
                            Text ="{Binding MediaFolder}" />
 
                 <CheckBox IsChecked="{Binding EmbeddedThumbnails, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Use embedded thumbnails where available
-                </CheckBox>
+                          Content = "{x:Static resx:Resources.USE_THUMBS}" 
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding UseInternalMediaTitles, Mode=TwoWay}"
+                          Content = "{x:Static resx:Resources.USE_TITLES}" 
                           Style="{StaticResource SettingsCheckBoxStyle}">
-                    Use embedded titles where available
+
                 </CheckBox>
 
                 <CheckBox IsChecked="{Binding ShowCommandPanel, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Enable Command Panel
-                </CheckBox>
+                          Content = "{x:Static resx:Resources.USE_CMD_PANEL}" 
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <TextBox
                     materialDesign:HintAssist.Hint="{x:Static resx:Resources.MAX_ITEMS}"
@@ -207,10 +203,8 @@
                           Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding AutoRotateImages, Mode=TwoWay}"
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-                    Auto-rotate
-                </CheckBox>
-
+                          Content="{x:Static resx:Resources.AUTO_ROTATE}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
             </StackPanel>
         </GroupBox>
 
@@ -357,12 +351,5 @@
         </GroupBox>
 
     </StackPanel>
-           
+
 </UserControl>
-
-
-
- 
-
-
-

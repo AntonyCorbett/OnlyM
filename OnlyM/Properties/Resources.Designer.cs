@@ -97,6 +97,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto-rotate.
+        /// </summary>
+        public static string AUTO_ROTATE {
+            get {
+                return ResourceManager.GetString("AUTO_ROTATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap blank {
@@ -188,6 +197,33 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DELETE.
+        /// </summary>
+        public static string DELETE {
+            get {
+                return ResourceManager.GetString("DELETE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display help.
+        /// </summary>
+        public static string DISPLAY_HELP {
+            get {
+                return ResourceManager.GetString("DISPLAY_HELP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drop your media files here!.
+        /// </summary>
+        public static string DROP_HERE {
+            get {
+                return ResourceManager.GetString("DROP_HERE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fading speed.
         /// </summary>
         public static string FADING_SPEED {
@@ -242,11 +278,47 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Freeze.
+        /// </summary>
+        public static string FREEZE {
+            get {
+                return ResourceManager.GetString("FREEZE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HIDE.
+        /// </summary>
+        public static string HIDE {
+            get {
+                return ResourceManager.GetString("HIDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image Margins.
         /// </summary>
         public static string IMAGE_MARGINS {
             get {
                 return ResourceManager.GetString("IMAGE_MARGINS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include &quot;Blank Screen&quot; item.
+        /// </summary>
+        public static string INCLUDE_BLANK {
+            get {
+                return ResourceManager.GetString("INCLUDE_BLANK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JW Library compatibility mode.
+        /// </summary>
+        public static string JW_COMPAT_MODE {
+            get {
+                return ResourceManager.GetString("JW_COMPAT_MODE", resourceCulture);
             }
         }
         
@@ -323,6 +395,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Media page.
+        /// </summary>
+        public static string MEDIA_PAGE {
+            get {
+                return ResourceManager.GetString("MEDIA_PAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         public static string MONITOR_NONE {
@@ -337,6 +418,15 @@ namespace OnlyM.Properties {
         public static string NEW_UPDATE_AVAILABLE {
             get {
                 return ResourceManager.GetString("NEW_UPDATE_AVAILABLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New version available!.
+        /// </summary>
+        public static string NEW_VERSION {
+            get {
+                return ResourceManager.GetString("NEW_VERSION", resourceCulture);
             }
         }
         
@@ -373,6 +463,24 @@ namespace OnlyM.Properties {
         public static string ON_TOP {
             get {
                 return ResourceManager.GetString("ON_TOP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause on final frame.
+        /// </summary>
+        public static string PAUSE_FINAL_FRAME {
+            get {
+                return ResourceManager.GetString("PAUSE_FINAL_FRAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permanent backdrop.
+        /// </summary>
+        public static string PERMANENT_BACKDROP {
+            get {
+                return ResourceManager.GetString("PERMANENT_BACKDROP", resourceCulture);
             }
         }
         
@@ -521,6 +629,42 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unhide.
+        /// </summary>
+        public static string UNHIDE {
+            get {
+                return ResourceManager.GetString("UNHIDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Command Panel.
+        /// </summary>
+        public static string USE_CMD_PANEL {
+            get {
+                return ResourceManager.GetString("USE_CMD_PANEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use embedded thumbnails where available.
+        /// </summary>
+        public static string USE_THUMBS {
+            get {
+                return ResourceManager.GetString("USE_THUMBS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use embedded titles where available.
+        /// </summary>
+        public static string USE_TITLES {
+            get {
+                return ResourceManager.GetString("USE_TITLES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Video Margins.
         /// </summary>
         public static string VIDEO_MARGINS {
@@ -535,6 +679,15 @@ namespace OnlyM.Properties {
         public static string VIEW {
             get {
                 return ResourceManager.GetString("VIEW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Will pause on final frame.
+        /// </summary>
+        public static string WILL_PAUSE {
+            get {
+                return ResourceManager.GetString("WILL_PAUSE", resourceCulture);
             }
         }
         

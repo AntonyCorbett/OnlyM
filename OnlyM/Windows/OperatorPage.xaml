@@ -10,6 +10,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
              xmlns:models="clr-namespace:OnlyM.Models"
+             xmlns:resx="clr-namespace:OnlyM.Properties"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
              TextElement.FontSize="18"
@@ -59,23 +60,23 @@
                                     <Button Grid.Column="0" Grid.Row="0"
                                             Command="{Binding Path=DataContext.DeleteMediaItemCommand, Source={x:Reference OnlyMOperatorPage}}"
                                             CommandParameter="{Binding Id}"
-                                            Content="DELETE"
+                                            Content="{x:Static resx:Resources.DELETE}"
                                             Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
 
                                     <Button Grid.Column="0" Grid.Row="1"
                                             Command="{Binding Path=DataContext.HideMediaItemCommand, Source={x:Reference OnlyMOperatorPage}}"
                                             CommandParameter="{Binding Id}"
-                                            Content="HIDE"
+                                            Content="{x:Static resx:Resources.HIDE}"
                                             Style="{StaticResource MaterialDesignRaisedLightButton}"/>
 
                                     <CheckBox Grid.Column="1" Grid.Row="1"
                                             Visibility="{Binding ShouldDisplayFreezeCommand, Converter={StaticResource BooleanToVisibilityConverter}}"
                                             Margin="10,0,0,0"
-                                            ToolTip="Pause on final frame"
+                                            ToolTip="{x:Static resx:Resources.PAUSE_FINAL_FRAME}"
+                                            Content="{x:Static resx:Resources.FREEZE}"
                                             IsChecked="{Binding PauseOnLastFrame, Mode=TwoWay}"
                                             Command="{Binding Path=DataContext.FreezeVideoCommand, Source={x:Reference OnlyMOperatorPage}}"
-                                            CommandParameter="{Binding Id}"
-                                            Content="Freeze" />
+                                            CommandParameter="{Binding Id}" />
 
                                 </Grid>
 
@@ -148,7 +149,7 @@
 
                                     <Border BorderThickness="1" 
                                             Visibility="{Binding PauseOnLastFrame, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                            ToolTip="Will pause on final frame"
+                                            ToolTip="{x:Static resx:Resources.WILL_PAUSE}"
                                             BorderBrush="Black">
                                     <Image 
                                         HorizontalAlignment="Right"

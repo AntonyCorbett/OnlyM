@@ -656,8 +656,8 @@
             // don't localize these strings!
             return new List<RenderingMethodItem>
             {
-                new RenderingMethodItem { Method = RenderingMethod.MediaFoundation, Name = "Media Foundation" },
-                new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = "Ffmpeg" }
+                new RenderingMethodItem { Method = RenderingMethod.MediaFoundation, Name = @"Media Foundation" },
+                new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = @"Ffmpeg" }
             };
         }
 

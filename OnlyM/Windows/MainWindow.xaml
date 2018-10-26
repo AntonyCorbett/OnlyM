@@ -9,6 +9,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
+        xmlns:resx="clr-namespace:OnlyM.Properties"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -163,7 +164,7 @@
                 <TextBlock Visibility="{Binding Path=ShowDragAndDropHint, Converter={StaticResource BooleanToVisibilityConverter}}" 
                            Height="20"
                            VerticalAlignment="Top"
-                           Text="Drop your media files here!"
+                           Text="{x:Static resx:Resources.DROP_HERE}"
                            Margin="20,20,20,0">
 
                 </TextBlock>
@@ -204,7 +205,7 @@
                         <Button Grid.Column="0"
                         HorizontalAlignment="Left"
                         Command="{Binding GotoOperatorCommand}"
-                        ToolTip="Media page"
+                        ToolTip="{x:Static resx:Resources.MEDIA_PAGE}"
                         Visibility="{Binding Path=IsSettingsPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
                             <materialDesign:PackIcon
@@ -216,7 +217,7 @@
                     <Button Grid.Column="0"
                         HorizontalAlignment="Left"
                         Command="{Binding UnhideCommand}"
-                        ToolTip="Unhide"
+                        ToolTip="{x:Static resx:Resources.UNHIDE}"
                         Visibility="{Binding Path=IsUnhideButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource MaterialDesignRaisedAccentButton}">
                         UNHIDE
@@ -238,7 +239,7 @@
                     <Button
                         Command="{Binding LaunchReleasePageCommand}"
                         Grid.Column="1"
-                        ToolTip="New version available!"
+                        ToolTip="{x:Static resx:Resources.NEW_VERSION}"
                         Visibility="{Binding Path=ShowNewVersionButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}">
                         <materialDesign:PackIcon
@@ -264,7 +265,7 @@
                     <Button
                         Command="{Binding LaunchHelpPageCommand}"
                         Grid.Column="3"
-                        ToolTip="Display help"
+                        ToolTip="{x:Static resx:Resources.DISPLAY_HELP}"
                         Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
                         <materialDesign:PackIcon
