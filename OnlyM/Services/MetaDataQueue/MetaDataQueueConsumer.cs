@@ -116,9 +116,9 @@
 
         private void PopulateThumbnailAndMetaData(MediaItem mediaItem)
         {
+            PopulateSlideData(mediaItem);
             PopulateThumbnail(mediaItem);
             PopulateDurationAndName(mediaItem);
-            PopulateSlideData(mediaItem);
         }
 
         private void PopulateSlideData(MediaItem mediaItem)

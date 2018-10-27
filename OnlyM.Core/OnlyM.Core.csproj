@@ -131,6 +131,7 @@
     <Compile Include="Services\Media\MediaMetaDataService.cs" />
     <Compile Include="Services\Media\MediaProviderService.cs" />
     <Compile Include="Services\Media\ThumbnailService.cs" />
+    <Compile Include="Services\Media\VideoFileInUseException.cs" />
     <Compile Include="Services\Monitors\DisplayDevices.cs" />
     <Compile Include="Services\Monitors\EnumDisplayNativeMethods.cs" />
     <Compile Include="Services\Monitors\IMonitorsService.cs" />

@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Core.Services.Media
+﻿using Unosquare.FFME.Shared;
+
+namespace OnlyM.Core.Services.Media
 {
     using System;
     using System.IO;
@@ -28,6 +30,10 @@
                         return null;
                 }
             }
+            catch (VideoFileInUseException)
+            {
+                Log.Logger.Information($"Waiting for file to become available: {mediaItemFilePath}");
+            }
             catch (System.IO.IOException)
             {
                 Log.Logger.Error($"Could not get metadata from file: {mediaItemFilePath} (in use)");
@@ -55,21 +61,29 @@
             Unosquare.FFME.MediaEngine.FFmpegDirectory = ffmpegFolder;
             Unosquare.FFME.MediaEngine.LoadFFmpeg();
 
-            var info = Unosquare.FFME.MediaEngine.RetrieveMediaInfo(mediaItemFilePath);
-
-            string title = null;
-            info.Metadata?.TryGetValue("title", out title);
-
-            if (string.IsNullOrEmpty(title))
+            try
             {
-                title = Path.GetFileNameWithoutExtension(mediaItemFilePath);
+                var info = Unosquare.FFME.MediaEngine.RetrieveMediaInfo(mediaItemFilePath);
+
+                string title = null;
+                info.Metadata?.TryGetValue("title", out title);
+
+                if (string.IsNullOrEmpty(title))
+                {
+                    title = Path.GetFileNameWithoutExtension(mediaItemFilePath);
+                }
+
+                return new MediaMetaData
+                {
+                    Title = StripNewLines(title),
+                    Duration = info.Duration
+                };
             }
-        
-            return new MediaMetaData
+            catch (MediaContainerException)
             {
-                Title = StripNewLines(title),
-                Duration = info.Duration
-            };
+                // file is in use...
+                throw new VideoFileInUseException();
+            }
         }
 
         private MediaMetaData GetNonVideoMetaData(string mediaItemFilePath)
