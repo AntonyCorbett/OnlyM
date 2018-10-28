@@ -32,13 +32,20 @@
                 var displayScreen = displayScreens?.SingleOrDefault(x => x.Item1.Equals(screen));
                 var deviceData = displayScreen?.Item2;
 
-                result.Add(new SystemMonitor
+                var monitor = new SystemMonitor
                 {
                     Monitor = screen,
                     MonitorName = deviceData?.DeviceString ?? SanitizeScreenDeviceName(screen.DeviceName),
                     MonitorId = deviceData?.DeviceId ?? screen.DeviceName,
                     FriendlyName = screen.DeviceFriendlyName()
-                });
+                };
+
+                if (string.IsNullOrEmpty(monitor.FriendlyName))
+                {
+                    monitor.FriendlyName = monitor.MonitorName;
+                }
+
+                result.Add(monitor);
             }
 
             return result;
