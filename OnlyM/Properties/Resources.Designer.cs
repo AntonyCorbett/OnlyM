@@ -332,7 +332,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Logging Level.
+        ///   Looks up a localized string similar to Logging level.
         /// </summary>
         public static string LOGGING_LEVEL {
             get {
@@ -341,7 +341,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maximum Number of Items.
+        ///   Looks up a localized string similar to Maximum number of items.
         /// </summary>
         public static string MAX_ITEMS {
             get {
