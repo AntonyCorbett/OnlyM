@@ -126,19 +126,19 @@
     <value>..\Resources\blank.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CONFIRM_STOP_MEDIA" xml:space="preserve">
-    <value>Do you want to stop playback?</value>
+    <value>Willst du die Wiedergabe beenden?</value>
     <comment>Prompt that is displayed when you attempt to stop playback</comment>
   </data>
   <data name="COPYING_ERROR" xml:space="preserve">
-    <value>There was an error!</value>
+    <value>Es ist ein Fehler aufgetreten!</value>
     <comment>Message displayed when there is an error copying media to the OnlyM media folder</comment>
   </data>
   <data name="FILES_COPIED" xml:space="preserve">
-    <value>{0} files copied</value>
+    <value>{0} Dateien kopiert</value>
     <comment>Displayed as a notification message when several files are dropped onto the media list. Please leve the placeholder as it is.</comment>
   </data>
   <data name="FILE_COPIED" xml:space="preserve">
-    <value>File copied</value>
+    <value>Datei kopiert</value>
     <comment>Displayed as a notification message when a single file is dropped onto the media list.</comment>
   </data>
   <data name="MEDIA_ACTIVE" xml:space="preserve">
@@ -146,11 +146,11 @@
     <comment>This is the notification displayed if you try to close OnlyM when media is playing.</comment>
   </data>
   <data name="MONITOR_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Kein Monitor ausgewählt</value>
     <comment>Default (blank) menu item in Settings =&gt; Display =&gt; Media monitor</comment>
   </data>
   <data name="NEW_UPDATE_AVAILABLE" xml:space="preserve">
-    <value>New update available!</value>
+    <value>Neues Update verfügbar!</value>
     <comment>Notification text displayed when there is a new version to download (can be translated the same as NEW_VERSION)</comment>
   </data>
   <data name="NO_SUPPORTED_FILES" xml:space="preserve">
@@ -165,31 +165,31 @@
     <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
   </data>
   <data name="YES" xml:space="preserve">
-    <value>YES</value>
+    <value>JA</value>
     <comment>Caption of the notification bar button to confirm that media should be stopped.</comment>
   </data>
   <data name="BLANK_SCREEN" xml:space="preserve">
-    <value>Blank Screen</value>
+    <value>Schwarzer Bildschirm</value>
     <comment>Title of the "Blank Screen" item</comment>
   </data>
   <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
-    <value>Select Media Folder</value>
+    <value>Medienordner auswählen</value>
     <comment>Title of the "Open Folder" dialog that is displayed when you click the folder button in Settings =&gt; Media Files</comment>
   </data>
   <data name="SETTINGS" xml:space="preserve">
-    <value>Settings</value>
+    <value>Einstellungen</value>
     <comment>Tooltip for the main page, Settings button</comment>
   </data>
   <data name="SETTINGS_DISABLED" xml:space="preserve">
-    <value>Settings disabled by administrator!</value>
+    <value>Einstellungen durch Administrator deaktiviert!</value>
     <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
   </data>
   <data name="FOLDER" xml:space="preserve">
-    <value>Open media folder</value>
+    <value>Medienordner öffnen</value>
     <comment>Tooltip on the main page Folder button</comment>
   </data>
   <data name="FOLDER_DISABLED" xml:space="preserve">
-    <value>Media folder disabled by administrator!</value>
+    <value>Medienordner öffnen durch Administator deaktivert!</value>
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
@@ -197,11 +197,11 @@
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
-    <value>(contains {0} slides)</value>
+    <value>(enthält {0} Folien)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="SLIDE_X_OF_Y" xml:space="preserve">
-    <value>slide {0} of {1}</value>
+    <value>Folie {0} von {1}</value>
     <comment>Displayed when showing a slideshow to indicate which slide is being viewed. Please retain the placeholders.</comment>
   </data>
   <data name="CONTAINS_X_ROLLING_SLIDES" xml:space="preserve">
@@ -217,19 +217,19 @@
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">
-    <value>DISPLAY</value>
+    <value>ANZEIGE</value>
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
-    <value>Media folder</value>
+    <value>Medienordner</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="SECTION_MEDIA_FILES" xml:space="preserve">
-    <value>MEDIA FILES</value>
+    <value>MEDIA-DATEIEN</value>
     <comment>Section title for Settings =&gt; Media Files</comment>
   </data>
   <data name="MAX_ITEMS" xml:space="preserve">
-    <value>Maximum number of items</value>
+    <value>Maximale Anzahl an Dateien</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
@@ -237,11 +237,11 @@
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
-    <value>Allow pause</value>
+    <value>Pause erlauben</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Allow scrubbing when paused</value>
+    <value>Spulen zulassen, wenn pausiert</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
