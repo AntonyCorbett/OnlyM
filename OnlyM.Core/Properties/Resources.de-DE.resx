@@ -138,7 +138,7 @@
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_NONE" xml:space="preserve">
-    <value>Keine</value>
+    <value>Keiner</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_OUT" xml:space="preserve">
