@@ -1,11 +1,10 @@
-﻿using Unosquare.FFME.Shared;
-
-namespace OnlyM.Core.Services.Media
+﻿namespace OnlyM.Core.Services.Media
 {
     using System;
     using System.IO;
     using Models;
     using Serilog;
+    using Unosquare.FFME.Shared;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MediaMetaDataService : IMediaMetaDataService
