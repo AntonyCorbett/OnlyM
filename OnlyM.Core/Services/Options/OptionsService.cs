@@ -1,8 +1,12 @@
 ﻿namespace OnlyM.Core.Services.Options
 {
     using System;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Threading;
+    using System.Windows;
+    using System.Windows.Markup;
     using CommandLine;
     using CommonServiceLocator;
     using Models;
@@ -306,6 +310,8 @@
                     var serializer = new JsonSerializer();
                     _options = (Options)serializer.Deserialize(file, typeof(Options));
                     _options.Sanitize();
+
+                    SetCulture();
                 }
             }
         }
@@ -331,6 +337,30 @@
                     serializer.Serialize(file, _options);
                     _originalOptionsSignature = GetOptionsSignature(_options);
                 }
+            }
+        }
+
+        private void SetCulture()
+        {
+            var culture = _options.Culture;
+
+            if (string.IsNullOrEmpty(culture))
+            {
+                culture = CultureInfo.CurrentCulture.Name;
+            }
+
+            try
+            {
+                Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+                FrameworkElement.LanguageProperty.OverrideMetadata(
+                    typeof(FrameworkElement),
+                    new FrameworkPropertyMetadata(
+                        XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not set culture");
             }
         }
     }

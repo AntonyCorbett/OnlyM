@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using AutoUpdates;
@@ -33,6 +34,7 @@
         private readonly IActiveMediaItemsService _activeMediaItemsService;
         private readonly ISnackbarService _snackbarService;
         private readonly MonitorItem[] _monitors;
+        private readonly LanguageItem[] _languages;
         private readonly RenderingMethodItem[] _renderingMethods;
         private readonly LoggingLevel[] _loggingLevels;
         private readonly ImageFade[] _fadingTypes;
@@ -60,6 +62,7 @@
             InitRecentlyUsedFolders();
             
             _monitors = GetSystemMonitors().ToArray();
+            _languages = GetSupportedLanguages();
             _loggingLevels = GetLoggingLevels().ToArray();
             _fadingTypes = GetImageFadingTypes().ToArray();
             _fadingSpeeds = GetFadingSpeedTypes().ToArray();
@@ -574,6 +577,21 @@
             }
         }
 
+        public IEnumerable<LanguageItem> Languages => _languages;
+
+        public string LanguageId
+        {
+            get => _optionsService.Options.Culture;
+            set
+            {
+                if (_optionsService.Options.Culture != value)
+                {
+                    _optionsService.Options.Culture = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public IEnumerable<MonitorItem> Monitors => _monitors;
 
         public string MonitorId
@@ -741,6 +759,47 @@
         private void PurgeThumbnailCache()
         {
             _thumbnailService.ClearThumbCache();
+        }
+
+        private LanguageItem[] GetSupportedLanguages()
+        {
+            var result = new List<LanguageItem>();
+
+            var subFolders = Directory.GetDirectories(AppDomain.CurrentDomain.BaseDirectory);
+
+            foreach (var folder in subFolders)
+            {
+                if (!string.IsNullOrEmpty(folder))
+                {
+                    try
+                    {
+                        var c = new CultureInfo(Path.GetFileNameWithoutExtension(folder));
+                        result.Add(new LanguageItem
+                        {
+                            LanguageId = c.Name,
+                            LanguageName = c.EnglishName
+                        });
+                    }
+                    catch (CultureNotFoundException)
+                    {
+                        // expected
+                    }
+                }
+            }
+
+            // the native language
+            {
+                var c = new CultureInfo(Path.GetFileNameWithoutExtension("en-GB"));
+                result.Add(new LanguageItem
+                {
+                    LanguageId = c.Name,
+                    LanguageName = c.EnglishName
+                });
+            }
+
+            result.Sort((x, y) => string.Compare(x.LanguageName, y.LanguageName, StringComparison.Ordinal));
+
+            return result.ToArray();
         }
     }
 }

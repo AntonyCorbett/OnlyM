@@ -323,6 +323,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string LANGUAGE {
+            get {
+                return ResourceManager.GetString("LANGUAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to L.
         /// </summary>
         public static string LEFT_CHAR {
@@ -499,6 +508,15 @@ namespace OnlyM.Properties {
         public static string RENDERING_ENGINE {
             get {
                 return ResourceManager.GetString("RENDERING_ENGINE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please restart OnlyM after changing the language..
+        /// </summary>
+        public static string RESTART_LANGUAGE {
+            get {
+                return ResourceManager.GetString("RESTART_LANGUAGE", resourceCulture);
             }
         }
         

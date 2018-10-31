@@ -304,7 +304,9 @@
         public bool JwLibraryCompatibilityMode { get; set; }
 
         public bool ConfirmVideoStop { get; set; }
-        
+
+        public string Culture { get; set; }
+
         public LogEventLevel LogEventLevel
         {
             get => _logEventLevel;
