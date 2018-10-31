@@ -189,11 +189,11 @@
     <comment>Tooltip on the main page Folder button</comment>
   </data>
   <data name="FOLDER_DISABLED" xml:space="preserve">
-    <value>Media folder disabled by administrator!</value>
+    <value>La carpeta dels fitxers multimèdia està bloquejada per l'administrador!</value>
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Cannot deselect monitor when media is active</value>
+    <value>No es pot treure el monitor mentre està en ús</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
