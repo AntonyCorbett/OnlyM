@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="APP_VER" xml:space="preserve">
-    <value>OnlyM software version: {0}</value>
+    <value>Verzia softwaru: {0}</value>
     <comment>See Settings =&gt; Images. Please retain the "{0}" - it's a placeholder for the version number</comment>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
