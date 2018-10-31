@@ -293,7 +293,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
-    <value>Rendering-Engine</value>
+    <value>Videoplayer</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="RIGHT_CHAR" xml:space="preserve">
