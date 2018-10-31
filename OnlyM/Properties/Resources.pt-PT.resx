@@ -249,7 +249,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="BOTTOM_CHAR" xml:space="preserve">
-    <value>B</value>
+    <value>F</value>
     <comment>See Settings =&gt; Margins. Denotes the (B)ottom margin</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
@@ -277,7 +277,7 @@
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LEFT_CHAR" xml:space="preserve">
-    <value>L</value>
+    <value>E</value>
     <comment>See Settings =&gt; Margins. Denotes the (L)eft margin</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
@@ -297,7 +297,7 @@
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="RIGHT_CHAR" xml:space="preserve">
-    <value>R</value>
+    <value>D</value>
     <comment>See Settings =&gt; Margins. Denotes the (R)ight margin</comment>
   </data>
   <data name="SECTION_IMAGES" xml:space="preserve">
