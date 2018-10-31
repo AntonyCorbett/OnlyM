@@ -154,7 +154,7 @@
     <comment>Notification text displayed when there is a new version to download (can be translated the same as NEW_VERSION)</comment>
   </data>
   <data name="NO_SUPPORTED_FILES" xml:space="preserve">
-    <value>No supported media files!</value>
+    <value>Desteklenen medya dosyası yok!</value>
     <comment>Notification displayed if you drag and drop a file (or files) of a type that is not supported.</comment>
   </data>
   <data name="OK" xml:space="preserve">
@@ -197,11 +197,11 @@
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
-    <value>(contains {0} slides)</value>
+    <value>({0} slayt içeriyor)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="SLIDE_X_OF_Y" xml:space="preserve">
-    <value>slide {0} of {1}</value>
+    <value>slayt: {0} / {1}</value>
     <comment>Displayed when showing a slideshow to indicate which slide is being viewed. Please retain the placeholders.</comment>
   </data>
   <data name="CONTAINS_X_ROLLING_SLIDES" xml:space="preserve">
@@ -213,7 +213,7 @@
     <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
   </data>
   <data name="MEDIA_MONITOR" xml:space="preserve">
-    <value>Media monitor</value>
+    <value>Medya monitörü</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">
@@ -221,15 +221,15 @@
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
-    <value>Media folder</value>
+    <value>Medya Klasörü</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="SECTION_MEDIA_FILES" xml:space="preserve">
-    <value>MEDIA FILES</value>
+    <value>MEDYA DOSYALARI</value>
     <comment>Section title for Settings =&gt; Media Files</comment>
   </data>
   <data name="MAX_ITEMS" xml:space="preserve">
-    <value>Maximum number of items</value>
+    <value>En fazla öğe sayısı</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
@@ -237,7 +237,7 @@
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
-    <value>Allow pause</value>
+    <value>Duraklamaya izin ver</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
@@ -249,7 +249,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="BOTTOM_CHAR" xml:space="preserve">
-    <value>B</value>
+    <value>ALT</value>
     <comment>See Settings =&gt; Margins. Denotes the (B)ottom margin</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
@@ -257,83 +257,83 @@
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
-    <value>Confirm when stopping</value>
+    <value>Durduruken onay iste</value>
     <comment>See Settings =&gt; Videos and Audio.</comment>
   </data>
   <data name="CURRENT_DATE" xml:space="preserve">
-    <value>Current date</value>
+    <value>Geçerli tarih</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="FADING_SPEED" xml:space="preserve">
-    <value>Fading speed</value>
+    <value>Solma hızı</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="FADING_STYLE" xml:space="preserve">
-    <value>Fading style</value>
+    <value>Solma stili</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
-    <value>Image Margins</value>
+    <value>Resim Kenar Boşlukları</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LEFT_CHAR" xml:space="preserve">
-    <value>L</value>
+    <value>SOL</value>
     <comment>See Settings =&gt; Margins. Denotes the (L)eft margin</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
-    <value>Logging level</value>
+    <value>Günlük düzeyi</value>
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
-    <value>Main window always on top</value>
+    <value>Ana pencere her zaman üstte</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>PURGE THUMBNAIL CACHE</value>
+    <value>KÜÇÜK RESİM ÖNBELLEĞİNİ TEMİZLE</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
-    <value>Rendering engine</value>
+    <value>Render motoru</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="RIGHT_CHAR" xml:space="preserve">
-    <value>R</value>
+    <value>SAĞ</value>
     <comment>See Settings =&gt; Margins. Denotes the (R)ight margin</comment>
   </data>
   <data name="SECTION_IMAGES" xml:space="preserve">
-    <value>IMAGES</value>
+    <value>RESİMLER</value>
     <comment>Section title for Settings =&gt; Images</comment>
   </data>
   <data name="SECTION_MARGINS" xml:space="preserve">
-    <value>MARGINS (as percentage of screen size)</value>
+    <value>KENAR BOŞLUKLARI (ekran boyutu yüzdesi olarak)</value>
     <comment>Section title for Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_MISC" xml:space="preserve">
-    <value>MISCELLANEOUS</value>
+    <value>DİĞER</value>
     <comment>Section title for Settings =&gt; Micellanesous</comment>
   </data>
   <data name="SECTION_VIDEO_AUDIO" xml:space="preserve">
-    <value>VIDEOS &amp; AUDIO</value>
+    <value>VİDEOLAR VE SES</value>
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Show 'Freeze' command in Command Panel</value>
+    <value>Komut Panelinde 'Dondur' komutunu göster</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
-    <value>Show subtitles if available</value>
+    <value>Varsa altyazıları göster</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="TOP_CHAR" xml:space="preserve">
-    <value>T</value>
+    <value>ÜST</value>
     <comment>See Settings =&gt; Margins. Denotes the (T)op margin</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
-    <value>Video Margins</value>
+    <value>Video Kenar Boşlukları</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="AUTO_ROTATE" xml:space="preserve">
-    <value>Auto-rotate</value>
+    <value>Otomatik Döndür</value>
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
@@ -341,15 +341,15 @@
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
-    <value>JW Library compatibility mode</value>
+    <value>JW Library uyumluluk modu</value>
     <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
   </data>
   <data name="PERMANENT_BACKDROP" xml:space="preserve">
-    <value>Permanent backdrop</value>
+    <value>Kalıcı fon</value>
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
-    <value>Enable Command Panel</value>
+    <value>Komut Panelini etkinleştir</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
@@ -369,7 +369,7 @@
     <comment>Tooltip for the Settings page "Back" button </comment>
   </data>
   <data name="UNHIDE" xml:space="preserve">
-    <value>Unhide</value>
+    <value>Göster</value>
     <comment>If you have hidden any of the media items (using the command panel), an "Unhide" biutton is displayed on the main page. This is the button caption.</comment>
   </data>
   <data name="DISPLAY_HELP" xml:space="preserve">
@@ -381,19 +381,19 @@
     <comment>Tooltip for the download button when a new version is ready (can be translated the same as NEW_UPDATE_AVAILABLE)</comment>
   </data>
   <data name="DELETE" xml:space="preserve">
-    <value>DELETE</value>
+    <value>SİL</value>
     <comment>Button label in Command panel</comment>
   </data>
   <data name="FREEZE" xml:space="preserve">
-    <value>Freeze</value>
+    <value>Dondur</value>
     <comment>Button label in Command panel. Freeze the video on the final frame.</comment>
   </data>
   <data name="HIDE" xml:space="preserve">
-    <value>HIDE</value>
+    <value>GİZLE</value>
     <comment>Button label in Command panel. Hide the media item.</comment>
   </data>
   <data name="PAUSE_FINAL_FRAME" xml:space="preserve">
-    <value>Pause on final frame</value>
+    <value>Son karede duraklat</value>
     <comment>Tooltip on Freeze button in Command panel</comment>
   </data>
   <data name="WILL_PAUSE" xml:space="preserve">
