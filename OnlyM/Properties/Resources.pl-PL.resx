@@ -161,11 +161,11 @@
     <value>OK</value>
   </data>
   <data name="VIEW" xml:space="preserve">
-    <value>VIEW</value>
+    <value>WIDOK</value>
     <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
   </data>
   <data name="YES" xml:space="preserve">
-    <value>YES</value>
+    <value>TAK</value>
     <comment>Caption of the notification bar button to confirm that media should be stopped.</comment>
   </data>
   <data name="BLANK_SCREEN" xml:space="preserve">
@@ -173,7 +173,7 @@
     <comment>Title of the "Blank Screen" item</comment>
   </data>
   <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
-    <value>Select Media Folder</value>
+    <value>Wybierz folder multimediów</value>
     <comment>Title of the "Open Folder" dialog that is displayed when you click the folder button in Settings =&gt; Media Files</comment>
   </data>
   <data name="SETTINGS" xml:space="preserve">
@@ -189,7 +189,7 @@
     <comment>Tooltip on the main page Folder button</comment>
   </data>
   <data name="FOLDER_DISABLED" xml:space="preserve">
-    <value>Media folder disabled by administrator!</value>
+    <value>Wyłączone przez administratora folderu multimediów!</value>
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
@@ -197,7 +197,7 @@
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
-    <value>(contains {0} slides)</value>
+    <value>(zawiera {0} slajdy/ów)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="SLIDE_X_OF_Y" xml:space="preserve">
@@ -217,15 +217,15 @@
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">
-    <value>DISPLAY</value>
+    <value>WYŚWIETLACZ</value>
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
-    <value>Media folder</value>
+    <value>Folder z plikami</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="SECTION_MEDIA_FILES" xml:space="preserve">
-    <value>MEDIA FILES</value>
+    <value>PLIKI MULTIMEDIALNE</value>
     <comment>Section title for Settings =&gt; Media Files</comment>
   </data>
   <data name="MAX_ITEMS" xml:space="preserve">
@@ -261,7 +261,7 @@
     <comment>See Settings =&gt; Videos and Audio.</comment>
   </data>
   <data name="CURRENT_DATE" xml:space="preserve">
-    <value>Current date</value>
+    <value>Bieżąca data</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="FADING_SPEED" xml:space="preserve">
@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Images</comment>
   </data>
   <data name="SECTION_MARGINS" xml:space="preserve">
-    <value>MARGINS (as percentage of screen size)</value>
+    <value>MARGINESY (jako procent rozmiaru ekranu)</value>
     <comment>Section title for Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_MISC" xml:space="preserve">
@@ -313,7 +313,7 @@
     <comment>Section title for Settings =&gt; Micellanesous</comment>
   </data>
   <data name="SECTION_VIDEO_AUDIO" xml:space="preserve">
-    <value>VIDEOS &amp; AUDIO</value>
+    <value>FILMY i AUDIO</value>
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
@@ -361,7 +361,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
-    <value>Drop your media files here!</value>
+    <value>Przeciągnij tutaj swoje pliki!</value>
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
