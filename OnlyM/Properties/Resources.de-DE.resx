@@ -126,7 +126,7 @@
     <value>..\Resources\blank.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CONFIRM_STOP_MEDIA" xml:space="preserve">
-    <value>Willst du die Wiedergabe beenden?</value>
+    <value>Wiedergabe wirklich beenden?</value>
     <comment>Prompt that is displayed when you attempt to stop playback</comment>
   </data>
   <data name="COPYING_ERROR" xml:space="preserve">
