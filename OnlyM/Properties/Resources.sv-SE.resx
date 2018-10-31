@@ -289,7 +289,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>TÖM MINIATYRBILDSCACHEN</value>
+    <value>TÖM MINIATYRBILDCACHEN</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
