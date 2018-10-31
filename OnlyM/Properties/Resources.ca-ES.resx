@@ -173,7 +173,7 @@
     <comment>Title of the "Blank Screen" item</comment>
   </data>
   <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
-    <value>Select Media Folder</value>
+    <value>Selecciona la carpeta dels fitxers multimèdia</value>
     <comment>Title of the "Open Folder" dialog that is displayed when you click the folder button in Settings =&gt; Media Files</comment>
   </data>
   <data name="SETTINGS" xml:space="preserve">
@@ -181,11 +181,11 @@
     <comment>Tooltip for the main page, Settings button</comment>
   </data>
   <data name="SETTINGS_DISABLED" xml:space="preserve">
-    <value>Settings disabled by administrator!</value>
+    <value>La configuració està inhabilitada per l'administrador!</value>
     <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
   </data>
   <data name="FOLDER" xml:space="preserve">
-    <value>Open media folder</value>
+    <value>Obre la carpeta dels fitxers multimèdia</value>
     <comment>Tooltip on the main page Folder button</comment>
   </data>
   <data name="FOLDER_DISABLED" xml:space="preserve">
