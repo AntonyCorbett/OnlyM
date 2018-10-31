@@ -241,47 +241,47 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Allow scrubbing when paused</value>
+    <value>Visualizar mídia quando pausado</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
-    <value>Allow position seeking</value>
+    <value>Permitir a busca de posição</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="BOTTOM_CHAR" xml:space="preserve">
-    <value>B</value>
+    <value>Inf</value>
     <comment>See Settings =&gt; Margins. Denotes the (B)ottom margin</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Cache images (better performance but more memory)</value>
+    <value>Cache de imagens (melhor desempenho e mais memória)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
-    <value>Confirm when stopping</value>
+    <value>Confirme quando parar</value>
     <comment>See Settings =&gt; Videos and Audio.</comment>
   </data>
   <data name="CURRENT_DATE" xml:space="preserve">
-    <value>Current date</value>
+    <value>Data atual</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="FADING_SPEED" xml:space="preserve">
-    <value>Fading speed</value>
+    <value>Velocidade de fading</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="FADING_STYLE" xml:space="preserve">
-    <value>Fading style</value>
+    <value>Estilo de fading</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
-    <value>Image Margins</value>
+    <value>Margens da imagem</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LEFT_CHAR" xml:space="preserve">
-    <value>L</value>
+    <value>Esq</value>
     <comment>See Settings =&gt; Margins. Denotes the (L)eft margin</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
-    <value>Logging level</value>
+    <value>Nível de Relatório</value>
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
