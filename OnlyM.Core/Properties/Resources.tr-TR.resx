@@ -122,31 +122,31 @@
     <value>..\Resources\Audio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Could not create folder {0}</value>
+    <value>{0} klasörü oluşturulamadı</value>
     <comment>Error notification message if OnlyM fails to create a folder. Please retain the placeholder.</comment>
   </data>
   <data name="FADE_CROSS" xml:space="preserve">
-    <value>Crossfade</value>
+    <value>Çapraz geçiş</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN" xml:space="preserve">
-    <value>Fade in</value>
+    <value>Artan</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN_OUT" xml:space="preserve">
-    <value>Fade in and out</value>
+    <value>Artan ve azalan</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Yok</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_OUT" xml:space="preserve">
-    <value>Fade out</value>
+    <value>Azalan</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_SPEED_FAST" xml:space="preserve">
-    <value>Fast</value>
+    <value>Hızlı</value>
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="FADE_SPEED_NORMAL" xml:space="preserve">
@@ -154,35 +154,35 @@
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="FADE_SPEED_SLOW" xml:space="preserve">
-    <value>Slow</value>
+    <value>Yavaş</value>
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="FADE_SPEED_SUPER_FAST" xml:space="preserve">
-    <value>Super fast</value>
+    <value>Süper hızlı</value>
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="LOG_LEVEL_DEBUG" xml:space="preserve">
-    <value>Debug</value>
+    <value>Hataları Ayıkla</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_ERROR" xml:space="preserve">
-    <value>Error</value>
+    <value>Hata</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_FATAL" xml:space="preserve">
-    <value>Fatal</value>
+    <value>Kritik</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_INFORMATION" xml:space="preserve">
-    <value>Information</value>
+    <value>Bilgi</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_VERBOSE" xml:space="preserve">
-    <value>Verbose</value>
+    <value>Ayrıntılı</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_WARNING" xml:space="preserve">
-    <value>Warning</value>
+    <value>Uyarı</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="Unknown" type="System.Resources.ResXFileRef, System.Windows.Forms">

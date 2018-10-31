@@ -245,7 +245,7 @@
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
-    <value>Allow position seeking</value>
+    <value>Manuel konumlandırmaya izin ver</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="BOTTOM_CHAR" xml:space="preserve">
@@ -253,7 +253,7 @@
     <comment>See Settings =&gt; Margins. Denotes the (B)ottom margin</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Cache images (better performance but more memory)</value>
+    <value>Resimleri önbelleğe al (daha fazla bellek ama daha iyi performans için)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
@@ -337,7 +337,7 @@
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
-    <value>Include "Blank Screen" item</value>
+    <value>"Boş Ekran" öğesi yerleştir</value>
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
@@ -353,11 +353,11 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Use embedded thumbnails where available</value>
+    <value>Varsa, tümleşik küçük resimleri kullan</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Use embedded titles where available</value>
+    <value>Varsa, tümleşik başlıkları kullan</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
@@ -365,7 +365,7 @@
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
-    <value>Media page</value>
+    <value>Medya sayfası</value>
     <comment>Tooltip for the Settings page "Back" button </comment>
   </data>
   <data name="UNHIDE" xml:space="preserve">
@@ -399,5 +399,13 @@
   <data name="WILL_PAUSE" xml:space="preserve">
     <value>Son karede duraklayacaktır</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
+  </data>
+  <data name="LANGUAGE" xml:space="preserve">
+    <value>Language</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
+  </data>
+  <data name="RESTART_LANGUAGE" xml:space="preserve">
+    <value>Please restart OnlyM after changing the language.</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
 </root>
