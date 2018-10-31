@@ -261,29 +261,36 @@
                            Margin="0,0,0,-20"/>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}" 
-                           Content="{x:Static resx:Resources.LEFT_CHAR}"/>
+                    <materialDesign:PackIcon Kind="BorderLeft" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding VideoScreenLeftMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
-                           Content="{x:Static resx:Resources.TOP_CHAR}"/>
+                    <materialDesign:PackIcon Kind="BorderTop" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding VideoScreenTopMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
-                           Content="{x:Static resx:Resources.RIGHT_CHAR}"/>
+                    <materialDesign:PackIcon Kind="BorderRight" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding VideoScreenRightMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
-                           Content="{x:Static resx:Resources.BOTTOM_CHAR}"/>
+                    <materialDesign:PackIcon Kind="BorderBottom" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding VideoScreenBottomMargin, Mode=TwoWay}"/>
                 </StackPanel>
@@ -293,29 +300,40 @@
                            Margin="0,40,0,-20"/>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
-                           Content="{x:Static resx:Resources.LEFT_CHAR}"/>
+                    <materialDesign:PackIcon Kind="BorderLeft" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding ImageScreenLeftMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
-                           Content="{x:Static resx:Resources.TOP_CHAR}"/>
+
+                    <materialDesign:PackIcon Kind="BorderTop" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding ImageScreenTopMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
-                           Content="{x:Static resx:Resources.RIGHT_CHAR}"/>
+
+                    <materialDesign:PackIcon Kind="BorderRight" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
+
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding ImageScreenRightMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <Label Style="{StaticResource SettingsMarginLabelStyle}"
-                           Content="{x:Static resx:Resources.BOTTOM_CHAR}"/>
+                    <materialDesign:PackIcon Kind="BorderBottom" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
                     <Slider Style="{StaticResource SettingsSliderStyle}" 
                             Value="{Binding ImageScreenBottomMargin, Mode=TwoWay}"/>
                 </StackPanel>

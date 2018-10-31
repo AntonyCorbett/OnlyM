@@ -125,15 +125,6 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to B.
-        /// </summary>
-        public static string BOTTOM_CHAR {
-            get {
-                return ResourceManager.GetString("BOTTOM_CHAR", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cache images (better performance but more memory).
         /// </summary>
         public static string CACHE_IMAGES {
@@ -332,15 +323,6 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to L.
-        /// </summary>
-        public static string LEFT_CHAR {
-            get {
-                return ResourceManager.GetString("LEFT_CHAR", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Logging level.
         /// </summary>
         public static string LOGGING_LEVEL {
@@ -521,15 +503,6 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to R.
-        /// </summary>
-        public static string RIGHT_CHAR {
-            get {
-                return ResourceManager.GetString("RIGHT_CHAR", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to rolling slide {0} of {1}.
         /// </summary>
         public static string ROLLING_SLIDE_X_OF_Y {
@@ -634,15 +607,6 @@ namespace OnlyM.Properties {
         public static string SLIDE_X_OF_Y {
             get {
                 return ResourceManager.GetString("SLIDE_X_OF_Y", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to T.
-        /// </summary>
-        public static string TOP_CHAR {
-            get {
-                return ResourceManager.GetString("TOP_CHAR", resourceCulture);
             }
         }
         
