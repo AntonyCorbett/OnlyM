@@ -126,63 +126,63 @@
     <comment>Error notification message if OnlyM fails to create a folder. Please retain the placeholder.</comment>
   </data>
   <data name="FADE_CROSS" xml:space="preserve">
-    <value>Crossfade</value>
+    <value>Ristihäivytys</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN" xml:space="preserve">
-    <value>Fade in</value>
+    <value>Häivytys sisään</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN_OUT" xml:space="preserve">
-    <value>Fade in and out</value>
+    <value>Häivytys sisään ja ulos</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Ei mitään</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_OUT" xml:space="preserve">
-    <value>Fade out</value>
+    <value>Häivytys ulos</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_SPEED_FAST" xml:space="preserve">
-    <value>Fast</value>
+    <value>Nopea</value>
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="FADE_SPEED_NORMAL" xml:space="preserve">
-    <value>Normal</value>
+    <value>Normaali</value>
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="FADE_SPEED_SLOW" xml:space="preserve">
-    <value>Slow</value>
+    <value>Hidas</value>
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="FADE_SPEED_SUPER_FAST" xml:space="preserve">
-    <value>Super fast</value>
+    <value>Erittäin nopea</value>
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="LOG_LEVEL_DEBUG" xml:space="preserve">
-    <value>Debug</value>
+    <value>Vianetsintä</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_ERROR" xml:space="preserve">
-    <value>Error</value>
+    <value>Virhe</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_FATAL" xml:space="preserve">
-    <value>Fatal</value>
+    <value>Kriittinen</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_INFORMATION" xml:space="preserve">
-    <value>Information</value>
+    <value>Informatiivinen</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_VERBOSE" xml:space="preserve">
-    <value>Verbose</value>
+    <value>Puhelias</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_WARNING" xml:space="preserve">
-    <value>Warning</value>
+    <value>Varoitus</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="Unknown" type="System.Resources.ResXFileRef, System.Windows.Forms">
