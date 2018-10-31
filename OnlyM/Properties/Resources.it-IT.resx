@@ -400,4 +400,12 @@
     <value>Mette pausa alla fine</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
+  <data name="LANGUAGE" xml:space="preserve">
+    <value>Language</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
+  </data>
+  <data name="RESTART_LANGUAGE" xml:space="preserve">
+    <value>Please restart OnlyM after changing the language.</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
+  </data>
 </root>
