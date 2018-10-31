@@ -205,39 +205,39 @@
     <comment>Displayed when showing a slideshow to indicate which slide is being viewed. Please retain the placeholders.</comment>
   </data>
   <data name="CONTAINS_X_ROLLING_SLIDES" xml:space="preserve">
-    <value>(contains {0} rolling slides)</value>
+    <value>(contiene {0} diapositivas en movimiento)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="ROLLING_SLIDE_X_OF_Y" xml:space="preserve">
-    <value>rolling slide {0} of {1}</value>
+    <value>diapositiva en movimiento {0} de {1}</value>
     <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
   </data>
   <data name="MEDIA_MONITOR" xml:space="preserve">
-    <value>Media monitor</value>
+    <value>Monitor multimedia</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">
-    <value>DISPLAY</value>
+    <value>PANTALLA</value>
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
-    <value>Media folder</value>
+    <value>Carpeta multimedia</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="SECTION_MEDIA_FILES" xml:space="preserve">
-    <value>MEDIA FILES</value>
+    <value>ARCHIVOS MULTIMEDIA</value>
     <comment>Section title for Settings =&gt; Media Files</comment>
   </data>
   <data name="MAX_ITEMS" xml:space="preserve">
-    <value>Maximum number of items</value>
+    <value>Número máximo de elementos</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
-    <value>Media folder specified on command-line:</value>
+    <value>Carpeta de multimedios especificada en la línea de comandos:</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
-    <value>Allow pause</value>
+    <value>Permitir pausa</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
@@ -247,10 +247,6 @@
   <data name="ALLOW_SEEK" xml:space="preserve">
     <value>Allow position seeking</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
-  </data>
-  <data name="BOTTOM_CHAR" xml:space="preserve">
-    <value>B</value>
-    <comment>See Settings =&gt; Margins. Denotes the (B)ottom margin</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
     <value>Cache images (better performance but more memory)</value>
@@ -276,10 +272,6 @@
     <value>Image Margins</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
-  <data name="LEFT_CHAR" xml:space="preserve">
-    <value>L</value>
-    <comment>See Settings =&gt; Margins. Denotes the (L)eft margin</comment>
-  </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
     <value>Logging level</value>
     <comment>See Settings =&gt; Miscellaneous.</comment>
@@ -295,10 +287,6 @@
   <data name="RENDERING_ENGINE" xml:space="preserve">
     <value>Rendering engine</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
-  </data>
-  <data name="RIGHT_CHAR" xml:space="preserve">
-    <value>R</value>
-    <comment>See Settings =&gt; Margins. Denotes the (R)ight margin</comment>
   </data>
   <data name="SECTION_IMAGES" xml:space="preserve">
     <value>IMAGES</value>
@@ -323,10 +311,6 @@
   <data name="SHOW_SUBTITLES" xml:space="preserve">
     <value>Show subtitles if available</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
-  </data>
-  <data name="TOP_CHAR" xml:space="preserve">
-    <value>T</value>
-    <comment>See Settings =&gt; Margins. Denotes the (T)op margin</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
     <value>Video Margins</value>

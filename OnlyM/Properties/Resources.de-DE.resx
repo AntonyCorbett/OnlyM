@@ -248,10 +248,6 @@
     <value>Suche nach Position zulassen</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
-  <data name="BOTTOM_CHAR" xml:space="preserve">
-    <value>U</value>
-    <comment>See Settings =&gt; Margins. Denotes the (B)ottom margin</comment>
-  </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
     <value>Bilder cachen (bessere Leistung, aber mehr Speicherverbrauch)</value>
     <comment>See Settings =&gt; Images.</comment>
@@ -276,10 +272,6 @@
     <value>Bildränder</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
-  <data name="LEFT_CHAR" xml:space="preserve">
-    <value>L</value>
-    <comment>See Settings =&gt; Margins. Denotes the (L)eft margin</comment>
-  </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
     <value>Logging-Level</value>
     <comment>See Settings =&gt; Miscellaneous.</comment>
@@ -295,10 +287,6 @@
   <data name="RENDERING_ENGINE" xml:space="preserve">
     <value>Videoplayer</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
-  </data>
-  <data name="RIGHT_CHAR" xml:space="preserve">
-    <value>R</value>
-    <comment>See Settings =&gt; Margins. Denotes the (R)ight margin</comment>
   </data>
   <data name="SECTION_IMAGES" xml:space="preserve">
     <value>BILDER</value>
@@ -323,10 +311,6 @@
   <data name="SHOW_SUBTITLES" xml:space="preserve">
     <value>Zeige, so vorhanden, Untertitel an</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
-  </data>
-  <data name="TOP_CHAR" xml:space="preserve">
-    <value>O</value>
-    <comment>See Settings =&gt; Margins. Denotes the (T)op margin</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
     <value>Videoränder</value>
