@@ -185,35 +185,35 @@
     <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
   </data>
   <data name="FOLDER" xml:space="preserve">
-    <value>Open media-map</value>
+    <value>Open mediamap</value>
     <comment>Tooltip on the main page Folder button</comment>
   </data>
   <data name="FOLDER_DISABLED" xml:space="preserve">
-    <value>Media folder disabled by administrator!</value>
+    <value>Mediamap uitgeschakeld door administrator!</value>
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Cannot deselect monitor when media is active</value>
+    <value>Kan scherm niet deselecteren wanneer media actief is</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
-    <value>(contains {0} slides)</value>
+    <value>(bevat {0} dia's)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="SLIDE_X_OF_Y" xml:space="preserve">
-    <value>slide {0} of {1}</value>
+    <value>dia {0} van {1}</value>
     <comment>Displayed when showing a slideshow to indicate which slide is being viewed. Please retain the placeholders.</comment>
   </data>
   <data name="CONTAINS_X_ROLLING_SLIDES" xml:space="preserve">
-    <value>(contains {0} rolling slides)</value>
+    <value>(bevat {0} rollende dia's)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="ROLLING_SLIDE_X_OF_Y" xml:space="preserve">
-    <value>rolling slide {0} of {1}</value>
+    <value>rollende dia {0} van {1}</value>
     <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
   </data>
   <data name="MEDIA_MONITOR" xml:space="preserve">
-    <value>Media monitor</value>
+    <value>Mediascherm</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">
@@ -221,7 +221,7 @@
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
-    <value>Media-map</value>
+    <value>Mediamap</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="SECTION_MEDIA_FILES" xml:space="preserve">
@@ -233,7 +233,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
-    <value>Media folder specified on command-line:</value>
+    <value>Mediamap opgegeven op de opdrachtregel:</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
@@ -241,11 +241,11 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Allow scrubbing when paused</value>
+    <value>Spoelen toestaan wanneer gepauzeerd</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
-    <value>Allow position seeking</value>
+    <value>Positie zoeken toestaan</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="BOTTOM_CHAR" xml:space="preserve">
@@ -253,7 +253,7 @@
     <comment>See Settings =&gt; Margins. Denotes the (B)ottom margin</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Cache images (better performance but more memory)</value>
+    <value>Cache beelden (betere prestaties maar meer geheugen)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
@@ -265,11 +265,11 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="FADING_SPEED" xml:space="preserve">
-    <value>Fading speed</value>
+    <value>Faden snelheid</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="FADING_STYLE" xml:space="preserve">
-    <value>Fading style</value>
+    <value>Faden stijl</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
@@ -285,15 +285,15 @@
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
-    <value>Main window always on top</value>
+    <value>Venster altijd op de voorgrond</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>PURGE THUMBNAIL CACHE</value>
+    <value>CACHE MINIATUREN LEEGMAKEN</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
-    <value>Rendering engine</value>
+    <value>Render-engine</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="RIGHT_CHAR" xml:space="preserve">
