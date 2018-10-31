@@ -12,7 +12,8 @@
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
-    
+    using Serilog;
+
     //// see https://stackoverflow.com/a/28257839/8576725
 
     public static class ScreenQuery
@@ -321,13 +322,21 @@
 
         public static string DeviceFriendlyName(this Screen screen)
         {
-            var allFriendlyNames = GetAllMonitorsFriendlyNames();
-            for (var index = 0; index < Screen.AllScreens.Length; index++)
+            try
             {
-                if (Equals(screen, Screen.AllScreens[index]))
+                var allFriendlyNames = GetAllMonitorsFriendlyNames().ToArray();
+
+                for (var index = 0; index < Screen.AllScreens.Length; index++)
                 {
-                    return allFriendlyNames.ToArray()[index];
+                    if (Equals(screen, Screen.AllScreens[index]))
+                    {
+                        return allFriendlyNames[index];
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Warning(ex, "Could not get monitor friendly names");
             }
 
             return null;
