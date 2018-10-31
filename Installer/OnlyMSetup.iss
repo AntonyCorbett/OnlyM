@@ -80,27 +80,27 @@ Source: "bin\Release\System.ValueTuple.dll"; DestDir: "{app}"; Flags: ignorevers
 Source: "bin\Release\System.Windows.Interactivity.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\taglib-sharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 
-Source: "OnlyT\bin\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\de-DE\*.dll"; DestDir: "{app}\de-DE"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\el-GR\*.dll"; DestDir: "{app}\el-GR"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\en-US\*.dll"; DestDir: "{app}\en-US"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\es-ES\*.dll"; DestDir: "{app}\es-ES"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\es-MX\*.dll"; DestDir: "{app}\es-MX"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\fi-FI\*.dll"; DestDir: "{app}\fi-FI"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\fr-FR\*.dll"; DestDir: "{app}\fr-FR"; Flags: ignoreversion
-;Source: "OnlyT\bin\Release\id-ID\*.dll"; DestDir: "{app}\id-ID"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
-;Source: "OnlyT\bin\Release\jv-Latn-ID\*.dll"; DestDir: "{app}\jv-Latn-ID"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\pl-PL\*.dll"; DestDir: "{app}\pl-PL"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\pt-BR\*.dll"; DestDir: "{app}\pt-BR"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\pt-PT\*.dll"; DestDir: "{app}\pt-PT"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\ro-RO\*.dll"; DestDir: "{app}\ro-RO"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\ru-RU\*.dll"; DestDir: "{app}\ru-RU"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\sk-SK\*.dll"; DestDir: "{app}\sk-SK"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignoreversion
-Source: "OnlyT\bin\Release\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
+Source: "bin\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
+Source: "bin\Release\de-DE\*.dll"; DestDir: "{app}\de-DE"; Flags: ignoreversion
+Source: "bin\Release\el-GR\*.dll"; DestDir: "{app}\el-GR"; Flags: ignoreversion
+Source: "bin\Release\en-US\*.dll"; DestDir: "{app}\en-US"; Flags: ignoreversion
+Source: "bin\Release\es-ES\*.dll"; DestDir: "{app}\es-ES"; Flags: ignoreversion
+Source: "bin\Release\es-MX\*.dll"; DestDir: "{app}\es-MX"; Flags: ignoreversion
+Source: "bin\Release\fi-FI\*.dll"; DestDir: "{app}\fi-FI"; Flags: ignoreversion
+Source: "bin\Release\fr-FR\*.dll"; DestDir: "{app}\fr-FR"; Flags: ignoreversion
+;Source: "bin\Release\id-ID\*.dll"; DestDir: "{app}\id-ID"; Flags: ignoreversion
+Source: "bin\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
+;Source: "bin\Release\jv-Latn-ID\*.dll"; DestDir: "{app}\jv-Latn-ID"; Flags: ignoreversion
+Source: "bin\Release\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
+Source: "bin\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
+Source: "bin\Release\pl-PL\*.dll"; DestDir: "{app}\pl-PL"; Flags: ignoreversion
+Source: "bin\Release\pt-BR\*.dll"; DestDir: "{app}\pt-BR"; Flags: ignoreversion
+Source: "bin\Release\pt-PT\*.dll"; DestDir: "{app}\pt-PT"; Flags: ignoreversion
+Source: "bin\Release\ro-RO\*.dll"; DestDir: "{app}\ro-RO"; Flags: ignoreversion
+Source: "bin\Release\ru-RU\*.dll"; DestDir: "{app}\ru-RU"; Flags: ignoreversion
+Source: "bin\Release\sk-SK\*.dll"; DestDir: "{app}\sk-SK"; Flags: ignoreversion
+Source: "bin\Release\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignoreversion
+Source: "bin\Release\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
 
 
 [Icons]
