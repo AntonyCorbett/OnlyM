@@ -397,7 +397,7 @@
     <comment>Tooltip on Freeze button in Command panel</comment>
   </data>
   <data name="WILL_PAUSE" xml:space="preserve">
-    <value>Wird im letzten Frame anhalten</value>
+    <value>Wird im letzten Frame angehalten</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
 </root>
