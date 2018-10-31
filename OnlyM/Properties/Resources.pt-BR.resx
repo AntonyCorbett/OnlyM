@@ -165,19 +165,19 @@
     <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
   </data>
   <data name="YES" xml:space="preserve">
-    <value>YES</value>
+    <value>SIM</value>
     <comment>Caption of the notification bar button to confirm that media should be stopped.</comment>
   </data>
   <data name="BLANK_SCREEN" xml:space="preserve">
-    <value>Blank Screen</value>
+    <value>Tela Escura</value>
     <comment>Title of the "Blank Screen" item</comment>
   </data>
   <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
-    <value>Select Media Folder</value>
+    <value>Selecione a pasta de mídia</value>
     <comment>Title of the "Open Folder" dialog that is displayed when you click the folder button in Settings =&gt; Media Files</comment>
   </data>
   <data name="SETTINGS" xml:space="preserve">
-    <value>Settings</value>
+    <value>Configurações</value>
     <comment>Tooltip for the main page, Settings button</comment>
   </data>
   <data name="SETTINGS_DISABLED" xml:space="preserve">
