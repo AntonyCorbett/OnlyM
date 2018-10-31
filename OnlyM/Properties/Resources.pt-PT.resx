@@ -349,11 +349,11 @@
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
-    <value>Enable Command Panel</value>
+    <value>Habilitar o painel de comando</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Use embedded thumbnails where available</value>
+    <value>Usar miniaturas incorporadas quando disponível</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
@@ -369,11 +369,11 @@
     <comment>Tooltip for the Settings page "Back" button </comment>
   </data>
   <data name="UNHIDE" xml:space="preserve">
-    <value>Unhide</value>
+    <value>Mostrar</value>
     <comment>If you have hidden any of the media items (using the command panel), an "Unhide" biutton is displayed on the main page. This is the button caption.</comment>
   </data>
   <data name="DISPLAY_HELP" xml:space="preserve">
-    <value>Display help</value>
+    <value>Mostrar ajuda</value>
     <comment>Tooltip for the Help button in the main window</comment>
   </data>
   <data name="NEW_VERSION" xml:space="preserve">
@@ -385,19 +385,19 @@
     <comment>Button label in Command panel</comment>
   </data>
   <data name="FREEZE" xml:space="preserve">
-    <value>Freeze</value>
+    <value>Fixar</value>
     <comment>Button label in Command panel. Freeze the video on the final frame.</comment>
   </data>
   <data name="HIDE" xml:space="preserve">
-    <value>HIDE</value>
+    <value>OCULTAR</value>
     <comment>Button label in Command panel. Hide the media item.</comment>
   </data>
   <data name="PAUSE_FINAL_FRAME" xml:space="preserve">
-    <value>Pause on final frame</value>
+    <value>Pausar no frame final</value>
     <comment>Tooltip on Freeze button in Command panel</comment>
   </data>
   <data name="WILL_PAUSE" xml:space="preserve">
-    <value>Will pause on final frame</value>
+    <value>Irá pausar no fotograma final</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
