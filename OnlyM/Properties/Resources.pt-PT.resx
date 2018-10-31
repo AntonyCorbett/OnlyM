@@ -213,7 +213,7 @@
     <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
   </data>
   <data name="MEDIA_MONITOR" xml:space="preserve">
-    <value>Media monitor</value>
+    <value>Monitor de média</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">
@@ -221,15 +221,15 @@
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
-    <value>Media folder</value>
+    <value>Pasta de média</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="SECTION_MEDIA_FILES" xml:space="preserve">
-    <value>MEDIA FILES</value>
+    <value>FICHEIROS DE MÉDIA</value>
     <comment>Section title for Settings =&gt; Media Files</comment>
   </data>
   <data name="MAX_ITEMS" xml:space="preserve">
-    <value>Maximum number of items</value>
+    <value>Número máximo de ítens</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
@@ -237,7 +237,7 @@
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
-    <value>Allow pause</value>
+    <value>Permitir pausar</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
@@ -301,19 +301,19 @@
     <comment>See Settings =&gt; Margins. Denotes the (R)ight margin</comment>
   </data>
   <data name="SECTION_IMAGES" xml:space="preserve">
-    <value>IMAGES</value>
+    <value>IMAGENS</value>
     <comment>Section title for Settings =&gt; Images</comment>
   </data>
   <data name="SECTION_MARGINS" xml:space="preserve">
-    <value>MARGINS (as percentage of screen size)</value>
+    <value>MARGENS (como porcentagem do tamanho do ecrã)</value>
     <comment>Section title for Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_MISC" xml:space="preserve">
-    <value>MISCELLANEOUS</value>
+    <value>DIVERSOS</value>
     <comment>Section title for Settings =&gt; Micellanesous</comment>
   </data>
   <data name="SECTION_VIDEO_AUDIO" xml:space="preserve">
-    <value>VIDEOS &amp; AUDIO</value>
+    <value>VÍDEOS E ÁUDIO</value>
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
@@ -321,7 +321,7 @@
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
-    <value>Show subtitles if available</value>
+    <value>Mostrar legendas se disponível</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="TOP_CHAR" xml:space="preserve">
@@ -329,11 +329,11 @@
     <comment>See Settings =&gt; Margins. Denotes the (T)op margin</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
-    <value>Video Margins</value>
+    <value>Margens do vídeo</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="AUTO_ROTATE" xml:space="preserve">
-    <value>Auto-rotate</value>
+    <value>Rotação automática</value>
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
