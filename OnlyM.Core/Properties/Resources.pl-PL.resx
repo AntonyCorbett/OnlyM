@@ -122,27 +122,27 @@
     <value>..\Resources\Audio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Could not create folder {0}</value>
+    <value>Nie można utworzyć folderu {0}</value>
     <comment>Error notification message if OnlyM fails to create a folder. Please retain the placeholder.</comment>
   </data>
   <data name="FADE_CROSS" xml:space="preserve">
-    <value>Crossfade</value>
+    <value>Przenikanie</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN" xml:space="preserve">
-    <value>Stopniowe rozjaśnianie</value>
+    <value>Rozjaśnianie</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN_OUT" xml:space="preserve">
-    <value>Fade in and out</value>
+    <value>Rozjaśnianie i przyciemnianie</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Żaden</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_OUT" xml:space="preserve">
-    <value>Stopniowe przyciemnianie</value>
+    <value>Przyciemnianie</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_SPEED_FAST" xml:space="preserve">
@@ -178,7 +178,7 @@
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_VERBOSE" xml:space="preserve">
-    <value>Verbose</value>
+    <value>Szczegóły</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_WARNING" xml:space="preserve">

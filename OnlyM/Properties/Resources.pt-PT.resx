@@ -201,15 +201,15 @@
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="SLIDE_X_OF_Y" xml:space="preserve">
-    <value>imagem {0} de {1}</value>
+    <value>slide {0} de {1}</value>
     <comment>Displayed when showing a slideshow to indicate which slide is being viewed. Please retain the placeholders.</comment>
   </data>
   <data name="CONTAINS_X_ROLLING_SLIDES" xml:space="preserve">
-    <value>(contains {0} rolling slides)</value>
+    <value>(contém {0} slides)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="ROLLING_SLIDE_X_OF_Y" xml:space="preserve">
-    <value>rolling slide {0} of {1}</value>
+    <value>slide {0} de {1}</value>
     <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
   </data>
   <data name="MEDIA_MONITOR" xml:space="preserve">
@@ -217,7 +217,7 @@
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">
-    <value>DISPLAY</value>
+    <value>VISUALIZAÇÃO</value>
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
@@ -241,19 +241,19 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Allow scrubbing when paused</value>
+    <value>Permitir percorrer linha do tempo quando pausado</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
-    <value>Allow position seeking</value>
+    <value>Permitir selecionar posição de início do vídeo</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="BOTTOM_CHAR" xml:space="preserve">
-    <value>B</value>
+    <value>F</value>
     <comment>See Settings =&gt; Margins. Denotes the (B)ottom margin</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Cache images (better performance but more memory)</value>
+    <value>Cache de imagens (melhor desempenho mas mais memória)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
@@ -277,11 +277,11 @@
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LEFT_CHAR" xml:space="preserve">
-    <value>L</value>
+    <value>E</value>
     <comment>See Settings =&gt; Margins. Denotes the (L)eft margin</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
-    <value>Logging level</value>
+    <value>Nível de log</value>
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
@@ -289,7 +289,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>PURGE THUMBNAIL CACHE</value>
+    <value>LIMPAR A CACHE DE MINIATURAS</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
@@ -297,7 +297,7 @@
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="RIGHT_CHAR" xml:space="preserve">
-    <value>R</value>
+    <value>D</value>
     <comment>See Settings =&gt; Margins. Denotes the (R)ight margin</comment>
   </data>
   <data name="SECTION_IMAGES" xml:space="preserve">
@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Images</comment>
   </data>
   <data name="SECTION_MARGINS" xml:space="preserve">
-    <value>MARGENS (como porcentagem do tamanho do ecrã)</value>
+    <value>MARGENS (como percentagem do tamanho do ecrã)</value>
     <comment>Section title for Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_MISC" xml:space="preserve">
@@ -317,11 +317,11 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Show 'Freeze' command in Command Panel</value>
+    <value>Mostrar o comando 'Fixar' no Painel de Comando</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
-    <value>Mostrar legendas se disponível</value>
+    <value>Mostrar legendas se disponíveis</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="TOP_CHAR" xml:space="preserve">
@@ -337,7 +337,7 @@
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
-    <value>Include "Blank Screen" item</value>
+    <value>Incluir o item "Ecrã Vazio"</value>
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
@@ -345,11 +345,11 @@
     <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
   </data>
   <data name="PERMANENT_BACKDROP" xml:space="preserve">
-    <value>Permanent backdrop</value>
+    <value>Imagem de fundo permanente</value>
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
-    <value>Habilitar o painel de comando</value>
+    <value>Habilitar o Painel de Comando</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
