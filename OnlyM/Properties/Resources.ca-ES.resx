@@ -130,7 +130,7 @@
     <comment>Prompt that is displayed when you attempt to stop playback</comment>
   </data>
   <data name="COPYING_ERROR" xml:space="preserve">
-    <value>There was an error!</value>
+    <value>S'ha produït un error!</value>
     <comment>Message displayed when there is an error copying media to the OnlyM media folder</comment>
   </data>
   <data name="FILES_COPIED" xml:space="preserve">
@@ -161,7 +161,7 @@
     <value>OK</value>
   </data>
   <data name="VIEW" xml:space="preserve">
-    <value>VIEW</value>
+    <value>MOSTRA</value>
     <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
   </data>
   <data name="YES" xml:space="preserve">
