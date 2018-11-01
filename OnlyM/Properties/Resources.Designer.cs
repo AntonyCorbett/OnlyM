@@ -611,7 +611,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unhide.
+        ///   Looks up a localized string similar to UNHIDE.
         /// </summary>
         public static string UNHIDE {
             get {

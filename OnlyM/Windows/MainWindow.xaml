@@ -217,11 +217,9 @@
                     <Button Grid.Column="0"
                         HorizontalAlignment="Left"
                         Command="{Binding UnhideCommand}"
-                        ToolTip="{x:Static resx:Resources.UNHIDE}"
+                        Content="{x:Static resx:Resources.UNHIDE}"
                         Visibility="{Binding Path=IsUnhideButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Style="{StaticResource MaterialDesignRaisedAccentButton}">
-                        UNHIDE
-                    </Button>
+                        Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
 
                     <materialDesign:Card
                         Grid.Column="0"
