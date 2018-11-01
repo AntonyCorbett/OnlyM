@@ -281,43 +281,43 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>PURGE THUMBNAIL CACHE</value>
+    <value>LIMPAR O CACHE DE MINIATURAS</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
-    <value>Rendering engine</value>
+    <value>Mecanismo de renderização</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SECTION_IMAGES" xml:space="preserve">
-    <value>IMAGES</value>
+    <value>IMAGENS</value>
     <comment>Section title for Settings =&gt; Images</comment>
   </data>
   <data name="SECTION_MARGINS" xml:space="preserve">
-    <value>MARGINS (as percentage of screen size)</value>
+    <value>MARGENS (com percentagem do tamanho do tela)</value>
     <comment>Section title for Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_MISC" xml:space="preserve">
-    <value>MISCELLANEOUS</value>
+    <value>DIVERSOS</value>
     <comment>Section title for Settings =&gt; Micellanesous</comment>
   </data>
   <data name="SECTION_VIDEO_AUDIO" xml:space="preserve">
-    <value>VIDEOS &amp; AUDIO</value>
+    <value>ÁUDIO E VÍDEOS</value>
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Show 'Freeze' command in Command Panel</value>
+    <value>Mostrar 'Congelar' comando no painel de comando</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
-    <value>Show subtitles if available</value>
+    <value>Mostrar legendas se disponíveis</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
-    <value>Video Margins</value>
+    <value>Margens do vídeo</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="AUTO_ROTATE" xml:space="preserve">
-    <value>Auto-rotate</value>
+    <value>Rotação automática</value>
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
