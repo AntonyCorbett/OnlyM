@@ -134,15 +134,15 @@
     <comment>Message displayed when there is an error copying media to the OnlyM media folder</comment>
   </data>
   <data name="FILES_COPIED" xml:space="preserve">
-    <value>{0} files copied</value>
+    <value>S'han copiat {0} fitxers</value>
     <comment>Displayed as a notification message when several files are dropped onto the media list. Please leve the placeholder as it is.</comment>
   </data>
   <data name="FILE_COPIED" xml:space="preserve">
-    <value>File copied</value>
+    <value>S'ha copiat el fitxer</value>
     <comment>Displayed as a notification message when a single file is dropped onto the media list.</comment>
   </data>
   <data name="MEDIA_ACTIVE" xml:space="preserve">
-    <value>Media is active - cannot close!</value>
+    <value>No es pot sortir mentre es mostra contingut multimèdia!</value>
     <comment>This is the notification displayed if you try to close OnlyM when media is playing.</comment>
   </data>
   <data name="MONITOR_NONE" xml:space="preserve">
@@ -150,11 +150,11 @@
     <comment>Default (blank) menu item in Settings =&gt; Display =&gt; Media monitor</comment>
   </data>
   <data name="NEW_UPDATE_AVAILABLE" xml:space="preserve">
-    <value>New update available!</value>
+    <value>Hi ha una nova versió disponible!</value>
     <comment>Notification text displayed when there is a new version to download (can be translated the same as NEW_VERSION)</comment>
   </data>
   <data name="NO_SUPPORTED_FILES" xml:space="preserve">
-    <value>No supported media files!</value>
+    <value>Fitxers multimèdia no compatibles!</value>
     <comment>Notification displayed if you drag and drop a file (or files) of a type that is not supported.</comment>
   </data>
   <data name="OK" xml:space="preserve">
@@ -169,123 +169,123 @@
     <comment>Caption of the notification bar button to confirm that media should be stopped.</comment>
   </data>
   <data name="BLANK_SCREEN" xml:space="preserve">
-    <value>Blank Screen</value>
+    <value>Pantalla sense res</value>
     <comment>Title of the "Blank Screen" item</comment>
   </data>
   <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
-    <value>Select Media Folder</value>
+    <value>Selecciona la carpeta dels fitxers multimèdia</value>
     <comment>Title of the "Open Folder" dialog that is displayed when you click the folder button in Settings =&gt; Media Files</comment>
   </data>
   <data name="SETTINGS" xml:space="preserve">
-    <value>Settings</value>
+    <value>Configuració</value>
     <comment>Tooltip for the main page, Settings button</comment>
   </data>
   <data name="SETTINGS_DISABLED" xml:space="preserve">
-    <value>Settings disabled by administrator!</value>
+    <value>La configuració està inhabilitada per l'administrador!</value>
     <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
   </data>
   <data name="FOLDER" xml:space="preserve">
-    <value>Open media folder</value>
+    <value>Obre la carpeta dels fitxers multimèdia</value>
     <comment>Tooltip on the main page Folder button</comment>
   </data>
   <data name="FOLDER_DISABLED" xml:space="preserve">
-    <value>Media folder disabled by administrator!</value>
+    <value>La carpeta dels fitxers multimèdia està bloquejada per l'administrador!</value>
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Cannot deselect monitor when media is active</value>
+    <value>No es pot treure el monitor mentre està en ús</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
-    <value>(contains {0} slides)</value>
+    <value>(conté {0} diapositives)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="SLIDE_X_OF_Y" xml:space="preserve">
-    <value>slide {0} of {1}</value>
+    <value>diapositiva {0} de {1}</value>
     <comment>Displayed when showing a slideshow to indicate which slide is being viewed. Please retain the placeholders.</comment>
   </data>
   <data name="CONTAINS_X_ROLLING_SLIDES" xml:space="preserve">
-    <value>(contains {0} rolling slides)</value>
+    <value>(conté {0} diapositives en moviment)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="ROLLING_SLIDE_X_OF_Y" xml:space="preserve">
-    <value>rolling slide {0} of {1}</value>
+    <value>diapositiva en moviment {0} de {1}</value>
     <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
   </data>
   <data name="MEDIA_MONITOR" xml:space="preserve">
-    <value>Media monitor</value>
+    <value>Monitor multimèdia</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">
-    <value>DISPLAY</value>
+    <value>VISUALITZACIÓ</value>
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
-    <value>Media folder</value>
+    <value>Carpeta dels fitxers multimèdia</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="SECTION_MEDIA_FILES" xml:space="preserve">
-    <value>MEDIA FILES</value>
+    <value>FITXERS MULTIMÈDIA</value>
     <comment>Section title for Settings =&gt; Media Files</comment>
   </data>
   <data name="MAX_ITEMS" xml:space="preserve">
-    <value>Maximum number of items</value>
+    <value>Quantitat màxima de fitxers</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
-    <value>Media folder specified on command-line:</value>
+    <value>Carpeta dels fitxers multimèdia especificada a la línia d'ordres:</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
-    <value>Allow pause</value>
+    <value>Permet que es pugui posar en pausa</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Allow scrubbing when paused</value>
+    <value>Permet visualitzar si desplaces quan està en pausa</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
-    <value>Allow position seeking</value>
+    <value>Permet cercar manualment la posició inicial</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Cache images (better performance but more memory)</value>
+    <value>Memòria cau (millor rendiment però més ús de memòria)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
-    <value>Confirm when stopping</value>
+    <value>Confirma quan aturis la reproducció</value>
     <comment>See Settings =&gt; Videos and Audio.</comment>
   </data>
   <data name="CURRENT_DATE" xml:space="preserve">
-    <value>Current date</value>
+    <value>Data actual</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="FADING_SPEED" xml:space="preserve">
-    <value>Fading speed</value>
+    <value>Velocitat de l'atenuació</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="FADING_STYLE" xml:space="preserve">
-    <value>Fading style</value>
+    <value>Estil d'atenuació</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
-    <value>Image Margins</value>
+    <value>Marges de les imatges</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
-    <value>Logging level</value>
+    <value>Nivell de registre (log)</value>
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
-    <value>Main window always on top</value>
+    <value>Sempre visible per sobre d'altres aplicacions</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>PURGE THUMBNAIL CACHE</value>
+    <value>ESBORRA LA MEMÒRIA CAU</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
-    <value>Rendering engine</value>
+    <value>Motor de reproducció</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SECTION_IMAGES" xml:space="preserve">
@@ -293,75 +293,75 @@
     <comment>Section title for Settings =&gt; Images</comment>
   </data>
   <data name="SECTION_MARGINS" xml:space="preserve">
-    <value>MARGINS (as percentage of screen size)</value>
+    <value>MARGES (com a percentatge de la mida de pantalla)</value>
     <comment>Section title for Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_MISC" xml:space="preserve">
-    <value>MISCELLANEOUS</value>
+    <value>VARIS</value>
     <comment>Section title for Settings =&gt; Micellanesous</comment>
   </data>
   <data name="SECTION_VIDEO_AUDIO" xml:space="preserve">
-    <value>VIDEOS &amp; AUDIO</value>
+    <value>VÍDEOS &amp; ÀUDIOS</value>
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Show 'Freeze' command in Command Panel</value>
+    <value>Mostra la funció «Congela» al Tauler d'opcions</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
-    <value>Show subtitles if available</value>
+    <value>Mostra els subtítols si estan disponibles</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
-    <value>Video Margins</value>
+    <value>Marges dels vídeos</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="AUTO_ROTATE" xml:space="preserve">
-    <value>Auto-rotate</value>
+    <value>Rotació automàtica</value>
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
-    <value>Include "Blank Screen" item</value>
+    <value>Inclou l'element «Pantalla sense res»</value>
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
-    <value>JW Library compatibility mode</value>
+    <value>Mode de compatibilitat amb JW Library</value>
     <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
   </data>
   <data name="PERMANENT_BACKDROP" xml:space="preserve">
-    <value>Permanent backdrop</value>
+    <value>Fons negre permanent</value>
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
-    <value>Enable Command Panel</value>
+    <value>Habilita el Tauler d'opcions</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Use embedded thumbnails where available</value>
+    <value>Utilitza les miniatures incorporades si estan disponibles</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Use embedded titles where available</value>
+    <value>Utilitza els títols incorporats si estan disponibles</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
-    <value>Drop your media files here!</value>
+    <value>Deixa anar els arxius multimèdia aquí!</value>
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
-    <value>Media page</value>
+    <value>Pantalla principal</value>
     <comment>Tooltip for the Settings page "Back" button </comment>
   </data>
   <data name="UNHIDE" xml:space="preserve">
-    <value>Unhide</value>
+    <value>Mostra tots</value>
     <comment>If you have hidden any of the media items (using the command panel), an "Unhide" biutton is displayed on the main page. This is the button caption.</comment>
   </data>
   <data name="DISPLAY_HELP" xml:space="preserve">
-    <value>Display help</value>
+    <value>Ajuda (en anglès)</value>
     <comment>Tooltip for the Help button in the main window</comment>
   </data>
   <data name="NEW_VERSION" xml:space="preserve">
-    <value>New version available!</value>
+    <value>Hi ha una nova versió disponible!</value>
     <comment>Tooltip for the download button when a new version is ready (can be translated the same as NEW_UPDATE_AVAILABLE)</comment>
   </data>
   <data name="DELETE" xml:space="preserve">
@@ -369,7 +369,7 @@
     <comment>Button label in Command panel</comment>
   </data>
   <data name="FREEZE" xml:space="preserve">
-    <value>Freeze</value>
+    <value>Congela</value>
     <comment>Button label in Command panel. Freeze the video on the final frame.</comment>
   </data>
   <data name="HIDE" xml:space="preserve">

@@ -309,11 +309,11 @@
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
-    <value>Show subtitles if available</value>
+    <value>Pokaż napisy, jeśli są dostępne</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
-    <value>Video Margins</value>
+    <value>Marginesy wideo</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="AUTO_ROTATE" xml:space="preserve">
@@ -321,7 +321,7 @@
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
-    <value>Include "Blank Screen" item</value>
+    <value>Wstaw "czarny ekran"</value>
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
@@ -333,15 +333,15 @@
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
-    <value>Enable Command Panel</value>
+    <value>Włącz Panel Sterowania</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Use embedded thumbnails where available</value>
+    <value>Używaj wbudowanych miniaturek, jeśli są dostępne</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Use embedded titles where available</value>
+    <value>Używaj wbudowanych tytułów, jeśli są dostępne</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
@@ -353,15 +353,15 @@
     <comment>Tooltip for the Settings page "Back" button </comment>
   </data>
   <data name="UNHIDE" xml:space="preserve">
-    <value>Unhide</value>
+    <value>Pokaż</value>
     <comment>If you have hidden any of the media items (using the command panel), an "Unhide" biutton is displayed on the main page. This is the button caption.</comment>
   </data>
   <data name="DISPLAY_HELP" xml:space="preserve">
-    <value>Display help</value>
+    <value>Wyświetl pomoc</value>
     <comment>Tooltip for the Help button in the main window</comment>
   </data>
   <data name="NEW_VERSION" xml:space="preserve">
-    <value>New version available!</value>
+    <value>Dostępna jest nowa wersja!</value>
     <comment>Tooltip for the download button when a new version is ready (can be translated the same as NEW_UPDATE_AVAILABLE)</comment>
   </data>
   <data name="DELETE" xml:space="preserve">
