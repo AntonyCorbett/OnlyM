@@ -130,19 +130,19 @@
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN" xml:space="preserve">
-    <value>Fade in</value>
+    <value>A l'entrada</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN_OUT" xml:space="preserve">
-    <value>Fade in and out</value>
+    <value>A l'entrada i a la sortida</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Cap</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_OUT" xml:space="preserve">
-    <value>Fade out</value>
+    <value>A la sortida</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_SPEED_FAST" xml:space="preserve">
