@@ -185,15 +185,15 @@
     <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
   </data>
   <data name="FOLDER" xml:space="preserve">
-    <value>Open media folder</value>
+    <value>Abrir la carpeta de los archivos multimedia</value>
     <comment>Tooltip on the main page Folder button</comment>
   </data>
   <data name="FOLDER_DISABLED" xml:space="preserve">
-    <value>Media folder disabled by administrator!</value>
+    <value>¡La carpeta de los archivos multimedia está deshabilitada por el administrador!</value>
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Cannot deselect monitor when media is active</value>
+    <value>No se puede deseleccionar el monitor mientras está en uso</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
