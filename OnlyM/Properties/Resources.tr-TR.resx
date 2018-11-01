@@ -353,8 +353,8 @@
     <comment>Tooltip for the Settings page "Back" button </comment>
   </data>
   <data name="UNHIDE" xml:space="preserve">
-    <value>Göster</value>
-    <comment>If you have hidden any of the media items (using the command panel), an "Unhide" biutton is displayed on the main page. This is the button caption.</comment>
+    <value>UNHIDE</value>
+    <comment>If you have hidden any of the media items (using the command panel), an "Unhide" button is displayed on the main page. This is the button caption.</comment>
   </data>
   <data name="DISPLAY_HELP" xml:space="preserve">
     <value>Yardımı görüntüle</value>
