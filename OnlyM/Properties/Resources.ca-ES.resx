@@ -265,7 +265,7 @@
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="FADING_STYLE" xml:space="preserve">
-    <value>Fading style</value>
+    <value>Estil d'atenuació</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
@@ -321,7 +321,7 @@
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
-    <value>Include "Blank Screen" item</value>
+    <value>Inclou l'element «Pantalla sense res»</value>
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
