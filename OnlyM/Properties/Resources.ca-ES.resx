@@ -241,7 +241,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Allow scrubbing when paused</value>
+    <value>Permet visualitzar si desplaces quan està en pausa</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
@@ -309,7 +309,7 @@
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
-    <value>Show subtitles if available</value>
+    <value>Mostra els subtítols si estan disponibles</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
