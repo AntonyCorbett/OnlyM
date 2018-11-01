@@ -337,7 +337,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Użyj osadzonych miniaturek, jeśli są dostępne</value>
+    <value>Używaj wbudowanych miniaturek, jeśli są dostępne</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
