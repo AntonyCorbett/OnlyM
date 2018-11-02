@@ -277,7 +277,7 @@
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
-    <value>Ventana principal de siempre en la parte superior</value>
+    <value>Ventana principal siempre en primer plano</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
