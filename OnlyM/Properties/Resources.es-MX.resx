@@ -165,7 +165,7 @@
     <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
   </data>
   <data name="YES" xml:space="preserve">
-    <value>Sí</value>
+    <value>SÍ</value>
     <comment>Caption of the notification bar button to confirm that media should be stopped.</comment>
   </data>
   <data name="BLANK_SCREEN" xml:space="preserve">
