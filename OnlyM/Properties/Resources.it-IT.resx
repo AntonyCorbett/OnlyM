@@ -181,7 +181,7 @@
     <comment>Tooltip for the main page, Settings button</comment>
   </data>
   <data name="SETTINGS_DISABLED" xml:space="preserve">
-    <value>Impostazioni disattivate dall'amministratore!</value>
+    <value>Impostazioni disabilitate dall'amministratore!</value>
     <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
   </data>
   <data name="FOLDER" xml:space="preserve">
