@@ -150,11 +150,11 @@
     <comment>Default (blank) menu item in Settings =&gt; Display =&gt; Media monitor</comment>
   </data>
   <data name="NEW_UPDATE_AVAILABLE" xml:space="preserve">
-    <value>Hi ha una nova versió disponible!</value>
+    <value>Hi ha una nova actualització disponible!</value>
     <comment>Notification text displayed when there is a new version to download (can be translated the same as NEW_VERSION)</comment>
   </data>
   <data name="NO_SUPPORTED_FILES" xml:space="preserve">
-    <value>Fitxers multimèdia no compatibles!</value>
+    <value>Fitxers multimèdia incompatibles!</value>
     <comment>Notification displayed if you drag and drop a file (or files) of a type that is not supported.</comment>
   </data>
   <data name="OK" xml:space="preserve">
@@ -245,7 +245,7 @@
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
-    <value>Permet cercar manualment la posició inicial</value>
+    <value>Permet situar manualment la posició inicial</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
@@ -353,7 +353,7 @@
     <comment>Tooltip for the Settings page "Back" button </comment>
   </data>
   <data name="UNHIDE" xml:space="preserve">
-    <value>UNHIDE</value>
+    <value>MOSTRA TOTS</value>
     <comment>If you have hidden any of the media items (using the command panel), an "Unhide" button is displayed on the main page. This is the button caption.</comment>
   </data>
   <data name="DISPLAY_HELP" xml:space="preserve">
