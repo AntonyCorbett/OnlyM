@@ -380,6 +380,7 @@
                                              VerticalAlignment="Center"/>
                     <ComboBox ItemsSource="{Binding Languages}" 
                               Style="{StaticResource SettingsComboBoxStyle}"
+                              materialDesign:HintAssist.IsFloating="True"
                               Width="390"
                               materialDesign:HintAssist.Hint="{x:Static resx:Resources.LANGUAGE}"
                               SelectedValuePath="LanguageId" 
