@@ -122,31 +122,31 @@
     <value>..\Resources\Audio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Could not create folder {0}</value>
+    <value>No se pudo crear la carpeta {0}</value>
     <comment>Error notification message if OnlyM fails to create a folder. Please retain the placeholder.</comment>
   </data>
   <data name="FADE_CROSS" xml:space="preserve">
-    <value>Crossfade</value>
+    <value>Fundido cruzado</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN" xml:space="preserve">
-    <value>Fade in</value>
+    <value>En la entrada</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN_OUT" xml:space="preserve">
-    <value>Fade in and out</value>
+    <value>En la entrada y en la salida</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_NONE" xml:space="preserve">
-    <value>None</value>
+    <value>Ninguno</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_OUT" xml:space="preserve">
-    <value>Fade out</value>
+    <value>En la salida</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_SPEED_FAST" xml:space="preserve">
-    <value>Fast</value>
+    <value>Rápido</value>
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="FADE_SPEED_NORMAL" xml:space="preserve">
