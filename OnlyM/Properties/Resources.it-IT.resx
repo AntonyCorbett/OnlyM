@@ -337,15 +337,15 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Utilizza le miniature incorporate dove possibile</value>
+    <value>Usa le miniature incorporate se disponibili</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Utilizza i titoli incorporati dove possibile</value>
+    <value>Usa i titoli incorporati se disponibili</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
-    <value>Trascina i file media qui!</value>
+    <value>Rilascia qui i tuoi file multimediali!</value>
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
