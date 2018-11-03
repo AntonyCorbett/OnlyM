@@ -381,7 +381,7 @@
     <comment>Tooltip on Freeze button in Command panel</comment>
   </data>
   <data name="WILL_PAUSE" xml:space="preserve">
-    <value>Mette pausa alla fine</value>
+    <value>Pausa sull'ultimo fotogramma</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
