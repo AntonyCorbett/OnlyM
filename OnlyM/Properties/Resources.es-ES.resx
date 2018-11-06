@@ -261,7 +261,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="FADING_SPEED" xml:space="preserve">
-    <value>Velocidad del desvanecimiento</value>
+    <value>Velocidad de desvanecimiento</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="FADING_STYLE" xml:space="preserve">
@@ -281,7 +281,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>ELIMINAR CACHÉ DE IMÁGENES</value>
+    <value>QUITAR CACHÉ DE MINIATURAS</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
@@ -301,7 +301,7 @@
     <comment>Section title for Settings =&gt; Micellanesous</comment>
   </data>
   <data name="SECTION_VIDEO_AUDIO" xml:space="preserve">
-    <value>VÍDEOS &amp; AUDIO</value>
+    <value>VIDEOS Y AUDIO</value>
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
@@ -321,7 +321,7 @@
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
-    <value>Incluir el elemento "Pantalla vacía"</value>
+    <value>Incluir el elemento "Pantalla en blanco"</value>
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
@@ -337,15 +337,15 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Usar miniaturas incorporadas si están disponibles</value>
+    <value>Usar miniaturas incorporadas donde esté disponible</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Usar títulos incorporados si están disponibles</value>
+    <value>Usar títulos incorporados donde esté disponible</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
-    <value>¡Deja tus archivos multimedia aquí!</value>
+    <value>¡Deje sus archivos multimedia aquí!</value>
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
@@ -377,11 +377,11 @@
     <comment>Button label in Command panel. Hide the media item.</comment>
   </data>
   <data name="PAUSE_FINAL_FRAME" xml:space="preserve">
-    <value>Pausar en el fotograma final</value>
+    <value>Pausar en el cuadro final</value>
     <comment>Tooltip on Freeze button in Command panel</comment>
   </data>
   <data name="WILL_PAUSE" xml:space="preserve">
-    <value>Hará una pausa en el fotograma final</value>
+    <value>Hará una pausa en el cuadro final</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
@@ -389,7 +389,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="RESTART_LANGUAGE" xml:space="preserve">
-    <value>Por favor, reinicia OnlyM después de cambiar el idioma.</value>
+    <value>Por favor, reinicie OnlyM después de cambiar el idioma.</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
 </root>
