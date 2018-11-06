@@ -142,7 +142,7 @@
     <comment>Displayed as a notification message when a single file is dropped onto the media list.</comment>
   </data>
   <data name="MEDIA_ACTIVE" xml:space="preserve">
-    <value>El archivo multimedia está activo, ¡no se puede cerrar!</value>
+    <value>Un archivo multimedia está activo, ¡no se puede cerrar!</value>
     <comment>This is the notification displayed if you try to close OnlyM when media is playing.</comment>
   </data>
   <data name="MONITOR_NONE" xml:space="preserve">
@@ -193,7 +193,7 @@
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>No puede deseleccionar el monitor cuando el archivo multimedia está en uso</value>
+    <value>No se puede deseleccionar el monitor cuando el archivo multimedia está en uso</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
@@ -281,7 +281,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>QUITAR CACHÉ DE MINIATURAS</value>
+    <value>BORRAR CACHÉ DE MINIATURAS</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
@@ -337,15 +337,15 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Usar miniaturas incorporadas donde esté disponible</value>
+    <value>Usar miniaturas incorporadas si están disponibles</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Usar títulos incorporados donde esté disponible</value>
+    <value>Usar títulos incorporados si están disponibles</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
-    <value>¡Deje sus archivos multimedia aquí!</value>
+    <value>¡Deja tus archivos multimedia aquí!</value>
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
@@ -377,11 +377,11 @@
     <comment>Button label in Command panel. Hide the media item.</comment>
   </data>
   <data name="PAUSE_FINAL_FRAME" xml:space="preserve">
-    <value>Pausar en el cuadro final</value>
+    <value>Pausar en el fotograma final</value>
     <comment>Tooltip on Freeze button in Command panel</comment>
   </data>
   <data name="WILL_PAUSE" xml:space="preserve">
-    <value>Hará una pausa en el cuadro final</value>
+    <value>Hará una pausa en el fotograma final</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
@@ -389,7 +389,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="RESTART_LANGUAGE" xml:space="preserve">
-    <value>Por favor, reinicie OnlyM después de cambiar el idioma.</value>
+    <value>Por favor, reinicia OnlyM después de cambiar el idioma.</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
 </root>
