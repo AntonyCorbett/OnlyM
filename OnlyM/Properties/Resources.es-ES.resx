@@ -185,15 +185,15 @@
     <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
   </data>
   <data name="FOLDER" xml:space="preserve">
-    <value>Abrir la carpeta de los archivos multimedia</value>
+    <value>Abrir carpeta multimedia</value>
     <comment>Tooltip on the main page Folder button</comment>
   </data>
   <data name="FOLDER_DISABLED" xml:space="preserve">
-    <value>¡La carpeta de los archivos multimedia está deshabilitada por el administrador!</value>
+    <value>¡La carpeta multimedia está deshabilitada por el administrador!</value>
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>No es posible deseleccionar el monitor mientras está en uso</value>
+    <value>No puede deseleccionar el monitor cuando el archivo multimedia está en uso</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
@@ -221,7 +221,7 @@
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
-    <value>Carpeta de los archivos multimedia</value>
+    <value>Carpeta multimedia</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="SECTION_MEDIA_FILES" xml:space="preserve">
@@ -233,7 +233,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
-    <value>Carpeta de los archivos multimedia especificada en la línea de comandos:</value>
+    <value>Carpeta multimedia especificada en la línea de comandos:</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
