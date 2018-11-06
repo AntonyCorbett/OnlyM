@@ -209,7 +209,7 @@
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="ROLLING_SLIDE_X_OF_Y" xml:space="preserve">
-    <value>rolling slide {0} of {1}</value>
+    <value>slajdów {0} z {1}</value>
     <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
   </data>
   <data name="MEDIA_MONITOR" xml:space="preserve">
@@ -237,11 +237,11 @@
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
-    <value>Allow pause</value>
+    <value>Zezwalaj na pauzę</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Allow scrubbing when paused</value>
+    <value>Zezwalaj na przewijanie przód/tył</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
@@ -249,11 +249,11 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Cache images (better performance but more memory)</value>
+    <value>Buforuj obrazy (lepsza wydajność kosztem pamięci)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
-    <value>Confirm when stopping</value>
+    <value>Potwierdź zatrzymanie</value>
     <comment>See Settings =&gt; Videos and Audio.</comment>
   </data>
   <data name="CURRENT_DATE" xml:space="preserve">
