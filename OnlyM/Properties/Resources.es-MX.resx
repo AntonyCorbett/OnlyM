@@ -241,11 +241,11 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Permite depuración cuando esta pausado</value>
+    <value>Permitir previsualizar cuando está pausado</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
-    <value>Permite búsqueda de posición</value>
+    <value>Permitir la ubicación de la posición inicial</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
@@ -281,11 +281,11 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>QUITAR CACHE DE MINIATURAS</value>
+    <value>QUITAR CACHÉ DE MINIATURAS</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
-    <value>Motor de renderizado</value>
+    <value>Motor de reproducción</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SECTION_IMAGES" xml:space="preserve">
@@ -377,7 +377,7 @@
     <comment>Button label in Command panel. Hide the media item.</comment>
   </data>
   <data name="PAUSE_FINAL_FRAME" xml:space="preserve">
-    <value>Pausa en el cuadro final</value>
+    <value>Pausar en el cuadro final</value>
     <comment>Tooltip on Freeze button in Command panel</comment>
   </data>
   <data name="WILL_PAUSE" xml:space="preserve">
