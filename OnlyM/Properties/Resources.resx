@@ -213,7 +213,7 @@
     <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
   </data>
   <data name="MEDIA_MONITOR" xml:space="preserve">
-    <value>Media monitor</value>
+    <value>Monitor</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">

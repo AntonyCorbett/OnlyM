@@ -377,7 +377,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Media monitor.
+        ///   Looks up a localized string similar to Monitor.
         /// </summary>
         public static string MEDIA_MONITOR {
             get {
