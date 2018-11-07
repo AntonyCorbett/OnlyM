@@ -229,7 +229,7 @@
     <comment>Section title for Settings =&gt; Media Files</comment>
   </data>
   <data name="MAX_ITEMS" xml:space="preserve">
-    <value>Antal tillåtna objekt</value>
+    <value>Max antal tillåtna mediafiler</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
