@@ -161,7 +161,7 @@
     <value>OK</value>
   </data>
   <data name="VIEW" xml:space="preserve">
-    <value>VIEW</value>
+    <value>Détails</value>
     <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
   </data>
   <data name="YES" xml:space="preserve">
