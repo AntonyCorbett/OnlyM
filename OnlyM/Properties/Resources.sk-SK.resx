@@ -341,7 +341,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Používanie vložených titulov, kde sú k dispozícii</value>
+    <value>Použi vložené názvy, ak sú k dispozícii</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
