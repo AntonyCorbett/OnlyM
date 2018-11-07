@@ -281,7 +281,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>VYMAŽ VYROVNÁVACIU PAMÄŤ MINIATÚR</value>
+    <value>VYMAŽ VYR. PAMÄŤ MINIATÚR</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
