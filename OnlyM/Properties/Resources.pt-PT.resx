@@ -273,7 +273,7 @@
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
-    <value>Nível de log</value>
+    <value>Nível de registo</value>
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
