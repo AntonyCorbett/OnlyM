@@ -368,7 +368,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Media folder specified on command-line:.
+        ///   Looks up a localized string similar to Media folder specified on command-line.
         /// </summary>
         public static string MEDIA_FOLDER_CMDLINE {
             get {
