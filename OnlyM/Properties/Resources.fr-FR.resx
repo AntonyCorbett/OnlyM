@@ -237,7 +237,7 @@
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
-    <value>Autoriser la mise pause</value>
+    <value>Autoriser la mise en pause</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
@@ -249,7 +249,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Précharger les images (meilleure performance mais plus de mémoire)</value>
+    <value>Précharger les images (meilleure performance mais utilise plus de mémoire)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
