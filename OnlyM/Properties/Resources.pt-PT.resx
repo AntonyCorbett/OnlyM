@@ -154,7 +154,7 @@
     <comment>Notification text displayed when there is a new version to download (can be translated the same as NEW_VERSION)</comment>
   </data>
   <data name="NO_SUPPORTED_FILES" xml:space="preserve">
-    <value>Arquivos de média não suportados!</value>
+    <value>Arquivos de multimédia não suportados!</value>
     <comment>Notification displayed if you drag and drop a file (or files) of a type that is not supported.</comment>
   </data>
   <data name="OK" xml:space="preserve">
@@ -169,11 +169,11 @@
     <comment>Caption of the notification bar button to confirm that media should be stopped.</comment>
   </data>
   <data name="BLANK_SCREEN" xml:space="preserve">
-    <value>Sem projeção</value>
+    <value>Ecrã Vazio</value>
     <comment>Title of the "Blank Screen" item</comment>
   </data>
   <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
-    <value>Selecione a pasta de médias</value>
+    <value>Selecione a pasta de multimédias</value>
     <comment>Title of the "Open Folder" dialog that is displayed when you click the folder button in Settings =&gt; Media Files</comment>
   </data>
   <data name="SETTINGS" xml:space="preserve">
@@ -185,7 +185,7 @@
     <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
   </data>
   <data name="FOLDER" xml:space="preserve">
-    <value>Abrir pasta de médias</value>
+    <value>Abrir pasta de multimédias</value>
     <comment>Tooltip on the main page Folder button</comment>
   </data>
   <data name="FOLDER_DISABLED" xml:space="preserve">
@@ -197,15 +197,15 @@
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
-    <value>(contém {0} slides)</value>
+    <value>(contém {0} imagens)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="SLIDE_X_OF_Y" xml:space="preserve">
-    <value>slide {0} de {1}</value>
+    <value>imagem {0} de {1}</value>
     <comment>Displayed when showing a slideshow to indicate which slide is being viewed. Please retain the placeholders.</comment>
   </data>
   <data name="CONTAINS_X_ROLLING_SLIDES" xml:space="preserve">
-    <value>(contém {0} slides)</value>
+    <value>(contém {0} imagens)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="ROLLING_SLIDE_X_OF_Y" xml:space="preserve">
@@ -221,11 +221,11 @@
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
-    <value>Pasta de médias</value>
+    <value>Pasta de multimédias</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="SECTION_MEDIA_FILES" xml:space="preserve">
-    <value>FICHEIROS DE MÉDIA</value>
+    <value>FICHEIROS DE MULTIMÉDIA</value>
     <comment>Section title for Settings =&gt; Media Files</comment>
   </data>
   <data name="MAX_ITEMS" xml:space="preserve">
@@ -233,7 +233,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
-    <value>Pasta de média especificada na linha de comando</value>
+    <value>Pasta de multimédias especificada na linha de comando</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
@@ -241,11 +241,11 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Permitir percorrer na linha do tempo</value>
+    <value>Permitir percorrer linha do tempo quando pausado</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
-    <value>Permitir selecionar início de vídeo</value>
+    <value>Permitir selecionar posição de início do vídeo</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Mostrar função 'Fixar'</value>
+    <value>Mostrar o comando 'Fixar' no Painel de Comando</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
@@ -321,7 +321,7 @@
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
-    <value>Incluir "Ecrã Vazio"</value>
+    <value>Incluir o item "Ecrã Vazio"</value>
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
@@ -333,7 +333,7 @@
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
-    <value>Permitir Painel de Comando</value>
+    <value>Habilitar o Painel de Comando</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
@@ -345,11 +345,11 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
-    <value>Largue os seus arquivos de média aqui!</value>
+    <value>Largue os seus arquivos de multimédia aqui!</value>
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
-    <value>Página de média</value>
+    <value>Página de multimédia</value>
     <comment>Tooltip for the Settings page "Back" button </comment>
   </data>
   <data name="UNHIDE" xml:space="preserve">
@@ -369,7 +369,7 @@
     <comment>Button label in Command panel</comment>
   </data>
   <data name="FREEZE" xml:space="preserve">
-    <value>Congelar</value>
+    <value>Fixar</value>
     <comment>Button label in Command panel. Freeze the video on the final frame.</comment>
   </data>
   <data name="HIDE" xml:space="preserve">
