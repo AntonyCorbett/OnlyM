@@ -158,7 +158,7 @@
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="FADE_SPEED_SUPER_FAST" xml:space="preserve">
-    <value>Super rapide</value>
+    <value>Très rapide</value>
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="LOG_LEVEL_DEBUG" xml:space="preserve">
