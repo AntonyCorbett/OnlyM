@@ -45,7 +45,7 @@ Source: "bin\Release\x86\*"; DestDir: "{app}\x86"; Flags: ignoreversion
 Source: "bin\Release\AutoMapper.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\CommonServiceLocator.dll"; DestDir: "{app}"; Flags: ignoreversion
 
-; temp inclusion of updated ffme assemblies to correct subtitle bug
+; temp inclusion of updated ffme assemblies to correct subtitle bug  (awaiting fix in 2.80)
 Source: "D:\ProjectsMisc\ffmediaelement-master\Unosquare.FFME.Windows.Sample\bin\Release\ffme.common.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\ProjectsMisc\ffmediaelement-master\Unosquare.FFME.Windows.Sample\bin\Release\ffme.win.dll"; DestDir: "{app}"; Flags: ignoreversion
 
