@@ -4,19 +4,24 @@
     using System.Diagnostics;
     using System.Threading.Tasks;
     using System.Windows.Controls;
+    using GalaSoft.MvvmLight.Messaging;
     using MediaElementAdaption;
     using Models;
     using OnlyM.Core.Models;
+    using OnlyM.Core.Services.Options;
     using OnlyM.Core.Subtitles;
+    using OnlyM.PubSubMessages;
     using Serilog;
     using Serilog.Events;
 
-    internal sealed class VideoDisplayManager
+    internal sealed class VideoDisplayManager : IDisposable
     {
         private const int FreezeMillisecsFromEnd = 250;
 
         private readonly IMediaElement _mediaElement;
         private readonly TextBlock _subtitleBlock;
+
+        private readonly IOptionsService _optionsService;
 
         private Guid _mediaItemId;
         private MediaClassification _mediaClassification;
@@ -26,19 +31,15 @@
         private bool _firedNearEndEvent;
         private SubtitleProvider _subTitleProvider;
         private string _mediaItemFilePath;
-        
-        public VideoDisplayManager(IMediaElement mediaElement, TextBlock subtitleBlock)
+
+        public VideoDisplayManager(IMediaElement mediaElement, TextBlock subtitleBlock, IOptionsService optionsService)
         {
             _mediaElement = mediaElement;
             _subtitleBlock = subtitleBlock;
 
-            _mediaElement.MediaOpened += HandleMediaOpened;
-            _mediaElement.MediaClosed += HandleMediaClosed;
-            _mediaElement.MediaEnded += async (s, e) => await HandleMediaEnded(s, e);
-            _mediaElement.MediaFailed += HandleMediaFailed;
-            _mediaElement.RenderingSubtitles += HandleRenderingSubtitles;
-            _mediaElement.PositionChanged += HandlePositionChanged;
-            _mediaElement.MessageLogged += HandleMediaElementMessageLogged;
+            _optionsService = optionsService;
+
+            SubscribeEvents();
         }
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
@@ -48,10 +49,15 @@
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
         public event EventHandler<SubtitleEventArgs> SubtitleEvent;
-
+        
         public bool ShowSubtitles { get; set; }
 
         public bool IsPaused => _mediaElement.IsPaused;
+
+        public void Dispose()
+        {
+            UnsubscribeEvents();
+        }
 
         public async Task ShowVideoOrPlayAudio(
             string mediaItemFilePath,
@@ -81,11 +87,13 @@
                 await _mediaElement.Play(new Uri(mediaItemFilePath), _mediaClassification);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
 
-                CreateSubtitleProvider(mediaItemFilePath, startOffset);
+                await CreateSubtitleProvider(mediaItemFilePath, startOffset);
             }
             else
             {
                 Log.Debug($"Firing Started - Media Id = {_mediaItemId}");
+
+                await CreateSubtitleFile(mediaItemFilePath);
                 
                 await _mediaElement.Play(new Uri(mediaItemFilePath), _mediaClassification).ConfigureAwait(true);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
@@ -134,7 +142,7 @@
             MediaChangeEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaOpened(object sender, System.Windows.RoutedEventArgs e)
+        private async void HandleMediaOpened(object sender, System.Windows.RoutedEventArgs e)
         {
             Log.Logger.Information("Opened");
 
@@ -143,7 +151,7 @@
             _mediaElement.Position = _startPosition;
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
 
-            CreateSubtitleProvider(_mediaItemFilePath, _startPosition);
+            await CreateSubtitleProvider(_mediaItemFilePath, _startPosition);
         }
 
         private void HandleMediaClosed(object sender, System.Windows.RoutedEventArgs e)
@@ -155,7 +163,7 @@
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
         }
 
-        private async Task HandleMediaEnded(object sender, System.Windows.RoutedEventArgs e)
+        private async void HandleMediaEnded(object sender, System.Windows.RoutedEventArgs e)
         {
             Log.Logger.Debug("Media ended");
 
@@ -244,7 +252,22 @@
             }
         }
 
-        private void CreateSubtitleProvider(string mediaItemFilePath, TimeSpan videoHeadPosition)
+        private Task<string> CreateSubtitleFile(string mediaItemFilePath)
+        {
+            return Task.Run(() =>
+            {
+                if (_mediaClassification == MediaClassification.Video &&
+                    _mediaElement is MediaElementMediaFoundation &&
+                    _optionsService.Options.ShowVideoSubtitles)
+                {
+                    return SubtitleFileGenerator.Generate(mediaItemFilePath, _mediaItemId);
+                }
+
+                return null;
+            });
+        }
+
+        private async Task CreateSubtitleProvider(string mediaItemFilePath, TimeSpan videoHeadPosition)
         {
             if (_subTitleProvider != null)
             {
@@ -253,17 +276,49 @@
             }
 
             if (_mediaClassification == MediaClassification.Video &&
-                _mediaElement is MediaElementMediaFoundation)
+                _mediaElement is MediaElementMediaFoundation &&
+                _optionsService.Options.ShowVideoSubtitles)
             {
                 // accommodate any latency introduced by creation of srt file
                 var sw = Stopwatch.StartNew();
-                var srtFile = SubtitleFileGenerator.Generate(mediaItemFilePath);
+                var srtFile = await CreateSubtitleFile(mediaItemFilePath);
                 
                 videoHeadPosition += sw.Elapsed;
 
                 _subTitleProvider = new SubtitleProvider(srtFile, videoHeadPosition);
                 _subTitleProvider.SubtitleEvent += HandleSubtitleEvent;
             }
+        }
+
+        private void HandleSubtitleFileEvent(object sender, SubtitleFileEventArgs e)
+        {
+            Messenger.Default.Send(new SubtitleFileMessage { MediaItemId = e.MediaItemId, Starting = e.Starting });
+        }
+
+        private void SubscribeEvents()
+        {
+            _mediaElement.MediaOpened += HandleMediaOpened;
+            _mediaElement.MediaClosed += HandleMediaClosed;
+            _mediaElement.MediaEnded += HandleMediaEnded;
+            _mediaElement.MediaFailed += HandleMediaFailed;
+            _mediaElement.RenderingSubtitles += HandleRenderingSubtitles;
+            _mediaElement.PositionChanged += HandlePositionChanged;
+            _mediaElement.MessageLogged += HandleMediaElementMessageLogged;
+
+            SubtitleFileGenerator.SubtitleFileEvent += HandleSubtitleFileEvent;
+        }
+
+        private void UnsubscribeEvents()
+        {
+            _mediaElement.MediaOpened -= HandleMediaOpened;
+            _mediaElement.MediaClosed -= HandleMediaClosed;
+            _mediaElement.MediaEnded -= HandleMediaEnded;
+            _mediaElement.MediaFailed -= HandleMediaFailed;
+            _mediaElement.RenderingSubtitles -= HandleRenderingSubtitles;
+            _mediaElement.PositionChanged -= HandlePositionChanged;
+            _mediaElement.MessageLogged -= HandleMediaElementMessageLogged;
+
+            SubtitleFileGenerator.SubtitleFileEvent -= HandleSubtitleFileEvent;
         }
     }
 }

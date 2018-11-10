@@ -392,4 +392,8 @@
     <value>Please restart OnlyM after changing the language.</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
+  <data name="GENERATING_SUBTITLES" xml:space="preserve">
+    <value>Generating subtitles</value>
+    <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
+  </data>
 </root>

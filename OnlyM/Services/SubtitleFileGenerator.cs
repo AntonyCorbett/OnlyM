@@ -3,14 +3,19 @@
     using System;
     using System.IO;
     using Core.Utils;
+    using OnlyM.Models;
     using Serilog;
 
     internal static class SubtitleFileGenerator
     {
-        public static string Generate(string mediaItemFilePath)
+        public static event EventHandler<SubtitleFileEventArgs> SubtitleFileEvent;
+
+        public static string Generate(string mediaItemFilePath, Guid mediaItemId)
         {
             try
             {
+                Log.Logger.Debug($"Generating subtitle file for media {mediaItemFilePath}");
+
                 var ffmpegFolder = Unosquare.FFME.MediaElement.FFmpegDirectory;
 
                 var destFolder = Path.GetDirectoryName(mediaItemFilePath);
@@ -34,6 +39,8 @@
                 var srtFile = Path.Combine(destFolder, Path.ChangeExtension(srtFileName, ".srt"));
                 if (ShouldCreate(srtFile, videoFileInfo.CreationTimeUtc))
                 {
+                    SubtitleFileEvent?.Invoke(null, new SubtitleFileEventArgs { MediaItemId = mediaItemId, Starting = true });
+
                     if (!GraphicsUtils.GenerateSubtitleFile(
                         ffmpegFolder,
                         mediaItemFilePath,
@@ -41,8 +48,10 @@
                     {
                         return null;
                     }
-
+                    
                     File.SetCreationTimeUtc(srtFile, videoFileInfo.CreationTimeUtc);
+
+                    SubtitleFileEvent?.Invoke(null, new SubtitleFileEventArgs { MediaItemId = mediaItemId, Starting = false });
                 }
 
                 return srtFile;
@@ -64,10 +73,14 @@
             var fileInfo = new FileInfo(srtFile);
             if (fileInfo.CreationTimeUtc != videoFileCreationTimeUtc)
             {
+                Log.Logger.Debug("Old subtitle file found");
+
                 // we also update the subtitles file if it looks
                 // like the video has been changed
                 return true;
             }
+
+            Log.Logger.Debug("Subtitle file already exists");
 
             return false;
         }

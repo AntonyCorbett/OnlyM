@@ -1,4 +1,6 @@
-﻿namespace OnlyM.ViewModel
+﻿using OnlyM.Services.Snackbar;
+
+namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -37,6 +39,7 @@
         private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
         private readonly IFrozenVideosService _frozenVideosService;
         private readonly IActiveMediaItemsService _activeMediaItemsService;
+        private readonly ISnackbarService _snackbarService;
 
         private readonly MetaDataQueueProducer _metaDataProducer = new MetaDataQueueProducer();
         private readonly CancellationTokenSource _metaDataCancellationTokenSource = new CancellationTokenSource();
@@ -55,13 +58,16 @@
             IMediaStatusChangingService mediaStatusChangingService,
             IHiddenMediaItemsService hiddenMediaItemsService,
             IActiveMediaItemsService activeMediaItemsService,
-            IFrozenVideosService frozenVideosService)
+            IFrozenVideosService frozenVideosService,
+            ISnackbarService snackbarService)
         {
             _mediaProviderService = mediaProviderService;
             _mediaStatusChangingService = mediaStatusChangingService;
 
             _hiddenMediaItemsService = hiddenMediaItemsService;
             _hiddenMediaItemsService.UnhideAllEvent += HandleUnhideAllEvent;
+
+            _snackbarService = snackbarService;
 
             _activeMediaItemsService = activeMediaItemsService;
             _frozenVideosService = frozenVideosService;
@@ -109,6 +115,7 @@
             LaunchThumbnailQueueConsumer();
 
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+            Messenger.Default.Register<SubtitleFileMessage>(this, OnSubtitleFileActivity);
         }
 
         public ObservableCollectionEx<MediaItem> MediaItems { get; } = new ObservableCollectionEx<MediaItem>();
@@ -938,6 +945,14 @@
 
                 _pendingLoadMediaItems = true;
             });
+        }
+
+        private void OnSubtitleFileActivity(SubtitleFileMessage message)
+        {
+            if (message.Starting)
+            {
+                _snackbarService.EnqueueWithOk(Properties.Resources.GENERATING_SUBTITLES);
+            }
         }
     }
 }

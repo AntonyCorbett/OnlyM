@@ -36,7 +36,7 @@
         private int _currentSlideshowIndex;
         private int _slideshowCount;
         private bool _isRollingSlideshow;
-
+        
         public event EventHandler PlaybackPositionChangedEvent;
 
         public Guid Id { get; set; }

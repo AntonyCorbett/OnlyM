@@ -278,6 +278,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generating subtitles.
+        /// </summary>
+        public static string GENERATING_SUBTITLES {
+            get {
+                return ResourceManager.GetString("GENERATING_SUBTITLES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to HIDE.
         /// </summary>
         public static string HIDE {

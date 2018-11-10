@@ -280,14 +280,10 @@
         private void HandleMediaFoundationSubtitleEvent(object sender, Core.Subtitles.SubtitleEventArgs e)
         {
             var vm = (MediaViewModel)DataContext;
-            if (e.Text == null)
-            {
-                vm.SubTitleText = null;
-            }
-            else
-            {
-                vm.SubTitleText = string.Join(Environment.NewLine, e.Text);
-            }
+
+            vm.SubTitleText = e.Text == null 
+                ? null 
+                : string.Join(Environment.NewLine, e.Text);
         }
 
         private void UnsubscribeOptionsEvents()
@@ -396,9 +392,10 @@
             if (_videoDisplayManager != null)
             {
                 UnsubscribeVideoEvents();
+                _videoDisplayManager.Dispose();
             }
 
-            _videoDisplayManager = new VideoDisplayManager(_videoElement, SubtitleBlock);
+            _videoDisplayManager = new VideoDisplayManager(_videoElement, SubtitleBlock, _optionsService);
             
             SubscribeVideoEvents();
         }

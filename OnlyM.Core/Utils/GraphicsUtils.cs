@@ -274,12 +274,16 @@
         // ReSharper disable once InconsistentNaming
         private static bool ExecuteFFMpeg(string ffmpegFolder, string arguments)
         {
+            Log.Logger.Debug($"Executing ffmpeg with args = {arguments}");
+
             var ffmpegPath = Path.Combine(ffmpegFolder, "ffmpeg.exe");
 
             var p = new Process
             {
                 StartInfo =
                 {
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     FileName = ffmpegPath,
                     Arguments = arguments,
                     UseShellExecute = false,
@@ -291,11 +295,16 @@
             {
                 p.Start();
 
+                p.BeginOutputReadLine();
+                p.StandardError.ReadToEnd();
+
                 bool rv = p.WaitForExit(5000);
                 if (!p.HasExited)
                 {
                     p.Kill();
                 }
+
+                Log.Logger.Debug($"Ffmpeg return code = {rv}");
 
                 return rv;
             }

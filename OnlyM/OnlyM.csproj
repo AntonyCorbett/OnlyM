@@ -163,10 +163,12 @@
     <Compile Include="Models\ScreenMarginSide.cs" />
     <Compile Include="Models\SlideTransition.cs" />
     <Compile Include="Models\SlideTransitionEventArgs.cs" />
+    <Compile Include="Models\SubtitleFileEventArgs.cs" />
     <Compile Include="Models\WindowVisibilityChangedEventArgs.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatedMessage.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatingMessage.cs" />
     <Compile Include="PubSubMessages\ShutDownMessage.cs" />
+    <Compile Include="PubSubMessages\SubtitleFileMessage.cs" />
     <Compile Include="Services\DragAndDrop\DragAndDropService.cs" />
     <Compile Include="Services\DragAndDrop\IDragAndDropService.cs" />
     <Compile Include="Services\FrozenVideoItems\FrozenVideosService.cs" />
