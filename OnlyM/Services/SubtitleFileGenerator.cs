@@ -3,46 +3,55 @@
     using System;
     using System.IO;
     using Core.Utils;
+    using Serilog;
 
     internal static class SubtitleFileGenerator
     {
         public static string Generate(string mediaItemFilePath)
         {
-            var ffmpegFolder = Unosquare.FFME.MediaElement.FFmpegDirectory;
-
-            var destFolder = Path.GetDirectoryName(mediaItemFilePath);
-            if (destFolder == null)
+            try
             {
-                return null;
-            }
+                var ffmpegFolder = Unosquare.FFME.MediaElement.FFmpegDirectory;
 
-            var srtFileName = Path.GetFileNameWithoutExtension(mediaItemFilePath);
-            if (srtFileName == null)
-            {
-                return null;
-            }
-
-            var videoFileInfo = new FileInfo(mediaItemFilePath);
-            if (!videoFileInfo.Exists)
-            {
-                return null;
-            }
-
-            var srtFile = Path.Combine(destFolder, Path.ChangeExtension(srtFileName, ".srt"));
-            if (ShouldCreate(srtFile, videoFileInfo.CreationTimeUtc))
-            {
-                if (!GraphicsUtils.GenerateSubtitleFile(
-                    ffmpegFolder,
-                    mediaItemFilePath,
-                    srtFile))
+                var destFolder = Path.GetDirectoryName(mediaItemFilePath);
+                if (destFolder == null)
                 {
                     return null;
                 }
 
-                File.SetCreationTimeUtc(srtFile, videoFileInfo.CreationTimeUtc);
-            }
+                var srtFileName = Path.GetFileNameWithoutExtension(mediaItemFilePath);
+                if (srtFileName == null)
+                {
+                    return null;
+                }
 
-            return srtFile;
+                var videoFileInfo = new FileInfo(mediaItemFilePath);
+                if (!videoFileInfo.Exists)
+                {
+                    return null;
+                }
+
+                var srtFile = Path.Combine(destFolder, Path.ChangeExtension(srtFileName, ".srt"));
+                if (ShouldCreate(srtFile, videoFileInfo.CreationTimeUtc))
+                {
+                    if (!GraphicsUtils.GenerateSubtitleFile(
+                        ffmpegFolder,
+                        mediaItemFilePath,
+                        srtFile))
+                    {
+                        return null;
+                    }
+
+                    File.SetCreationTimeUtc(srtFile, videoFileInfo.CreationTimeUtc);
+                }
+
+                return srtFile;
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, $"Could not create srt file for media: {mediaItemFilePath}");
+                return null;
+            }
         }
 
         private static bool ShouldCreate(string srtFile, DateTime videoFileCreationTimeUtc)

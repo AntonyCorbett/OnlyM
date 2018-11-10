@@ -45,7 +45,7 @@
             ImageFadeType = ImageFadeType.CrossFade;
             ImageFadeSpeed = FadeSpeed.Normal;
             CacheImages = true;
-            ShowVideoSubtitles = true;
+            ShowVideoSubtitles = false;
             AllowVideoScrubbing = true;
             AllowVideoPause = true;
             AllowVideoPositionSeeking = true;

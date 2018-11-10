@@ -86,6 +86,7 @@
             else
             {
                 Log.Debug($"Firing Started - Media Id = {_mediaItemId}");
+                
                 await _mediaElement.Play(new Uri(mediaItemFilePath), _mediaClassification).ConfigureAwait(true);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
             }
@@ -257,6 +258,7 @@
                 // accommodate any latency introduced by creation of srt file
                 var sw = Stopwatch.StartNew();
                 var srtFile = SubtitleFileGenerator.Generate(mediaItemFilePath);
+                
                 videoHeadPosition += sw.Elapsed;
 
                 _subTitleProvider = new SubtitleProvider(srtFile, videoHeadPosition);
