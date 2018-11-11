@@ -92,7 +92,7 @@ Source: "bin\Release\fr-FR\*.dll"; DestDir: "{app}\fr-FR"; Flags: ignoreversion
 Source: "bin\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
 ;Source: "bin\Release\jv-Latn-ID\*.dll"; DestDir: "{app}\jv-Latn-ID"; Flags: ignoreversion
 Source: "bin\Release\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
-Source: "bin\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
+;Source: "bin\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
 Source: "bin\Release\pl-PL\*.dll"; DestDir: "{app}\pl-PL"; Flags: ignoreversion
 Source: "bin\Release\pt-BR\*.dll"; DestDir: "{app}\pt-BR"; Flags: ignoreversion
 Source: "bin\Release\pt-PT\*.dll"; DestDir: "{app}\pt-PT"; Flags: ignoreversion
