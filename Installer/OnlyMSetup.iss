@@ -81,6 +81,7 @@ Source: "bin\Release\System.Windows.Interactivity.dll"; DestDir: "{app}"; Flags:
 Source: "bin\Release\taglib-sharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 Source: "bin\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
+Source: "bin\Release\cs-CZ\*.dll"; DestDir: "{app}\cs-CZ"; Flags: ignoreversion
 Source: "bin\Release\de-DE\*.dll"; DestDir: "{app}\de-DE"; Flags: ignoreversion
 Source: "bin\Release\el-GR\*.dll"; DestDir: "{app}\el-GR"; Flags: ignoreversion
 Source: "bin\Release\en-US\*.dll"; DestDir: "{app}\en-US"; Flags: ignoreversion
@@ -93,6 +94,7 @@ Source: "bin\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
 ;Source: "bin\Release\jv-Latn-ID\*.dll"; DestDir: "{app}\jv-Latn-ID"; Flags: ignoreversion
 Source: "bin\Release\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
 ;Source: "bin\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
+Source: "bin\Release\pap\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
 Source: "bin\Release\pl-PL\*.dll"; DestDir: "{app}\pl-PL"; Flags: ignoreversion
 Source: "bin\Release\pt-BR\*.dll"; DestDir: "{app}\pt-BR"; Flags: ignoreversion
 Source: "bin\Release\pt-PT\*.dll"; DestDir: "{app}\pt-PT"; Flags: ignoreversion
