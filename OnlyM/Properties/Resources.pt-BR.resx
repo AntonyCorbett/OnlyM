@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="APP_VER" xml:space="preserve">
-    <value>Versão do aplicativo: {0}</value>
+    <value>Versão do programa: {0}</value>
     <comment>See Settings =&gt; Images. Please retain the "{0}" - it's a placeholder for the version number</comment>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
@@ -138,11 +138,11 @@
     <comment>Displayed as a notification message when several files are dropped onto the media list. Please leve the placeholder as it is.</comment>
   </data>
   <data name="FILE_COPIED" xml:space="preserve">
-    <value>Arquivos copiados</value>
+    <value>Arquivo copiado</value>
     <comment>Displayed as a notification message when a single file is dropped onto the media list.</comment>
   </data>
   <data name="MEDIA_ACTIVE" xml:space="preserve">
-    <value>Pare a mídia primeiro para fechar!</value>
+    <value>Não é possível fechar com a mídia em execução!</value>
     <comment>This is the notification displayed if you try to close OnlyM when media is playing.</comment>
   </data>
   <data name="MONITOR_NONE" xml:space="preserve">
@@ -154,7 +154,7 @@
     <comment>Notification text displayed when there is a new version to download (can be translated the same as NEW_VERSION)</comment>
   </data>
   <data name="NO_SUPPORTED_FILES" xml:space="preserve">
-    <value>Arquivos de mídia não suportados!</value>
+    <value>Não há arquivos de mídia suportados!</value>
     <comment>Notification displayed if you drag and drop a file (or files) of a type that is not supported.</comment>
   </data>
   <data name="OK" xml:space="preserve">
@@ -193,7 +193,7 @@
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Não é possível cancelar a seleção do monitor quando a mídia está ativa</value>
+    <value>Não é possível desativar o monitor enquanto a mídia estiver ativa</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
@@ -233,7 +233,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
-    <value>Media folder specified on command-line</value>
+    <value>Pasta com mídias especificada por linha de comando</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
@@ -393,7 +393,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="GENERATING_SUBTITLES" xml:space="preserve">
-    <value>Generating subtitles</value>
+    <value>Criando legendas</value>
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
 </root>
