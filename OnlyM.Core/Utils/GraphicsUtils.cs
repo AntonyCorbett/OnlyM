@@ -151,6 +151,7 @@
             // BitmapCacheOption.OnLoad prevents the source image file remaining
             // in use when the bitmap is used as an ImageSource.
             bmp.BeginInit();
+            bmp.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
             bmp.UriSource = new Uri(imageFile);
             bmp.CacheOption = BitmapCacheOption.OnLoad;
             bmp.EndInit();
