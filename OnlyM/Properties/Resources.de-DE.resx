@@ -233,7 +233,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
-    <value>Media folder specified on command-line</value>
+    <value>Über die Kommandozeile angegebener Medienordner</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
@@ -393,7 +393,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="GENERATING_SUBTITLES" xml:space="preserve">
-    <value>Generating subtitles</value>
+    <value>Untertitel werden generiert</value>
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
 </root>
