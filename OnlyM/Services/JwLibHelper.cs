@@ -41,6 +41,14 @@
                     if (procId == p.Id)
                     {
                         found = true;
+
+                        IntPtr mainWindow = p.MainWindowHandle;
+                        if (JwLibHelperNativeMethods.IsIconic(mainWindow))
+                        {
+                            const int swRestore = 9;
+                            JwLibHelperNativeMethods.ShowWindow(mainWindow, swRestore);
+                        }
+
                         JwLibHelperNativeMethods.SetForegroundWindow(nextWindow);
                     }
 

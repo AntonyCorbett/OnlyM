@@ -20,5 +20,11 @@
 
         [DllImport("User32.dll")]
         public static extern bool SetForegroundWindow(IntPtr handle);
+
+        [DllImport("User32.dll")]
+        public static extern bool IsIconic(IntPtr hWnd);
+
+        [DllImport("User32.dll")]
+        public static extern bool ShowWindow(IntPtr handle, int nCmdShow);
     }
 }
