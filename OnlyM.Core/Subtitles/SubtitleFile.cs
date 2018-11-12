@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Text;
     using HtmlAgilityPack;
 
     /// <summary>
@@ -10,6 +11,8 @@
     /// </summary>
     internal sealed class SubtitleFile
     {
+        private const string AssStartToken = "{\\";
+        
         private readonly List<SubtitleEntry> _subtitles = new List<SubtitleEntry>();
         private int _index = -1;
 
@@ -98,9 +101,45 @@
 
         private string StripHtml(IReadOnlyCollection<string> lines)
         {
-            HtmlDocument doc = new HtmlDocument();
+            var doc = new HtmlDocument();
             doc.LoadHtml(string.Join(Environment.NewLine, lines));
-            return doc.DocumentNode.InnerText;
+            return StripASSCodes(doc.DocumentNode.InnerText);
+        }
+
+        private string StripASSCodes(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return s;
+            }
+
+            if (!s.Contains(AssStartToken))
+            {
+                return s;
+            }
+
+            var sb = new StringBuilder();
+
+            int assCodeLevel = 0;
+            for (int n = 0; n < s.Length; ++n)
+            {
+                var ch = s[n];
+
+                if (ch == '{' && n < s.Length - 1 && s[n + 1] == '\\')
+                {
+                    ++assCodeLevel;
+                }
+                else if (assCodeLevel > 0 && ch == '}')
+                {
+                    --assCodeLevel;
+                }
+                else if (assCodeLevel == 0)
+                {
+                    sb.Append(ch);
+                }
+            }
+
+            return sb.ToString().Trim();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using OnlyM.Services.Snackbar;
-
-namespace OnlyM.ViewModel
+﻿namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -19,6 +17,7 @@ namespace OnlyM.ViewModel
     using GalaSoft.MvvmLight.Threading;
     using MediaElementAdaption;
     using Models;
+    using OnlyM.Services.Snackbar;
     using PubSubMessages;
     using Serilog;
     using Services.FrozenVideoItems;
