@@ -193,7 +193,7 @@
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Während die Wiedergabe aktiv ist, kann die Auswahl des Monitors nicht aufgehoben werden</value>
+    <value>Während einer Wiedergabe kann der Monitor nicht deaktiviert werden</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
