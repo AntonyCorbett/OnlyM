@@ -1,4 +1,6 @@
-﻿namespace OnlyM
+﻿using System;
+
+namespace OnlyM
 {
     using System.Diagnostics;
     using System.IO;
@@ -29,7 +31,7 @@
             RegisterMappings();
         }
 
-        public static string FMpegFolderName { get; } = @"FFmpeg";
+        public static string FMpegFolderName { get; } = $"{AppDomain.CurrentDomain.BaseDirectory}\\FFmpeg";
 
         protected override void OnExit(ExitEventArgs e)
         {
