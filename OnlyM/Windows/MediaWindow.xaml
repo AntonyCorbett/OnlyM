@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
+        xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         DataContext="{Binding Media, Mode=OneWay, Source={StaticResource Locator}}"
         WindowStyle="None" 
         Background="Black" 
@@ -35,8 +36,10 @@
                            LoadedBehavior="Manual" 
                            UnloadedBehavior="Manual" />
 
-        <Image x:Name="Image1Element"></Image>
+        <wpf:ChromiumWebBrowser x:Name="Browser" />
 
-        <Image x:Name="Image2Element"></Image>
+        <Image x:Name="Image1Element" />
+
+        <Image x:Name="Image2Element" />
     </Grid>
 </Window>
