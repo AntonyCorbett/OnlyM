@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace OnlyM
+﻿namespace OnlyM
 {
+    using System;
     using System.Diagnostics;
     using System.IO;
     using System.Threading;
