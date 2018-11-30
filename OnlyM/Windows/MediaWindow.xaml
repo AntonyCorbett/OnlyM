@@ -36,7 +36,7 @@
                            LoadedBehavior="Manual" 
                            UnloadedBehavior="Manual" />
 
-        <wpf:ChromiumWebBrowser x:Name="Browser" />
+        <wpf:ChromiumWebBrowser x:Name="Browser" Opacity="0"/>
 
         <Image x:Name="Image1Element" />
 

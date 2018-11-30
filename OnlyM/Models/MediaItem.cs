@@ -42,7 +42,9 @@
 
         public Guid Id { get; set; }
 
-        public bool IsVideo => MediaType.Classification == MediaClassification.Video; 
+        public bool IsVideo => MediaType.Classification == MediaClassification.Video;
+
+        public bool IsWeb => MediaType.Classification == MediaClassification.Web;
 
         public bool IsBlankScreen { get; set; }
 

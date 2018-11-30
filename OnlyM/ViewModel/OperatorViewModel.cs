@@ -335,14 +335,19 @@
             var videoOrAudioIsActive = VideoOrAudioIsActive();
             var videoIsActive = VideoIsActive();
             var rollingSlideshowIsActive = RollingSlideshowIsActive();
+            var webIsActive = WebIsActive();
 
             foreach (var item in MediaItems)
             {
                 switch (item.MediaType.Classification)
                 {
                     case MediaClassification.Image:
-                        // cannot show an image if video or rolling slideshow is playing.
-                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive && !rollingSlideshowIsActive;
+                        // cannot show an image if video or rolling slideshow or web page is playing.
+                        item.IsPlayButtonEnabled = 
+                            monitorSpecified && 
+                            !videoIsActive && 
+                            !rollingSlideshowIsActive && 
+                            !webIsActive;
                         break;
 
                     case MediaClassification.Audio:
@@ -351,18 +356,30 @@
                         break;
 
                     case MediaClassification.Video:
-                        // cannot play a video if another video or audio or rolling slideshow is playing.
-                        item.IsPlayButtonEnabled = monitorSpecified && !videoOrAudioIsActive && !rollingSlideshowIsActive;
+                        // cannot play a video if another video or audio or rolling slideshow or web page is playing.
+                        item.IsPlayButtonEnabled = 
+                            monitorSpecified && 
+                            !videoOrAudioIsActive && 
+                            !rollingSlideshowIsActive && 
+                            !webIsActive;
                         break;
 
                     case MediaClassification.Slideshow:
-                        // cannot play a slideshow if video or rolling slideshow is playing.
-                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive && !rollingSlideshowIsActive;
+                        // cannot play a slideshow if video or rolling slideshow or web page is playing.
+                        item.IsPlayButtonEnabled = 
+                            monitorSpecified && 
+                            !videoIsActive && 
+                            !rollingSlideshowIsActive &&
+                            !webIsActive;
                         break;
 
                     case MediaClassification.Web:
-                        // cannot launch a web page if video or rolling slideshow is playing.
-                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive && !rollingSlideshowIsActive;
+                        // cannot launch a web page if video or rolling slideshow or web page is playing.
+                        item.IsPlayButtonEnabled = 
+                            monitorSpecified && 
+                            !videoIsActive && 
+                            !rollingSlideshowIsActive &&
+                            !webIsActive;
                         break;
 
                     default:
@@ -573,6 +590,11 @@
             return mediaItem.IsRollingSlideshow;
         }
 
+        private bool IsWeb(MediaItem mediaItem)
+        {
+            return mediaItem.IsWeb;
+        }
+
         private async Task MediaPauseControl(Guid mediaItemId)
         {
             // only allow pause media when nothing is changing.
@@ -696,6 +718,17 @@
             }
 
             return currentItems.Any(IsRollingSlideshow);
+        }
+
+        private bool WebIsActive()
+        {
+            var currentItems = GetCurrentMediaItems();
+            if (currentItems == null)
+            {
+                return false;
+            }
+
+            return currentItems.Any(IsWeb);
         }
 
         private MediaItem GetNextImageItem(MediaItem currentMediaItem)

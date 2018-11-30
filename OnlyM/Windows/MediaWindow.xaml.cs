@@ -50,6 +50,7 @@
 
             SubscribeOptionsEvents();
             SubscribeImageEvents();
+            SubscribeWebEvents();
         }
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
@@ -92,7 +93,7 @@
                     break;
 
                 case MediaClassification.Web:
-                    ShowWebPage(mediaItemToStart);
+                    ShowWebPage(mediaItemToStart, currentMediaItems);
                     break;
             }
         }
@@ -213,9 +214,10 @@
             _imageDisplayManager.ShowSingleImage(mediaItem.FilePath, mediaItem.Id, mediaItem.IsBlankScreen);
         }
 
-        private void ShowWebPage(MediaItem mediaItem)
+        private void ShowWebPage(MediaItem mediaItem, IReadOnlyCollection<MediaItem> currentMediaItems)
         {
-            _webDisplayManager.ShowWeb(mediaItem.FilePath);
+            _webDisplayManager.ShowWeb(mediaItem.FilePath, mediaItem.Id);
+            HideImageOrSlideshow(currentMediaItems);
         }
 
         private void StopWeb(MediaItem mediaItem)
@@ -273,6 +275,7 @@
                 UnsubscribeOptionsEvents();
                 UnsubscribeImageEvents();
                 UnsubscribeVideoEvents();
+                UnsubscribeWebEvents();
             }
         }
 
@@ -295,6 +298,11 @@
             _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent += HandleMediaNearEndEvent;
             _videoDisplayManager.SubtitleEvent += HandleMediaFoundationSubtitleEvent;
+        }
+
+        private void SubscribeWebEvents()
+        {
+            _webDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
         }
 
         private void HandleMediaFoundationSubtitleEvent(object sender, Core.Subtitles.SubtitleEventArgs e)
@@ -325,6 +333,11 @@
             _videoDisplayManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent -= HandleMediaNearEndEvent;
             _videoDisplayManager.SubtitleEvent -= HandleMediaFoundationSubtitleEvent;
+        }
+
+        private void UnsubscribeWebEvents()
+        {
+            _webDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
         }
 
         private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
