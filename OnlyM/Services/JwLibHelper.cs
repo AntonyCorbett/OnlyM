@@ -3,62 +3,60 @@
     using System;
     using System.Diagnostics;
     using System.Linq;
+    using System.Text;
 
     internal static class JwLibHelper
     {
         private const string JwLibProcessName = "JWLibrary";
         private const string JwLibSignLanguageProcessName = "JWLibrary.Forms.UWP";
+        private const string MainWindowClassName = "ApplicationFrameWindow";
+        private const string JwLibCaptionPrefix = "JW Library";
 
         public static void BringToFront()
         {
-            BringToFront(JwLibProcessName);
-            BringToFront(JwLibSignLanguageProcessName);
+            if (!BringToFront(JwLibProcessName))
+            {
+                BringToFront(JwLibSignLanguageProcessName);
+            }
         }
 
-        private static void BringToFront(string processName)
+        private static bool BringToFront(string processName)
         {
             var p = Process.GetProcessesByName(processName).FirstOrDefault();
             if (p == null)
             {
-                return;
+                return false;
             }
 
             var desktopWindow = JwLibHelperNativeMethods.GetDesktopWindow();
             if (desktopWindow == IntPtr.Zero)
             {
-                return;
+                return false;
             }
-            
-            var found = false;
+
+            bool found = false;
             var prevWindow = IntPtr.Zero;
 
             while (!found)
             {
-                var nextWindow = JwLibHelperNativeMethods.FindWindowEx(desktopWindow, prevWindow, null, null);
-                if (nextWindow != IntPtr.Zero)
-                {
-                    JwLibHelperNativeMethods.GetWindowThreadProcessId(nextWindow, out var procId);
-                    if (procId == p.Id)
-                    {
-                        found = true;
-
-                        IntPtr mainWindow = p.MainWindowHandle;
-                        if (JwLibHelperNativeMethods.IsIconic(mainWindow))
-                        {
-                            const int swRestore = 9;
-                            JwLibHelperNativeMethods.ShowWindow(mainWindow, swRestore);
-                        }
-
-                        JwLibHelperNativeMethods.SetForegroundWindow(nextWindow);
-                    }
-
-                    prevWindow = nextWindow;
-                }
-                else
+                var mainWindow = JwLibHelperNativeMethods.FindWindowEx(desktopWindow, prevWindow, MainWindowClassName, null);
+                if (mainWindow == IntPtr.Zero)
                 {
                     break;
                 }
+
+                var sb = new StringBuilder(256);
+                JwLibHelperNativeMethods.GetWindowText(mainWindow, sb, 256);
+                if (sb.ToString().StartsWith(JwLibCaptionPrefix))
+                {
+                    JwLibHelperNativeMethods.SetForegroundWindow(mainWindow);
+                    found = true;
+                }
+
+                prevWindow = mainWindow;
             }
+
+            return found;
         }
     }
 }

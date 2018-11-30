@@ -52,14 +52,7 @@
                 <Setter Property="Margin" Value="0,5,0,7"/>
                 <Setter Property="Width" Value="420"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="ItemsPanel">
-                    <Setter.Value>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel 
-                                Background="{StaticResource MaterialDesignChipBackground}" />
-                        </ItemsPanelTemplate>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="materialDesign:ComboBoxAssist.ClassicMode" Value="true" />
             </Style>
 
             <Style x:Key="SettingsCheckBoxStyle" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignCheckBox}">
