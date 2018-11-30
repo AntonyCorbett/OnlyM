@@ -28,6 +28,9 @@
             DispatcherHelper.Initialize();
             MediaElement.FFmpegDirectory = FMpegFolderName;
             RegisterMappings();
+
+            // pre-load the CefSharp assemblies otherwise 1st instantiation is too long.
+            System.Reflection.Assembly.Load("CefSharp.Wpf");
         }
 
         public static string FMpegFolderName { get; } = $"{AppDomain.CurrentDomain.BaseDirectory}\\FFmpeg";

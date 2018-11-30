@@ -356,7 +356,12 @@
                         break;
 
                     case MediaClassification.Slideshow:
-                        // cannot play a slideshow if video or a rolling slideshow is playing.
+                        // cannot play a slideshow if video or rolling slideshow is playing.
+                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive && !rollingSlideshowIsActive;
+                        break;
+
+                    case MediaClassification.Web:
+                        // cannot launch a web page if video or rolling slideshow is playing.
                         item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive && !rollingSlideshowIsActive;
                         break;
 
@@ -639,6 +644,9 @@
                     return !VideoOrAudioIsActive();
 
                 case MediaClassification.Slideshow:
+                    return !VideoIsActive();
+
+                case MediaClassification.Web:
                     return !VideoIsActive();
 
                 default:

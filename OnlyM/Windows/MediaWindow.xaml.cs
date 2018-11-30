@@ -26,7 +26,8 @@
         private const int MediaConfirmStopWindowSeconds = 3;
 
         private readonly ImageDisplayManager _imageDisplayManager;
-        
+        private readonly WebDisplayManager _webDisplayManager;
+
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
         private VideoDisplayManager _videoDisplayManager;
@@ -41,10 +42,11 @@
             _optionsService = optionsService;
 
             _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
+            _webDisplayManager = new WebDisplayManager(Browser);
             
             _snackbarService = snackbarService;
 
-            InitRenderingMethod();
+            InitVideoRenderingMethod();
 
             SubscribeOptionsEvents();
             SubscribeImageEvents();
@@ -62,7 +64,7 @@
         {
             if (_optionsService.Options.RenderingMethod != _currentRenderingMethod)
             {
-                InitRenderingMethod();
+                InitVideoRenderingMethod();
             }
         }
 
@@ -87,6 +89,10 @@
 
                 case MediaClassification.Slideshow:
                     StartSlideshow(mediaItemToStart);
+                    break;
+
+                case MediaClassification.Web:
+                    ShowWebPage(mediaItemToStart);
                     break;
             }
         }
@@ -122,6 +128,10 @@
 
                 case MediaClassification.Slideshow:
                     StopSlideshow(mediaItem);
+                    break;
+
+                case MediaClassification.Web:
+                    StopWeb(mediaItem);
                     break;
             }
         }
@@ -197,10 +207,20 @@
                 _imageDisplayManager.HideSingleImage(mediaItem.Id);
             }
         }
-
+        
         private void ShowImage(MediaItem mediaItem)
         {
             _imageDisplayManager.ShowSingleImage(mediaItem.FilePath, mediaItem.Id, mediaItem.IsBlankScreen);
+        }
+
+        private void ShowWebPage(MediaItem mediaItem)
+        {
+            _webDisplayManager.ShowWeb(mediaItem.FilePath);
+        }
+
+        private void StopWeb(MediaItem mediaItem)
+        {
+            _webDisplayManager.HideWeb();
         }
 
         private void StartSlideshow(MediaItem mediaItem)
@@ -371,7 +391,7 @@
             ScreenPositionHelper.SetScreenPosition(Image2Element, _optionsService.Options.ImageScreenPosition);
         }
 
-        private void InitRenderingMethod()
+        private void InitVideoRenderingMethod()
         {
             _videoElement?.UnsubscribeEvents();
             

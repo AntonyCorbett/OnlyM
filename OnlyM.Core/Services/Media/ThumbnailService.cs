@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Core.Services.Media
+﻿using OnlyM.Core.Services.WebShortcuts;
+
+namespace OnlyM.Core.Services.Media
 {
     using System;
     using System.Drawing;
@@ -20,6 +22,13 @@
         private readonly Lazy<byte[]> _standardAudioThumbnail = new Lazy<byte[]>(() =>
         {
             var bmp = Properties.Resources.Audio;
+            var converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+        });
+
+        private readonly Lazy<byte[]> _standardWebThumbnail = new Lazy<byte[]>(() =>
+        {
+            var bmp = Properties.Resources.Web;
             var converter = new ImageConverter();
             return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
         });
@@ -110,6 +119,9 @@
 
                 case MediaClassification.Slideshow:
                     return GetSlideshowThumbnail(originalPath);
+
+                case MediaClassification.Web:
+                    return _standardWebThumbnail.Value;
 
                 default:
                     return null;

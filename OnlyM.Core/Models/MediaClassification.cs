@@ -25,6 +25,11 @@
         /// <summary>
         /// A slideshow file.
         /// </summary>
-        Slideshow
+        Slideshow,
+
+        /// <summary>
+        /// A web address shortcut (*.url)
+        /// </summary>
+        Web
     }
 }
