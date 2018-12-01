@@ -8,14 +8,27 @@
     using Newtonsoft.Json;
     using Serilog.Events;
     using Utils;
+    using Xceed.Wpf.Toolkit;
 
     public sealed class Options
     {
         private const int AbsoluteMaxItemCount = 200;
         private const int DefaultMaxItemCount = 50;
+
+        private const int MinMagnifierRadius = 20;
         private const int DefaultMagnifierRadius = 200;
+        private const int MaxMagnifierRadius = 400;
+
         private const double DefaultMagnifierZoomLevel = 0.5;
-        private const int MaxMagnifierRadius = 500;
+        private const double DefaultBrowserZoomLevelIncrement = 0.15;
+
+        private const int MinMagnifierWidth = 20;
+        private const int DefaultMagnifierWidth = 500;
+        private const int MaxMagnifierWidth = 800;
+
+        private const int MinMagnifierHeight = 20;
+        private const int DefaultMagnifierHeight = 200;
+        private const int MaxMagnifierHeight = 400;
 
         private string _commandLineMediaFolder;
         private bool _showMediaItemCommandPanel;
@@ -40,6 +53,11 @@
         private FadeSpeed _fadeSpeed;
         private int _magnifierRadius;
         private double _magnifierZoomLevel;
+        private FrameType _magnifierFrameType;
+        private int _magnifierWidth;
+        private int _magnifierHeight;
+        private double _browserZoomLevelIncrement;
+        private bool _isMagnifierVisible;
 
         public Options()
         {
@@ -60,7 +78,12 @@
             MaxItemCount = DefaultMaxItemCount;
             MagnifierRadius = DefaultMagnifierRadius;
             MagnifierZoomLevel = DefaultMagnifierZoomLevel;
-
+            MagnifierFrameType = FrameType.Circle;
+            MagnifierWidth = DefaultMagnifierWidth;
+            MagnifierHeight = DefaultMagnifierHeight;
+            BrowserZoomLevelIncrement = DefaultBrowserZoomLevelIncrement;
+            IsMagnifierVisible = true;
+            
             _videoScreenPosition = new ScreenPosition();
             _imageScreenPosition = new ScreenPosition();
 
@@ -76,6 +99,8 @@
         public event EventHandler ImageFadeSpeedChangedEvent;
 
         public event EventHandler MagnifierChangedEvent;
+
+        public event EventHandler BrowserChangedEvent;
 
         public event EventHandler LogEventLevelChangedEvent;
 
@@ -381,6 +406,72 @@
             }
         }
 
+        public double BrowserZoomLevelIncrement
+        {
+            get => _browserZoomLevelIncrement;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_browserZoomLevelIncrement != value)
+                {
+                    _browserZoomLevelIncrement = value;
+                    BrowserChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public int MagnifierHeight
+        {
+            get => _magnifierHeight;
+            set
+            {
+                if (_magnifierHeight != value)
+                {
+                    _magnifierHeight = value;
+                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public int MagnifierWidth
+        {
+            get => _magnifierWidth;
+            set
+            {
+                if (_magnifierWidth != value)
+                {
+                    _magnifierWidth = value;
+                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public bool IsMagnifierVisible
+        {
+            get => _isMagnifierVisible;
+            set
+            {
+                if (_isMagnifierVisible != value)
+                {
+                    _isMagnifierVisible = value;
+                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public FrameType MagnifierFrameType
+        {
+            get => _magnifierFrameType;
+            set
+            {
+                if (_magnifierFrameType != value)
+                {
+                    _magnifierFrameType = value;
+                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
         public int MagnifierRadius
         {
             get => _magnifierRadius;
@@ -472,7 +563,7 @@
                 MaxItemCount = 1;
             }
 
-            if (MagnifierRadius < 10 || MagnifierRadius > MaxMagnifierRadius)
+            if (MagnifierRadius < MinMagnifierRadius || MagnifierRadius > MaxMagnifierRadius)
             {
                 MagnifierRadius = DefaultMagnifierRadius;
             }
@@ -480,6 +571,21 @@
             if (MagnifierZoomLevel < 0 || MagnifierZoomLevel > 1.0)
             {
                 MagnifierZoomLevel = DefaultMagnifierZoomLevel;
+            }
+
+            if (BrowserZoomLevelIncrement < 0 || BrowserZoomLevelIncrement > 1)
+            {
+                BrowserZoomLevelIncrement = DefaultBrowserZoomLevelIncrement;
+            }
+
+            if (MagnifierHeight < MinMagnifierHeight || MagnifierHeight > MaxMagnifierHeight)
+            {
+                MagnifierHeight = DefaultMagnifierHeight;
+            }
+
+            if (MagnifierWidth < MinMagnifierWidth || MagnifierWidth > MaxMagnifierWidth)
+            {
+                MagnifierWidth = DefaultMagnifierWidth;
             }
         }
 

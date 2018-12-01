@@ -6,6 +6,7 @@
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
     using OnlyM.Services.Pages;
+    using Xceed.Wpf.Toolkit;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class MediaViewModel : ViewModelBase
@@ -30,6 +31,72 @@
         {
             get => _webBrowser;
             set => Set(ref _webBrowser, value);
+        }
+
+        public double BrowserZoomLevelIncrement
+        {
+            get => _optionsService.Options.BrowserZoomLevelIncrement;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_optionsService.Options.BrowserZoomLevelIncrement != value)
+                {
+                    _optionsService.Options.BrowserZoomLevelIncrement = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool IsMagnifierVisible
+        {
+            get => _optionsService.Options.IsMagnifierVisible;
+            set
+            {
+                if (_optionsService.Options.IsMagnifierVisible != value)
+                {
+                    _optionsService.Options.IsMagnifierVisible = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int MagnifierWidth
+        {
+            get => _optionsService.Options.MagnifierWidth;
+            set
+            {
+                if (_optionsService.Options.MagnifierWidth != value)
+                {
+                    _optionsService.Options.MagnifierWidth = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int MagnifierHeight
+        {
+            get => _optionsService.Options.MagnifierHeight;
+            set
+            {
+                if (_optionsService.Options.MagnifierHeight != value)
+                {
+                    _optionsService.Options.MagnifierHeight = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public FrameType MagnifierFrameType
+        {
+            get => _optionsService.Options.MagnifierFrameType;
+            set
+            {
+                if (_optionsService.Options.MagnifierFrameType != value)
+                {
+                    _optionsService.Options.MagnifierFrameType = value;
+                    RaisePropertyChanged();
+                }
+            }
         }
 
         public int MagnifierRadius

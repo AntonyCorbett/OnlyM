@@ -13,7 +13,6 @@
 
     internal sealed class WebDisplayManager
     {
-        private const string BlankUrl = @"about:blank";
         private readonly ChromiumWebBrowser _browser;
         private readonly FrameworkElement _browserGrid;
         private Guid _mediaItemId;
@@ -37,7 +36,7 @@
             OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Starting));
 
             RemoveAnimation();
-
+            
             _browserGrid.Visibility = Visibility.Visible;
 
             var urlHelper = new WebShortcutHelper(mediaItemFilePath);
@@ -52,7 +51,6 @@
 
             FadeBrowser(false, () =>
             {
-                _browser.Load(BlankUrl);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
                 _browserGrid.Visibility = Visibility.Hidden;
             });
@@ -77,11 +75,6 @@
         {
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                if (_browser.Address == BlankUrl)
-                {
-                    return;
-                }
-
                 Log.Debug(e.IsLoading ? $"Loading web page = {_browser.Address}" : "Loaded web page");
 
                 if (!e.IsLoading)

@@ -123,11 +123,16 @@
             <Grid Grid.Row="1">
                 <wpf:ChromiumWebBrowser 
                     x:Name="Browser" 
+                    ZoomLevelIncrement="{Binding BrowserZoomLevelIncrement}"
                     WebBrowser="{Binding WebBrowser, Mode=OneWayToSource}" />
 
                 <xctk:MagnifierManager.Magnifier>
                     <xctk:Magnifier BorderBrush="Red" 
                                     BorderThickness="1" 
+                                    Visibility="{Binding Path=IsMagnifierVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Width="{Binding MagnifierWidth}"
+                                    Height="{Binding MagnifierHeight}"
+                                    FrameType="{Binding MagnifierFrameType}"
                                     Radius="{Binding MagnifierRadius}" 
                                     ZoomFactor="{Binding MagnifierZoomLevel}"/>
                 </xctk:MagnifierManager.Magnifier>
