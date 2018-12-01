@@ -116,6 +116,7 @@
                             Height="32"
                             Width="32"/>
                     </Button>
+
                 </StackPanel>
 
             </DockPanel>
