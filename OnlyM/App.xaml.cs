@@ -6,6 +6,8 @@
     using System.Threading;
     using System.Windows;
     using AutoUpdates;
+    using CefSharp;
+    using CefSharp.Wpf;
     using Core.Models;
     using Core.Services.Options;
     using Core.Utils;
@@ -31,6 +33,8 @@
 
             // pre-load the CefSharp assemblies otherwise 1st instantiation is too long.
             System.Reflection.Assembly.Load("CefSharp.Wpf");
+
+            InitCef();
         }
 
         public static string FMpegFolderName { get; } = $"{AppDomain.CurrentDomain.BaseDirectory}\\FFmpeg";
@@ -80,6 +84,21 @@
         private void RegisterMappings()
         {
             AutoMapper.Mapper.Initialize(cfg => cfg.CreateMap<SystemMonitor, MonitorItem>());
+        }
+
+        private void InitCef()
+        {
+            var settings = new CefSettings
+            {
+                CachePath = FileUtils.GetBrowserCacheFolder(),
+                LogFile = FileUtils.GetBrowserLogFilePath(),
+                LogSeverity = LogSeverity.Info
+            };
+
+            settings.CefCommandLineArgs.Add("no-proxy-server", "1");
+            settings.CefCommandLineArgs.Add("force-device-scale-factor", "1");
+            
+            Cef.Initialize(settings);
         }
     }
 }

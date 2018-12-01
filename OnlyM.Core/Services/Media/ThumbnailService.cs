@@ -1,13 +1,15 @@
-﻿using OnlyM.Core.Services.WebShortcuts;
-
-namespace OnlyM.Core.Services.Media
+﻿namespace OnlyM.Core.Services.Media
 {
     using System;
     using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
+    using System.Windows;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
     using Database;
     using Models;
+    using OnlyM.Core.Services.WebShortcuts;
     using OnlyM.Slides;
     using Options;
     using Serilog;
@@ -121,11 +123,62 @@ namespace OnlyM.Core.Services.Media
                     return GetSlideshowThumbnail(originalPath);
 
                 case MediaClassification.Web:
-                    return _standardWebThumbnail.Value;
+                    return GetWebThumbnail(originalPath);
 
                 default:
                     return null;
             }
+        }
+
+        private byte[] GetWebThumbnail(string originalPath)
+        {
+            var helper = new WebShortcutHelper(originalPath);
+
+            var bytes = FaviconHelper.GetIconImage(helper.Uri);
+            if (bytes != null)
+            {
+                bytes = CreateFramedSmallIcon(bytes);
+                return bytes;
+            }
+
+            return _standardWebThumbnail.Value;
+        }
+
+        private byte[] CreateFramedSmallIcon(byte[] bytes)
+        {
+            const int pixelSize = 100;
+
+            var image = GraphicsUtils.ByteArrayToImage(bytes);
+            if (Math.Max(image.Height, image.Width) < pixelSize)
+            {
+                var visual = new DrawingVisual();
+                using (var drawingContext = visual.RenderOpen())
+                {
+                    drawingContext.DrawRectangle(
+                        System.Windows.Media.Brushes.Black, 
+                        null, 
+                        new Rect(0, 0, pixelSize, pixelSize));
+
+                    var left = (pixelSize - image.Width) / 2;
+                    var top = (pixelSize - image.Height) / 2;
+                    
+                    drawingContext.DrawImage(image, new Rect(left, top, image.Width, image.Height));
+                }
+                
+                var bitmap = new RenderTargetBitmap(pixelSize, pixelSize, 96, 96, PixelFormats.Pbgra32);
+                bitmap.Render(visual);
+
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmap));
+
+                using (var stream = new MemoryStream())
+                {
+                    encoder.Save(stream);
+                    bytes = stream.ToArray();
+                }
+            }
+
+            return bytes;
         }
 
         private byte[] GetSlideshowThumbnail(string originalPath)

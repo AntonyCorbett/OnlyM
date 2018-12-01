@@ -8,24 +8,30 @@
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.WebShortcuts;
     using OnlyM.Models;
+    using OnlyM.Services.WebBrowser;
     using Serilog;
 
     internal sealed class WebDisplayManager
     {
         private const string BlankUrl = @"about:blank";
         private readonly ChromiumWebBrowser _browser;
+        private readonly FrameworkElement _browserGrid;
         private Guid _mediaItemId;
+        private bool _showing;
 
-        public WebDisplayManager(ChromiumWebBrowser browser)
+        public WebDisplayManager(ChromiumWebBrowser browser, FrameworkElement browserGrid)
         {
             _browser = browser;
-            _browser.LoadingStateChanged += HandleBrowserLoadingStateChanged;
+            _browserGrid = browserGrid;
+
+            InitBrowser();
         }
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
         public void ShowWeb(string mediaItemFilePath, Guid mediaItemId)
         {
+            _showing = false;
             _mediaItemId = mediaItemId;
 
             OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Starting));
@@ -77,18 +83,19 @@
 
                 if (!e.IsLoading)
                 {
-                    // page is loaded so fade in...
-                    FadeBrowser(true, () =>
+                    if (!_showing)
                     {
-                        OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
-                    });
+                        // page is loaded so fade in...
+                        _showing = true;
+                        FadeBrowser(true, () => { OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started)); });
+                    }
                 }
             });
         }
 
         private void FadeBrowser(bool fadeIn, Action completed)
         {
-            double fadeTimeSecs = 1.0;
+            var fadeTimeSecs = 1.0;
 
             if (fadeIn)
             {
@@ -108,13 +115,19 @@
                 animation.Completed += (sender, args) => { completed(); };
             }
 
-            _browser.BeginAnimation(UIElement.OpacityProperty, animation);
+            _browserGrid.BeginAnimation(UIElement.OpacityProperty, animation);
         }
 
         private void RemoveAnimation()
         {
-            _browser.BeginAnimation(UIElement.OpacityProperty, null);
-            _browser.Opacity = 0.0;
+            _browserGrid.BeginAnimation(UIElement.OpacityProperty, null);
+            _browserGrid.Opacity = 0.0;
+        }
+
+        private void InitBrowser()
+        {
+            _browser.LoadingStateChanged += HandleBrowserLoadingStateChanged;
+            _browser.LifeSpanHandler = new BrowserLifeSpanHandler();
         }
     }
 }

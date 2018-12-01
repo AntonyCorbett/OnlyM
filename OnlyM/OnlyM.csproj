@@ -225,6 +225,7 @@
     <Compile Include="Services\Snackbar\SnackbarService.cs" />
     <Compile Include="Services\SubtitleFileGenerator.cs" />
     <Compile Include="Services\VideoDisplayManager.cs" />
+    <Compile Include="Services\WebBrowser\BrowserLifeSpanHandler.cs" />
     <Compile Include="Services\WebDisplayManager.cs" />
     <Compile Include="ViewModel\MediaViewModel.cs" />
     <Compile Include="ViewModel\OperatorViewModel.cs" />

@@ -42,7 +42,7 @@
             _optionsService = optionsService;
 
             _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
-            _webDisplayManager = new WebDisplayManager(Browser);
+            _webDisplayManager = new WebDisplayManager(Browser, BrowserGrid);
             
             _snackbarService = snackbarService;
 

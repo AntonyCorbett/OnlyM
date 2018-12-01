@@ -52,10 +52,20 @@
         /// <returns>Log folder</returns>
         public static string GetLogFolder()
         {
-            return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                AppNamePathSegment,
-                "Logs");
+            var folder = Path.Combine(GetOnlyMMyDocsFolder(), "Logs");
+            CreateDirectory(folder);
+            return folder;
+        }
+
+        /// <summary>
+        /// Gets the browser cache folder
+        /// </summary>
+        /// <returns>Log folder</returns>
+        public static string GetBrowserCacheFolder()
+        {
+            var folder = Path.Combine(GetOnlyMMyDocsFolder(), "BrowserCache");
+            CreateDirectory(folder);
+            return folder;
         }
 
         /// <summary>
@@ -129,6 +139,13 @@
             {
                 return false;
             }
+        }
+
+        public static string GetBrowserLogFilePath()
+        {
+            var folder = Path.Combine(GetOnlyMMyDocsFolder(), "BrowserLogs");
+            Directory.CreateDirectory(folder);
+            return Path.Combine(folder, "browser.log");
         }
     }
 }

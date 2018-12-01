@@ -121,6 +121,7 @@
     </Compile>
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\UriExtensions.cs" />
     <Compile Include="Models\DisplayDeviceData.cs" />
     <Compile Include="Models\FadeSpeed.cs" />
     <Compile Include="Models\ImageFadeType.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Services\Database\DatabaseService.cs" />
     <Compile Include="Services\Database\IDatabaseService.cs" />
     <Compile Include="Services\Media\DatedSubFolders.cs" />
+    <Compile Include="Utils\FaviconHelper.cs" />
     <Compile Include="Services\Media\FolderWatcherService.cs" />
     <Compile Include="Services\Media\IFolderWatcherService.cs" />
     <Compile Include="Services\Media\IMediaMetaDataService.cs" />
@@ -223,6 +225,9 @@
       <Project>{4d79789c-5626-4c86-a31f-75b78385dc2a}</Project>
       <Name>OnlyM.Slides</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Web2.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Web.png" />
