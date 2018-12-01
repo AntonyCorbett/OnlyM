@@ -6,6 +6,7 @@
         xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
         xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         DataContext="{Binding Media, Mode=OneWay, Source={StaticResource Locator}}"
         WindowStyle="None" 
         Background="Black" 
@@ -19,8 +20,8 @@
             <Setter Property="Margin" Value="0,0,5,0"/>
         </Style>
 
-        <Style x:Key="RefreshButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionAccentButton}">
-            <Setter Property="Margin" Value="5,0,10,0"/>
+        <Style x:Key="RefreshButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
+            <Setter Property="Margin" Value="0,0,5,0"/>
         </Style>
 
         <Style x:Key="ZoomButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
@@ -51,7 +52,7 @@
                            LoadedBehavior="Manual" 
                            UnloadedBehavior="Manual" />
 
-        <Grid x:Name="BrowserGrid" Background="White" Opacity="0">
+        <Grid x:Name="BrowserGrid" Background="White" Opacity="0.0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="76" />
                 <RowDefinition Height="*" />
@@ -76,9 +77,7 @@
                             Height="32"
                             Width="32"/>
                     </Button>
-                </StackPanel>
 
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="0,0,5,0">
                     <Button
                         Style="{StaticResource RefreshButtonStyle}"
                         Command="{Binding WebBrowser.ReloadCommand}">
@@ -88,11 +87,14 @@
                             Width="32"/>
                     </Button>
 
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="0,0,5,0">
                     <Button
                         Style="{StaticResource ZoomButtonStyle}"
                         Command="{Binding WebBrowser.ZoomInCommand}">
                         <materialDesign:PackIcon
-                            Kind="MagnifyPlus"
+                            Kind="PlusCircleOutline"
                             Height="32"
                             Width="32"/>
                     </Button>
@@ -101,7 +103,7 @@
                         Style="{StaticResource ZoomButtonStyle}"
                         Command="{Binding WebBrowser.ZoomOutCommand}">
                         <materialDesign:PackIcon
-                            Kind="MagnifyMinus"
+                            Kind="MinusCircleOutline"
                             Height="32"
                             Width="32"/>
                     </Button>
@@ -110,7 +112,7 @@
                         Style="{StaticResource ZoomButtonStyle}"
                         Command="{Binding WebBrowser.ZoomResetCommand}">
                         <materialDesign:PackIcon
-                            Kind="Magnify"
+                            Kind="CircleOutline"
                             Height="32"
                             Width="32"/>
                     </Button>
@@ -118,10 +120,18 @@
 
             </DockPanel>
 
-            <wpf:ChromiumWebBrowser 
-                x:Name="Browser" 
-                WebBrowser="{Binding WebBrowser, Mode=OneWayToSource}"
-                Grid.Row="1" />
+            <Grid Grid.Row="1">
+                <wpf:ChromiumWebBrowser 
+                    x:Name="Browser" 
+                    WebBrowser="{Binding WebBrowser, Mode=OneWayToSource}" />
+
+                <xctk:MagnifierManager.Magnifier>
+                    <xctk:Magnifier BorderBrush="Red" 
+                                    BorderThickness="1" 
+                                    Radius="{Binding MagnifierRadius}" 
+                                    ZoomFactor="{Binding MagnifierZoomLevel}"/>
+                </xctk:MagnifierManager.Magnifier>
+            </Grid>
         </Grid>
 
         <Image x:Name="Image1Element" />

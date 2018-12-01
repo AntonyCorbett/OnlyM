@@ -59,5 +59,7 @@
         int GotoPreviousSlide();
 
         int GotoNextSlide();
+
+        void InitMediaWindow();
     }
 }

@@ -34,7 +34,7 @@
         private readonly ISnackbarService _snackbarService;
         private readonly IActiveMediaItemsService _activeMediaItemsService;
         private readonly (int dpiX, int dpiY) _systemDpi;
-
+        
         private MediaWindow _mediaWindow;
         private double _operatorPageScrollerPosition;
         private double _settingsPageScrollerPosition;
@@ -55,7 +55,7 @@
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
 
             _systemDpi = WindowPlacement.GetDpiSettings();
-
+            
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
 
@@ -90,6 +90,15 @@
         public bool IsMediaWindowVisible => _mediaWindow != null &&
                                             _mediaWindow.IsVisible &&
                                             _mediaWindow.Visibility == Visibility.Visible;
+
+        public void InitMediaWindow()
+        {
+            // used to instantiate the media window and its controls (and then
+            // possibly hide it immediately). Required to correctly configure
+            // the CefSharp browser control.
+            OpenMediaWindow(requiresVisibleWindow: true);
+            ManageMediaWindowVisibility();
+        }
 
         public void GotoOperatorPage()
         {

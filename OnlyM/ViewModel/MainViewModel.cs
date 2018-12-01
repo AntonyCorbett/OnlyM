@@ -80,9 +80,9 @@ namespace OnlyM.ViewModel
 
             InitCommands();
 
-            if (!IsInDesignMode && _optionsService.Options.PermanentBackdrop)
+            if (!IsInDesignMode)
             {
-                _pageService.OpenMediaWindow(requiresVisibleWindow: true);
+                _pageService.InitMediaWindow();
             }
 
             GetVersionData();

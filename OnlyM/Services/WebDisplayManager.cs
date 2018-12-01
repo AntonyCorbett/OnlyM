@@ -38,8 +38,10 @@
 
             RemoveAnimation();
 
+            _browserGrid.Visibility = Visibility.Visible;
+
             var urlHelper = new WebShortcutHelper(mediaItemFilePath);
-            _browser.Address = urlHelper.Uri;
+            _browser.Load(urlHelper.Uri);
         }
 
         public void HideWeb()
@@ -50,8 +52,9 @@
 
             FadeBrowser(false, () =>
             {
-                _browser.Address = BlankUrl;
+                _browser.Load(BlankUrl);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
+                _browserGrid.Visibility = Visibility.Hidden;
             });
         }
 
@@ -96,7 +99,7 @@
         private void FadeBrowser(bool fadeIn, Action completed)
         {
             var fadeTimeSecs = 1.0;
-
+            
             if (fadeIn)
             {
                 // note that the fade in time is longer than fade out - just seems to look better

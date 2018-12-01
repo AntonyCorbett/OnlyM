@@ -13,6 +13,9 @@
     {
         private const int AbsoluteMaxItemCount = 200;
         private const int DefaultMaxItemCount = 50;
+        private const int DefaultMagnifierRadius = 200;
+        private const double DefaultMagnifierZoomLevel = 0.5;
+        private const int MaxMagnifierRadius = 500;
 
         private string _commandLineMediaFolder;
         private bool _showMediaItemCommandPanel;
@@ -35,6 +38,8 @@
         private string _mediaFolder;
         private ImageFadeType _imageFadeType;
         private FadeSpeed _fadeSpeed;
+        private int _magnifierRadius;
+        private double _magnifierZoomLevel;
 
         public Options()
         {
@@ -53,6 +58,8 @@
             JwLibraryCompatibilityMode = true;
             ConfirmVideoStop = false;
             MaxItemCount = DefaultMaxItemCount;
+            MagnifierRadius = DefaultMagnifierRadius;
+            MagnifierZoomLevel = DefaultMagnifierZoomLevel;
 
             _videoScreenPosition = new ScreenPosition();
             _imageScreenPosition = new ScreenPosition();
@@ -67,6 +74,8 @@
         public event EventHandler ImageFadeTypeChangedEvent;
 
         public event EventHandler ImageFadeSpeedChangedEvent;
+
+        public event EventHandler MagnifierChangedEvent;
 
         public event EventHandler LogEventLevelChangedEvent;
 
@@ -372,6 +381,33 @@
             }
         }
 
+        public int MagnifierRadius
+        {
+            get => _magnifierRadius;
+            set
+            {
+                if (_magnifierRadius != value)
+                {
+                    _magnifierRadius = value;
+                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public double MagnifierZoomLevel
+        {
+            get => _magnifierZoomLevel;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_magnifierZoomLevel != value)
+                {
+                    _magnifierZoomLevel = value;
+                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
         public bool EmbeddedThumbnails { get; set; }
 
         public bool CacheImages { get; set; }
@@ -434,6 +470,16 @@
             if (MaxItemCount <= 0)
             {
                 MaxItemCount = 1;
+            }
+
+            if (MagnifierRadius < 10 || MagnifierRadius > MaxMagnifierRadius)
+            {
+                MagnifierRadius = DefaultMagnifierRadius;
+            }
+
+            if (MagnifierZoomLevel < 0 || MagnifierZoomLevel > 1.0)
+            {
+                MagnifierZoomLevel = DefaultMagnifierZoomLevel;
             }
         }
 

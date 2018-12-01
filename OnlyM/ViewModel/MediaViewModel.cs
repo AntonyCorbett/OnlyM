@@ -5,6 +5,7 @@
     using Core.Services.Options;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
+    using OnlyM.Services.Pages;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class MediaViewModel : ViewModelBase
@@ -17,16 +18,45 @@
         {
             _optionsService = optionsService;
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
+
+            InitCommands();
         }
 
         public bool EngineIsMediaFoundation => _optionsService.Options.RenderingMethod == RenderingMethod.MediaFoundation;
 
         public bool EngineIsFfmpeg => _optionsService.Options.RenderingMethod == RenderingMethod.Ffmpeg;
-        
+
         public IWpfWebBrowser WebBrowser
         {
             get => _webBrowser;
             set => Set(ref _webBrowser, value);
+        }
+
+        public int MagnifierRadius
+        {
+            get => _optionsService.Options.MagnifierRadius;
+            set
+            {
+                if (_optionsService.Options.MagnifierRadius != value)
+                {
+                    _optionsService.Options.MagnifierRadius = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public double MagnifierZoomLevel
+        {
+            get => _optionsService.Options.MagnifierZoomLevel;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_optionsService.Options.MagnifierZoomLevel != value)
+                {
+                    _optionsService.Options.MagnifierZoomLevel = value;
+                    RaisePropertyChanged();
+                }
+            }
         }
 
         public string SubTitleText
@@ -49,6 +79,10 @@
         {
             RaisePropertyChanged(nameof(EngineIsFfmpeg));
             RaisePropertyChanged(nameof(EngineIsMediaFoundation));
+        }
+
+        private void InitCommands()
+        {
         }
     }
 }
