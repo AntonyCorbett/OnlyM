@@ -24,6 +24,7 @@
     {
         private readonly string _appString = "OnlyMMeetingMedia";
         private Mutex _appMutex;
+        private readonly bool _successCefSharp;
 
         public App()
         {
@@ -34,7 +35,7 @@
             // pre-load the CefSharp assemblies otherwise 1st instantiation is too long.
             System.Reflection.Assembly.Load("CefSharp.Wpf");
 
-            InitCef();
+            _successCefSharp = InitCef();
         }
 
         public static string FMpegFolderName { get; } = $"{AppDomain.CurrentDomain.BaseDirectory}\\FFmpeg";
@@ -54,6 +55,11 @@
             else
             {
                 ConfigureLogger();
+            }
+
+            if (!_successCefSharp)
+            {
+                Log.Logger.Error("Could not initialise CefSharp");
             }
 
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
@@ -86,8 +92,11 @@
             AutoMapper.Mapper.Initialize(cfg => cfg.CreateMap<SystemMonitor, MonitorItem>());
         }
 
-        private void InitCef()
+        private bool InitCef()
         {
+            //// refer here:
+            //// https://github.com/cefsharp/CefSharp/blob/cefsharp/43/CefSharp.Example/CefExample.cs#L54
+
             var settings = new CefSettings
             {
                 CachePath = FileUtils.GetBrowserCacheFolder(),
@@ -97,8 +106,15 @@
 
             settings.CefCommandLineArgs.Add("no-proxy-server", "1");
             settings.CefCommandLineArgs.Add("force-device-scale-factor", "1");
-            
-            Cef.Initialize(settings);
+
+            // does this help?
+            ////settings.SetOffScreenRenderingBestPerformanceArgs();
+
+            //// this setting is automatically added. It means that if the user has
+            //// Pepper Flash installed it will be detected and used.
+            //// settings.CefCommandLineArgs.Add("enable-system-flash", "1"); 
+
+            return Cef.Initialize(settings);
         }
     }
 }

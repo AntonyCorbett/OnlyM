@@ -183,7 +183,21 @@
         private void InitBrowser()
         {
             _browser.LoadingStateChanged += HandleBrowserLoadingStateChanged;
+            _browser.LoadError += HandleBrowserLoadError;
             _browser.LifeSpanHandler = new BrowserLifeSpanHandler();
+        }
+
+        private void HandleBrowserLoadError(object sender, LoadErrorEventArgs e)
+        {
+            // Don't display an error for downloaded files where the user aborted the download.
+            if (e.ErrorCode == CefErrorCode.Aborted)
+            {
+                return;
+            }
+
+            // todo: localise
+            var errorMessage = $"<html><body><h2>Failed to load URL {e.FailedUrl} with error {e.ErrorText} ({e.ErrorCode}).</h2></body></html>";
+            _browser.LoadHtml(errorMessage, e.FailedUrl);
         }
     }
 }
