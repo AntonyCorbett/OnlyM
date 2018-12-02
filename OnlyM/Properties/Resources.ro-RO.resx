@@ -150,7 +150,7 @@
     <comment>Default (blank) menu item in Settings =&gt; Display =&gt; Media monitor</comment>
   </data>
   <data name="NEW_UPDATE_AVAILABLE" xml:space="preserve">
-    <value>O nouă actualizare este disponibilă!</value>
+    <value>Versiune nouă disponibilă!</value>
     <comment>Notification text displayed when there is a new version to download (can be translated the same as NEW_VERSION)</comment>
   </data>
   <data name="NO_SUPPORTED_FILES" xml:space="preserve">
@@ -169,7 +169,7 @@
     <comment>Caption of the notification bar button to confirm that media should be stopped.</comment>
   </data>
   <data name="BLANK_SCREEN" xml:space="preserve">
-    <value>Ecran gol</value>
+    <value>Ecran negru</value>
     <comment>Title of the "Blank Screen" item</comment>
   </data>
   <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
@@ -193,7 +193,7 @@
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Nu pot deselecta monitorul atunci când media este activ</value>
+    <value>Nu pot deselecta monitorul când media este activ</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
@@ -233,7 +233,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
-    <value>Media folderul specificat pe linia de comandă</value>
+    <value>Dosarul Media specificat pe linia de comandă</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
