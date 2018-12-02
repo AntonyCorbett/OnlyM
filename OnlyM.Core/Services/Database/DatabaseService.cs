@@ -10,7 +10,7 @@
     // ReSharper disable once ClassNeverInstantiated.Global
     public class DatabaseService : IDatabaseService
     {
-        private const int CurrentSchemaVersion = 2;
+        private const int CurrentSchemaVersion = 3;
 
         public DatabaseService()
         {
@@ -84,6 +84,57 @@
             return null;
         }
 
+        public void AddBrowserData(string url, double zoomLevel)
+        {
+            using (var c = CreateConnection())
+            using (var cmd = c.CreateCommand())
+            {
+                Log.Logger.Verbose($"Inserting into browser table {url}");
+
+                var sb = new StringBuilder();
+
+                sb.AppendLine("insert into browser (url, zoom)");
+                sb.AppendLine("values (@U, @Z)");
+                sb.AppendLine("on conflict(url) do update set zoom=@Z");
+
+                cmd.CommandText = sb.ToString();
+                cmd.Parameters.AddWithValue("@U", url.Trim());
+                cmd.Parameters.AddWithValue("@Z", zoomLevel);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public BrowserData GetBrowserData(string url)
+        {
+            using (var c = CreateConnection())
+            using (var cmd = c.CreateCommand())
+            {
+                Log.Logger.Verbose($"Selecting from browser table {url}");
+
+                cmd.CommandText = "select id, url, zoom from browser where url = @U";
+                cmd.Parameters.AddWithValue("@U", url.Trim());
+
+                using (var r = cmd.ExecuteReader())
+                {
+                    if (r.Read())
+                    {
+                        var result = new BrowserData
+                        {
+                            Id = Convert.ToInt32(r["id"]),
+                            Url = (string)r["url"],
+                            ZoomLevel = Convert.ToDouble(r["zoom"])
+                        };
+
+                        result.Sanitize();
+                        return result;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         private void EnsureDatabaseExists()
         {
             var path = GetDatabasePath();
@@ -122,8 +173,16 @@
         {
             Log.Logger.Verbose("Deleting database");
 
-            SQLiteConnection.ClearAllPools();
-            File.Delete(GetDatabasePath());
+            try
+            {
+                SQLiteConnection.ClearAllPools();
+                File.Delete(GetDatabasePath());
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not delete database");
+                throw;
+            }
         }
 
         private int GetDatabaseSchemaVersion()
@@ -158,6 +217,7 @@
                 Log.Logger.Verbose("Creating database");
 
                 CreateThumbTable(c);
+                CreateBrowserTable(c);
                 SetDatabaseSchemaVersion(c, CurrentSchemaVersion);
             }
         }
@@ -189,6 +249,26 @@
                 sb.AppendLine("[changed] INTEGER NOT NULL);");
 
                 sb.AppendLine("CREATE UNIQUE INDEX[PathIndex] ON[thumb]([path]);");
+
+                cmd.CommandText = sb.ToString();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
+        private void CreateBrowserTable(SQLiteConnection connection)
+        {
+            using (var cmd = connection.CreateCommand())
+            {
+                Log.Logger.Verbose("Creating browser table");
+
+                var sb = new StringBuilder();
+                sb.AppendLine("CREATE TABLE[browser](");
+                sb.AppendLine("[id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,");
+                sb.AppendLine("[url] TEXT NOT NULL COLLATE NOCASE,");
+                sb.AppendLine("[zoom] NUMBER NOT NULL);");
+                
+                sb.AppendLine("CREATE UNIQUE INDEX[UrlIndex] ON[browser]([url]);");
 
                 cmd.CommandText = sb.ToString();
                 cmd.ExecuteNonQuery();

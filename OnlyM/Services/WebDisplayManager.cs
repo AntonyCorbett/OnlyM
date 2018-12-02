@@ -1,11 +1,14 @@
 ﻿namespace OnlyM.Services
 {
     using System;
+    using System.Threading;
     using System.Windows;
     using System.Windows.Media.Animation;
+    using CefSharp;
     using CefSharp.Wpf;
     using GalaSoft.MvvmLight.Threading;
     using OnlyM.Core.Models;
+    using OnlyM.Core.Services.Database;
     using OnlyM.Core.Services.WebShortcuts;
     using OnlyM.Models;
     using OnlyM.Services.WebBrowser;
@@ -15,13 +18,19 @@
     {
         private readonly ChromiumWebBrowser _browser;
         private readonly FrameworkElement _browserGrid;
+        private readonly IDatabaseService _databaseService;
         private Guid _mediaItemId;
         private bool _showing;
+        private string _currentMediaItemUrl;
 
-        public WebDisplayManager(ChromiumWebBrowser browser, FrameworkElement browserGrid)
+        public WebDisplayManager(
+            ChromiumWebBrowser browser, 
+            FrameworkElement browserGrid,
+            IDatabaseService databaseService)
         {
             _browser = browser;
             _browserGrid = browserGrid;
+            _databaseService = databaseService;
 
             InitBrowser();
         }
@@ -35,17 +44,21 @@
 
             OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Starting));
 
+            var urlHelper = new WebShortcutHelper(mediaItemFilePath);
+            _currentMediaItemUrl = urlHelper.Uri;
+
             RemoveAnimation();
             
             _browserGrid.Visibility = Visibility.Visible;
             
-            var urlHelper = new WebShortcutHelper(mediaItemFilePath);
             _browser.Load(urlHelper.Uri);
         }
 
-        public void HideWeb()
+        public void HideWeb(string mediaItemFilePath)
         {
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopping));
+
+            UpdateBrowserDataInDatabase();
 
             RemoveAnimation();
 
@@ -54,6 +67,46 @@
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
                 _browserGrid.Visibility = Visibility.Hidden;
             });
+        }
+
+        private void InitBrowserFromDatabase(string url)
+        {
+            SetZoomLevel(0.0);
+
+            try
+            {
+                var browserData = _databaseService.GetBrowserData(url);
+                if (browserData != null)
+                {
+                    SetZoomLevel(browserData.ZoomLevel);
+
+                    // this hack to allow the web renderer time to change zoom level before fading in
+                    //Thread.Sleep(500);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not get browser data from database");
+            }
+        }
+
+        private void SetZoomLevel(double zoomLevel)
+        {
+            // don't understand why this apparent duplication is necessary!
+            _browser.SetZoomLevel(zoomLevel);
+            _browser.ZoomLevel = zoomLevel;
+        }
+
+        private void UpdateBrowserDataInDatabase()
+        {
+            try
+            {
+                _databaseService.AddBrowserData(_currentMediaItemUrl, _browser.ZoomLevel);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not update browser data in database");
+            }
         }
 
         private MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
@@ -83,6 +136,7 @@
                     {
                         // page is loaded so fade in...
                         _showing = true;
+                        InitBrowserFromDatabase(_currentMediaItemUrl);
                         FadeBrowser(true, () =>
                         {
                             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));

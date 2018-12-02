@@ -12,6 +12,7 @@
     using Core.Services.Options;
     using MediaElementAdaption;
     using Models;
+    using OnlyM.Core.Services.Database;
     using OnlyM.ViewModel;
     using Serilog;
     using Services;
@@ -35,14 +36,17 @@
         private IMediaElement _videoElement;
         private RenderingMethod _currentRenderingMethod;
 
-        public MediaWindow(IOptionsService optionsService, ISnackbarService snackbarService)
+        public MediaWindow(
+            IOptionsService optionsService, 
+            ISnackbarService snackbarService, 
+            IDatabaseService databaseService)
         {
             InitializeComponent();
 
             _optionsService = optionsService;
 
             _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
-            _webDisplayManager = new WebDisplayManager(Browser, BrowserGrid);
+            _webDisplayManager = new WebDisplayManager(Browser, BrowserGrid, databaseService);
             
             _snackbarService = snackbarService;
 
@@ -222,7 +226,7 @@
 
         private void StopWeb(MediaItem mediaItem)
         {
-            _webDisplayManager.HideWeb();
+            _webDisplayManager.HideWeb(mediaItem.FilePath);
         }
 
         private void StartSlideshow(MediaItem mediaItem)

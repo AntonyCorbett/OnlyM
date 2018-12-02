@@ -4,6 +4,7 @@
     using Core.Models;
     using Core.Services.Options;
     using GalaSoft.MvvmLight;
+    using GalaSoft.MvvmLight.CommandWpf;
     using Xceed.Wpf.Toolkit;
 
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -25,6 +26,10 @@
         public bool EngineIsMediaFoundation => _optionsService.Options.RenderingMethod == RenderingMethod.MediaFoundation;
 
         public bool EngineIsFfmpeg => _optionsService.Options.RenderingMethod == RenderingMethod.Ffmpeg;
+
+        public RelayCommand ToggleMagnifier { get; set; }
+
+        public RelayCommand ToggleMagnifierFrame { get; set; }
 
         public IWpfWebBrowser WebBrowser
         {
@@ -107,6 +112,7 @@
                 {
                     _optionsService.Options.MagnifierFrameType = value;
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsMagnifierFrameSquare));
                 }
             }
         }
@@ -162,6 +168,20 @@
 
         private void InitCommands()
         {
+            ToggleMagnifier = new RelayCommand(DoToggleMagnifier);
+            ToggleMagnifierFrame = new RelayCommand(DoToggleMagnifierFrame);
+        }
+
+        private void DoToggleMagnifierFrame()
+        {
+            MagnifierFrameType = MagnifierFrameType == FrameType.Circle 
+                ? FrameType.Rectangle 
+                : FrameType.Circle;
+        }
+
+        private void DoToggleMagnifier()
+        {
+            IsMagnifierVisible = !IsMagnifierVisible;
         }
     }
 }

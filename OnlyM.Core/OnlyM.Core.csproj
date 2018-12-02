@@ -161,6 +161,7 @@
     </Compile>
     <Compile Include="Services\CommandLine\CommandLineService.cs" />
     <Compile Include="Services\CommandLine\ICommandLineService.cs" />
+    <Compile Include="Services\Database\BrowserData.cs" />
     <Compile Include="Services\Database\DatabaseService.cs" />
     <Compile Include="Services\Database\IDatabaseService.cs" />
     <Compile Include="Services\Media\DatedSubFolders.cs" />

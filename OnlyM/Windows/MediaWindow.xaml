@@ -82,7 +82,13 @@
                 <KeyBinding Command="{Binding WebBrowser.BackCommand}" Key="BrowserBack" Modifiers="Control"/>
                 <KeyBinding Command="{Binding WebBrowser.ForwardCommand}" Key="BrowserForward" Modifiers="Control"/>
                 <KeyBinding Command="{Binding WebBrowser.ReloadCommand}" Key="BrowserRefresh" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ReloadCommand}" Key="F5" Modifiers="Control"/>
                 <KeyBinding Command="{Binding WebBrowser.StopCommand}" Key="BrowserStop" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.StopCommand}" Key="Escape" Modifiers="Control"/>
+
+                <KeyBinding Command="{Binding ToggleMagnifier}" Key="F7" />
+                <KeyBinding Command="{Binding ToggleMagnifierFrame}" Key="F8" />
+                
             </Grid.InputBindings>
 
             <Grid.RowDefinitions>

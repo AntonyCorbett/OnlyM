@@ -7,16 +7,14 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Forms;
-    
     using Core.Models;
     using Core.Services.Monitors;
     using Core.Services.Options;
-
     using GalaSoft.MvvmLight.Messaging;
-
     using MediaChanging;
     using MediaElementAdaption;
     using Models;
+    using OnlyM.Core.Services.Database;
     using PubSubMessages;
     using Serilog;
     using Snackbar;
@@ -32,6 +30,7 @@
         private readonly IMonitorsService _monitorsService;
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
+        private readonly IDatabaseService _databaseService;
         private readonly IActiveMediaItemsService _activeMediaItemsService;
         private readonly (int dpiX, int dpiY) _systemDpi;
         
@@ -43,11 +42,13 @@
             IMonitorsService monitorsService,
             IOptionsService optionsService,
             IActiveMediaItemsService activeMediaItemsService,
-            ISnackbarService snackbarService)
+            ISnackbarService snackbarService,
+            IDatabaseService databaseService)
         {
             _monitorsService = monitorsService;
             _optionsService = optionsService;
             _snackbarService = snackbarService;
+            _databaseService = databaseService;
             _activeMediaItemsService = activeMediaItemsService;
             
             _optionsService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
@@ -294,7 +295,7 @@
         {
             AllowMediaWindowToClose = false;
 
-            _mediaWindow = new MediaWindow(_optionsService, _snackbarService);
+            _mediaWindow = new MediaWindow(_optionsService, _snackbarService, _databaseService);
 
             SubscribeMediaWindowEvents();
         }
@@ -381,7 +382,11 @@
 
         private bool AnyActiveMediaRequiringVisibleMediaWindow()
         {
-            return _activeMediaItemsService.Any(MediaClassification.Image, MediaClassification.Video, MediaClassification.Slideshow);
+            return _activeMediaItemsService.Any(
+                MediaClassification.Image, 
+                MediaClassification.Video, 
+                MediaClassification.Slideshow,
+                MediaClassification.Web);
         }
 
         private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
