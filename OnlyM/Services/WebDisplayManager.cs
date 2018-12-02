@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Media.Animation;
     using CefSharp;
@@ -69,7 +70,7 @@
             });
         }
 
-        private void InitBrowserFromDatabase(string url)
+        private async Task InitBrowserFromDatabase(string url)
         {
             SetZoomLevel(0.0);
 
@@ -80,8 +81,8 @@
                 {
                     SetZoomLevel(browserData.ZoomLevel);
 
-                    // this hack to allow the web renderer time to change zoom level before fading in
-                    //Thread.Sleep(500);
+                    // this hack to allow the web renderer time to change zoom level before fading in!
+                    await Task.Delay(500);
                 }
             }
             catch (Exception ex)
@@ -126,7 +127,7 @@
 
         private void HandleBrowserLoadingStateChanged(object sender, CefSharp.LoadingStateChangedEventArgs e)
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            DispatcherHelper.CheckBeginInvokeOnUI(async () =>
             {
                 Log.Debug(e.IsLoading ? $"Loading web page = {_browser.Address}" : "Loaded web page");
 
@@ -136,7 +137,8 @@
                     {
                         // page is loaded so fade in...
                         _showing = true;
-                        InitBrowserFromDatabase(_currentMediaItemUrl);
+                        await InitBrowserFromDatabase(_currentMediaItemUrl);
+
                         FadeBrowser(true, () =>
                         {
                             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
