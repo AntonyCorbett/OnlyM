@@ -4,8 +4,6 @@
     using Core.Models;
     using Core.Services.Options;
     using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.CommandWpf;
-    using OnlyM.Services.Pages;
     using Xceed.Wpf.Toolkit;
 
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -14,12 +12,13 @@
         private readonly IOptionsService _optionsService;
         private string _subtitleText;
         private IWpfWebBrowser _webBrowser;
+        private bool _isMagnifierVisible;
 
         public MediaViewModel(IOptionsService optionsService)
         {
             _optionsService = optionsService;
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
-
+            
             InitCommands();
         }
 
@@ -47,14 +46,27 @@
             }
         }
 
-        public bool IsMagnifierVisible
+        public bool IsMagnifierFrameSquare
         {
-            get => _optionsService.Options.IsMagnifierVisible;
+            get => MagnifierFrameType == FrameType.Rectangle;
             set
             {
-                if (_optionsService.Options.IsMagnifierVisible != value)
+                if (MagnifierFrameType == FrameType.Rectangle != value)
                 {
-                    _optionsService.Options.IsMagnifierVisible = value;
+                    MagnifierFrameType = value ? FrameType.Rectangle : FrameType.Circle;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool IsMagnifierVisible
+        {
+            get => _isMagnifierVisible;
+            set
+            {
+                if (_isMagnifierVisible != value)
+                {
+                    _isMagnifierVisible = value;
                     RaisePropertyChanged();
                 }
             }

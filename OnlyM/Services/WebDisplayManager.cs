@@ -38,7 +38,7 @@
             RemoveAnimation();
             
             _browserGrid.Visibility = Visibility.Visible;
-
+            
             var urlHelper = new WebShortcutHelper(mediaItemFilePath);
             _browser.Load(urlHelper.Uri);
         }
@@ -83,7 +83,11 @@
                     {
                         // page is loaded so fade in...
                         _showing = true;
-                        FadeBrowser(true, () => { OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started)); });
+                        FadeBrowser(true, () =>
+                        {
+                            OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
+                            _browserGrid.Focus();
+                        });
                     }
                 }
             });

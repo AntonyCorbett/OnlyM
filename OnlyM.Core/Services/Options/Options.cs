@@ -57,8 +57,7 @@
         private int _magnifierWidth;
         private int _magnifierHeight;
         private double _browserZoomLevelIncrement;
-        private bool _isMagnifierVisible;
-
+        
         public Options()
         {
             // defaults
@@ -82,7 +81,6 @@
             MagnifierWidth = DefaultMagnifierWidth;
             MagnifierHeight = DefaultMagnifierHeight;
             BrowserZoomLevelIncrement = DefaultBrowserZoomLevelIncrement;
-            IsMagnifierVisible = true;
             
             _videoScreenPosition = new ScreenPosition();
             _imageScreenPosition = new ScreenPosition();
@@ -441,19 +439,6 @@
                 if (_magnifierWidth != value)
                 {
                     _magnifierWidth = value;
-                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        public bool IsMagnifierVisible
-        {
-            get => _isMagnifierVisible;
-            set
-            {
-                if (_isMagnifierVisible != value)
-                {
-                    _isMagnifierVisible = value;
                     MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }

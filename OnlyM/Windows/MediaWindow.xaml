@@ -35,6 +35,19 @@
         </Style>
     </Window.Resources>
     
+    <!--<Window.InputBindings>
+        <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="Add" Modifiers="Control"/>
+        <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="OemPlus" Modifiers="Control"/>
+        <KeyBinding Command="{Binding WebBrowser.ZoomOutCommand}" Key="Subtract" Modifiers="Control"/>
+        <KeyBinding Command="{Binding WebBrowser.ZoomOutCommand}" Key="OemMinus" Modifiers="Control"/>
+        <KeyBinding Command="{Binding WebBrowser.ZoomResetCommand}" Key="D0" Modifiers="Control"/>
+
+        <KeyBinding Command="{Binding WebBrowser.BackCommand}" Key="BrowserBack" Modifiers="Control"/>
+        <KeyBinding Command="{Binding WebBrowser.ForwardCommand}" Key="BrowserForward" Modifiers="Control"/>
+        <KeyBinding Command="{Binding WebBrowser.ReloadCommand}" Key="BrowserRefresh" Modifiers="Control"/>
+        <KeyBinding Command="{Binding WebBrowser.StopCommand}" Key="BrowserStop" Modifiers="Control"/>
+    </Window.InputBindings>-->
+
     <Grid>
         <MediaElement x:Name="VideoElementMediaFoundation"
                       Visibility="{Binding Path=EngineIsMediaFoundation, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -58,7 +71,20 @@
                            LoadedBehavior="Manual" 
                            UnloadedBehavior="Manual" />
 
-        <Grid x:Name="BrowserGrid" Background="White" Opacity="0.0">
+        <Grid x:Name="BrowserGrid" Background="White" Opacity="0.0" Focusable="True">
+            <Grid.InputBindings>
+                <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="Add" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="OemPlus" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ZoomOutCommand}" Key="Subtract" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ZoomOutCommand}" Key="OemMinus" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ZoomResetCommand}" Key="D0" Modifiers="Control"/>
+
+                <KeyBinding Command="{Binding WebBrowser.BackCommand}" Key="BrowserBack" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ForwardCommand}" Key="BrowserForward" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ReloadCommand}" Key="BrowserRefresh" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.StopCommand}" Key="BrowserStop" Modifiers="Control"/>
+            </Grid.InputBindings>
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="76" />
                 <RowDefinition Height="*" />
@@ -103,22 +129,26 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="0,0,5,0">
-                    <ToggleButton Style="{StaticResource ToggleBtnStyle}">
+                    <ToggleButton Style="{StaticResource ToggleBtnStyle}"
+                                  IsChecked="{Binding IsMagnifierVisible, Mode=TwoWay}">
                         <ToggleButton.Content>
+                            <Grid>
                             <materialDesign:PackIcon
                                 Height="28"
                                 Width="28"
-                                Kind="Select" />
+                                Kind="Close" />
+                            </Grid>
                         </ToggleButton.Content>
                         <materialDesign:ToggleButtonAssist.OnContent>
                             <materialDesign:PackIcon
                                 Height="28"
                                 Width="28"
-                                Kind="SelectOff" />
+                                Kind="Check" />
                         </materialDesign:ToggleButtonAssist.OnContent>
                     </ToggleButton>
 
-                    <ToggleButton Style="{StaticResource ToggleBtnStyle}">
+                    <ToggleButton Style="{StaticResource ToggleBtnStyle}"
+                                  IsChecked="{Binding IsMagnifierFrameSquare, Mode=TwoWay}">
                         <ToggleButton.Content>
                             <materialDesign:PackIcon
                                 Height="28"
