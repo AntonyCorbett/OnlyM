@@ -27,6 +27,12 @@
         <Style x:Key="ZoomButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
             <Setter Property="Margin" Value="5,0,0,0"/>
         </Style>
+
+        <Style x:Key="ToggleBtnStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="0,0,10,0" />
+        </Style>
     </Window.Resources>
     
     <Grid>
@@ -87,9 +93,46 @@
                             Width="32"/>
                     </Button>
 
+                    <TextBlock Text="{Binding WebBrowser.Title}"
+                               Margin="20,0,0,0"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource PrimaryHueLightBrush}"
+                               TextTrimming="WordEllipsis"
+                               FontSize="28"/>
+
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="0,0,5,0">
+                    <ToggleButton Style="{StaticResource ToggleBtnStyle}">
+                        <ToggleButton.Content>
+                            <materialDesign:PackIcon
+                                Height="28"
+                                Width="28"
+                                Kind="Select" />
+                        </ToggleButton.Content>
+                        <materialDesign:ToggleButtonAssist.OnContent>
+                            <materialDesign:PackIcon
+                                Height="28"
+                                Width="28"
+                                Kind="SelectOff" />
+                        </materialDesign:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
+
+                    <ToggleButton Style="{StaticResource ToggleBtnStyle}">
+                        <ToggleButton.Content>
+                            <materialDesign:PackIcon
+                                Height="28"
+                                Width="28"
+                                Kind="CircleOutline" />
+                        </ToggleButton.Content>
+                        <materialDesign:ToggleButtonAssist.OnContent>
+                            <materialDesign:PackIcon
+                                Height="28"
+                                Width="28"
+                                Kind="SquareOutline" />
+                        </materialDesign:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
+
                     <Button
                         Style="{StaticResource ZoomButtonStyle}"
                         Command="{Binding WebBrowser.ZoomInCommand}">
@@ -121,7 +164,7 @@
 
             </DockPanel>
 
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1" Background="White">
                 <wpf:ChromiumWebBrowser 
                     x:Name="Browser" 
                     ZoomLevelIncrement="{Binding BrowserZoomLevelIncrement}"

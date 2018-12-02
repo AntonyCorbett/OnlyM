@@ -82,10 +82,10 @@
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger SourceName="Thumb" Property="IsMouseOver" Value="true">
-                                    <Setter Value="{DynamicResource ButtonSelectBrush}" TargetName="Thumb" Property="Background" />
+                                    <Setter Value="{StaticResource PrimaryHueLightBrush}" TargetName="Thumb" Property="Background" />
                                 </Trigger>
                                 <Trigger SourceName="Thumb" Property="IsDragging" Value="true">
-                                    <Setter Value="{DynamicResource DarkBrush}" TargetName="Thumb" Property="Background" />
+                                    <Setter Value="{StaticResource PrimaryHueMidBrush}" TargetName="Thumb" Property="Background" />
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="false">
                                     <Setter TargetName="Thumb" Property="Visibility" Value="Collapsed" />
