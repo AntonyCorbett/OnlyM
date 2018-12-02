@@ -337,11 +337,11 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Utiliza miniaturi încorporate atunci când sunt disponibile</value>
+    <value>Utilizați imagini de previzualizare când sunt disponibile</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Utilizaţi titluri încorporate atunci când sunt disponibile</value>
+    <value>Utilizaţi titluri încorporate când sunt disponibile</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
