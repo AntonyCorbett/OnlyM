@@ -249,7 +249,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Imagini cache (performanţă mai bună dar consumă memorie)</value>
+    <value>Imagini din cache (performanţă mai bună dar consumă memorie)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Arată comanda "Îngheață" în panoul de comanda</value>
+    <value>Arată comanda "Îngheață" în panoul de comandă</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
@@ -381,7 +381,7 @@
     <comment>Tooltip on Freeze button in Command panel</comment>
   </data>
   <data name="WILL_PAUSE" xml:space="preserve">
-    <value>Pauză pe ultimul cadru activat</value>
+    <value>Pauză pe ultimul cadru</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
