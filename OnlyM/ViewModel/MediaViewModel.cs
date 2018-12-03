@@ -79,12 +79,12 @@
 
         public int MagnifierWidth
         {
-            get => _optionsService.Options.MagnifierWidth;
+            get => _optionsService.Options.MagnifierRectangleWidth;
             set
             {
-                if (_optionsService.Options.MagnifierWidth != value)
+                if (_optionsService.Options.MagnifierRectangleWidth != value)
                 {
-                    _optionsService.Options.MagnifierWidth = value;
+                    _optionsService.Options.MagnifierRectangleWidth = value;
                     RaisePropertyChanged();
                 }
             }
@@ -92,12 +92,12 @@
 
         public int MagnifierHeight
         {
-            get => _optionsService.Options.MagnifierHeight;
+            get => _optionsService.Options.MagnifierRectangleHeight;
             set
             {
-                if (_optionsService.Options.MagnifierHeight != value)
+                if (_optionsService.Options.MagnifierRectangleHeight != value)
                 {
-                    _optionsService.Options.MagnifierHeight = value;
+                    _optionsService.Options.MagnifierRectangleHeight = value;
                     RaisePropertyChanged();
                 }
             }
@@ -113,19 +113,6 @@
                     _optionsService.Options.MagnifierFrameType = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(IsMagnifierFrameSquare));
-                }
-            }
-        }
-
-        public int MagnifierRadius
-        {
-            get => _optionsService.Options.MagnifierRadius;
-            set
-            {
-                if (_optionsService.Options.MagnifierRadius != value)
-                {
-                    _optionsService.Options.MagnifierRadius = value;
-                    RaisePropertyChanged();
                 }
             }
         }

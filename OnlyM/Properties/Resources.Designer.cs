@@ -332,6 +332,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading frame {0}.
+        /// </summary>
+        public static string LOADING_FRAME {
+            get {
+                return ResourceManager.GetString("LOADING_FRAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Logging level.
         /// </summary>
         public static string LOGGING_LEVEL {
@@ -575,6 +584,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to WEB.
+        /// </summary>
+        public static string SECTION_WEB {
+            get {
+                return ResourceManager.GetString("SECTION_WEB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string SETTINGS {
@@ -674,11 +692,38 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show header panel.
+        /// </summary>
+        public static string WEB_HEADER_PANEL_SHOW {
+            get {
+                return ResourceManager.GetString("WEB_HEADER_PANEL_SHOW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load URL {0} with error {1} ({2}).
         /// </summary>
         public static string WEB_LOAD_FAIL {
             get {
                 return ResourceManager.GetString("WEB_LOAD_FAIL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show magnifier.
+        /// </summary>
+        public static string WEB_MAGNIFIER_SHOW {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_SHOW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web Margins.
+        /// </summary>
+        public static string WEB_MARGINS {
+            get {
+                return ResourceManager.GetString("WEB_MARGINS", resourceCulture);
             }
         }
         

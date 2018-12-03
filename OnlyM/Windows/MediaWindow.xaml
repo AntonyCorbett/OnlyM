@@ -213,7 +213,6 @@
                                     Width="{Binding MagnifierWidth}"
                                     Height="{Binding MagnifierHeight}"
                                     FrameType="{Binding MagnifierFrameType}"
-                                    Radius="{Binding MagnifierRadius}" 
                                     ZoomFactor="{Binding MagnifierZoomLevel}"/>
                 </xctk:MagnifierManager.Magnifier>
             </Grid>

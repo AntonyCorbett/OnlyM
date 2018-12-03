@@ -14,21 +14,17 @@
     {
         private const int AbsoluteMaxItemCount = 200;
         private const int DefaultMaxItemCount = 50;
-
-        private const int MinMagnifierRadius = 20;
-        private const int DefaultMagnifierRadius = 200;
-        private const int MaxMagnifierRadius = 400;
-
+        
         private const double DefaultMagnifierZoomLevel = 0.5;
         private const double DefaultBrowserZoomLevelIncrement = 0.15;
 
         private const int MinMagnifierWidth = 20;
-        private const int DefaultMagnifierWidth = 500;
+        private const int DefaultMagnifierWidth = 400;
         private const int MaxMagnifierWidth = 800;
 
         private const int MinMagnifierHeight = 20;
-        private const int DefaultMagnifierHeight = 200;
-        private const int MaxMagnifierHeight = 400;
+        private const int DefaultMagnifierHeight = 400;
+        private const int MaxMagnifierHeight = 800;
 
         private string _commandLineMediaFolder;
         private bool _showMediaItemCommandPanel;
@@ -39,6 +35,7 @@
         private int _maxItemCount;
         private ScreenPosition _videoScreenPosition;
         private ScreenPosition _imageScreenPosition;
+        private ScreenPosition _webScreenPosition;
         private bool _includeBlankScreenItem;
         private bool _useInternalMediaTitles;
         private bool _permanentBackdrop;
@@ -51,12 +48,14 @@
         private string _mediaFolder;
         private ImageFadeType _imageFadeType;
         private FadeSpeed _fadeSpeed;
-        private int _magnifierRadius;
         private double _magnifierZoomLevel;
         private FrameType _magnifierFrameType;
-        private int _magnifierWidth;
-        private int _magnifierHeight;
+        private int _magnifierRectangleWidth;
+        private int _magnifierRectangleHeight;
+        private int _magnifierEllipseWidth;
+        private int _magnifierEllipseHeight;
         private double _browserZoomLevelIncrement;
+        private bool _showBrowserHeaderPanel;
         
         public Options()
         {
@@ -75,15 +74,19 @@
             JwLibraryCompatibilityMode = true;
             ConfirmVideoStop = false;
             MaxItemCount = DefaultMaxItemCount;
-            MagnifierRadius = DefaultMagnifierRadius;
+
             MagnifierZoomLevel = DefaultMagnifierZoomLevel;
             MagnifierFrameType = FrameType.Circle;
-            MagnifierWidth = DefaultMagnifierWidth;
-            MagnifierHeight = DefaultMagnifierHeight;
+            MagnifierRectangleWidth = DefaultMagnifierWidth;
+            MagnifierRectangleHeight = DefaultMagnifierHeight;
+            MagnifierEllipseWidth = DefaultMagnifierWidth;
+            MagnifierEllipseHeight = DefaultMagnifierHeight;
             BrowserZoomLevelIncrement = DefaultBrowserZoomLevelIncrement;
+            ShowBrowserHeaderPanel = true;
             
             _videoScreenPosition = new ScreenPosition();
             _imageScreenPosition = new ScreenPosition();
+            _webScreenPosition = new ScreenPosition();
 
             Sanitize();
         }
@@ -123,6 +126,8 @@
         public event EventHandler VideoScreenPositionChangedEvent;
 
         public event EventHandler ImageScreenPositionChangedEvent;
+
+        public event EventHandler WebScreenPositionChangedEvent;
 
         public event EventHandler ShowMediaItemCommandPanelChangedEvent;
 
@@ -234,6 +239,19 @@
                 {
                     _imageScreenPosition = value;
                     ImageScreenPositionChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public ScreenPosition WebScreenPosition
+        {
+            get => _webScreenPosition;
+            set
+            {
+                if (!_webScreenPosition.SamePosition(value))
+                {
+                    _webScreenPosition = value;
+                    WebScreenPositionChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -418,27 +436,66 @@
             }
         }
 
-        public int MagnifierHeight
+        public bool ShowBrowserHeaderPanel
         {
-            get => _magnifierHeight;
+            get => _showBrowserHeaderPanel;
             set
             {
-                if (_magnifierHeight != value)
+                if (_showBrowserHeaderPanel != value)
                 {
-                    _magnifierHeight = value;
+                    _showBrowserHeaderPanel = value;
+                    BrowserChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public int MagnifierRectangleHeight
+        {
+            get => _magnifierRectangleHeight;
+            set
+            {
+                if (_magnifierRectangleHeight != value)
+                {
+                    _magnifierRectangleHeight = value;
                     MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
 
-        public int MagnifierWidth
+        public int MagnifierRectangleWidth
         {
-            get => _magnifierWidth;
+            get => _magnifierRectangleWidth;
             set
             {
-                if (_magnifierWidth != value)
+                if (_magnifierRectangleWidth != value)
                 {
-                    _magnifierWidth = value;
+                    _magnifierRectangleWidth = value;
+                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public int MagnifierEllipseHeight
+        {
+            get => _magnifierEllipseHeight;
+            set
+            {
+                if (_magnifierEllipseHeight != value)
+                {
+                    _magnifierEllipseHeight = value;
+                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public int MagnifierEllipseWidth
+        {
+            get => _magnifierEllipseWidth;
+            set
+            {
+                if (_magnifierEllipseWidth != value)
+                {
+                    _magnifierEllipseWidth = value;
                     MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -457,18 +514,7 @@
             }
         }
 
-        public int MagnifierRadius
-        {
-            get => _magnifierRadius;
-            set
-            {
-                if (_magnifierRadius != value)
-                {
-                    _magnifierRadius = value;
-                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public bool ShowMagnifierByDefault { get; set; }
 
         public double MagnifierZoomLevel
         {
@@ -517,6 +563,7 @@
 
             VideoScreenPosition.Sanitize();
             ImageScreenPosition.Sanitize();
+            WebScreenPosition.Sanitize();
 
             if (!RecentlyUsedMediaFolders.Any())
             {
@@ -548,11 +595,6 @@
                 MaxItemCount = 1;
             }
 
-            if (MagnifierRadius < MinMagnifierRadius || MagnifierRadius > MaxMagnifierRadius)
-            {
-                MagnifierRadius = DefaultMagnifierRadius;
-            }
-
             if (MagnifierZoomLevel < 0 || MagnifierZoomLevel > 1.0)
             {
                 MagnifierZoomLevel = DefaultMagnifierZoomLevel;
@@ -563,14 +605,14 @@
                 BrowserZoomLevelIncrement = DefaultBrowserZoomLevelIncrement;
             }
 
-            if (MagnifierHeight < MinMagnifierHeight || MagnifierHeight > MaxMagnifierHeight)
+            if (MagnifierRectangleHeight < MinMagnifierHeight || MagnifierRectangleHeight > MaxMagnifierHeight)
             {
-                MagnifierHeight = DefaultMagnifierHeight;
+                MagnifierRectangleHeight = DefaultMagnifierHeight;
             }
 
-            if (MagnifierWidth < MinMagnifierWidth || MagnifierWidth > MaxMagnifierWidth)
+            if (MagnifierRectangleWidth < MinMagnifierWidth || MagnifierRectangleWidth > MaxMagnifierWidth)
             {
-                MagnifierWidth = DefaultMagnifierWidth;
+                MagnifierRectangleWidth = DefaultMagnifierWidth;
             }
         }
 

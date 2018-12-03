@@ -15,7 +15,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DesignHeight="1850" d:DesignWidth="600">
+             d:DesignHeight="1550" d:DesignWidth="1600">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -60,6 +60,7 @@
             </Style>
 
             <Style x:Key="SettingsGroupBoxStyle" TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignGroupBox}">
+                <Setter Property="Width" Value="450" />
                 <Setter Property="Margin" Value="10,6" />
                 <Setter Property="Padding" Value="10" />
             </Style>
@@ -71,7 +72,7 @@
             </Style>
 
             <Style x:Key="SettingsSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignDiscreteSlider}">
-                <Setter Property="Margin" Value="0,5,0,5"/>
+                <Setter Property="Margin" Value="0,3,0,3"/>
                 <Setter Property="Width" Value="380"/>
                 <Setter Property="Minimum" Value="0"/>
                 <Setter Property="Maximum" Value="90"/>
@@ -92,7 +93,7 @@
         </EventTrigger>
     </UserControl.Triggers>
 
-    <StackPanel Orientation="Vertical">
+    <WrapPanel Orientation="Horizontal">
         <GroupBox Header="{x:Static resx:Resources.SECTION_DISPLAY}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
@@ -174,6 +175,20 @@
                     Margin="0,10,0,0"
                     Command="{Binding PurgeThumbnailCacheCommand}"
                     Content="{x:Static resx:Resources.PURGE_THUMBS}" />
+
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="{x:Static resx:Resources.SECTION_WEB}" Style="{StaticResource SettingsGroupBoxStyle}">
+            <StackPanel Orientation="Vertical">
+
+                <CheckBox IsChecked="{Binding WebShowHeaderPanel, Mode=TwoWay}"
+                          Content = "{x:Static resx:Resources.WEB_HEADER_PANEL_SHOW}" 
+                          Style="{StaticResource SettingsCheckBoxStyle}" />
+
+                <CheckBox IsChecked="{Binding WebShowMagnifier, Mode=TwoWay}"
+                          Content = "{x:Static resx:Resources.WEB_MAGNIFIER_SHOW}" 
+                          Style="{StaticResource SettingsCheckBoxStyle}" />
 
             </StackPanel>
         </GroupBox>
@@ -331,6 +346,51 @@
                             Value="{Binding ImageScreenBottomMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
+
+
+                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
+                           Text="{x:Static resx:Resources.WEB_MARGINS}"
+                           Margin="0,40,0,-20"/>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <materialDesign:PackIcon Kind="BorderLeft" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding WebScreenLeftMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+
+                    <materialDesign:PackIcon Kind="BorderTop" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding WebScreenTopMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+
+                    <materialDesign:PackIcon Kind="BorderRight" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
+
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding WebScreenRightMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <materialDesign:PackIcon Kind="BorderBottom" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
+                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                            Value="{Binding WebScreenBottomMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
             </StackPanel>
         </GroupBox>
 
@@ -388,6 +448,6 @@
             </StackPanel>
         </GroupBox>
 
-    </StackPanel>
+    </WrapPanel>
 
 </UserControl>

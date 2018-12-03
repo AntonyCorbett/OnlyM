@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace OnlyM.ViewModel
+﻿namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;

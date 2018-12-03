@@ -205,14 +205,13 @@
         {
             if (!e.Browser.IsLoading)
             {
-                StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs {Description = e.Value});
+                StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = e.Value });
             }
         }
 
         private void HandleBrowserFrameLoadStart(object sender, FrameLoadStartEventArgs e)
         {
-            // todo: localise
-            var s = $"Loading frame {e.Frame.Identifier}";
+            var s = string.Format(Properties.Resources.LOADING_FRAME, e.Frame.Identifier);
             StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = s });
         }
 

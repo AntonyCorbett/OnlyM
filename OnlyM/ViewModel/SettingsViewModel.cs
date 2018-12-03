@@ -296,6 +296,116 @@
             }
         }
 
+        public int WebScreenLeftMargin
+        {
+            get => _optionsService.Options.WebScreenPosition.LeftMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.WebScreenPosition.LeftMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.WebScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Left, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.WebScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(WebScreenRightMargin));
+                    }
+                }
+            }
+        }
+
+        public int WebScreenRightMargin
+        {
+            get => _optionsService.Options.WebScreenPosition.RightMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.WebScreenPosition.RightMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.WebScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Right, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.WebScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(WebScreenLeftMargin));
+                    }
+                }
+            }
+        }
+
+        public int WebScreenTopMargin
+        {
+            get => _optionsService.Options.WebScreenPosition.TopMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.WebScreenPosition.TopMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.WebScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Top, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.WebScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(WebScreenBottomMargin));
+                    }
+                }
+            }
+        }
+
+        public int WebScreenBottomMargin
+        {
+            get => _optionsService.Options.WebScreenPosition.BottomMarginPercentage;
+            set
+            {
+                if (_optionsService.Options.WebScreenPosition.BottomMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.Options.WebScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Bottom, value, out var opposingMarginChanged);
+
+                    _optionsService.Options.WebScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(WebScreenTopMargin));
+                    }
+                }
+            }
+        }
+
+        public bool WebShowHeaderPanel
+        {
+            get => _optionsService.Options.ShowBrowserHeaderPanel;
+            set
+            {
+                if (_optionsService.Options.ShowBrowserHeaderPanel != value)
+                {
+                    _optionsService.Options.ShowBrowserHeaderPanel = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool WebShowMagnifier
+        {
+            get => _optionsService.Options.ShowMagnifierByDefault;
+            set
+            {
+                if (_optionsService.Options.ShowMagnifierByDefault != value)
+                {
+                    _optionsService.Options.ShowMagnifierByDefault = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public bool ShowCommandPanel
         {
             get => _optionsService.Options.ShowMediaItemCommandPanel;

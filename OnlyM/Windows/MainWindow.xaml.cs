@@ -1,9 +1,8 @@
-﻿using System.Windows.Media;
-
-namespace OnlyM.Windows
+﻿namespace OnlyM.Windows
 {
     using System.Windows;
     using System.Windows.Input;
+    using System.Windows.Media;
     using CommonServiceLocator;
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Messaging;
