@@ -1,6 +1,6 @@
 # How to contribute
 
-Thanks for thinking about contributing additional code or bug fixes to the project.
+Thanks for thinking about contributing additional code or bug fixes to the project. If your changes are likely to be more than a few lines of code, please would you let me know in advance what you propose to do. This will help avoid duplication of effort.
 
 ## Submitting changes
 
@@ -15,4 +15,5 @@ A StyleCop ruleset file is used to help maintain consistent coding conventions.
 The projects reference the StyleCop.Analyzers assembly so it should be possible to stick to the coding style without too much difficulty.
 
 Many thanks
+
 Antony Corbett
