@@ -1,7 +1,6 @@
 ﻿namespace OnlyM.Services
 {
     using System;
-    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Media.Animation;
@@ -37,6 +36,8 @@
         }
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
+
+        public event EventHandler<WebBrowserProgressEventArgs> StatusEvent;
 
         public void ShowWeb(string mediaItemFilePath, Guid mediaItemId)
         {
@@ -127,6 +128,16 @@
 
         private void HandleBrowserLoadingStateChanged(object sender, CefSharp.LoadingStateChangedEventArgs e)
         {
+            if (e.IsLoading)
+            {
+                // todo: localise
+                StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = "Loading..." });
+            }
+            else
+            {
+                StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty });
+            }
+
             DispatcherHelper.CheckBeginInvokeOnUI(async () =>
             {
                 Log.Debug(e.IsLoading ? $"Loading web page = {_browser.Address}" : "Loaded web page");
@@ -184,7 +195,25 @@
         {
             _browser.LoadingStateChanged += HandleBrowserLoadingStateChanged;
             _browser.LoadError += HandleBrowserLoadError;
+            _browser.StatusMessage += HandleBrowserStatusMessage;
+            _browser.FrameLoadStart += HandleBrowserFrameLoadStart;
+
             _browser.LifeSpanHandler = new BrowserLifeSpanHandler();
+        }
+
+        private void HandleBrowserStatusMessage(object sender, StatusMessageEventArgs e)
+        {
+            if (!e.Browser.IsLoading)
+            {
+                StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs {Description = e.Value});
+            }
+        }
+
+        private void HandleBrowserFrameLoadStart(object sender, FrameLoadStartEventArgs e)
+        {
+            // todo: localise
+            var s = $"Loading frame {e.Frame.Identifier}";
+            StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = s });
         }
 
         private void HandleBrowserLoadError(object sender, LoadErrorEventArgs e)
@@ -195,9 +224,10 @@
                 return;
             }
 
-            // todo: localise
-            var errorMessage = $"<html><body><h2>Failed to load URL {e.FailedUrl} with error {e.ErrorText} ({e.ErrorCode}).</h2></body></html>";
-            _browser.LoadHtml(errorMessage, e.FailedUrl);
+            var errorMsg = string.Format(Properties.Resources.WEB_LOAD_FAIL, e.FailedUrl, e.ErrorText, e.ErrorCode);
+            var body = $"<html><body><h2>{errorMsg}</h2></body></html>";
+
+            _browser.LoadHtml(body, e.FailedUrl);
         }
     }
 }

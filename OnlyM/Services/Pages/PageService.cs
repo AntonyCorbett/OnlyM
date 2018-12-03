@@ -15,6 +15,7 @@
     using MediaElementAdaption;
     using Models;
     using OnlyM.Core.Services.Database;
+    using OnlyM.Services.WebBrowser;
     using PubSubMessages;
     using Serilog;
     using Snackbar;
@@ -77,6 +78,8 @@
         public event EventHandler<WindowVisibilityChangedEventArgs> MediaWindowVisibilityChanged;
 
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
+
+        public event EventHandler<WebBrowserProgressEventArgs> WebStatusEvent;
 
         public bool ApplicationIsClosing { get; private set; }
 
@@ -308,6 +311,12 @@
             _mediaWindow.MediaNearEndEvent += HandleMediaNearEndEvent;
             _mediaWindow.IsVisibleChanged += HandleMediaWindowVisibility;
             _mediaWindow.Loaded += HandleLoaded;
+            _mediaWindow.WebStatusEvent += HandleWebStatusEvent;
+        }
+
+        private void HandleWebStatusEvent(object sender, WebBrowserProgressEventArgs e)
+        {
+            WebStatusEvent?.Invoke(this, e);
         }
 
         private void HandleMediaWindowVisibility(object sender, DependencyPropertyChangedEventArgs e)
@@ -323,6 +332,7 @@
             _mediaWindow.MediaNearEndEvent -= HandleMediaNearEndEvent;
             _mediaWindow.IsVisibleChanged -= HandleMediaWindowVisibility;
             _mediaWindow.Loaded -= HandleLoaded;
+            _mediaWindow.WebStatusEvent -= HandleWebStatusEvent;
         }
 
         private void BringJwlToFront()

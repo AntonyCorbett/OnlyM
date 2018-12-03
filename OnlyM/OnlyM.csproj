@@ -189,6 +189,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="AutoUpdates\VersionDetection.cs" />
+    <Compile Include="Controls\PathTextBlock.cs" />
     <Compile Include="MediaElementAdaption\IMediaElement.cs" />
     <Compile Include="MediaElementAdaption\LogMessageEventArgs.cs" />
     <Compile Include="MediaElementAdaption\MediaElementMediaFoundation.cs" />
@@ -244,6 +245,7 @@
     <Compile Include="Services\SubtitleFileGenerator.cs" />
     <Compile Include="Services\VideoDisplayManager.cs" />
     <Compile Include="Services\WebBrowser\BrowserLifeSpanHandler.cs" />
+    <Compile Include="Services\WebBrowser\WebBrowserProgressEventArgs.cs" />
     <Compile Include="Services\WebDisplayManager.cs" />
     <Compile Include="ViewModel\MediaViewModel.cs" />
     <Compile Include="ViewModel\OperatorViewModel.cs" />

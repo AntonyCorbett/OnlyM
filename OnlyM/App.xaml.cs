@@ -23,8 +23,8 @@
     public partial class App : Application
     {
         private readonly string _appString = "OnlyMMeetingMedia";
-        private Mutex _appMutex;
         private readonly bool _successCefSharp;
+        private Mutex _appMutex;
 
         public App()
         {

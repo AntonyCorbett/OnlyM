@@ -7,6 +7,7 @@
     using System.Windows.Controls;
     using MediaElementAdaption;
     using Models;
+    using OnlyM.Services.WebBrowser;
 
     internal interface IPageService
     {
@@ -27,6 +28,8 @@
         event EventHandler<WindowVisibilityChangedEventArgs> MediaWindowVisibilityChanged;
         
         event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
+
+        event EventHandler<WebBrowserProgressEventArgs> WebStatusEvent;
 
         bool AllowMediaWindowToClose { get; }
 

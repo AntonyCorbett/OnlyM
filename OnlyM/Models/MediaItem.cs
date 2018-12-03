@@ -37,7 +37,8 @@
         private int _currentSlideshowIndex;
         private int _slideshowCount;
         private bool _isRollingSlideshow;
-        
+        private string _miscText;
+
         public event EventHandler PlaybackPositionChangedEvent;
 
         public Guid Id { get; set; }
@@ -354,6 +355,19 @@
         public bool IsPauseButtonVisible => HasDuration && IsMediaActive && AllowPause;
 
         public bool IsSlideshow => MediaType.Classification == MediaClassification.Slideshow;
+
+        public string MiscText
+        {
+            get => _miscText;
+            set
+            {
+                if (_miscText != value)
+                {
+                    _miscText = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         public bool IsSliderVisible => 
             HasDuration && 

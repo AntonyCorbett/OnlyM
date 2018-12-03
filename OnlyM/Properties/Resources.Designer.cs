@@ -674,6 +674,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load URL {0} with error {1} ({2}).
+        /// </summary>
+        public static string WEB_LOAD_FAIL {
+            get {
+                return ResourceManager.GetString("WEB_LOAD_FAIL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Will pause on final frame.
         /// </summary>
         public static string WILL_PAUSE {

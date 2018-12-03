@@ -396,4 +396,8 @@
     <value>Generating subtitles</value>
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
+  <data name="WEB_LOAD_FAIL" xml:space="preserve">
+    <value>Failed to load URL {0} with error {1} ({2})</value>
+    <comment>Error message displayed when a web page cannot be loaded.</comment>
+  </data>
 </root>

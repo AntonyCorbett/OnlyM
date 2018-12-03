@@ -1,4 +1,6 @@
-﻿namespace OnlyM.ViewModel
+﻿using System.Text;
+
+namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -18,6 +20,7 @@
     using MediaElementAdaption;
     using Models;
     using OnlyM.Services.Snackbar;
+    using OnlyM.Services.WebBrowser;
     using PubSubMessages;
     using Serilog;
     using Services.FrozenVideoItems;
@@ -107,6 +110,7 @@
                 await HandleMediaNearEndEvent(sender, e);
             };
             _pageService.NavigationEvent += HandleNavigationEvent;
+            _pageService.WebStatusEvent += HandleWebStatusEvent;
 
             LoadMediaItems();
             InitCommands();
@@ -231,6 +235,12 @@
         {
             var items = GetCurrentMediaItems();
             return items?.SingleOrDefault(x => x.IsBlankScreen && x.IsMediaActive);
+        }
+
+        private MediaItem GetActiveWebItem()
+        {
+            var items = GetCurrentMediaItems();
+            return items?.SingleOrDefault(x => x.IsWeb && x.IsMediaActive);
         }
 
         private void HandleUseInternalMediaTitlesChangedEvent(object sender, EventArgs e)
@@ -993,6 +1003,18 @@
             {
                 _snackbarService.EnqueueWithOk(Properties.Resources.GENERATING_SUBTITLES);
             }
+        }
+
+        private void HandleWebStatusEvent(object sender, WebBrowserProgressEventArgs e)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                var item = GetActiveWebItem();
+                if (item != null)
+                {
+                    item.MiscText = e.Description;
+                }
+            });
         }
     }
 }

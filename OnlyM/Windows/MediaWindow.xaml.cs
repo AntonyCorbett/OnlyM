@@ -7,12 +7,14 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
+    using CefSharp;
     using CommonServiceLocator;
     using Core.Models;
     using Core.Services.Options;
     using MediaElementAdaption;
     using Models;
     using OnlyM.Core.Services.Database;
+    using OnlyM.Services.WebBrowser;
     using OnlyM.ViewModel;
     using Serilog;
     using Services;
@@ -64,6 +66,8 @@
         public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
 
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
+
+        public event EventHandler<WebBrowserProgressEventArgs> WebStatusEvent;
 
         public void UpdateRenderingMethod()
         {
@@ -307,6 +311,12 @@
         private void SubscribeWebEvents()
         {
             _webDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
+            _webDisplayManager.StatusEvent += HandleWebDisplayManagerStatusEvent;
+        }
+
+        private void HandleWebDisplayManagerStatusEvent(object sender, WebBrowserProgressEventArgs e)
+        {
+            WebStatusEvent?.Invoke(this, e);
         }
 
         private void HandleMediaFoundationSubtitleEvent(object sender, Core.Subtitles.SubtitleEventArgs e)
@@ -342,6 +352,7 @@
         private void UnsubscribeWebEvents()
         {
             _webDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
+            _webDisplayManager.StatusEvent -= HandleWebDisplayManagerStatusEvent;
         }
 
         private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
