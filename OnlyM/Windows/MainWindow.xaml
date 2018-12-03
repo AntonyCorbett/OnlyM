@@ -23,7 +23,7 @@
         MinWidth="500"
         MinHeight="500"
         Topmost="{Binding AlwaysOnTop, Mode=OneWay}"
-        Title="S o u n d B o x - O N L Y M" Height="650" Width="500" Closing="WindowClosing">
+        Title="S o u n d B o x - O N L Y M" Height="650" Width="500" Closing="WindowClosing" Activated="OnWindowActivated" Deactivated="OnWindowDeactivated">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -100,7 +100,7 @@
     </Window.Resources>
 
 
-    <Border BorderBrush="#FF512DA8" BorderThickness="1">
+    <Border Name="MainBorder" BorderBrush="#FF512DA8" BorderThickness="1">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="38"/>
@@ -108,7 +108,7 @@
                 <RowDefinition Height="74"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0">
+            <Border Name="TopBorder" Grid.Row="0">
                 <Border.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FF512DA8" Offset="1"/>
@@ -181,7 +181,7 @@
                 </Rectangle>
             </Grid>
 
-            <Border Grid.Row="2">
+            <Border Name="BottomBorder" Grid.Row="2">
                 <Border.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFB39DDB" Offset="0"/>

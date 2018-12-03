@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Windows
+﻿using System.Windows.Media;
+
+namespace OnlyM.Windows
 {
     using System.Windows;
     using System.Windows.Input;
@@ -107,6 +109,22 @@
         private void CloseClick(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void OnWindowActivated(object sender, System.EventArgs e)
+        {
+            var converter = new BrushConverter();
+            TopBorder.Opacity = 1.0;
+            BottomBorder.Opacity = 1.0;
+            MainBorder.BorderBrush = (Brush)converter.ConvertFromString("#FF512DA8");
+        }
+
+        private void OnWindowDeactivated(object sender, System.EventArgs e)
+        {
+            var converter = new BrushConverter();
+            TopBorder.Opacity = 0.65;
+            BottomBorder.Opacity = 0.65;
+            MainBorder.BorderBrush = (Brush)converter.ConvertFromString("#FFB39DDB");
         }
     }
 }
