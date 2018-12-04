@@ -71,7 +71,7 @@
 
         public void UpdateRenderingMethod()
         {
-            if (_optionsService.Options.RenderingMethod != _currentRenderingMethod)
+            if (_optionsService.RenderingMethod != _currentRenderingMethod)
             {
                 InitVideoRenderingMethod();
             }
@@ -175,7 +175,7 @@
 
         private void HandlePlaybackPositionChangedEvent(object sender, EventArgs e)
         {
-            if (_optionsService.Options.AllowVideoScrubbing)
+            if (_optionsService.AllowVideoScrubbing)
             {
                 var item = (MediaItem)sender;
                 _videoDisplayManager.SetPlaybackPosition(
@@ -251,11 +251,11 @@
         {
             var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 100);
 
-            _videoDisplayManager.ShowSubtitles = _optionsService.Options.ShowVideoSubtitles;
+            _videoDisplayManager.ShowSubtitles = _optionsService.ShowVideoSubtitles;
 
             await _videoDisplayManager.ShowVideoOrPlayAudio(
                 mediaItemToStart.FilePath,
-                _optionsService.Options.VideoScreenPosition,
+                _optionsService.VideoScreenPosition,
                 mediaItemToStart.Id,
                 mediaItemToStart.MediaType.Classification,
                 startPosition,
@@ -377,7 +377,7 @@
 
         private void HandleShowSubtitlesChangedEvent(object sender, EventArgs e)
         {
-            _videoDisplayManager.ShowSubtitles = _optionsService.Options.ShowVideoSubtitles;
+            _videoDisplayManager.ShowSubtitles = _optionsService.ShowVideoSubtitles;
         }
 
         private bool IsVideoOrAudio(MediaItem mediaItem)
@@ -390,7 +390,7 @@
         private bool ShouldConfirmMediaStop(MediaItem mediaItem)
         {
             return
-                _optionsService.Options.ConfirmVideoStop &&
+                _optionsService.ConfirmVideoStop &&
                 IsVideoOrAudio(mediaItem) &&
                 !_videoDisplayManager.IsPaused && 
                 _videoDisplayManager.GetPlaybackPosition().TotalSeconds > MediaConfirmStopWindowSeconds;
@@ -409,21 +409,21 @@
 
         private void HandleVideoScreenPositionChangedEvent(object sender, EventArgs e)
         {
-            ScreenPositionHelper.SetScreenPosition(_videoElement.FrameworkElement, _optionsService.Options.VideoScreenPosition);
-            ScreenPositionHelper.SetSubtitleBlockScreenPosition(SubtitleBlock, _optionsService.Options.VideoScreenPosition);
+            ScreenPositionHelper.SetScreenPosition(_videoElement.FrameworkElement, _optionsService.VideoScreenPosition);
+            ScreenPositionHelper.SetSubtitleBlockScreenPosition(SubtitleBlock, _optionsService.VideoScreenPosition);
         }
 
         private void HandleImageScreenPositionChangedEvent(object sender, EventArgs e)
         {
-            ScreenPositionHelper.SetScreenPosition(Image1Element, _optionsService.Options.ImageScreenPosition);
-            ScreenPositionHelper.SetScreenPosition(Image2Element, _optionsService.Options.ImageScreenPosition);
+            ScreenPositionHelper.SetScreenPosition(Image1Element, _optionsService.ImageScreenPosition);
+            ScreenPositionHelper.SetScreenPosition(Image2Element, _optionsService.ImageScreenPosition);
         }
 
         private void InitVideoRenderingMethod()
         {
             _videoElement?.UnsubscribeEvents();
             
-            switch (_optionsService.Options.RenderingMethod)
+            switch (_optionsService.RenderingMethod)
             {
                 case RenderingMethod.Ffmpeg:
                     _videoElement = new MediaElementUnoSquare(VideoElementFfmpeg);
@@ -435,7 +435,7 @@
                     break;
             }
 
-            _currentRenderingMethod = _optionsService.Options.RenderingMethod;
+            _currentRenderingMethod = _optionsService.RenderingMethod;
 
             if (_videoDisplayManager != null)
             {

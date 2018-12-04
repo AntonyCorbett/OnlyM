@@ -107,7 +107,7 @@
                     var tempFile = GraphicsUtils.CreateThumbnailForVideo(
                         originalPath, 
                         ffmpegFolder, 
-                        _optionsService.Options.EmbeddedThumbnails);
+                        _optionsService.EmbeddedThumbnails);
 
                     if (string.IsNullOrEmpty(tempFile))
                     {

@@ -143,7 +143,7 @@
 
                 if (requiresVisibleWindow)
                 {
-                    var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
+                    var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
                     if (targetMonitor != null)
                     {
                         Log.Logger.Information("Opening media window");
@@ -268,7 +268,7 @@
             {
                 var isVisible = _mediaWindow.IsVisible;
 
-                var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
+                var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
                 if (targetMonitor != null)
                 {
                     _mediaWindow.Hide();
@@ -288,7 +288,7 @@
                     }
                 }
             }
-            else if (_optionsService.Options.PermanentBackdrop)
+            else if (_optionsService.PermanentBackdrop)
             {
                 OpenMediaWindow(requiresVisibleWindow: true);
             }
@@ -337,7 +337,7 @@
 
         private void BringJwlToFront()
         {
-            if (_optionsService.Options.JwLibraryCompatibilityMode)
+            if (_optionsService.JwLibraryCompatibilityMode)
             {
                 JwLibHelper.BringToFront();
                 Thread.Sleep(100);
@@ -383,7 +383,7 @@
 
         private void ManageMediaWindowVisibility()
         {
-            if (!_optionsService.Options.PermanentBackdrop && !AnyActiveMediaRequiringVisibleMediaWindow())
+            if (!_optionsService.PermanentBackdrop && !AnyActiveMediaRequiringVisibleMediaWindow())
             {
                 _mediaWindow?.Hide();
                 BringJwlToFront();
@@ -429,7 +429,7 @@
 
         private void HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
         {
-            if (_optionsService.Options.PermanentBackdrop)
+            if (_optionsService.PermanentBackdrop)
             {
                 OpenMediaWindow(requiresVisibleWindow: true);
             }

@@ -74,7 +74,7 @@
             Guid mediaItemId, 
             bool isBlankScreenImage)
         {
-            var fadeType = _optionsService.Options.ImageFadeType;
+            var fadeType = _optionsService.ImageFadeType;
 
             PlaceImage(
                 mediaItemId, 
@@ -106,7 +106,7 @@
 
         public void HideSingleImage(Guid mediaItemId)
         {
-            var fadeType = _optionsService.Options.ImageFadeType;
+            var fadeType = _optionsService.ImageFadeType;
             UnplaceImage(
                 mediaItemId,
                 MediaClassification.Image,
@@ -213,7 +213,7 @@
 
         public void CacheImageItem(string mediaFilePath)
         {
-            if (_optionsService.Options.CacheImages)
+            if (_optionsService.CacheImages)
             {
                 ImageCache.GetImage(mediaFilePath);
             }
@@ -352,7 +352,7 @@
                 fadeType == ImageFadeType.FadeInOut ||
                 fadeType == ImageFadeType.CrossFade;
 
-            var imageSrc = _optionsService.Options.CacheImages
+            var imageSrc = _optionsService.CacheImages
                 ? ImageCache.GetImage(imageFile)
                 : GetBitmapImageWithCacheOnLoad(imageFile);
 
@@ -521,7 +521,7 @@
             if (previousSlide == null)
             {
                 // previous image (if any) is a regular image _not_ a slide
-                var regularImageFadeType = _optionsService.Options.ImageFadeType;
+                var regularImageFadeType = _optionsService.ImageFadeType;
                 switch (regularImageFadeType)
                 {
                     case ImageFadeType.CrossFade:
@@ -572,7 +572,7 @@
             Action<Guid, MediaClassification> onStopped,
             Action<Guid, MediaClassification> onStarted)
         {
-            var fadeTime = _optionsService.Options.ImageFadeSpeed.GetFadeSpeedSeconds();
+            var fadeTime = _optionsService.ImageFadeSpeed.GetFadeSpeedSeconds();
 
             onStarting?.Invoke(mediaItemId, mediaClassification);
 
@@ -582,7 +582,7 @@
 
                 ShowImageInternal(
                     isBlankScreenImage,
-                    _optionsService.Options.ImageScreenPosition,
+                    _optionsService.ImageScreenPosition,
                     imageFilePath,
                     _image1,
                     _image2,
@@ -607,7 +607,7 @@
 
                 ShowImageInternal(
                     isBlankScreenImage,
-                    _optionsService.Options.ImageScreenPosition,
+                    _optionsService.ImageScreenPosition,
                     imageFilePath,
                     _image2,
                     _image1,
@@ -635,7 +635,7 @@
             Action<Guid, MediaClassification> stopping,
             Action<Guid, MediaClassification> stopped)
         {
-            var fadeTime = _optionsService.Options.ImageFadeSpeed.GetFadeSpeedSeconds();
+            var fadeTime = _optionsService.ImageFadeSpeed.GetFadeSpeedSeconds();
 
             stopping?.Invoke(mediaItemId, mediaClassification);
             

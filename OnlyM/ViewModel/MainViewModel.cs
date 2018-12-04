@@ -105,7 +105,7 @@ namespace OnlyM.ViewModel
 
         public bool ShowNewVersionButton => _newVersionAvailable && IsOperatorPageActive;
 
-        public bool AlwaysOnTop => _optionsService.Options.AlwaysOnTop || _pageService.IsMediaWindowVisible;
+        public bool AlwaysOnTop => _optionsService.AlwaysOnTop || _pageService.IsMediaWindowVisible;
 
         public bool IsSettingsPageActive => _currentPageName.Equals(_pageService.SettingsPageName);
 
@@ -279,9 +279,9 @@ namespace OnlyM.ViewModel
 
         private void LaunchMediaFolder()
         {
-            if (Directory.Exists(_optionsService.Options.MediaFolder))
+            if (Directory.Exists(_optionsService.MediaFolder))
             {
-                Process.Start(_optionsService.Options.MediaFolder);
+                Process.Start(_optionsService.MediaFolder);
             }
         }
 

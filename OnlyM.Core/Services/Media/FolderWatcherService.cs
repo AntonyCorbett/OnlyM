@@ -40,7 +40,7 @@
             {
                 if (_watcher != null && _watcher.EnableRaisingEvents != value)
                 {
-                    if (value && !Directory.Exists(_optionsService.Options.MediaFolder))
+                    if (value && !Directory.Exists(_optionsService.MediaFolder))
                     {
                         return;
                     }
@@ -179,7 +179,7 @@
         
         private void InitWatcher()
         {
-            _foldersToWatch = _mediaProviderService.GetMediaFolders(_optionsService.Options.OperatingDate);
+            _foldersToWatch = _mediaProviderService.GetMediaFolders(_optionsService.OperatingDate);
             InitWatcher(_foldersToWatch);
         }
     }

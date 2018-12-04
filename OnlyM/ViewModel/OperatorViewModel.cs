@@ -181,7 +181,7 @@
 
         private void HandleShowMediaItemCommandPanelChangedEvent(object sender, EventArgs e)
         {
-            var visible = _optionsService.Options.ShowMediaItemCommandPanel;
+            var visible = _optionsService.ShowMediaItemCommandPanel;
 
             foreach (var item in MediaItems)
             {
@@ -191,7 +191,7 @@
 
         private void HandleShowFreezeCommandChangedEvent(object sender, EventArgs e)
         {
-            var allow = _optionsService.Options.ShowFreezeCommand;
+            var allow = _optionsService.ShowFreezeCommand;
 
             foreach (var item in MediaItems)
             {
@@ -201,7 +201,7 @@
 
         private async Task HandleIncludeBlankScreenItemChangedEvent(object sender, EventArgs e)
         {
-            if (!_optionsService.Options.IncludeBlanksScreenItem)
+            if (!_optionsService.IncludeBlankScreenItem)
             {
                 await RemoveBlankScreenItem();
             }
@@ -211,7 +211,7 @@
 
         private async Task HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
         {
-            if (_optionsService.Options.PermanentBackdrop)
+            if (_optionsService.PermanentBackdrop)
             {
                 await RemoveBlankScreenItem();
             }
@@ -257,7 +257,7 @@
         {
             foreach (var item in MediaItems)
             {
-                item.AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking;
+                item.AllowPositionSeeking = _optionsService.AllowVideoPositionSeeking;
             }
         }
 
@@ -265,7 +265,7 @@
         {
             foreach (var item in MediaItems)
             {
-                item.AllowPause = _optionsService.Options.AllowVideoPause;
+                item.AllowPause = _optionsService.AllowVideoPause;
             }
         }
 
@@ -321,7 +321,7 @@
         {
             var item = e.MediaItem;
             
-            if (_optionsService.Options.AutoRotateImages)
+            if (_optionsService.AutoRotateImages)
             {
                 AutoRotateImageIfRequired(item);
             }
@@ -859,7 +859,7 @@
 
         private void TruncateMediaItemsToMaxCount()
         {
-            while (MediaItems.Count > _optionsService.Options.MaxItemCount)
+            while (MediaItems.Count > _optionsService.MaxItemCount)
             {
                 MediaItems.RemoveAt(MediaItems.Count - 1);
             }
@@ -871,13 +871,13 @@
             {
                 MediaType = file.MediaType,
                 Id = Guid.NewGuid(),
-                AllowFreezeCommand = _optionsService.Options.ShowFreezeCommand,
-                CommandPanelVisible = _optionsService.Options.ShowMediaItemCommandPanel,
+                AllowFreezeCommand = _optionsService.ShowFreezeCommand,
+                CommandPanelVisible = _optionsService.ShowMediaItemCommandPanel,
                 FilePath = file.FullPath,
                 IsVisible = true,
                 LastChanged = file.LastChanged,
-                AllowPause = _optionsService.Options.AllowVideoPause,
-                AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking
+                AllowPause = _optionsService.AllowVideoPause,
+                AllowPositionSeeking = _optionsService.AllowVideoPositionSeeking
             };
 
             return result;
@@ -887,7 +887,7 @@
         {
             // only add a "blank screen" item if we don't already display
             // a permanent black backdrop.
-            if (!_optionsService.Options.PermanentBackdrop && _optionsService.Options.IncludeBlanksScreenItem)
+            if (!_optionsService.PermanentBackdrop && _optionsService.IncludeBlankScreenItem)
             {
                 var blankScreenPath = GetBlankScreenPath();
 
@@ -897,8 +897,8 @@
                     Id = Guid.NewGuid(),
                     IsBlankScreen = true,
                     IsVisible = true,
-                    AllowFreezeCommand = _optionsService.Options.ShowFreezeCommand,
-                    CommandPanelVisible = _optionsService.Options.ShowMediaItemCommandPanel,
+                    AllowFreezeCommand = _optionsService.ShowFreezeCommand,
+                    CommandPanelVisible = _optionsService.ShowMediaItemCommandPanel,
                     Name = Properties.Resources.BLANK_SCREEN,
                     FilePath = blankScreenPath,
                     LastChanged = DateTime.UtcNow.Ticks
@@ -983,7 +983,7 @@
         {
             Task.Run(() =>
             {
-                if (_optionsService.Options.AutoRotateImages)
+                if (_optionsService.AutoRotateImages)
                 {
                     foreach (var item in MediaItems)
                     {

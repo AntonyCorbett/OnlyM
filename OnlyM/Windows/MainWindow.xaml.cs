@@ -52,20 +52,20 @@
         private void AdjustMainWindowPositionAndSize()
         {
             var optionsService = ServiceLocator.Current.GetInstance<IOptionsService>();
-            if (!string.IsNullOrEmpty(optionsService.Options.AppWindowPlacement))
+            if (!string.IsNullOrEmpty(optionsService.AppWindowPlacement))
             {
                 ResizeMode = WindowState == WindowState.Maximized
                     ? ResizeMode.NoResize
                     : ResizeMode.CanResizeWithGrip;
 
-                this.SetPlacement(optionsService.Options.AppWindowPlacement);
+                this.SetPlacement(optionsService.AppWindowPlacement);
             }
         }
 
         private void SaveWindowPos()
         {
             var optionsService = ServiceLocator.Current.GetInstance<IOptionsService>();
-            optionsService.Options.AppWindowPlacement = this.GetPlacement();
+            optionsService.AppWindowPlacement = this.GetPlacement();
             optionsService.Save();
         }
 

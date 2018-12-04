@@ -1,7 +1,6 @@
-﻿using System.Diagnostics;
-
-namespace OnlyM.ViewModel
+﻿namespace OnlyM.ViewModel
 {
+    using System.Diagnostics;
     using CefSharp.Wpf;
     using Core.Models;
     using Core.Services.Options;
@@ -28,9 +27,9 @@ namespace OnlyM.ViewModel
             InitCommands();
         }
 
-        public bool EngineIsMediaFoundation => _optionsService.Options.RenderingMethod == RenderingMethod.MediaFoundation;
+        public bool EngineIsMediaFoundation => _optionsService.RenderingMethod == RenderingMethod.MediaFoundation;
 
-        public bool EngineIsFfmpeg => _optionsService.Options.RenderingMethod == RenderingMethod.Ffmpeg;
+        public bool EngineIsFfmpeg => _optionsService.RenderingMethod == RenderingMethod.Ffmpeg;
 
         public RelayCommand ToggleMagnifier { get; set; }
 
@@ -44,13 +43,13 @@ namespace OnlyM.ViewModel
 
         public double BrowserZoomLevelIncrement
         {
-            get => _optionsService.Options.BrowserZoomLevelIncrement;
+            get => _optionsService.BrowserZoomLevelIncrement;
             set
             {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (_optionsService.Options.BrowserZoomLevelIncrement != value)
+                if (_optionsService.BrowserZoomLevelIncrement != value)
                 {
-                    _optionsService.Options.BrowserZoomLevelIncrement = value;
+                    _optionsService.BrowserZoomLevelIncrement = value;
                     RaisePropertyChanged();
                 }
             }
@@ -58,7 +57,7 @@ namespace OnlyM.ViewModel
 
         public bool IsMagnifierVisible
         {
-            get => _isMagnifierVisible && _optionsService.Options.WebAllowMagnifier;
+            get => _isMagnifierVisible && _optionsService.WebAllowMagnifier;
             set
             {
                 if (_isMagnifierVisible != value)
@@ -71,13 +70,13 @@ namespace OnlyM.ViewModel
 
         public double MagnifierZoomLevel
         {
-            get => _optionsService.Options.MagnifierZoomLevel;
+            get => _optionsService.MagnifierZoomLevel;
             set
             {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (_optionsService.Options.MagnifierZoomLevel != value)
+                if (_optionsService.MagnifierZoomLevel != value)
                 {
-                    _optionsService.Options.MagnifierZoomLevel = value;
+                    _optionsService.MagnifierZoomLevel = value;
                     RaisePropertyChanged();
                 }
             }
@@ -127,13 +126,13 @@ namespace OnlyM.ViewModel
 
         public MagnifierShape MagnifierShape
         {
-            get => _optionsService.Options.MagnifierShape;
+            get => _optionsService.MagnifierShape;
             set
             {
-                if (_optionsService.Options.MagnifierShape != value)
+                if (_optionsService.MagnifierShape != value)
                 {
-                    Debug.WriteLine($"CHANGING SHAPE ({_optionsService.Options.MagnifierShape}-{value})");
-                    _optionsService.Options.MagnifierShape = value;
+                    Debug.WriteLine($"CHANGING SHAPE ({_optionsService.MagnifierShape}-{value})");
+                    _optionsService.MagnifierShape = value;
                     RaisePropertyChanged();
                 }
             }
@@ -147,7 +146,7 @@ namespace OnlyM.ViewModel
                 var aspectRatioEllipse = 2.0;
                 var aspectRatioRectangle = 2.0;
 
-                switch (_optionsService.Options.MagnifierShape)
+                switch (_optionsService.MagnifierShape)
                 {
                     case MagnifierShape.Ellipse:
                         Debug.WriteLine($"WIDTH={(int)(height * aspectRatioEllipse)}");
@@ -172,7 +171,7 @@ namespace OnlyM.ViewModel
         {
             get
             {
-                switch (_optionsService.Options.MagnifierShape)
+                switch (_optionsService.MagnifierShape)
                 {
                     case MagnifierShape.Rectangle:
                     case MagnifierShape.Square:
@@ -237,7 +236,7 @@ namespace OnlyM.ViewModel
         {
             var delta = _displayHeight / 40;
 
-            switch (_optionsService.Options.MagnifierSize)
+            switch (_optionsService.MagnifierSize)
             {
                 case MagnifierSize.XSmall:
                     return delta;
