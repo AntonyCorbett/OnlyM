@@ -5,7 +5,7 @@
     using Core.Services.Options;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
-    using Xceed.Wpf.Toolkit;
+    using OnlyM.CustomControls.MagnifierControl;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class MediaViewModel : ViewModelBase
@@ -31,6 +31,10 @@
         public RelayCommand ToggleMagnifier { get; set; }
 
         public RelayCommand ToggleMagnifierFrame { get; set; }
+
+        public RelayCommand MagnifierSmaller { get; set; }
+
+        public RelayCommand MagnifierLarger { get; set; }
 
         public IWpfWebBrowser WebBrowser
         {
@@ -99,6 +103,20 @@
 
         public double MagnifierRadius => CalculateMagnifierRadius();
 
+        public bool IsMagnifierFrameSquare
+        {
+            get => _optionsService.MagnifierShape == MagnifierShape.Square;
+            set
+            {
+                if (_optionsService.MagnifierShape == MagnifierShape.Square != value)
+                {
+                    MagnifierShape = value
+                        ? MagnifierShape.Square
+                        : MagnifierShape.Circle;
+                }
+            }
+        }
+
         public FrameType MagnifierFrameType
         {
             get
@@ -127,6 +145,7 @@
                     _optionsService.MagnifierShape = value;
 
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsMagnifierFrameSquare));
                 }
             }
         }
@@ -141,6 +160,68 @@
         {
             ToggleMagnifier = new RelayCommand(DoToggleMagnifier);
             ToggleMagnifierFrame = new RelayCommand(DoToggleMagnifierFrame);
+            MagnifierSmaller = new RelayCommand(DoMagnifierSmaller);
+            MagnifierLarger = new RelayCommand(DoMagnifierLarger);
+        }
+
+        private void DoMagnifierLarger()
+        {
+            switch (_optionsService.MagnifierSize)
+            {
+                case MagnifierSize.XXSmall:
+                    _optionsService.MagnifierSize = MagnifierSize.XSmall;
+                    break;
+
+                case MagnifierSize.XSmall:
+                    _optionsService.MagnifierSize = MagnifierSize.Small;
+                    break;
+
+                case MagnifierSize.Small:
+                    _optionsService.MagnifierSize = MagnifierSize.Medium;
+                    break;
+
+                case MagnifierSize.Medium:
+                    _optionsService.MagnifierSize = MagnifierSize.Large;
+                    break;
+
+                case MagnifierSize.Large:
+                    _optionsService.MagnifierSize = MagnifierSize.XLarge;
+                    break;
+
+                case MagnifierSize.XLarge:
+                    _optionsService.MagnifierSize = MagnifierSize.XXLarge;
+                    break;
+            }
+        }
+
+        private void DoMagnifierSmaller()
+        {
+            switch (_optionsService.MagnifierSize)
+            {
+                case MagnifierSize.XXLarge:
+                    _optionsService.MagnifierSize = MagnifierSize.XLarge;
+                    break;
+
+                case MagnifierSize.XLarge:
+                    _optionsService.MagnifierSize = MagnifierSize.Large;
+                    break;
+
+                case MagnifierSize.Large:
+                    _optionsService.MagnifierSize = MagnifierSize.Medium;
+                    break;
+
+                case MagnifierSize.Medium:
+                    _optionsService.MagnifierSize = MagnifierSize.Small;
+                    break;
+
+                case MagnifierSize.Small:
+                    _optionsService.MagnifierSize = MagnifierSize.XSmall;
+                    break;
+
+                case MagnifierSize.XSmall:
+                    _optionsService.MagnifierSize = MagnifierSize.XXSmall;
+                    break;
+            }
         }
 
         private void DoToggleMagnifierFrame()
@@ -168,21 +249,27 @@
 
             switch (_optionsService.MagnifierSize)
             {
-                case MagnifierSize.XSmall:
+                case MagnifierSize.XXSmall:
                     return delta;
 
-                case MagnifierSize.Small:
+                case MagnifierSize.XSmall:
                     return delta * 2;
+
+                case MagnifierSize.Small:
+                    return delta * 4;
+
+                default:
+                case MagnifierSize.Medium:
+                    return delta * 6;
 
                 case MagnifierSize.Large:
                     return delta * 8;
 
                 case MagnifierSize.XLarge:
-                    return delta * 16;
+                    return delta * 12;
 
-                default:
-                case MagnifierSize.Normal:
-                    return delta * 4;
+                case MagnifierSize.XXLarge:
+                    return delta * 18;
             }
         }
 
@@ -191,6 +278,7 @@
             RaisePropertyChanged(nameof(IsMagnifierVisible));
             RaisePropertyChanged(nameof(MagnifierFrameType));
             RaisePropertyChanged(nameof(MagnifierZoomLevel));
+            RaisePropertyChanged(nameof(MagnifierRadius));
         }
     }
 }

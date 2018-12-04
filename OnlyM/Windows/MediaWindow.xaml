@@ -6,7 +6,7 @@
         xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
         xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:magnifierControl="clr-namespace:OnlyM.CustomControls.MagnifierControl;assembly=OnlyM.CustomControls"
         DataContext="{Binding Media, Mode=OneWay, Source={StaticResource Locator}}"
         WindowStyle="None" 
         Background="Black" 
@@ -38,6 +38,11 @@
                 <Setter Property="Height" Value="40"/>
                 <Setter Property="Margin" Value="0,0,10,0" />
             </Style>
+
+            <Style x:Key="MagnifierSizeButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}">
+                <Setter Property="Margin" Value="0,0,10,0"/>
+            </Style>
+            
         </ResourceDictionary>
     </Window.Resources>
 
@@ -82,6 +87,8 @@
 
                 <KeyBinding Command="{Binding ToggleMagnifier}" Key="F7" />
                 <KeyBinding Command="{Binding ToggleMagnifierFrame}" Key="F8" />
+                <KeyBinding Command="{Binding MagnifierLarger}" Key="F9" />
+                <KeyBinding Command="{Binding MagnifierSmaller}" Key="F10" />
                 
             </Grid.InputBindings>
 
@@ -147,6 +154,40 @@
                         </materialDesign:ToggleButtonAssist.OnContent>
                     </ToggleButton>
 
+                    <ToggleButton Style="{StaticResource ToggleBtnStyle}"
+                                  IsChecked="{Binding IsMagnifierFrameSquare, Mode=TwoWay}">
+                        <ToggleButton.Content>
+                            <materialDesign:PackIcon
+                                Height="28"
+                                Width="28"
+                                Kind="CircleOutline" />
+                        </ToggleButton.Content>
+                        <materialDesign:ToggleButtonAssist.OnContent>
+                            <materialDesign:PackIcon
+                                Height="28"
+                                Width="28"
+                                Kind="SquareOutline" />
+                        </materialDesign:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
+
+                    <Button
+                        Style="{StaticResource MagnifierSizeButtonStyle}"
+                        Command="{Binding MagnifierLarger}">
+                        <materialDesign:PackIcon
+                            Kind="Plus"
+                            Height="24"
+                            Width="24" />
+                    </Button>
+
+                    <Button
+                        Style="{StaticResource MagnifierSizeButtonStyle}"
+                            Command="{Binding MagnifierSmaller}">
+                        <materialDesign:PackIcon
+                            Kind="Minus"
+                            Height="24"
+                            Width="24" />
+                    </Button>
+
                     <Button
                         Style="{StaticResource ZoomButtonStyle}"
                         Command="{Binding WebBrowser.ZoomInCommand}">
@@ -184,14 +225,14 @@
                     ZoomLevelIncrement="{Binding BrowserZoomLevelIncrement}"
                     WebBrowser="{Binding WebBrowser, Mode=OneWayToSource}" />
 
-                <xctk:MagnifierManager.Magnifier>
-                    <xctk:Magnifier BorderBrush="Red" 
+                <magnifierControl:MagnifierManager.Magnifier>
+                    <magnifierControl:Magnifier BorderBrush="Red" 
                                     BorderThickness="1" 
                                     Visibility="{Binding Path=IsMagnifierVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Radius="{Binding MagnifierRadius}"
                                     FrameType="{Binding MagnifierFrameType}"
                                     ZoomFactor="{Binding MagnifierZoomLevel}"/>
-                </xctk:MagnifierManager.Magnifier>
+                </magnifierControl:MagnifierManager.Magnifier>
             </Grid>
         </Grid>
 

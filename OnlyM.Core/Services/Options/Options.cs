@@ -39,7 +39,7 @@
             ShowBrowserHeaderPanel = true;
             WebAllowMagnifier = true;
             MagnifierShape = MagnifierShape.Circle;
-            MagnifierSize = MagnifierSize.Normal;
+            MagnifierSize = MagnifierSize.Medium;
             
             VideoScreenPosition = new ScreenPosition();
             ImageScreenPosition = new ScreenPosition();

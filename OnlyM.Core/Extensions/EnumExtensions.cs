@@ -23,11 +23,18 @@
         {
             switch (size)
             {
+                case MagnifierSize.XXSmall:
+                    return Resources.MAGNIFIER_SIZE_XXSMALL;
+
                 case MagnifierSize.XSmall:
                     return Resources.MAGNIFIER_SIZE_XSMALL;
 
                 case MagnifierSize.Small:
                     return Resources.MAGNIFIER_SIZE_SMALL;
+
+                default:
+                case MagnifierSize.Medium:
+                    return Resources.MAGNIFIER_SIZE_MEDIUM;
 
                 case MagnifierSize.Large:
                     return Resources.MAGNIFIER_SIZE_LARGE;
@@ -35,9 +42,8 @@
                 case MagnifierSize.XLarge:
                     return Resources.MAGNIFIER_SIZE_XLARGE;
 
-                default:
-                case MagnifierSize.Normal:
-                    return Resources.MAGNIFIER_SIZE_NORMAL;
+                case MagnifierSize.XXLarge:
+                    return Resources.MAGNIFIER_SIZE_XXLARGE;
             }
         }
 

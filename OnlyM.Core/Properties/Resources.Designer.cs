@@ -242,11 +242,11 @@ namespace OnlyM.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Normal.
+        ///   Looks up a localized string similar to Medium.
         /// </summary>
-        internal static string MAGNIFIER_SIZE_NORMAL {
+        internal static string MAGNIFIER_SIZE_MEDIUM {
             get {
-                return ResourceManager.GetString("MAGNIFIER_SIZE_NORMAL", resourceCulture);
+                return ResourceManager.GetString("MAGNIFIER_SIZE_MEDIUM", resourceCulture);
             }
         }
         
@@ -260,7 +260,7 @@ namespace OnlyM.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extra large.
+        ///   Looks up a localized string similar to X Large.
         /// </summary>
         internal static string MAGNIFIER_SIZE_XLARGE {
             get {
@@ -269,11 +269,29 @@ namespace OnlyM.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extra small.
+        ///   Looks up a localized string similar to X Small.
         /// </summary>
         internal static string MAGNIFIER_SIZE_XSMALL {
             get {
                 return ResourceManager.GetString("MAGNIFIER_SIZE_XSMALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XXLarge.
+        /// </summary>
+        internal static string MAGNIFIER_SIZE_XXLARGE {
+            get {
+                return ResourceManager.GetString("MAGNIFIER_SIZE_XXLARGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XX Small.
+        /// </summary>
+        internal static string MAGNIFIER_SIZE_XXSMALL {
+            get {
+                return ResourceManager.GetString("MAGNIFIER_SIZE_XXSMALL", resourceCulture);
             }
         }
         

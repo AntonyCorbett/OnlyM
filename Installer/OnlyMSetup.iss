@@ -68,6 +68,7 @@ Source: "bin\x86\Release\Microsoft.WindowsAPICodePack.Shell.dll"; DestDir: "{app
 Source: "bin\x86\Release\Microsoft.WindowsAPICodePack.ShellExtensions.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\x86\Release\OnlyM.CustomControls.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.Slides.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -80,7 +81,6 @@ Source: "bin\x86\Release\System.Data.SQLite.dll"; DestDir: "{app}"; Flags: ignor
 Source: "bin\x86\Release\System.ValueTuple.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\System.Windows.Interactivity.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\taglib-sharp.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\Xceed.Wpf.Toolkit.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ; localisation..
 Source: "bin\x86\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
