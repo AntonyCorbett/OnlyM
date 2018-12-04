@@ -7,7 +7,7 @@
 #define MyAppExeName "OnlyM.exe"
 #define MySource "d:\ProjectsPersonal\OnlyM\OnlyM"
 
-#define MyAppVersion GetFileVersion(MySource + '\bin\Release\OnlyM.exe');
+#define MyAppVersion GetFileVersion(MySource + '\bin\x86\Release\OnlyM.exe');
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -95,6 +95,7 @@ Source: "bin\x86\Release\fr-FR\*.dll"; DestDir: "{app}\fr-FR"; Flags: ignorevers
 ;Source: "bin\x86\Release\id-ID\*.dll"; DestDir: "{app}\id-ID"; Flags: ignoreversion
 Source: "bin\x86\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
 ;Source: "bin\x86\Release\jv-Latn-ID\*.dll"; DestDir: "{app}\jv-Latn-ID"; Flags: ignoreversion
+Source: "bin\x86\Release\ka-GE\*.dll"; DestDir: "{app}\ka-GE"; Flags: ignoreversion
 Source: "bin\x86\Release\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
 ;Source: "bin\x86\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
 Source: "bin\x86\Release\pap\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
