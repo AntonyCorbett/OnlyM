@@ -710,6 +710,24 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Elliptical magnifier.
+        /// </summary>
+        public static string WEB_MAGNIFIER_ELLIPTICAL {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_ELLIPTICAL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rectangular magnifier.
+        /// </summary>
+        public static string WEB_MAGNIFIER_RECT {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_RECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show magnifier.
         /// </summary>
         public static string WEB_MAGNIFIER_SHOW {

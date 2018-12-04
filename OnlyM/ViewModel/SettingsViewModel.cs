@@ -128,6 +128,58 @@
             }
         }
 
+        public int WebMagnifierRectWidth
+        {
+            get => _optionsService.Options.MagnifierRectangleWidth;
+            set
+            {
+                if (_optionsService.Options.MagnifierRectangleWidth != value)
+                {
+                    _optionsService.Options.MagnifierRectangleWidth = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int WebMagnifierRectHeight
+        {
+            get => _optionsService.Options.MagnifierRectangleHeight;
+            set
+            {
+                if (_optionsService.Options.MagnifierRectangleHeight != value)
+                {
+                    _optionsService.Options.MagnifierRectangleHeight = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int WebMagnifierEllipticalWidth
+        {
+            get => _optionsService.Options.MagnifierEllipseWidth;
+            set
+            {
+                if (_optionsService.Options.MagnifierEllipseWidth != value)
+                {
+                    _optionsService.Options.MagnifierEllipseWidth = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int WebMagnifierEllipticalHeight
+        {
+            get => _optionsService.Options.MagnifierEllipseHeight;
+            set
+            {
+                if (_optionsService.Options.MagnifierEllipseHeight != value)
+                {
+                    _optionsService.Options.MagnifierEllipseHeight = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public int VideoScreenLeftMargin
         {
             get => _optionsService.Options.VideoScreenPosition.LeftMarginPercentage;
