@@ -1,4 +1,6 @@
-﻿namespace OnlyM.ViewModel
+﻿using System.Diagnostics;
+
+namespace OnlyM.ViewModel
 {
     using CefSharp.Wpf;
     using Core.Models;
@@ -14,11 +16,14 @@
         private string _subtitleText;
         private IWpfWebBrowser _webBrowser;
         private bool _isMagnifierVisible;
+        private int _displayWidth;
+        private int _displayHeight;
 
         public MediaViewModel(IOptionsService optionsService)
         {
             _optionsService = optionsService;
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
+            _optionsService.MagnifierChangedEvent += HandleMagnifierChangedEvent;
             
             InitCommands();
         }
@@ -51,68 +56,15 @@
             }
         }
 
-        public bool IsMagnifierFrameSquare
-        {
-            get => MagnifierFrameType == FrameType.Rectangle;
-            set
-            {
-                if (MagnifierFrameType == FrameType.Rectangle != value)
-                {
-                    MagnifierFrameType = value ? FrameType.Rectangle : FrameType.Circle;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         public bool IsMagnifierVisible
         {
-            get => _isMagnifierVisible;
+            get => _isMagnifierVisible && _optionsService.Options.WebAllowMagnifier;
             set
             {
                 if (_isMagnifierVisible != value)
                 {
                     _isMagnifierVisible = value;
                     RaisePropertyChanged();
-                }
-            }
-        }
-
-        public int MagnifierWidth
-        {
-            get => _optionsService.Options.MagnifierRectangleWidth;
-            set
-            {
-                if (_optionsService.Options.MagnifierRectangleWidth != value)
-                {
-                    _optionsService.Options.MagnifierRectangleWidth = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        public int MagnifierHeight
-        {
-            get => _optionsService.Options.MagnifierRectangleHeight;
-            set
-            {
-                if (_optionsService.Options.MagnifierRectangleHeight != value)
-                {
-                    _optionsService.Options.MagnifierRectangleHeight = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        public FrameType MagnifierFrameType
-        {
-            get => _optionsService.Options.MagnifierFrameType;
-            set
-            {
-                if (_optionsService.Options.MagnifierFrameType != value)
-                {
-                    _optionsService.Options.MagnifierFrameType = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsMagnifierFrameSquare));
                 }
             }
         }
@@ -145,6 +97,97 @@
             }
         }
 
+        public int DisplayWidth
+        {
+            get => _displayWidth;
+            set
+            {
+                if (_displayWidth != value)
+                {
+                    _displayWidth = value;
+                    RaisePropertyChanged(nameof(MagnifierHeight));
+                    RaisePropertyChanged(nameof(MagnifierWidth));
+                }
+            }
+        }
+
+        public int DisplayHeight
+        {
+            get => _displayHeight;
+            set
+            {
+                if (_displayHeight != value)
+                {
+                    _displayHeight = value;
+                    RaisePropertyChanged(nameof(MagnifierHeight));
+                    RaisePropertyChanged(nameof(MagnifierWidth));
+                }
+            }
+        }
+
+        public MagnifierShape MagnifierShape
+        {
+            get => _optionsService.Options.MagnifierShape;
+            set
+            {
+                if (_optionsService.Options.MagnifierShape != value)
+                {
+                    Debug.WriteLine($"CHANGING SHAPE ({_optionsService.Options.MagnifierShape}-{value})");
+                    _optionsService.Options.MagnifierShape = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int MagnifierWidth
+        {
+            get
+            {
+                var height = CalculateMagnifierHeight();
+                var aspectRatioEllipse = 2.0;
+                var aspectRatioRectangle = 2.0;
+
+                switch (_optionsService.Options.MagnifierShape)
+                {
+                    case MagnifierShape.Ellipse:
+                        Debug.WriteLine($"WIDTH={(int)(height * aspectRatioEllipse)}");
+                        return (int)(height * aspectRatioEllipse);
+
+                    case MagnifierShape.Rectangle:
+                        Debug.WriteLine($"WIDTH={(int)(height * aspectRatioRectangle)}");
+                        return (int)(height * aspectRatioRectangle);
+
+                    default:
+                    case MagnifierShape.Circle:
+                    case MagnifierShape.Square:
+                        Debug.WriteLine($"WIDTH={height}");
+                        return height;
+                }
+            }
+        }
+
+        public int MagnifierHeight => CalculateMagnifierHeight();
+
+        public FrameType MagnifierFrameType
+        {
+            get
+            {
+                switch (_optionsService.Options.MagnifierShape)
+                {
+                    case MagnifierShape.Rectangle:
+                    case MagnifierShape.Square:
+                        Debug.WriteLine("FRAME=RECT");
+                        return FrameType.Rectangle;
+
+                    default:
+                    case MagnifierShape.Circle:
+                    case MagnifierShape.Ellipse:
+                        Debug.WriteLine("FRAME=CIRCLE");
+                        return FrameType.Circle;
+                }
+            } 
+        }
+
         public bool SubTitleTextIsNotEmpty => !string.IsNullOrEmpty(SubTitleText);
     
         private void HandleRenderingMethodChangedEvent(object sender, System.EventArgs e)
@@ -161,14 +204,67 @@
 
         private void DoToggleMagnifierFrame()
         {
-            MagnifierFrameType = MagnifierFrameType == FrameType.Circle 
-                ? FrameType.Rectangle 
-                : FrameType.Circle;
+            switch (MagnifierShape)
+            {
+                case MagnifierShape.Circle:
+                    Debug.WriteLine("TO ELLIPSE");
+                    MagnifierShape = MagnifierShape.Ellipse;
+                    break;
+
+                case MagnifierShape.Ellipse:
+                    Debug.WriteLine("TO SQUARE");
+                    MagnifierShape = MagnifierShape.Square;
+                    break;
+
+                case MagnifierShape.Square:
+                    Debug.WriteLine("TO RECT");
+                    MagnifierShape = MagnifierShape.Rectangle;
+                    break;
+
+                case MagnifierShape.Rectangle:
+                    Debug.WriteLine("TO CIRCLE");
+                    MagnifierShape = MagnifierShape.Circle;
+                    break;
+            }
         }
 
         private void DoToggleMagnifier()
         {
             IsMagnifierVisible = !IsMagnifierVisible;
+        }
+
+        private int CalculateMagnifierHeight()
+        {
+            var delta = _displayHeight / 40;
+
+            switch (_optionsService.Options.MagnifierSize)
+            {
+                case MagnifierSize.XSmall:
+                    return delta;
+
+                case MagnifierSize.Small:
+                    return delta * 2;
+
+                case MagnifierSize.Large:
+                    return delta * 8;
+
+                case MagnifierSize.XLarge:
+                    return delta * 16;
+
+                default:
+                case MagnifierSize.Normal:
+                    return delta * 4;
+            }
+        }
+
+        private void HandleMagnifierChangedEvent(object sender, System.EventArgs e)
+        {
+            Debug.WriteLine("Handling Magnifier Changed Event");
+            RaisePropertyChanged(nameof(IsMagnifierVisible));
+            RaisePropertyChanged(nameof(MagnifierFrameType));
+            RaisePropertyChanged(nameof(MagnifierWidth));
+            RaisePropertyChanged(nameof(MagnifierHeight));
+            RaisePropertyChanged(nameof(MagnifierZoomLevel));
         }
     }
 }

@@ -13,40 +13,34 @@
         ShowInTaskbar="False" 
         ResizeMode="NoResize" 
         mc:Ignorable="d"
-        Title="MediaWindow" Height="450" Width="800" Loaded="WindowLoaded" Closing="WindowClosing">
+        Title="MediaWindow" 
+        Height="{Binding DisplayHeight, Mode=OneWayToSource}" 
+        Width="{Binding DisplayWidth, Mode=OneWayToSource}" 
+        Loaded="WindowLoaded" Closing="WindowClosing">
 
     <Window.Resources>
-        <Style x:Key="NavButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
-            <Setter Property="Margin" Value="0,0,5,0"/>
-        </Style>
+        <ResourceDictionary>
+       
+            <Style x:Key="NavButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
+                <Setter Property="Margin" Value="0,0,5,0"/>
+            </Style>
 
-        <Style x:Key="RefreshButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
-            <Setter Property="Margin" Value="0,0,5,0"/>
-        </Style>
+            <Style x:Key="RefreshButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
+                <Setter Property="Margin" Value="0,0,5,0"/>
+            </Style>
 
-        <Style x:Key="ZoomButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
-            <Setter Property="Margin" Value="5,0,0,0"/>
-        </Style>
+            <Style x:Key="ZoomButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
+                <Setter Property="Margin" Value="5,0,0,0"/>
+            </Style>
 
-        <Style x:Key="ToggleBtnStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
-            <Setter Property="Width" Value="40"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Margin" Value="0,0,10,0" />
-        </Style>
+            <Style x:Key="ToggleBtnStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+                <Setter Property="Width" Value="40"/>
+                <Setter Property="Height" Value="40"/>
+                <Setter Property="Margin" Value="0,0,10,0" />
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
-    
-    <!--<Window.InputBindings>
-        <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="Add" Modifiers="Control"/>
-        <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="OemPlus" Modifiers="Control"/>
-        <KeyBinding Command="{Binding WebBrowser.ZoomOutCommand}" Key="Subtract" Modifiers="Control"/>
-        <KeyBinding Command="{Binding WebBrowser.ZoomOutCommand}" Key="OemMinus" Modifiers="Control"/>
-        <KeyBinding Command="{Binding WebBrowser.ZoomResetCommand}" Key="D0" Modifiers="Control"/>
 
-        <KeyBinding Command="{Binding WebBrowser.BackCommand}" Key="BrowserBack" Modifiers="Control"/>
-        <KeyBinding Command="{Binding WebBrowser.ForwardCommand}" Key="BrowserForward" Modifiers="Control"/>
-        <KeyBinding Command="{Binding WebBrowser.ReloadCommand}" Key="BrowserRefresh" Modifiers="Control"/>
-        <KeyBinding Command="{Binding WebBrowser.StopCommand}" Key="BrowserStop" Modifiers="Control"/>
-    </Window.InputBindings>-->
 
     <Grid>
         <MediaElement x:Name="VideoElementMediaFoundation"
@@ -150,22 +144,6 @@
                                 Height="28"
                                 Width="28"
                                 Kind="Check" />
-                        </materialDesign:ToggleButtonAssist.OnContent>
-                    </ToggleButton>
-
-                    <ToggleButton Style="{StaticResource ToggleBtnStyle}"
-                                  IsChecked="{Binding IsMagnifierFrameSquare, Mode=TwoWay}">
-                        <ToggleButton.Content>
-                            <materialDesign:PackIcon
-                                Height="28"
-                                Width="28"
-                                Kind="CircleOutline" />
-                        </ToggleButton.Content>
-                        <materialDesign:ToggleButtonAssist.OnContent>
-                            <materialDesign:PackIcon
-                                Height="28"
-                                Width="28"
-                                Kind="SquareOutline" />
                         </materialDesign:ToggleButtonAssist.OnContent>
                     </ToggleButton>
 

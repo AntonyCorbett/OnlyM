@@ -40,6 +40,8 @@
         private readonly ImageFade[] _fadingTypes;
         private readonly ImageFadeSpeed[] _fadingSpeeds;
         private readonly RecentlyUsedFolders _recentlyUsedMediaFolders;
+        private readonly MagnifierShapeItem[] _magnifierShapes;
+        private readonly MagnifierSizeItem[] _magnifierSizes;
 
         private bool _isMediaActive;
 
@@ -61,12 +63,14 @@
             _recentlyUsedMediaFolders = new RecentlyUsedFolders();
             InitRecentlyUsedFolders();
             
-            _monitors = GetSystemMonitors().ToArray();
+            _monitors = GetSystemMonitors();
             _languages = GetSupportedLanguages();
-            _loggingLevels = GetLoggingLevels().ToArray();
-            _fadingTypes = GetImageFadingTypes().ToArray();
-            _fadingSpeeds = GetFadingSpeedTypes().ToArray();
-            _renderingMethods = GetRenderingMethods().ToArray();
+            _loggingLevels = GetLoggingLevels();
+            _fadingTypes = GetImageFadingTypes();
+            _fadingSpeeds = GetFadingSpeedTypes();
+            _renderingMethods = GetRenderingMethods();
+            _magnifierShapes = GetMagnifierShapes();
+            _magnifierSizes = GetMagnifierSizes();
             
             _pageService.NavigationEvent += HandleNavigationEvent;
             
@@ -85,6 +89,10 @@
         public IEnumerable<ImageFadeSpeed> FadeSpeedTypes => _fadingSpeeds;
 
         public IEnumerable<ImageFade> ImageFadeTypes => _fadingTypes;
+
+        public IEnumerable<MagnifierShapeItem> MagnifierShapes => _magnifierShapes;
+
+        public IEnumerable<MagnifierSizeItem> MagnifierSizes => _magnifierSizes;
 
         public string MaxItemCount
         {
@@ -123,58 +131,6 @@
                 if (_optionsService.Options.AlwaysOnTop != value)
                 {
                     _optionsService.Options.AlwaysOnTop = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        public int WebMagnifierRectWidth
-        {
-            get => _optionsService.Options.MagnifierRectangleWidth;
-            set
-            {
-                if (_optionsService.Options.MagnifierRectangleWidth != value)
-                {
-                    _optionsService.Options.MagnifierRectangleWidth = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        public int WebMagnifierRectHeight
-        {
-            get => _optionsService.Options.MagnifierRectangleHeight;
-            set
-            {
-                if (_optionsService.Options.MagnifierRectangleHeight != value)
-                {
-                    _optionsService.Options.MagnifierRectangleHeight = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        public int WebMagnifierEllipticalWidth
-        {
-            get => _optionsService.Options.MagnifierEllipseWidth;
-            set
-            {
-                if (_optionsService.Options.MagnifierEllipseWidth != value)
-                {
-                    _optionsService.Options.MagnifierEllipseWidth = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        public int WebMagnifierEllipticalHeight
-        {
-            get => _optionsService.Options.MagnifierEllipseHeight;
-            set
-            {
-                if (_optionsService.Options.MagnifierEllipseHeight != value)
-                {
-                    _optionsService.Options.MagnifierEllipseHeight = value;
                     RaisePropertyChanged();
                 }
             }
@@ -445,14 +401,14 @@
             }
         }
 
-        public bool WebShowMagnifier
+        public bool WebAllowMagnifier
         {
-            get => _optionsService.Options.ShowMagnifierByDefault;
+            get => _optionsService.Options.WebAllowMagnifier;
             set
             {
-                if (_optionsService.Options.ShowMagnifierByDefault != value)
+                if (_optionsService.Options.WebAllowMagnifier != value)
                 {
-                    _optionsService.Options.ShowMagnifierByDefault = value;
+                    _optionsService.Options.WebAllowMagnifier = value;
                     RaisePropertyChanged();
                 }
             }
@@ -696,6 +652,32 @@
             }
         }
 
+        public MagnifierShape MagnifierShape
+        {
+            get => _optionsService.Options.MagnifierShape;
+            set
+            {
+                if (_optionsService.Options.MagnifierShape != value)
+                {
+                    _optionsService.Options.MagnifierShape = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public MagnifierSize MagnifierSize
+        {
+            get => _optionsService.Options.MagnifierSize;
+            set
+            {
+                if (_optionsService.Options.MagnifierSize != value)
+                {
+                    _optionsService.Options.MagnifierSize = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public FadeSpeed FadeSpeedType
         {
             get => _optionsService.Options.ImageFadeSpeed;
@@ -782,8 +764,40 @@
             _optionsService.Options.RecentlyUsedMediaFolders = _recentlyUsedMediaFolders.GetFolders().ToList();
             _optionsService.Save();
         }
-        
-        private IEnumerable<ImageFadeSpeed> GetFadingSpeedTypes()
+
+        private MagnifierShapeItem[] GetMagnifierShapes()
+        {
+            var result = new List<MagnifierShapeItem>();
+
+            foreach (MagnifierShape v in Enum.GetValues(typeof(MagnifierShape)))
+            {
+                result.Add(new MagnifierShapeItem
+                {
+                    Shape = v,
+                    Name = v.GetDescriptiveName()
+                });
+            }
+
+            return result.ToArray();
+        }
+
+        private MagnifierSizeItem[] GetMagnifierSizes()
+        {
+            var result = new List<MagnifierSizeItem>();
+
+            foreach (MagnifierSize v in Enum.GetValues(typeof(MagnifierSize)))
+            {
+                result.Add(new MagnifierSizeItem
+                {
+                    Size = v,
+                    Name = v.GetDescriptiveName()
+                });
+            }
+
+            return result.ToArray();
+        }
+
+        private ImageFadeSpeed[] GetFadingSpeedTypes()
         {
             var result = new List<ImageFadeSpeed>();
 
@@ -796,10 +810,10 @@
                 });
             }
 
-            return result;
+            return result.ToArray();
         }
         
-        private IEnumerable<ImageFade> GetImageFadingTypes()
+        private ImageFade[] GetImageFadingTypes()
         {
             var result = new List<ImageFade>();
 
@@ -812,10 +826,10 @@
                 });
             }
 
-            return result;
+            return result.ToArray();
         }
 
-        private IEnumerable<LoggingLevel> GetLoggingLevels()
+        private LoggingLevel[] GetLoggingLevels()
         {
             var result = new List<LoggingLevel>();
 
@@ -828,20 +842,20 @@
                 });
             }
 
-            return result;
+            return result.ToArray();
         }
 
-        private IEnumerable<RenderingMethodItem> GetRenderingMethods()
+        private RenderingMethodItem[] GetRenderingMethods()
         {
             // don't localize these strings!
-            return new List<RenderingMethodItem>
+            return new[]
             {
                 new RenderingMethodItem { Method = RenderingMethod.MediaFoundation, Name = @"Media Foundation" },
                 new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = @"Ffmpeg" }
             };
         }
 
-        private IEnumerable<MonitorItem> GetSystemMonitors()
+        private MonitorItem[] GetSystemMonitors()
         {
             var result = new List<MonitorItem>
             {
@@ -856,7 +870,7 @@
             var monitors = _monitorsService.GetSystemMonitors();
             result.AddRange(monitors.Select(AutoMapper.Mapper.Map<MonitorItem>));
 
-            return result;
+            return result.ToArray();
         }
 
         private void InitRecentlyUsedFolders()

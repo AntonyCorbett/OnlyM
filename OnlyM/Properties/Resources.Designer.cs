@@ -710,20 +710,11 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Elliptical magnifier.
+        ///   Looks up a localized string similar to Magnifier shape.
         /// </summary>
-        public static string WEB_MAGNIFIER_ELLIPTICAL {
+        public static string WEB_MAGNIFIER_SHAPE {
             get {
-                return ResourceManager.GetString("WEB_MAGNIFIER_ELLIPTICAL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rectangular magnifier.
-        /// </summary>
-        public static string WEB_MAGNIFIER_RECT {
-            get {
-                return ResourceManager.GetString("WEB_MAGNIFIER_RECT", resourceCulture);
+                return ResourceManager.GetString("WEB_MAGNIFIER_SHAPE", resourceCulture);
             }
         }
         
@@ -733,6 +724,15 @@ namespace OnlyM.Properties {
         public static string WEB_MAGNIFIER_SHOW {
             get {
                 return ResourceManager.GetString("WEB_MAGNIFIER_SHOW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Magnifier size.
+        /// </summary>
+        public static string WEB_MAGNIFIER_SIZE {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_SIZE", resourceCulture);
             }
         }
         

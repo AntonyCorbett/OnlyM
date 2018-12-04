@@ -43,6 +43,8 @@
 
         event EventHandler ShowFreezeCommandChangedEvent;
 
+        event EventHandler MagnifierChangedEvent;
+
         Options Options { get; }
 
         bool IsMediaMonitorSpecified { get; }

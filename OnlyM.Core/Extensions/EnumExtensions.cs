@@ -6,6 +6,47 @@
 
     public static class EnumExtensions
     {
+        public static string GetDescriptiveName(this MagnifierShape shape)
+        {
+            switch (shape)
+            {
+                case MagnifierShape.Ellipse:
+                    return Resources.MAGNIFIER_SHAPE_ELLIPSE;
+
+                case MagnifierShape.Square:
+                    return Resources.MAGNIFIER_SHAPE_SQUARE;
+
+                case MagnifierShape.Rectangle:
+                    return Resources.MAGNIFIER_SHAPE_RECT;
+
+                default:
+                case MagnifierShape.Circle:
+                    return Resources.MAGNIFIER_SHAPE_CIRCLE;
+            }
+        }
+
+        public static string GetDescriptiveName(this MagnifierSize size)
+        {
+            switch (size)
+            {
+                case MagnifierSize.XSmall:
+                    return Resources.MAGNIFIER_SIZE_XSMALL;
+
+                case MagnifierSize.Small:
+                    return Resources.MAGNIFIER_SIZE_SMALL;
+
+                case MagnifierSize.Large:
+                    return Resources.MAGNIFIER_SIZE_LARGE;
+
+                case MagnifierSize.XLarge:
+                    return Resources.MAGNIFIER_SIZE_XLARGE;
+
+                default:
+                case MagnifierSize.Normal:
+                    return Resources.MAGNIFIER_SIZE_NORMAL;
+            }
+        }
+
         public static double GetFadeSpeedSeconds(this FadeSpeed speed)
         {
             switch (speed)

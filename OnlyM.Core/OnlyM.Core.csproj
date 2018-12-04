@@ -144,6 +144,8 @@
     <Compile Include="Models\DisplayDeviceData.cs" />
     <Compile Include="Models\FadeSpeed.cs" />
     <Compile Include="Models\ImageFadeType.cs" />
+    <Compile Include="Models\MagnifierShape.cs" />
+    <Compile Include="Models\MagnifierSize.cs" />
     <Compile Include="Models\MediaClassification.cs" />
     <Compile Include="Models\MediaFile.cs" />
     <Compile Include="Models\MediaFolders.cs" />

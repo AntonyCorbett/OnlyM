@@ -420,12 +420,12 @@
     <value>Show magnifier</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
-  <data name="WEB_MAGNIFIER_ELLIPTICAL" xml:space="preserve">
-    <value>Elliptical magnifier</value>
+  <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
+    <value>Magnifier shape</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
-  <data name="WEB_MAGNIFIER_RECT" xml:space="preserve">
-    <value>Rectangular magnifier</value>
+  <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
+    <value>Magnifier size</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
 </root>

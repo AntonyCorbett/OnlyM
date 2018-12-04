@@ -80,15 +80,6 @@
                 <Setter Property="TickFrequency" Value="10"/>
             </Style>
 
-            <Style x:Key="SettingsMagnifierSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignDiscreteSlider}">
-                <Setter Property="Margin" Value="0,3,0,3"/>
-                <Setter Property="Width" Value="380"/>
-                <Setter Property="Minimum" Value="20"/>
-                <Setter Property="Maximum" Value="800"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="TickFrequency" Value="40"/>
-            </Style>
-
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -195,53 +186,25 @@
                           Content = "{x:Static resx:Resources.WEB_HEADER_PANEL_SHOW}" 
                           Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding WebShowMagnifier, Mode=TwoWay}"
+                <CheckBox IsChecked="{Binding WebAllowMagnifier, Mode=TwoWay}"
                           Content = "{x:Static resx:Resources.WEB_MAGNIFIER_SHOW}" 
                           Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
-                           Text="{x:Static resx:Resources.WEB_MAGNIFIER_RECT}"
-                           Margin="0,0,0,-20"/>
+                <ComboBox ItemsSource="{Binding MagnifierShapes}"
+                          Style="{StaticResource SettingsComboBoxStyle}" 
+                          materialDesign:HintAssist.IsFloating="True"
+                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.WEB_MAGNIFIER_SHAPE}"
+                          SelectedValuePath="Shape" 
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding MagnifierShape, Mode=TwoWay}"/>
 
-                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="UnfoldMoreVertical" 
-                                             VerticalAlignment="Bottom"
-                                             Width="24" Height="24"/>
-
-                    <Slider Style="{StaticResource SettingsMagnifierSliderStyle}" 
-                            Value="{Binding WebMagnifierRectWidth, Mode=TwoWay}"/>
-                </StackPanel>
-
-                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="UnfoldMoreHorizontal" 
-                                             VerticalAlignment="Bottom"
-                                             Width="24" Height="24"/>
-
-                    <Slider Style="{StaticResource SettingsMagnifierSliderStyle}" 
-                            Value="{Binding WebMagnifierRectHeight, Mode=TwoWay}"/>
-                </StackPanel>
-
-                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
-                           Text="{x:Static resx:Resources.WEB_MAGNIFIER_ELLIPTICAL}"
-                           Margin="0,0,0,-20"/>
-
-                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="UnfoldMoreVertical" 
-                                             VerticalAlignment="Bottom"
-                                             Width="24" Height="24"/>
-
-                    <Slider Style="{StaticResource SettingsMagnifierSliderStyle}" 
-                            Value="{Binding WebMagnifierEllipticalWidth, Mode=TwoWay}"/>
-                </StackPanel>
-
-                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="UnfoldMoreHorizontal" 
-                                             VerticalAlignment="Bottom"
-                                             Width="24" Height="24"/>
-
-                    <Slider Style="{StaticResource SettingsMagnifierSliderStyle}" 
-                            Value="{Binding WebMagnifierEllipticalHeight, Mode=TwoWay}"/>
-                </StackPanel>
+                <ComboBox ItemsSource="{Binding MagnifierSizes}"
+                          Style="{StaticResource SettingsComboBoxStyle}" 
+                          materialDesign:HintAssist.IsFloating="True"
+                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.WEB_MAGNIFIER_SIZE}"
+                          SelectedValuePath="Size" 
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding MagnifierSize, Mode=TwoWay}"/>
 
             </StackPanel>
         </GroupBox>

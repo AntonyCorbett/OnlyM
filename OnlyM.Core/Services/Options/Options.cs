@@ -8,7 +8,6 @@
     using Newtonsoft.Json;
     using Serilog.Events;
     using Utils;
-    using Xceed.Wpf.Toolkit;
 
     public sealed class Options
     {
@@ -17,14 +16,6 @@
         
         private const double DefaultMagnifierZoomLevel = 0.5;
         private const double DefaultBrowserZoomLevelIncrement = 0.15;
-
-        private const int MinMagnifierWidth = 20;
-        private const int DefaultMagnifierWidth = 400;
-        private const int MaxMagnifierWidth = 800;
-
-        private const int MinMagnifierHeight = 20;
-        private const int DefaultMagnifierHeight = 400;
-        private const int MaxMagnifierHeight = 800;
 
         private string _commandLineMediaFolder;
         private bool _showMediaItemCommandPanel;
@@ -48,15 +39,14 @@
         private string _mediaFolder;
         private ImageFadeType _imageFadeType;
         private FadeSpeed _fadeSpeed;
+
+        private bool _webAllowMagnifier;
         private double _magnifierZoomLevel;
-        private FrameType _magnifierFrameType;
-        private int _magnifierRectangleWidth;
-        private int _magnifierRectangleHeight;
-        private int _magnifierEllipseWidth;
-        private int _magnifierEllipseHeight;
         private double _browserZoomLevelIncrement;
         private bool _showBrowserHeaderPanel;
-        
+        private MagnifierShape _magnifierShape;
+        private MagnifierSize _magnifierSize;
+
         public Options()
         {
             // defaults
@@ -74,15 +64,12 @@
             JwLibraryCompatibilityMode = true;
             ConfirmVideoStop = false;
             MaxItemCount = DefaultMaxItemCount;
-
             MagnifierZoomLevel = DefaultMagnifierZoomLevel;
-            MagnifierFrameType = FrameType.Circle;
-            MagnifierRectangleWidth = DefaultMagnifierWidth;
-            MagnifierRectangleHeight = DefaultMagnifierHeight;
-            MagnifierEllipseWidth = DefaultMagnifierWidth;
-            MagnifierEllipseHeight = DefaultMagnifierHeight;
             BrowserZoomLevelIncrement = DefaultBrowserZoomLevelIncrement;
             ShowBrowserHeaderPanel = true;
+            WebAllowMagnifier = true;
+            MagnifierShape = MagnifierShape.Circle;
+            MagnifierSize = MagnifierSize.Normal;
             
             _videoScreenPosition = new ScreenPosition();
             _imageScreenPosition = new ScreenPosition();
@@ -136,7 +123,7 @@
         public event EventHandler MaxItemCountChangedEvent;
 
         public event EventHandler ShowFreezeCommandChangedEvent;
-
+        
         public bool ShowMediaItemCommandPanel
         {
             get => _showMediaItemCommandPanel;
@@ -149,7 +136,7 @@
                 }
             }
         }
-        
+
         public bool ShowFreezeCommand
         {
             get => _showFreezeCommand;
@@ -449,72 +436,44 @@
             }
         }
 
-        public int MagnifierRectangleHeight
+        public bool WebAllowMagnifier
         {
-            get => _magnifierRectangleHeight;
+            get => _webAllowMagnifier;
             set
             {
-                if (_magnifierRectangleHeight != value)
+                if (_webAllowMagnifier != value)
                 {
-                    _magnifierRectangleHeight = value;
+                    _webAllowMagnifier = value;
                     MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
 
-        public int MagnifierRectangleWidth
+        public MagnifierShape MagnifierShape
         {
-            get => _magnifierRectangleWidth;
+            get => _magnifierShape;
             set
             {
-                if (_magnifierRectangleWidth != value)
+                if (_magnifierShape != value)
                 {
-                    _magnifierRectangleWidth = value;
+                    _magnifierShape = value;
                     MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
 
-        public int MagnifierEllipseHeight
+        public MagnifierSize MagnifierSize
         {
-            get => _magnifierEllipseHeight;
+            get => _magnifierSize;
             set
             {
-                if (_magnifierEllipseHeight != value)
+                if (_magnifierSize != value)
                 {
-                    _magnifierEllipseHeight = value;
+                    _magnifierSize = value;
                     MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
-
-        public int MagnifierEllipseWidth
-        {
-            get => _magnifierEllipseWidth;
-            set
-            {
-                if (_magnifierEllipseWidth != value)
-                {
-                    _magnifierEllipseWidth = value;
-                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        public FrameType MagnifierFrameType
-        {
-            get => _magnifierFrameType;
-            set
-            {
-                if (_magnifierFrameType != value)
-                {
-                    _magnifierFrameType = value;
-                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        public bool ShowMagnifierByDefault { get; set; }
 
         public double MagnifierZoomLevel
         {
@@ -603,16 +562,6 @@
             if (BrowserZoomLevelIncrement < 0 || BrowserZoomLevelIncrement > 1)
             {
                 BrowserZoomLevelIncrement = DefaultBrowserZoomLevelIncrement;
-            }
-
-            if (MagnifierRectangleHeight < MinMagnifierHeight || MagnifierRectangleHeight > MaxMagnifierHeight)
-            {
-                MagnifierRectangleHeight = DefaultMagnifierHeight;
-            }
-
-            if (MagnifierRectangleWidth < MinMagnifierWidth || MagnifierRectangleWidth > MaxMagnifierWidth)
-            {
-                MagnifierRectangleWidth = DefaultMagnifierWidth;
             }
         }
 

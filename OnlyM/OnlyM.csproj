@@ -202,6 +202,8 @@
     <Compile Include="Models\ImageFadeSpeed.cs" />
     <Compile Include="Models\LanguageItem.cs" />
     <Compile Include="Models\LoggingLevel.cs" />
+    <Compile Include="Models\MagnifierShapeItem.cs" />
+    <Compile Include="Models\MagnifierSizeItem.cs" />
     <Compile Include="Models\MediaChange.cs" />
     <Compile Include="Models\MediaItem.cs" />
     <Compile Include="Models\MediaEventArgs.cs" />
@@ -324,6 +326,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.ro-RO.resx" />
     <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />

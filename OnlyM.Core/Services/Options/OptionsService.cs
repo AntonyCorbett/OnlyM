@@ -72,6 +72,8 @@
 
         public event EventHandler ShowFreezeCommandChangedEvent;
 
+        public event EventHandler MagnifierChangedEvent;
+
         public Options Options
         {
             get
@@ -167,14 +169,20 @@
                     _options.IncludeBlankScreenItemChangedEvent += HandleIncludeBlankScreenItemChangedEvent;
                     _options.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
                     _options.ImageScreenPositionChangedEvent += HandleImageScreenPositionChangedEvent;
-                    _options.ShowMediaItemCommandPanelChangedEvent += HandleShowMediaItemCommandPanelChangedEvent;
+                    //_options.ShowMediaItemCommandPanelChangedEvent += HandleShowMediaItemCommandPanelChangedEvent;
                     _options.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
                     _options.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
                     _options.ShowFreezeCommandChangedEvent += HandleShowFreezeCommandChangedEvent;
+                    _options.MagnifierChangedEvent += HandleMagnifierChangedEvent;
 
                     _logLevelSwitchService.SetMinimumLevel(Options.LogEventLevel);
                 }
             }
+        }
+
+        private void HandleMagnifierChangedEvent(object sender, EventArgs e)
+        {
+            MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void HandleAutoRotateChangedEvent(object sender, EventArgs e)
@@ -211,10 +219,10 @@
             OperatingDateChangedEvent?.Invoke(this, e);
         }
 
-        private void HandleShowMediaItemCommandPanelChangedEvent(object sender, EventArgs e)
-        {
-            ShowMediaItemCommandPanelChangedEvent?.Invoke(this, e);
-        }
+        //private void HandleShowMediaItemCommandPanelChangedEvent(object sender, EventArgs e)
+        //{
+        //    ShowMediaItemCommandPanelChangedEvent?.Invoke(this, e);
+        //}
 
         private void HandleImageScreenPositionChangedEvent(object sender, EventArgs e)
         {
