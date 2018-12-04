@@ -189,14 +189,6 @@
     <value>Circle</value>
     <comment>See Settings =&gt; Web (magnifier shape)</comment>
   </data>
-  <data name="MAGNIFIER_SHAPE_ELLIPSE" xml:space="preserve">
-    <value>Ellipse</value>
-    <comment>See Settings =&gt; Web (magnifier shape)</comment>
-  </data>
-  <data name="MAGNIFIER_SHAPE_RECT" xml:space="preserve">
-    <value>Rectangle</value>
-    <comment>See Settings =&gt; Web (magnifier shape)</comment>
-  </data>
   <data name="MAGNIFIER_SHAPE_SQUARE" xml:space="preserve">
     <value>Square</value>
     <comment>See Settings =&gt; Web (magnifier shape)</comment>

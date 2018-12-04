@@ -224,24 +224,6 @@ namespace OnlyM.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ellipse.
-        /// </summary>
-        internal static string MAGNIFIER_SHAPE_ELLIPSE {
-            get {
-                return ResourceManager.GetString("MAGNIFIER_SHAPE_ELLIPSE", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rectangle.
-        /// </summary>
-        internal static string MAGNIFIER_SHAPE_RECT {
-            get {
-                return ResourceManager.GetString("MAGNIFIER_SHAPE_RECT", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Square.
         /// </summary>
         internal static string MAGNIFIER_SHAPE_SQUARE {

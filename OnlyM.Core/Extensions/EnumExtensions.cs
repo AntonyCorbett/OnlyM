@@ -10,14 +10,8 @@
         {
             switch (shape)
             {
-                case MagnifierShape.Ellipse:
-                    return Resources.MAGNIFIER_SHAPE_ELLIPSE;
-
                 case MagnifierShape.Square:
                     return Resources.MAGNIFIER_SHAPE_SQUARE;
-
-                case MagnifierShape.Rectangle:
-                    return Resources.MAGNIFIER_SHAPE_RECT;
 
                 default:
                 case MagnifierShape.Circle:

@@ -3,8 +3,6 @@
     public enum MagnifierShape
     {
         Circle,
-        Ellipse,
-        Square,
-        Rectangle
+        Square
     }
 }
