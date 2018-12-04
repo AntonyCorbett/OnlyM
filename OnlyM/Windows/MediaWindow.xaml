@@ -14,8 +14,8 @@
         ResizeMode="NoResize" 
         mc:Ignorable="d"
         Title="MediaWindow" 
-        Height="{Binding DisplayHeight, Mode=OneWayToSource}" 
-        Width="{Binding DisplayWidth, Mode=OneWayToSource}" 
+        Height="{Binding WindowHeight, Mode=OneWayToSource}" 
+        Width="800" 
         Loaded="WindowLoaded" Closing="WindowClosing">
 
     <Window.Resources>
@@ -70,7 +70,10 @@
                            LoadedBehavior="Manual" 
                            UnloadedBehavior="Manual" />
 
-        <Grid x:Name="BrowserGrid" Background="White" Opacity="0.0" Focusable="True">
+        <Grid x:Name="BrowserGrid" 
+              Background="White" 
+              Opacity="0.0" 
+              Focusable="True">
             <Grid.InputBindings>
                 <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="Add" Modifiers="Control"/>
                 <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="OemPlus" Modifiers="Control"/>

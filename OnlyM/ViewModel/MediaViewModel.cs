@@ -1,5 +1,6 @@
 ﻿namespace OnlyM.ViewModel
 {
+    using System;
     using CefSharp.Wpf;
     using Core.Models;
     using Core.Services.Options;
@@ -96,10 +97,8 @@
                 }
             }
         }
-
-        public int DisplayWidth { get; set; }
-
-        public int DisplayHeight { get; set; }
+        
+        public int WindowHeight { get; set; }
 
         public double MagnifierRadius => CalculateMagnifierRadius();
 
@@ -245,7 +244,8 @@
 
         private double CalculateMagnifierRadius()
         {
-            var delta = DisplayHeight / 40;
+            const int minDelta = 10;
+            var delta = Math.Max(WindowHeight / 40, minDelta);
 
             switch (_optionsService.MagnifierSize)
             {

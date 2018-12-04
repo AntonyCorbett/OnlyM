@@ -39,10 +39,15 @@
 
         public event EventHandler<WebBrowserProgressEventArgs> StatusEvent;
 
-        public void ShowWeb(string mediaItemFilePath, Guid mediaItemId)
+        public void ShowWeb(
+            string mediaItemFilePath, 
+            Guid mediaItemId,
+            ScreenPosition screenPosition)
         {
             _showing = false;
             _mediaItemId = mediaItemId;
+
+            ScreenPositionHelper.SetScreenPosition(_browserGrid, screenPosition);
 
             OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Starting));
 

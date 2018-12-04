@@ -224,7 +224,7 @@
 
         private void ShowWebPage(MediaItem mediaItem, IReadOnlyCollection<MediaItem> currentMediaItems)
         {
-            _webDisplayManager.ShowWeb(mediaItem.FilePath, mediaItem.Id);
+            _webDisplayManager.ShowWeb(mediaItem.FilePath, mediaItem.Id, _optionsService.WebScreenPosition);
             HideImageOrSlideshow(currentMediaItems);
         }
 
@@ -292,6 +292,7 @@
             _optionsService.ShowSubtitlesChangedEvent += HandleShowSubtitlesChangedEvent;
             _optionsService.ImageScreenPositionChangedEvent += HandleImageScreenPositionChangedEvent;
             _optionsService.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
+            _optionsService.WebScreenPositionChangedEvent += HandleWebScreenPositionChangedEvent;
         }
 
         private void SubscribeImageEvents()
@@ -333,6 +334,7 @@
             _optionsService.ShowSubtitlesChangedEvent -= HandleShowSubtitlesChangedEvent;
             _optionsService.ImageScreenPositionChangedEvent -= HandleImageScreenPositionChangedEvent;
             _optionsService.VideoScreenPositionChangedEvent -= HandleVideoScreenPositionChangedEvent;
+            _optionsService.WebScreenPositionChangedEvent -= HandleWebScreenPositionChangedEvent;
         }
 
         private void UnsubscribeImageEvents()
@@ -411,6 +413,11 @@
         {
             ScreenPositionHelper.SetScreenPosition(_videoElement.FrameworkElement, _optionsService.VideoScreenPosition);
             ScreenPositionHelper.SetSubtitleBlockScreenPosition(SubtitleBlock, _optionsService.VideoScreenPosition);
+        }
+
+        private void HandleWebScreenPositionChangedEvent(object sender, EventArgs e)
+        {
+            ScreenPositionHelper.SetScreenPosition(BrowserGrid, _optionsService.WebScreenPosition);
         }
 
         private void HandleImageScreenPositionChangedEvent(object sender, EventArgs e)
