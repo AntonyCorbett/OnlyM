@@ -1,9 +1,8 @@
-﻿using Serilog;
-
-namespace OnlyM.Core.Utils
+﻿namespace OnlyM.Core.Utils
 {
     using System;
     using System.IO;
+    using Serilog;
 
     /// <summary>
     /// General file / folder utilities
