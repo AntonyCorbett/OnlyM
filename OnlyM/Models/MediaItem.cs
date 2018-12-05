@@ -12,6 +12,7 @@
         private static readonly SolidColorBrush AudioIconBrush = new SolidColorBrush(Colors.CornflowerBlue);
         private static readonly SolidColorBrush VideoIconBrush = new SolidColorBrush(Colors.Chocolate);
         private static readonly SolidColorBrush SlideshowIconBrush = new SolidColorBrush(Colors.BlueViolet);
+        private static readonly SolidColorBrush WebIconBrush = new SolidColorBrush(Colors.Firebrick);
         private static readonly SolidColorBrush UnknownIconBrush = new SolidColorBrush(Colors.Crimson);
         private static readonly SolidColorBrush GreenBrush = new SolidColorBrush(Colors.DarkGreen);
         private static readonly SolidColorBrush BlackBrush = new SolidColorBrush(Colors.Black);
@@ -36,12 +37,15 @@
         private int _currentSlideshowIndex;
         private int _slideshowCount;
         private bool _isRollingSlideshow;
-        
+        private string _miscText;
+
         public event EventHandler PlaybackPositionChangedEvent;
 
         public Guid Id { get; set; }
 
-        public bool IsVideo => MediaType.Classification == MediaClassification.Video; 
+        public bool IsVideo => MediaType.Classification == MediaClassification.Video;
+
+        public bool IsWeb => MediaType.Classification == MediaClassification.Web;
 
         public bool IsBlankScreen { get; set; }
 
@@ -352,6 +356,19 @@
 
         public bool IsSlideshow => MediaType.Classification == MediaClassification.Slideshow;
 
+        public string MiscText
+        {
+            get => _miscText;
+            set
+            {
+                if (_miscText != value)
+                {
+                    _miscText = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public bool IsSliderVisible => 
             HasDuration && 
             AllowPositionSeeking && 
@@ -461,6 +478,9 @@
                     case MediaClassification.Slideshow:
                         return SlideshowIconBrush;
 
+                    case MediaClassification.Web:
+                        return WebIconBrush;
+
                     default:
                         return UnknownIconBrush;
                 }
@@ -484,6 +504,9 @@
 
                     case MediaClassification.Slideshow:
                         return "CameraBurst";
+
+                    case MediaClassification.Web:
+                        return "Web";
 
                     default:
                         return "Question";

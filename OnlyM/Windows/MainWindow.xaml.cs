@@ -2,6 +2,7 @@
 {
     using System.Windows;
     using System.Windows.Input;
+    using System.Windows.Media;
     using CommonServiceLocator;
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Messaging;
@@ -51,20 +52,20 @@
         private void AdjustMainWindowPositionAndSize()
         {
             var optionsService = ServiceLocator.Current.GetInstance<IOptionsService>();
-            if (!string.IsNullOrEmpty(optionsService.Options.AppWindowPlacement))
+            if (!string.IsNullOrEmpty(optionsService.AppWindowPlacement))
             {
                 ResizeMode = WindowState == WindowState.Maximized
                     ? ResizeMode.NoResize
                     : ResizeMode.CanResizeWithGrip;
 
-                this.SetPlacement(optionsService.Options.AppWindowPlacement);
+                this.SetPlacement(optionsService.AppWindowPlacement);
             }
         }
 
         private void SaveWindowPos()
         {
             var optionsService = ServiceLocator.Current.GetInstance<IOptionsService>();
-            optionsService.Options.AppWindowPlacement = this.GetPlacement();
+            optionsService.AppWindowPlacement = this.GetPlacement();
             optionsService.Save();
         }
 
@@ -107,6 +108,22 @@
         private void CloseClick(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void OnWindowActivated(object sender, System.EventArgs e)
+        {
+            var converter = new BrushConverter();
+            TopBorderBrush.Opacity = 1.0;
+            BottomBorderBrush.Opacity = 1.0;
+            MainBorder.BorderBrush = (Brush)converter.ConvertFromString("#FF512DA8");
+        }
+
+        private void OnWindowDeactivated(object sender, System.EventArgs e)
+        {
+            var converter = new BrushConverter();
+            TopBorderBrush.Opacity = 0.65;
+            BottomBorderBrush.Opacity = 0.65;
+            MainBorder.BorderBrush = (Brush)converter.ConvertFromString("#FFB39DDB");
         }
     }
 }

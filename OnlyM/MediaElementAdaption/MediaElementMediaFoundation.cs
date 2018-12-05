@@ -34,7 +34,7 @@
             _mediaElement = mediaElement;
             _mediaElement.Volume = 1.0;
 
-            _mediaElement.ScrubbingEnabled = optionsService.Options.AllowVideoScrubbing;
+            _mediaElement.ScrubbingEnabled = optionsService.AllowVideoScrubbing;
 
             _mediaElement.MediaOpened += HandleMediaOpened;
             _mediaElement.MediaEnded += HandleMediaEnded;
@@ -217,7 +217,7 @@
             var result = new MediaPlayer
             {
                 Volume = 1.0,
-                ScrubbingEnabled = _optionsService.Options.AllowVideoScrubbing
+                ScrubbingEnabled = _optionsService.AllowVideoScrubbing
             };
 
             result.MediaOpened += HandleMediaOpened2;

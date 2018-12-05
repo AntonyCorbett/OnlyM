@@ -104,7 +104,7 @@
             
             try
             {
-                var mediaFolder = _optionsService.Options.MediaFolder;
+                var mediaFolder = _optionsService.MediaFolder;
 
                 var files = GetSupportedFiles(data).ToArray();
                 if (!files.Any())

@@ -7,16 +7,15 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Forms;
-    
     using Core.Models;
     using Core.Services.Monitors;
     using Core.Services.Options;
-
     using GalaSoft.MvvmLight.Messaging;
-
     using MediaChanging;
     using MediaElementAdaption;
     using Models;
+    using OnlyM.Core.Services.Database;
+    using OnlyM.Services.WebBrowser;
     using PubSubMessages;
     using Serilog;
     using Snackbar;
@@ -32,9 +31,10 @@
         private readonly IMonitorsService _monitorsService;
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
+        private readonly IDatabaseService _databaseService;
         private readonly IActiveMediaItemsService _activeMediaItemsService;
         private readonly (int dpiX, int dpiY) _systemDpi;
-
+        
         private MediaWindow _mediaWindow;
         private double _operatorPageScrollerPosition;
         private double _settingsPageScrollerPosition;
@@ -43,11 +43,13 @@
             IMonitorsService monitorsService,
             IOptionsService optionsService,
             IActiveMediaItemsService activeMediaItemsService,
-            ISnackbarService snackbarService)
+            ISnackbarService snackbarService,
+            IDatabaseService databaseService)
         {
             _monitorsService = monitorsService;
             _optionsService = optionsService;
             _snackbarService = snackbarService;
+            _databaseService = databaseService;
             _activeMediaItemsService = activeMediaItemsService;
             
             _optionsService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
@@ -55,7 +57,7 @@
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
 
             _systemDpi = WindowPlacement.GetDpiSettings();
-
+            
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
 
@@ -77,6 +79,8 @@
 
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
+        public event EventHandler<WebBrowserProgressEventArgs> WebStatusEvent;
+
         public bool ApplicationIsClosing { get; private set; }
 
         public ScrollViewer ScrollViewer { get; set; }
@@ -90,6 +94,15 @@
         public bool IsMediaWindowVisible => _mediaWindow != null &&
                                             _mediaWindow.IsVisible &&
                                             _mediaWindow.Visibility == Visibility.Visible;
+
+        public void InitMediaWindow()
+        {
+            // used to instantiate the media window and its controls (and then
+            // possibly hide it immediately). Required to correctly configure
+            // the CefSharp browser control.
+            OpenMediaWindow(requiresVisibleWindow: true);
+            ManageMediaWindowVisibility();
+        }
 
         public void GotoOperatorPage()
         {
@@ -130,7 +143,7 @@
 
                 if (requiresVisibleWindow)
                 {
-                    var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
+                    var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
                     if (targetMonitor != null)
                     {
                         Log.Logger.Information("Opening media window");
@@ -255,7 +268,7 @@
             {
                 var isVisible = _mediaWindow.IsVisible;
 
-                var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.Options.MediaMonitorId);
+                var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
                 if (targetMonitor != null)
                 {
                     _mediaWindow.Hide();
@@ -275,7 +288,7 @@
                     }
                 }
             }
-            else if (_optionsService.Options.PermanentBackdrop)
+            else if (_optionsService.PermanentBackdrop)
             {
                 OpenMediaWindow(requiresVisibleWindow: true);
             }
@@ -285,7 +298,7 @@
         {
             AllowMediaWindowToClose = false;
 
-            _mediaWindow = new MediaWindow(_optionsService, _snackbarService);
+            _mediaWindow = new MediaWindow(_optionsService, _snackbarService, _databaseService);
 
             SubscribeMediaWindowEvents();
         }
@@ -298,6 +311,12 @@
             _mediaWindow.MediaNearEndEvent += HandleMediaNearEndEvent;
             _mediaWindow.IsVisibleChanged += HandleMediaWindowVisibility;
             _mediaWindow.Loaded += HandleLoaded;
+            _mediaWindow.WebStatusEvent += HandleWebStatusEvent;
+        }
+
+        private void HandleWebStatusEvent(object sender, WebBrowserProgressEventArgs e)
+        {
+            WebStatusEvent?.Invoke(this, e);
         }
 
         private void HandleMediaWindowVisibility(object sender, DependencyPropertyChangedEventArgs e)
@@ -313,11 +332,12 @@
             _mediaWindow.MediaNearEndEvent -= HandleMediaNearEndEvent;
             _mediaWindow.IsVisibleChanged -= HandleMediaWindowVisibility;
             _mediaWindow.Loaded -= HandleLoaded;
+            _mediaWindow.WebStatusEvent -= HandleWebStatusEvent;
         }
 
         private void BringJwlToFront()
         {
-            if (_optionsService.Options.JwLibraryCompatibilityMode)
+            if (_optionsService.JwLibraryCompatibilityMode)
             {
                 JwLibHelper.BringToFront();
                 Thread.Sleep(100);
@@ -363,7 +383,7 @@
 
         private void ManageMediaWindowVisibility()
         {
-            if (!_optionsService.Options.PermanentBackdrop && !AnyActiveMediaRequiringVisibleMediaWindow())
+            if (!_optionsService.PermanentBackdrop && !AnyActiveMediaRequiringVisibleMediaWindow())
             {
                 _mediaWindow?.Hide();
                 BringJwlToFront();
@@ -372,7 +392,11 @@
 
         private bool AnyActiveMediaRequiringVisibleMediaWindow()
         {
-            return _activeMediaItemsService.Any(MediaClassification.Image, MediaClassification.Video, MediaClassification.Slideshow);
+            return _activeMediaItemsService.Any(
+                MediaClassification.Image, 
+                MediaClassification.Video, 
+                MediaClassification.Slideshow,
+                MediaClassification.Web);
         }
 
         private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
@@ -405,7 +429,7 @@
 
         private void HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
         {
-            if (_optionsService.Options.PermanentBackdrop)
+            if (_optionsService.PermanentBackdrop)
             {
                 OpenMediaWindow(requiresVisibleWindow: true);
             }

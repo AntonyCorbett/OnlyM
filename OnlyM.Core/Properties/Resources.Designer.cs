@@ -215,11 +215,102 @@ namespace OnlyM.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Circle.
+        /// </summary>
+        internal static string MAGNIFIER_SHAPE_CIRCLE {
+            get {
+                return ResourceManager.GetString("MAGNIFIER_SHAPE_CIRCLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Square.
+        /// </summary>
+        internal static string MAGNIFIER_SHAPE_SQUARE {
+            get {
+                return ResourceManager.GetString("MAGNIFIER_SHAPE_SQUARE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Large.
+        /// </summary>
+        internal static string MAGNIFIER_SIZE_LARGE {
+            get {
+                return ResourceManager.GetString("MAGNIFIER_SIZE_LARGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        internal static string MAGNIFIER_SIZE_MEDIUM {
+            get {
+                return ResourceManager.GetString("MAGNIFIER_SIZE_MEDIUM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Small.
+        /// </summary>
+        internal static string MAGNIFIER_SIZE_SMALL {
+            get {
+                return ResourceManager.GetString("MAGNIFIER_SIZE_SMALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to X Large.
+        /// </summary>
+        internal static string MAGNIFIER_SIZE_XLARGE {
+            get {
+                return ResourceManager.GetString("MAGNIFIER_SIZE_XLARGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to X Small.
+        /// </summary>
+        internal static string MAGNIFIER_SIZE_XSMALL {
+            get {
+                return ResourceManager.GetString("MAGNIFIER_SIZE_XSMALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XXLarge.
+        /// </summary>
+        internal static string MAGNIFIER_SIZE_XXLARGE {
+            get {
+                return ResourceManager.GetString("MAGNIFIER_SIZE_XXLARGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XX Small.
+        /// </summary>
+        internal static string MAGNIFIER_SIZE_XXSMALL {
+            get {
+                return ResourceManager.GetString("MAGNIFIER_SIZE_XXSMALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Unknown {
             get {
                 object obj = ResourceManager.GetObject("Unknown", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Web {
+            get {
+                object obj = ResourceManager.GetObject("Web", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

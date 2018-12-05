@@ -15,7 +15,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DesignHeight="1850" d:DesignWidth="600">
+             d:DesignHeight="1550" d:DesignWidth="1600">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -32,9 +32,9 @@
                 <Setter Property="Margin" Value="0,10,0,10" />
             </Style>
 
-            <Style x:Key="SettingsMarginLabelStyle" TargetType="{x:Type Label}">
-                <Setter Property="MinWidth" Value="30"/>
-                <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Style x:Key="SettingsLabelStyle" TargetType="{x:Type Label}" BasedOn="{StaticResource MaterialDesignLabel}">
+                <Setter Property="Margin" Value="-5,0,0,0" />
+                <Setter Property="FontSize" Value="12" />
             </Style>
 
             <Style x:Key="SettingsMarginStackPanelStyle" TargetType="{x:Type StackPanel}">
@@ -60,6 +60,7 @@
             </Style>
 
             <Style x:Key="SettingsGroupBoxStyle" TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignGroupBox}">
+                <Setter Property="Width" Value="450" />
                 <Setter Property="Margin" Value="10,6" />
                 <Setter Property="Padding" Value="10" />
             </Style>
@@ -70,8 +71,8 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
-            <Style x:Key="SettingsSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignDiscreteSlider}">
-                <Setter Property="Margin" Value="0,5,0,5"/>
+            <Style x:Key="MarginsSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignDiscreteSlider}">
+                <Setter Property="Margin" Value="0,3,0,3"/>
                 <Setter Property="Width" Value="380"/>
                 <Setter Property="Minimum" Value="0"/>
                 <Setter Property="Maximum" Value="90"/>
@@ -79,6 +80,39 @@
                 <Setter Property="TickFrequency" Value="10"/>
             </Style>
 
+            <Style x:Key="MagnificationSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignSlider}">
+                <Setter Property="Margin" Value="0,3,0,3"/>
+                <Setter Property="Width" Value="420"/>
+                <Setter Property="Minimum" Value="0.3"/>
+                <Setter Property="Maximum" Value="1.0"/>
+                <Setter Property="SmallChange" Value="0.1"/>
+                <Setter Property="LargeChange" Value="0.2"/>
+                <Setter Property="IsDirectionReversed" Value="True" />
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="TickFrequency" Value="0.1"/>
+            </Style>
+
+            <Style x:Key="WebPageZoomSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignSlider}">
+                <Setter Property="Margin" Value="0,0,0,3"/>
+                <Setter Property="Width" Value="420"/>
+                <Setter Property="Minimum" Value="0.1"/>
+                <Setter Property="Maximum" Value="1.0"/>
+                <Setter Property="SmallChange" Value="0.1"/>
+                <Setter Property="LargeChange" Value="0.2"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="TickFrequency" Value="0.1"/>
+            </Style>
+
+            <Style x:Key="MagnificationFrameThicknessSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignSlider}">
+                <Setter Property="Margin" Value="0,0,0,3"/>
+                <Setter Property="Width" Value="420"/>
+                <Setter Property="Minimum" Value="1"/>
+                <Setter Property="Maximum" Value="5"/>
+                <Setter Property="SmallChange" Value="0.5"/>
+                <Setter Property="LargeChange" Value="1"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="TickFrequency" Value="1"/>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -92,7 +126,7 @@
         </EventTrigger>
     </UserControl.Triggers>
 
-    <StackPanel Orientation="Vertical">
+    <WrapPanel Orientation="Horizontal">
         <GroupBox Header="{x:Static resx:Resources.SECTION_DISPLAY}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
@@ -178,6 +212,58 @@
             </StackPanel>
         </GroupBox>
 
+        <GroupBox Header="{x:Static resx:Resources.SECTION_WEB}" Style="{StaticResource SettingsGroupBoxStyle}">
+            <StackPanel Orientation="Vertical">
+
+                <ComboBox ItemsSource="{Binding MagnifierShapes}"
+                          Style="{StaticResource SettingsComboBoxStyle}" 
+                          materialDesign:HintAssist.IsFloating="True"
+                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.WEB_MAGNIFIER_SHAPE}"
+                          SelectedValuePath="Shape" 
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding MagnifierShape, Mode=TwoWay}"/>
+
+                <ComboBox ItemsSource="{Binding MagnifierSizes}"
+                          Style="{StaticResource SettingsComboBoxStyle}" 
+                          materialDesign:HintAssist.IsFloating="True"
+                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.WEB_MAGNIFIER_SIZE}"
+                          SelectedValuePath="Size" 
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding MagnifierSize, Mode=TwoWay}"/>
+
+
+                <Label Style="{StaticResource SettingsLabelStyle}" 
+                           Content="{x:Static resx:Resources.WEB_MAGNIFIER_ZOOM}"/>
+
+                <Slider Style="{StaticResource MagnificationSliderStyle}" 
+                        Value="{Binding MagnifierZoomLevel, Mode=TwoWay}"/>
+
+                <Label Style="{StaticResource SettingsLabelStyle}" 
+                           Content="{x:Static resx:Resources.WEB_ZOOM_INCREMENT}"/>
+
+                <Slider Style="{StaticResource WebPageZoomSliderStyle}" 
+                        Value="{Binding WebPageZoomIncrement, Mode=TwoWay}"/>
+
+                <Label Style="{StaticResource SettingsLabelStyle}" 
+                       Content="{x:Static resx:Resources.WEB_MAGNIFIER_FRAME_THICKNESS}"/>
+
+                <Slider Style="{StaticResource MagnificationFrameThicknessSliderStyle}" 
+                        Value="{Binding MagnifierFrameThickness, Mode=TwoWay}"/>
+
+                <Button 
+                    Style="{StaticResource SettingsButtonStyle}" 
+                    Margin="0,10,0,0"
+                    Command="{Binding PurgeWebCacheCommand}"
+                    Content="{x:Static resx:Resources.PURGE_WEB_CACHE}" />
+
+                <TextBlock Style="{StaticResource MiscNotesStyle}" 
+                           TextWrapping="Wrap"
+                           Visibility="{Binding Path=IsBrowserCachePurgeQueued, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Text="{x:Static resx:Resources.PURGE_WEB_CACHE_RESTART}"/>
+
+            </StackPanel>
+        </GroupBox>
+
         <GroupBox Header="{x:Static resx:Resources.SECTION_IMAGES}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
@@ -258,7 +344,7 @@
                                              VerticalAlignment="Bottom"
                                              Width="24" Height="24"/>
 
-                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding VideoScreenLeftMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
@@ -267,7 +353,7 @@
                                              VerticalAlignment="Bottom"
                                              Width="24" Height="24"/>
 
-                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding VideoScreenTopMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
@@ -275,7 +361,7 @@
                     <materialDesign:PackIcon Kind="BorderRight" 
                                              VerticalAlignment="Bottom"
                                              Width="24" Height="24"/>
-                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding VideoScreenRightMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
@@ -284,7 +370,7 @@
                                              VerticalAlignment="Bottom"
                                              Width="24" Height="24"/>
 
-                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding VideoScreenBottomMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
@@ -297,7 +383,7 @@
                                              VerticalAlignment="Bottom"
                                              Width="24" Height="24"/>
 
-                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding ImageScreenLeftMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
@@ -307,7 +393,7 @@
                                              VerticalAlignment="Bottom"
                                              Width="24" Height="24"/>
 
-                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding ImageScreenTopMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
@@ -318,7 +404,7 @@
                                              Width="24" Height="24"/>
 
 
-                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding ImageScreenRightMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
@@ -327,8 +413,53 @@
                                              VerticalAlignment="Bottom"
                                              Width="24" Height="24"/>
 
-                    <Slider Style="{StaticResource SettingsSliderStyle}" 
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding ImageScreenBottomMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+
+
+                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
+                           Text="{x:Static resx:Resources.WEB_MARGINS}"
+                           Margin="0,40,0,-20"/>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <materialDesign:PackIcon Kind="BorderLeft" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
+                            Value="{Binding WebScreenLeftMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+
+                    <materialDesign:PackIcon Kind="BorderTop" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
+                            Value="{Binding WebScreenTopMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+
+                    <materialDesign:PackIcon Kind="BorderRight" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
+
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
+                            Value="{Binding WebScreenRightMargin, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <materialDesign:PackIcon Kind="BorderBottom" 
+                                             VerticalAlignment="Bottom"
+                                             Width="24" Height="24"/>
+
+                    <Slider Style="{StaticResource MarginsSliderStyle}" 
+                            Value="{Binding WebScreenBottomMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
             </StackPanel>
@@ -388,6 +519,6 @@
             </StackPanel>
         </GroupBox>
 
-    </StackPanel>
+    </WrapPanel>
 
 </UserControl>

@@ -40,9 +40,11 @@
         private readonly ImageFade[] _fadingTypes;
         private readonly ImageFadeSpeed[] _fadingSpeeds;
         private readonly RecentlyUsedFolders _recentlyUsedMediaFolders;
+        private readonly MagnifierShapeItem[] _magnifierShapes;
+        private readonly MagnifierSizeItem[] _magnifierSizes;
 
         private bool _isMediaActive;
-
+        
         public SettingsViewModel(
             IPageService pageService, 
             IMonitorsService monitorsService,
@@ -61,12 +63,14 @@
             _recentlyUsedMediaFolders = new RecentlyUsedFolders();
             InitRecentlyUsedFolders();
             
-            _monitors = GetSystemMonitors().ToArray();
+            _monitors = GetSystemMonitors();
             _languages = GetSupportedLanguages();
-            _loggingLevels = GetLoggingLevels().ToArray();
-            _fadingTypes = GetImageFadingTypes().ToArray();
-            _fadingSpeeds = GetFadingSpeedTypes().ToArray();
-            _renderingMethods = GetRenderingMethods().ToArray();
+            _loggingLevels = GetLoggingLevels();
+            _fadingTypes = GetImageFadingTypes();
+            _fadingSpeeds = GetFadingSpeedTypes();
+            _renderingMethods = GetRenderingMethods();
+            _magnifierShapes = GetMagnifierShapes();
+            _magnifierSizes = GetMagnifierSizes();
             
             _pageService.NavigationEvent += HandleNavigationEvent;
             
@@ -75,6 +79,8 @@
         }
 
         public RelayCommand PurgeThumbnailCacheCommand { get; set; }
+
+        public RelayCommand PurgeWebCacheCommand { get; set; }
 
         public RelayCommand OpenMediaFolderCommand { get; set; }
 
@@ -86,16 +92,22 @@
 
         public IEnumerable<ImageFade> ImageFadeTypes => _fadingTypes;
 
+        public IEnumerable<MagnifierShapeItem> MagnifierShapes => _magnifierShapes;
+
+        public IEnumerable<MagnifierSizeItem> MagnifierSizes => _magnifierSizes;
+
+        public bool IsBrowserCachePurgeQueued => _optionsService.ShouldPurgeBrowserCacheOnStartup;
+
         public string MaxItemCount
         {
-            get => _optionsService.Options.MaxItemCount.ToString();
+            get => _optionsService.MaxItemCount.ToString();
             set
             {
-                if (!string.IsNullOrEmpty(value) && !_optionsService.Options.MaxItemCount.ToString().Equals(value))
+                if (!string.IsNullOrEmpty(value) && !_optionsService.MaxItemCount.ToString().Equals(value))
                 {
                     if (int.TryParse(value, out var count))
                     {
-                        _optionsService.Options.MaxItemCount = count;
+                        _optionsService.MaxItemCount = count;
                         RaisePropertyChanged();
                     }
                 }
@@ -104,12 +116,12 @@
 
         public DateTime MediaCalendarDate
         {
-            get => _optionsService.Options.OperatingDate;
+            get => _optionsService.OperatingDate;
             set
             {
-                if (_optionsService.Options.OperatingDate != value)
+                if (_optionsService.OperatingDate != value)
                 {
-                    _optionsService.Options.OperatingDate = value;
+                    _optionsService.OperatingDate = value;
                     RaisePropertyChanged();
                 }
             }
@@ -117,12 +129,12 @@
 
         public bool AlwaysOnTop
         {
-            get => _optionsService.Options.AlwaysOnTop;
+            get => _optionsService.AlwaysOnTop;
             set
             {
-                if (_optionsService.Options.AlwaysOnTop != value)
+                if (_optionsService.AlwaysOnTop != value)
                 {
-                    _optionsService.Options.AlwaysOnTop = value;
+                    _optionsService.AlwaysOnTop = value;
                     RaisePropertyChanged();
                 }
             }
@@ -130,15 +142,15 @@
 
         public int VideoScreenLeftMargin
         {
-            get => _optionsService.Options.VideoScreenPosition.LeftMarginPercentage;
+            get => _optionsService.VideoScreenPosition.LeftMarginPercentage;
             set
             {
-                if (_optionsService.Options.VideoScreenPosition.LeftMarginPercentage != value)
+                if (_optionsService.VideoScreenPosition.LeftMarginPercentage != value)
                 {
-                    var newPos = (ScreenPosition)_optionsService.Options.VideoScreenPosition.Clone();
+                    var newPos = (ScreenPosition)_optionsService.VideoScreenPosition.Clone();
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Left, value, out var opposingMarginChanged);
 
-                    _optionsService.Options.VideoScreenPosition = newPos;
+                    _optionsService.VideoScreenPosition = newPos;
                     RaisePropertyChanged();
 
                     if (opposingMarginChanged)
@@ -151,15 +163,15 @@
 
         public int VideoScreenRightMargin
         {
-            get => _optionsService.Options.VideoScreenPosition.RightMarginPercentage;
+            get => _optionsService.VideoScreenPosition.RightMarginPercentage;
             set
             {
-                if (_optionsService.Options.VideoScreenPosition.RightMarginPercentage != value)
+                if (_optionsService.VideoScreenPosition.RightMarginPercentage != value)
                 {
-                    var newPos = (ScreenPosition)_optionsService.Options.VideoScreenPosition.Clone();
+                    var newPos = (ScreenPosition)_optionsService.VideoScreenPosition.Clone();
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Right, value, out var opposingMarginChanged);
 
-                    _optionsService.Options.VideoScreenPosition = newPos;
+                    _optionsService.VideoScreenPosition = newPos;
                     RaisePropertyChanged();
 
                     if (opposingMarginChanged)
@@ -172,15 +184,15 @@
 
         public int VideoScreenTopMargin
         {
-            get => _optionsService.Options.VideoScreenPosition.TopMarginPercentage;
+            get => _optionsService.VideoScreenPosition.TopMarginPercentage;
             set
             {
-                if (_optionsService.Options.VideoScreenPosition.TopMarginPercentage != value)
+                if (_optionsService.VideoScreenPosition.TopMarginPercentage != value)
                 {
-                    var newPos = (ScreenPosition)_optionsService.Options.VideoScreenPosition.Clone();
+                    var newPos = (ScreenPosition)_optionsService.VideoScreenPosition.Clone();
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Top, value, out var opposingMarginChanged);
 
-                    _optionsService.Options.VideoScreenPosition = newPos;
+                    _optionsService.VideoScreenPosition = newPos;
                     RaisePropertyChanged();
 
                     if (opposingMarginChanged)
@@ -193,15 +205,15 @@
 
         public int VideoScreenBottomMargin
         {
-            get => _optionsService.Options.VideoScreenPosition.BottomMarginPercentage;
+            get => _optionsService.VideoScreenPosition.BottomMarginPercentage;
             set
             {
-                if (_optionsService.Options.VideoScreenPosition.BottomMarginPercentage != value)
+                if (_optionsService.VideoScreenPosition.BottomMarginPercentage != value)
                 {
-                    var newPos = (ScreenPosition)_optionsService.Options.VideoScreenPosition.Clone();
+                    var newPos = (ScreenPosition)_optionsService.VideoScreenPosition.Clone();
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Bottom, value, out var opposingMarginChanged);
 
-                    _optionsService.Options.VideoScreenPosition = newPos;
+                    _optionsService.VideoScreenPosition = newPos;
                     RaisePropertyChanged();
 
                     if (opposingMarginChanged)
@@ -214,15 +226,15 @@
         
         public int ImageScreenLeftMargin
         {
-            get => _optionsService.Options.ImageScreenPosition.LeftMarginPercentage;
+            get => _optionsService.ImageScreenPosition.LeftMarginPercentage;
             set
             {
-                if (_optionsService.Options.ImageScreenPosition.LeftMarginPercentage != value)
+                if (_optionsService.ImageScreenPosition.LeftMarginPercentage != value)
                 {
-                    var newPos = (ScreenPosition)_optionsService.Options.ImageScreenPosition.Clone();
+                    var newPos = (ScreenPosition)_optionsService.ImageScreenPosition.Clone();
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Left, value, out var opposingMarginChanged);
 
-                    _optionsService.Options.ImageScreenPosition = newPos;
+                    _optionsService.ImageScreenPosition = newPos;
                     RaisePropertyChanged();
 
                     if (opposingMarginChanged)
@@ -235,15 +247,15 @@
 
         public int ImageScreenRightMargin
         {
-            get => _optionsService.Options.ImageScreenPosition.RightMarginPercentage;
+            get => _optionsService.ImageScreenPosition.RightMarginPercentage;
             set
             {
-                if (_optionsService.Options.ImageScreenPosition.RightMarginPercentage != value)
+                if (_optionsService.ImageScreenPosition.RightMarginPercentage != value)
                 {
-                    var newPos = (ScreenPosition)_optionsService.Options.ImageScreenPosition.Clone();
+                    var newPos = (ScreenPosition)_optionsService.ImageScreenPosition.Clone();
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Right, value, out var opposingMarginChanged);
 
-                    _optionsService.Options.ImageScreenPosition = newPos;
+                    _optionsService.ImageScreenPosition = newPos;
                     RaisePropertyChanged();
 
                     if (opposingMarginChanged)
@@ -256,15 +268,15 @@
 
         public int ImageScreenTopMargin
         {
-            get => _optionsService.Options.ImageScreenPosition.TopMarginPercentage;
+            get => _optionsService.ImageScreenPosition.TopMarginPercentage;
             set
             {
-                if (_optionsService.Options.ImageScreenPosition.TopMarginPercentage != value)
+                if (_optionsService.ImageScreenPosition.TopMarginPercentage != value)
                 {
-                    var newPos = (ScreenPosition)_optionsService.Options.ImageScreenPosition.Clone();
+                    var newPos = (ScreenPosition)_optionsService.ImageScreenPosition.Clone();
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Top, value, out var opposingMarginChanged);
 
-                    _optionsService.Options.ImageScreenPosition = newPos;
+                    _optionsService.ImageScreenPosition = newPos;
                     RaisePropertyChanged();
 
                     if (opposingMarginChanged)
@@ -277,15 +289,15 @@
 
         public int ImageScreenBottomMargin
         {
-            get => _optionsService.Options.ImageScreenPosition.BottomMarginPercentage;
+            get => _optionsService.ImageScreenPosition.BottomMarginPercentage;
             set
             {
-                if (_optionsService.Options.ImageScreenPosition.BottomMarginPercentage != value)
+                if (_optionsService.ImageScreenPosition.BottomMarginPercentage != value)
                 {
-                    var newPos = (ScreenPosition)_optionsService.Options.ImageScreenPosition.Clone();
+                    var newPos = (ScreenPosition)_optionsService.ImageScreenPosition.Clone();
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Bottom, value, out var opposingMarginChanged);
 
-                    _optionsService.Options.ImageScreenPosition = newPos;
+                    _optionsService.ImageScreenPosition = newPos;
                     RaisePropertyChanged();
 
                     if (opposingMarginChanged)
@@ -296,14 +308,98 @@
             }
         }
 
-        public bool ShowCommandPanel
+        public int WebScreenLeftMargin
         {
-            get => _optionsService.Options.ShowMediaItemCommandPanel;
+            get => _optionsService.WebScreenPosition.LeftMarginPercentage;
             set
             {
-                if (_optionsService.Options.ShowMediaItemCommandPanel != value)
+                if (_optionsService.WebScreenPosition.LeftMarginPercentage != value)
                 {
-                    _optionsService.Options.ShowMediaItemCommandPanel = value;
+                    var newPos = (ScreenPosition)_optionsService.WebScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Left, value, out var opposingMarginChanged);
+
+                    _optionsService.WebScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(WebScreenRightMargin));
+                    }
+                }
+            }
+        }
+
+        public int WebScreenRightMargin
+        {
+            get => _optionsService.WebScreenPosition.RightMarginPercentage;
+            set
+            {
+                if (_optionsService.WebScreenPosition.RightMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.WebScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Right, value, out var opposingMarginChanged);
+
+                    _optionsService.WebScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(WebScreenLeftMargin));
+                    }
+                }
+            }
+        }
+
+        public int WebScreenTopMargin
+        {
+            get => _optionsService.WebScreenPosition.TopMarginPercentage;
+            set
+            {
+                if (_optionsService.WebScreenPosition.TopMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.WebScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Top, value, out var opposingMarginChanged);
+
+                    _optionsService.WebScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(WebScreenBottomMargin));
+                    }
+                }
+            }
+        }
+
+        public int WebScreenBottomMargin
+        {
+            get => _optionsService.WebScreenPosition.BottomMarginPercentage;
+            set
+            {
+                if (_optionsService.WebScreenPosition.BottomMarginPercentage != value)
+                {
+                    var newPos = (ScreenPosition)_optionsService.WebScreenPosition.Clone();
+                    ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Bottom, value, out var opposingMarginChanged);
+
+                    _optionsService.WebScreenPosition = newPos;
+                    RaisePropertyChanged();
+
+                    if (opposingMarginChanged)
+                    {
+                        RaisePropertyChanged(nameof(WebScreenTopMargin));
+                    }
+                }
+            }
+        }
+
+        public bool ShowCommandPanel
+        {
+            get => _optionsService.ShowMediaItemCommandPanel;
+            set
+            {
+                if (_optionsService.ShowMediaItemCommandPanel != value)
+                {
+                    _optionsService.ShowMediaItemCommandPanel = value;
                     RaisePropertyChanged();
                 }
             }
@@ -311,12 +407,12 @@
 
         public bool UseInternalMediaTitles
         {
-            get => _optionsService.Options.UseInternalMediaTitles;
+            get => _optionsService.UseInternalMediaTitles;
             set
             {
-                if (_optionsService.Options.UseInternalMediaTitles != value)
+                if (_optionsService.UseInternalMediaTitles != value)
                 {
-                    _optionsService.Options.UseInternalMediaTitles = value;
+                    _optionsService.UseInternalMediaTitles = value;
                     RaisePropertyChanged();
                 }
             }
@@ -324,12 +420,12 @@
 
         public bool IncludeBlankScreenItem
         {
-            get => _optionsService.Options.IncludeBlanksScreenItem;
+            get => _optionsService.IncludeBlankScreenItem;
             set
             {
-                if (_optionsService.Options.IncludeBlanksScreenItem != value)
+                if (_optionsService.IncludeBlankScreenItem != value)
                 {
-                    _optionsService.Options.IncludeBlanksScreenItem = value;
+                    _optionsService.IncludeBlankScreenItem = value;
                     RaisePropertyChanged();
                 }
             }
@@ -339,12 +435,12 @@
 
         public bool JwLibraryCompatibilityMode
         {
-            get => _optionsService.Options.JwLibraryCompatibilityMode;
+            get => _optionsService.JwLibraryCompatibilityMode;
             set
             {
-                if (_optionsService.Options.JwLibraryCompatibilityMode != value)
+                if (_optionsService.JwLibraryCompatibilityMode != value)
                 {
-                    _optionsService.Options.JwLibraryCompatibilityMode = value;
+                    _optionsService.JwLibraryCompatibilityMode = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(JwLibModeNotSet));
 
@@ -358,12 +454,12 @@
 
         public bool PermanentBackdrop
         {
-            get => _optionsService.Options.PermanentBackdrop;
+            get => _optionsService.PermanentBackdrop;
             set
             {
-                if (_optionsService.Options.PermanentBackdrop != value)
+                if (_optionsService.PermanentBackdrop != value)
                 {
-                    _optionsService.Options.PermanentBackdrop = value;
+                    _optionsService.PermanentBackdrop = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(NotPermanentBackdrop));
                 }
@@ -374,12 +470,12 @@
         
         public bool ShowVideoSubtitles
         {
-            get => _optionsService.Options.ShowVideoSubtitles;
+            get => _optionsService.ShowVideoSubtitles;
             set
             {
-                if (_optionsService.Options.ShowVideoSubtitles != value)
+                if (_optionsService.ShowVideoSubtitles != value)
                 {
-                    _optionsService.Options.ShowVideoSubtitles = value;
+                    _optionsService.ShowVideoSubtitles = value;
                     RaisePropertyChanged();
                 }
             }
@@ -387,12 +483,12 @@
 
         public bool AllowVideoScrubbing
         {
-            get => _optionsService.Options.AllowVideoScrubbing;
+            get => _optionsService.AllowVideoScrubbing;
             set
             {
-                if (_optionsService.Options.AllowVideoScrubbing != value)
+                if (_optionsService.AllowVideoScrubbing != value)
                 {
-                    _optionsService.Options.AllowVideoScrubbing = value;
+                    _optionsService.AllowVideoScrubbing = value;
                     RaisePropertyChanged();
                 }
             }
@@ -400,12 +496,12 @@
 
         public bool AllowVideoPositionSeeking
         {
-            get => _optionsService.Options.AllowVideoPositionSeeking;
+            get => _optionsService.AllowVideoPositionSeeking;
             set
             {
-                if (_optionsService.Options.AllowVideoPositionSeeking != value)
+                if (_optionsService.AllowVideoPositionSeeking != value)
                 {
-                    _optionsService.Options.AllowVideoPositionSeeking = value;
+                    _optionsService.AllowVideoPositionSeeking = value;
                     RaisePropertyChanged();
                 }
             }
@@ -413,12 +509,12 @@
 
         public bool ConfirmWhenStoppingVideo
         {
-            get => _optionsService.Options.ConfirmVideoStop;
+            get => _optionsService.ConfirmVideoStop;
             set
             {
-                if (_optionsService.Options.ConfirmVideoStop != value)
+                if (_optionsService.ConfirmVideoStop != value)
                 {
-                    _optionsService.Options.ConfirmVideoStop = value;
+                    _optionsService.ConfirmVideoStop = value;
                     RaisePropertyChanged();
                 }
             }
@@ -426,12 +522,12 @@
 
         public bool AllowVideoPause
         {
-            get => _optionsService.Options.AllowVideoPause;
+            get => _optionsService.AllowVideoPause;
             set
             {
-                if (_optionsService.Options.AllowVideoPause != value)
+                if (_optionsService.AllowVideoPause != value)
                 {
-                    _optionsService.Options.AllowVideoPause = value;
+                    _optionsService.AllowVideoPause = value;
                     RaisePropertyChanged();
                 }
             }
@@ -439,12 +535,12 @@
 
         public bool ShowFreezeCommand
         {
-            get => _optionsService.Options.ShowFreezeCommand;
+            get => _optionsService.ShowFreezeCommand;
             set
             {
-                if (_optionsService.Options.ShowFreezeCommand != value)
+                if (_optionsService.ShowFreezeCommand != value)
                 {
-                    _optionsService.Options.ShowFreezeCommand = value;
+                    _optionsService.ShowFreezeCommand = value;
                     RaisePropertyChanged();
                 }
             }
@@ -464,18 +560,18 @@
             }
         }
 
-        public bool IsMediaFolderOverriden => _optionsService.Options.IsCommandLineMediaFolderSpecified();
+        public bool IsMediaFolderOverriden => _optionsService.IsCommandLineMediaFolderSpecified();
 
         public bool IsMediaInactive => !IsMediaActive;
 
         public bool EmbeddedThumbnails
         {
-            get => _optionsService.Options.EmbeddedThumbnails;
+            get => _optionsService.EmbeddedThumbnails;
             set
             {
-                if (_optionsService.Options.EmbeddedThumbnails != value)
+                if (_optionsService.EmbeddedThumbnails != value)
                 {
-                    _optionsService.Options.EmbeddedThumbnails = value;
+                    _optionsService.EmbeddedThumbnails = value;
                     RaisePropertyChanged();
                     PurgeThumbnailCache();
                 }
@@ -484,12 +580,12 @@
 
         public bool CacheImages
         {
-            get => _optionsService.Options.CacheImages;
+            get => _optionsService.CacheImages;
             set
             {
-                if (_optionsService.Options.CacheImages != value)
+                if (_optionsService.CacheImages != value)
                 {
-                    _optionsService.Options.CacheImages = value;
+                    _optionsService.CacheImages = value;
                     RaisePropertyChanged();
                 }
             }
@@ -497,12 +593,12 @@
 
         public bool AutoRotateImages
         {
-            get => _optionsService.Options.AutoRotateImages;
+            get => _optionsService.AutoRotateImages;
             set
             {
-                if (_optionsService.Options.AutoRotateImages != value)
+                if (_optionsService.AutoRotateImages != value)
                 {
-                    _optionsService.Options.AutoRotateImages = value;
+                    _optionsService.AutoRotateImages = value;
                     RaisePropertyChanged();
                 }
             }
@@ -510,12 +606,12 @@
 
         public string MediaFolder
         {
-            get => _optionsService.Options.MediaFolder;
+            get => _optionsService.MediaFolder;
             set
             {
-                if (_optionsService.Options.MediaFolder != value)
+                if (_optionsService.MediaFolder != value)
                 {
-                    _optionsService.Options.MediaFolder = value;
+                    _optionsService.MediaFolder = value;
                     RaisePropertyChanged();
                 }
             }
@@ -523,12 +619,80 @@
 
         public ImageFadeType ImageFadeType
         {
-            get => _optionsService.Options.ImageFadeType;
+            get => _optionsService.ImageFadeType;
             set
             {
-                if (_optionsService.Options.ImageFadeType != value)
+                if (_optionsService.ImageFadeType != value)
                 {
-                    _optionsService.Options.ImageFadeType = value;
+                    _optionsService.ImageFadeType = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public MagnifierShape MagnifierShape
+        {
+            get => _optionsService.MagnifierShape;
+            set
+            {
+                if (_optionsService.MagnifierShape != value)
+                {
+                    _optionsService.MagnifierShape = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public MagnifierSize MagnifierSize
+        {
+            get => _optionsService.MagnifierSize;
+            set
+            {
+                if (_optionsService.MagnifierSize != value)
+                {
+                    _optionsService.MagnifierSize = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public double MagnifierZoomLevel
+        {
+            get => _optionsService.MagnifierZoomLevel;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_optionsService.MagnifierZoomLevel != value)
+                {
+                    _optionsService.MagnifierZoomLevel = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public double MagnifierFrameThickness
+        {
+            get => _optionsService.MagnifierFrameThickness;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_optionsService.MagnifierFrameThickness != value)
+                {
+                    _optionsService.MagnifierFrameThickness = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public double WebPageZoomIncrement
+        {
+            get => _optionsService.BrowserZoomLevelIncrement;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_optionsService.BrowserZoomLevelIncrement != value)
+                {
+                    _optionsService.BrowserZoomLevelIncrement = value;
                     RaisePropertyChanged();
                 }
             }
@@ -536,12 +700,12 @@
 
         public FadeSpeed FadeSpeedType
         {
-            get => _optionsService.Options.ImageFadeSpeed;
+            get => _optionsService.ImageFadeSpeed;
             set
             {
-                if (_optionsService.Options.ImageFadeSpeed != value)
+                if (_optionsService.ImageFadeSpeed != value)
                 {
-                    _optionsService.Options.ImageFadeSpeed = value;
+                    _optionsService.ImageFadeSpeed = value;
                     RaisePropertyChanged();
                 }
             }
@@ -551,12 +715,12 @@
 
         public LogEventLevel LogEventLevel
         {
-            get => _optionsService.Options.LogEventLevel;
+            get => _optionsService.LogEventLevel;
             set
             {
-                if (_optionsService.Options.LogEventLevel != value)
+                if (_optionsService.LogEventLevel != value)
                 {
-                    _optionsService.Options.LogEventLevel = value;
+                    _optionsService.LogEventLevel = value;
                     RaisePropertyChanged();
                 }
             }
@@ -566,12 +730,12 @@
 
         public RenderingMethod RenderingMethod
         {
-            get => _optionsService.Options.RenderingMethod;
+            get => _optionsService.RenderingMethod;
             set
             {
-                if (_optionsService.Options.RenderingMethod != value)
+                if (_optionsService.RenderingMethod != value)
                 {
-                    _optionsService.Options.RenderingMethod = value;
+                    _optionsService.RenderingMethod = value;
                     RaisePropertyChanged();
                 }
             }
@@ -581,12 +745,12 @@
 
         public string LanguageId
         {
-            get => _optionsService.Options.Culture;
+            get => _optionsService.Culture;
             set
             {
-                if (_optionsService.Options.Culture != value)
+                if (_optionsService.Culture != value)
                 {
-                    _optionsService.Options.Culture = value;
+                    _optionsService.Culture = value;
                     RaisePropertyChanged();
                 }
             }
@@ -596,10 +760,10 @@
 
         public string MonitorId
         {
-            get => _optionsService.Options.MediaMonitorId;
+            get => _optionsService.MediaMonitorId;
             set
             {
-                if (_optionsService.Options.MediaMonitorId != value)
+                if (_optionsService.MediaMonitorId != value)
                 {
                     if (value == null && IsMediaActive)
                     {
@@ -608,7 +772,7 @@
                     }
                     else
                     {
-                        _optionsService.Options.MediaMonitorId = value;
+                        _optionsService.MediaMonitorId = value;
                         RaisePropertyChanged();
                     }
                 }
@@ -617,11 +781,43 @@
 
         private void OnShutDown(ShutDownMessage obj)
         {
-            _optionsService.Options.RecentlyUsedMediaFolders = _recentlyUsedMediaFolders.GetFolders().ToList();
+            _optionsService.RecentlyUsedMediaFolders = _recentlyUsedMediaFolders.GetFolders().ToList();
             _optionsService.Save();
         }
-        
-        private IEnumerable<ImageFadeSpeed> GetFadingSpeedTypes()
+
+        private MagnifierShapeItem[] GetMagnifierShapes()
+        {
+            var result = new List<MagnifierShapeItem>();
+
+            foreach (MagnifierShape v in Enum.GetValues(typeof(MagnifierShape)))
+            {
+                result.Add(new MagnifierShapeItem
+                {
+                    Shape = v,
+                    Name = v.GetDescriptiveName()
+                });
+            }
+
+            return result.ToArray();
+        }
+
+        private MagnifierSizeItem[] GetMagnifierSizes()
+        {
+            var result = new List<MagnifierSizeItem>();
+
+            foreach (MagnifierSize v in Enum.GetValues(typeof(MagnifierSize)))
+            {
+                result.Add(new MagnifierSizeItem
+                {
+                    Size = v,
+                    Name = v.GetDescriptiveName()
+                });
+            }
+
+            return result.ToArray();
+        }
+
+        private ImageFadeSpeed[] GetFadingSpeedTypes()
         {
             var result = new List<ImageFadeSpeed>();
 
@@ -634,10 +830,10 @@
                 });
             }
 
-            return result;
+            return result.ToArray();
         }
         
-        private IEnumerable<ImageFade> GetImageFadingTypes()
+        private ImageFade[] GetImageFadingTypes()
         {
             var result = new List<ImageFade>();
 
@@ -650,10 +846,10 @@
                 });
             }
 
-            return result;
+            return result.ToArray();
         }
 
-        private IEnumerable<LoggingLevel> GetLoggingLevels()
+        private LoggingLevel[] GetLoggingLevels()
         {
             var result = new List<LoggingLevel>();
 
@@ -666,20 +862,20 @@
                 });
             }
 
-            return result;
+            return result.ToArray();
         }
 
-        private IEnumerable<RenderingMethodItem> GetRenderingMethods()
+        private RenderingMethodItem[] GetRenderingMethods()
         {
             // don't localize these strings!
-            return new List<RenderingMethodItem>
+            return new[]
             {
                 new RenderingMethodItem { Method = RenderingMethod.MediaFoundation, Name = @"Media Foundation" },
                 new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = @"Ffmpeg" }
             };
         }
 
-        private IEnumerable<MonitorItem> GetSystemMonitors()
+        private MonitorItem[] GetSystemMonitors()
         {
             var result = new List<MonitorItem>
             {
@@ -694,14 +890,14 @@
             var monitors = _monitorsService.GetSystemMonitors();
             result.AddRange(monitors.Select(AutoMapper.Mapper.Map<MonitorItem>));
 
-            return result;
+            return result.ToArray();
         }
 
         private void InitRecentlyUsedFolders()
         {
-            for (int n = _optionsService.Options.RecentlyUsedMediaFolders.Count - 1; n >= 0; --n)
+            for (int n = _optionsService.RecentlyUsedMediaFolders.Count - 1; n >= 0; --n)
             {
-                _recentlyUsedMediaFolders.Add(_optionsService.Options.RecentlyUsedMediaFolders[n]);
+                _recentlyUsedMediaFolders.Add(_optionsService.RecentlyUsedMediaFolders[n]);
             }
         }
 
@@ -717,7 +913,14 @@
         private void InitCommands()
         {
             PurgeThumbnailCacheCommand = new RelayCommand(PurgeThumbnailCache);
+            PurgeWebCacheCommand = new RelayCommand(PurgeWebCache);
             OpenMediaFolderCommand = new RelayCommand(OpenMediaFolder);
+        }
+
+        private void PurgeWebCache()
+        {
+            _optionsService.ShouldPurgeBrowserCacheOnStartup = true;
+            RaisePropertyChanged(nameof(IsBrowserCachePurgeQueued));
         }
 
         private void OpenMediaFolder()

@@ -18,6 +18,7 @@
     using MediaElementAdaption;
     using Models;
     using OnlyM.Services.Snackbar;
+    using OnlyM.Services.WebBrowser;
     using PubSubMessages;
     using Serilog;
     using Services.FrozenVideoItems;
@@ -107,6 +108,7 @@
                 await HandleMediaNearEndEvent(sender, e);
             };
             _pageService.NavigationEvent += HandleNavigationEvent;
+            _pageService.WebStatusEvent += HandleWebStatusEvent;
 
             LoadMediaItems();
             InitCommands();
@@ -179,7 +181,7 @@
 
         private void HandleShowMediaItemCommandPanelChangedEvent(object sender, EventArgs e)
         {
-            var visible = _optionsService.Options.ShowMediaItemCommandPanel;
+            var visible = _optionsService.ShowMediaItemCommandPanel;
 
             foreach (var item in MediaItems)
             {
@@ -189,7 +191,7 @@
 
         private void HandleShowFreezeCommandChangedEvent(object sender, EventArgs e)
         {
-            var allow = _optionsService.Options.ShowFreezeCommand;
+            var allow = _optionsService.ShowFreezeCommand;
 
             foreach (var item in MediaItems)
             {
@@ -199,7 +201,7 @@
 
         private async Task HandleIncludeBlankScreenItemChangedEvent(object sender, EventArgs e)
         {
-            if (!_optionsService.Options.IncludeBlanksScreenItem)
+            if (!_optionsService.IncludeBlankScreenItem)
             {
                 await RemoveBlankScreenItem();
             }
@@ -209,7 +211,7 @@
 
         private async Task HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
         {
-            if (_optionsService.Options.PermanentBackdrop)
+            if (_optionsService.PermanentBackdrop)
             {
                 await RemoveBlankScreenItem();
             }
@@ -233,6 +235,12 @@
             return items?.SingleOrDefault(x => x.IsBlankScreen && x.IsMediaActive);
         }
 
+        private MediaItem GetActiveWebItem()
+        {
+            var items = GetCurrentMediaItems();
+            return items?.SingleOrDefault(x => x.IsWeb && x.IsMediaActive);
+        }
+
         private void HandleUseInternalMediaTitlesChangedEvent(object sender, EventArgs e)
         {
             foreach (var item in MediaItems)
@@ -249,7 +257,7 @@
         {
             foreach (var item in MediaItems)
             {
-                item.AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking;
+                item.AllowPositionSeeking = _optionsService.AllowVideoPositionSeeking;
             }
         }
 
@@ -257,7 +265,7 @@
         {
             foreach (var item in MediaItems)
             {
-                item.AllowPause = _optionsService.Options.AllowVideoPause;
+                item.AllowPause = _optionsService.AllowVideoPause;
             }
         }
 
@@ -313,7 +321,7 @@
         {
             var item = e.MediaItem;
             
-            if (_optionsService.Options.AutoRotateImages)
+            if (_optionsService.AutoRotateImages)
             {
                 AutoRotateImageIfRequired(item);
             }
@@ -335,14 +343,19 @@
             var videoOrAudioIsActive = VideoOrAudioIsActive();
             var videoIsActive = VideoIsActive();
             var rollingSlideshowIsActive = RollingSlideshowIsActive();
+            var webIsActive = WebIsActive();
 
             foreach (var item in MediaItems)
             {
                 switch (item.MediaType.Classification)
                 {
                     case MediaClassification.Image:
-                        // cannot show an image if video or rolling slideshow is playing.
-                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive && !rollingSlideshowIsActive;
+                        // cannot show an image if video or rolling slideshow or web page is playing.
+                        item.IsPlayButtonEnabled = 
+                            monitorSpecified && 
+                            !videoIsActive && 
+                            !rollingSlideshowIsActive && 
+                            !webIsActive;
                         break;
 
                     case MediaClassification.Audio:
@@ -351,13 +364,30 @@
                         break;
 
                     case MediaClassification.Video:
-                        // cannot play a video if another video or audio or rolling slideshow is playing.
-                        item.IsPlayButtonEnabled = monitorSpecified && !videoOrAudioIsActive && !rollingSlideshowIsActive;
+                        // cannot play a video if another video or audio or rolling slideshow or web page is playing.
+                        item.IsPlayButtonEnabled = 
+                            monitorSpecified && 
+                            !videoOrAudioIsActive && 
+                            !rollingSlideshowIsActive && 
+                            !webIsActive;
                         break;
 
                     case MediaClassification.Slideshow:
-                        // cannot play a slideshow if video or a rolling slideshow is playing.
-                        item.IsPlayButtonEnabled = monitorSpecified && !videoIsActive && !rollingSlideshowIsActive;
+                        // cannot play a slideshow if video or rolling slideshow or web page is playing.
+                        item.IsPlayButtonEnabled = 
+                            monitorSpecified && 
+                            !videoIsActive && 
+                            !rollingSlideshowIsActive &&
+                            !webIsActive;
+                        break;
+
+                    case MediaClassification.Web:
+                        // cannot launch a web page if video or rolling slideshow or web page is playing.
+                        item.IsPlayButtonEnabled = 
+                            monitorSpecified && 
+                            !videoIsActive && 
+                            !rollingSlideshowIsActive &&
+                            !webIsActive;
                         break;
 
                     default:
@@ -568,6 +598,11 @@
             return mediaItem.IsRollingSlideshow;
         }
 
+        private bool IsWeb(MediaItem mediaItem)
+        {
+            return mediaItem.IsWeb;
+        }
+
         private async Task MediaPauseControl(Guid mediaItemId)
         {
             // only allow pause media when nothing is changing.
@@ -641,6 +676,9 @@
                 case MediaClassification.Slideshow:
                     return !VideoIsActive();
 
+                case MediaClassification.Web:
+                    return !VideoIsActive();
+
                 default:
                 case MediaClassification.Unknown:
                     return false;
@@ -688,6 +726,17 @@
             }
 
             return currentItems.Any(IsRollingSlideshow);
+        }
+
+        private bool WebIsActive()
+        {
+            var currentItems = GetCurrentMediaItems();
+            if (currentItems == null)
+            {
+                return false;
+            }
+
+            return currentItems.Any(IsWeb);
         }
 
         private MediaItem GetNextImageItem(MediaItem currentMediaItem)
@@ -810,7 +859,7 @@
 
         private void TruncateMediaItemsToMaxCount()
         {
-            while (MediaItems.Count > _optionsService.Options.MaxItemCount)
+            while (MediaItems.Count > _optionsService.MaxItemCount)
             {
                 MediaItems.RemoveAt(MediaItems.Count - 1);
             }
@@ -822,13 +871,13 @@
             {
                 MediaType = file.MediaType,
                 Id = Guid.NewGuid(),
-                AllowFreezeCommand = _optionsService.Options.ShowFreezeCommand,
-                CommandPanelVisible = _optionsService.Options.ShowMediaItemCommandPanel,
+                AllowFreezeCommand = _optionsService.ShowFreezeCommand,
+                CommandPanelVisible = _optionsService.ShowMediaItemCommandPanel,
                 FilePath = file.FullPath,
                 IsVisible = true,
                 LastChanged = file.LastChanged,
-                AllowPause = _optionsService.Options.AllowVideoPause,
-                AllowPositionSeeking = _optionsService.Options.AllowVideoPositionSeeking
+                AllowPause = _optionsService.AllowVideoPause,
+                AllowPositionSeeking = _optionsService.AllowVideoPositionSeeking
             };
 
             return result;
@@ -838,7 +887,7 @@
         {
             // only add a "blank screen" item if we don't already display
             // a permanent black backdrop.
-            if (!_optionsService.Options.PermanentBackdrop && _optionsService.Options.IncludeBlanksScreenItem)
+            if (!_optionsService.PermanentBackdrop && _optionsService.IncludeBlankScreenItem)
             {
                 var blankScreenPath = GetBlankScreenPath();
 
@@ -848,8 +897,8 @@
                     Id = Guid.NewGuid(),
                     IsBlankScreen = true,
                     IsVisible = true,
-                    AllowFreezeCommand = _optionsService.Options.ShowFreezeCommand,
-                    CommandPanelVisible = _optionsService.Options.ShowMediaItemCommandPanel,
+                    AllowFreezeCommand = _optionsService.ShowFreezeCommand,
+                    CommandPanelVisible = _optionsService.ShowMediaItemCommandPanel,
                     Name = Properties.Resources.BLANK_SCREEN,
                     FilePath = blankScreenPath,
                     LastChanged = DateTime.UtcNow.Ticks
@@ -934,7 +983,7 @@
         {
             Task.Run(() =>
             {
-                if (_optionsService.Options.AutoRotateImages)
+                if (_optionsService.AutoRotateImages)
                 {
                     foreach (var item in MediaItems)
                     {
@@ -952,6 +1001,18 @@
             {
                 _snackbarService.EnqueueWithOk(Properties.Resources.GENERATING_SUBTITLES);
             }
+        }
+
+        private void HandleWebStatusEvent(object sender, WebBrowserProgressEventArgs e)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                var item = GetActiveWebItem();
+                if (item != null)
+                {
+                    item.MiscText = e.Description;
+                }
+            });
         }
     }
 }

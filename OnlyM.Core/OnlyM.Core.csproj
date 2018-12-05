@@ -35,6 +35,26 @@
     <CodeAnalysisRuleSet>..\OnlyM.ruleset</CodeAnalysisRuleSet>
     <NoWarn>SA1008;SA1009</NoWarn>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <NoWarn>SA1008;SA1009</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\OnlyM.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>SA1008;SA1009</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\OnlyM.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net47\CommonServiceLocator.dll</HintPath>
@@ -84,6 +104,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -101,9 +122,12 @@
     </Compile>
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\UriExtensions.cs" />
     <Compile Include="Models\DisplayDeviceData.cs" />
     <Compile Include="Models\FadeSpeed.cs" />
     <Compile Include="Models\ImageFadeType.cs" />
+    <Compile Include="Models\MagnifierShape.cs" />
+    <Compile Include="Models\MagnifierSize.cs" />
     <Compile Include="Models\MediaClassification.cs" />
     <Compile Include="Models\MediaFile.cs" />
     <Compile Include="Models\MediaFolders.cs" />
@@ -121,9 +145,11 @@
     </Compile>
     <Compile Include="Services\CommandLine\CommandLineService.cs" />
     <Compile Include="Services\CommandLine\ICommandLineService.cs" />
+    <Compile Include="Services\Database\BrowserData.cs" />
     <Compile Include="Services\Database\DatabaseService.cs" />
     <Compile Include="Services\Database\IDatabaseService.cs" />
     <Compile Include="Services\Media\DatedSubFolders.cs" />
+    <Compile Include="Utils\FaviconHelper.cs" />
     <Compile Include="Services\Media\FolderWatcherService.cs" />
     <Compile Include="Services\Media\IFolderWatcherService.cs" />
     <Compile Include="Services\Media\IMediaMetaDataService.cs" />
@@ -143,6 +169,7 @@
     <Compile Include="Services\Options\LogLevelSwitchService.cs" />
     <Compile Include="Services\Options\Options.cs" />
     <Compile Include="Services\Options\OptionsService.cs" />
+    <Compile Include="Services\WebShortcuts\WebShortcutHelper.cs" />
     <Compile Include="Subtitles\SubtitleEntry.cs" />
     <Compile Include="Subtitles\SubtitleEventArgs.cs" />
     <Compile Include="Subtitles\SubtitleProvider.cs" />
@@ -203,6 +230,12 @@
       <Project>{4d79789c-5626-4c86-a31f-75b78385dc2a}</Project>
       <Name>OnlyM.Slides</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Web2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Web.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" />

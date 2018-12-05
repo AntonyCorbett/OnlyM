@@ -15,6 +15,7 @@ namespace OnlyM.ViewModel
     using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
     using Models;
+    using OnlyM.Core.Utils;
     using PubSubMessages;
     using Services.DragAndDrop;
     using Services.HiddenMediaItems;
@@ -74,15 +75,22 @@ namespace OnlyM.ViewModel
             _optionsService = optionsService;
             _optionsService.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
 
+            if (_optionsService.ShouldPurgeBrowserCacheOnStartup)
+            {
+                _optionsService.ShouldPurgeBrowserCacheOnStartup = false;
+                _optionsService.Save();
+                FileUtils.DeleteBrowserCacheFolder();
+            }
+
             _pageService.GotoOperatorPage();
 
             dragAndDropService.CopyingFilesProgressEvent += HandleCopyingFilesProgressEvent;
 
             InitCommands();
 
-            if (!IsInDesignMode && _optionsService.Options.PermanentBackdrop)
+            if (!IsInDesignMode)
             {
-                _pageService.OpenMediaWindow(requiresVisibleWindow: true);
+                _pageService.InitMediaWindow();
             }
 
             GetVersionData();
@@ -105,7 +113,7 @@ namespace OnlyM.ViewModel
 
         public bool ShowNewVersionButton => _newVersionAvailable && IsOperatorPageActive;
 
-        public bool AlwaysOnTop => _optionsService.Options.AlwaysOnTop || _pageService.IsMediaWindowVisible;
+        public bool AlwaysOnTop => _optionsService.AlwaysOnTop || _pageService.IsMediaWindowVisible;
 
         public bool IsSettingsPageActive => _currentPageName.Equals(_pageService.SettingsPageName);
 
@@ -279,9 +287,9 @@ namespace OnlyM.ViewModel
 
         private void LaunchMediaFolder()
         {
-            if (Directory.Exists(_optionsService.Options.MediaFolder))
+            if (Directory.Exists(_optionsService.MediaFolder))
             {
-                Process.Start(_optionsService.Options.MediaFolder);
+                Process.Start(_optionsService.MediaFolder);
             }
         }
 

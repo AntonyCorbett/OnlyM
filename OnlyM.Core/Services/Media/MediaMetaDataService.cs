@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using Models;
+    using OnlyM.Core.Services.WebShortcuts;
     using Serilog;
     using Unosquare.FFME.Shared;
 
@@ -24,6 +25,9 @@
                     case MediaClassification.Audio:
                     case MediaClassification.Image:
                         return GetNonVideoMetaData(mediaItemFilePath);
+
+                    case MediaClassification.Web:
+                        return GetWebPageMetaData(mediaItemFilePath);
 
                     case MediaClassification.Slideshow:
                         return null;
@@ -83,6 +87,16 @@
                 // file is in use...
                 throw new VideoFileInUseException();
             }
+        }
+
+        private MediaMetaData GetWebPageMetaData(string mediaItemFilePath)
+        {
+            var helper = new WebShortcutHelper(mediaItemFilePath);
+            return new MediaMetaData
+            {
+                Title = Path.GetFileNameWithoutExtension(mediaItemFilePath),
+                Duration = TimeSpan.Zero
+            };
         }
 
         private MediaMetaData GetNonVideoMetaData(string mediaItemFilePath)

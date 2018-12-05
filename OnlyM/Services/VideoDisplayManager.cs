@@ -258,7 +258,7 @@
             {
                 if (_mediaClassification == MediaClassification.Video &&
                     _mediaElement is MediaElementMediaFoundation &&
-                    _optionsService.Options.ShowVideoSubtitles)
+                    _optionsService.ShowVideoSubtitles)
                 {
                     return SubtitleFileGenerator.Generate(mediaItemFilePath, _mediaItemId);
                 }
@@ -277,7 +277,7 @@
 
             if (_mediaClassification == MediaClassification.Video &&
                 _mediaElement is MediaElementMediaFoundation &&
-                _optionsService.Options.ShowVideoSubtitles)
+                _optionsService.ShowVideoSubtitles)
             {
                 // accommodate any latency introduced by creation of srt file
                 var sw = Stopwatch.StartNew();

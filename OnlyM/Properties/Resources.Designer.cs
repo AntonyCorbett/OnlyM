@@ -332,6 +332,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading frame {0}.
+        /// </summary>
+        public static string LOADING_FRAME {
+            get {
+                return ResourceManager.GetString("LOADING_FRAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Logging level.
         /// </summary>
         public static string LOGGING_LEVEL {
@@ -494,6 +503,24 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PURGE BROWSER CACHE.
+        /// </summary>
+        public static string PURGE_WEB_CACHE {
+            get {
+                return ResourceManager.GetString("PURGE_WEB_CACHE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The browser cache will be purged on next restart..
+        /// </summary>
+        public static string PURGE_WEB_CACHE_RESTART {
+            get {
+                return ResourceManager.GetString("PURGE_WEB_CACHE_RESTART", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rendering engine.
         /// </summary>
         public static string RENDERING_ENGINE {
@@ -571,6 +598,15 @@ namespace OnlyM.Properties {
         public static string SECTION_VIDEO_AUDIO {
             get {
                 return ResourceManager.GetString("SECTION_VIDEO_AUDIO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WEB.
+        /// </summary>
+        public static string SECTION_WEB {
+            get {
+                return ResourceManager.GetString("SECTION_WEB", resourceCulture);
             }
         }
         
@@ -670,6 +706,87 @@ namespace OnlyM.Properties {
         public static string VIEW {
             get {
                 return ResourceManager.GetString("VIEW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show header panel.
+        /// </summary>
+        public static string WEB_HEADER_PANEL_SHOW {
+            get {
+                return ResourceManager.GetString("WEB_HEADER_PANEL_SHOW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load URL {0} with error {1} ({2}).
+        /// </summary>
+        public static string WEB_LOAD_FAIL {
+            get {
+                return ResourceManager.GetString("WEB_LOAD_FAIL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Magnifier frame thickness.
+        /// </summary>
+        public static string WEB_MAGNIFIER_FRAME_THICKNESS {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_FRAME_THICKNESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Magnifier shape.
+        /// </summary>
+        public static string WEB_MAGNIFIER_SHAPE {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_SHAPE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show magnifier.
+        /// </summary>
+        public static string WEB_MAGNIFIER_SHOW {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_SHOW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Magnifier size.
+        /// </summary>
+        public static string WEB_MAGNIFIER_SIZE {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_SIZE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Magnifier magnification level.
+        /// </summary>
+        public static string WEB_MAGNIFIER_ZOOM {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_ZOOM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web Margins.
+        /// </summary>
+        public static string WEB_MARGINS {
+            get {
+                return ResourceManager.GetString("WEB_MARGINS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page zoom increment.
+        /// </summary>
+        public static string WEB_ZOOM_INCREMENT {
+            get {
+                return ResourceManager.GetString("WEB_ZOOM_INCREMENT", resourceCulture);
             }
         }
         

@@ -6,6 +6,8 @@
     using System.Threading;
     using System.Windows;
     using AutoUpdates;
+    using CefSharp;
+    using CefSharp.Wpf;
     using Core.Models;
     using Core.Services.Options;
     using Core.Utils;
@@ -21,6 +23,7 @@
     public partial class App : Application
     {
         private readonly string _appString = "OnlyMMeetingMedia";
+        private readonly bool _successCefSharp;
         private Mutex _appMutex;
 
         public App()
@@ -28,6 +31,11 @@
             DispatcherHelper.Initialize();
             MediaElement.FFmpegDirectory = FMpegFolderName;
             RegisterMappings();
+
+            // pre-load the CefSharp assemblies otherwise 1st instantiation is too long.
+            System.Reflection.Assembly.Load("CefSharp.Wpf");
+
+            _successCefSharp = InitCef();
         }
 
         public static string FMpegFolderName { get; } = $"{AppDomain.CurrentDomain.BaseDirectory}\\FFmpeg";
@@ -47,6 +55,11 @@
             else
             {
                 ConfigureLogger();
+            }
+
+            if (!_successCefSharp)
+            {
+                Log.Logger.Error("Could not initialise CefSharp");
             }
 
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
@@ -77,6 +90,28 @@
         private void RegisterMappings()
         {
             AutoMapper.Mapper.Initialize(cfg => cfg.CreateMap<SystemMonitor, MonitorItem>());
+        }
+
+        private bool InitCef()
+        {
+            //// refer here:
+            //// https://github.com/cefsharp/CefSharp/blob/cefsharp/43/CefSharp.Example/CefExample.cs#L54
+
+            var settings = new CefSettings
+            {
+                CachePath = FileUtils.GetBrowserCacheFolder(),
+                LogFile = FileUtils.GetBrowserLogFilePath(),
+                LogSeverity = LogSeverity.Info
+            };
+
+            settings.CefCommandLineArgs.Add("no-proxy-server", "1");
+            settings.CefCommandLineArgs.Add("force-device-scale-factor", "1");
+
+            //// this setting is automatically added. It means that if the user has
+            //// Pepper Flash installed it will be detected and used.
+            //// settings.CefCommandLineArgs.Add("enable-system-flash", "1"); 
+
+            return Cef.Initialize(settings);
         }
     }
 }

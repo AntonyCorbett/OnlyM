@@ -35,6 +35,8 @@
             new SupportedMediaType { Name = "WMP Image", Classification = MediaClassification.Audio, FileExtension = ".wmp" },
 
             new SupportedMediaType { Name = "OnlyM Slideshow", Classification = MediaClassification.Slideshow, FileExtension = ".omslide" },
+
+            new SupportedMediaType { Name = "Web Page", Classification = MediaClassification.Web, FileExtension = ".url" }
         };
 
         private readonly HashSet<string> _supportedFileExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -54,7 +56,7 @@
         {
             var result = new MediaFolders();
 
-            var mediaFolder = _optionsService.Options.MediaFolder;
+            var mediaFolder = _optionsService.MediaFolder;
             result.MediaFolder = mediaFolder;
             
             var subFolder = DatedSubFolders.GetDatedSubFolder(mediaFolder, theDate);
@@ -70,7 +72,7 @@
         {
             var result = new List<MediaFile>();
 
-            var folders = GetMediaFolders(_optionsService.Options.OperatingDate);
+            var folders = GetMediaFolders(_optionsService.OperatingDate);
 
             result.AddRange(GetMediaFilesInFolder(folders.MediaFolder));
             result.AddRange(GetMediaFilesInFolder(folders.DatedSubFolder));

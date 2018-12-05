@@ -11,6 +11,7 @@
              xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
              xmlns:models="clr-namespace:OnlyM.Models"
              xmlns:resx="clr-namespace:OnlyM.Properties"
+             xmlns:controls="clr-namespace:OnlyM.Controls"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
              TextElement.FontSize="18"
@@ -216,10 +217,10 @@
                                                 Grid.Row="0"
                                                 Grid.RowSpan="2">
                                         <Button Style="{StaticResource SlideshowButtonStyle}"
-                                                IsEnabled="{Binding IsPreviousSlideButtonEnabled}"
-                                                Command="{Binding Path=DataContext.PreviousSlideCommand, Source={x:Reference OnlyMOperatorPage}}"
-                                                CommandParameter="{Binding Id}"
-                                                Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            IsEnabled="{Binding IsPreviousSlideButtonEnabled}"
+                                            Command="{Binding Path=DataContext.PreviousSlideCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                            CommandParameter="{Binding Id}"
+                                            Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                                             <materialDesign:PackIcon 
                                                 Kind="StepBackward"
@@ -228,11 +229,11 @@
 
                                         </Button>
                                         <Button Style="{StaticResource SlideshowButtonStyle}"
-                                                IsEnabled="{Binding IsNextSlideButtonEnabled}"
-                                                Command="{Binding Path=DataContext.NextSlideCommand, Source={x:Reference OnlyMOperatorPage}}"
-                                                CommandParameter="{Binding Id}"
-                                                Margin="6,0,0,0"
-                                                Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            IsEnabled="{Binding IsNextSlideButtonEnabled}"
+                                            Command="{Binding Path=DataContext.NextSlideCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                            CommandParameter="{Binding Id}"
+                                            Margin="6,0,0,0"
+                                            Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                                             <materialDesign:PackIcon 
                                                 Kind="StepForward"
@@ -241,6 +242,12 @@
                                         </Button>
                                     </StackPanel>
                                 </Grid>
+                                <controls:PathTextBlock 
+                                    Grid.Row="2" 
+                                    Grid.ColumnSpan="2"
+                                    FontSize="12" 
+                                    Path="{Binding MiscText}" />
+                                
                                 <ProgressBar Grid.Row="2" 
                                            Visibility="{Binding Path=HasDurationAndIsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
                                            Value="{Binding PlaybackPositionDeciseconds, Mode=OneWay}" 
