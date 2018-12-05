@@ -503,6 +503,24 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PURGE BROWSER CACHE.
+        /// </summary>
+        public static string PURGE_WEB_CACHE {
+            get {
+                return ResourceManager.GetString("PURGE_WEB_CACHE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The browser cache will be purged on next restart..
+        /// </summary>
+        public static string PURGE_WEB_CACHE_RESTART {
+            get {
+                return ResourceManager.GetString("PURGE_WEB_CACHE_RESTART", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rendering engine.
         /// </summary>
         public static string RENDERING_ENGINE {
@@ -737,11 +755,29 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Magnifier magnification level.
+        /// </summary>
+        public static string WEB_MAGNIFIER_ZOOM {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_ZOOM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Web Margins.
         /// </summary>
         public static string WEB_MARGINS {
             get {
                 return ResourceManager.GetString("WEB_MARGINS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page zoom increment.
+        /// </summary>
+        public static string WEB_ZOOM_INCREMENT {
+            get {
+                return ResourceManager.GetString("WEB_ZOOM_INCREMENT", resourceCulture);
             }
         }
         

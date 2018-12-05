@@ -86,6 +86,12 @@
 
         public event EventHandler LogEventLevelChangedEvent;
 
+        public bool ShouldPurgeBrowserCacheOnStartup
+        {
+            get => _options.Value.ShouldPurgeBrowserCacheOnStartup;
+            set => _options.Value.ShouldPurgeBrowserCacheOnStartup = value;
+        }
+
         public string AppWindowPlacement
         {
             get => _options.Value.AppWindowPlacement;
@@ -386,19 +392,6 @@
             }
         }
 
-        public bool ShowBrowserHeaderPanel
-        {
-            get => _options.Value.ShowBrowserHeaderPanel;
-            set
-            {
-                if (_options.Value.ShowBrowserHeaderPanel != value)
-                {
-                    _options.Value.ShowBrowserHeaderPanel = value;
-                    BrowserChangedEvent?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
         public LogEventLevel LogEventLevel
         {
             get => _options.Value.LogEventLevel;
@@ -421,19 +414,6 @@
                 {
                     _options.Value.AlwaysOnTop = value;
                     AlwaysOnTopChangedEvent?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        public bool WebAllowMagnifier
-        {
-            get => _options.Value.WebAllowMagnifier;
-            set
-            {
-                if (_options.Value.WebAllowMagnifier != value)
-                {
-                    _options.Value.WebAllowMagnifier = value;
-                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }

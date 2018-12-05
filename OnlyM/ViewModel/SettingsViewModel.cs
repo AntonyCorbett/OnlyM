@@ -1,4 +1,6 @@
-﻿namespace OnlyM.ViewModel
+﻿using OnlyM.Core.Utils;
+
+namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -44,7 +46,7 @@
         private readonly MagnifierSizeItem[] _magnifierSizes;
 
         private bool _isMediaActive;
-
+        
         public SettingsViewModel(
             IPageService pageService, 
             IMonitorsService monitorsService,
@@ -80,6 +82,8 @@
 
         public RelayCommand PurgeThumbnailCacheCommand { get; set; }
 
+        public RelayCommand PurgeWebCacheCommand { get; set; }
+
         public RelayCommand OpenMediaFolderCommand { get; set; }
 
         public ObservableCollection<string> RecentMediaFolders => _recentlyUsedMediaFolders.GetFolders();
@@ -93,6 +97,8 @@
         public IEnumerable<MagnifierShapeItem> MagnifierShapes => _magnifierShapes;
 
         public IEnumerable<MagnifierSizeItem> MagnifierSizes => _magnifierSizes;
+
+        public bool IsBrowserCachePurgeQueued => _optionsService.ShouldPurgeBrowserCacheOnStartup;
 
         public string MaxItemCount
         {
@@ -388,32 +394,6 @@
             }
         }
 
-        public bool WebShowHeaderPanel
-        {
-            get => _optionsService.ShowBrowserHeaderPanel;
-            set
-            {
-                if (_optionsService.ShowBrowserHeaderPanel != value)
-                {
-                    _optionsService.ShowBrowserHeaderPanel = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        public bool WebAllowMagnifier
-        {
-            get => _optionsService.WebAllowMagnifier;
-            set
-            {
-                if (_optionsService.WebAllowMagnifier != value)
-                {
-                    _optionsService.WebAllowMagnifier = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         public bool ShowCommandPanel
         {
             get => _optionsService.ShowMediaItemCommandPanel;
@@ -678,6 +658,34 @@
             }
         }
 
+        public double MagnifierZoomLevel
+        {
+            get => _optionsService.MagnifierZoomLevel;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_optionsService.MagnifierZoomLevel != value)
+                {
+                    _optionsService.MagnifierZoomLevel = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public double WebPageZoomIncrement
+        {
+            get => _optionsService.BrowserZoomLevelIncrement;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_optionsService.BrowserZoomLevelIncrement != value)
+                {
+                    _optionsService.BrowserZoomLevelIncrement = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public FadeSpeed FadeSpeedType
         {
             get => _optionsService.ImageFadeSpeed;
@@ -893,7 +901,14 @@
         private void InitCommands()
         {
             PurgeThumbnailCacheCommand = new RelayCommand(PurgeThumbnailCache);
+            PurgeWebCacheCommand = new RelayCommand(PurgeWebCache);
             OpenMediaFolderCommand = new RelayCommand(OpenMediaFolder);
+        }
+
+        private void PurgeWebCache()
+        {
+            _optionsService.ShouldPurgeBrowserCacheOnStartup = true;
+            RaisePropertyChanged(nameof(IsBrowserCachePurgeQueued));
         }
 
         private void OpenMediaFolder()

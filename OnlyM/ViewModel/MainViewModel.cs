@@ -1,3 +1,5 @@
+using OnlyM.Core.Utils;
+
 namespace OnlyM.ViewModel
 {
     using System;
@@ -73,6 +75,13 @@ namespace OnlyM.ViewModel
             
             _optionsService = optionsService;
             _optionsService.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
+
+            if (_optionsService.ShouldPurgeBrowserCacheOnStartup)
+            {
+                _optionsService.ShouldPurgeBrowserCacheOnStartup = false;
+                _optionsService.Save();
+                FileUtils.DeleteBrowserCacheFolder();
+            }
 
             _pageService.GotoOperatorPage();
 

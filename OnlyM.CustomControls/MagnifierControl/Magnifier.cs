@@ -237,6 +237,10 @@ namespace OnlyM.CustomControls.MagnifierControl
             ViewBox = new Rect(
               ViewBox.Location,
               new Size(ActualWidth * ZoomFactor, ActualHeight * ZoomFactor));
+
+            // make the brush transparent at ZoomFactor 1 (no zoom). This looks
+            // noticeable better!
+            _visualBrush.Opacity = AreVirtuallyEqual(ZoomFactor, 1.0) ? 0.0 : 1.0;
         }
     }
 }

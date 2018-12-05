@@ -15,7 +15,7 @@
         private const int DefaultMaxItemCount = 50;
         
         private const double DefaultMagnifierZoomLevel = 0.5;
-        private const double DefaultBrowserZoomLevelIncrement = 0.15;
+        private const double DefaultBrowserZoomLevelIncrement = 0.25;
         
         public Options()
         {
@@ -36,18 +36,18 @@
             MaxItemCount = DefaultMaxItemCount;
             MagnifierZoomLevel = DefaultMagnifierZoomLevel;
             BrowserZoomLevelIncrement = DefaultBrowserZoomLevelIncrement;
-            ShowBrowserHeaderPanel = true;
-            WebAllowMagnifier = true;
             MagnifierShape = MagnifierShape.Circle;
             MagnifierSize = MagnifierSize.Medium;
             
             VideoScreenPosition = new ScreenPosition();
             ImageScreenPosition = new ScreenPosition();
             WebScreenPosition = new ScreenPosition();
-
+            
             Sanitize();
         }
         
+        public bool ShouldPurgeBrowserCacheOnStartup { get; set; }
+
         public bool ShowMediaItemCommandPanel { get; set; }
 
         public bool ShowFreezeCommand { get; set; }
@@ -102,11 +102,7 @@
         public FadeSpeed ImageFadeSpeed { get; set; }
 
         public double BrowserZoomLevelIncrement { get; set; }
-
-        public bool ShowBrowserHeaderPanel { get; set; }
-
-        public bool WebAllowMagnifier { get; set; }
-
+        
         public MagnifierShape MagnifierShape { get; set; }
 
         public MagnifierSize MagnifierSize { get; set; }

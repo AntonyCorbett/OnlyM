@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Core.Utils
+﻿using Serilog;
+
+namespace OnlyM.Core.Utils
 {
     using System;
     using System.IO;
@@ -146,6 +148,36 @@
             var folder = Path.Combine(GetOnlyMMyDocsFolder(), "BrowserLogs");
             Directory.CreateDirectory(folder);
             return Path.Combine(folder, "browser.log");
+        }
+
+        public static void DeleteBrowserCacheFolder()
+        {
+            var folder = GetBrowserCacheFolder();
+
+            try
+            {
+                Log.Logger.Information("Purging browser cache");
+
+                if (Directory.Exists(folder))
+                {
+                    Directory.Delete(folder, true);
+                }
+            }
+            catch (IOException ex)
+            {
+                // it's normal for the "Visited Links" file to be in use,
+                // so just test that the "Cookies" file has been removed. If so
+                // we assume success.
+                var cookiesFile = Path.Combine(folder, "Cookies");
+                if (File.Exists(cookiesFile))
+                {
+                    Log.Logger.Error(ex, "Could not purge browser cache");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not purge browser cache");
+            }
         }
     }
 }

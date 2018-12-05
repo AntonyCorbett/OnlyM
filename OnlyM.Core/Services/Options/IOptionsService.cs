@@ -53,6 +53,8 @@
 
         event EventHandler LogEventLevelChangedEvent;
 
+        bool ShouldPurgeBrowserCacheOnStartup { get; set; }
+
         string AppWindowPlacement { get; set; }
 
         List<string> RecentlyUsedMediaFolders { get; set; }
@@ -101,13 +103,9 @@
 
         double BrowserZoomLevelIncrement { get; set; }
         
-        bool ShowBrowserHeaderPanel { get; set; }
-
         LogEventLevel LogEventLevel { get; set; }
 
         bool AlwaysOnTop { get; set; }
-
-        bool WebAllowMagnifier { get; set; }
 
         MagnifierShape MagnifierShape { get; set; }
 

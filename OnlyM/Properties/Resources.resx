@@ -428,4 +428,20 @@
     <value>Magnifier size</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
+  <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
+    <value>Magnifier magnification level</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
+    <value>Page zoom increment</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="PURGE_WEB_CACHE" xml:space="preserve">
+    <value>PURGE BROWSER CACHE</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
+    <value>The browser cache will be purged on next restart.</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
 </root>

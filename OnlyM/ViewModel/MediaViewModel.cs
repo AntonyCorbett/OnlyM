@@ -21,6 +21,7 @@
             _optionsService = optionsService;
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
             _optionsService.MagnifierChangedEvent += HandleMagnifierChangedEvent;
+            _optionsService.BrowserChangedEvent += HandleBrowserChangedEvent;
 
             InitCommands();
         }
@@ -59,7 +60,7 @@
 
         public bool IsMagnifierVisible
         {
-            get => _isMagnifierVisible && _optionsService.WebAllowMagnifier;
+            get => _isMagnifierVisible;
             set
             {
                 if (_isMagnifierVisible != value)
@@ -279,6 +280,11 @@
             RaisePropertyChanged(nameof(MagnifierFrameType));
             RaisePropertyChanged(nameof(MagnifierZoomLevel));
             RaisePropertyChanged(nameof(MagnifierRadius));
+        }
+
+        private void HandleBrowserChangedEvent(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(BrowserZoomLevelIncrement));
         }
     }
 }
