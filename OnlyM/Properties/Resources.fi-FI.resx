@@ -397,55 +397,55 @@
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
   <data name="WEB_LOAD_FAIL" xml:space="preserve">
-    <value>Failed to load URL {0} with error {1} ({2})</value>
+    <value>Verkkosivun {0} lataus epäonnistui, virhe {1} ({2})</value>
     <comment>Error message displayed when a web page cannot be loaded.</comment>
   </data>
   <data name="LOADING_FRAME" xml:space="preserve">
-    <value>Loading frame {0}</value>
+    <value>Ladataan ruutua {0}</value>
     <comment>Progress message displayed when loading a web page</comment>
   </data>
   <data name="WEB_MARGINS" xml:space="preserve">
-    <value>Web Margins</value>
+    <value>Verkkosivujen reunukset</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_WEB" xml:space="preserve">
-    <value>WEB</value>
+    <value>VERKKOSIVUT</value>
     <comment>Section title for Settings =&gt; Web</comment>
   </data>
   <data name="WEB_HEADER_PANEL_SHOW" xml:space="preserve">
-    <value>Show header panel</value>
+    <value>Näytä ylätunnistepaneeli</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
-    <value>Show magnifier</value>
+    <value>Näytä suurennuslasi</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
-    <value>Magnifier shape</value>
+    <value>Suurennuslasin muoto</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
-    <value>Magnifier size</value>
+    <value>Suurennuslasin koko</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
-    <value>Magnifier magnification level</value>
+    <value>Suurennuslasin suurennustaso</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
-    <value>Page zoom increment</value>
+    <value>Sivun suurennusherkkyys</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>PURGE BROWSER CACHE</value>
+    <value>TYHJENNÄ SELAIMEN VÄLIMUISTI</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
-    <value>The browser cache will be purged on next restart.</value>
+    <value>Selaimen välimuisti puhdistetaan, kun käynnistät OnlyM:n uudelleen.</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
-    <value>Magnifier frame thickness</value>
+    <value>Suurennuslasin reunuksen paksuus</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
 </root>
