@@ -417,19 +417,19 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
-    <value>Show magnifier</value>
+    <value>Lupe anzeigen</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
-    <value>Magnifier shape</value>
+    <value>Form der Lupe</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
-    <value>Magnifier size</value>
+    <value>Größe der Lupe</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
-    <value>Magnifier magnification level</value>
+    <value>Vergrößerungsstufe</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
