@@ -16,7 +16,7 @@
         Title="MediaWindow" 
         Height="500"
         Width="500"
-        Loaded="WindowLoaded" Closing="WindowClosing" SizeChanged="Window_SizeChanged">
+        Loaded="WindowLoaded" Closing="WindowClosing" SizeChanged="WindowSizeChanged">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -133,7 +133,7 @@
                                Margin="20,0,0,0"
                                VerticalAlignment="Center"
                                Foreground="{StaticResource PrimaryHueLightBrush}"
-                               TextTrimming="WordEllipsis"
+                               TextTrimming="CharacterEllipsis"
                                FontSize="28"/>
 
                 </StackPanel>
