@@ -206,18 +206,18 @@
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XLARGE" xml:space="preserve">
-    <value>X Large</value>
+    <value>Ekstrasuuri</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XSMALL" xml:space="preserve">
-    <value>X Small</value>
+    <value>Ekstrapieni</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XXLARGE" xml:space="preserve">
-    <value>XXLarge</value>
+    <value>Suurin</value>
   </data>
   <data name="MAGNIFIER_SIZE_XXSMALL" xml:space="preserve">
-    <value>XX Small</value>
+    <value>Pienin</value>
   </data>
   <data name="Unknown" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Unknown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
