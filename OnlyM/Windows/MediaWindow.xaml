@@ -14,9 +14,9 @@
         ResizeMode="NoResize" 
         mc:Ignorable="d"
         Title="MediaWindow" 
-        Height="{Binding WindowHeight, Mode=OneWayToSource}" 
-        Width="800" 
-        Loaded="WindowLoaded" Closing="WindowClosing">
+        Height="500"
+        Width="500"
+        Loaded="WindowLoaded" Closing="WindowClosing" SizeChanged="Window_SizeChanged">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -230,7 +230,7 @@
 
                 <magnifierControl:MagnifierManager.Magnifier>
                     <magnifierControl:Magnifier BorderBrush="Red" 
-                                    BorderThickness="1" 
+                                    BorderThickness="{Binding MagnifierFrameThickness}" 
                                     Visibility="{Binding Path=IsMagnifierVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Radius="{Binding MagnifierRadius}"
                                     FrameType="{Binding MagnifierFrameType}"

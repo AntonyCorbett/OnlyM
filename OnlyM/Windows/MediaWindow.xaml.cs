@@ -454,5 +454,11 @@
             
             SubscribeVideoEvents();
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var vm = (MediaViewModel)DataContext;
+            vm.WindowSize = new Size(ActualWidth, ActualHeight);
+        }
     }
 }

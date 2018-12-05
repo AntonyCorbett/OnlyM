@@ -1,6 +1,4 @@
-﻿using OnlyM.Core.Utils;
-
-namespace OnlyM.ViewModel
+﻿namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -667,6 +665,20 @@ namespace OnlyM.ViewModel
                 if (_optionsService.MagnifierZoomLevel != value)
                 {
                     _optionsService.MagnifierZoomLevel = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public double MagnifierFrameThickness
+        {
+            get => _optionsService.MagnifierFrameThickness;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_optionsService.MagnifierFrameThickness != value)
+                {
+                    _optionsService.MagnifierFrameThickness = value;
                     RaisePropertyChanged();
                 }
             }

@@ -102,6 +102,17 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="TickFrequency" Value="0.1"/>
             </Style>
+
+            <Style x:Key="MagnificationFrameThicknessSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignSlider}">
+                <Setter Property="Margin" Value="0,0,0,3"/>
+                <Setter Property="Width" Value="420"/>
+                <Setter Property="Minimum" Value="1"/>
+                <Setter Property="Maximum" Value="5"/>
+                <Setter Property="SmallChange" Value="0.5"/>
+                <Setter Property="LargeChange" Value="1"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="TickFrequency" Value="1"/>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -232,6 +243,12 @@
 
                 <Slider Style="{StaticResource WebPageZoomSliderStyle}" 
                         Value="{Binding WebPageZoomIncrement, Mode=TwoWay}"/>
+
+                <Label Style="{StaticResource SettingsLabelStyle}" 
+                       Content="{x:Static resx:Resources.WEB_MAGNIFIER_FRAME_THICKNESS}"/>
+
+                <Slider Style="{StaticResource MagnificationFrameThicknessSliderStyle}" 
+                        Value="{Binding MagnifierFrameThickness, Mode=TwoWay}"/>
 
                 <Button 
                     Style="{StaticResource SettingsButtonStyle}" 

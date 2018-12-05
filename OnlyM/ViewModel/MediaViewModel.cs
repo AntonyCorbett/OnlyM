@@ -1,6 +1,7 @@
 ﻿namespace OnlyM.ViewModel
 {
     using System;
+    using System.Windows;
     using CefSharp.Wpf;
     using Core.Models;
     using Core.Services.Options;
@@ -15,10 +16,12 @@
         private string _subtitleText;
         private IWpfWebBrowser _webBrowser;
         private bool _isMagnifierVisible;
+        private Size _windowSize;
 
         public MediaViewModel(IOptionsService optionsService)
         {
             _optionsService = optionsService;
+            
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
             _optionsService.MagnifierChangedEvent += HandleMagnifierChangedEvent;
             _optionsService.BrowserChangedEvent += HandleBrowserChangedEvent;
@@ -42,6 +45,20 @@
         {
             get => _webBrowser;
             set => Set(ref _webBrowser, value);
+        }
+
+        public Size WindowSize
+        {
+            get => _windowSize;
+            set
+            {
+                if (_windowSize != value)
+                {
+                    _windowSize = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(MagnifierRadius));
+                }
+            }
         }
 
         public double BrowserZoomLevelIncrement
@@ -98,10 +115,17 @@
                 }
             }
         }
-        
-        public int WindowHeight { get; set; }
 
-        public double MagnifierRadius => CalculateMagnifierRadius();
+        public double MagnifierFrameThickness => _optionsService.MagnifierFrameThickness;
+
+        public double MagnifierRadius
+        {
+            get
+            {
+                var r = CalculateMagnifierRadius();
+                return r;
+            }
+        } 
 
         public bool IsMagnifierFrameSquare
         {
@@ -246,7 +270,7 @@
         private double CalculateMagnifierRadius()
         {
             const int minDelta = 10;
-            var delta = Math.Max(WindowHeight / 40, minDelta);
+            var delta = Math.Max(WindowSize.Height / 40, minDelta);
 
             switch (_optionsService.MagnifierSize)
             {
@@ -280,6 +304,7 @@
             RaisePropertyChanged(nameof(MagnifierFrameType));
             RaisePropertyChanged(nameof(MagnifierZoomLevel));
             RaisePropertyChanged(nameof(MagnifierRadius));
+            RaisePropertyChanged(nameof(MagnifierFrameThickness));
         }
 
         private void HandleBrowserChangedEvent(object sender, EventArgs e)

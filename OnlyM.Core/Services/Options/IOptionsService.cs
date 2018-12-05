@@ -52,7 +52,7 @@
         event EventHandler BrowserChangedEvent;
 
         event EventHandler LogEventLevelChangedEvent;
-
+        
         bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 
         string AppWindowPlacement { get; set; }
@@ -106,6 +106,8 @@
         LogEventLevel LogEventLevel { get; set; }
 
         bool AlwaysOnTop { get; set; }
+
+        double MagnifierFrameThickness { get; set; }
 
         MagnifierShape MagnifierShape { get; set; }
 

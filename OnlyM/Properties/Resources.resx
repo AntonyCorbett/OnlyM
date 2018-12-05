@@ -444,4 +444,8 @@
     <value>The browser cache will be purged on next restart.</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
+  <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
+    <value>Magnifier frame thickness</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
 </root>

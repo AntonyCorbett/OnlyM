@@ -1,5 +1,3 @@
-using OnlyM.Core.Utils;
-
 namespace OnlyM.ViewModel
 {
     using System;
@@ -17,6 +15,7 @@ namespace OnlyM.ViewModel
     using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
     using Models;
+    using OnlyM.Core.Utils;
     using PubSubMessages;
     using Services.DragAndDrop;
     using Services.HiddenMediaItems;

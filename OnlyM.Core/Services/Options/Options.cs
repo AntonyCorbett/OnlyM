@@ -16,7 +16,11 @@
         
         private const double DefaultMagnifierZoomLevel = 0.5;
         private const double DefaultBrowserZoomLevelIncrement = 0.25;
-        
+
+        private const double MinBrowserFrameThickness = 1.0;
+        private const double DefaultBrowserFrameThickness = 2.0;
+        private const double MaxBrowserFrameThickness = 5.0;
+
         public Options()
         {
             // defaults
@@ -38,7 +42,8 @@
             BrowserZoomLevelIncrement = DefaultBrowserZoomLevelIncrement;
             MagnifierShape = MagnifierShape.Circle;
             MagnifierSize = MagnifierSize.Medium;
-            
+            MagnifierFrameThickness = DefaultBrowserFrameThickness;
+
             VideoScreenPosition = new ScreenPosition();
             ImageScreenPosition = new ScreenPosition();
             WebScreenPosition = new ScreenPosition();
@@ -109,6 +114,8 @@
 
         public double MagnifierZoomLevel { get; set; }
 
+        public double MagnifierFrameThickness { get; set; }
+
         public bool EmbeddedThumbnails { get; set; }
 
         public bool CacheImages { get; set; }
@@ -172,6 +179,12 @@
             if (BrowserZoomLevelIncrement < 0 || BrowserZoomLevelIncrement > 1)
             {
                 BrowserZoomLevelIncrement = DefaultBrowserZoomLevelIncrement;
+            }
+
+            if (MagnifierFrameThickness < MinBrowserFrameThickness ||
+                MagnifierFrameThickness > MaxBrowserFrameThickness)
+            {
+                MagnifierFrameThickness = DefaultBrowserFrameThickness;
             }
         }
     }

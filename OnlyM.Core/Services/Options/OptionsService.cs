@@ -418,6 +418,20 @@
             }
         }
 
+        public double MagnifierFrameThickness
+        {
+            get => _options.Value.MagnifierFrameThickness;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_options.Value.MagnifierFrameThickness != value)
+                {
+                    _options.Value.MagnifierFrameThickness = value;
+                    MagnifierChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            } 
+        }
+
         public MagnifierShape MagnifierShape
         {
             get => _options.Value.MagnifierShape;

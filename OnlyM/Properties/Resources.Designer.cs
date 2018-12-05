@@ -728,6 +728,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Magnifier frame thickness.
+        /// </summary>
+        public static string WEB_MAGNIFIER_FRAME_THICKNESS {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_FRAME_THICKNESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Magnifier shape.
         /// </summary>
         public static string WEB_MAGNIFIER_SHAPE {
