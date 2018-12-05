@@ -437,15 +437,15 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>PURGE BROWSER CACHE</value>
+    <value>LIMPAR O CACHE DO NAVEGADOR</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
-    <value>The browser cache will be purged on next restart.</value>
+    <value>A cache do navegador será limpa na próxima vez que abrir o programa.</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
-    <value>Magnifier frame thickness</value>
+    <value>Espessura da moldura da lupa</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
 </root>
