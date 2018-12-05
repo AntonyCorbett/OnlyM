@@ -413,7 +413,7 @@
     <comment>Section title for Settings =&gt; Web</comment>
   </data>
   <data name="WEB_HEADER_PANEL_SHOW" xml:space="preserve">
-    <value>Show header panel</value>
+    <value>Visa övre panel</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
