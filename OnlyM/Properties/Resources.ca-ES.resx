@@ -413,7 +413,7 @@
     <comment>Section title for Settings =&gt; Web</comment>
   </data>
   <data name="WEB_HEADER_PANEL_SHOW" xml:space="preserve">
-    <value>Show header panel</value>
+    <value>Mostra la barra d'opcions a la capçalera</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
@@ -437,7 +437,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>PURGE BROWSER CACHE</value>
+    <value>ESBORRA LA MEMÒRIA CAU</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
