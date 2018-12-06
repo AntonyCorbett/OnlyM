@@ -710,15 +710,6 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show header panel.
-        /// </summary>
-        public static string WEB_HEADER_PANEL_SHOW {
-            get {
-                return ResourceManager.GetString("WEB_HEADER_PANEL_SHOW", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to load URL {0} with error {1} ({2}).
         /// </summary>
         public static string WEB_LOAD_FAIL {
