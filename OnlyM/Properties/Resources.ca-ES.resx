@@ -397,7 +397,7 @@
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
   <data name="WEB_LOAD_FAIL" xml:space="preserve">
-    <value>No es pot obrir la pàgina web {0} perquè hi ha un error: {1} ({2})</value>
+    <value>No es pot obrir la pàgina web {0} perquè hi ha hagut un error: {1} ({2})</value>
     <comment>Error message displayed when a web page cannot be loaded.</comment>
   </data>
   <data name="LOADING_FRAME" xml:space="preserve">
