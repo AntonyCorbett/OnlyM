@@ -88,10 +88,10 @@
                 <KeyBinding Command="{Binding WebBrowser.StopCommand}" Key="BrowserStop" Modifiers="Control"/>
                 <KeyBinding Command="{Binding WebBrowser.StopCommand}" Key="Escape" Modifiers="Control"/>
 
-                <KeyBinding Command="{Binding ToggleMagnifier}" Key="F7" />
-                <KeyBinding Command="{Binding ToggleMagnifierFrame}" Key="F8" />
-                <KeyBinding Command="{Binding MagnifierLarger}" Key="F9" />
-                <KeyBinding Command="{Binding MagnifierSmaller}" Key="F10" />
+                <KeyBinding Command="{Binding ToggleMagnifier}" Key="F1" />
+                <KeyBinding Command="{Binding ToggleMagnifierFrame}" Key="F2" />
+                <KeyBinding Command="{Binding MagnifierLarger}" Key="F3" />
+                <KeyBinding Command="{Binding MagnifierSmaller}" Key="F4" />
                 
             </Grid.InputBindings>
 
@@ -100,8 +100,14 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <DockPanel Grid.Row="0" Background="{StaticResource MaterialDesignBody}">
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="5,0,0,0">
+            <Grid Grid.Row="0" Background="{StaticResource MaterialDesignBody}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="190"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="395"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="5,0,0,0">
                     <Button
                         Style="{StaticResource NavButtonStyle}"
                         Command="{Binding WebBrowser.BackCommand}">
@@ -128,17 +134,19 @@
                             Height="32"
                             Width="32"/>
                     </Button>
-
-                    <TextBlock Text="{Binding WebBrowser.Title}"
-                               Margin="20,0,0,0"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource PrimaryHueLightBrush}"
-                               TextTrimming="CharacterEllipsis"
-                               FontSize="28"/>
-
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="0,0,5,0">
+                <TextBlock Grid.Column="1" 
+                           Text="{Binding WebBrowser.Title}"
+                           Margin="0,0,0,0"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource PrimaryHueLightBrush}"
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="28"/>
+
+                <StackPanel Orientation="Horizontal" 
+                            Grid.Column="2"
+                            HorizontalAlignment="Right" Margin="0,0,5,0">
                     <ToggleButton Style="{StaticResource ToggleBtnStyle}"
                                   IsChecked="{Binding IsMagnifierVisible, Mode=TwoWay}">
                         <ToggleButton.Content>
@@ -220,7 +228,7 @@
 
                 </StackPanel>
 
-            </DockPanel>
+            </Grid>
 
             <Grid Grid.Row="1" Background="White">
                 <wpf:ChromiumWebBrowser 
