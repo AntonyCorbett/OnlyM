@@ -134,7 +134,7 @@
     <comment>Message displayed when there is an error copying media to the OnlyM media folder</comment>
   </data>
   <data name="FILES_COPIED" xml:space="preserve">
-    <value>{0} fişierele copiate</value>
+    <value>{0} fişiere copiate</value>
     <comment>Displayed as a notification message when several files are dropped onto the media list. Please leve the placeholder as it is.</comment>
   </data>
   <data name="FILE_COPIED" xml:space="preserve">
@@ -193,7 +193,7 @@
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Nu pot deselecta monitorul când media este activ</value>
+    <value>Nu poți deselecta monitorul când media este activ</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
@@ -201,7 +201,7 @@
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="SLIDE_X_OF_Y" xml:space="preserve">
-    <value>glisaţi {0} {1}</value>
+    <value>diapozitivul {0} {1}</value>
     <comment>Displayed when showing a slideshow to indicate which slide is being viewed. Please retain the placeholders.</comment>
   </data>
   <data name="CONTAINS_X_ROLLING_SLIDES" xml:space="preserve">
@@ -209,7 +209,7 @@
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="ROLLING_SLIDE_X_OF_Y" xml:space="preserve">
-    <value>rulare diapozitiv {0} {1}</value>
+    <value>rulare diapozitiv {0} din {1}</value>
     <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
   </data>
   <data name="MEDIA_MONITOR" xml:space="preserve">
@@ -241,7 +241,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Arată cadrele în timpul derulării</value>
+    <value>Permite derulare când este în pauză</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
@@ -321,7 +321,7 @@
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
-    <value>Include imagine ”Ecran negru”</value>
+    <value>Include ”Ecran negru”</value>
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
@@ -329,7 +329,7 @@
     <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
   </data>
   <data name="PERMANENT_BACKDROP" xml:space="preserve">
-    <value>Fundal negru</value>
+    <value>Fundal negru permanent</value>
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
@@ -389,11 +389,11 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="RESTART_LANGUAGE" xml:space="preserve">
-    <value>Vă rugăm reporniţi OnlyM după schimbarea limbii.</value>
+    <value>Vă rugăm să reporniţi OnlyM după schimbarea limbii.</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="GENERATING_SUBTITLES" xml:space="preserve">
-    <value>Se generează subtitrarea</value>
+    <value>Se generează subtitrările</value>
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
   <data name="WEB_LOAD_FAIL" xml:space="preserve">
@@ -433,7 +433,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
-    <value>Nivel creștere zoom</value>
+    <value>Nivel mărire pagină</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
