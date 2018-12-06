@@ -186,31 +186,31 @@
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="MAGNIFIER_SHAPE_CIRCLE" xml:space="preserve">
-    <value>Circle</value>
+    <value>Cerc</value>
     <comment>See Settings =&gt; Web (magnifier shape)</comment>
   </data>
   <data name="MAGNIFIER_SHAPE_SQUARE" xml:space="preserve">
-    <value>Square</value>
+    <value>Pătrat</value>
     <comment>See Settings =&gt; Web (magnifier shape)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_LARGE" xml:space="preserve">
-    <value>Large</value>
+    <value>Mare</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_MEDIUM" xml:space="preserve">
-    <value>Medium</value>
+    <value>Mediu</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_SMALL" xml:space="preserve">
-    <value>Small</value>
+    <value>Mic</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XLARGE" xml:space="preserve">
-    <value>X Large</value>
+    <value>Foarte mare</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XSMALL" xml:space="preserve">
-    <value>X Small</value>
+    <value>Foarte mic</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XXLARGE" xml:space="preserve">
