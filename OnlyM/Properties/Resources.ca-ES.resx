@@ -396,4 +396,56 @@
     <value>S'estan generant els subtítols</value>
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
+  <data name="WEB_LOAD_FAIL" xml:space="preserve">
+    <value>No es pot obrir la pàgina web {0} perquè hi ha hagut un error: {1} ({2})</value>
+    <comment>Error message displayed when a web page cannot be loaded.</comment>
+  </data>
+  <data name="LOADING_FRAME" xml:space="preserve">
+    <value>S'està carregant la pàgina {0}</value>
+    <comment>Progress message displayed when loading a web page</comment>
+  </data>
+  <data name="WEB_MARGINS" xml:space="preserve">
+    <value>Marges de les pàgines web</value>
+    <comment>See Settings =&gt; Margins</comment>
+  </data>
+  <data name="SECTION_WEB" xml:space="preserve">
+    <value>PÀGINES WEB</value>
+    <comment>Section title for Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_HEADER_PANEL_SHOW" xml:space="preserve">
+    <value>Mostra la barra d'opcions a la capçalera</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
+    <value>Mostra la lupa</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
+    <value>Forma de la lupa</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
+    <value>Mida de la lupa</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
+    <value>Magnifier magnification level</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
+    <value>Page zoom increment</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="PURGE_WEB_CACHE" xml:space="preserve">
+    <value>ESBORRA LA MEMÒRIA CAU</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
+    <value>La memòria cau del navegador web s'esborrarà quan reiniciïs l'aplicació.</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
+    <value>Magnifier frame thickness</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
 </root>

@@ -174,7 +174,7 @@
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_INFORMATION" xml:space="preserve">
-    <value>Informație</value>
+    <value>Informare</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_VERBOSE" xml:space="preserve">
@@ -182,10 +182,47 @@
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_WARNING" xml:space="preserve">
-    <value>Avertisment</value>
+    <value>Avertizare</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
+  </data>
+  <data name="MAGNIFIER_SHAPE_CIRCLE" xml:space="preserve">
+    <value>Cerc</value>
+    <comment>See Settings =&gt; Web (magnifier shape)</comment>
+  </data>
+  <data name="MAGNIFIER_SHAPE_SQUARE" xml:space="preserve">
+    <value>Pătrat</value>
+    <comment>See Settings =&gt; Web (magnifier shape)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_LARGE" xml:space="preserve">
+    <value>Mare</value>
+    <comment>See Settings =&gt; Web (magnifier size)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_MEDIUM" xml:space="preserve">
+    <value>Mediu</value>
+    <comment>See Settings =&gt; Web (magnifier size)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_SMALL" xml:space="preserve">
+    <value>Mic</value>
+    <comment>See Settings =&gt; Web (magnifier size)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_XLARGE" xml:space="preserve">
+    <value>Foarte mare</value>
+    <comment>See Settings =&gt; Web (magnifier size)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_XSMALL" xml:space="preserve">
+    <value>Foarte mic</value>
+    <comment>See Settings =&gt; Web (magnifier size)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_XXLARGE" xml:space="preserve">
+    <value>Extra mare</value>
+  </data>
+  <data name="MAGNIFIER_SIZE_XXSMALL" xml:space="preserve">
+    <value>Extra mic</value>
   </data>
   <data name="Unknown" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Unknown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Web" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Web.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

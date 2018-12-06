@@ -396,4 +396,56 @@
     <value>Genererar undertexter</value>
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
+  <data name="WEB_LOAD_FAIL" xml:space="preserve">
+    <value>Webbsidan {0} kunde inte laddas, fel {1} ({2})</value>
+    <comment>Error message displayed when a web page cannot be loaded.</comment>
+  </data>
+  <data name="LOADING_FRAME" xml:space="preserve">
+    <value>Laddar ram {0}</value>
+    <comment>Progress message displayed when loading a web page</comment>
+  </data>
+  <data name="WEB_MARGINS" xml:space="preserve">
+    <value>Webmarginaler</value>
+    <comment>See Settings =&gt; Margins</comment>
+  </data>
+  <data name="SECTION_WEB" xml:space="preserve">
+    <value>WEBB</value>
+    <comment>Section title for Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_HEADER_PANEL_SHOW" xml:space="preserve">
+    <value>Visa övre panel</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
+    <value>Visa förstoringsglas</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
+    <value>Förstoringsglasets form</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
+    <value>Förstoringsglasets storlek</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
+    <value>Förstoringsnivå</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
+    <value>Förstoringskänslighet</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="PURGE_WEB_CACHE" xml:space="preserve">
+    <value>TÖM WEBBLÄSARENS CACHEMINNE</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
+    <value>Webbläsarens cacheminne töms vid nästa omstart.</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
+    <value>Förstoringsglasets ramtjocklek</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
 </root>

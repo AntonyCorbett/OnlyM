@@ -185,7 +185,44 @@
     <value>Varoitus</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
+  <data name="MAGNIFIER_SHAPE_CIRCLE" xml:space="preserve">
+    <value>Ympyrä</value>
+    <comment>See Settings =&gt; Web (magnifier shape)</comment>
+  </data>
+  <data name="MAGNIFIER_SHAPE_SQUARE" xml:space="preserve">
+    <value>Neliö</value>
+    <comment>See Settings =&gt; Web (magnifier shape)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_LARGE" xml:space="preserve">
+    <value>Suuri</value>
+    <comment>See Settings =&gt; Web (magnifier size)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_MEDIUM" xml:space="preserve">
+    <value>Keskikokoinen</value>
+    <comment>See Settings =&gt; Web (magnifier size)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_SMALL" xml:space="preserve">
+    <value>Pieni</value>
+    <comment>See Settings =&gt; Web (magnifier size)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_XLARGE" xml:space="preserve">
+    <value>Erittäin suuri</value>
+    <comment>See Settings =&gt; Web (magnifier size)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_XSMALL" xml:space="preserve">
+    <value>Erittäin pieni</value>
+    <comment>See Settings =&gt; Web (magnifier size)</comment>
+  </data>
+  <data name="MAGNIFIER_SIZE_XXLARGE" xml:space="preserve">
+    <value>Suurin</value>
+  </data>
+  <data name="MAGNIFIER_SIZE_XXSMALL" xml:space="preserve">
+    <value>Pienin</value>
+  </data>
   <data name="Unknown" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Unknown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Web" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Web.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
