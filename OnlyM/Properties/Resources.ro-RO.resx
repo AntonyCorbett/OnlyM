@@ -249,7 +249,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Imagini din cache (crește performanţa, consumă memoria)</value>
+    <value>Imagini cache (crește performanţa dar consumă memorie)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
@@ -281,7 +281,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>ȘTERGE CACHE</value>
+    <value>ȘTERGE CACHE PREVIZUALIZARE</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
