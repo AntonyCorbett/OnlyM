@@ -206,11 +206,11 @@
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XLARGE" xml:space="preserve">
-    <value>Ekstrasuuri</value>
+    <value>Erittäin suuri</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XSMALL" xml:space="preserve">
-    <value>Ekstrapieni</value>
+    <value>Erittäin pieni</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XXLARGE" xml:space="preserve">
