@@ -142,7 +142,7 @@
     <comment>Displayed as a notification message when a single file is dropped onto the media list.</comment>
   </data>
   <data name="MEDIA_ACTIVE" xml:space="preserve">
-    <value>Media activ - nu se poate închide!</value>
+    <value>Conținut media activ - nu se poate închide!</value>
     <comment>This is the notification displayed if you try to close OnlyM when media is playing.</comment>
   </data>
   <data name="MONITOR_NONE" xml:space="preserve">
