@@ -48,6 +48,26 @@
 
         public void Sanitize()
         {
+            if (LeftMarginPercentage < 0)
+            {
+                LeftMarginPercentage = 0;
+            }
+
+            if (RightMarginPercentage < 0)
+            {
+                RightMarginPercentage = 0;
+            }
+
+            if (TopMarginPercentage < 0)
+            {
+                TopMarginPercentage = 0;
+            }
+
+            if (BottomMarginPercentage < 0)
+            {
+                BottomMarginPercentage = 0;
+            }
+
             if (LeftMarginPercentage + RightMarginPercentage > 90)
             {
                 LeftMarginPercentage = 0;
