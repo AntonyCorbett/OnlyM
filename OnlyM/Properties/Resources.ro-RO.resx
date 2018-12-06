@@ -249,7 +249,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Imagini din cache (performanţă mai bună dar consumă memorie)</value>
+    <value>Imagini din cache (crește performanţa, consumă memoria)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
@@ -269,7 +269,7 @@
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
-    <value>Marginile imaginii</value>
+    <value>Margini imagine</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
@@ -277,7 +277,7 @@
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
-    <value>Fereastra principală întotdeauna deasupra</value>
+    <value>Întotdeauna deasupra</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Arată comanda "Îngheață" în panoul de comandă</value>
+    <value>Arată opțiunea "Îngheață" în panoul de comandă</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
@@ -329,7 +329,7 @@
     <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
   </data>
   <data name="PERMANENT_BACKDROP" xml:space="preserve">
-    <value>Fundal negru permanent</value>
+    <value>Fundal negru</value>
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
@@ -389,7 +389,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="RESTART_LANGUAGE" xml:space="preserve">
-    <value>Vă rugăm să reporniţi OnlyM după schimbarea limbii.</value>
+    <value>Vă rugăm reporniţi OnlyM după schimbarea limbii.</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="GENERATING_SUBTITLES" xml:space="preserve">
