@@ -142,7 +142,7 @@
     <comment>Displayed as a notification message when a single file is dropped onto the media list.</comment>
   </data>
   <data name="MEDIA_ACTIVE" xml:space="preserve">
-    <value>Media este activ - nu se poate închide!</value>
+    <value>Conținut media activ - nu se poate închide!</value>
     <comment>This is the notification displayed if you try to close OnlyM when media is playing.</comment>
   </data>
   <data name="MONITOR_NONE" xml:space="preserve">
@@ -229,7 +229,7 @@
     <comment>Section title for Settings =&gt; Media Files</comment>
   </data>
   <data name="MAX_ITEMS" xml:space="preserve">
-    <value>Numărul maxim de elemente</value>
+    <value>Număr maxim de elemente</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
@@ -241,7 +241,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Afișează cadrele la derularea pe pauză</value>
+    <value>Arată cadrele în timpul derulării</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
@@ -249,7 +249,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Imagini din cache (performanţă mai bună dar consumă memorie)</value>
+    <value>Imagini cache (crește performanţa dar consumă memorie)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
@@ -269,19 +269,19 @@
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
-    <value>Marginile imaginii</value>
+    <value>Margini imagine</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
-    <value>Nivel de logare</value>
+    <value>Nivel logare</value>
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
-    <value>Fereastra principală întotdeauna deasupra</value>
+    <value>Întotdeauna deasupra</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>ȘTERGE CACHE</value>
+    <value>ȘTERGE CACHE PREVIZUALIZARE</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Arată comanda "Îngheață" în panoul de comandă</value>
+    <value>Arată opțiunea "Îngheață" în panoul de control</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
@@ -329,7 +329,7 @@
     <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
   </data>
   <data name="PERMANENT_BACKDROP" xml:space="preserve">
-    <value>Fundal negru permanent</value>
+    <value>Fundal negru</value>
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
@@ -389,7 +389,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="RESTART_LANGUAGE" xml:space="preserve">
-    <value>Vă rugăm să reporniţi OnlyM după schimbarea limbii.</value>
+    <value>Vă rugăm reporniţi OnlyM după schimbarea limbii.</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="GENERATING_SUBTITLES" xml:space="preserve">
@@ -397,15 +397,15 @@
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
   <data name="WEB_LOAD_FAIL" xml:space="preserve">
-    <value>Failed to load URL {0} with error {1} ({2})</value>
+    <value>Nu s-a putut încărca pagina {0} cu eroarea {1} ({2})</value>
     <comment>Error message displayed when a web page cannot be loaded.</comment>
   </data>
   <data name="LOADING_FRAME" xml:space="preserve">
-    <value>Loading frame {0}</value>
+    <value>Se încarcă cadrul {0}</value>
     <comment>Progress message displayed when loading a web page</comment>
   </data>
   <data name="WEB_MARGINS" xml:space="preserve">
-    <value>Web Margins</value>
+    <value>Margini web</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_WEB" xml:space="preserve">
@@ -413,39 +413,39 @@
     <comment>Section title for Settings =&gt; Web</comment>
   </data>
   <data name="WEB_HEADER_PANEL_SHOW" xml:space="preserve">
-    <value>Show header panel</value>
+    <value>Arată panoul de control web</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
-    <value>Show magnifier</value>
+    <value>Arată lupă</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
-    <value>Magnifier shape</value>
+    <value>Formă lupă</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
-    <value>Magnifier size</value>
+    <value>Dimensiune lupă</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
-    <value>Magnifier magnification level</value>
+    <value>Nivel mărire lupă</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
-    <value>Page zoom increment</value>
+    <value>Nivel creștere zoom</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>PURGE BROWSER CACHE</value>
+    <value>ȘTERGE CACHE BROWSER</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
-    <value>The browser cache will be purged on next restart.</value>
+    <value>Cache-ul browserului va fi șters la următoarea repornire.</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
-    <value>Magnifier frame thickness</value>
+    <value>Grosime ramă lupă</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
 </root>
