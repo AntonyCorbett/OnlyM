@@ -437,7 +437,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>TYHJENNÄ SELAIMEN VÄLIMUISTI</value>
+    <value>TYHJ. SELAIMEN VÄLIMUISTI</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
