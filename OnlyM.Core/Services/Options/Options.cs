@@ -17,7 +17,7 @@
         private const double DefaultMagnifierZoomLevel = 0.5;
         private const double DefaultBrowserZoomLevelIncrement = 0.25;
 
-        private const double MinBrowserFrameThickness = 1.0;
+        private const double MinBrowserFrameThickness = 0.0;
         private const double DefaultBrowserFrameThickness = 2.0;
         private const double MaxBrowserFrameThickness = 5.0;
 
