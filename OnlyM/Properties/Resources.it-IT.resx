@@ -429,11 +429,11 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
-    <value>Incremento di zoom della pagina</value>
+    <value>Incremento zoom pagina</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>ELIMINA LA CACHE DEL BROWSER</value>
+    <value>SVUOTA CACHE BROWSER</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
