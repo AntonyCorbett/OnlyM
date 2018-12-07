@@ -425,7 +425,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
-    <value>Livello di ingrandimento</value>
+    <value>Livello ingrandimento lente</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
