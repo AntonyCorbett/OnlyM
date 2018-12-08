@@ -412,10 +412,6 @@
     <value>WEBB</value>
     <comment>Section title for Settings =&gt; Web</comment>
   </data>
-  <data name="WEB_HEADER_PANEL_SHOW" xml:space="preserve">
-    <value>Visa övre panel</value>
-    <comment>See Settings =&gt; Web</comment>
-  </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
     <value>Visa förstoringsglas</value>
     <comment>See Settings =&gt; Web</comment>
