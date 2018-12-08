@@ -61,6 +61,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow magnifier in PDFs.
+        /// </summary>
+        public static string ALLOW_MAG_PDF {
+            get {
+                return ResourceManager.GetString("ALLOW_MAG_PDF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow pause.
         /// </summary>
         public static string ALLOW_PAUSE {

@@ -70,6 +70,8 @@
                            LoadedBehavior="Manual" 
                            UnloadedBehavior="Manual" />
 
+        <!--WebBrowser browser Grid-->
+        
         <Grid x:Name="BrowserGrid" 
               Background="White" 
               Opacity="0.0" 
@@ -96,17 +98,20 @@
             </Grid.InputBindings>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="76" />
+                <RowDefinition Height="76"/>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Background="{StaticResource MaterialDesignBody}">
+            <!--Row 0 = Web header panel with navigation and command buttons-->
+            <Grid Grid.Row="0" 
+                  Background="{StaticResource MaterialDesignBody}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="190"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="395"/>
                 </Grid.ColumnDefinitions>
 
+                <!--Web navigation buttons stack panel-->
                 <StackPanel Orientation="Horizontal" 
                             Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Grid.Column="0" Margin="5,0,0,0">
@@ -138,6 +143,7 @@
                     </Button>
                 </StackPanel>
 
+                <!--Web page title-->
                 <TextBlock Grid.Column="1" 
                            Text="{Binding WebBrowser.Title}"
                            Margin="0,0,0,0"
@@ -147,6 +153,7 @@
                            TextTrimming="CharacterEllipsis"
                            FontSize="28"/>
 
+                <!--Web page magnifier buttons etc-->
                 <StackPanel Orientation="Horizontal" 
                             Grid.Column="2"
                             HorizontalAlignment="Right" Margin="0,0,5,0">
@@ -233,9 +240,10 @@
                     </Button>
 
                 </StackPanel>
-
+            
             </Grid>
 
+            <!--Actual web browser-->
             <Grid Grid.Row="1" Background="White">
                 <wpf:ChromiumWebBrowser 
                     x:Name="Browser" 
@@ -251,7 +259,10 @@
                                     ZoomFactor="{Binding MagnifierZoomLevel}"/>
                 </magnifierControl:MagnifierManager.Magnifier>
             </Grid>
+            <!--End of web page header panel-->
+        
         </Grid>
+        <!--End of page grid-->
 
         <Image x:Name="Image1Element" />
 

@@ -418,6 +418,19 @@
             }
         }
 
+        public bool AllowPdfMagnifier
+        {
+            get => _options.Value.AllowPdfMagnifier;
+            set
+            {
+                if (_options.Value.AllowPdfMagnifier != value)
+                {
+                    _options.Value.AllowPdfMagnifier = value;
+                    BrowserChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
         public double MagnifierFrameThickness
         {
             get => _options.Value.MagnifierFrameThickness;

@@ -190,12 +190,14 @@
 
                 <CheckBox IsChecked="{Binding UseInternalMediaTitles, Mode=TwoWay}"
                           Content = "{x:Static resx:Resources.USE_TITLES}" 
-                          Style="{StaticResource SettingsCheckBoxStyle}">
-
-                </CheckBox>
+                          Style="{StaticResource SettingsCheckBoxStyle}" />
 
                 <CheckBox IsChecked="{Binding ShowCommandPanel, Mode=TwoWay}"
                           Content = "{x:Static resx:Resources.USE_CMD_PANEL}" 
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+
+                <CheckBox IsChecked="{Binding AllowMagnifierInPdfs, Mode=TwoWay}"
+                          Content = "{x:Static resx:Resources.ALLOW_MAG_PDF}" 
                           Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <TextBox
