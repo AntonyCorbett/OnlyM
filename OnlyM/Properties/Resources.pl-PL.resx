@@ -444,4 +444,8 @@
     <value>Magnifier frame thickness</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
+  <data name="ALLOW_MAG_PDF" xml:space="preserve">
+    <value>Allow magnifier in PDFs</value>
+    <comment>See Settings =&gt; Media File</comment>
+  </data>
 </root>
