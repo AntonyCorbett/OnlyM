@@ -28,6 +28,13 @@
             return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
         });
 
+        private readonly Lazy<byte[]> _standardPdfThumbnail = new Lazy<byte[]>(() =>
+        {
+            var bmp = Properties.Resources.PDF;
+            var converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+        });
+
         private readonly Lazy<byte[]> _standardWebThumbnail = new Lazy<byte[]>(() =>
         {
             var bmp = Properties.Resources.Web;
@@ -132,6 +139,16 @@
 
         private byte[] GetWebThumbnail(string originalPath)
         {
+            if (string.IsNullOrEmpty(originalPath))
+            {
+                return null;
+            }
+
+            if (Path.GetExtension(originalPath).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
+            {
+                return _standardPdfThumbnail.Value;
+            }
+
             var helper = new WebShortcutHelper(originalPath);
 
             var bytes = FaviconHelper.GetIconImage(helper.Uri);

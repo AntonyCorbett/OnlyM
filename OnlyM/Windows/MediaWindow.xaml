@@ -107,7 +107,9 @@
                     <ColumnDefinition Width="395"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="5,0,0,0">
+                <StackPanel Orientation="Horizontal" 
+                            Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Grid.Column="0" Margin="5,0,0,0">
                     <Button
                         Style="{StaticResource NavButtonStyle}"
                         Command="{Binding WebBrowser.BackCommand}">
@@ -139,6 +141,7 @@
                 <TextBlock Grid.Column="1" 
                            Text="{Binding WebBrowser.Title}"
                            Margin="0,0,0,0"
+                           Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}"
                            VerticalAlignment="Center"
                            Foreground="{StaticResource PrimaryHueLightBrush}"
                            TextTrimming="CharacterEllipsis"
@@ -192,7 +195,7 @@
 
                     <Button
                         Style="{StaticResource MagnifierSizeButtonStyle}"
-                            Command="{Binding MagnifierSmaller}">
+                        Command="{Binding MagnifierSmaller}">
                         <materialDesign:PackIcon
                             Kind="Minus"
                             Height="24"
@@ -201,6 +204,7 @@
 
                     <Button
                         Style="{StaticResource ZoomButtonStyle}"
+                        Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Command="{Binding WebBrowser.ZoomInCommand}">
                         <materialDesign:PackIcon
                             Kind="PlusCircleOutline"
@@ -210,6 +214,7 @@
 
                     <Button
                         Style="{StaticResource ZoomButtonStyle}"
+                        Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Command="{Binding WebBrowser.ZoomOutCommand}">
                         <materialDesign:PackIcon
                             Kind="MinusCircleOutline"
@@ -219,6 +224,7 @@
 
                     <Button
                         Style="{StaticResource ZoomButtonStyle}"
+                        Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Command="{Binding WebBrowser.ZoomResetCommand}">
                         <materialDesign:PackIcon
                             Kind="CircleOutline"

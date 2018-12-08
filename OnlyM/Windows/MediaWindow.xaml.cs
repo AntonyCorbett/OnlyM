@@ -48,7 +48,7 @@
             _optionsService = optionsService;
 
             _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
-            _webDisplayManager = new WebDisplayManager(Browser, BrowserGrid, databaseService);
+            _webDisplayManager = new WebDisplayManager(Browser, BrowserGrid, databaseService, _optionsService);
             
             _snackbarService = snackbarService;
 
@@ -224,6 +224,9 @@
 
         private void ShowWebPage(MediaItem mediaItem, IReadOnlyCollection<MediaItem> currentMediaItems)
         {
+            var vm = (MediaViewModel)DataContext;
+            vm.IsWebPage = !mediaItem.IsPdf;
+
             _webDisplayManager.ShowWeb(mediaItem.FilePath, mediaItem.Id, _optionsService.WebScreenPosition);
             HideImageOrSlideshow(currentMediaItems);
         }

@@ -91,7 +91,15 @@
 
         private MediaMetaData GetWebPageMetaData(string mediaItemFilePath)
         {
-            var helper = new WebShortcutHelper(mediaItemFilePath);
+            return new MediaMetaData
+            {
+                Title = Path.GetFileNameWithoutExtension(mediaItemFilePath),
+                Duration = TimeSpan.Zero
+            };
+        }
+
+        private MediaMetaData GetPdfMetaData(string mediaItemFilePath)
+        {
             return new MediaMetaData
             {
                 Title = Path.GetFileNameWithoutExtension(mediaItemFilePath),

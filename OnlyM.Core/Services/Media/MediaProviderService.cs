@@ -36,7 +36,8 @@
 
             new SupportedMediaType { Name = "OnlyM Slideshow", Classification = MediaClassification.Slideshow, FileExtension = ".omslide" },
 
-            new SupportedMediaType { Name = "Web Page", Classification = MediaClassification.Web, FileExtension = ".url" }
+            new SupportedMediaType { Name = "Web Page", Classification = MediaClassification.Web, FileExtension = ".url" },
+            new SupportedMediaType { Name = "PDF file", Classification = MediaClassification.Web, FileExtension = ".pdf" }
         };
 
         private readonly HashSet<string> _supportedFileExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

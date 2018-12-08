@@ -13,6 +13,7 @@
     using Core.Utils;
     using GalaSoft.MvvmLight.Threading;
     using Models;
+    using OnlyM.Services.WebBrowser;
     using Serilog;
     using Unosquare.FFME;
 
@@ -109,7 +110,15 @@
 
             //// this setting is automatically added. It means that if the user has
             //// Pepper Flash installed it will be detected and used.
-            //// settings.CefCommandLineArgs.Add("enable-system-flash", "1"); 
+            //// settings.CefCommandLineArgs.Add("enable-system-flash", "1");
+
+            // custom pdf scheme...
+            settings.RegisterScheme(new CefCustomScheme
+            {
+                SchemeName = PdfSchemeHandlerFactory.SchemeName,
+                SchemeHandlerFactory = new PdfSchemeHandlerFactory(),
+                IsCSPBypassing = true
+            });
 
             return Cef.Initialize(settings);
         }

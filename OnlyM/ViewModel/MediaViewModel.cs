@@ -17,6 +17,7 @@
         private IWpfWebBrowser _webBrowser;
         private bool _isMagnifierVisible;
         private Size _windowSize;
+        private bool _isWebPage;
 
         public MediaViewModel(IOptionsService optionsService)
         {
@@ -70,6 +71,19 @@
                 if (_optionsService.BrowserZoomLevelIncrement != value)
                 {
                     _optionsService.BrowserZoomLevelIncrement = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool IsWebPage
+        {
+            get => _isWebPage;
+            set
+            {
+                if (_isWebPage != value)
+                {
+                    _isWebPage = value;
                     RaisePropertyChanged();
                 }
             }

@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Models
+﻿using System.IO;
+
+namespace OnlyM.Models
 {
     using System;
     using System.Windows.Media;
@@ -13,6 +15,7 @@
         private static readonly SolidColorBrush VideoIconBrush = new SolidColorBrush(Colors.Chocolate);
         private static readonly SolidColorBrush SlideshowIconBrush = new SolidColorBrush(Colors.BlueViolet);
         private static readonly SolidColorBrush WebIconBrush = new SolidColorBrush(Colors.Firebrick);
+        private static readonly SolidColorBrush PdfIconBrush = new SolidColorBrush(Colors.Firebrick);
         private static readonly SolidColorBrush UnknownIconBrush = new SolidColorBrush(Colors.Crimson);
         private static readonly SolidColorBrush GreenBrush = new SolidColorBrush(Colors.DarkGreen);
         private static readonly SolidColorBrush BlackBrush = new SolidColorBrush(Colors.Black);
@@ -46,6 +49,8 @@
         public bool IsVideo => MediaType.Classification == MediaClassification.Video;
 
         public bool IsWeb => MediaType.Classification == MediaClassification.Web;
+
+        public bool IsPdf => FilePath != null && Path.GetExtension(FilePath).Equals(".pdf", StringComparison.OrdinalIgnoreCase);
 
         public bool IsBlankScreen { get; set; }
 
@@ -506,6 +511,11 @@
                         return "CameraBurst";
 
                     case MediaClassification.Web:
+                        if (MediaType.FileExtension.Equals(".pdf", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return "FilePdf";
+                        }
+
                         return "Web";
 
                     default:

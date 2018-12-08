@@ -1,6 +1,7 @@
 ﻿namespace OnlyM.Services
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Media.Animation;
@@ -9,6 +10,7 @@
     using GalaSoft.MvvmLight.Threading;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Database;
+    using OnlyM.Core.Services.Options;
     using OnlyM.Core.Services.WebShortcuts;
     using OnlyM.Models;
     using OnlyM.Services.WebBrowser;
@@ -19,6 +21,7 @@
         private readonly ChromiumWebBrowser _browser;
         private readonly FrameworkElement _browserGrid;
         private readonly IDatabaseService _databaseService;
+        private readonly IOptionsService _optionsService;
         private Guid _mediaItemId;
         private bool _showing;
         private string _currentMediaItemUrl;
@@ -26,11 +29,13 @@
         public WebDisplayManager(
             ChromiumWebBrowser browser, 
             FrameworkElement browserGrid,
-            IDatabaseService databaseService)
+            IDatabaseService databaseService,
+            IOptionsService optionsService)
         {
             _browser = browser;
             _browserGrid = browserGrid;
             _databaseService = databaseService;
+            _optionsService = optionsService;
 
             InitBrowser();
         }
@@ -44,6 +49,11 @@
             Guid mediaItemId,
             ScreenPosition screenPosition)
         {
+            if (string.IsNullOrEmpty(mediaItemFilePath))
+            {
+                return;
+            }
+
             _showing = false;
             _mediaItemId = mediaItemId;
 
@@ -51,14 +61,24 @@
 
             OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Starting));
 
-            var urlHelper = new WebShortcutHelper(mediaItemFilePath);
-            _currentMediaItemUrl = urlHelper.Uri;
+            string webAddress;
+            if (Path.GetExtension(mediaItemFilePath).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
+            {
+                webAddress = $"pdf://{mediaItemFilePath}";
+            }
+            else
+            {
+                var urlHelper = new WebShortcutHelper(mediaItemFilePath);
+                webAddress = urlHelper.Uri;
+            }
+
+            _currentMediaItemUrl = webAddress;
 
             RemoveAnimation();
             
             _browserGrid.Visibility = Visibility.Visible;
-            
-            _browser.Load(urlHelper.Uri);
+
+            _browser.Load(webAddress);
         }
 
         public void HideWeb(string mediaItemFilePath)
