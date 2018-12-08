@@ -1,8 +1,7 @@
-﻿using System.IO;
-
-namespace OnlyM.Models
+﻿namespace OnlyM.Models
 {
     using System;
+    using System.IO;
     using System.Windows.Media;
     using Core.Extensions;
     using Core.Models;

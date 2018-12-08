@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Core.Services.Media
+﻿using Microsoft.WindowsAPICodePack.Shell;
+
+namespace OnlyM.Core.Services.Media
 {
     using System;
     using System.Drawing;
@@ -146,7 +148,7 @@
 
             if (Path.GetExtension(originalPath).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
             {
-                return _standardPdfThumbnail.Value;
+                return GetPdfThumbnail(originalPath);
             }
 
             var helper = new WebShortcutHelper(originalPath);
@@ -159,6 +161,27 @@
             }
 
             return _standardWebThumbnail.Value;
+        }
+
+        private byte[] GetPdfThumbnail(string originalPath)
+        {
+            try
+            {
+                var o = ShellObject.FromParsingName(originalPath);
+
+                var encoder = new JpegBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(o.Thumbnail.BitmapSource));
+
+                using (var stream = new MemoryStream())
+                {
+                    encoder.Save(stream);
+                    return stream.ToArray();
+                }
+            }
+            catch (Exception)
+            {
+                return _standardPdfThumbnail.Value;
+            }
         }
 
         private byte[] CreateFramedSmallIcon(byte[] bytes)
