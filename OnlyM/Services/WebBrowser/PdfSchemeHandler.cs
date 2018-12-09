@@ -11,8 +11,9 @@
         public override bool ProcessRequestAsync(IRequest request, ICallback callback)
         {
             var uri = new Uri(request.Url);
-            var file = uri.LocalPath;
             
+            var file = $"{uri.Host}:{uri.LocalPath}";
+         
             Task.Run(() =>
             {
                 using (callback)
