@@ -31,8 +31,10 @@
             new SupportedMediaType { Name = "TIFF Image", Classification = MediaClassification.Image, FileExtension = ".tiff" },
             
             new SupportedMediaType { Name = "MP3 Audio", Classification = MediaClassification.Audio, FileExtension = ".mp3" },
+            new SupportedMediaType { Name = "M4A Audio", Classification = MediaClassification.Audio, FileExtension = ".m4a" },
             new SupportedMediaType { Name = "WMA Audio", Classification = MediaClassification.Audio, FileExtension = ".wma" },
-            new SupportedMediaType { Name = "WMP Image", Classification = MediaClassification.Audio, FileExtension = ".wmp" },
+            new SupportedMediaType { Name = "WMP Audio", Classification = MediaClassification.Audio, FileExtension = ".wmp" },
+            new SupportedMediaType { Name = "WAV Audio", Classification = MediaClassification.Audio, FileExtension = ".wav" },
 
             new SupportedMediaType { Name = "OnlyM Slideshow", Classification = MediaClassification.Slideshow, FileExtension = ".omslide" },
 
