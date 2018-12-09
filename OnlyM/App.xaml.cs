@@ -107,7 +107,7 @@
 
             settings.CefCommandLineArgs.Add("no-proxy-server", "1");
             settings.CefCommandLineArgs.Add("force-device-scale-factor", "1");
-
+            
             //// this setting is automatically added. It means that if the user has
             //// Pepper Flash installed it will be detected and used.
             //// settings.CefCommandLineArgs.Add("enable-system-flash", "1");
@@ -119,6 +119,10 @@
                 SchemeHandlerFactory = new PdfSchemeHandlerFactory(),
                 IsCSPBypassing = true
             });
+
+            // prevents orphaned CelSharp.BrowserSubprocess.exe instances
+            // caused by an OnlyM crash.
+            CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
 
             return Cef.Initialize(settings);
         }
