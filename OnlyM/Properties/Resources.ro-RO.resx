@@ -444,8 +444,4 @@
     <value>Grosime ramă lupă</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
-  <data name="ALLOW_MAG_PDF" xml:space="preserve">
-    <value>Permite lupă în fișiere PDF</value>
-    <comment>See Settings =&gt; Media File</comment>
-  </data>
 </root>
