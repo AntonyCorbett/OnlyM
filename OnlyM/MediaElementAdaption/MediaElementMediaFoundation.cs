@@ -172,6 +172,8 @@
                 _mediaElement.Close();
             }
 
+            IsPaused = false;
+
             MediaClosed?.Invoke(this, null);
             return Task.CompletedTask;
         }
