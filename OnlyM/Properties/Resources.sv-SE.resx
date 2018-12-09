@@ -444,8 +444,4 @@
     <value>Förstoringsglasets ramtjocklek</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
-  <data name="ALLOW_MAG_PDF" xml:space="preserve">
-    <value>Tillåt förstoring i PDF</value>
-    <comment>See Settings =&gt; Media File</comment>
-  </data>
 </root>

@@ -444,8 +444,4 @@
     <value>Suurennuslasin reunuksen paksuus</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
-  <data name="ALLOW_MAG_PDF" xml:space="preserve">
-    <value>Salli suurennuslasin käyttö PDF-tiedostoissa</value>
-    <comment>See Settings =&gt; Media File</comment>
-  </data>
 </root>
