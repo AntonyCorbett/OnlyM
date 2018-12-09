@@ -77,8 +77,6 @@
 
         DateTime OperatingDate { get; set; }
 
-        bool AllowPdfMagnifier { get; set; }
-
         bool ShowMediaItemCommandPanel { get; set; }
 
         ScreenPosition VideoScreenPosition { get; set; }

@@ -196,10 +196,6 @@
                           Content = "{x:Static resx:Resources.USE_CMD_PANEL}" 
                           Style="{StaticResource SettingsCheckBoxStyle}"/>
 
-                <CheckBox IsChecked="{Binding AllowMagnifierInPdfs, Mode=TwoWay}"
-                          Content = "{x:Static resx:Resources.ALLOW_MAG_PDF}" 
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
-
                 <TextBox
                     materialDesign:HintAssist.Hint="{x:Static resx:Resources.MAX_ITEMS}"
                     Text="{Binding MaxItemCount, Mode=TwoWay}"

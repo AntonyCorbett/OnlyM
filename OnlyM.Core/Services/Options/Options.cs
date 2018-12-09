@@ -43,7 +43,6 @@
             MagnifierShape = MagnifierShape.Circle;
             MagnifierSize = MagnifierSize.Medium;
             MagnifierFrameThickness = DefaultBrowserFrameThickness;
-            AllowPdfMagnifier = true;
 
             VideoScreenPosition = new ScreenPosition();
             ImageScreenPosition = new ScreenPosition();
@@ -51,8 +50,6 @@
             
             Sanitize();
         }
-
-        public bool AllowPdfMagnifier { get; set; }
 
         public bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 

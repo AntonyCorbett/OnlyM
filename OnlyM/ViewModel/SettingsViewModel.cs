@@ -392,19 +392,6 @@
             }
         }
 
-        public bool AllowMagnifierInPdfs
-        {
-            get => _optionsService.AllowPdfMagnifier;
-            set
-            {
-                if (_optionsService.AllowPdfMagnifier != value)
-                {
-                    _optionsService.AllowPdfMagnifier = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         public bool ShowCommandPanel
         {
             get => _optionsService.ShowMediaItemCommandPanel;
