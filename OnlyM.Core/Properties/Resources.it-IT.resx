@@ -194,30 +194,33 @@
     <comment>See Settings =&gt; Web (magnifier shape)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_LARGE" xml:space="preserve">
-    <value>Grande</value>
+    <value>L</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_MEDIUM" xml:space="preserve">
-    <value>Media</value>
+    <value>M</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_SMALL" xml:space="preserve">
-    <value>Piccola</value>
+    <value>S</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XLARGE" xml:space="preserve">
-    <value>X-Large</value>
+    <value>XL</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XSMALL" xml:space="preserve">
-    <value>X-Small</value>
+    <value>XS</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XXLARGE" xml:space="preserve">
-    <value>XX-Large</value>
+    <value>XXL</value>
   </data>
   <data name="MAGNIFIER_SIZE_XXSMALL" xml:space="preserve">
-    <value>XX-Small</value>
+    <value>XXS</value>
+  </data>
+  <data name="PDF" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\PDF.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Unknown" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Unknown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

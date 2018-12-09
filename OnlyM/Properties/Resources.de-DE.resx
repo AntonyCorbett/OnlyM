@@ -444,4 +444,8 @@
     <value>Rahmenstärke</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
+  <data name="ALLOW_MAG_PDF" xml:space="preserve">
+    <value>Lupe in PDF-Dateien zulassen</value>
+    <comment>See Settings =&gt; Media File</comment>
+  </data>
 </root>

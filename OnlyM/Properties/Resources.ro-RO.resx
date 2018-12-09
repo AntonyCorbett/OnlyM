@@ -193,7 +193,7 @@
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Nu poți deselecta monitorul când media este activ</value>
+    <value>Monitorul nu se poate deselecta când media este activ</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
@@ -443,5 +443,9 @@
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
     <value>Grosime ramă lupă</value>
     <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="ALLOW_MAG_PDF" xml:space="preserve">
+    <value>Permite lupă în fișiere PDF</value>
+    <comment>See Settings =&gt; Media File</comment>
   </data>
 </root>
