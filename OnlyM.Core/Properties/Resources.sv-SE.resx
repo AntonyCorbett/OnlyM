@@ -186,11 +186,11 @@
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="MAGNIFIER_SHAPE_CIRCLE" xml:space="preserve">
-    <value>Cirkel</value>
+    <value>Rund</value>
     <comment>See Settings =&gt; Web (magnifier shape)</comment>
   </data>
   <data name="MAGNIFIER_SHAPE_SQUARE" xml:space="preserve">
-    <value>Fyrkant</value>
+    <value>Fyrkantig</value>
     <comment>See Settings =&gt; Web (magnifier shape)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_LARGE" xml:space="preserve">
@@ -214,10 +214,10 @@
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XXLARGE" xml:space="preserve">
-    <value>Största</value>
+    <value>Störst</value>
   </data>
   <data name="MAGNIFIER_SIZE_XXSMALL" xml:space="preserve">
-    <value>Minsta</value>
+    <value>Minst</value>
   </data>
   <data name="PDF" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PDF.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
