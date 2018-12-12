@@ -409,7 +409,7 @@
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_WEB" xml:space="preserve">
-    <value>PÁGINAS DE INTERNET</value>
+    <value>INTERNET</value>
     <comment>Section title for Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
@@ -425,11 +425,11 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
-    <value>Nível de ampliação da lupa</value>
+    <value>Zoom da lupa</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
-    <value>Incremento de zoom da página</value>
+    <value>Aumentar zoom da página</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
@@ -443,9 +443,5 @@
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
     <value>Espessura da moldura da lupa</value>
     <comment>See Settings =&gt; Web</comment>
-  </data>
-  <data name="ALLOW_MAG_PDF" xml:space="preserve">
-    <value>Allow magnifier in PDFs</value>
-    <comment>See Settings =&gt; Media File</comment>
   </data>
 </root>
