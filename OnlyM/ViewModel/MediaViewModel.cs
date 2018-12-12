@@ -18,7 +18,7 @@
         private bool _isMagnifierVisible;
         private Size _windowSize;
         private bool _isWebPage;
-
+        
         public MediaViewModel(IOptionsService optionsService)
         {
             _optionsService = optionsService;
@@ -315,6 +315,7 @@
         private void HandleMagnifierChangedEvent(object sender, System.EventArgs e)
         {
             RaisePropertyChanged(nameof(IsMagnifierVisible));
+            RaisePropertyChanged(nameof(IsMagnifierFrameSquare));
             RaisePropertyChanged(nameof(MagnifierFrameType));
             RaisePropertyChanged(nameof(MagnifierZoomLevel));
             RaisePropertyChanged(nameof(MagnifierRadius));
