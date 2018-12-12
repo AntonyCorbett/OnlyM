@@ -184,6 +184,7 @@
     <Compile Include="Subtitles\SubtitleProvider.cs" />
     <Compile Include="Subtitles\SubtitleStatus.cs" />
     <Compile Include="Subtitles\SubtitleTiming.cs" />
+    <Compile Include="Utils\FFmpegUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\GraphicsUtils.cs" />
     <Compile Include="Utils\ObservableCollectionEx.cs" />

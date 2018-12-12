@@ -4,6 +4,7 @@
     using System.IO;
     using Models;
     using OnlyM.Core.Services.WebShortcuts;
+    using OnlyM.Core.Utils;
     using Serilog;
     using Unosquare.FFME.Shared;
 
@@ -66,7 +67,7 @@
 
             try
             {
-                var info = Unosquare.FFME.MediaEngine.RetrieveMediaInfo(mediaItemFilePath);
+                var info = Unosquare.FFME.MediaEngine.RetrieveMediaInfo(FFmpegUtils.FixUnicodeString(mediaItemFilePath));
 
                 string title = null;
                 info.Metadata?.TryGetValue("title", out title);

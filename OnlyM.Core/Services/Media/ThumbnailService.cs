@@ -1,6 +1,4 @@
-﻿using Microsoft.WindowsAPICodePack.Shell;
-
-namespace OnlyM.Core.Services.Media
+﻿namespace OnlyM.Core.Services.Media
 {
     using System;
     using System.Drawing;
@@ -10,6 +8,7 @@ namespace OnlyM.Core.Services.Media
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using Database;
+    using Microsoft.WindowsAPICodePack.Shell;
     using Models;
     using OnlyM.Core.Services.WebShortcuts;
     using OnlyM.Slides;

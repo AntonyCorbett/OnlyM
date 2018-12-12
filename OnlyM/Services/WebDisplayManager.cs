@@ -71,7 +71,7 @@
                 var urlHelper = new WebShortcutHelper(mediaItemFilePath);
                 webAddress = urlHelper.Uri;
             }
-
+            
             _currentMediaItemUrl = webAddress;
 
             RemoveAnimation();

@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using System.Windows;
     using OnlyM.Core.Models;
+    using OnlyM.Core.Utils;
     using Serilog.Events;
     using Unosquare.FFME.Shared;
 
@@ -56,6 +57,8 @@
         public async Task Play(Uri mediaPath, MediaClassification mediaClassification)
         {
             IsPaused = false;
+
+            mediaPath = FFmpegUtils.FixUnicodeUri(mediaPath);
 
             if (_mediaElement.Source != mediaPath)
             {
