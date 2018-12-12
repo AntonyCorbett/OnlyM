@@ -325,15 +325,15 @@
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
-    <value>JW Library compatibility mode</value>
+    <value>Režim kompatibility s JW Library</value>
     <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
   </data>
   <data name="PERMANENT_BACKDROP" xml:space="preserve">
-    <value>Permanent backdrop</value>
+    <value>Zobrazovat černé pozadí</value>
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
-    <value>Enable Command Panel</value>
+    <value>Povolit panel příkazů</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
@@ -417,31 +417,31 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
-    <value>Magnifier shape</value>
+    <value>Tvar lupy</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
-    <value>Magnifier size</value>
+    <value>Velikost lupy</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
-    <value>Magnifier magnification level</value>
+    <value>Úroveň zvětšení lupy</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
-    <value>Page zoom increment</value>
+    <value>Krok zvětšení lupy</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>PURGE BROWSER CACHE</value>
+    <value>VYČIŠTĚNÍ MEZIPAMĚTI PROHLÍŽEČE</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
-    <value>The browser cache will be purged on next restart.</value>
+    <value>Mezipaměť prohlížeče bude vymazána po restartu.</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
-    <value>Magnifier frame thickness</value>
+    <value>Šířka rámečku lupy</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
 </root>
