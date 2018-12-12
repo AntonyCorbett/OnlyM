@@ -253,43 +253,43 @@
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
-    <value>Confirm when stopping</value>
+    <value>Potvrzovat zastavení</value>
     <comment>See Settings =&gt; Videos and Audio.</comment>
   </data>
   <data name="CURRENT_DATE" xml:space="preserve">
-    <value>Current date</value>
+    <value>Aktuální datum</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="FADING_SPEED" xml:space="preserve">
-    <value>Fading speed</value>
+    <value>Rychlost prolínání</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="FADING_STYLE" xml:space="preserve">
-    <value>Fading style</value>
+    <value>Styl prolínání</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
-    <value>Image Margins</value>
+    <value>Okraje obrázku</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
-    <value>Logging level</value>
+    <value>Úroveň logování</value>
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
-    <value>Main window always on top</value>
+    <value>Hlavní okno vždy navrchu</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>PURGE THUMBNAIL CACHE</value>
+    <value>SMAZAT PAMĚŤ MINIATUR OBRÁZKŮ</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
-    <value>Rendering engine</value>
+    <value>Vykreslovací jádro</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SECTION_IMAGES" xml:space="preserve">
-    <value>IMAGES</value>
+    <value>OBRÁZKY</value>
     <comment>Section title for Settings =&gt; Images</comment>
   </data>
   <data name="SECTION_MARGINS" xml:space="preserve">
