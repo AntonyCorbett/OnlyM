@@ -125,6 +125,10 @@ Source: "bin\x86\Release\natives_blob.bin"; DestDir: "{app}"; Flags: ignoreversi
 Source: "bin\x86\Release\snapshot_blob.bin"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\v8_context_snapshot.bin"; DestDir: "{app}"; Flags: ignoreversion
 
+; c rtl required by CefSharp
+; I have chosen to install locally to allow for "xcopy" style install
+Source: "..\VCRTL\*"; DestDir: "{app}"; Flags: ignoreversion
+
 ; web shortcuts...
 Source: "..\UrlLinkFiles\JW Broadcasting.url"; DestDir: "{commonappdata}\OnlyM\Websites"
 Source: "..\UrlLinkFiles\JW.org website.url"; DestDir: "{commonappdata}\OnlyM\Websites"
