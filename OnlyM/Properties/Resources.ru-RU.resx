@@ -425,11 +425,11 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
-    <value>Magnifier magnification level</value>
+    <value>Уровень увеличения лупы</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
-    <value>Page zoom increment</value>
+    <value>Увеличение масштаба страницы</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
