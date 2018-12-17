@@ -249,11 +249,11 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Cache images (better performance but more memory)</value>
+    <value>Кэширование изображений (более высокая производительность, но занимает больше памяти)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
-    <value>Confirm when stopping</value>
+    <value>Подтверждение при остановке</value>
     <comment>See Settings =&gt; Videos and Audio.</comment>
   </data>
   <data name="CURRENT_DATE" xml:space="preserve">
@@ -269,19 +269,19 @@
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
-    <value>Image Margins</value>
+    <value>Отступ изображений</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
-    <value>Logging level</value>
+    <value>Уровень ведения журнала</value>
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
-    <value>Main window always on top</value>
+    <value>Поверх всех окон</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>PURGE THUMBNAIL CACHE</value>
+    <value>ОЧИСТИТЬ КЭШ ЭСКИЗОВ</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
@@ -293,7 +293,7 @@
     <comment>Section title for Settings =&gt; Images</comment>
   </data>
   <data name="SECTION_MARGINS" xml:space="preserve">
-    <value>MARGINS (as percentage of screen size)</value>
+    <value>ОТСТУПЫ (в процентах от размера экрана)</value>
     <comment>Section title for Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_MISC" xml:space="preserve">
@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Show 'Freeze' command in Command Panel</value>
+    <value>Показать команду 'Заморозка' на панели команд</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
@@ -433,15 +433,15 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>PURGE BROWSER CACHE</value>
+    <value>ОЧИСТИТЬ КЭШ БРАУЗЕРА</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
-    <value>The browser cache will be purged on next restart.</value>
+    <value>Кэш браузера будет очищен при следующем перезапуске.</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
-    <value>Magnifier frame thickness</value>
+    <value>Толщина рамки лупы</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
 </root>
