@@ -309,7 +309,7 @@
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
-    <value>Show subtitles if available</value>
+    <value>Показать субтитры, если доступны</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
