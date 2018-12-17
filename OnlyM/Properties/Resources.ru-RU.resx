@@ -165,7 +165,7 @@
     <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
   </data>
   <data name="YES" xml:space="preserve">
-    <value>Да</value>
+    <value>ДА</value>
     <comment>Caption of the notification bar button to confirm that media should be stopped.</comment>
   </data>
   <data name="BLANK_SCREEN" xml:space="preserve">
@@ -197,7 +197,7 @@
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
-    <value>(содержит {0} слайдов)</value>
+    <value>(содержит слайдов: {0})</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="SLIDE_X_OF_Y" xml:space="preserve">
@@ -217,7 +217,7 @@
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">
-    <value>Дисплей</value>
+    <value>ОТОБРАЖЕНИЕ</value>
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
@@ -225,7 +225,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="SECTION_MEDIA_FILES" xml:space="preserve">
-    <value>Медиа файлы</value>
+    <value>МЕДИА ФАЙЛЫ</value>
     <comment>Section title for Settings =&gt; Media Files</comment>
   </data>
   <data name="MAX_ITEMS" xml:space="preserve">
@@ -313,7 +313,7 @@
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
-    <value>Отступы у видео</value>
+    <value>Отступы для видео</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="AUTO_ROTATE" xml:space="preserve">
