@@ -23,7 +23,7 @@
         MinWidth="500"
         MinHeight="500"
         Topmost="{Binding AlwaysOnTop, Mode=OneWay}"
-        Title="S o u n d B o x - O N L Y M" Height="650" Width="500" Closing="WindowClosing" Activated="OnWindowActivated" Deactivated="OnWindowDeactivated">
+        Title="S o u n d B o x - O N L Y M" Height="650" Width="500" Closing="WindowClosing" Activated="OnWindowActivated" Deactivated="OnWindowDeactivated" Icon="/OnlyM;component/icon2.ico">
 
     <Window.Resources>
         <ResourceDictionary>

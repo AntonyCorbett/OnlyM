@@ -44,7 +44,7 @@
     <NoWarn>SA1008;SA1009</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>icon2.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -329,9 +329,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\OnlyM.Core\OnlyM.Core.csproj">
       <Project>{ee384d4b-3a3b-4d9b-b2b6-cc71a6f87a97}</Project>
       <Name>OnlyM.Core</Name>
@@ -378,6 +375,7 @@
       <Link>FFmpeg\ffprobe.exe</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="icon2.ico" />
     <Resource Include="Images\freeze2.png" />
     <None Include="Resources\blank.png" />
     <Resource Include="..\FFmpeg\LICENSE.txt">
