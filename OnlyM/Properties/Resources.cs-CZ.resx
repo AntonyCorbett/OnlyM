@@ -126,7 +126,7 @@
     <value>..\Resources\blank.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CONFIRM_STOP_MEDIA" xml:space="preserve">
-    <value>Mám zastavit přehrávání?</value>
+    <value>Chcete zastavit přehrávání?</value>
     <comment>Prompt that is displayed when you attempt to stop playback</comment>
   </data>
   <data name="COPYING_ERROR" xml:space="preserve">
@@ -138,7 +138,7 @@
     <comment>Displayed as a notification message when several files are dropped onto the media list. Please leve the placeholder as it is.</comment>
   </data>
   <data name="FILE_COPIED" xml:space="preserve">
-    <value>Soubor zkopírován</value>
+    <value>Kopírování dokončeno</value>
     <comment>Displayed as a notification message when a single file is dropped onto the media list.</comment>
   </data>
   <data name="MEDIA_ACTIVE" xml:space="preserve">
@@ -181,7 +181,7 @@
     <comment>Tooltip for the main page, Settings button</comment>
   </data>
   <data name="SETTINGS_DISABLED" xml:space="preserve">
-    <value>Nastavení je zakázáno administrátorem!</value>
+    <value>Nastavení zakázáno administrátorem!</value>
     <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
   </data>
   <data name="FOLDER" xml:space="preserve">
@@ -241,7 +241,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Allow scrubbing when paused</value>
+    <value>Povolit přetáčení při pauze</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Show 'Freeze' command in Command Panel</value>
+    <value>Zobrazit "Zmrazit" na panelu příkazů</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
@@ -321,7 +321,7 @@
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
-    <value>Include "Blank Screen" item</value>
+    <value>Vložit položku "Prázdná obrazovka"</value>
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
@@ -337,23 +337,23 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Use embedded thumbnails where available</value>
+    <value>Použít miniatury, pokud jsou k dispozici</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Use embedded titles where available</value>
+    <value>Použít vložené titulky, pokud jsou k dispozici</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
-    <value>Drop your media files here!</value>
+    <value>Soubory přesuňte sem!</value>
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
-    <value>Media page</value>
+    <value>Stránka multimédií</value>
     <comment>Tooltip for the Settings page "Back" button </comment>
   </data>
   <data name="UNHIDE" xml:space="preserve">
-    <value>ZNOVU ZOBRAZ</value>
+    <value>ZOBRAZIT SKRYTÉ</value>
     <comment>If you have hidden any of the media items (using the command panel), an "Unhide" button is displayed on the main page. This is the button caption.</comment>
   </data>
   <data name="DISPLAY_HELP" xml:space="preserve">
@@ -361,15 +361,15 @@
     <comment>Tooltip for the Help button in the main window</comment>
   </data>
   <data name="NEW_VERSION" xml:space="preserve">
-    <value>K dispozici je nová verze!</value>
+    <value>Je dostupná nová verze!</value>
     <comment>Tooltip for the download button when a new version is ready (can be translated the same as NEW_UPDATE_AVAILABLE)</comment>
   </data>
   <data name="DELETE" xml:space="preserve">
-    <value>SMAZAT</value>
+    <value>ODSTRANIT</value>
     <comment>Button label in Command panel</comment>
   </data>
   <data name="FREEZE" xml:space="preserve">
-    <value>Freeze</value>
+    <value>Zmrazit</value>
     <comment>Button label in Command panel. Freeze the video on the final frame.</comment>
   </data>
   <data name="HIDE" xml:space="preserve">
@@ -377,11 +377,11 @@
     <comment>Button label in Command panel. Hide the media item.</comment>
   </data>
   <data name="PAUSE_FINAL_FRAME" xml:space="preserve">
-    <value>Pause on final frame</value>
+    <value>Zastavit na posledním snímku</value>
     <comment>Tooltip on Freeze button in Command panel</comment>
   </data>
   <data name="WILL_PAUSE" xml:space="preserve">
-    <value>Will pause on final frame</value>
+    <value>Zastaví na posledním snímku</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
@@ -389,7 +389,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="RESTART_LANGUAGE" xml:space="preserve">
-    <value>Prosím restartujte OnlyM po změně jazyka.</value>
+    <value>Po změně jazyka prosím restartujte OnlyM.</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="GENERATING_SUBTITLES" xml:space="preserve">
@@ -401,7 +401,7 @@
     <comment>Error message displayed when a web page cannot be loaded.</comment>
   </data>
   <data name="LOADING_FRAME" xml:space="preserve">
-    <value>Načítám {0}</value>
+    <value>Načítám snímek {0}</value>
     <comment>Progress message displayed when loading a web page</comment>
   </data>
   <data name="WEB_MARGINS" xml:space="preserve">

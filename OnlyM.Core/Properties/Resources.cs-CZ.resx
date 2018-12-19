@@ -130,11 +130,11 @@
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN" xml:space="preserve">
-    <value>Prolnutí zobrazení</value>
+    <value>Postupné zobrazení</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN_OUT" xml:space="preserve">
-    <value>Prolnutí zobrazení i skrytí</value>
+    <value>Postupné zobrazení i skrytí</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_NONE" xml:space="preserve">
@@ -142,7 +142,7 @@
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_OUT" xml:space="preserve">
-    <value>Prolnutí skytí</value>
+    <value>Postupné skrytí</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_SPEED_FAST" xml:space="preserve">
