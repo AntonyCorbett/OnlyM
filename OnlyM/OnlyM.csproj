@@ -44,7 +44,7 @@
     <NoWarn>SA1008;SA1009</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icon2.ico</ApplicationIcon>
+    <ApplicationIcon>icon3.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -375,7 +375,7 @@
       <Link>FFmpeg\ffprobe.exe</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="icon2.ico" />
+    <Resource Include="icon3.ico" />
     <Resource Include="Images\freeze2.png" />
     <None Include="Resources\blank.png" />
     <Resource Include="..\FFmpeg\LICENSE.txt">
