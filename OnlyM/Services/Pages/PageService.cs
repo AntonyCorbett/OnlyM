@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Services.Pages
+﻿using GalaSoft.MvvmLight.Threading;
+
+namespace OnlyM.Services.Pages
 {
     using System;
     using System.Collections.Generic;
@@ -262,7 +264,7 @@
             CloseMediaWindow();
         }
         
-        private void RelocateMediaWindow(string originalMonitorId)
+        private void RelocateMediaWindow()
         {
             if (_mediaWindow != null)
             {
@@ -293,7 +295,7 @@
                 OpenMediaWindow(requiresVisibleWindow: true);
             }
         }
-        
+
         private void CreateMediaWindow()
         {
             AllowMediaWindowToClose = false;
@@ -401,16 +403,16 @@
 
         private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
         {
-            UpdateMediaMonitor(e.OriginalMonitorId);
+            UpdateMediaMonitor();
         }
 
-        private void UpdateMediaMonitor(string originalMonitorId)
+        private void UpdateMediaMonitor()
         {
             try
             {
                 if (_optionsService.IsMediaMonitorSpecified)
                 {
-                    RelocateMediaWindow(originalMonitorId);
+                    RelocateMediaWindow();
                 }
                 else
                 {
@@ -436,6 +438,28 @@
             else if (!_activeMediaItemsService.Any())
             {
                 CloseMediaWindow();
+
+                // must use this hack otherwise CefSharp won't display the browser
+                // when next required!
+                PermanentBackDropHack();
+            }
+        }
+
+        private void PermanentBackDropHack()
+        {
+            if (_mediaWindow == null)
+            {
+                EnsureMediaWindowCreated();
+                _mediaWindow.Show();
+
+                Task.Delay(10).ContinueWith(t =>
+                {
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        RelocateMediaWindow();
+                        _mediaWindow.Hide();
+                    });
+                });
             }
         }
 
@@ -458,6 +482,7 @@
                 UnsubscribeMediaWindowEvents();
 
                 _mediaWindow.Close();
+                _mediaWindow.Dispose();
                 _mediaWindow = null;
 
                 MediaWindowClosedEvent?.Invoke(this, EventArgs.Empty);

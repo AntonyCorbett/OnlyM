@@ -24,7 +24,7 @@
     /// <summary>
     /// Interaction logic for MediaWindow.xaml
     /// </summary>
-    public partial class MediaWindow : Window
+    public partial class MediaWindow : Window, IDisposable
     {
         private const int MediaConfirmStopWindowSeconds = 3;
 
@@ -71,6 +71,14 @@
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
         public event EventHandler<WebBrowserProgressEventArgs> WebStatusEvent;
+
+        public void Dispose()
+        {
+            _videoDisplayManager?.Dispose();
+            _audioManager?.Dispose();
+            VideoElementFfmpeg?.Dispose();
+            Browser?.Dispose();
+        }
 
         public void UpdateRenderingMethod()
         {

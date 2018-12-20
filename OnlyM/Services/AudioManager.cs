@@ -8,7 +8,7 @@
     using OnlyM.Models;
     using Serilog;
 
-    internal sealed class AudioManager
+    internal sealed class AudioManager : IDisposable
     {
         private readonly Timer _timer = new Timer(200);
 
@@ -60,6 +60,13 @@
             _timer.Start();
             
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
+            _outputDevice?.Dispose();
+            _audioFileReader?.Dispose();
         }
 
         public TimeSpan GetPlaybackPosition()
