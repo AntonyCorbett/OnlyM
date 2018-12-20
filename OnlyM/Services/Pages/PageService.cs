@@ -1,6 +1,4 @@
-﻿using GalaSoft.MvvmLight.Threading;
-
-namespace OnlyM.Services.Pages
+﻿namespace OnlyM.Services.Pages
 {
     using System;
     using System.Collections.Generic;
@@ -13,6 +11,7 @@ namespace OnlyM.Services.Pages
     using Core.Services.Monitors;
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Messaging;
+    using GalaSoft.MvvmLight.Threading;
     using MediaChanging;
     using MediaElementAdaption;
     using Models;
