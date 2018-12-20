@@ -719,6 +719,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string WEB_LOADING {
+            get {
+                return ResourceManager.GetString("WEB_LOADING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Magnifier frame thickness.
         /// </summary>
         public static string WEB_MAGNIFIER_FRAME_THICKNESS {

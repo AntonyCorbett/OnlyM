@@ -1,15 +1,19 @@
 ﻿namespace OnlyM.Services
 {
     using System;
+    using System.Diagnostics;
     using System.IO;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Interop;
     using System.Windows.Media.Animation;
     using CefSharp;
     using CefSharp.Wpf;
     using GalaSoft.MvvmLight.Threading;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Database;
+    using OnlyM.Core.Services.Monitors;
     using OnlyM.Core.Services.Options;
     using OnlyM.Core.Services.WebShortcuts;
     using OnlyM.Models;
@@ -22,20 +26,24 @@
         private readonly FrameworkElement _browserGrid;
         private readonly IDatabaseService _databaseService;
         private readonly IOptionsService _optionsService;
+        private readonly IMonitorsService _monitorsService;
         private Guid _mediaItemId;
         private bool _showing;
+        private bool _useMirror;
         private string _currentMediaItemUrl;
 
         public WebDisplayManager(
             ChromiumWebBrowser browser, 
             FrameworkElement browserGrid,
             IDatabaseService databaseService,
-            IOptionsService optionsService)
+            IOptionsService optionsService,
+            IMonitorsService monitorsService)
         {
             _browser = browser;
             _browserGrid = browserGrid;
             _databaseService = databaseService;
             _optionsService = optionsService;
+            _monitorsService = monitorsService;
 
             InitBrowser();
         }
@@ -47,8 +55,11 @@
         public void ShowWeb(
             string mediaItemFilePath, 
             Guid mediaItemId,
+            bool showMirror,
             ScreenPosition screenPosition)
         {
+            _useMirror = showMirror;
+
             if (string.IsNullOrEmpty(mediaItemFilePath))
             {
                 return;
@@ -155,8 +166,10 @@
         {
             if (e.IsLoading)
             {
-                // todo: localise
-                StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = "Loading..." });
+                StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs
+                {
+                    Description = Properties.Resources.WEB_LOADING
+                });
             }
             else
             {
@@ -179,10 +192,64 @@
                         {
                             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
                             _browserGrid.Focus();
+                            ShowMirror();
                         });
                     }
                 }
             });
+        }
+
+        private void ShowMirror()
+        {
+            if (!_useMirror)
+            {
+                return;
+            }
+
+            if (Mutex.TryOpenExisting("OnlyMMirrorMutex", out var _))
+            {
+                Log.Logger.Debug("OnlyMMirrorMutex mutex exists");
+                return;
+            }
+
+            var folder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            if (folder == null)
+            {
+                Log.Logger.Error("Could not get assembly folder");
+                return;
+            }
+
+            const string mirrorExeFileName = "OnlyMMirror.exe";
+
+            var mirrorExePath = Path.Combine(folder, mirrorExeFileName);
+            if (!File.Exists(mirrorExePath))
+            {
+                Log.Logger.Error($"Could not find {mirrorExeFileName}");
+                return;
+            }
+
+            var mainWindow = Application.Current.MainWindow;
+            if (mainWindow == null)
+            {
+                Log.Logger.Error("Could not get main window");
+                return;
+            }
+
+            var handle = new WindowInteropHelper(mainWindow).Handle;
+            var onlyMMonitor = _monitorsService.GetMonitorForWindowHandle(handle);
+            var mediaMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
+
+            if (mediaMonitor.MonitorId.Equals(onlyMMonitor.MonitorId))
+            {
+                Log.Logger.Error("Cannot display mirror since OnlyM and Media window share a monitor");
+                return;
+            }
+
+            string zoomStr = "1.0";
+
+            Process.Start(
+                mirrorExePath,
+                $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr}");
         }
 
         private void FadeBrowser(bool fadeIn, Action completed)

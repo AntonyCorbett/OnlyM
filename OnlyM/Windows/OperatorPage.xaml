@@ -35,12 +35,15 @@
             </Style>
 
             <DataTemplate DataType="{x:Type models:MediaItem}">
+                <!-- Media Item Card -->
                 <materialDesign:Card Height="120" Margin="4" Padding="4"
                                          Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                          materialDesign:ShadowAssist.ShadowDepth="Depth1"
                                          materialDesign:ShadowAssist.ShadowEdges="Bottom">
-
+                    
                     <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding IsCommandPanelOpen, Mode=TwoWay}">
+                        
+                        <!-- Command Panel -->
                         <materialDesign:DrawerHost.LeftDrawerContent>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -48,6 +51,7 @@
                                     <ColumnDefinition Width="12" />
                                 </Grid.ColumnDefinitions>
 
+                                <!-- Command Panel controls -->
                                 <Grid Grid.Column="0" Margin="10,10,30,10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
@@ -81,6 +85,7 @@
 
                                 </Grid>
 
+                                <!-- 'Left' arrow button to close Command Panel -->
                                 <Button Grid.Column="1" 
                                         Style="{StaticResource MaterialDesignRaisedLightButton}"
                                         Width="10"
@@ -99,7 +104,9 @@
 
                             </Grid>
                         </materialDesign:DrawerHost.LeftDrawerContent>
+                        <!-- End of Command Panel -->
 
+                        <!-- Media Card Body -->
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="{Binding CommandPanelBtnColWidth}"/>
@@ -108,6 +115,7 @@
                                 <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
 
+                            <!-- 'Right' arrow button to open Command Panel -->
                             <Button Grid.Column="0" 
                                     Style="{StaticResource MaterialDesignRaisedLightButton}"
                                     IsEnabled="{Binding CommandPanelEnabled}"
@@ -125,6 +133,7 @@
                                     Kind="ArrowRight" />
                             </Button>
 
+                            <!-- Thumbnail -->
                             <Border Grid.Column="1" Background="Black" Margin="0,0,5,0" BorderThickness="1" BorderBrush="Black">
                                 <Grid>
                                     <Image Source="{Binding ThumbnailImageSource}" />
@@ -162,7 +171,9 @@
 
                                 </Grid>
                             </Border>
+                            <!-- End of Thumbnail -->
 
+                            <!-- Main section of Card -->
                             <Grid Grid.Column="2" Margin="10,0,0,0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
@@ -170,6 +181,7 @@
                                     <RowDefinition Height="28" />
                                 </Grid.RowDefinitions>
 
+                                <!-- Media Title -->
                                 <TextBlock Grid.Row="0" 
                                            TextTrimming="CharacterEllipsis" 
                                            Style="{StaticResource MaterialDesignTitleTextBlock}"
@@ -183,6 +195,8 @@
                                         <ColumnDefinition Width="95"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
+
+                                    <!-- TextBlocks generally used to show media length and duration -->
                                     <TextBlock Grid.Row="0" Grid.Column="0"
                                                Style="{StaticResource MaterialDesignBody1TextBlock}"
                                                Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -195,6 +209,8 @@
                                                FontSize="16"
                                                Foreground="{Binding PlaybackTimeColorBrush}"
                                                Text="{Binding PlaybackTimeString}"/>
+
+                                    <!-- Pause button -->
                                     <Button Style="{StaticResource MaterialDesignRaisedLightButton}"
                                             Width="50"
                                             VerticalAlignment="Stretch"
@@ -211,6 +227,20 @@
                                             Width="24" />
                                     </Button>
 
+                                    <!-- Web and PDF Mirror button -->
+                                    <CheckBox 
+                                        Style="{StaticResource MaterialDesignCheckBox}"
+                                        Grid.Column="0" 
+                                        Grid.Row="0" 
+                                        Grid.ColumnSpan="2" 
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="14"
+                                        Visibility="{Binding Path=IsWeb, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        IsChecked="{Binding UseMirror}"
+                                        Content="Mirror"/>
+
+                                    <!-- Slide Navigation buttons -->
                                     <StackPanel Orientation="Horizontal" 
                                                 Grid.Column="0"
                                                 Grid.ColumnSpan="2"
@@ -247,7 +277,8 @@
                                     Grid.ColumnSpan="2"
                                     FontSize="12" 
                                     Path="{Binding MiscText}" />
-                                
+
+                                <!-- Progress bar and Slider -->
                                 <ProgressBar Grid.Row="2" 
                                            Visibility="{Binding Path=HasDurationAndIsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
                                            Value="{Binding PlaybackPositionDeciseconds, Mode=OneWay}" 
@@ -267,6 +298,7 @@
                                 </TextBlock>
                             </Grid>
 
+                            <!-- Spinner as media is being prepared -->
                             <ProgressBar
                                 Grid.Column="3"
                                 Visibility="{Binding Path=IsPreparingMedia, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -274,6 +306,7 @@
                                 Value="0"
                                 IsIndeterminate="True" />
 
+                            <!-- Start and Stop buttons -->
                             <Button
                                 Width="50"
                                 Height="50"
@@ -302,10 +335,13 @@
                                     Height="40"
                                     Width="40" />
                             </Button>
-
                         </Grid>
+                        <!-- End of Media Card Body -->
+
                     </materialDesign:DrawerHost>
                 </materialDesign:Card>
+                <!-- End of Media Item Card -->
+
             </DataTemplate>
 
         </ResourceDictionary>

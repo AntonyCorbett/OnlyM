@@ -14,6 +14,7 @@
     using MediaElementAdaption;
     using Models;
     using OnlyM.Core.Services.Database;
+    using OnlyM.Core.Services.Monitors;
     using OnlyM.Services.WebBrowser;
     using OnlyM.ViewModel;
     using Serilog;
@@ -42,14 +43,19 @@
         public MediaWindow(
             IOptionsService optionsService, 
             ISnackbarService snackbarService, 
-            IDatabaseService databaseService)
+            IDatabaseService databaseService,
+            IMonitorsService monitorsService)
         {
             InitializeComponent();
 
             _optionsService = optionsService;
 
-            _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
-            _webDisplayManager = new WebDisplayManager(Browser, BrowserGrid, databaseService, _optionsService);
+            _imageDisplayManager = new ImageDisplayManager(
+                Image1Element, Image2Element, _optionsService);
+
+            _webDisplayManager = new WebDisplayManager(
+                Browser, BrowserGrid, databaseService, _optionsService, monitorsService);
+
             _audioManager = new AudioManager();
             
             _snackbarService = snackbarService;
@@ -271,7 +277,12 @@
             var vm = (MediaViewModel)DataContext;
             vm.IsWebPage = !mediaItem.IsPdf;
 
-            _webDisplayManager.ShowWeb(mediaItem.FilePath, mediaItem.Id, _optionsService.WebScreenPosition);
+            _webDisplayManager.ShowWeb(
+                mediaItem.FilePath, 
+                mediaItem.Id,
+                mediaItem.UseMirror,
+                _optionsService.WebScreenPosition);
+
             HideImageOrSlideshow(currentMediaItems);
         }
 

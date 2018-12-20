@@ -299,7 +299,7 @@
         {
             AllowMediaWindowToClose = false;
 
-            _mediaWindow = new MediaWindow(_optionsService, _snackbarService, _databaseService);
+            _mediaWindow = new MediaWindow(_optionsService, _snackbarService, _databaseService, _monitorsService);
 
             SubscribeMediaWindowEvents();
         }
