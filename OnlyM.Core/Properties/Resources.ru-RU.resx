@@ -126,15 +126,15 @@
     <comment>Error notification message if OnlyM fails to create a folder. Please retain the placeholder.</comment>
   </data>
   <data name="FADE_CROSS" xml:space="preserve">
-    <value>Crossfade</value>
+    <value>Вспышка</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN" xml:space="preserve">
-    <value>Fade in</value>
+    <value>Плавное появление</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_IN_OUT" xml:space="preserve">
-    <value>Fade in and out</value>
+    <value>Плавное появление и затухание</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_NONE" xml:space="preserve">
@@ -142,7 +142,7 @@
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_OUT" xml:space="preserve">
-    <value>Fade out</value>
+    <value>Плавное затухание</value>
     <comment>See Settings =&gt; Images =&gt; Fading style</comment>
   </data>
   <data name="FADE_SPEED_FAST" xml:space="preserve">
@@ -158,66 +158,66 @@
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="FADE_SPEED_SUPER_FAST" xml:space="preserve">
-    <value>Супер быстрая</value>
+    <value>Очень быстрая</value>
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="LOG_LEVEL_DEBUG" xml:space="preserve">
-    <value>Отладка</value>
+    <value>Debug (отладка)</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_ERROR" xml:space="preserve">
-    <value>Ошибка</value>
+    <value>Error (ошибка)</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_FATAL" xml:space="preserve">
-    <value>Fatal</value>
+    <value>Fatal (фатальные)</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_INFORMATION" xml:space="preserve">
-    <value>Информация</value>
+    <value>Information (информация)</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_VERBOSE" xml:space="preserve">
-    <value>Подробный</value>
+    <value>Verbose (подробный)</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="LOG_LEVEL_WARNING" xml:space="preserve">
-    <value>Внимание</value>
+    <value>Warning (предупреждение)</value>
     <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
   </data>
   <data name="MAGNIFIER_SHAPE_CIRCLE" xml:space="preserve">
-    <value>Circle</value>
+    <value>Круг</value>
     <comment>See Settings =&gt; Web (magnifier shape)</comment>
   </data>
   <data name="MAGNIFIER_SHAPE_SQUARE" xml:space="preserve">
-    <value>Square</value>
+    <value>Квадрат</value>
     <comment>See Settings =&gt; Web (magnifier shape)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_LARGE" xml:space="preserve">
-    <value>Large</value>
+    <value>Большой</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_MEDIUM" xml:space="preserve">
-    <value>Medium</value>
+    <value>Средний</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_SMALL" xml:space="preserve">
-    <value>Small</value>
+    <value>Небольшой</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XLARGE" xml:space="preserve">
-    <value>X Large</value>
+    <value>Очень большой</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XSMALL" xml:space="preserve">
-    <value>X Small</value>
+    <value>Маленький</value>
     <comment>See Settings =&gt; Web (magnifier size)</comment>
   </data>
   <data name="MAGNIFIER_SIZE_XXLARGE" xml:space="preserve">
-    <value>XXLarge</value>
+    <value>Огромный</value>
   </data>
   <data name="MAGNIFIER_SIZE_XXSMALL" xml:space="preserve">
-    <value>XX Small</value>
+    <value>Крошечный</value>
   </data>
   <data name="PDF" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PDF.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
