@@ -392,6 +392,46 @@
             }
         }
 
+        public bool AllowMirror
+        {
+            get => _optionsService.AllowMirror;
+            set
+            {
+                if (_optionsService.AllowMirror != value)
+                {
+                    _optionsService.AllowMirror = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool MirrorByDefault
+        {
+            get => _optionsService.AllowMirror;
+            set
+            {
+                if (_optionsService.AllowMirror != value)
+                {
+                    _optionsService.AllowMirror = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public double MirrorZoom
+        {
+            get => _optionsService.MirrorZoom;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_optionsService.MirrorZoom != value)
+                {
+                    _optionsService.MirrorZoom = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public bool ShowCommandPanel
         {
             get => _optionsService.ShowMediaItemCommandPanel;

@@ -61,6 +61,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow mirror window.
+        /// </summary>
+        public static string ALLOW_MIRROR {
+            get {
+                return ResourceManager.GetString("ALLOW_MIRROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow pause.
         /// </summary>
         public static string ALLOW_PAUSE {
@@ -409,6 +418,24 @@ namespace OnlyM.Properties {
         public static string MEDIA_PAGE {
             get {
                 return ResourceManager.GetString("MEDIA_PAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mirror enabled by default.
+        /// </summary>
+        public static string MIRROR_BY_DEFAULT {
+            get {
+                return ResourceManager.GetString("MIRROR_BY_DEFAULT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mirror zoom.
+        /// </summary>
+        public static string MIRROR_ZOOM {
+            get {
+                return ResourceManager.GetString("MIRROR_ZOOM", resourceCulture);
             }
         }
         

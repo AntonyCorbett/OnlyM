@@ -236,7 +236,7 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
                                         FontSize="14"
-                                        Visibility="{Binding Path=IsWeb, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Visibility="{Binding Path=IsWebAndAllowMirror, Converter={StaticResource BooleanToVisibilityConverter}}"
                                         IsChecked="{Binding UseMirror}"
                                         Content="Mirror"/>
 

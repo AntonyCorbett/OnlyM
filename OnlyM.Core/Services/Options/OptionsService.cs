@@ -66,6 +66,8 @@
 
         public event EventHandler IncludeBlankScreenItemChangedEvent;
 
+        public event EventHandler AllowMirrorChangedEvent;
+
         public event EventHandler VideoScreenPositionChangedEvent;
 
         public event EventHandler ImageScreenPositionChangedEvent;
@@ -273,6 +275,44 @@
             }
         }
 
+        public bool AllowMirror
+        {
+            get => _options.Value.AllowMirror;
+            set
+            {
+                if (_options.Value.AllowMirror != value)
+                {
+                    _options.Value.AllowMirror = value;
+                    AllowMirrorChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public bool UseMirrorByDefault
+        {
+            get => _options.Value.UseMirrorByDefault;
+            set
+            {
+                if (_options.Value.UseMirrorByDefault != value)
+                {
+                    _options.Value.UseMirrorByDefault = value;
+                }
+            }
+        }
+
+        public double MirrorZoom
+        {
+            get => _options.Value.MirrorZoom;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_options.Value.MirrorZoom != value)
+                {
+                    _options.Value.MirrorZoom = value;
+                }
+            }
+        }
+        
         public bool IncludeBlankScreenItem
         {
             get => _options.Value.IncludeBlankScreenItem;

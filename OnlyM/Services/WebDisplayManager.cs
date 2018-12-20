@@ -107,6 +107,59 @@
             });
         }
 
+        public void ShowMirror()
+        {
+            if (!_useMirror)
+            {
+                return;
+            }
+
+            if (Mutex.TryOpenExisting("OnlyMMirrorMutex", out var _))
+            {
+                Log.Logger.Debug("OnlyMMirrorMutex mutex exists");
+                return;
+            }
+
+            var folder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            if (folder == null)
+            {
+                Log.Logger.Error("Could not get assembly folder");
+                return;
+            }
+
+            const string mirrorExeFileName = "OnlyMMirror.exe";
+
+            var mirrorExePath = Path.Combine(folder, mirrorExeFileName);
+            if (!File.Exists(mirrorExePath))
+            {
+                Log.Logger.Error($"Could not find {mirrorExeFileName}");
+                return;
+            }
+
+            var mainWindow = Application.Current.MainWindow;
+            if (mainWindow == null)
+            {
+                Log.Logger.Error("Could not get main window");
+                return;
+            }
+
+            var handle = new WindowInteropHelper(mainWindow).Handle;
+            var onlyMMonitor = _monitorsService.GetMonitorForWindowHandle(handle);
+            var mediaMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
+
+            if (mediaMonitor.MonitorId.Equals(onlyMMonitor.MonitorId))
+            {
+                Log.Logger.Error("Cannot display mirror since OnlyM and Media window share a monitor");
+                return;
+            }
+
+            string zoomStr = "1.0";
+
+            Process.Start(
+                mirrorExePath,
+                $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr}");
+        }
+
         private async Task InitBrowserFromDatabase(string url)
         {
             SetZoomLevel(0.0);
@@ -197,59 +250,6 @@
                     }
                 }
             });
-        }
-
-        private void ShowMirror()
-        {
-            if (!_useMirror)
-            {
-                return;
-            }
-
-            if (Mutex.TryOpenExisting("OnlyMMirrorMutex", out var _))
-            {
-                Log.Logger.Debug("OnlyMMirrorMutex mutex exists");
-                return;
-            }
-
-            var folder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-            if (folder == null)
-            {
-                Log.Logger.Error("Could not get assembly folder");
-                return;
-            }
-
-            const string mirrorExeFileName = "OnlyMMirror.exe";
-
-            var mirrorExePath = Path.Combine(folder, mirrorExeFileName);
-            if (!File.Exists(mirrorExePath))
-            {
-                Log.Logger.Error($"Could not find {mirrorExeFileName}");
-                return;
-            }
-
-            var mainWindow = Application.Current.MainWindow;
-            if (mainWindow == null)
-            {
-                Log.Logger.Error("Could not get main window");
-                return;
-            }
-
-            var handle = new WindowInteropHelper(mainWindow).Handle;
-            var onlyMMonitor = _monitorsService.GetMonitorForWindowHandle(handle);
-            var mediaMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
-
-            if (mediaMonitor.MonitorId.Equals(onlyMMonitor.MonitorId))
-            {
-                Log.Logger.Error("Cannot display mirror since OnlyM and Media window share a monitor");
-                return;
-            }
-
-            string zoomStr = "1.0";
-
-            Process.Start(
-                mirrorExePath,
-                $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr}");
         }
 
         private void FadeBrowser(bool fadeIn, Action completed)

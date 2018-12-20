@@ -24,6 +24,7 @@
         private bool _pauseOnLastFrame;
         private bool _isCommandPanelOpen;
         private bool _allowFreezeCommand;
+        private bool _useMirror;
         private bool _isVisible;
         private string _name;
         private bool _isPaused;
@@ -38,6 +39,7 @@
         private int _currentSlideshowIndex;
         private int _slideshowCount;
         private bool _isRollingSlideshow;
+        private bool _allowUseMirror;
         private string _miscText;
 
         public event EventHandler PlaybackPositionChangedEvent;
@@ -48,11 +50,37 @@
 
         public bool IsWeb => MediaType.Classification == MediaClassification.Web;
 
+        public bool IsWebAndAllowMirror => IsWeb && AllowUseMirror;
+        
         public bool IsPdf => FilePath != null && Path.GetExtension(FilePath).Equals(".pdf", StringComparison.OrdinalIgnoreCase);
 
         public bool IsBlankScreen { get; set; }
 
-        public bool UseMirror { get; set; }
+        public bool UseMirror
+        {
+            get => _useMirror;
+            set
+            {
+                if (_useMirror != value)
+                {
+                    _useMirror = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool AllowUseMirror
+        {
+            get => _allowUseMirror;
+            set
+            {
+                if (_allowUseMirror != value)
+                {
+                    _allowUseMirror = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         public bool CommandPanelVisible
         {

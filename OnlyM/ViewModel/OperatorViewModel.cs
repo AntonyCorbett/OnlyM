@@ -84,6 +84,7 @@
             _optionsService.AllowVideoPositionSeekingChangedEvent += HandleAllowVideoPositionSeekingChangedEvent;
             _optionsService.UseInternalMediaTitlesChangedEvent += HandleUseInternalMediaTitlesChangedEvent;
             _optionsService.ShowMediaItemCommandPanelChangedEvent += HandleShowMediaItemCommandPanelChangedEvent;
+            _optionsService.AllowMirrorChangedEvent += HandleAllowMirrorChangedEvent;
             _optionsService.ShowFreezeCommandChangedEvent += HandleShowFreezeCommandChangedEvent;
             _optionsService.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
             _optionsService.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
@@ -1013,6 +1014,16 @@
                     item.MiscText = e.Description;
                 }
             });
+        }
+
+        private void HandleAllowMirrorChangedEvent(object sender, EventArgs e)
+        {
+            var allow = _optionsService.AllowMirror;
+
+            foreach (var item in MediaItems)
+            {
+                item.AllowUseMirror = allow;
+            }
         }
     }
 }

@@ -113,6 +113,17 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="TickFrequency" Value="1"/>
             </Style>
+
+            <Style x:Key="MirrorZoomSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignSlider}">
+                <Setter Property="Margin" Value="0,0,0,3"/>
+                <Setter Property="Width" Value="420"/>
+                <Setter Property="Minimum" Value="1.0"/>
+                <Setter Property="Maximum" Value="3.0"/>
+                <Setter Property="SmallChange" Value="0.1"/>
+                <Setter Property="LargeChange" Value="0.5"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="TickFrequency" Value="0.5"/>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -247,6 +258,17 @@
 
                 <Slider Style="{StaticResource MagnificationFrameThicknessSliderStyle}" 
                         Value="{Binding MagnifierFrameThickness, Mode=TwoWay}"/>
+
+                <CheckBox IsChecked="{Binding AllowMirror, Mode=TwoWay}"
+                          Content = "{x:Static resx:Resources.ALLOW_MIRROR}" 
+                          Style="{StaticResource SettingsCheckBoxStyle}" />
+
+                <CheckBox IsChecked="{Binding MirrorByDefault, Mode=TwoWay}"
+                          Content = "{x:Static resx:Resources.MIRROR_BY_DEFAULT}" 
+                          Style="{StaticResource SettingsCheckBoxStyle}" />
+
+                <Slider Style="{StaticResource MirrorZoomSliderStyle}" 
+                        Value="{Binding MirrorZoom, Mode=TwoWay}"/>
 
                 <Button 
                     Style="{StaticResource SettingsButtonStyle}" 

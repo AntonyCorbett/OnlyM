@@ -33,6 +33,8 @@
 
         event EventHandler IncludeBlankScreenItemChangedEvent;
 
+        event EventHandler AllowMirrorChangedEvent;
+        
         event EventHandler VideoScreenPositionChangedEvent;
 
         event EventHandler ImageScreenPositionChangedEvent;
@@ -125,10 +127,16 @@
 
         bool IsMediaMonitorSpecified { get; }
 
+        bool AllowMirror { get; set; }
+
+        bool UseMirrorByDefault { get; set; }
+
+        double MirrorZoom { get; set; }
+
         void SetCommandLineMediaFolder(string folder);
 
         bool IsCommandLineMediaFolderSpecified();
-        
+
         void Save();
     }
 }

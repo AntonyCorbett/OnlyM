@@ -21,6 +21,10 @@
         private const double DefaultBrowserFrameThickness = 2.0;
         private const double MaxBrowserFrameThickness = 5.0;
 
+        private const double MinMirrorZoom = 1.0;
+        private const double MaxMirrorZoom = 3.0;
+        private const double DefaultMirrorZoom = 1.0;
+        
         public Options()
         {
             // defaults
@@ -47,7 +51,10 @@
             VideoScreenPosition = new ScreenPosition();
             ImageScreenPosition = new ScreenPosition();
             WebScreenPosition = new ScreenPosition();
-            
+
+            AllowMirror = true;
+            MirrorZoom = DefaultMirrorZoom;
+
             Sanitize();
         }
 
@@ -122,6 +129,12 @@
 
         public List<string> RecentlyUsedMediaFolders { get; set; } = new List<string>();
 
+        public bool AllowMirror { get; set; }
+
+        public bool UseMirrorByDefault { get; set; }
+
+        public double MirrorZoom { get; set; }
+
         /// <summary>
         /// Validates the data, correcting automatically as required
         /// </summary>
@@ -185,6 +198,11 @@
                 MagnifierFrameThickness > MaxBrowserFrameThickness)
             {
                 MagnifierFrameThickness = DefaultBrowserFrameThickness;
+            }
+
+            if (MirrorZoom < MinMirrorZoom || MirrorZoom > MaxMirrorZoom)
+            {
+                MirrorZoom = DefaultMirrorZoom;
             }
         }
     }
