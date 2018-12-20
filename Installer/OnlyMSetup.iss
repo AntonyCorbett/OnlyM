@@ -66,6 +66,7 @@ Source: "bin\x86\Release\MaterialDesignThemes.Wpf.dll"; DestDir: "{app}"; Flags:
 Source: "bin\x86\Release\Microsoft.WindowsAPICodePack.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\Microsoft.WindowsAPICodePack.Shell.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\Microsoft.WindowsAPICodePack.ShellExtensions.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\x86\Release\NAudio.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.CustomControls.dll"; DestDir: "{app}"; Flags: ignoreversion

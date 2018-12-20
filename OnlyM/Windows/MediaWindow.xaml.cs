@@ -145,7 +145,7 @@
                     break;
 
                 case MediaClassification.Audio:
-                    mediaItem.PlaybackPositionChangedEvent -= HandleVideoPlaybackPositionChangedEvent;
+                    mediaItem.PlaybackPositionChangedEvent -= HandleAudioPlaybackPositionChangedEvent;
                     StopAudio(mediaItem);
                     break;
 
