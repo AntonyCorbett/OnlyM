@@ -24,7 +24,6 @@
         private readonly IOptionsService _optionsService;
 
         private Guid _mediaItemId;
-        private MediaClassification _mediaClassification;
         private TimeSpan _startPosition;
         private TimeSpan _lastPosition = TimeSpan.Zero;
         private bool _manuallySettingPlaybackPosition;
@@ -59,20 +58,18 @@
             UnsubscribeEvents();
         }
 
-        public async Task ShowVideoOrPlayAudio(
+        public async Task ShowVideoAsync(
             string mediaItemFilePath,
             ScreenPosition screenPosition,
             Guid mediaItemId,
-            MediaClassification mediaClassification,
             TimeSpan startOffset,
             bool startFromPaused)
         {
             _mediaItemId = mediaItemId;
             _mediaItemFilePath = mediaItemFilePath;
 
-            Log.Debug($"ShowVideoOrPlayAudio - Media Id = {_mediaItemId}");
-            
-            _mediaClassification = mediaClassification;
+            Log.Debug($"ShowVideo - Media Id = {_mediaItemId}");
+
             _startPosition = startOffset;
             _lastPosition = TimeSpan.Zero;
 
@@ -84,7 +81,7 @@
             if (startFromPaused)
             {
                 _mediaElement.Position = _startPosition;
-                await _mediaElement.Play(new Uri(mediaItemFilePath), _mediaClassification);
+                await _mediaElement.Play(new Uri(mediaItemFilePath), MediaClassification.Video);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
 
                 await CreateSubtitleProvider(mediaItemFilePath, startOffset);
@@ -95,18 +92,25 @@
 
                 await CreateSubtitleFile(mediaItemFilePath);
                 
-                await _mediaElement.Play(new Uri(mediaItemFilePath), _mediaClassification).ConfigureAwait(true);
+                await _mediaElement.Play(new Uri(mediaItemFilePath), MediaClassification.Video).ConfigureAwait(true);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
             }
         }
 
-        public void SetPlaybackPosition(TimeSpan position)
+        public async Task SetPlaybackPosition(TimeSpan position)
         {
             _manuallySettingPlaybackPosition = true;
 
-            _mediaElement.Position = position;
-            _lastPosition = TimeSpan.Zero;
+            if (position == TimeSpan.Zero)
+            {
+                await HideVideoAsync(_mediaItemId);
+            }
+            else
+            {
+                _mediaElement.Position = position;
+            }
 
+            _lastPosition = TimeSpan.Zero;
             _manuallySettingPlaybackPosition = false;
         }
 
@@ -115,7 +119,7 @@
             return _mediaElement.Position;
         }
 
-        public async Task PauseVideoOrAudioAsync(Guid mediaItemId)
+        public async Task PauseVideoAsync(Guid mediaItemId)
         {
             if (_mediaItemId == mediaItemId)
             {
@@ -237,7 +241,7 @@
             return new MediaEventArgs
             {
                 MediaItemId = id,
-                Classification = _mediaClassification,
+                Classification = MediaClassification.Video,
                 Change = change
             };
         }
@@ -256,8 +260,7 @@
         {
             return Task.Run(() =>
             {
-                if (_mediaClassification == MediaClassification.Video &&
-                    _mediaElement is MediaElementMediaFoundation &&
+                if (_mediaElement is MediaElementMediaFoundation &&
                     _optionsService.ShowVideoSubtitles)
                 {
                     return SubtitleFileGenerator.Generate(mediaItemFilePath, _mediaItemId);
@@ -275,8 +278,7 @@
                 _subTitleProvider = null;
             }
 
-            if (_mediaClassification == MediaClassification.Video &&
-                _mediaElement is MediaElementMediaFoundation &&
+            if (_mediaElement is MediaElementMediaFoundation &&
                 _optionsService.ShowVideoSubtitles)
             {
                 // accommodate any latency introduced by creation of srt file

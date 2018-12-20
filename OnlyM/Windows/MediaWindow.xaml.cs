@@ -30,6 +30,7 @@
 
         private readonly ImageDisplayManager _imageDisplayManager;
         private readonly WebDisplayManager _webDisplayManager;
+        private readonly AudioManager _audioManager;
 
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
@@ -49,6 +50,7 @@
 
             _imageDisplayManager = new ImageDisplayManager(Image1Element, Image2Element, _optionsService);
             _webDisplayManager = new WebDisplayManager(Browser, BrowserGrid, databaseService, _optionsService);
+            _audioManager = new AudioManager();
             
             _snackbarService = snackbarService;
 
@@ -57,6 +59,7 @@
             SubscribeOptionsEvents();
             SubscribeImageEvents();
             SubscribeWebEvents();
+            SubscribeAudioEvents();
         }
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
@@ -91,9 +94,13 @@
                     break;
 
                 case MediaClassification.Video:
+                    mediaItemToStart.PlaybackPositionChangedEvent -= HandleVideoPlaybackPositionChangedEvent;
+                    await ShowVideoAsync(mediaItemToStart, currentMediaItems, startFromPaused);
+                    break;
+
                 case MediaClassification.Audio:
-                    mediaItemToStart.PlaybackPositionChangedEvent -= HandlePlaybackPositionChangedEvent;
-                    await ShowVideoOrPlayAudioAsync(mediaItemToStart, currentMediaItems, startFromPaused);
+                    mediaItemToStart.PlaybackPositionChangedEvent -= HandleAudioPlaybackPositionChangedEvent;
+                    PlayAudio(mediaItemToStart, startFromPaused);
                     break;
 
                 case MediaClassification.Slideshow:
@@ -130,8 +137,12 @@
                     break;
 
                 case MediaClassification.Audio:
+                    mediaItem.PlaybackPositionChangedEvent -= HandleVideoPlaybackPositionChangedEvent;
+                    StopAudio(mediaItem);
+                    break;
+
                 case MediaClassification.Video:
-                    mediaItem.PlaybackPositionChangedEvent -= HandlePlaybackPositionChangedEvent;
+                    mediaItem.PlaybackPositionChangedEvent -= HandleVideoPlaybackPositionChangedEvent;
                     await HideVideoAsync(mediaItem);
                     break;
 
@@ -169,16 +180,36 @@
 
         private async Task PauseVideoOrAudioAsync(MediaItem mediaItem)
         {
-            await _videoDisplayManager.PauseVideoOrAudioAsync(mediaItem.Id);
-            mediaItem.PlaybackPositionChangedEvent += HandlePlaybackPositionChangedEvent;
+            switch (mediaItem.MediaType.Classification)
+            {
+                case MediaClassification.Video:
+                    await _videoDisplayManager.PauseVideoAsync(mediaItem.Id);
+                    mediaItem.PlaybackPositionChangedEvent += HandleVideoPlaybackPositionChangedEvent;
+                    break;
+
+                case MediaClassification.Audio:
+                    _audioManager.PauseAudio(mediaItem.Id);
+                    mediaItem.PlaybackPositionChangedEvent += HandleAudioPlaybackPositionChangedEvent;
+                    break;
+            }
         }
 
-        private void HandlePlaybackPositionChangedEvent(object sender, EventArgs e)
+        private async void HandleVideoPlaybackPositionChangedEvent(object sender, EventArgs e)
         {
             if (_optionsService.AllowVideoScrubbing)
             {
                 var item = (MediaItem)sender;
-                _videoDisplayManager.SetPlaybackPosition(
+                await _videoDisplayManager.SetPlaybackPosition(
+                    TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
+            }
+        }
+
+        private void HandleAudioPlaybackPositionChangedEvent(object sender, EventArgs e)
+        {
+            if (_optionsService.AllowVideoScrubbing)
+            {
+                var item = (MediaItem)sender;
+                _audioManager.SetPlaybackPosition(
                     TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
             }
         }
@@ -186,6 +217,11 @@
         private async Task HideVideoAsync(MediaItem mediaItem)
         {
             await _videoDisplayManager.HideVideoAsync(mediaItem.Id);
+        }
+
+        private void StopAudio(MediaItem mediaItem)
+        {
+            _audioManager.StopAudio(mediaItem.Id);
         }
 
         private void HideImageOrSlideshow(IReadOnlyCollection<MediaItem> mediaItems)
@@ -247,7 +283,7 @@
             _imageDisplayManager.StopSlideshow(mediaItem.Id);
         }
 
-        private async Task ShowVideoOrPlayAudioAsync(
+        private async Task ShowVideoAsync(
             MediaItem mediaItemToStart,
             IReadOnlyCollection<MediaItem> currentMediaItems,
             bool startFromPaused)
@@ -256,18 +292,22 @@
 
             _videoDisplayManager.ShowSubtitles = _optionsService.ShowVideoSubtitles;
 
-            await _videoDisplayManager.ShowVideoOrPlayAudio(
+            await _videoDisplayManager.ShowVideoAsync(
                 mediaItemToStart.FilePath,
                 _optionsService.VideoScreenPosition,
                 mediaItemToStart.Id,
-                mediaItemToStart.MediaType.Classification,
                 startPosition,
                 startFromPaused);
 
-            if (mediaItemToStart.MediaType.Classification != MediaClassification.Audio)
-            {
-                HideImageOrSlideshow(currentMediaItems);
-            }
+            HideImageOrSlideshow(currentMediaItems);
+        }
+
+        private void PlayAudio(MediaItem mediaItemToStart, bool startFromPaused)
+        {
+            _audioManager.PlayAudio(
+                mediaItemToStart.FilePath,
+                mediaItemToStart.Id,
+                startFromPaused);
         }
 
         private void WindowLoaded(object sender, RoutedEventArgs e)
@@ -287,6 +327,7 @@
                 UnsubscribeImageEvents();
                 UnsubscribeVideoEvents();
                 UnsubscribeWebEvents();
+                UnsubscribeAudioEvents();
             }
         }
 
@@ -316,6 +357,18 @@
         {
             _webDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
             _webDisplayManager.StatusEvent += HandleWebDisplayManagerStatusEvent;
+        }
+
+        private void SubscribeAudioEvents()
+        {
+            _audioManager.MediaChangeEvent += HandleMediaChangeEvent;
+            _audioManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
+        }
+
+        private void UnsubscribeAudioEvents()
+        {
+            _audioManager.MediaChangeEvent -= HandleMediaChangeEvent;
+            _audioManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
         }
 
         private void HandleWebDisplayManagerStatusEvent(object sender, WebBrowserProgressEventArgs e)
@@ -394,11 +447,23 @@
 
         private bool ShouldConfirmMediaStop(MediaItem mediaItem)
         {
-            return
-                _optionsService.ConfirmVideoStop &&
-                IsVideoOrAudio(mediaItem) &&
-                !_videoDisplayManager.IsPaused && 
-                _videoDisplayManager.GetPlaybackPosition().TotalSeconds > MediaConfirmStopWindowSeconds;
+            switch (mediaItem.MediaType.Classification)
+            {
+                case MediaClassification.Video:
+                    return
+                        _optionsService.ConfirmVideoStop &&
+                        !_videoDisplayManager.IsPaused &&
+                        _videoDisplayManager.GetPlaybackPosition().TotalSeconds > MediaConfirmStopWindowSeconds;
+
+                case MediaClassification.Audio:
+                    return
+                        _optionsService.ConfirmVideoStop &&
+                        !_audioManager.IsPaused &&
+                        _audioManager.GetPlaybackPosition().TotalSeconds > MediaConfirmStopWindowSeconds;
+
+                default:
+                    return false;
+            }
         }
 
         private void ConfirmMediaStop(MediaItem mediaItem)
