@@ -111,6 +111,8 @@
 
         public void ShowMirror()
         {
+            Log.Logger.Debug("Attempting to open mirror");
+
             if (Mutex.TryOpenExisting("OnlyMMirrorMutex", out var _))
             {
                 Log.Logger.Debug("OnlyMMirrorMutex mutex exists");
@@ -132,6 +134,8 @@
                 Log.Logger.Error($"Could not find {mirrorExeFileName}");
                 return;
             }
+
+            Log.Logger.Debug($"Mirror path = {mirrorExePath}");
 
             var mainWindow = Application.Current.MainWindow;
             if (mainWindow == null)
@@ -156,16 +160,35 @@
                 return;
             }
 
+            Log.Logger.Debug($"Main monitor = {onlyMMonitor.Monitor.DeviceName}");
+            Log.Logger.Debug($"Media monitor = {mediaMonitor.Monitor.DeviceName}");
+
             StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = Properties.Resources.LAUNCHING_MIRROR });
 
             try
             {
-                string zoomStr = _optionsService.MirrorZoom.ToString(CultureInfo.InvariantCulture);
+                var zoomStr = _optionsService.MirrorZoom.ToString(CultureInfo.InvariantCulture);
+                var commandLineArgs = $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr}";
 
-                _mirrorProcess = Process.Start(
-                    mirrorExePath,
-                    $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr}");
+                Log.Logger.Debug($"Starting mirror exe with args = {commandLineArgs}");
 
+                _mirrorProcess = Process.Start(mirrorExePath, commandLineArgs);
+
+                if (_mirrorProcess == null)
+                {
+                    Log.Logger.Error("Could not launch mirror - process is null");
+                }
+                else if (_mirrorProcess.HasExited)
+                {
+                    Log.Logger.Error("Could not launch mirror - process exited");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not launch mirror");
+            }
+            finally
+            {
                 Task.Delay(1000).ContinueWith(t =>
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
@@ -173,10 +196,6 @@
                         StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty });
                     });
                 });
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not launch mirror");
             }
         }
 
