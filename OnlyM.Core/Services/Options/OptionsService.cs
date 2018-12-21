@@ -85,9 +85,7 @@
         public event EventHandler MagnifierChangedEvent;
 
         public event EventHandler BrowserChangedEvent;
-
-        public event EventHandler LogEventLevelChangedEvent;
-
+        
         public bool ShouldPurgeBrowserCacheOnStartup
         {
             get => _options.Value.ShouldPurgeBrowserCacheOnStartup;
@@ -440,7 +438,7 @@
                 if (_options.Value.LogEventLevel != value)
                 {
                     _options.Value.LogEventLevel = value;
-                    LogEventLevelChangedEvent?.Invoke(this, EventArgs.Empty);
+                    _logLevelSwitchService.SetMinimumLevel(value);
                 }
             }
         }

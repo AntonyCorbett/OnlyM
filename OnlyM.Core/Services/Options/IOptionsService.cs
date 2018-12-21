@@ -52,8 +52,6 @@
         event EventHandler MagnifierChangedEvent;
 
         event EventHandler BrowserChangedEvent;
-
-        event EventHandler LogEventLevelChangedEvent;
         
         bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 
