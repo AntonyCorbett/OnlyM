@@ -473,7 +473,7 @@
     <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
   </data>
   <data name="MIRROR_HOTKEY" xml:space="preserve">
-    <value>Mirror hotkey</value>
+    <value>Comandă rapidă oglindă</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
 </root>
