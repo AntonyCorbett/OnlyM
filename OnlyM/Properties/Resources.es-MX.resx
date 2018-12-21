@@ -369,7 +369,7 @@
     <comment>Button label in Command panel</comment>
   </data>
   <data name="FREEZE" xml:space="preserve">
-    <value>Congelar</value>
+    <value>Pausar</value>
     <comment>Button label in Command panel. Freeze the video on the final frame.</comment>
   </data>
   <data name="HIDE" xml:space="preserve">
