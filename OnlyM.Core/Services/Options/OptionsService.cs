@@ -298,6 +298,18 @@
             }
         }
 
+        public char MirrorHotKey
+        {
+            get => _options.Value.MirrorHotKey;
+            set
+            {
+                if (_options.Value.MirrorHotKey != value)
+                {
+                    _options.Value.MirrorHotKey = value;
+                }
+            }
+        }
+
         public double MirrorZoom
         {
             get => _options.Value.MirrorZoom;

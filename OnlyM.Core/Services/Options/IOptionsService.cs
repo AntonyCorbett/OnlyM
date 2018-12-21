@@ -131,6 +131,8 @@
 
         double MirrorZoom { get; set; }
 
+        char MirrorHotKey { get; set; }
+
         void SetCommandLineMediaFolder(string folder);
 
         bool IsCommandLineMediaFolderSpecified();

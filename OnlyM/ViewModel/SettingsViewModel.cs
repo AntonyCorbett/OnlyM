@@ -34,6 +34,7 @@
         private readonly IActiveMediaItemsService _activeMediaItemsService;
         private readonly ISnackbarService _snackbarService;
         private readonly MonitorItem[] _monitors;
+        private readonly MirrorHotKeyItem[] _mirrorHotKeys;
         private readonly LanguageItem[] _languages;
         private readonly RenderingMethodItem[] _renderingMethods;
         private readonly LoggingLevel[] _loggingLevels;
@@ -71,13 +72,14 @@
             _renderingMethods = GetRenderingMethods();
             _magnifierShapes = GetMagnifierShapes();
             _magnifierSizes = GetMagnifierSizes();
-            
+            _mirrorHotKeys = GetMirrorHotKeys();
+
             _pageService.NavigationEvent += HandleNavigationEvent;
             
             InitCommands();
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
-
+        
         public RelayCommand PurgeThumbnailCacheCommand { get; set; }
 
         public RelayCommand PurgeWebCacheCommand { get; set; }
@@ -96,8 +98,10 @@
 
         public IEnumerable<MagnifierSizeItem> MagnifierSizes => _magnifierSizes;
 
-        public bool IsBrowserCachePurgeQueued => _optionsService.ShouldPurgeBrowserCacheOnStartup;
+        public IEnumerable<MirrorHotKeyItem> MirrorHotKeys => _mirrorHotKeys;
 
+        public bool IsBrowserCachePurgeQueued => _optionsService.ShouldPurgeBrowserCacheOnStartup;
+        
         public string MaxItemCount
         {
             get => _optionsService.MaxItemCount.ToString();
@@ -427,6 +431,19 @@
                 if (_optionsService.MirrorZoom != value)
                 {
                     _optionsService.MirrorZoom = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public char MirrorHotKey
+        {
+            get => _optionsService.MirrorHotKey;
+            set
+            {
+                if (_optionsService.MirrorHotKey != value)
+                {
+                    _optionsService.MirrorHotKey = value;
                     RaisePropertyChanged();
                 }
             }
@@ -1041,6 +1058,18 @@
             }
 
             result.Sort((x, y) => string.Compare(x.LanguageName, y.LanguageName, StringComparison.Ordinal));
+
+            return result.ToArray();
+        }
+
+        private MirrorHotKeyItem[] GetMirrorHotKeys()
+        {
+            var result = new List<MirrorHotKeyItem>();
+
+            for (var ch = 'A'; ch <= 'Z'; ++ch)
+            {
+                result.Add(new MirrorHotKeyItem { Character = ch, Name = $"ALT+{ch}" });
+            }
 
             return result.ToArray();
         }

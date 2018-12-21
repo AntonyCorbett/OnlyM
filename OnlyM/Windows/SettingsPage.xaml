@@ -273,6 +273,14 @@
                 <Slider Style="{StaticResource MirrorZoomSliderStyle}" 
                         Value="{Binding MirrorZoom, Mode=TwoWay}"/>
 
+                <ComboBox ItemsSource="{Binding MirrorHotKeys}"
+                          Style="{StaticResource SettingsComboBoxStyle}" 
+                          materialDesign:HintAssist.IsFloating="True"
+                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.MIRROR_HOTKEY}"
+                          SelectedValuePath="Character" 
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding MirrorHotKey, Mode=TwoWay}"/>
+
                 <Button 
                     Style="{StaticResource SettingsButtonStyle}" 
                     Margin="0,10,0,0"

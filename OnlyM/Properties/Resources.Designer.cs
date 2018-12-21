@@ -458,6 +458,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mirror hotkey.
+        /// </summary>
+        public static string MIRROR_HOTKEY {
+            get {
+                return ResourceManager.GetString("MIRROR_HOTKEY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mirror zoom.
         /// </summary>
         public static string MIRROR_ZOOM {

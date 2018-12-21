@@ -172,7 +172,9 @@
             try
             {
                 var zoomStr = _optionsService.MirrorZoom.ToString(CultureInfo.InvariantCulture);
-                var commandLineArgs = $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr}";
+                var hotKey = _optionsService.MirrorHotKey;
+
+                var commandLineArgs = $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr} {hotKey}";
 
                 Log.Logger.Debug($"Starting mirror exe with args = {commandLineArgs}");
 

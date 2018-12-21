@@ -186,6 +186,7 @@
     <Compile Include="Models\FilesCopyProgressEventArgs.cs" />
     <Compile Include="Models\ImageFade.cs" />
     <Compile Include="Models\ImageFadeSpeed.cs" />
+    <Compile Include="Models\MirrorHotKeyItem.cs" />
     <Compile Include="Models\LanguageItem.cs" />
     <Compile Include="Models\LoggingLevel.cs" />
     <Compile Include="Models\MagnifierShapeItem.cs" />

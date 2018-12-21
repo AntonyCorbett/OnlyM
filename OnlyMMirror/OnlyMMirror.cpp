@@ -12,7 +12,7 @@
 // Global variables and strings.
 HINSTANCE           hInst;
 const TCHAR         WindowClassName[] = TEXT("OnlyMMirrorWindow");
-const TCHAR         WindowTitle[] = TEXT("OnlyM Mirror (ALT-Z to close)");
+const TCHAR         WindowTitle[] = TEXT("OnlyM Mirror");
 const UINT          timerInterval = 60; 
 HWND                hwndMag;
 HWND                hwndHost;
@@ -86,6 +86,10 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 		}
 		else
 		{
+			TCHAR caption[64];
+			sprintf_s(caption, "%s (ALT+%c to close)", WindowTitle, HotKey);
+
+			::SetWindowText(hwndHost, caption);
 			UINT_PTR timerId = SetTimer(hwndHost, 0, timerInterval, UpdateMirrorWindow);
 
 			MSG msg;

@@ -48,6 +48,7 @@
             InitializeComponent();
 
             _optionsService = optionsService;
+            _snackbarService = snackbarService;
 
             _imageDisplayManager = new ImageDisplayManager(
                 Image1Element, Image2Element, _optionsService);
@@ -57,8 +58,6 @@
 
             _audioManager = new AudioManager();
             
-            _snackbarService = snackbarService;
-
             InitVideoRenderingMethod();
 
             SubscribeOptionsEvents();

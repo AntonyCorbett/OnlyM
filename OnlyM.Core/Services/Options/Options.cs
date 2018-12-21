@@ -24,6 +24,7 @@
         private const double MinMirrorZoom = 1.0;
         private const double MaxMirrorZoom = 2.0;
         private const double DefaultMirrorZoom = 1.0;
+        private const char DefaultMirrorHotKey = 'Z';
         
         public Options()
         {
@@ -135,6 +136,8 @@
 
         public double MirrorZoom { get; set; }
 
+        public char MirrorHotKey { get; set; }
+
         /// <summary>
         /// Validates the data, correcting automatically as required
         /// </summary>
@@ -203,6 +206,11 @@
             if (MirrorZoom < MinMirrorZoom || MirrorZoom > MaxMirrorZoom)
             {
                 MirrorZoom = DefaultMirrorZoom;
+            }
+
+            if (MirrorHotKey < 'A' || MirrorHotKey > 'Z')
+            {
+                MirrorHotKey = DefaultMirrorHotKey;
             }
         }
     }
