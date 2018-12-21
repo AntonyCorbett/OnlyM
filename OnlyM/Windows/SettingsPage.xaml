@@ -267,6 +267,9 @@
                           Content = "{x:Static resx:Resources.MIRROR_BY_DEFAULT}" 
                           Style="{StaticResource SettingsCheckBoxStyle}" />
 
+                <Label Style="{StaticResource SettingsLabelStyle}" 
+                       Content="{x:Static resx:Resources.MIRROR_ZOOM}"/>
+
                 <Slider Style="{StaticResource MirrorZoomSliderStyle}" 
                         Value="{Binding MirrorZoom, Mode=TwoWay}"/>
 
