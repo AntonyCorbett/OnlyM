@@ -209,6 +209,9 @@
         {
             if (_mediaWindow != null)
             {
+                // close any mirror...
+                Messenger.Default.Send(new MirrorWindowMessage { MediaItemId = mediaItem.Id, UseMirror = false });
+
                 await _mediaWindow.StopMediaAsync(mediaItem);
             }
         }
