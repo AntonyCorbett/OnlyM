@@ -22,7 +22,7 @@
         private const double MaxBrowserFrameThickness = 5.0;
 
         private const double MinMirrorZoom = 1.0;
-        private const double MaxMirrorZoom = 3.0;
+        private const double MaxMirrorZoom = 2.0;
         private const double DefaultMirrorZoom = 1.0;
         
         public Options()

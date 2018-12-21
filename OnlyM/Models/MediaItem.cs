@@ -78,6 +78,7 @@
                 {
                     _allowUseMirror = value;
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsWebAndAllowMirror));
                 }
             }
         }

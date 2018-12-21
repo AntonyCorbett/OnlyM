@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Globalization;
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
@@ -31,6 +32,7 @@
         private bool _showing;
         private bool _useMirror;
         private string _currentMediaItemUrl;
+        private Process _mirrorProcess;
 
         public WebDisplayManager(
             ChromiumWebBrowser browser, 
@@ -109,11 +111,6 @@
 
         public void ShowMirror()
         {
-            if (!_useMirror)
-            {
-                return;
-            }
-
             if (Mutex.TryOpenExisting("OnlyMMirrorMutex", out var _))
             {
                 Log.Logger.Debug("OnlyMMirrorMutex mutex exists");
@@ -147,17 +144,65 @@
             var onlyMMonitor = _monitorsService.GetMonitorForWindowHandle(handle);
             var mediaMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
 
+            if (onlyMMonitor == null || mediaMonitor == null)
+            {
+                Log.Logger.Debug("Cannot get monitor");
+                return;
+            }
+            
             if (mediaMonitor.MonitorId.Equals(onlyMMonitor.MonitorId))
             {
                 Log.Logger.Error("Cannot display mirror since OnlyM and Media window share a monitor");
                 return;
             }
 
-            string zoomStr = "1.0";
+            StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = Properties.Resources.LAUNCHING_MIRROR });
 
-            Process.Start(
-                mirrorExePath,
-                $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr}");
+            try
+            {
+                string zoomStr = _optionsService.MirrorZoom.ToString(CultureInfo.InvariantCulture);
+
+                _mirrorProcess = Process.Start(
+                    mirrorExePath,
+                    $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr}");
+
+                Task.Delay(1000).ContinueWith(t =>
+                {
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty });
+                    });
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not launch mirror");
+            }
+        }
+
+        public void CloseMirror()
+        {
+            if (!Mutex.TryOpenExisting("OnlyMMirrorMutex", out var _))
+            {
+                return;
+            }
+
+            if (_mirrorProcess == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (_mirrorProcess.CloseMainWindow())
+                {
+                    _mirrorProcess = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not close mirror");
+            }
         }
 
         private async Task InitBrowserFromDatabase(string url)
@@ -245,7 +290,11 @@
                         {
                             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
                             _browserGrid.Focus();
-                            ShowMirror();
+
+                            if (_useMirror)
+                            {
+                                ShowMirror();
+                            }
                         });
                     }
                 }

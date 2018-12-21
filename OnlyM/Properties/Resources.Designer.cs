@@ -341,6 +341,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Launching mirror....
+        /// </summary>
+        public static string LAUNCHING_MIRROR {
+            get {
+                return ResourceManager.GetString("LAUNCHING_MIRROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading frame {0}.
         /// </summary>
         public static string LOADING_FRAME {

@@ -60,6 +60,7 @@
             _systemDpi = WindowPlacement.GetDpiSettings();
             
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+            Messenger.Default.Register<MirrorWindowMessage>(this, OnMirrorWindowMessage);
         }
 
         public event EventHandler MediaMonitorChangedEvent;
@@ -491,6 +492,14 @@
         private void HandleRenderingMethodChangedEvent(object sender, EventArgs e)
         {
             _mediaWindow?.UpdateRenderingMethod();
+        }
+
+        private void OnMirrorWindowMessage(MirrorWindowMessage msg)
+        {
+            if (_activeMediaItemsService.Exists(msg.MediaItemId))
+            {
+                _mediaWindow.ShowMirror(msg.UseMirror);
+            }
         }
     }
 }

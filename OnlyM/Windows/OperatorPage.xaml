@@ -232,13 +232,16 @@
                                         Style="{StaticResource MaterialDesignCheckBox}"
                                         Grid.Column="0" 
                                         Grid.Row="0" 
+                                        Tag="{Binding Id}"
                                         Grid.ColumnSpan="2" 
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
                                         FontSize="14"
                                         Visibility="{Binding Path=IsWebAndAllowMirror, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        IsChecked="{Binding UseMirror}"
-                                        Content="Mirror"/>
+                                        IsChecked="{Binding UseMirror, Mode=TwoWay}"
+                                        Content="Mirror" 
+                                        Checked="MirrorCheckBoxChecked" 
+                                        Unchecked="MirrorCheckBoxUnchecked"/>
 
                                     <!-- Slide Navigation buttons -->
                                     <StackPanel Orientation="Horizontal" 

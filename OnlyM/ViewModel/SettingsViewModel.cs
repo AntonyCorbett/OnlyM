@@ -407,12 +407,12 @@
 
         public bool MirrorByDefault
         {
-            get => _optionsService.AllowMirror;
+            get => _optionsService.UseMirrorByDefault;
             set
             {
-                if (_optionsService.AllowMirror != value)
+                if (_optionsService.UseMirrorByDefault != value)
                 {
-                    _optionsService.AllowMirror = value;
+                    _optionsService.UseMirrorByDefault = value;
                     RaisePropertyChanged();
                 }
             }

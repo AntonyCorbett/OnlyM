@@ -878,9 +878,11 @@
                 IsVisible = true,
                 LastChanged = file.LastChanged,
                 AllowPause = _optionsService.AllowVideoPause,
-                AllowPositionSeeking = _optionsService.AllowVideoPositionSeeking
+                AllowPositionSeeking = _optionsService.AllowVideoPositionSeeking,
+                AllowUseMirror = _optionsService.AllowMirror,
+                UseMirror = _optionsService.UseMirrorByDefault
             };
-
+            
             return result;
         }
 

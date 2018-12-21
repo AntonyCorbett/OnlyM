@@ -7,7 +7,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
-    using CefSharp;
     using CommonServiceLocator;
     using Core.Models;
     using Core.Services.Options;
@@ -84,6 +83,18 @@
             _audioManager?.Dispose();
             VideoElementFfmpeg?.Dispose();
             Browser?.Dispose();
+        }
+
+        public void ShowMirror(bool show)
+        {
+            if (show)
+            {
+                _webDisplayManager.ShowMirror();
+            }
+            else
+            {
+                _webDisplayManager.CloseMirror();
+            }
         }
 
         public void UpdateRenderingMethod()
@@ -277,10 +288,12 @@
             var vm = (MediaViewModel)DataContext;
             vm.IsWebPage = !mediaItem.IsPdf;
 
+            var showMirrorWindow = mediaItem.UseMirror && mediaItem.AllowUseMirror;
+
             _webDisplayManager.ShowWeb(
                 mediaItem.FilePath, 
                 mediaItem.Id,
-                mediaItem.UseMirror,
+                showMirrorWindow,
                 _optionsService.WebScreenPosition);
 
             HideImageOrSlideshow(currentMediaItems);
