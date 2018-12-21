@@ -464,4 +464,16 @@
     <value>Lanzando espejo...</value>
     <comment>Displayed when mirror window is launching</comment>
   </data>
+  <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
+    <value>Change the mirror hotkey!</value>
+    <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
+  </data>
+  <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
+    <value>Logging level is high!</value>
+    <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
+  </data>
+  <data name="MIRROR_HOTKEY" xml:space="preserve">
+    <value>Mirror hotkey</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
 </root>
