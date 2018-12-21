@@ -444,4 +444,24 @@
     <value>Espessura da moldura da lupa</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
+  <data name="ALLOW_MIRROR" xml:space="preserve">
+    <value>Allow mirror window</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
+    <value>Mirror enabled by default</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR_ZOOM" xml:space="preserve">
+    <value>Mirror zoom</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_LOADING" xml:space="preserve">
+    <value>Loading...</value>
+    <comment>Displayed when a web page is loading</comment>
+  </data>
+  <data name="LAUNCHING_MIRROR" xml:space="preserve">
+    <value>Launching mirror...</value>
+    <comment>Displayed when mirror window is launching</comment>
+  </data>
 </root>

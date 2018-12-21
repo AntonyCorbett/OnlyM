@@ -241,7 +241,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Povolit přetáčení při pauze</value>
+    <value>Zobrazit živý náhled při přetáčení videa během pauzy</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
@@ -281,7 +281,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
-    <value>SMAZAT PAMĚŤ MINIATUR OBRÁZKŮ</value>
+    <value>SMAZAT PAMĚŤ MINIATUR</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
@@ -409,7 +409,7 @@
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_WEB" xml:space="preserve">
-    <value>WEB</value>
+    <value>WEBOVÝ PROHLÍŽEČ</value>
     <comment>Section title for Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
@@ -433,7 +433,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>VYČIŠTĚNÍ MEZIPAMĚTI PROHLÍŽEČE</value>
+    <value>VYMAZAT CACHE PROHLÍŽEČE</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
@@ -443,5 +443,25 @@
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
     <value>Šířka rámečku lupy</value>
     <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="ALLOW_MIRROR" xml:space="preserve">
+    <value>Allow mirror window</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
+    <value>Mirror enabled by default</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR_ZOOM" xml:space="preserve">
+    <value>Mirror zoom</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_LOADING" xml:space="preserve">
+    <value>Loading...</value>
+    <comment>Displayed when a web page is loading</comment>
+  </data>
+  <data name="LAUNCHING_MIRROR" xml:space="preserve">
+    <value>Launching mirror...</value>
+    <comment>Displayed when mirror window is launching</comment>
   </data>
 </root>
