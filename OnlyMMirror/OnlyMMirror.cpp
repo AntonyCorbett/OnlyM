@@ -5,7 +5,8 @@
 #include <strsafe.h>
 #include <magnification.h>
 
-#define HOST_WINDOW_STYLES WS_CLIPCHILDREN | WS_CAPTION
+// WS_DISABLED prevents window being moved
+#define HOST_WINDOW_STYLES WS_CLIPCHILDREN | WS_CAPTION | WS_DISABLED
 #define HOST_WINDOW_STYLES_EX WS_EX_TOPMOST | WS_EX_TOOLWINDOW
 
 // Global variables and strings.
@@ -38,7 +39,7 @@ const int MAX_MONITOR_NAME_LEN = 32;
 TCHAR MainMonitor[MAX_MONITOR_NAME_LEN + 1];
 TCHAR TargetMonitor[MAX_MONITOR_NAME_LEN + 1];
 float ZoomFactor = 1.0F;
-
+TCHAR HotKey = 'Z';
 
 int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE /*hPrevInstance*/,
@@ -73,11 +74,13 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 		ShowWindow(hwndHost, nCmdShow | SW_SHOWNA);		
 		UpdateWindow(hwndHost);
 
+		RECT originalRect;
+		::GetWindowRect(hwndHost, &originalRect);
+
 		PositionCursor();
 
 		if (!InitHotKey())
-		{
-			MessageBox(NULL, "Could not register hotkey", "OnlyM Mirror", MB_OK);
+		{			
 			rv = 5;
 		}
 		else
@@ -85,10 +88,18 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 			UINT_PTR timerId = SetTimer(hwndHost, 0, timerInterval, UpdateMirrorWindow);
 
 			MSG msg;
-			while (GetMessage(&msg, NULL, 0, 0))
+			BOOL bRet;
+			while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0)			
 			{
+				if (bRet == -1)
+				{
+					break;
+				}
+
 				if (msg.message == WM_HOTKEY)
 				{
+					// we only register one hotkey
+					// so its value doesn't matter
 					break;
 				}
 
@@ -161,6 +172,11 @@ BOOL InitFromCommandLine()
 		}
 	}
 
+	if (__argc >= 5)
+	{
+		HotKey = __argv[4][0];
+	}
+
 	return rv;
 }
 
@@ -175,7 +191,8 @@ BOOL InitMonitors()
 
 BOOL InitHotKey()
 {
-	return ::RegisterHotKey(NULL, 1, MOD_ALT, 0x5A);  //0x5A is 'Z'
+	UINT vkCode = 0x41 + HotKey - 'A';
+	return ::RegisterHotKey(NULL, 1, MOD_ALT, vkCode);  //0x5A is 'Z'
 }
 
 BOOL CALLBACK OnlyMMonitorEnumProc(HMONITOR hMonitor, HDC /*hdcMonitor*/, LPRECT /*lprcMonitor*/, LPARAM /*dwData*/)
@@ -206,18 +223,8 @@ LRESULT CALLBACK HostWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 	switch (message)
 	{
 		case WM_SETCURSOR:
-			if (LOWORD(lParam) == HTCAPTION)
-			{
-				SetCursor(hCursorArrow);
-				return TRUE;
-			}
-
-			if (LOWORD(lParam) == HTCLIENT)
-			{
-				// prevent cursor showing (confusing!)
-				SetCursor(NULL);
-				return TRUE;
-			}
+			SetCursor(NULL);
+			return TRUE;
 			break;
 
 		case WM_DESTROY:

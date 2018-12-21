@@ -180,7 +180,7 @@
                 }
                 else if (_mirrorProcess.HasExited)
                 {
-                    Log.Logger.Error("Could not launch mirror - process exited");
+                    Log.Logger.Error($"Could not launch mirror - process exited with exit code {_mirrorProcess.ExitCode}");
                 }
             }
             catch (Exception ex)
