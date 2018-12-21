@@ -81,6 +81,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 
 		if (!InitHotKey())
 		{			
+			// NB - this exit code is used in OnlyM (WebDisplayManager)
 			rv = 5;
 		}
 		else

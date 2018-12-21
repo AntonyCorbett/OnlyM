@@ -143,6 +143,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change the mirror hotkey!.
+        /// </summary>
+        public static string CHANGE_MIRROR_HOTKEY {
+            get {
+                return ResourceManager.GetString("CHANGE_MIRROR_HOTKEY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm when stopping.
         /// </summary>
         public static string CONFIRM_STOP {
@@ -364,6 +373,15 @@ namespace OnlyM.Properties {
         public static string LOGGING_LEVEL {
             get {
                 return ResourceManager.GetString("LOGGING_LEVEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logging level is high!.
+        /// </summary>
+        public static string LOGGING_LEVEL_HIGH {
+            get {
+                return ResourceManager.GetString("LOGGING_LEVEL_HIGH", resourceCulture);
             }
         }
         

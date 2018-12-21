@@ -53,7 +53,7 @@
                 Image1Element, Image2Element, _optionsService);
 
             _webDisplayManager = new WebDisplayManager(
-                Browser, BrowserGrid, databaseService, _optionsService, monitorsService);
+                Browser, BrowserGrid, databaseService, _optionsService, monitorsService, _snackbarService);
 
             _audioManager = new AudioManager();
             

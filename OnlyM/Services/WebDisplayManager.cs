@@ -18,6 +18,7 @@
     using OnlyM.Core.Services.Options;
     using OnlyM.Core.Services.WebShortcuts;
     using OnlyM.Models;
+    using OnlyM.Services.Snackbar;
     using OnlyM.Services.WebBrowser;
     using Serilog;
 
@@ -28,6 +29,7 @@
         private readonly IDatabaseService _databaseService;
         private readonly IOptionsService _optionsService;
         private readonly IMonitorsService _monitorsService;
+        private readonly ISnackbarService _snackbarService;
         private Guid _mediaItemId;
         private bool _showing;
         private bool _useMirror;
@@ -39,13 +41,15 @@
             FrameworkElement browserGrid,
             IDatabaseService databaseService,
             IOptionsService optionsService,
-            IMonitorsService monitorsService)
+            IMonitorsService monitorsService,
+            ISnackbarService snackbarService)
         {
             _browser = browser;
             _browserGrid = browserGrid;
             _databaseService = databaseService;
             _optionsService = optionsService;
             _monitorsService = monitorsService;
+            _snackbarService = snackbarService;
 
             InitBrowser();
         }
@@ -181,6 +185,11 @@
                 else if (_mirrorProcess.HasExited)
                 {
                     Log.Logger.Error($"Could not launch mirror - process exited with exit code {_mirrorProcess.ExitCode}");
+
+                    if (_mirrorProcess.ExitCode == 5)
+                    {
+                        _snackbarService.EnqueueWithOk(Properties.Resources.CHANGE_MIRROR_HOTKEY);
+                    }
                 }
             }
             catch (Exception ex)

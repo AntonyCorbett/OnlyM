@@ -17,6 +17,7 @@ namespace OnlyM.ViewModel
     using Models;
     using OnlyM.Core.Utils;
     using PubSubMessages;
+    using Serilog.Events;
     using Services.DragAndDrop;
     using Services.HiddenMediaItems;
     using Services.MediaChanging;
@@ -94,6 +95,7 @@ namespace OnlyM.ViewModel
             }
 
             GetVersionData();
+            CheckLogLevel();
         }
 
         // commands...
@@ -236,6 +238,20 @@ namespace OnlyM.ViewModel
         private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)
         {
             RaisePropertyChanged(nameof(AlwaysOnTop));
+        }
+
+        private void CheckLogLevel()
+        {
+            Task.Delay(3000).ContinueWith(_ =>
+            {
+                switch (_optionsService.LogEventLevel)
+                {
+                    case LogEventLevel.Debug:
+                    case LogEventLevel.Verbose:
+                        _snackbarService.EnqueueWithOk(Properties.Resources.LOGGING_LEVEL_HIGH);
+                        break;
+                }
+            });
         }
 
         private void GetVersionData()
