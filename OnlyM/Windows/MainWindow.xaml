@@ -99,6 +99,9 @@
         </ResourceDictionary>
     </Window.Resources>
 
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Paste" Executed="OnPaste" />
+    </Window.CommandBindings>
 
     <Border Name="MainBorder" BorderBrush="#FF512DA8" BorderThickness="1">
         <Grid>

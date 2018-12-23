@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Windows
+﻿using OnlyM.Services.DragAndDrop;
+
+namespace OnlyM.Windows
 {
     using System.Windows;
     using System.Windows.Input;
@@ -39,7 +41,7 @@
             {
                 // prevent app closing when media is active.
                 var snackbarService = ServiceLocator.Current.GetInstance<ISnackbarService>();
-                snackbarService.Enqueue(Properties.Resources.MEDIA_ACTIVE);
+                snackbarService.EnqueueWithOk(Properties.Resources.MEDIA_ACTIVE);
                 e.Cancel = true;
             }
             else
@@ -124,6 +126,12 @@
             TopBorderBrush.Opacity = 0.65;
             BottomBorderBrush.Opacity = 0.65;
             MainBorder.BorderBrush = (Brush)converter.ConvertFromString("#FFB39DDB");
+        }
+
+        private void OnPaste(object sender, ExecutedRoutedEventArgs e)
+        {
+            var dragAndDropService = ServiceLocator.Current.GetInstance<IDragAndDropService>();
+            dragAndDropService.Paste();
         }
     }
 }

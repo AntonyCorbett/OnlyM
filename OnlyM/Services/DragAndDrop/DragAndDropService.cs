@@ -41,6 +41,15 @@
             targetElement.Drop += HandleDrop;
         }
 
+        public void Paste()
+        {
+            IDataObject data = Clipboard.GetDataObject();
+            if (CanDropOrPaste(data))
+            {
+                CopyMediaFiles(data);
+            }
+        }
+
         private void HandleDragOver(object sender, DragEventArgs e)
         {
             SetEffects(e);

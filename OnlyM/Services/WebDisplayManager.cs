@@ -167,7 +167,7 @@
             Log.Logger.Debug($"Main monitor = {onlyMMonitor.Monitor.DeviceName}");
             Log.Logger.Debug($"Media monitor = {mediaMonitor.Monitor.DeviceName}");
 
-            StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs {Description = Properties.Resources.LAUNCHING_MIRROR});
+            StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = Properties.Resources.LAUNCHING_MIRROR });
 
             try
             {
@@ -206,7 +206,7 @@
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
-                        StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs {Description = string.Empty});
+                        StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty });
                     });
                 });
             }

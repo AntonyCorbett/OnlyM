@@ -9,5 +9,7 @@
         event EventHandler<FilesCopyProgressEventArgs> CopyingFilesProgressEvent;
 
         void Init(FrameworkElement targetElement);
+
+        void Paste();
     }
 }
