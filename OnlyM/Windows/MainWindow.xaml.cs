@@ -1,6 +1,4 @@
-﻿using OnlyM.Services.DragAndDrop;
-
-namespace OnlyM.Windows
+﻿namespace OnlyM.Windows
 {
     using System.Windows;
     using System.Windows.Input;
@@ -9,6 +7,7 @@ namespace OnlyM.Windows
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
+    using OnlyM.Services.DragAndDrop;
     using PubSubMessages;
     using Services.MediaChanging;
     using Services.Pages;
@@ -132,6 +131,7 @@ namespace OnlyM.Windows
         {
             var dragAndDropService = ServiceLocator.Current.GetInstance<IDragAndDropService>();
             dragAndDropService.Paste();
+            e.Handled = true;
         }
     }
 }

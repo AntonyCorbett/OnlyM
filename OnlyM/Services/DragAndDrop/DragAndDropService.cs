@@ -43,7 +43,7 @@
 
         public void Paste()
         {
-            IDataObject data = Clipboard.GetDataObject();
+            var data = Clipboard.GetDataObject();
             if (CanDropOrPaste(data))
             {
                 CopyMediaFiles(data);
