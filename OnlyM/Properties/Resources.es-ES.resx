@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Mostrar el comando 'Congelar' en el Panel de Comandos</value>
+    <value>Mostrar el comando 'Pausar' en el Panel de Comandos</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
@@ -369,7 +369,7 @@
     <comment>Button label in Command panel</comment>
   </data>
   <data name="FREEZE" xml:space="preserve">
-    <value>Congelar</value>
+    <value>Pausar</value>
     <comment>Button label in Command panel. Freeze the video on the final frame.</comment>
   </data>
   <data name="HIDE" xml:space="preserve">
@@ -445,23 +445,35 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="ALLOW_MIRROR" xml:space="preserve">
-    <value>Allow mirror window</value>
+    <value>Permitir ventana de espejo</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
-    <value>Mirror enabled by default</value>
+    <value>Espejo habilitado por defecto</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_ZOOM" xml:space="preserve">
-    <value>Mirror zoom</value>
+    <value>Zoom del espejo</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_LOADING" xml:space="preserve">
-    <value>Loading...</value>
+    <value>Cargando...</value>
     <comment>Displayed when a web page is loading</comment>
   </data>
   <data name="LAUNCHING_MIRROR" xml:space="preserve">
-    <value>Launching mirror...</value>
+    <value>Lanzando espejo...</value>
     <comment>Displayed when mirror window is launching</comment>
+  </data>
+  <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
+    <value>Change the mirror hotkey!</value>
+    <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
+  </data>
+  <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
+    <value>Logging level is high!</value>
+    <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
+  </data>
+  <data name="MIRROR_HOTKEY" xml:space="preserve">
+    <value>Mirror hotkey</value>
+    <comment>See Settings =&gt; Web</comment>
   </data>
 </root>
