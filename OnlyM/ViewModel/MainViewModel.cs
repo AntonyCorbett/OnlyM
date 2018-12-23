@@ -201,6 +201,8 @@ namespace OnlyM.ViewModel
             }
         }
 
+        public object AllowsTransparency => !_commandLineService.ObsCompatible;
+
         private void OnMediaListUpdating(MediaListUpdatingMessage message)
         {
             IsMediaListLoading = true;

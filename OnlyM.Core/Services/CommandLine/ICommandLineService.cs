@@ -11,5 +11,7 @@
         bool NoFolder { get; set; }
 
         string SourceFolder { get; set; }
+
+        bool ObsCompatible { get; set; }
     }
 }

@@ -25,6 +25,9 @@
             p.Setup<string>("source")
                 .Callback(s => { SourceFolder = s; }).SetDefault(null);
 
+            p.Setup<bool>("obs")
+                .Callback(s => { ObsCompatible = s; }).SetDefault(false);
+
             p.Parse(Environment.GetCommandLineArgs());
         }
 
@@ -37,5 +40,7 @@
         public bool NoFolder { get; set; }
 
         public string SourceFolder { get; set; }
+
+        public bool ObsCompatible { get; set; }
     }
 }

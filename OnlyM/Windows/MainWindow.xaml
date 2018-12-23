@@ -18,7 +18,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         WindowStyle="None"
-        AllowsTransparency="True"
+        AllowsTransparency="{Binding AllowsTransparency}"
         ResizeMode="NoResize"
         MinWidth="500"
         MinHeight="500"
