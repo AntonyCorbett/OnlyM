@@ -293,7 +293,7 @@
     <comment>Section title for Settings =&gt; Images</comment>
   </data>
   <data name="SECTION_MARGINS" xml:space="preserve">
-    <value>MARGES (com a percentatge de la mida de pantalla)</value>
+    <value>MARGES (com a percentatge de la mida de la pantalla)</value>
     <comment>Section title for Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_MISC" xml:space="preserve">
