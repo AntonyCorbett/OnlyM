@@ -66,6 +66,12 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 		return 3;
 	}
 
+	if (!InitHotKey())
+	{
+		// NB - this exit code is used in OnlyM (WebDisplayManager)
+		return 5;
+	}
+
 	int rv = 0;
 
 	HANDLE hMutex = ::CreateMutex(0, TRUE, "OnlyMMirrorMutex");
@@ -74,53 +80,42 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 		ShowWindow(hwndHost, nCmdShow | SW_SHOWNA);		
 		UpdateWindow(hwndHost);
 
-		RECT originalRect;
-		::GetWindowRect(hwndHost, &originalRect);
-
 		PositionCursor();
 
-		if (!InitHotKey())
-		{			
-			// NB - this exit code is used in OnlyM (WebDisplayManager)
-			rv = 5;
-		}
-		else
+		TCHAR caption[64];
+		sprintf_s(caption, "%s (ALT+%c to close)", WindowTitle, HotKey);
+
+		::SetWindowText(hwndHost, caption);
+		UINT_PTR timerId = SetTimer(hwndHost, 0, timerInterval, UpdateMirrorWindow);
+
+		MSG msg;
+		BOOL bRet;
+		while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0)			
 		{
-			TCHAR caption[64];
-			sprintf_s(caption, "%s (ALT+%c to close)", WindowTitle, HotKey);
-
-			::SetWindowText(hwndHost, caption);
-			UINT_PTR timerId = SetTimer(hwndHost, 0, timerInterval, UpdateMirrorWindow);
-
-			MSG msg;
-			BOOL bRet;
-			while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0)			
+			if (bRet == -1)
 			{
-				if (bRet == -1)
-				{
-					break;
-				}
-
-				if (msg.message == WM_HOTKEY)
-				{
-					// we only register one hotkey
-					// so its value doesn't matter
-					break;
-				}
-
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
+				break;
 			}
 
-			// Shut down.
-			KillTimer(NULL, timerId);
-			MagUninitialize();
+			if (msg.message == WM_HOTKEY)
+			{
+				// we only register one hotkey
+				// so its value doesn't matter
+				break;
+			}
 
-			// find OnlyM window and reposition cursor over it...
-			RepositionCursor();
-
-			rv = (int)msg.wParam;
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
 		}
+
+		// Shut down.
+		KillTimer(NULL, timerId);
+		MagUninitialize();
+
+		// find OnlyM window and reposition cursor over it...
+		RepositionCursor();
+
+		rv = (int)msg.wParam;
 
 		::CloseHandle(hMutex);
 	}

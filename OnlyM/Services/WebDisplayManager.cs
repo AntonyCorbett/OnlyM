@@ -37,7 +37,7 @@
         private Process _mirrorProcess;
 
         public WebDisplayManager(
-            ChromiumWebBrowser browser, 
+            ChromiumWebBrowser browser,
             FrameworkElement browserGrid,
             IDatabaseService databaseService,
             IOptionsService optionsService,
@@ -59,7 +59,7 @@
         public event EventHandler<WebBrowserProgressEventArgs> StatusEvent;
 
         public void ShowWeb(
-            string mediaItemFilePath, 
+            string mediaItemFilePath,
             Guid mediaItemId,
             bool showMirror,
             ScreenPosition screenPosition)
@@ -88,11 +88,11 @@
                 var urlHelper = new WebShortcutHelper(mediaItemFilePath);
                 webAddress = urlHelper.Uri;
             }
-            
+
             _currentMediaItemUrl = webAddress;
 
             RemoveAnimation();
-            
+
             _browserGrid.Visibility = Visibility.Visible;
 
             _browser.Load(webAddress);
@@ -157,7 +157,7 @@
                 Log.Logger.Debug("Cannot get monitor");
                 return;
             }
-            
+
             if (mediaMonitor.MonitorId.Equals(onlyMMonitor.MonitorId))
             {
                 Log.Logger.Error("Cannot display mirror since OnlyM and Media window share a monitor");
@@ -167,31 +167,33 @@
             Log.Logger.Debug($"Main monitor = {onlyMMonitor.Monitor.DeviceName}");
             Log.Logger.Debug($"Media monitor = {mediaMonitor.Monitor.DeviceName}");
 
-            StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = Properties.Resources.LAUNCHING_MIRROR });
+            StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs {Description = Properties.Resources.LAUNCHING_MIRROR});
 
             try
             {
                 var zoomStr = _optionsService.MirrorZoom.ToString(CultureInfo.InvariantCulture);
                 var hotKey = _optionsService.MirrorHotKey;
 
-                var commandLineArgs = $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr} {hotKey}";
+                var commandLineArgs =
+                    $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr} {hotKey}";
 
                 Log.Logger.Debug($"Starting mirror exe with args = {commandLineArgs}");
 
-                _mirrorProcess = Process.Start(mirrorExePath, commandLineArgs);
-
-                if (_mirrorProcess == null)
+                _mirrorProcess = new Process
                 {
-                    Log.Logger.Error("Could not launch mirror - process is null");
-                }
-                else if (_mirrorProcess.HasExited)
-                {
-                    Log.Logger.Error($"Could not launch mirror - process exited with exit code {_mirrorProcess.ExitCode}");
-
-                    if (_mirrorProcess.ExitCode == 5)
+                    StartInfo =
                     {
-                        _snackbarService.EnqueueWithOk(Properties.Resources.CHANGE_MIRROR_HOTKEY);
-                    }
+                        FileName = mirrorExePath,
+                        Arguments = commandLineArgs
+                    },
+                    EnableRaisingEvents = true
+                };
+
+                _mirrorProcess.Exited += HandleMirrorProcessExited;
+
+                if (!_mirrorProcess.Start())
+                {
+                    Log.Logger.Error("Could not launch mirror");
                 }
             }
             catch (Exception ex)
@@ -204,7 +206,7 @@
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
-                        StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty });
+                        StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs {Description = string.Empty});
                     });
                 });
             }
@@ -398,6 +400,23 @@
             var body = $"<html><body><h2>{errorMsg}</h2></body></html>";
 
             _browser.LoadHtml(body, e.FailedUrl);
+        }
+
+        private void HandleMirrorProcessExited(object sender, EventArgs e)
+        {
+            if (_mirrorProcess.ExitCode == 0)
+            {
+                Log.Logger.Debug("Mirror process closed normally");
+            }
+            else
+            {
+                Log.Logger.Error($"Mirror process exited with exit code {_mirrorProcess.ExitCode}");
+
+                if (_mirrorProcess.ExitCode == 5)
+                {
+                    _snackbarService.EnqueueWithOk(Properties.Resources.CHANGE_MIRROR_HOTKEY);
+                }
+            }
         }
     }
 }
