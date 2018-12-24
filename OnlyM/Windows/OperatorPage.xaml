@@ -239,7 +239,7 @@
                                         FontSize="14"
                                         Visibility="{Binding Path=IsWebAndAllowMirror, Converter={StaticResource BooleanToVisibilityConverter}}"
                                         IsChecked="{Binding UseMirror, Mode=TwoWay}"
-                                        Content="Mirror" 
+                                        Content="{x:Static resx:Resources.MIRROR}"
                                         Checked="MirrorCheckBoxChecked" 
                                         Unchecked="MirrorCheckBoxUnchecked"/>
 

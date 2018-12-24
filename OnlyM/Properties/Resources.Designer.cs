@@ -449,6 +449,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mirror.
+        /// </summary>
+        public static string MIRROR {
+            get {
+                return ResourceManager.GetString("MIRROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mirror enabled by default.
         /// </summary>
         public static string MIRROR_BY_DEFAULT {
