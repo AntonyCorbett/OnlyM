@@ -7,6 +7,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Media.Animation;
     using CommonServiceLocator;
     using Core.Models;
     using Core.Services.Options;
@@ -15,6 +17,7 @@
     using OnlyM.Core.Services.Database;
     using OnlyM.Core.Services.Monitors;
     using OnlyM.Services.WebBrowser;
+    using OnlyM.Services.WebNavHeaderManager;
     using OnlyM.ViewModel;
     using Serilog;
     using Services;
@@ -32,13 +35,15 @@
         private readonly WebDisplayManager _webDisplayManager;
         private readonly AudioManager _audioManager;
 
+        private readonly WebNavHeaderAdmin _webNavHeaderAdmin;
+
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
         private VideoDisplayManager _videoDisplayManager;
 
         private IMediaElement _videoElement;
         private RenderingMethod _currentRenderingMethod;
-
+        
         public MediaWindow(
             IOptionsService optionsService, 
             ISnackbarService snackbarService, 
@@ -46,6 +51,8 @@
             IMonitorsService monitorsService)
         {
             InitializeComponent();
+
+            _webNavHeaderAdmin = new WebNavHeaderAdmin(WebNavHeader);
 
             _optionsService = optionsService;
             _snackbarService = snackbarService;
@@ -294,6 +301,9 @@
                 mediaItem.Id,
                 showMirrorWindow,
                 _optionsService.WebScreenPosition);
+
+            // show the header for a few seconds
+            _webNavHeaderAdmin.PreviewWebNavHeader();
 
             HideImageOrSlideshow(currentMediaItems);
         }
@@ -558,6 +568,12 @@
         {
             var vm = (MediaViewModel)DataContext;
             vm.WindowSize = new Size(ActualWidth, ActualHeight);
+        }
+
+        private void BrowserGrid_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            var pos = e.GetPosition(this);
+            _webNavHeaderAdmin.MouseMove(pos);
         }
     }
 }

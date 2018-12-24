@@ -23,24 +23,29 @@
        
             <Style x:Key="NavButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
                 <Setter Property="Margin" Value="0,0,5,0"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
 
             <Style x:Key="RefreshButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
                 <Setter Property="Margin" Value="0,0,5,0"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
 
             <Style x:Key="ZoomButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
                 <Setter Property="Margin" Value="5,0,0,0"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
 
             <Style x:Key="ToggleBtnStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
                 <Setter Property="Width" Value="40"/>
                 <Setter Property="Height" Value="40"/>
                 <Setter Property="Margin" Value="0,0,10,0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
 
             <Style x:Key="MagnifierSizeButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}">
                 <Setter Property="Margin" Value="0,0,10,0"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
             
         </ResourceDictionary>
@@ -75,7 +80,7 @@
         <Grid x:Name="BrowserGrid" 
               Background="White" 
               Opacity="0.0" 
-              Focusable="True">
+              Focusable="True" MouseMove="BrowserGrid_MouseMove">
             <Grid.InputBindings>
                 <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="Add" Modifiers="Control"/>
                 <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="OemPlus" Modifiers="Control"/>
@@ -97,14 +102,38 @@
                 
             </Grid.InputBindings>
 
-            <Grid.RowDefinitions>
+            <!--<Grid.RowDefinitions>
                 <RowDefinition Height="76"/>
                 <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+            </Grid.RowDefinitions>-->
+
+            <!--Actual web browser-->
+            <Grid Grid.Row="0" Background="White">
+                <wpf:ChromiumWebBrowser 
+                    x:Name="Browser" 
+                    ZoomLevelIncrement="{Binding BrowserZoomLevelIncrement}"
+                    WebBrowser="{Binding WebBrowser, Mode=OneWayToSource}" />
+
+                <magnifierControl:MagnifierManager.Magnifier>
+                    <magnifierControl:Magnifier BorderBrush="Red" 
+                                    BorderThickness="{Binding MagnifierFrameThickness}" 
+                                    Visibility="{Binding Path=IsMagnifierVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Radius="{Binding MagnifierRadius}"
+                                    FrameType="{Binding MagnifierFrameType}"
+                                    ZoomFactor="{Binding MagnifierZoomLevel}"/>
+                </magnifierControl:MagnifierManager.Magnifier>
+            </Grid>
 
             <!--Row 0 = Web header panel with navigation and command buttons-->
-            <Grid Grid.Row="0" 
-                  Background="{StaticResource MaterialDesignBody}">
+            <Grid Name="WebNavHeader"
+                  Grid.Row="0" 
+                  VerticalAlignment="Top"
+                  Height="0"
+                  Background="Black">
+                <Grid.Effect>
+                    <DropShadowEffect Opacity="0.4" ShadowDepth="10" BlurRadius="10" />
+                </Grid.Effect>
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="190"/>
                     <ColumnDefinition Width="*"/>
@@ -161,7 +190,7 @@
                                   IsChecked="{Binding IsMagnifierVisible, Mode=TwoWay}">
                         <ToggleButton.Content>
                             <Grid>
-                            <materialDesign:PackIcon
+                                <materialDesign:PackIcon
                                 Height="28"
                                 Width="28"
                                 Kind="Close" />
@@ -240,25 +269,9 @@
                     </Button>
 
                 </StackPanel>
-            
+
             </Grid>
 
-            <!--Actual web browser-->
-            <Grid Grid.Row="1" Background="White">
-                <wpf:ChromiumWebBrowser 
-                    x:Name="Browser" 
-                    ZoomLevelIncrement="{Binding BrowserZoomLevelIncrement}"
-                    WebBrowser="{Binding WebBrowser, Mode=OneWayToSource}" />
-
-                <magnifierControl:MagnifierManager.Magnifier>
-                    <magnifierControl:Magnifier BorderBrush="Red" 
-                                    BorderThickness="{Binding MagnifierFrameThickness}" 
-                                    Visibility="{Binding Path=IsMagnifierVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    Radius="{Binding MagnifierRadius}"
-                                    FrameType="{Binding MagnifierFrameType}"
-                                    ZoomFactor="{Binding MagnifierZoomLevel}"/>
-                </magnifierControl:MagnifierManager.Magnifier>
-            </Grid>
             <!--End of web page header panel-->
         
         </Grid>

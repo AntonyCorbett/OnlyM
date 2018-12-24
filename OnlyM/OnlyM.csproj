@@ -201,6 +201,7 @@
     <Compile Include="Models\SlideTransition.cs" />
     <Compile Include="Models\SlideTransitionEventArgs.cs" />
     <Compile Include="Models\SubtitleFileEventArgs.cs" />
+    <Compile Include="Services\WebNavHeaderManager\WebNavHeaderStatus.cs" />
     <Compile Include="Models\WindowVisibilityChangedEventArgs.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatedMessage.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatingMessage.cs" />
@@ -241,6 +242,7 @@
     <Compile Include="Services\WebBrowser\PdfSchemeHandlerFactory.cs" />
     <Compile Include="Services\WebBrowser\WebBrowserProgressEventArgs.cs" />
     <Compile Include="Services\WebDisplayManager.cs" />
+    <Compile Include="Services\WebNavHeaderManager\WebNavHeaderAdmin.cs" />
     <Compile Include="ViewModel\MediaViewModel.cs" />
     <Compile Include="ViewModel\OperatorViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
