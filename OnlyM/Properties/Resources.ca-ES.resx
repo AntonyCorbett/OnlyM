@@ -445,15 +445,15 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="ALLOW_MIRROR" xml:space="preserve">
-    <value>Permet controlar amb una finestra mirall</value>
+    <value>Permet el control amb una finestra replicada</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
-    <value>Mode de rèplica habilitat per defecte</value>
+    <value>Mode de rèplica activat per defecte</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_ZOOM" xml:space="preserve">
-    <value>Zoom del mirall</value>
+    <value>Zoom de la rèplica</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_LOADING" xml:space="preserve">
@@ -461,11 +461,11 @@
     <comment>Displayed when a web page is loading</comment>
   </data>
   <data name="LAUNCHING_MIRROR" xml:space="preserve">
-    <value>S'està iniciant el mirall...</value>
+    <value>S'està iniciant la rèplica...</value>
     <comment>Displayed when mirror window is launching</comment>
   </data>
   <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
-    <value>Hauries de canviar la tecla de drecera del mirall!</value>
+    <value>Hauries de canviar la tecla de drecera de la rèplica!</value>
     <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
   </data>
   <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
