@@ -449,7 +449,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
-    <value>Mirall habilitat per defecte</value>
+    <value>Mode de rèplica habilitat per defecte</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_ZOOM" xml:space="preserve">
