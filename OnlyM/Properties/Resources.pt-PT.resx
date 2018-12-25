@@ -477,7 +477,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR" xml:space="preserve">
-    <value>Mirror</value>
+    <value>Espelhamento</value>
     <comment>Checkbox caption in web and PDF media item</comment>
   </data>
 </root>
