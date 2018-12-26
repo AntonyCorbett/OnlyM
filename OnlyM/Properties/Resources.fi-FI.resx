@@ -457,7 +457,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_LOADING" xml:space="preserve">
-    <value>Loading...</value>
+    <value>Ladataan...</value>
     <comment>Displayed when a web page is loading</comment>
   </data>
   <data name="LAUNCHING_MIRROR" xml:space="preserve">
@@ -475,5 +475,9 @@
   <data name="MIRROR_HOTKEY" xml:space="preserve">
     <value>Mirror hotkey</value>
     <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR" xml:space="preserve">
+    <value>Mirror</value>
+    <comment>Checkbox caption in web and PDF media item</comment>
   </data>
 </root>
