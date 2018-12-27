@@ -465,7 +465,7 @@
     <comment>Displayed when mirror window is launching</comment>
   </data>
   <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
-    <value>¡Cambie las teclas de acceso rápido al espejo!</value>
+    <value>¡Cambia las teclas de acceso rápido al espejo!</value>
     <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
   </data>
   <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
