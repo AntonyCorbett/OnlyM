@@ -445,7 +445,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="ALLOW_MIRROR" xml:space="preserve">
-    <value>Permite fereastra oglindă</value>
+    <value>Permite funcția oglindă</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
@@ -475,5 +475,9 @@
   <data name="MIRROR_HOTKEY" xml:space="preserve">
     <value>Comandă rapidă oglindă</value>
     <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR" xml:space="preserve">
+    <value>Oglindă</value>
+    <comment>Checkbox caption in web and PDF media item</comment>
   </data>
 </root>
