@@ -341,6 +341,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;JW Library&quot; is a registered trademark of Watch Tower Bible and Tract Society of Pennsylvania.
+        /// </summary>
+        public static string JWL_TRADEMARK {
+            get {
+                return ResourceManager.GetString("JWL_TRADEMARK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string LANGUAGE {
