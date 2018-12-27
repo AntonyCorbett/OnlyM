@@ -94,6 +94,7 @@ Source: "bin\x86\Release\es-ES\*.dll"; DestDir: "{app}\es-ES"; Flags: ignorevers
 Source: "bin\x86\Release\es-MX\*.dll"; DestDir: "{app}\es-MX"; Flags: ignoreversion
 Source: "bin\x86\Release\fi-FI\*.dll"; DestDir: "{app}\fi-FI"; Flags: ignoreversion
 Source: "bin\x86\Release\fr-FR\*.dll"; DestDir: "{app}\fr-FR"; Flags: ignoreversion
+Source: "bin\x86\Release\hr-HR\*.dll"; DestDir: "{app}\hr-HR"; Flags: ignoreversion
 ;Source: "bin\x86\Release\id-ID\*.dll"; DestDir: "{app}\id-ID"; Flags: ignoreversion
 Source: "bin\x86\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
 ;Source: "bin\x86\Release\jv-Latn-ID\*.dll"; DestDir: "{app}\jv-Latn-ID"; Flags: ignoreversion
