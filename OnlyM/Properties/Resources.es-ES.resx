@@ -465,7 +465,7 @@
     <comment>Displayed when mirror window is launching</comment>
   </data>
   <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
-    <value>¡Cambie las teclas de acceso rápido al espejo!</value>
+    <value>¡Cambia las teclas de acceso rápido al espejo!</value>
     <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
   </data>
   <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
@@ -481,7 +481,7 @@
     <comment>Checkbox caption in web and PDF media item</comment>
   </data>
   <data name="JWL_TRADEMARK" xml:space="preserve">
-    <value>"JW Library" is a registered trademark of Watch Tower Bible and Tract Society of Pennsylvania</value>
+    <value>"JW Library" es una marca registrada de Watch Tower Bible and Tract Society of Pennsylvania</value>
     <comment>See Settings =&gt; Main</comment>
   </data>
 </root>

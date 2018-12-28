@@ -481,7 +481,7 @@
     <comment>Checkbox caption in web and PDF media item</comment>
   </data>
   <data name="JWL_TRADEMARK" xml:space="preserve">
-    <value>"JW Library" is a registered trademark of Watch Tower Bible and Tract Society of Pennsylvania</value>
+    <value>«JW Library» és una marca registrada de Watch Tower Bible and Tract Society of Pennsylvania</value>
     <comment>See Settings =&gt; Main</comment>
   </data>
 </root>
