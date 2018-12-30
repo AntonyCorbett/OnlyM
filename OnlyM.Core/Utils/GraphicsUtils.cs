@@ -214,7 +214,7 @@
                 arguments.Append("-map 0:s:0 ");
                 arguments.Append("\"");
                 arguments.Append(destinationSrtFilePath);
-                arguments.Append("\" ");
+                arguments.Append("\" -y");
 
                 ExecuteFFMpeg(ffmpegFolder, arguments.ToString());
 
