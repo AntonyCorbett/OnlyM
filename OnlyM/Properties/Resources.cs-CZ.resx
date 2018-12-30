@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Zobrazit "Zmrazit" na panelu příkazů</value>
+    <value>V menu zobrazovat položku "Zmrazit"</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
@@ -333,7 +333,7 @@
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
-    <value>Povolit panel příkazů</value>
+    <value>Zobrazit menu s dalšími možnostmi</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
