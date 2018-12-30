@@ -269,7 +269,7 @@
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
-    <value>Okraje obrázku</value>
+    <value>Šířka okrajů kolem obrázku</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
@@ -313,7 +313,7 @@
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
-    <value>Okraje videa</value>
+    <value>Šířka okrajů kolem videa</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="AUTO_ROTATE" xml:space="preserve">
@@ -345,7 +345,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
-    <value>Soubory přesuňte sem!</value>
+    <value>Sem přesuňte soubory k zobrazení!</value>
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
@@ -405,7 +405,7 @@
     <comment>Progress message displayed when loading a web page</comment>
   </data>
   <data name="WEB_MARGINS" xml:space="preserve">
-    <value>Okraje webové stránky</value>
+    <value>Šířka okrajů kolem webové stránky</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_WEB" xml:space="preserve">
