@@ -445,15 +445,15 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="ALLOW_MIRROR" xml:space="preserve">
-    <value>Allow mirror window</value>
+    <value>Salli peilausikkuna</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
-    <value>Mirror enabled by default</value>
+    <value>Peilaus käytössä oletuksena</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_ZOOM" xml:space="preserve">
-    <value>Mirror zoom</value>
+    <value>Peilauksen suurennustaso</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_LOADING" xml:space="preserve">
@@ -461,11 +461,11 @@
     <comment>Displayed when a web page is loading</comment>
   </data>
   <data name="LAUNCHING_MIRROR" xml:space="preserve">
-    <value>Launching mirror...</value>
+    <value>Käynnistetään peilausta...</value>
     <comment>Displayed when mirror window is launching</comment>
   </data>
   <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
-    <value>Change the mirror hotkey!</value>
+    <value>Vaihda peilauksen pikanäppäin!</value>
     <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
   </data>
   <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
