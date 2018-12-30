@@ -253,7 +253,7 @@
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
-    <value>Potvrzovat zastavení</value>
+    <value>Potvrdit zastavení přehrávání</value>
     <comment>See Settings =&gt; Videos and Audio.</comment>
   </data>
   <data name="CURRENT_DATE" xml:space="preserve">
