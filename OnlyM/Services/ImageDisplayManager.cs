@@ -41,7 +41,7 @@
         private MediaClassification _mediaClassification2;
 
         private int _currentSlideshowImageIndex;
-        private List<SlideData> _slides;
+        private List<Slide> _slides;
         private bool _shouldLoopSlideshow;
         private bool _autoPlaySlideshow;
         private int _autoPlaySlideshowDwellTime;
@@ -456,7 +456,7 @@
             }
         }
 
-        private void DisplaySlide(SlideData slide, Guid mediaItemId, SlideData previousSlide, int oldIndex, int newIndex)
+        private void DisplaySlide(Slide slide, Guid mediaItemId, Slide previousSlide, int oldIndex, int newIndex)
         {
             var direction = newIndex >= oldIndex ? SlideDirection.Forward : SlideDirection.Reverse;
 
@@ -512,7 +512,7 @@
                 });
         }
 
-        private ImageFadeType GetSlideFadeType(SlideData slide, SlideData previousSlide, SlideDirection direction)
+        private ImageFadeType GetSlideFadeType(Slide slide, Slide previousSlide, SlideDirection direction)
         {
             var thisSlideFadeInType = direction == SlideDirection.Forward
                 ? slide.FadeInForward ? ImageFadeType.FadeIn : ImageFadeType.None
@@ -556,7 +556,7 @@
             return thisSlideFadeInType;
         }
 
-        private SlideData GetCurrentSlide()
+        private Slide GetCurrentSlide()
         {
             return _slides[_currentSlideshowImageIndex];
         }

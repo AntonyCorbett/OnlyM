@@ -12,14 +12,17 @@
     {
         private const string ConfigEntryName = @"config.json";
         private readonly SlidesConfig _config;
-        private readonly string _zipPath;
-
+        
         public SlideFile(string path)
         {
-            _zipPath = path;
+            FilePath = path;
             _config = Load();
         }
-        
+
+        public static string FileExtension => ".omslide";
+
+        public string FilePath { get; }
+
         public bool AutoPlay => _config.AutoPlay;
 
         public int DwellTimeMilliseconds => _config.DwellTimeMilliseconds;
@@ -28,7 +31,7 @@
 
         public int SlideCount => _config.SlideCount;
 
-        public SlideData GetSlide(int index, bool includeBitmapImage = true)
+        public Slide GetSlide(int index, bool includeBitmapImage = true)
         {
             if (index < 0 || index > SlideCount - 1)
             {
@@ -37,14 +40,15 @@
 
             var slide = _config.Slides[index];
 
-            using (var zip = ZipFile.OpenRead(_zipPath))
+            using (var zip = ZipFile.OpenRead(FilePath))
             {
                 var image = includeBitmapImage
                     ? ReadBackgroundImage(zip, slide.ArchiveEntryName)
                     : null;
 
-                return new SlideData
+                return new Slide
                 {
+                    OriginalFilePath = slide.OriginalFilePath,
                     ArchiveEntryName = slide.ArchiveEntryName,
                     FadeInForward = slide.FadeInForward,
                     FadeInReverse = slide.FadeInReverse,
@@ -56,11 +60,11 @@
             }
         }
 
-        public IReadOnlyCollection<SlideData> GetSlides(bool includeBitmapImage)
+        public IReadOnlyCollection<Slide> GetSlides(bool includeBitmapImage)
         {
-            var result = new List<SlideData>();
+            var result = new List<Slide>();
 
-            using (var zip = ZipFile.OpenRead(_zipPath))
+            using (var zip = ZipFile.OpenRead(FilePath))
             {
                 foreach (var slide in _config.Slides)
                 {
@@ -68,8 +72,9 @@
                         ? ReadBackgroundImage(zip, slide.ArchiveEntryName)
                         : null;
 
-                    result.Add(new SlideData
+                    result.Add(new Slide
                     {
+                        OriginalFilePath = slide.OriginalFilePath,
                         ArchiveEntryName = slide.ArchiveEntryName,
                         FadeInForward = slide.FadeInForward,
                         FadeInReverse = slide.FadeInReverse,
@@ -88,7 +93,7 @@
         {
             Directory.CreateDirectory(folder);
 
-            using (var zip = ZipFile.OpenRead(_zipPath))
+            using (var zip = ZipFile.OpenRead(FilePath))
             {
                 foreach (var slide in _config.Slides)
                 {
@@ -101,7 +106,7 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "trust streams behave properly")]
         private SlidesConfig Load()
         {
-            using (var zip = ZipFile.OpenRead(_zipPath))
+            using (var zip = ZipFile.OpenRead(FilePath))
             {
                 var configEntry = zip.GetEntry(ConfigEntryName);
                 if (configEntry == null)

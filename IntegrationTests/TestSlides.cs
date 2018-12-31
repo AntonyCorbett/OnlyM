@@ -10,7 +10,7 @@
         [TestMethod]
         public void TestSlideCreation()
         {
-            const string slideFilePath = "test.omslide";
+            string slideFilePath = "test" + SlideFile.FileExtension;
 
             var fb = new SlideFileBuilder();
             fb.AddSlide(@"TestImages\001.jpg", true, true, true, true);

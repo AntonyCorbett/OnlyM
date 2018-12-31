@@ -3,24 +3,26 @@ namespace OnlyMSlideManager.ViewModel
     using CommonServiceLocator;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Ioc;
+    using OnlyMSlideManager.Services;
+    using OnlyMSlideManager.Services.DragAndDrop;
 
-    public class ViewModelLocator
+    internal class ViewModelLocator
     {
         public ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<ShouldSaveViewModel>();
+
+            SimpleIoc.Default.Register<IDialogService, DialogService>();
+            SimpleIoc.Default.Register<IDragAndDropServiceCustom, DragAndDropServiceCustom>();
         }
 
-        public MainViewModel Main
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<MainViewModel>();
-            }
-        }
-        
+        public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
+
+        public ShouldSaveViewModel ShouldSaveDialog => ServiceLocator.Current.GetInstance<ShouldSaveViewModel>();
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

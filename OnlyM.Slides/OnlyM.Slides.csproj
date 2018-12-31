@@ -69,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Slide.cs" />
-    <Compile Include="Models\SlideData.cs" />
     <Compile Include="Models\SlideDirection.cs" />
     <Compile Include="Models\SlidesConfig.cs" />
     <Compile Include="SlideFile.cs" />

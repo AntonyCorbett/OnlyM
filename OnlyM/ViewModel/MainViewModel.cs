@@ -51,7 +51,7 @@ namespace OnlyM.ViewModel
             IDragAndDropService dragAndDropService)
         {
             _commandLineService = commandLineService;
-
+            
             if (commandLineService.NoGpu || ForceSoftwareRendering())
             {
                 // disable hardware (GPU) rendering so that it's all done by the CPU...

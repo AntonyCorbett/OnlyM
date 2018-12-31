@@ -1,8 +1,10 @@
 ﻿namespace OnlyM.Slides
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.IO.Compression;
+    using System.Windows.Media.Imaging;
     using Newtonsoft.Json;
     using OnlyM.Slides.Models;
 
@@ -10,7 +12,37 @@
     {
         private const string ConfigEntryName = @"config.json";
         private readonly SlidesConfig _config = new SlidesConfig();
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SlideFileBuilder"/> class.
+        /// </summary>
+        /// <remarks>Use when creating a slideshow from scratch.</remarks>
+        public SlideFileBuilder()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SlideFileBuilder"/> class from an existing slideshow.
+        /// </summary>
+        /// <param name="slideshowPath">An existing slideshow path.</param>
+        public SlideFileBuilder(string slideshowPath)
+        {
+            if (string.IsNullOrEmpty(slideshowPath))
+            {
+                return;
+            }
+            
+            var f = new SlideFile(slideshowPath);
+            AutoPlay = f.AutoPlay;
+            DwellTimeMilliseconds = f.DwellTimeMilliseconds;
+            Loop = f.Loop;
+
+            foreach (var slide in f.GetSlides(true))
+            {
+                _config.Slides.Add(slide);
+            }
+        }
+
         public bool AutoPlay
         {
             get => _config.AutoPlay;
@@ -28,7 +60,22 @@
             get => _config.Loop;
             set => _config.Loop = value;
         }
-        
+
+        public string CreateSignature()
+        {
+            return _config.CreateSignature();
+        }
+
+        public IReadOnlyCollection<Slide> GetSlides()
+        {
+            return _config.Slides;
+        }
+
+        public void SyncSlideOrder(IEnumerable<string> slideNames)
+        {
+            _config.SyncSlideOrder(slideNames);
+        }
+
         public void AddSlide(
             string bitmapPath, 
             bool fadeInForward,
@@ -85,14 +132,38 @@
                         serializer.Serialize(jsonTextWriter, _config);
                     }
 
-                    foreach (var image in _config.Slides)
+                    foreach (var slide in _config.Slides)
                     {
-                        if (!File.Exists(image.OriginalFilePath))
+                        if (slide.Image != null)
                         {
-                            throw new Exception($"Could not find image file: {image.OriginalFilePath}");
-                        }
+                            // already have image data...
 
-                        zip.CreateEntryFromFile(image.OriginalFilePath, image.ArchiveEntryName);
+                            // This is a little odd (multiple streams and rewinding the memory stream!).
+                            // I can't find a better way of saving a BitmapSource in the archive entry.
+                            BitmapEncoder encoder = new PngBitmapEncoder();
+                            encoder.Frames.Add(BitmapFrame.Create(slide.Image));
+
+                            using (var ms = new MemoryStream())
+                            {
+                                encoder.Save(ms);
+                                ms.Seek(0, SeekOrigin.Begin);
+
+                                var entry = zip.CreateEntry(slide.ArchiveEntryName);
+                                using (var entryStream = entry.Open())
+                                {
+                                    ms.CopyTo(entryStream);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (!File.Exists(slide.OriginalFilePath))
+                            {
+                                throw new Exception($"Could not find image file: {slide.OriginalFilePath}");
+                            }
+
+                            zip.CreateEntryFromFile(slide.OriginalFilePath, slide.ArchiveEntryName);
+                        }
                     }
                 }
 
@@ -106,6 +177,17 @@
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     memoryStream.CopyTo(fileStream);
                 }
+            }
+        }
+
+        private static byte[] ConvertToByteArray(BitmapImage image)
+        {
+            var encoder = new JpegBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(image));
+            using (MemoryStream ms = new MemoryStream())
+            {
+                encoder.Save(ms);
+                return ms.ToArray();
             }
         }
     }

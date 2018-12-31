@@ -123,6 +123,82 @@
   </data>
   <data name="SETTINGS" xml:space="preserve">
     <value>SETTINGS</value>
-    <comment>title</comment>
+    <comment>Title</comment>
+  </data>
+  <data name="NEW_SLIDESHOW" xml:space="preserve">
+    <value>New slideshow</value>
+    <comment>File command</comment>
+  </data>
+  <data name="OPEN_SLIDESHOW" xml:space="preserve">
+    <value>Open slideshow</value>
+    <comment>File command</comment>
+  </data>
+  <data name="SAVE_SLIDESHOW" xml:space="preserve">
+    <value>Save slideshow</value>
+    <comment>File command</comment>
+  </data>
+  <data name="SAVE_SLIDESHOW_AS" xml:space="preserve">
+    <value>Save slideshow as...</value>
+    <comment>File command</comment>
+  </data>
+  <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
+    <value>Could not create folder {0}</value>
+    <comment>Error shown when a folder cannot be created</comment>
+  </data>
+  <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
+    <value>Open Slideshow</value>
+    <comment>File Open dialog caption</comment>
+  </data>
+  <data name="SLIDESHOW_FILE" xml:space="preserve">
+    <value>Slideshow file</value>
+    <comment>Used in File Open dialog</comment>
+  </data>
+  <data name="ANSWER_CANCEL" xml:space="preserve">
+    <value>CANCEL</value>
+    <comment>Answer in prompt dialog (button caption)</comment>
+  </data>
+  <data name="ANSWER_NO" xml:space="preserve">
+    <value>NO</value>
+    <comment>Answer in prompt dialog (button caption)</comment>
+  </data>
+  <data name="ANSWER_YES" xml:space="preserve">
+    <value>YES</value>
+    <comment>Answer in prompt dialog (button caption)</comment>
+  </data>
+  <data name="WANT_TO_SAVE" xml:space="preserve">
+    <value>The slideshow has changed. Do you want to save it?</value>
+    <comment>Question used in dialog prompt</comment>
+  </data>
+  <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
+    <value>Save Slideshow</value>
+    <comment>Caption of File Save dialog</comment>
+  </data>
+  <data name="AUTO_PLAY" xml:space="preserve">
+    <value>Auto play</value>
+    <comment>Slidehow option (automatically play)</comment>
+  </data>
+  <data name="LOOP" xml:space="preserve">
+    <value>Loop</value>
+    <comment>Slidehow option (loop if automatic play is enabled)</comment>
+  </data>
+  <data name="WANT_TO_SAVE_TITLE" xml:space="preserve">
+    <value>Save?</value>
+    <comment>Title used in dialog prompt</comment>
+  </data>
+  <data name="FADE_IN_FORWARD" xml:space="preserve">
+    <value>Fade in</value>
+    <comment>Checkbox on slide Edit page</comment>
+  </data>
+  <data name="FADE_IN_REVERSE" xml:space="preserve">
+    <value>Fade in (reversing)</value>
+    <comment>Checkbox on slide Edit page</comment>
+  </data>
+  <data name="FADE_OUT_FORWARD" xml:space="preserve">
+    <value>Fade out</value>
+    <comment>Checkbox on slide Edit page</comment>
+  </data>
+  <data name="FADE_OUT_REVERSE" xml:space="preserve">
+    <value>Fade out (reversing)</value>
+    <comment>Checkbox on slide Edit page</comment>
   </data>
 </root>

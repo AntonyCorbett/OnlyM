@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="OnlyMSlideManager.Dialogs.ShouldSaveDialog"
+             
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal" 
+             TextOptions.TextRenderingMode="Auto"        
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+
+             DataContext="{Binding Source={StaticResource Locator}, Path=ShouldSaveDialog}"
+             
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:resx="clr-namespace:OnlyMSlideManager.Properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="500">
+
+    <UserControl.Resources>
+        <Style x:Key="BtnStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedLightButton}">
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Width" Value="100"/>
+        </Style>
+        <Style x:Key="YesBtnStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedAccentButton}">
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Width" Value="100"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Padding="30">
+        <Grid>
+            <StackPanel Orientation="Vertical">
+                <TextBlock Style="{StaticResource MaterialDesignDisplay1TextBlock}"
+                   Text="{x:Static resx:Resources.WANT_TO_SAVE_TITLE}"
+                   Margin="0,0,0,20"/>
+
+                <Grid Margin="0,0,0,40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:PackIcon Kind="AlertOutline" 
+                                     Grid.Column="0"
+                                     Foreground="{StaticResource PrimaryHueDarkBrush}"
+                                     Width="50" Height="50"/>
+                    <TextBlock
+                VerticalAlignment="Center"
+                Grid.Column="1"
+                Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+                Text="{x:Static resx:Resources.WANT_TO_SAVE}"/>
+                </Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource YesBtnStyle}"
+                        IsDefault="true" 
+                        Command="{Binding YesCommand}"
+                        Content="{x:Static resx:Resources.ANSWER_YES}">
+                    </Button>
+
+                    <Button Style="{StaticResource BtnStyle}" 
+                        Command="{Binding NoCommand}"
+                        Content="{x:Static resx:Resources.ANSWER_NO}">
+                    </Button>
+
+                    <Button Style="{StaticResource BtnStyle}" 
+                        Command="{Binding CancelCommand}"
+                        IsCancel="true" 
+                        Content="{x:Static resx:Resources.ANSWER_CANCEL}">
+                    </Button>
+
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

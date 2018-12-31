@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using Models;
+    using OnlyM.Slides;
     using Options;
 
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -36,7 +37,7 @@
             new SupportedMediaType { Name = "WMP Audio", Classification = MediaClassification.Audio, FileExtension = ".wmp" },
             new SupportedMediaType { Name = "WAV Audio", Classification = MediaClassification.Audio, FileExtension = ".wav" },
 
-            new SupportedMediaType { Name = "OnlyM Slideshow", Classification = MediaClassification.Slideshow, FileExtension = ".omslide" },
+            new SupportedMediaType { Name = "OnlyM Slideshow", Classification = MediaClassification.Slideshow, FileExtension = SlideFile.FileExtension },
 
             new SupportedMediaType { Name = "Web Page", Classification = MediaClassification.Web, FileExtension = ".url" },
             new SupportedMediaType { Name = "PDF file", Classification = MediaClassification.Web, FileExtension = ".pdf" }

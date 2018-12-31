@@ -16,7 +16,7 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -27,7 +27,7 @@
     <CodeAnalysisRuleSet>..\OnlyM.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -103,11 +103,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\BooleanToBorderThicknessConverter.cs" />
+    <Compile Include="Dialogs\ShouldSaveDialog.xaml.cs">
+      <DependentUpon>ShouldSaveDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\DesignTimeSlideCreation.cs" />
+    <Compile Include="Helpers\FileUtils.cs" />
     <Compile Include="Helpers\GraphicsUtils.cs" />
     <Compile Include="Models\SlideItem.cs" />
+    <Compile Include="PubSubMessages\ReorderMessage.cs" />
+    <Compile Include="Services\DialogService.cs" />
+    <Compile Include="Services\DragAndDrop\DragAndDropServiceCustom.cs" />
+    <Compile Include="Services\DragAndDrop\IDragAndDropServiceCustom.cs" />
+    <Compile Include="Services\DragAndDrop\SourceCard.cs" />
+    <Compile Include="Services\IDialogService.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\ShouldSaveViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Page Include="Dialogs\ShouldSaveDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -154,6 +170,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\flower.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OnlyM.Slides\OnlyM.Slides.csproj">
+      <Project>{4d79789c-5626-4c86-a31f-75b78385dc2a}</Project>
+      <Name>OnlyM.Slides</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

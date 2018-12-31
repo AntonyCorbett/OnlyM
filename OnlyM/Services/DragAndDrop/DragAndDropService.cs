@@ -156,7 +156,7 @@
                     sfb.AddSlide(file, n == 0, false, n == file.Length - 1, false);
                 }
 
-                var destFilename = Path.Combine(mediaFolder, title + ".omslide");
+                var destFilename = Path.Combine(mediaFolder, title + SlideFile.FileExtension);
                 sfb.Build(destFilename, overwrite: true);
                 
                 return 1;

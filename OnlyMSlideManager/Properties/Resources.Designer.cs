@@ -61,6 +61,87 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CANCEL.
+        /// </summary>
+        public static string ANSWER_CANCEL {
+            get {
+                return ResourceManager.GetString("ANSWER_CANCEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NO.
+        /// </summary>
+        public static string ANSWER_NO {
+            get {
+                return ResourceManager.GetString("ANSWER_NO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to YES.
+        /// </summary>
+        public static string ANSWER_YES {
+            get {
+                return ResourceManager.GetString("ANSWER_YES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto play.
+        /// </summary>
+        public static string AUTO_PLAY {
+            get {
+                return ResourceManager.GetString("AUTO_PLAY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not create folder {0}.
+        /// </summary>
+        public static string CREATE_FOLDER_ERROR {
+            get {
+                return ResourceManager.GetString("CREATE_FOLDER_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fade in.
+        /// </summary>
+        public static string FADE_IN_FORWARD {
+            get {
+                return ResourceManager.GetString("FADE_IN_FORWARD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fade in (reversing).
+        /// </summary>
+        public static string FADE_IN_REVERSE {
+            get {
+                return ResourceManager.GetString("FADE_IN_REVERSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fade out.
+        /// </summary>
+        public static string FADE_OUT_FORWARD {
+            get {
+                return ResourceManager.GetString("FADE_OUT_FORWARD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fade out (reversing).
+        /// </summary>
+        public static string FADE_OUT_REVERSE {
+            get {
+                return ResourceManager.GetString("FADE_OUT_REVERSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap flower {
@@ -71,11 +152,101 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loop.
+        /// </summary>
+        public static string LOOP {
+            get {
+                return ResourceManager.GetString("LOOP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New slideshow.
+        /// </summary>
+        public static string NEW_SLIDESHOW {
+            get {
+                return ResourceManager.GetString("NEW_SLIDESHOW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open slideshow.
+        /// </summary>
+        public static string OPEN_SLIDESHOW {
+            get {
+                return ResourceManager.GetString("OPEN_SLIDESHOW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Slideshow.
+        /// </summary>
+        public static string OPEN_SLIDESHOW_TITLE {
+            get {
+                return ResourceManager.GetString("OPEN_SLIDESHOW_TITLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save slideshow.
+        /// </summary>
+        public static string SAVE_SLIDESHOW {
+            get {
+                return ResourceManager.GetString("SAVE_SLIDESHOW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save slideshow as....
+        /// </summary>
+        public static string SAVE_SLIDESHOW_AS {
+            get {
+                return ResourceManager.GetString("SAVE_SLIDESHOW_AS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Slideshow.
+        /// </summary>
+        public static string SAVE_SLIDESHOW_TITLE {
+            get {
+                return ResourceManager.GetString("SAVE_SLIDESHOW_TITLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SETTINGS.
         /// </summary>
         public static string SETTINGS {
             get {
                 return ResourceManager.GetString("SETTINGS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slideshow file.
+        /// </summary>
+        public static string SLIDESHOW_FILE {
+            get {
+                return ResourceManager.GetString("SLIDESHOW_FILE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The slideshow has changed. Do you want to save it?.
+        /// </summary>
+        public static string WANT_TO_SAVE {
+            get {
+                return ResourceManager.GetString("WANT_TO_SAVE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save?.
+        /// </summary>
+        public static string WANT_TO_SAVE_TITLE {
+            get {
+                return ResourceManager.GetString("WANT_TO_SAVE_TITLE", resourceCulture);
             }
         }
     }

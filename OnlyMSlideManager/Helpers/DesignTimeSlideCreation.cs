@@ -23,6 +23,8 @@
                 });
             }
 
+            result.Add(new SlideItem { IsEndMarker = true });
+
             return result;
         }
     }
