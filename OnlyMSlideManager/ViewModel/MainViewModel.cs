@@ -194,8 +194,7 @@ namespace OnlyMSlideManager.ViewModel
                 if (rv == CommonFileDialogResult.Ok)
                 {
                     _defaultFileSaveFolder = System.IO.Path.GetDirectoryName(d.FileName);
-                    var themePath = d.FileName;
-
+                    
                     CurrentSlideFileBuilder.Build(d.FileName, true);
 
                     InitNewSlideshow(d.FileName);
@@ -253,7 +252,7 @@ namespace OnlyMSlideManager.ViewModel
             {
                 foreach (var slide in _currentSlideFileBuilder.GetSlides())
                 {
-                    SlideItems.Add(new SlideItem
+                    var newSlide = new SlideItem
                     {
                         Name = slide.ArchiveEntryName,
                         OriginalFilePath = slide.OriginalFilePath,
@@ -262,13 +261,35 @@ namespace OnlyMSlideManager.ViewModel
                         FadeInReverse = slide.FadeInReverse,
                         FadeOutForward = slide.FadeOutForward,
                         FadeOutReverse = slide.FadeOutReverse,
-                        DwellTimeMilliseconds = slide.DwellTimeMilliseconds,
+                        DwellTimeSeconds = slide.DwellTimeMilliseconds == 0 ? (int?)null : slide.DwellTimeMilliseconds / 1000,
                         DropZoneId = Guid.NewGuid().ToString()
-                    });
+                    };
+
+                    newSlide.SlideItemModifiedEvent += HandleSlideItemModifiedEvent;
+                    SlideItems.Add(newSlide);
                 }
             }
 
             AddEndMarker();
+        }
+
+        private void HandleSlideItemModifiedEvent(object sender, EventArgs e)
+        {
+            if (sender is SlideItem item)
+            {
+                var slide = _currentSlideFileBuilder.GetSlide(item.Name);
+                if (slide != null)
+                {
+                    slide.FadeInForward = item.FadeInForward;
+                    slide.FadeInReverse = item.FadeInReverse;
+                    slide.FadeOutForward = item.FadeOutForward;
+                    slide.FadeOutReverse = item.FadeOutReverse;
+                    slide.DwellTimeMilliseconds = item.DwellTimeSeconds ?? 0;
+
+                    RaisePropertyChanged(nameof(IsDirty));
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
         }
 
         private void AddEndMarker()

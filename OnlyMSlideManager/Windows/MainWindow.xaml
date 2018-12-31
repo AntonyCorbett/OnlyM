@@ -117,10 +117,19 @@
                                 <TextBlock Grid.Row="0" Style="{StaticResource SlideTitleStyle}" Margin="0,0,0,5"/>
 
                                 <StackPanel Grid.Row="1" Margin="10">
-                                    <CheckBox Content="{x:Static resx:Resources.FADE_IN_FORWARD}" />
-                                    <CheckBox Content="{x:Static resx:Resources.FADE_OUT_FORWARD}" />
-                                    <CheckBox Content="{x:Static resx:Resources.FADE_IN_REVERSE}" />
-                                    <CheckBox Content="{x:Static resx:Resources.FADE_OUT_REVERSE}" />
+                                    <CheckBox Content="{x:Static resx:Resources.FADE_IN_FORWARD}" 
+                                              IsChecked="{Binding FadeInForward}"/>
+                                    <CheckBox Content="{x:Static resx:Resources.FADE_OUT_FORWARD}" 
+                                              IsChecked="{Binding FadeOutForward}"/>
+                                    <CheckBox Content="{x:Static resx:Resources.FADE_IN_REVERSE}" 
+                                              IsChecked="{Binding FadeInReverse}"/>
+                                    <CheckBox Content="{x:Static resx:Resources.FADE_OUT_REVERSE}" 
+                                              IsChecked="{Binding FadeOutReverse}"/>
+                                    
+                                    <TextBox Margin="0,5,0,0"
+                                             materialDesign:HintAssist.Hint="{x:Static resx:Resources.DWELL_SECONDS}"
+                                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                                             Text="{Binding DwellTimeSeconds}"/>
                                 </StackPanel>
 
                                 <Button Style="{StaticResource FlipBtnStyle}">

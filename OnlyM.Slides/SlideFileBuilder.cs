@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Slides
+﻿using System.Linq;
+
+namespace OnlyM.Slides
 {
     using System;
     using System.Collections.Generic;
@@ -107,6 +109,11 @@
             };
 
             _config.Slides.Add(slide);
+        }
+
+        public Slide GetSlide(string itemName)
+        {
+            return _config.Slides.SingleOrDefault(x => x.ArchiveEntryName.Equals(itemName, StringComparison.Ordinal));
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "trust streams behave properly")]

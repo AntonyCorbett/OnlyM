@@ -201,4 +201,8 @@
     <value>Fade out (reversing)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
+  <data name="DWELL_SECONDS" xml:space="preserve">
+    <value>Dwell time (secs)</value>
+    <comment>The time a slide is displayed during automatic playback.</comment>
+  </data>
 </root>

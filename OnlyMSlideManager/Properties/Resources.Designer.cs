@@ -106,6 +106,15 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dwell time (secs).
+        /// </summary>
+        public static string DWELL_SECONDS {
+            get {
+                return ResourceManager.GetString("DWELL_SECONDS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fade in.
         /// </summary>
         public static string FADE_IN_FORWARD {
