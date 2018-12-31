@@ -401,7 +401,7 @@
     <comment>Error message displayed when a web page cannot be loaded.</comment>
   </data>
   <data name="LOADING_FRAME" xml:space="preserve">
-    <value>Carregando a página: {0}%</value>
+    <value>Carregando a página: {0}</value>
     <comment>Progress message displayed when loading a web page</comment>
   </data>
   <data name="WEB_MARGINS" xml:space="preserve">
@@ -437,7 +437,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
-    <value>O cache do navegador será limpa na próxima vez que abrir o programa.</value>
+    <value>O cache do navegador será limpo na próxima vez que abrir o programa.</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
@@ -477,15 +477,15 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR" xml:space="preserve">
-    <value>Mirror</value>
+    <value>Espelhamento</value>
     <comment>Checkbox caption in web and PDF media item</comment>
   </data>
   <data name="JWL_TRADEMARK" xml:space="preserve">
-    <value>"JW Library" is a registered trademark of Watch Tower Bible and Tract Society of Pennsylvania</value>
+    <value>"JW Library" é uma marca registada de Watch Tower Bible and Tract Society of Pennsylvania</value>
     <comment>See Settings =&gt; Main</comment>
   </data>
   <data name="CANNOT_DELETE_FILE" xml:space="preserve">
-    <value>Cannot delete file!</value>
+    <value>Não é possível excluir o arquivo!</value>
     <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
   </data>
 </root>
