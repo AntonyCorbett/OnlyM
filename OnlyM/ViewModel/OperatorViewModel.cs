@@ -579,6 +579,10 @@
                 {
                     mediaItem.IsCommandPanelOpen = false;
                 }
+                else
+                {
+                    _snackbarService.EnqueueWithOk(Properties.Resources.CANNOT_DELETE_FILE);
+                }
             }
         }
 

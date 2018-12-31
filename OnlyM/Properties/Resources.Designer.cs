@@ -143,6 +143,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot delete file!.
+        /// </summary>
+        public static string CANNOT_DELETE_FILE {
+            get {
+                return ResourceManager.GetString("CANNOT_DELETE_FILE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change the mirror hotkey!.
         /// </summary>
         public static string CHANGE_MIRROR_HOTKEY {
