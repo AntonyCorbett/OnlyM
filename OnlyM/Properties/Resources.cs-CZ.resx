@@ -169,7 +169,7 @@
     <comment>Caption of the notification bar button to confirm that media should be stopped.</comment>
   </data>
   <data name="BLANK_SCREEN" xml:space="preserve">
-    <value>Prázdná obrazovka</value>
+    <value>Černá obrazovka</value>
     <comment>Title of the "Blank Screen" item</comment>
   </data>
   <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
@@ -217,7 +217,7 @@
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">
-    <value>DISPLEJ</value>
+    <value>DRUHÝ MONITOR</value>
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
@@ -253,7 +253,7 @@
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
-    <value>Potvrzovat zastavení</value>
+    <value>Potvrdit zastavení přehrávání</value>
     <comment>See Settings =&gt; Videos and Audio.</comment>
   </data>
   <data name="CURRENT_DATE" xml:space="preserve">
@@ -269,7 +269,7 @@
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
-    <value>Okraje obrázku</value>
+    <value>Šířka okrajů kolem obrázku</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Zobrazit "Zmrazit" na panelu příkazů</value>
+    <value>V menu zobrazovat položku "Zmrazit"</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
@@ -313,7 +313,7 @@
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="VIDEO_MARGINS" xml:space="preserve">
-    <value>Okraje videa</value>
+    <value>Šířka okrajů kolem videa</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="AUTO_ROTATE" xml:space="preserve">
@@ -321,7 +321,7 @@
     <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
   </data>
   <data name="INCLUDE_BLANK" xml:space="preserve">
-    <value>Vložit položku "Prázdná obrazovka"</value>
+    <value>V seznamu zobrazit položku "Černá obrazovka"</value>
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
@@ -333,7 +333,7 @@
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
-    <value>Povolit panel příkazů</value>
+    <value>Zobrazit menu s dalšími možnostmi</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
@@ -345,7 +345,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
-    <value>Soubory přesuňte sem!</value>
+    <value>Sem přesuňte soubory k zobrazení!</value>
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
@@ -405,7 +405,7 @@
     <comment>Progress message displayed when loading a web page</comment>
   </data>
   <data name="WEB_MARGINS" xml:space="preserve">
-    <value>Okraje webové stránky</value>
+    <value>Šířka okrajů kolem webové stránky</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_WEB" xml:space="preserve">
@@ -445,39 +445,43 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="ALLOW_MIRROR" xml:space="preserve">
-    <value>Allow mirror window</value>
+    <value>Povolit okno zrcadlení</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
-    <value>Mirror enabled by default</value>
+    <value>Zrcadlení je ve výchozím nastavení zapnuté</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_ZOOM" xml:space="preserve">
-    <value>Mirror zoom</value>
+    <value>Zoom zrcadlení</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_LOADING" xml:space="preserve">
-    <value>Loading...</value>
+    <value>Načítám...</value>
     <comment>Displayed when a web page is loading</comment>
   </data>
   <data name="LAUNCHING_MIRROR" xml:space="preserve">
-    <value>Launching mirror...</value>
+    <value>Inicializace zrcadlení...</value>
     <comment>Displayed when mirror window is launching</comment>
   </data>
   <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
-    <value>Change the mirror hotkey!</value>
+    <value>Změňte klávesovou zkratku pro zrcadlení!</value>
     <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
   </data>
   <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
-    <value>Logging level is high!</value>
+    <value>Úroveň logování je vysoká!</value>
     <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
   </data>
   <data name="MIRROR_HOTKEY" xml:space="preserve">
-    <value>Mirror hotkey</value>
+    <value>Klávesa pro zrcadlení</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR" xml:space="preserve">
-    <value>Mirror</value>
+    <value>Zrcadlit</value>
     <comment>Checkbox caption in web and PDF media item</comment>
+  </data>
+  <data name="JWL_TRADEMARK" xml:space="preserve">
+    <value>"JW Library" je registrovaná ochranná známka společnosti Watch Tower Bible and Tract Society of Pennsylvania</value>
+    <comment>See Settings =&gt; Main</comment>
   </data>
 </root>
