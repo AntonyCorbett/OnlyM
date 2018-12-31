@@ -5,29 +5,29 @@
 
     public class ObservableCollectionEx<T> : ObservableCollection<T>
     {
-        private bool _notificationSupressed;
-        private bool _supressNotification;
+        private bool _notificationSuppressed;
+        private bool _suppressNotification;
 
-        public bool SupressNotification
+        public bool SuppressNotification
         {
-            get => _supressNotification;
+            get => _suppressNotification;
             set
             {
-                _supressNotification = value;
+                _suppressNotification = value;
 
-                if (_supressNotification == false && _notificationSupressed)
+                if (_suppressNotification == false && _notificationSuppressed)
                 {
                     OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                    _notificationSupressed = false;
+                    _notificationSuppressed = false;
                 }
             }
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (SupressNotification)
+            if (SuppressNotification)
             {
-                _notificationSupressed = true;
+                _notificationSuppressed = true;
                 return;
             }
 

@@ -71,7 +71,7 @@
             <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
                 <Rectangle Style="{StaticResource DropZoneStyle}" Margin="0,0,9,0" />
 
-                    <materialDesign:Flipper  
+                <materialDesign:Flipper  
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         Visibility="{Binding IsEndMarker, Converter={StaticResource InverseBoolToVisConverter}}"
@@ -92,8 +92,19 @@
                                         BorderThickness="{Binding ShowCardBorder, Converter={StaticResource BooleanToBorderThicknessConverter}}" />
 
                                 <!-- Card title (front) -->
-                                <TextBlock Grid.Row="0" Style="{StaticResource SlideTitleStyle}" Margin="0,0,0,5"/>
-
+                                <TextBlock Grid.Row="0" Style="{StaticResource SlideTitleStyle}" Margin="25,0,25,5"/>
+                                <Ellipse Grid.Row="0" Fill="{StaticResource SecondaryAccentBrush}" 
+                                        Margin="-25,-25"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Left"
+                                        Width="50" Height="50" />
+                                <TextBlock Grid.Row="0" Width="25" 
+                                           TextAlignment="Center"
+                                           Margin="-3,-2,0,0"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left" 
+                                           Text="{Binding SlideIndex}"/>
+                                
                                 <Image Grid.Row="1" Source="{Binding Image}" HorizontalAlignment="Center" Margin="10"/>
 
                                 <Button Style="{StaticResource FlipBtnStyle}">

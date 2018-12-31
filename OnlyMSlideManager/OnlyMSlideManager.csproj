@@ -172,6 +172,10 @@
     <None Include="Resources\flower.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OnlyM.Core\OnlyM.Core.csproj">
+      <Project>{ee384d4b-3a3b-4d9b-b2b6-cc71a6f87a97}</Project>
+      <Name>OnlyM.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OnlyM.Slides\OnlyM.Slides.csproj">
       <Project>{4d79789c-5626-4c86-a31f-75b78385dc2a}</Project>
       <Name>OnlyM.Slides</Name>

@@ -23,6 +23,8 @@
 
         public ImageSource Image { get; set; }
 
+        public int SlideIndex { get; set; }
+
         public bool FadeInForward
         {
             get => _fadeInForward;

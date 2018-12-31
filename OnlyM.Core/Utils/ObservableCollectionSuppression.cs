@@ -9,12 +9,12 @@
         public ObservableCollectionSuppression(ObservableCollectionEx<T> collection)
         {
             _collection = collection;
-            _collection.SupressNotification = true;
+            _collection.SuppressNotification = true;
         }
 
         public void Dispose()
         {
-            _collection.SupressNotification = false;
+            _collection.SuppressNotification = false;
         }
     }
 }

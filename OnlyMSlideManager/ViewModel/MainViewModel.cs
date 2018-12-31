@@ -1,3 +1,5 @@
+using OnlyM.Core.Utils;
+
 namespace OnlyMSlideManager.ViewModel
 {
     using System;
@@ -22,6 +24,7 @@ namespace OnlyMSlideManager.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private const string AppName = @"O N L Y M  Slideshow Manager";
+        private const int MaxSlideIndexNumber = 99;
 
         private readonly IDialogService _dialogService;
         private readonly IDragAndDropServiceCustom _dragAndDropServiceCustom;
@@ -98,7 +101,7 @@ namespace OnlyMSlideManager.ViewModel
 
         public bool IsDirty => CreateSlideshowSignature() != _lastSavedSlideshowSignature;
 
-        public ObservableCollection<SlideItem> SlideItems { get; } = new ObservableCollection<SlideItem>();
+        public ObservableCollectionEx<SlideItem> SlideItems { get; } = new ObservableCollectionEx<SlideItem>();
 
         public RelayCommand NewFileCommand { get; set; }
 
@@ -246,31 +249,39 @@ namespace OnlyMSlideManager.ViewModel
 
         private void GenerateSlideItems()
         {
-            SlideItems.Clear();
-
-            if (_currentSlideFileBuilder != null)
+            using (new ObservableCollectionSuppression<SlideItem>(SlideItems))
             {
-                foreach (var slide in _currentSlideFileBuilder.GetSlides())
+                SlideItems.Clear();
+
+                if (_currentSlideFileBuilder != null)
                 {
-                    var newSlide = new SlideItem
+                    int slideIndex = 1;
+
+                    foreach (var slide in _currentSlideFileBuilder.GetSlides())
                     {
-                        Name = slide.ArchiveEntryName,
-                        OriginalFilePath = slide.OriginalFilePath,
-                        Image = slide.Image,
-                        FadeInForward = slide.FadeInForward,
-                        FadeInReverse = slide.FadeInReverse,
-                        FadeOutForward = slide.FadeOutForward,
-                        FadeOutReverse = slide.FadeOutReverse,
-                        DwellTimeSeconds = slide.DwellTimeMilliseconds == 0 ? (int?)null : slide.DwellTimeMilliseconds / 1000,
-                        DropZoneId = Guid.NewGuid().ToString()
-                    };
+                        var newSlide = new SlideItem
+                        {
+                            Name = slide.ArchiveEntryName,
+                            OriginalFilePath = slide.OriginalFilePath,
+                            Image = slide.Image,
+                            FadeInForward = slide.FadeInForward,
+                            FadeInReverse = slide.FadeInReverse,
+                            FadeOutForward = slide.FadeOutForward,
+                            FadeOutReverse = slide.FadeOutReverse,
+                            DwellTimeSeconds = slide.DwellTimeMilliseconds == 0
+                                ? (int?) null
+                                : slide.DwellTimeMilliseconds / 1000,
+                            DropZoneId = Guid.NewGuid().ToString(),
+                            SlideIndex = slideIndex == MaxSlideIndexNumber ? MaxSlideIndexNumber : slideIndex++
+                        };
 
-                    newSlide.SlideItemModifiedEvent += HandleSlideItemModifiedEvent;
-                    SlideItems.Add(newSlide);
+                        newSlide.SlideItemModifiedEvent += HandleSlideItemModifiedEvent;
+                        SlideItems.Add(newSlide);
+                    }
                 }
-            }
 
-            AddEndMarker();
+                AddEndMarker();
+            }
         }
 
         private void HandleSlideItemModifiedEvent(object sender, EventArgs e)
@@ -364,24 +375,37 @@ namespace OnlyMSlideManager.ViewModel
         {
             var newOrder = new List<SlideItem>();
 
+            int slideIndex = 1;
+
             foreach (var slide in SlideItems)
             {
                 if (slide.DropZoneId == message.TargetId)
                 {
+                    message.SourceItem.SlideIndex = slideIndex == MaxSlideIndexNumber
+                        ? MaxSlideIndexNumber
+                        : slideIndex++;
+
                     newOrder.Add(message.SourceItem);
                 }
 
                 if (slide != message.SourceItem)
                 {
+                    slide.SlideIndex = slideIndex == MaxSlideIndexNumber
+                        ? MaxSlideIndexNumber
+                        : slideIndex++;
+
                     newOrder.Add(slide);
                 }
             }
 
-            SlideItems.Clear();
-
-            foreach (var slide in newOrder)
+            using (new ObservableCollectionSuppression<SlideItem>(SlideItems))
             {
-                SlideItems.Add(slide);
+                SlideItems.Clear();
+
+                foreach (var slide in newOrder)
+                {
+                    SlideItems.Add(slide);
+                }
             }
 
             CurrentSlideFileBuilder.SyncSlideOrder(newOrder.Select(x => x.Name));
