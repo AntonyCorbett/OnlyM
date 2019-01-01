@@ -17,6 +17,7 @@ namespace OnlyMSlideManager.ViewModel
     using Microsoft.WindowsAPICodePack.Dialogs;
     using OnlyM.Core.Utils;
     using OnlyM.Slides;
+    using OnlyM.Slides.Exceptions;
     using OnlyMSlideManager.Helpers;
     using OnlyMSlideManager.Models;
     using OnlyMSlideManager.PubSubMessages;
@@ -130,6 +131,18 @@ namespace OnlyMSlideManager.ViewModel
                 if (value != _dwellTimeSeconds)
                 {
                     _dwellTimeSeconds = value;
+                    if (_currentSlideFileBuilder != null)
+                    {
+                        if (value == null)
+                        {
+                            _currentSlideFileBuilder.DwellTimeMilliseconds = 0;
+                        }
+                        else
+                        {
+                            _currentSlideFileBuilder.DwellTimeMilliseconds = _dwellTimeSeconds.Value * 1000;
+                        }
+                    }
+
                     RaisePropertyChanged();
                 }
             }
@@ -290,7 +303,7 @@ namespace OnlyMSlideManager.ViewModel
             return IsDirty && !Busy;
         }
 
-        private void SaveFileAs()
+        private async void SaveFileAs()
         {
             using (var d = new CommonSaveFileDialog())
             {
@@ -306,9 +319,9 @@ namespace OnlyMSlideManager.ViewModel
                 if (rv == CommonFileDialogResult.Ok)
                 {
                     _defaultFileSaveFolder = System.IO.Path.GetDirectoryName(d.FileName);
-                    
-                    CurrentSlideFileBuilder.Build(d.FileName, true);
 
+                    await SaveFileInternal(d.FileName);
+                    
                     InitNewSlideshow(d.FileName);
                 }
             }
@@ -325,8 +338,16 @@ namespace OnlyMSlideManager.ViewModel
             {
                 using (_userInterfaceService.BeginBusy())
                 {
-                    await SaveFileInternal();
-                    SaveSignature();
+                    if (string.IsNullOrEmpty(CurrentSlideshowPath))
+                    {
+                        SaveFileAs();
+                    }
+                    else
+                    {
+                        await SaveFileInternal(CurrentSlideshowPath);
+                        SaveSignature();
+                    }
+                    
                     _snackbarService.EnqueueWithOk(Properties.Resources.SAVED_FILE);
                 }
             }
@@ -337,11 +358,11 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private Task SaveFileInternal()
+        private Task SaveFileInternal(string path)
         {
             return Task.Run(() =>
             {
-                CurrentSlideFileBuilder.Build(CurrentSlideshowPath, true);
+                CurrentSlideFileBuilder.Build(path, true);
             });
         }
 
@@ -354,7 +375,7 @@ namespace OnlyMSlideManager.ViewModel
                 {
                     using (_userInterfaceService.BeginBusy())
                     {
-                        await SaveFileInternal();
+                        await SaveFileInternal(CurrentSlideshowPath);
                     }
                 }
                 else if (result == null)
@@ -601,23 +622,36 @@ namespace OnlyMSlideManager.ViewModel
             {
                 using (_userInterfaceService.BeginBusy())
                 {
-                    var fileCount = await AddImages(message.FileList, message.TargetId);
-                    GenerateSlideItems();
-
-                    switch (fileCount)
+                    try
                     {
-                        case 0:
-                            _snackbarService.EnqueueWithOk(Properties.Resources.NO_SLIDES_CREATED);
-                            break;
+                        var fileCount = await AddImages(message.FileList, message.TargetId);
+                        GenerateSlideItems();
 
-                        case 1:
-                            _snackbarService.EnqueueWithOk(Properties.Resources.SLIDE_CREATED);
-                            break;
+                        switch (fileCount)
+                        {
+                            case 0:
+                                _snackbarService.EnqueueWithOk(Properties.Resources.NO_SLIDES_CREATED);
+                                break;
 
-                        default:
-                            var msg = string.Format(Properties.Resources.X_SLIDES_CREATED, fileCount);
-                            _snackbarService.EnqueueWithOk(msg);
-                            break;
+                            case 1:
+                                _snackbarService.EnqueueWithOk(Properties.Resources.SLIDE_CREATED);
+                                break;
+
+                            default:
+                                var msg = string.Format(Properties.Resources.X_SLIDES_CREATED, fileCount);
+                                _snackbarService.EnqueueWithOk(msg);
+                                break;
+                        }
+                    }
+                    catch (SlideWithNameExistsException ex)
+                    {
+                        Log.Logger.Warning(ex, "Could not add all images");
+                        _snackbarService.EnqueueWithOk(Properties.Resources.SAME_NAME_SLIDE_EXISTS);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Logger.Warning(ex, "Could not add all images");
+                        _snackbarService.EnqueueWithOk(Properties.Resources.ERROR_ADDING_IMAGES);
                     }
                 }
             }
@@ -627,7 +661,7 @@ namespace OnlyMSlideManager.ViewModel
         {
             return Task.Run(() =>
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
 
                 var count = 0;
                 if (CurrentSlideFileBuilder != null)

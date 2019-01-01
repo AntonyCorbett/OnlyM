@@ -160,6 +160,15 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred adding images!.
+        /// </summary>
+        public static string ERROR_ADDING_IMAGES {
+            get {
+                return ResourceManager.GetString("ERROR_ADDING_IMAGES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fade in.
         /// </summary>
         public static string FADE_IN_FORWARD {
@@ -265,6 +274,15 @@ namespace OnlyMSlideManager.Properties {
         public static string RETURN_TO_SLIDE {
             get {
                 return ResourceManager.GetString("RETURN_TO_SLIDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One or more slide names are duplicated.
+        /// </summary>
+        public static string SAME_NAME_SLIDE_EXISTS {
+            get {
+                return ResourceManager.GetString("SAME_NAME_SLIDE_EXISTS", resourceCulture);
             }
         }
         

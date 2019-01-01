@@ -68,6 +68,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\SlideException.cs" />
+    <Compile Include="Exceptions\SlideWithNameExistsException.cs" />
     <Compile Include="Models\Slide.cs" />
     <Compile Include="Models\SlideDirection.cs" />
     <Compile Include="Models\SlidesConfig.cs" />

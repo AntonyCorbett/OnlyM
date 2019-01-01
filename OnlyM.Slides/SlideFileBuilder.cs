@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Slides
+﻿using OnlyM.Slides.Exceptions;
+
+namespace OnlyM.Slides
 {
     using System;
     using System.Collections.Generic;
@@ -135,6 +137,8 @@
                 throw new Exception("File already exists!");
             }
 
+            _config.Sanitize();
+
             using (var memoryStream = new MemoryStream())
             {
                 using (var zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
@@ -223,6 +227,12 @@
             }
 
             var archiveEntryName = Path.GetFileName(bitmapPath);
+
+            if (SlideExists(archiveEntryName))
+            {
+                throw new SlideWithNameExistsException(archiveEntryName);
+            }
+
             if (string.IsNullOrEmpty(archiveEntryName))
             {
                 throw new ArgumentException("Could not extract archive entry name", nameof(bitmapPath));
@@ -240,6 +250,11 @@
             };
 
             return result;
+        }
+
+        private bool SlideExists(string archiveEntryName)
+        {
+            return GetSlide(archiveEntryName) != null;
         }
     }
 }

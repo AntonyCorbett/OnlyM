@@ -246,4 +246,12 @@
     <value>{0} slides created</value>
     <comment>Message displayed when slides are created following drag and drop</comment>
   </data>
+  <data name="SAME_NAME_SLIDE_EXISTS" xml:space="preserve">
+    <value>One or more slide names are duplicated</value>
+    <comment>Warning message displayed if you attempt to add image files with the same name.</comment>
+  </data>
+  <data name="ERROR_ADDING_IMAGES" xml:space="preserve">
+    <value>An error occurred adding images!</value>
+    <comment>Error message</comment>
+  </data>
 </root>

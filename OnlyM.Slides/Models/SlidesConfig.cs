@@ -25,6 +25,17 @@
             Loop = false;
         }
 
+        public void Sanitize()
+        {
+            const int OneSecond = 1000;
+            const int TenSeconds = 10000;
+
+            if (AutoPlay && DwellTimeMilliseconds < OneSecond)
+            {
+                DwellTimeMilliseconds = TenSeconds;
+            }
+        }
+
         public string CreateSignature()
         {
             var sb = new StringBuilder();
