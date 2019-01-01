@@ -1,6 +1,4 @@
-﻿using OnlyM.Slides.Exceptions;
-
-namespace OnlyM.Slides
+﻿namespace OnlyM.Slides
 {
     using System;
     using System.Collections.Generic;
@@ -9,6 +7,7 @@ namespace OnlyM.Slides
     using System.Linq;
     using System.Windows.Media.Imaging;
     using Newtonsoft.Json;
+    using OnlyM.Slides.Exceptions;
     using OnlyM.Slides.Models;
 
     public class SlideFileBuilder
