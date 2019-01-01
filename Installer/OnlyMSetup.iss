@@ -87,6 +87,7 @@ Source: "bin\x86\Release\taglib-sharp.dll"; DestDir: "{app}"; Flags: ignoreversi
 
 ; Slide manager
 Source: "..\OnlyMSlideManager\bin\Release\OnlyMSlideManager.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\OnlyMSlideManager.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 
 ; localisation..
 Source: "bin\x86\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
