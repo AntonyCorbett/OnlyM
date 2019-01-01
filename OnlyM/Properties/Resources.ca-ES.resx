@@ -365,7 +365,7 @@
     <comment>Tooltip for the download button when a new version is ready (can be translated the same as NEW_UPDATE_AVAILABLE)</comment>
   </data>
   <data name="DELETE" xml:space="preserve">
-    <value>ESBORRA</value>
+    <value>SUPRIMEIX</value>
     <comment>Button label in Command panel</comment>
   </data>
   <data name="FREEZE" xml:space="preserve">
@@ -483,5 +483,9 @@
   <data name="JWL_TRADEMARK" xml:space="preserve">
     <value>«JW Library» és una marca registrada de Watch Tower Bible and Tract Society of Pennsylvania</value>
     <comment>See Settings =&gt; Main</comment>
+  </data>
+  <data name="CANNOT_DELETE_FILE" xml:space="preserve">
+    <value>No es pot suprimir el fitxer!</value>
+    <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
   </data>
 </root>

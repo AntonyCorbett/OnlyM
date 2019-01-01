@@ -484,4 +484,8 @@
     <value>"JW Library" é uma marca registada da Sociedade Torre de Vigia de Bíblias e Tratados da Pensilvânia</value>
     <comment>See Settings =&gt; Main</comment>
   </data>
+  <data name="CANNOT_DELETE_FILE" xml:space="preserve">
+    <value>Cannot delete file!</value>
+    <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
+  </data>
 </root>
