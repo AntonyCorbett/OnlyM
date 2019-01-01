@@ -26,7 +26,7 @@
         behaviours:WindowClosingBehaviour.CancelClosing="{Binding CancelClosingCommand}"
 
         mc:Ignorable="d"
-        Title="{Binding MainWindowCaption}" Height="450" Width="800">
+        Title="{Binding MainWindowCaption}" Height="450" Width="800" Icon="/OnlyMSlideManager;component/slides.ico">
     <Window.Resources>
 
         <Style x:Key="SettingsCheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignCheckBox}">
