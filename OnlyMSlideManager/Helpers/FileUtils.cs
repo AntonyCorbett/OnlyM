@@ -6,6 +6,7 @@
     internal static class FileUtils
     {
         private static readonly string AppNamePathSegment = "OnlyMSlideManager";
+        private static readonly string OptionsFileName = "options.json";
 
         /// <summary>
         /// Creates directory if it doesn't exist. Throws if cannot be created
@@ -41,6 +42,15 @@
             return Path.Combine(
                 GetAppMyDocsFolder(),
                 "Logs");
+        }
+
+        public static string GetUserOptionsFilePath(int optionsVersion)
+        {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                AppNamePathSegment,
+                optionsVersion.ToString(),
+                OptionsFileName);
         }
     }
 }

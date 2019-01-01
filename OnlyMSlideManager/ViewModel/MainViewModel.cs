@@ -15,7 +15,6 @@ namespace OnlyMSlideManager.ViewModel
     using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
     using Microsoft.WindowsAPICodePack.Dialogs;
-    using OnlyM.Core.Utils;
     using OnlyM.Slides;
     using OnlyM.Slides.Exceptions;
     using OnlyMSlideManager.Helpers;
@@ -29,7 +28,7 @@ namespace OnlyMSlideManager.ViewModel
 
     public class MainViewModel : ViewModelBase
     {
-        private const string AppName = @"O N L Y M  Slideshow Manager";
+        private const string AppName = @"O N L Y M  Slide Manager";
         private const int MaxSlideIndexNumber = 99;
 
         private readonly IDialogService _dialogService;

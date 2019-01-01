@@ -84,6 +84,9 @@ Source: "bin\x86\Release\System.ValueTuple.dll"; DestDir: "{app}"; Flags: ignore
 Source: "bin\x86\Release\System.Windows.Interactivity.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\taglib-sharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 
+; Slide manager
+Source: "..\OnlyMSlideManager\bin\Release\OnlyMSlideManager.exe"; DestDir: "{app}"; Flags: ignoreversion
+
 ; localisation..
 Source: "bin\x86\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
 Source: "bin\x86\Release\cs-CZ\*.dll"; DestDir: "{app}\cs-CZ"; Flags: ignoreversion

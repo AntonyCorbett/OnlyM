@@ -8,6 +8,8 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
+        MinWidth="500"
+        MinHeight="400"
 
         DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}"
 

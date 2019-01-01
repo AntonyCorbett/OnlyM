@@ -1,10 +1,10 @@
 namespace OnlyMSlideManager.ViewModel
 {
     using CommonServiceLocator;
-    using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Ioc;
     using OnlyMSlideManager.Services;
     using OnlyMSlideManager.Services.DragAndDrop;
+    using OnlyMSlideManager.Services.Options;
     using OnlyMSlideManager.Services.Snackbar;
     using OnlyMSlideManager.Services.UI;
 
@@ -21,6 +21,7 @@ namespace OnlyMSlideManager.ViewModel
             SimpleIoc.Default.Register<IDragAndDropServiceCustom, DragAndDropServiceCustom>();
             SimpleIoc.Default.Register<ISnackbarService, SnackbarService>();
             SimpleIoc.Default.Register<IUserInterfaceService, UserInterfaceService>();
+            SimpleIoc.Default.Register<IOptionsService, OptionsService>();
         }
 
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();

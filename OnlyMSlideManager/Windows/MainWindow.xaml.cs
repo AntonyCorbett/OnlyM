@@ -1,11 +1,15 @@
 ﻿namespace OnlyMSlideManager.Windows
 {
+    using System.ComponentModel;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Shapes;
+    using CommonServiceLocator;
     using GalaSoft.MvvmLight.Messaging;
     using OnlyMSlideManager.PubSubMessages;
+    using OnlyMSlideManager.Services.Options;
+    using OnlyMSlideManager.Services.WindowsPositioning;
     using OnlyMSlideManager.ViewModel;
 
     public partial class MainWindow : Window
@@ -15,6 +19,36 @@
             InitializeComponent();
 
             Messenger.Default.Register<CloseAppMessage>(this, OnCloseAppMessage);
+        }
+
+        protected override void OnSourceInitialized(System.EventArgs e)
+        {
+            AdjustMainWindowPositionAndSize();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            SaveWindowPos();
+        }
+
+        private void SaveWindowPos()
+        {
+            var optionsService = ServiceLocator.Current.GetInstance<IOptionsService>();
+            optionsService.AppWindowPlacement = this.GetPlacement();
+            optionsService.Save();
+        }
+
+        private void AdjustMainWindowPositionAndSize()
+        {
+            var optionsService = ServiceLocator.Current.GetInstance<IOptionsService>();
+            if (!string.IsNullOrEmpty(optionsService.AppWindowPlacement))
+            {
+                ResizeMode = WindowState == WindowState.Maximized
+                    ? ResizeMode.NoResize
+                    : ResizeMode.CanResizeWithGrip;
+
+                this.SetPlacement(optionsService.AppWindowPlacement);
+            }
         }
 
         private void DragSourcePreviewMouseDown(object sender, MouseButtonEventArgs e)
