@@ -103,6 +103,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviours\WindowClosingBehaviour.cs" />
     <Compile Include="Converters\BooleanToBorderThicknessConverter.cs" />
     <Compile Include="Dialogs\ShouldSaveDialog.xaml.cs">
       <DependentUpon>ShouldSaveDialog.xaml</DependentUpon>
@@ -111,12 +112,19 @@
     <Compile Include="Helpers\FileUtils.cs" />
     <Compile Include="Helpers\GraphicsUtils.cs" />
     <Compile Include="Models\SlideItem.cs" />
+    <Compile Include="PubSubMessages\CloseAppMessage.cs" />
+    <Compile Include="PubSubMessages\DropImagesMessage.cs" />
     <Compile Include="PubSubMessages\ReorderMessage.cs" />
     <Compile Include="Services\DialogService.cs" />
     <Compile Include="Services\DragAndDrop\DragAndDropServiceCustom.cs" />
     <Compile Include="Services\DragAndDrop\IDragAndDropServiceCustom.cs" />
     <Compile Include="Services\DragAndDrop\SourceCard.cs" />
     <Compile Include="Services\IDialogService.cs" />
+    <Compile Include="Services\Snackbar\ISnackbarService.cs" />
+    <Compile Include="Services\Snackbar\SnackbarService.cs" />
+    <Compile Include="Services\UI\BusyCursor.cs" />
+    <Compile Include="Services\UI\IUserInterfaceService.cs" />
+    <Compile Include="Services\UI\UserInterfaceService.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ShouldSaveViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -154,6 +162,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

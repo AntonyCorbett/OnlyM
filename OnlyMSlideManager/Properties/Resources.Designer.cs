@@ -88,11 +88,29 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto play.
+        ///   Looks up a localized string similar to Auto-play.
         /// </summary>
         public static string AUTO_PLAY {
             get {
                 return ResourceManager.GetString("AUTO_PLAY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto-play settings.
+        /// </summary>
+        public static string AUTO_PLAY_SETTINGS {
+            get {
+                return ResourceManager.GetString("AUTO_PLAY_SETTINGS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not save file!.
+        /// </summary>
+        public static string COULD_NOT_SAVE {
+            get {
+                return ResourceManager.GetString("COULD_NOT_SAVE", resourceCulture);
             }
         }
         
@@ -106,11 +124,38 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete slide.
+        /// </summary>
+        public static string DELETE_SLIDE {
+            get {
+                return ResourceManager.GetString("DELETE_SLIDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag your image(s) here!.
+        /// </summary>
+        public static string DRAG_IMAGES_HERE {
+            get {
+                return ResourceManager.GetString("DRAG_IMAGES_HERE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dwell time (secs).
         /// </summary>
         public static string DWELL_SECONDS {
             get {
                 return ResourceManager.GetString("DWELL_SECONDS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit slide.
+        /// </summary>
+        public static string EDIT_SLIDE {
+            get {
+                return ResourceManager.GetString("EDIT_SLIDE", resourceCulture);
             }
         }
         
@@ -179,6 +224,24 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No slides created!.
+        /// </summary>
+        public static string NO_SLIDES_CREATED {
+            get {
+                return ResourceManager.GetString("NO_SLIDES_CREATED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string OK {
+            get {
+                return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open slideshow.
         /// </summary>
         public static string OPEN_SLIDESHOW {
@@ -193,6 +256,15 @@ namespace OnlyMSlideManager.Properties {
         public static string OPEN_SLIDESHOW_TITLE {
             get {
                 return ResourceManager.GetString("OPEN_SLIDESHOW_TITLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Return.
+        /// </summary>
+        public static string RETURN_TO_SLIDE {
+            get {
+                return ResourceManager.GetString("RETURN_TO_SLIDE", resourceCulture);
             }
         }
         
@@ -224,11 +296,29 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Saved file.
+        /// </summary>
+        public static string SAVED_FILE {
+            get {
+                return ResourceManager.GetString("SAVED_FILE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SETTINGS.
         /// </summary>
         public static string SETTINGS {
             get {
                 return ResourceManager.GetString("SETTINGS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slide created.
+        /// </summary>
+        public static string SLIDE_CREATED {
+            get {
+                return ResourceManager.GetString("SLIDE_CREATED", resourceCulture);
             }
         }
         
@@ -256,6 +346,15 @@ namespace OnlyMSlideManager.Properties {
         public static string WANT_TO_SAVE_TITLE {
             get {
                 return ResourceManager.GetString("WANT_TO_SAVE_TITLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} slides created.
+        /// </summary>
+        public static string X_SLIDES_CREATED {
+            get {
+                return ResourceManager.GetString("X_SLIDES_CREATED", resourceCulture);
             }
         }
     }

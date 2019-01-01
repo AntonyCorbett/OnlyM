@@ -4,6 +4,8 @@
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Shapes;
+    using GalaSoft.MvvmLight.Messaging;
+    using OnlyMSlideManager.PubSubMessages;
     using OnlyMSlideManager.ViewModel;
 
     public partial class MainWindow : Window
@@ -11,6 +13,8 @@
         public MainWindow()
         {
             InitializeComponent();
+
+            Messenger.Default.Register<CloseAppMessage>(this, OnCloseAppMessage);
         }
 
         private void DragSourcePreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -38,8 +42,22 @@
             if (sender is Rectangle rect)
             {
                 var vm = (MainViewModel)DataContext;
-                vm.Drop(rect);
+                vm.Drop(rect, e);
             }
+        }
+
+        private void OnDragEnter(object sender, DragEventArgs e)
+        {
+            if (sender is Rectangle rect)
+            {
+                var vm = (MainViewModel)DataContext;
+                vm.DragEnter(rect, e);
+            }
+        }
+
+        private void OnCloseAppMessage(CloseAppMessage message)
+        {
+            Close();
         }
     }
 }

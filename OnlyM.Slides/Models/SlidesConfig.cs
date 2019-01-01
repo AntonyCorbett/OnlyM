@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
-
-namespace OnlyM.Slides.Models
+﻿namespace OnlyM.Slides.Models
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
 
     internal class SlidesConfig
@@ -58,6 +57,20 @@ namespace OnlyM.Slides.Models
                     Slides.Add(originalSlide);
                 }
             }
+        }
+
+        public void RemoveSlide(string slideName)
+        {
+            var slide = GetSlideByName(slideName);
+            if (slide != null)
+            {
+                Slides.Remove(slide);
+            }
+        }
+
+        private Slide GetSlideByName(string slideName)
+        {
+            return Slides.SingleOrDefault(x => x.ArchiveEntryName.Equals(slideName));
         }
     }
 }

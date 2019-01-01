@@ -1,25 +1,30 @@
-using OnlyM.Core.Utils;
-
 namespace OnlyMSlideManager.ViewModel
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+    using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
     using GalaSoft.MvvmLight.Messaging;
+    using MaterialDesignThemes.Wpf;
     using Microsoft.WindowsAPICodePack.Dialogs;
+    using OnlyM.Core.Utils;
     using OnlyM.Slides;
     using OnlyMSlideManager.Helpers;
     using OnlyMSlideManager.Models;
     using OnlyMSlideManager.PubSubMessages;
     using OnlyMSlideManager.Services;
     using OnlyMSlideManager.Services.DragAndDrop;
+    using OnlyMSlideManager.Services.Snackbar;
+    using OnlyMSlideManager.Services.UI;
+    using Serilog;
 
     public class MainViewModel : ViewModelBase
     {
@@ -28,6 +33,8 @@ namespace OnlyMSlideManager.ViewModel
 
         private readonly IDialogService _dialogService;
         private readonly IDragAndDropServiceCustom _dragAndDropServiceCustom;
+        private readonly ISnackbarService _snackbarService;
+        private readonly IUserInterfaceService _userInterfaceService;
 
         private string _defaultFileOpenFolder;
         private string _defaultFileSaveFolder;
@@ -36,16 +43,32 @@ namespace OnlyMSlideManager.ViewModel
         private SlideFileBuilder _currentSlideFileBuilder;
         private bool? _autoPlay;
         private bool? _loop;
-
-        public MainViewModel(IDialogService dialogService, IDragAndDropServiceCustom dragAndDropServiceCustom)
+        private int? _dwellTimeSeconds;
+        private bool _busy;
+        
+        public MainViewModel(
+            IDialogService dialogService, 
+            IDragAndDropServiceCustom dragAndDropServiceCustom,
+            ISnackbarService snackbarService,
+            IUserInterfaceService userInterfaceService)
         {
             _dialogService = dialogService;
             _dragAndDropServiceCustom = dragAndDropServiceCustom;
+            _snackbarService = snackbarService;
+            _userInterfaceService = userInterfaceService;
 
             AddDesignTimeItems();
 
-            CreateCommands();
+            InitCommands();
             Messenger.Default.Register<ReorderMessage>(this, OnReorderMessage);
+            Messenger.Default.Register<DropImagesMessage>(this, OnDropImageFilesMessage);
+
+            _userInterfaceService.BusyStatusChangedEvent += HandleBusyStatusChangedEvent;
+
+            if (!IsInDesignMode)
+            {
+                InitNewSlideshow(null);
+            }
         }
 
         public SlideFileBuilder CurrentSlideFileBuilder
@@ -99,9 +122,30 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
+        public int? DwellTimeSeconds
+        {
+            get => _dwellTimeSeconds;
+            set
+            {
+                if (value != _dwellTimeSeconds)
+                {
+                    _dwellTimeSeconds = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool HasSlides => SlideItems.Count > 1;
+
+        public bool HasNoSlides => SlideItems.Count == 1;
+
+        public ISnackbarMessageQueue TheSnackbarMessageQueue => _snackbarService.TheSnackbarMessageQueue;
+
         public bool IsDirty => CreateSlideshowSignature() != _lastSavedSlideshowSignature;
 
         public ObservableCollectionEx<SlideItem> SlideItems { get; } = new ObservableCollectionEx<SlideItem>();
+
+        public RelayCommand<string> DeleteSlideCommand { get; set; }
 
         public RelayCommand NewFileCommand { get; set; }
 
@@ -110,6 +154,12 @@ namespace OnlyMSlideManager.ViewModel
         public RelayCommand SaveFileCommand { get; set; }
 
         public RelayCommand SaveFileAsCommand { get; set; }
+
+        public RelayCommand ClosedCommand { get; set; }
+
+        public RelayCommand ClosingCommand { get; set; }
+
+        public RelayCommand CancelClosingCommand { get; set; }
 
         public string CurrentSlideshowPath
         {
@@ -138,6 +188,22 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
+        public bool Busy
+        {
+            get => _busy;
+            set
+            {
+                if (_busy != value)
+                {
+                    _busy = value;
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsNotBusy));
+                }
+            }
+        }
+
+        public bool IsNotBusy => !Busy;
+
         public void DragSourcePreviewMouseDown(Control card, Point position)
         {
             _dragAndDropServiceCustom.DragSourcePreviewMouseDown(card, position);
@@ -148,17 +214,60 @@ namespace OnlyMSlideManager.ViewModel
             _dragAndDropServiceCustom.DragSourcePreviewMouseMove(position);
         }
 
-        public void Drop(Rectangle rect)
+        public void Drop(Rectangle rect, DragEventArgs e)
         {
-            _dragAndDropServiceCustom.Drop(rect);
+            _dragAndDropServiceCustom.Drop(rect, e);
         }
 
-        private void CreateCommands()
+        public void DragEnter(Rectangle rect, DragEventArgs e)
         {
-            NewFileCommand = new RelayCommand(NewFile);
-            OpenFileCommand = new RelayCommand(OpenFile);
-            SaveFileCommand = new RelayCommand(SaveFile, CanExecuteSaveFile);
+            _dragAndDropServiceCustom.DragEnter(rect, e);
+        }
+
+        private void InitCommands()
+        {
+            DeleteSlideCommand = new RelayCommand<string>(DeleteSlide, CanDeleteSlide);
+            NewFileCommand = new RelayCommand(NewFile, CanExecuteNewFile);
+            OpenFileCommand = new RelayCommand(OpenFile, CanExecuteOpenFile);
+            SaveFileCommand = new RelayCommand(DoSaveFile, CanExecuteSaveFile);
             SaveFileAsCommand = new RelayCommand(SaveFileAs, CanExecuteSaveAsFile);
+            ClosedCommand = new RelayCommand(ExecuteClosed);
+            ClosingCommand = new RelayCommand(ExecuteClosing, CanExecuteClosing);
+            CancelClosingCommand = new RelayCommand(ExecuteCancelClosing);
+        }
+
+        private bool CanDeleteSlide(string slideName)
+        {
+            return !Busy;
+        }
+
+        private void DeleteSlide(string slideName)
+        {
+            var slide = GetSlideByName(slideName);
+            if (slide != null)
+            {
+                SlideItems.Remove(slide);
+                CurrentSlideFileBuilder.RemoveSlide(slide.Name);
+
+                RaisePropertyChanged(nameof(HasSlides));
+                RaisePropertyChanged(nameof(HasNoSlides));
+                RaisePropertyChanged(nameof(IsDirty));
+            }
+        }
+
+        private SlideItem GetSlideByName(string slideName)
+        {
+            return SlideItems.SingleOrDefault(x => slideName.Equals(x.Name, StringComparison.Ordinal));
+        }
+
+        private bool CanExecuteOpenFile()
+        {
+            return !Busy;
+        }
+
+        private bool CanExecuteNewFile()
+        {
+            return !Busy;
         }
 
         private bool CanExecuteSaveAsFile()
@@ -168,17 +277,17 @@ namespace OnlyMSlideManager.ViewModel
                 return false;
             }
 
-            return SlideItems.Count > 1;
+            return !Busy;
         }
 
         private bool CanExecuteSaveFile()
         {
             if (string.IsNullOrEmpty(_currentSlideshowPath))
             {
-                return SlideItems.Count > 1;
+                return !Busy;
             }
 
-            return IsDirty;
+            return IsDirty && !Busy;
         }
 
         private void SaveFileAs()
@@ -188,7 +297,7 @@ namespace OnlyMSlideManager.ViewModel
                 d.OverwritePrompt = true;
                 d.AlwaysAppendDefaultExtension = true;
                 d.IsExpandedMode = true;
-                d.DefaultDirectory = _defaultFileSaveFolder ?? FileUtils.GetPrivateSlideshowFolder();
+                d.DefaultDirectory = _defaultFileSaveFolder ?? Helpers.FileUtils.GetPrivateSlideshowFolder();
                 d.DefaultExtension = SlideFile.FileExtension;
                 d.Filters.Add(new CommonFileDialogFilter(Properties.Resources.SLIDESHOW_FILE, $"*{SlideFile.FileExtension}"));
                 d.Title = Properties.Resources.SAVE_SLIDESHOW_TITLE;
@@ -205,15 +314,35 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private void SaveFile()
+        private async void DoSaveFile()
         {
-            SaveFileInternal();
-            SaveSignature();
+            await SaveFile();
         }
 
-        private void SaveFileInternal()
+        private async Task SaveFile()
         {
-            CurrentSlideFileBuilder.Build(CurrentSlideshowPath, true);
+            try
+            {
+                using (_userInterfaceService.BeginBusy())
+                {
+                    await SaveFileInternal();
+                    SaveSignature();
+                    _snackbarService.EnqueueWithOk(Properties.Resources.SAVED_FILE);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, $"Could not save file: {CurrentSlideshowPath}");
+                _snackbarService.EnqueueWithOk(Properties.Resources.COULD_NOT_SAVE);
+            }
+        }
+
+        private Task SaveFileInternal()
+        {
+            return Task.Run(() =>
+            {
+                CurrentSlideFileBuilder.Build(CurrentSlideshowPath, true);
+            });
         }
 
         private async void OpenFile()
@@ -223,7 +352,10 @@ namespace OnlyMSlideManager.ViewModel
                 var result = await _dialogService.ShouldSaveDirtyDataAsync().ConfigureAwait(true);
                 if (result == true)
                 {
-                    SaveFileInternal();
+                    using (_userInterfaceService.BeginBusy())
+                    {
+                        await SaveFileInternal();
+                    }
                 }
                 else if (result == null)
                 {
@@ -233,7 +365,7 @@ namespace OnlyMSlideManager.ViewModel
 
             using (var d = new CommonOpenFileDialog())
             {
-                d.DefaultDirectory = _defaultFileOpenFolder ?? FileUtils.GetPrivateSlideshowFolder();
+                d.DefaultDirectory = _defaultFileOpenFolder ?? Helpers.FileUtils.GetPrivateSlideshowFolder();
                 d.DefaultExtension = SlideFile.FileExtension;
                 d.Filters.Add(new CommonFileDialogFilter(Properties.Resources.SLIDESHOW_FILE, $"*{SlideFile.FileExtension}"));
                 d.Title = Properties.Resources.OPEN_SLIDESHOW_TITLE;
@@ -259,17 +391,19 @@ namespace OnlyMSlideManager.ViewModel
 
                     foreach (var slide in _currentSlideFileBuilder.GetSlides())
                     {
+                        var image = slide.Image ?? new BitmapImage(new Uri(slide.OriginalFilePath, UriKind.Absolute));
+
                         var newSlide = new SlideItem
                         {
                             Name = slide.ArchiveEntryName,
                             OriginalFilePath = slide.OriginalFilePath,
-                            Image = slide.Image,
+                            Image = image,
                             FadeInForward = slide.FadeInForward,
                             FadeInReverse = slide.FadeInReverse,
                             FadeOutForward = slide.FadeOutForward,
                             FadeOutReverse = slide.FadeOutReverse,
                             DwellTimeSeconds = slide.DwellTimeMilliseconds == 0
-                                ? (int?) null
+                                ? (int?)null
                                 : slide.DwellTimeMilliseconds / 1000,
                             DropZoneId = Guid.NewGuid().ToString(),
                             SlideIndex = slideIndex == MaxSlideIndexNumber ? MaxSlideIndexNumber : slideIndex++
@@ -282,6 +416,9 @@ namespace OnlyMSlideManager.ViewModel
 
                 AddEndMarker();
             }
+
+            RaisePropertyChanged(nameof(HasSlides));
+            RaisePropertyChanged(nameof(HasNoSlides));
         }
 
         private void HandleSlideItemModifiedEvent(object sender, EventArgs e)
@@ -318,7 +455,7 @@ namespace OnlyMSlideManager.ViewModel
                 var result = await _dialogService.ShouldSaveDirtyDataAsync().ConfigureAwait(true);
                 if (result == true)
                 {
-                    SaveFile();
+                    await SaveFile();
                 }
                 else if (result == null)
                 {
@@ -331,13 +468,21 @@ namespace OnlyMSlideManager.ViewModel
 
         private void InitNewSlideshow(string optionalPathToExistingSlideshow)
         {
-            CurrentSlideFileBuilder = new SlideFileBuilder(optionalPathToExistingSlideshow);
+            var builder = new SlideFileBuilder();
+            if (!string.IsNullOrEmpty(optionalPathToExistingSlideshow))
+            {
+                builder.Load(optionalPathToExistingSlideshow);
+            }
+
+            CurrentSlideFileBuilder = builder;
+
             CurrentSlideshowPath = optionalPathToExistingSlideshow;
 
             AutoPlay = CurrentSlideFileBuilder.AutoPlay;
             Loop = CurrentSlideFileBuilder.Loop;
 
             SaveSignature();
+
             GenerateSlideItems();
         }
 
@@ -351,10 +496,6 @@ namespace OnlyMSlideManager.ViewModel
                 {
                     SlideItems.Add(slide);
                 }
-            }
-            else
-            {
-                GenerateSlideItems();
             }
         }
 
@@ -412,6 +553,104 @@ namespace OnlyMSlideManager.ViewModel
             
             RaisePropertyChanged(nameof(IsDirty));
             CommandManager.InvalidateRequerySuggested();
+        }
+
+        private void ExecuteClosed()
+        {
+        }
+
+        private void ExecuteClosing()
+        {
+        }
+
+        private bool CanExecuteClosing()
+        {
+            return !_dialogService.IsDialogVisible() && !IsDirty && !Busy;
+        }
+
+        private async void ExecuteCancelClosing()
+        {
+            if (_dialogService.IsDialogVisible() || Busy)
+            {
+                return;
+            }
+
+            var rv = await _dialogService.ShouldSaveDirtyDataAsync().ConfigureAwait(true);
+            if (rv == true)
+            {
+                await SaveFile();
+            }
+
+            if (rv != null)
+            {
+                // User answered "No". Make the data not dirty by saving current sig...
+                SaveSignature();
+                Messenger.Default.Send(new CloseAppMessage());
+            }
+        }
+
+        private void HandleBusyStatusChangedEvent(object sender, EventArgs e)
+        {
+            Busy = _userInterfaceService.IsBusy();
+            CommandManager.InvalidateRequerySuggested();
+        }
+
+        private async void OnDropImageFilesMessage(DropImagesMessage message)
+        {
+            if (!Busy)
+            {
+                using (_userInterfaceService.BeginBusy())
+                {
+                    var fileCount = await AddImages(message.FileList, message.TargetId);
+                    GenerateSlideItems();
+
+                    switch (fileCount)
+                    {
+                        case 0:
+                            _snackbarService.EnqueueWithOk(Properties.Resources.NO_SLIDES_CREATED);
+                            break;
+
+                        case 1:
+                            _snackbarService.EnqueueWithOk(Properties.Resources.SLIDE_CREATED);
+                            break;
+
+                        default:
+                            var msg = string.Format(Properties.Resources.X_SLIDES_CREATED, fileCount);
+                            _snackbarService.EnqueueWithOk(msg);
+                            break;
+                    }
+                }
+            }
+        }
+
+        private Task<int> AddImages(List<string> files, string messageTargetId)
+        {
+            return Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+
+                var count = 0;
+                if (CurrentSlideFileBuilder != null)
+                {
+                    var dropTargetSlide = SlideItems.SingleOrDefault(x => x.DropZoneId == messageTargetId);
+                    var dropTargetSlideIndex = SlideItems.IndexOf(dropTargetSlide);
+
+                    foreach (var file in files)
+                    {
+                        CurrentSlideFileBuilder.InsertSlide(
+                            dropTargetSlideIndex++,
+                            file,
+                            true,
+                            true,
+                            true,
+                            true);
+
+                        ++count;
+                    }
+                }
+                
+                return count;
+            });
         }
     }
 }

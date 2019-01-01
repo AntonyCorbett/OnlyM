@@ -35,5 +35,12 @@
             CreateDirectory(folder);
             return folder;
         }
+
+        public static string GetLogFolder()
+        {
+            return Path.Combine(
+                GetAppMyDocsFolder(),
+                "Logs");
+        }
     }
 }

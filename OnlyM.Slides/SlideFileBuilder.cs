@@ -1,11 +1,10 @@
-﻿using System.Linq;
-
-namespace OnlyM.Slides
+﻿namespace OnlyM.Slides
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.IO.Compression;
+    using System.Linq;
     using System.Windows.Media.Imaging;
     using Newtonsoft.Json;
     using OnlyM.Slides.Models;
@@ -21,28 +20,6 @@ namespace OnlyM.Slides
         /// <remarks>Use when creating a slideshow from scratch.</remarks>
         public SlideFileBuilder()
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SlideFileBuilder"/> class from an existing slideshow.
-        /// </summary>
-        /// <param name="slideshowPath">An existing slideshow path.</param>
-        public SlideFileBuilder(string slideshowPath)
-        {
-            if (string.IsNullOrEmpty(slideshowPath))
-            {
-                return;
-            }
-            
-            var f = new SlideFile(slideshowPath);
-            AutoPlay = f.AutoPlay;
-            DwellTimeMilliseconds = f.DwellTimeMilliseconds;
-            Loop = f.Loop;
-
-            foreach (var slide in f.GetSlides(true))
-            {
-                _config.Slides.Add(slide);
-            }
         }
 
         public bool AutoPlay
@@ -73,9 +50,57 @@ namespace OnlyM.Slides
             return _config.Slides;
         }
 
+        public void RemoveSlide(string slideName)
+        {
+            _config.RemoveSlide(slideName);
+        }
+
         public void SyncSlideOrder(IEnumerable<string> slideNames)
         {
             _config.SyncSlideOrder(slideNames);
+        }
+
+        public void Load(string slideshowPath)
+        {
+            if (string.IsNullOrEmpty(slideshowPath))
+            {
+                throw new ArgumentNullException(nameof(slideshowPath));
+            }
+
+            var f = new SlideFile(slideshowPath);
+            AutoPlay = f.AutoPlay;
+            DwellTimeMilliseconds = f.DwellTimeMilliseconds;
+            Loop = f.Loop;
+
+            foreach (var slide in f.GetSlides(true))
+            {
+                _config.Slides.Add(slide);
+            }
+        }
+
+        public void InsertSlide(
+            int index,
+            string bitmapPath,
+            bool fadeInForward,
+            bool fadeInReverse,
+            bool fadeOutForward,
+            bool fadeOutReverse,
+            int dwellTimeMilliseconds = 0)
+        {
+            if (index < 0 || index > _config.SlideCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            var slide = CreateSlide(
+                bitmapPath,
+                fadeInForward,
+                fadeInReverse,
+                fadeOutForward,
+                fadeOutReverse,
+                dwellTimeMilliseconds);
+
+            _config.Slides.Insert(index, slide);
         }
 
         public void AddSlide(
@@ -86,27 +111,13 @@ namespace OnlyM.Slides
             bool fadeOutReverse,
             int dwellTimeMilliseconds = 0)
         {
-            if (!File.Exists(bitmapPath))
-            {
-                throw new ArgumentException("Could not find file", nameof(bitmapPath));
-            }
-
-            var archiveEntryName = Path.GetFileName(bitmapPath);
-            if (string.IsNullOrEmpty(archiveEntryName))
-            {
-                throw new ArgumentException("Could not extract archive entry name", nameof(bitmapPath));
-            }
-
-            var slide = new Slide
-            {
-                ArchiveEntryName = archiveEntryName,
-                OriginalFilePath = bitmapPath,
-                FadeInForward = fadeInForward,
-                FadeInReverse = fadeInReverse,
-                FadeOutForward = fadeOutForward,
-                FadeOutReverse = fadeOutReverse,
-                DwellTimeMilliseconds = dwellTimeMilliseconds
-            };
+            var slide = CreateSlide(
+                bitmapPath,
+                fadeInForward,
+                fadeInReverse,
+                fadeOutForward,
+                fadeOutReverse,
+                dwellTimeMilliseconds);
 
             _config.Slides.Add(slide);
         }
@@ -196,6 +207,39 @@ namespace OnlyM.Slides
                 encoder.Save(ms);
                 return ms.ToArray();
             }
+        }
+
+        private Slide CreateSlide(
+            string bitmapPath,
+            bool fadeInForward,
+            bool fadeInReverse,
+            bool fadeOutForward,
+            bool fadeOutReverse,
+            int dwellTimeMilliseconds = 0)
+        {
+            if (!File.Exists(bitmapPath))
+            {
+                throw new ArgumentException("Could not find file", nameof(bitmapPath));
+            }
+
+            var archiveEntryName = Path.GetFileName(bitmapPath);
+            if (string.IsNullOrEmpty(archiveEntryName))
+            {
+                throw new ArgumentException("Could not extract archive entry name", nameof(bitmapPath));
+            }
+
+            var result = new Slide
+            {
+                ArchiveEntryName = archiveEntryName,
+                OriginalFilePath = bitmapPath,
+                FadeInForward = fadeInForward,
+                FadeInReverse = fadeInReverse,
+                FadeOutForward = fadeOutForward,
+                FadeOutReverse = fadeOutReverse,
+                DwellTimeMilliseconds = dwellTimeMilliseconds
+            };
+
+            return result;
         }
     }
 }

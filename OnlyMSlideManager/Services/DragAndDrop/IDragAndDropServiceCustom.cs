@@ -10,6 +10,8 @@
 
         void DragSourcePreviewMouseMove(Point position);
 
-        void Drop(Rectangle rect);
+        void Drop(Rectangle rect, DragEventArgs e);
+
+        void DragEnter(Rectangle rect, DragEventArgs e);
     }
 }

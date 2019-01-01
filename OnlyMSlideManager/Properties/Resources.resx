@@ -174,7 +174,7 @@
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
-    <value>Auto play</value>
+    <value>Auto-play</value>
     <comment>Slidehow option (automatically play)</comment>
   </data>
   <data name="LOOP" xml:space="preserve">
@@ -204,5 +204,46 @@
   <data name="DWELL_SECONDS" xml:space="preserve">
     <value>Dwell time (secs)</value>
     <comment>The time a slide is displayed during automatic playback.</comment>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="COULD_NOT_SAVE" xml:space="preserve">
+    <value>Could not save file!</value>
+  </data>
+  <data name="SAVED_FILE" xml:space="preserve">
+    <value>Saved file</value>
+  </data>
+  <data name="AUTO_PLAY_SETTINGS" xml:space="preserve">
+    <value>Auto-play settings</value>
+    <comment>group box title</comment>
+  </data>
+  <data name="DRAG_IMAGES_HERE" xml:space="preserve">
+    <value>Drag your image(s) here!</value>
+    <comment>Instruction on empty window</comment>
+  </data>
+  <data name="DELETE_SLIDE" xml:space="preserve">
+    <value>Delete slide</value>
+    <comment>Tooltip for delete button on slide edit page</comment>
+  </data>
+  <data name="EDIT_SLIDE" xml:space="preserve">
+    <value>Edit slide</value>
+    <comment>Tooltip for edit button on slides</comment>
+  </data>
+  <data name="RETURN_TO_SLIDE" xml:space="preserve">
+    <value>Return</value>
+    <comment>Tooltip for 'back' button on slide edit page</comment>
+  </data>
+  <data name="NO_SLIDES_CREATED" xml:space="preserve">
+    <value>No slides created!</value>
+    <comment>Message displayed following an unsuccessful drag and drop</comment>
+  </data>
+  <data name="SLIDE_CREATED" xml:space="preserve">
+    <value>Slide created</value>
+    <comment>Message displayed when a slide is created following drag and drop</comment>
+  </data>
+  <data name="X_SLIDES_CREATED" xml:space="preserve">
+    <value>{0} slides created</value>
+    <comment>Message displayed when slides are created following drag and drop</comment>
   </data>
 </root>
