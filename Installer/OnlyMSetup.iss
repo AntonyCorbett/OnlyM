@@ -6,6 +6,7 @@
 #define MyAppURL "https://soundboxsoftware.com"
 #define MyAppExeName "OnlyM.exe"
 #define MySource "d:\ProjectsPersonal\OnlyM\OnlyM"
+#define SlideManagerAppExeName "OnlyMSlideManager.exe"
 
 #define MyAppVersion GetFileVersion(MySource + '\bin\x86\Release\OnlyM.exe');
 
@@ -33,7 +34,7 @@ DisableWelcomePage=false
 SetupLogging=True
 RestartApplications=False
 CloseApplications=False
-AppMutex=OnlyMMeetingMedia
+AppMutex=OnlyMMeetingMedia,OnlyMSlideManagerTool
 
 ; for CefSharp refer here: https://github.com/cefsharp/CefSharp/wiki/Output-files-description-table-(Redistribution)
 
@@ -142,7 +143,9 @@ Source: "..\UrlLinkFiles\Watchtower online library.url"; DestDir: "{commonappdat
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\{#SlideManagerAppExeName}"; Filename: "{app}\{#SlideManagerAppExeName}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{commondesktop}\{#SlideManagerAppExeName}"; Filename: "{app}\{#SlideManagerAppExeName}"; Tasks: desktopicon
 
 [ThirdParty]
 UseRelativePaths=True
