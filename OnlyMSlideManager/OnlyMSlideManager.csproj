@@ -109,6 +109,7 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="Behaviours\WindowClosingBehaviour.cs" />
     <Compile Include="Converters\BooleanToBorderThicknessConverter.cs" />
     <Compile Include="Dialogs\ShouldSaveDialog.xaml.cs">
       <DependentUpon>ShouldSaveDialog.xaml</DependentUpon>

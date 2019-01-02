@@ -24,11 +24,13 @@
         protected override void OnSourceInitialized(System.EventArgs e)
         {
             AdjustMainWindowPositionAndSize();
+            base.OnSourceInitialized(e);
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
             SaveWindowPos();
+            base.OnClosing(e);
         }
 
         private void SaveWindowPos()

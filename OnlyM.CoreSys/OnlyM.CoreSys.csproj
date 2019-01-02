@@ -92,7 +92,6 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="Behaviours\WindowClosingBehaviour.cs" />
     <Compile Include="GraphicsUtils.cs" />
     <Compile Include="ObservableCollectionEx.cs" />
     <Compile Include="ObservableCollectionSuppression.cs" />
