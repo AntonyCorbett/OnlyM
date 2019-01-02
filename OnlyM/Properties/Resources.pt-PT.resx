@@ -485,7 +485,7 @@
     <comment>See Settings =&gt; Main</comment>
   </data>
   <data name="CANNOT_DELETE_FILE" xml:space="preserve">
-    <value>Cannot delete file!</value>
+    <value>Não foi possível eliminar o ficheiro!</value>
     <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
   </data>
 </root>
