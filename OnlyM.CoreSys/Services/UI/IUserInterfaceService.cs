@@ -1,4 +1,4 @@
-﻿namespace OnlyMSlideManager.Services.UI
+﻿namespace OnlyM.CoreSys.Services.UI
 {
     using System;
 

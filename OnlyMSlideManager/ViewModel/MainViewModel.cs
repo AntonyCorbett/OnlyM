@@ -15,6 +15,9 @@ namespace OnlyMSlideManager.ViewModel
     using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
     using Microsoft.WindowsAPICodePack.Dialogs;
+    using OnlyM.CoreSys;
+    using OnlyM.CoreSys.Services.Snackbar;
+    using OnlyM.CoreSys.Services.UI;
     using OnlyM.Slides;
     using OnlyM.Slides.Exceptions;
     using OnlyMSlideManager.Helpers;
@@ -22,14 +25,14 @@ namespace OnlyMSlideManager.ViewModel
     using OnlyMSlideManager.PubSubMessages;
     using OnlyMSlideManager.Services;
     using OnlyMSlideManager.Services.DragAndDrop;
-    using OnlyMSlideManager.Services.Snackbar;
-    using OnlyMSlideManager.Services.UI;
     using Serilog;
 
     public class MainViewModel : ViewModelBase
     {
         private const string AppName = @"O N L Y M  Slide Manager";
         private const int MaxSlideIndexNumber = 99;
+        private const int MaxImageWidth = 1280;
+        private const int MaxImageHeight = 720;
 
         private readonly IDialogService _dialogService;
         private readonly IDragAndDropServiceCustom _dragAndDropServiceCustom;
@@ -347,13 +350,13 @@ namespace OnlyMSlideManager.ViewModel
                         SaveSignature();
                     }
                     
-                    _snackbarService.EnqueueWithOk(Properties.Resources.SAVED_FILE);
+                    _snackbarService.EnqueueWithOk(Properties.Resources.SAVED_FILE, Properties.Resources.OK);
                 }
             }
             catch (Exception ex)
             {
                 Log.Logger.Error(ex, $"Could not save file: {CurrentSlideshowPath}");
-                _snackbarService.EnqueueWithOk(Properties.Resources.COULD_NOT_SAVE);
+                _snackbarService.EnqueueWithOk(Properties.Resources.COULD_NOT_SAVE, Properties.Resources.OK);
             }
         }
 
@@ -399,6 +402,12 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
+        private BitmapSource CreateBitmapImage(string filePath)
+        {
+            var image = GraphicsUtils.GetImageAutoRotatedIfRequired(filePath);
+            return GraphicsUtils.Downsize(image, MaxImageWidth, MaxImageHeight);
+        }
+
         private void GenerateSlideItems()
         {
             using (new ObservableCollectionSuppression<SlideItem>(SlideItems))
@@ -411,7 +420,7 @@ namespace OnlyMSlideManager.ViewModel
 
                     foreach (var slide in _currentSlideFileBuilder.GetSlides())
                     {
-                        var image = slide.Image ?? new BitmapImage(new Uri(slide.OriginalFilePath, UriKind.Absolute));
+                        var image = slide.Image ?? CreateBitmapImage(slide.OriginalFilePath);
 
                         var newSlide = new SlideItem
                         {
@@ -629,28 +638,28 @@ namespace OnlyMSlideManager.ViewModel
                         switch (fileCount)
                         {
                             case 0:
-                                _snackbarService.EnqueueWithOk(Properties.Resources.NO_SLIDES_CREATED);
+                                _snackbarService.EnqueueWithOk(Properties.Resources.NO_SLIDES_CREATED, Properties.Resources.OK);
                                 break;
 
                             case 1:
-                                _snackbarService.EnqueueWithOk(Properties.Resources.SLIDE_CREATED);
+                                _snackbarService.EnqueueWithOk(Properties.Resources.SLIDE_CREATED, Properties.Resources.OK);
                                 break;
 
                             default:
                                 var msg = string.Format(Properties.Resources.X_SLIDES_CREATED, fileCount);
-                                _snackbarService.EnqueueWithOk(msg);
+                                _snackbarService.EnqueueWithOk(msg, Properties.Resources.OK);
                                 break;
                         }
                     }
                     catch (SlideWithNameExistsException ex)
                     {
                         Log.Logger.Warning(ex, "Could not add all images");
-                        _snackbarService.EnqueueWithOk(Properties.Resources.SAME_NAME_SLIDE_EXISTS);
+                        _snackbarService.EnqueueWithOk(Properties.Resources.SAME_NAME_SLIDE_EXISTS, Properties.Resources.OK);
                     }
                     catch (Exception ex)
                     {
                         Log.Logger.Warning(ex, "Could not add all images");
-                        _snackbarService.EnqueueWithOk(Properties.Resources.ERROR_ADDING_IMAGES);
+                        _snackbarService.EnqueueWithOk(Properties.Resources.ERROR_ADDING_IMAGES, Properties.Resources.OK);
                     }
                 }
             }

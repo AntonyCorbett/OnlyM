@@ -1,4 +1,4 @@
-﻿namespace OnlyMSlideManager.Services.Snackbar
+﻿namespace OnlyM.CoreSys.Services.Snackbar
 {
     using System;
     using MaterialDesignThemes.Wpf;
@@ -19,6 +19,6 @@
 
         void Enqueue(object content);
 
-        void EnqueueWithOk(object content);
+        void EnqueueWithOk(object content, string okText);
     }
 }

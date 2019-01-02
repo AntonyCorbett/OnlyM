@@ -2,11 +2,11 @@ namespace OnlyMSlideManager.ViewModel
 {
     using CommonServiceLocator;
     using GalaSoft.MvvmLight.Ioc;
+    using OnlyM.CoreSys.Services.Snackbar;
+    using OnlyM.CoreSys.Services.UI;
     using OnlyMSlideManager.Services;
     using OnlyMSlideManager.Services.DragAndDrop;
     using OnlyMSlideManager.Services.Options;
-    using OnlyMSlideManager.Services.Snackbar;
-    using OnlyMSlideManager.Services.UI;
 
     internal class ViewModelLocator
     {

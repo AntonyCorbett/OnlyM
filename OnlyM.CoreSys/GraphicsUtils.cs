@@ -1,4 +1,4 @@
-﻿namespace OnlyM.Core.Utils
+﻿namespace OnlyM.CoreSys
 {
     using System;
     using System.Diagnostics;
@@ -45,10 +45,49 @@
             return false;
         }
 
+        public static BitmapSource GetImageAutoRotatedIfRequired(string itemFilePath)
+        {
+            try
+            {
+                if (ImageRequiresRotation(itemFilePath))
+                {
+                    byte[] photoBytes = System.IO.File.ReadAllBytes(itemFilePath);
+
+                    using (var inStream = new MemoryStream(photoBytes))
+                    {
+                        using (var imageFactory = new ImageFactory())
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                imageFactory
+                                    .Load(inStream)
+                                    .AutoRotate()
+                                    .Save(ms);
+
+                                return ByteArrayToImage(ms.ToArray());
+                            }
+                        }
+                    }
+                }
+
+                return new BitmapImage(new Uri(itemFilePath, UriKind.Absolute));
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, $"Could not auto-rotate image {itemFilePath}");
+            }
+
+            return null;
+        }
+
         public static BitmapSource Downsize(string imageFilePath, int maxImageWidth, int maxImageHeight)
         {
             var image = GetBitmapImageWithCacheOnLoad(imageFilePath);
+            return Downsize(image, maxImageWidth, maxImageHeight);
+        }
 
+        public static BitmapSource Downsize(BitmapSource image, int maxImageWidth, int maxImageHeight)
+        {
             var factorWidth = (double)maxImageWidth / image.PixelWidth;
             var factorHeight = (double)maxImageHeight / image.PixelHeight;
 
@@ -127,7 +166,19 @@
             }
         }
 
-        public static ImageSource ByteArrayToImage(byte[] imageData)
+        public static BitmapImage BitmapToBitmapImage(Bitmap src)
+        {
+            MemoryStream ms = new MemoryStream();
+            src.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            ms.Seek(0, SeekOrigin.Begin);
+            image.StreamSource = ms;
+            image.EndInit();
+            return image;
+        }
+
+        public static BitmapImage ByteArrayToImage(byte[] imageData)
         {
             if (imageData == null)
             {
@@ -164,18 +215,20 @@
         /// </summary>
         /// <param name="originalPath">The original video path.</param>
         /// <param name="ffmpegFolder">The ffmpeg installation folder.</param>
+        /// <param name="tempFolder">Temp folder for thumbnail images.</param>
         /// <param name="useEmbeddedWhereAvailable">Use an embedded thumbnail if available.</param>
         /// <returns>The temporary thumbnail image file.</returns>
         public static string CreateThumbnailForVideo(
             string originalPath, 
             string ffmpegFolder,
+            string tempFolder,
             bool useEmbeddedWhereAvailable)
         {
             if (useEmbeddedWhereAvailable)
             {
                 try
                 {
-                    var result = CreateEmbeddedThumbnailForVideo(originalPath, ffmpegFolder);
+                    var result = CreateEmbeddedThumbnailForVideo(originalPath, ffmpegFolder, tempFolder);
                     if (result != null && System.IO.File.Exists(result))
                     {
                         return result;
@@ -191,7 +244,7 @@
 
             try
             {
-                return CreateFFMpegThumbnailForVideo(originalPath, ffmpegFolder);
+                return CreateFFMpegThumbnailForVideo(originalPath, ffmpegFolder, tempFolder);
             }
             catch (Exception ex)
             {
@@ -229,9 +282,10 @@
         }
 
         // ReSharper disable once InconsistentNaming
-        private static string CreateFFMpegThumbnailForVideo(string originalPath, string ffmpegFolder)
+        private static string CreateFFMpegThumbnailForVideo(
+            string originalPath, string ffmpegFolder, string tempFolder)
         {
-            var tempThumbnailPath = GetTempVideoThumbnailFileName(originalPath);
+            var tempThumbnailPath = GetTempVideoThumbnailFileName(originalPath, tempFolder);
 
             // use the ffmpeg "thumbnail" argument.
             var arguments = new StringBuilder();
@@ -252,9 +306,10 @@
                 : null;
         }
 
-        private static string CreateEmbeddedThumbnailForVideo(string originalPath, string ffmpegFolder)
+        private static string CreateEmbeddedThumbnailForVideo(
+            string originalPath, string ffmpegFolder, string tempFolder)
         {
-            var tempThumbnailPath = GetTempVideoThumbnailFileName(originalPath);
+            var tempThumbnailPath = GetTempVideoThumbnailFileName(originalPath, tempFolder);
 
             // get the internal thumbnail provided in the video itself.
             var arguments = new StringBuilder();
@@ -311,11 +366,8 @@
             }
         }
 
-        private static string GetTempVideoThumbnailFileName(string originalFilePath)
+        private static string GetTempVideoThumbnailFileName(string originalFilePath, string tempThumbnailFolder)
         {
-            var tempThumbnailFolder = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyM", "TempThumbs");
-            FileUtils.CreateDirectory(tempThumbnailFolder);
-
             var origFileName = Path.GetFileName(originalFilePath);
             if (string.IsNullOrEmpty(origFileName))
             {
@@ -328,23 +380,30 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "trust taglib objects behave properly")]
         private static bool ImageRequiresRotation(string imageFilePath)
         {
-            using (var tf = TagLib.File.Create(imageFilePath))
+            try
             {
-                tf.Mode = TagLib.File.AccessMode.Read;
-
-                using (var imageFile = tf as TagLib.Image.File)
+                using (var tf = TagLib.File.Create(imageFilePath))
                 {
-                    if (imageFile != null)
-                    {
-                        // see here for Exif discussion:
-                        // http://sylvana.net/jpegcrop/exif_orientation.html
-                        // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
-                        var orientation = imageFile.ImageTag.Orientation;
+                    tf.Mode = TagLib.File.AccessMode.Read;
 
-                        return orientation != ImageOrientation.None &&
-                               orientation != ImageOrientation.TopLeft;
+                    using (var imageFile = tf as TagLib.Image.File)
+                    {
+                        if (imageFile != null)
+                        {
+                            // see here for Exif discussion:
+                            // http://sylvana.net/jpegcrop/exif_orientation.html
+                            // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
+                            var orientation = imageFile.ImageTag.Orientation;
+
+                            return orientation != ImageOrientation.None &&
+                                   orientation != ImageOrientation.TopLeft;
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not determine image orientation");
             }
 
             return false;

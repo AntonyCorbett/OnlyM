@@ -16,13 +16,13 @@
     using MediaElementAdaption;
     using Models;
     using OnlyM.Core.Services.Database;
+    using OnlyM.CoreSys.Services.Snackbar;
+    using OnlyM.CoreSys.WindowsPositioning;
     using OnlyM.Services.WebBrowser;
     using PubSubMessages;
     using Serilog;
-    using Snackbar;
     using Windows;
-    using WindowsPositioning;
-
+    
     // ReSharper disable once ClassNeverInstantiated.Global
     internal sealed class PageService : IPageService
     {
@@ -57,7 +57,7 @@
             _optionsService.PermanentBackdropChangedEvent += HandlePermanentBackdropChangedEvent;
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
 
-            _systemDpi = WindowPlacement.GetDpiSettings();
+            _systemDpi = WindowsPlacement.GetDpiSettings();
             
             Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
             Messenger.Default.Register<MirrorWindowMessage>(this, OnMirrorWindowMessage);

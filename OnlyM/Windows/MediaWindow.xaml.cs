@@ -16,14 +16,14 @@
     using Models;
     using OnlyM.Core.Services.Database;
     using OnlyM.Core.Services.Monitors;
+    using OnlyM.CoreSys.Services.Snackbar;
     using OnlyM.Services.WebBrowser;
     using OnlyM.Services.WebNavHeaderManager;
     using OnlyM.ViewModel;
     using Serilog;
     using Services;
     using Services.Pages;
-    using Services.Snackbar;
-
+    
     /// <summary>
     /// Interaction logic for MediaWindow.xaml
     /// </summary>

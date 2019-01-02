@@ -1,4 +1,4 @@
-﻿namespace OnlyMSlideManager.Helpers
+﻿namespace OnlyM.CoreSys
 {
     using System;
 

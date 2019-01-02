@@ -7,13 +7,13 @@
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
+    using OnlyM.CoreSys.Services.Snackbar;
+    using OnlyM.CoreSys.WindowsPositioning;
     using OnlyM.Services.DragAndDrop;
     using PubSubMessages;
     using Services.MediaChanging;
     using Services.Pages;
-    using Services.Snackbar;
-    using WindowsPositioning;
-
+    
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -40,7 +40,7 @@
             {
                 // prevent app closing when media is active.
                 var snackbarService = ServiceLocator.Current.GetInstance<ISnackbarService>();
-                snackbarService.EnqueueWithOk(Properties.Resources.MEDIA_ACTIVE);
+                snackbarService.EnqueueWithOk(Properties.Resources.MEDIA_ACTIVE, Properties.Resources.OK);
                 e.Cancel = true;
             }
             else

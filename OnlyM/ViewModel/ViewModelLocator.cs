@@ -7,13 +7,13 @@ namespace OnlyM.ViewModel
     using Core.Services.Monitors;
     using Core.Services.Options;
     using GalaSoft.MvvmLight.Ioc;
+    using OnlyM.CoreSys.Services.Snackbar;
     using Services.DragAndDrop;
     using Services.FrozenVideoItems;
     using Services.HiddenMediaItems;
     using Services.MediaChanging;
     using Services.Pages;
-    using Services.Snackbar;
-
+    
     /// <summary>
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.

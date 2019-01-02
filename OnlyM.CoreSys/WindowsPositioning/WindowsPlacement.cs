@@ -1,4 +1,4 @@
-﻿namespace OnlyM.WindowsPositioning
+﻿namespace OnlyM.CoreSys.WindowsPositioning
 {
     // ReSharper disable CommentTypo
     // ReSharper disable IdentifierTypo
@@ -9,6 +9,7 @@
     // ReSharper disable StyleCop.SA1203
     // ReSharper disable StyleCop.SA1310
     // ReSharper disable UnusedMember.Global
+    // adapted from david Rickard's Tech Blog
     using System;
     using System.IO;
     using System.Reflection;
@@ -20,14 +21,10 @@
     using System.Xml.Serialization;
     using Serilog;
 
-    //// adapted from david Rickard's Tech Blog
-
-    public static class WindowPlacement
+    public static class WindowsPlacement
     {
-#pragma warning disable SA1310 // Field names must not contain underscore
-        private const int SW_SHOWNORMAL = 1;
-        private const int SW_SHOWMINIMIZED = 2;
-#pragma warning restore SA1310 // Field names must not contain underscore
+        private const int SwShowNormal = 1;
+        private const int SwShowMinimized = 2;
 
         private static readonly Encoding Encoding = new UTF8Encoding();
         private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(WINDOWPLACEMENT));
@@ -49,7 +46,7 @@
 
                     placement.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
                     placement.flags = 0;
-                    placement.showCmd = placement.showCmd == SW_SHOWMINIMIZED ? SW_SHOWNORMAL : placement.showCmd;
+                    placement.showCmd = placement.showCmd == SwShowMinimized ? SwShowNormal : placement.showCmd;
                     WindowsPlacementNativeMethods.SetWindowPlacement(windowHandle, ref placement);
                 }
                 catch (InvalidOperationException ex)
@@ -64,6 +61,7 @@
             return GetPlacement(new WindowInteropHelper(window).Handle);
         }
 
+#pragma warning disable SA1008 // Opening parenthesis must be spaced correctly
         public static (int x, int y) GetDpiSettings()
         {
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
@@ -76,16 +74,17 @@
 
             return ((int)dpiXProperty.GetValue(null, null), (int)dpiYProperty.GetValue(null, null));
         }
+#pragma warning restore SA1008 // Opening parenthesis must be spaced correctly
 
         private static string GetPlacement(IntPtr windowHandle)
         {
             WindowsPlacementNativeMethods.GetWindowPlacement(windowHandle, out var placement);
 
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
+                var xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
                 Serializer.Serialize(xmlTextWriter, placement);
-                byte[] xmlBytes = memoryStream.ToArray();
+                var xmlBytes = memoryStream.ToArray();
                 return Encoding.GetString(xmlBytes);
             }
         }
@@ -96,7 +95,6 @@
     [StructLayout(LayoutKind.Sequential)]
 #pragma warning disable SA1201 // Elements must appear in the correct order
     public struct RECT
-#pragma warning restore SA1201 // Elements must appear in the correct order
     {
         public int Left;
         public int Top;
@@ -111,6 +109,7 @@
             Bottom = bottom;
         }
     }
+#pragma warning restore SA1201 // Elements must appear in the correct order
 
     // POINT structure required by WINDOWPLACEMENT structure
     [Serializable]

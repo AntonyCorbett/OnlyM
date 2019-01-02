@@ -1,8 +1,7 @@
 ﻿namespace OnlyMSlideManager.Helpers
 {
-    using System;
     using System.Collections.Generic;
-    using System.Windows.Media.Imaging;
+    using OnlyM.CoreSys;
     using OnlyMSlideManager.Models;
     using OnlyMSlideManager.Properties;
 
@@ -19,7 +18,7 @@
                 result.Add(new SlideItem
                 {
                     Name = $"Slide {n + 1}",
-                    Image = GraphicsUtils.Convert(image)
+                    Image = GraphicsUtils.BitmapToBitmapImage(image)
                 });
             }
 

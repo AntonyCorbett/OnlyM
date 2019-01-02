@@ -109,16 +109,12 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="Behaviours\WindowClosingBehaviour.cs" />
     <Compile Include="Converters\BooleanToBorderThicknessConverter.cs" />
     <Compile Include="Dialogs\ShouldSaveDialog.xaml.cs">
       <DependentUpon>ShouldSaveDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\DesignTimeSlideCreation.cs" />
     <Compile Include="Helpers\FileUtils.cs" />
-    <Compile Include="Helpers\GraphicsUtils.cs" />
-    <Compile Include="Helpers\ObservableCollectionEx.cs" />
-    <Compile Include="Helpers\ObservableCollectionSuppression.cs" />
     <Compile Include="Models\SlideItem.cs" />
     <Compile Include="PubSubMessages\CloseAppMessage.cs" />
     <Compile Include="PubSubMessages\DropImagesMessage.cs" />
@@ -131,13 +127,6 @@
     <Compile Include="Services\Options\IOptionsService.cs" />
     <Compile Include="Services\Options\Options.cs" />
     <Compile Include="Services\Options\OptionsService.cs" />
-    <Compile Include="Services\Snackbar\ISnackbarService.cs" />
-    <Compile Include="Services\Snackbar\SnackbarService.cs" />
-    <Compile Include="Services\UI\BusyCursor.cs" />
-    <Compile Include="Services\UI\IUserInterfaceService.cs" />
-    <Compile Include="Services\UI\UserInterfaceService.cs" />
-    <Compile Include="Services\WindowsPositioning\WindowsPlacement.cs" />
-    <Compile Include="Services\WindowsPositioning\WindowsPlacementNativeMethods.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ShouldSaveViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -194,6 +183,10 @@
     <None Include="Resources\flower.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OnlyM.CoreSys\OnlyM.CoreSys.csproj">
+      <Project>{bb5933cd-cbe4-47db-a2fc-82abde5be746}</Project>
+      <Name>OnlyM.CoreSys</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OnlyM.Slides\OnlyM.Slides.csproj">
       <Project>{4d79789c-5626-4c86-a31f-75b78385dc2a}</Project>
       <Name>OnlyM.Slides</Name>

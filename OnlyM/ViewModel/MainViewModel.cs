@@ -16,14 +16,14 @@ namespace OnlyM.ViewModel
     using MaterialDesignThemes.Wpf;
     using Models;
     using OnlyM.Core.Utils;
+    using OnlyM.CoreSys.Services.Snackbar;
     using PubSubMessages;
     using Serilog.Events;
     using Services.DragAndDrop;
     using Services.HiddenMediaItems;
     using Services.MediaChanging;
     using Services.Pages;
-    using Services.Snackbar;
-
+    
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class MainViewModel : ViewModelBase
     {
@@ -250,7 +250,7 @@ namespace OnlyM.ViewModel
                 {
                     case LogEventLevel.Debug:
                     case LogEventLevel.Verbose:
-                        _snackbarService.EnqueueWithOk(Properties.Resources.LOGGING_LEVEL_HIGH);
+                        _snackbarService.EnqueueWithOk(Properties.Resources.LOGGING_LEVEL_HIGH, Properties.Resources.OK);
                         break;
                 }
             });

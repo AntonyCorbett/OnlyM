@@ -8,9 +8,9 @@
     using System.Windows.Controls;
     using System.Windows.Shapes;
     using GalaSoft.MvvmLight.Messaging;
+    using OnlyM.CoreSys.Services.UI;
     using OnlyMSlideManager.Models;
     using OnlyMSlideManager.PubSubMessages;
-    using OnlyMSlideManager.Services.UI;
     using Serilog;
 
     internal class DragAndDropServiceCustom : IDragAndDropServiceCustom

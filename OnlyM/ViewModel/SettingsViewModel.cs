@@ -17,13 +17,13 @@
     using GalaSoft.MvvmLight.Messaging;
     using Microsoft.WindowsAPICodePack.Dialogs;
     using Models;
+    using OnlyM.CoreSys.Services.Snackbar;
     using PubSubMessages;
     using Serilog.Events;
     using Services;
     using Services.MediaChanging;
     using Services.Pages;
-    using Services.Snackbar;
-
+    
     // ReSharper disable once UnusedMember.Global
     internal class SettingsViewModel : ViewModelBase
     {
@@ -825,7 +825,7 @@
                     if (value == null && IsMediaActive)
                     {
                         // prevent selection of "none" when media is active.
-                        _snackbarService.EnqueueWithOk(Properties.Resources.NO_DESELECT_MONITOR);
+                        _snackbarService.EnqueueWithOk(Properties.Resources.NO_DESELECT_MONITOR, Properties.Resources.OK);
                     }
                     else
                     {

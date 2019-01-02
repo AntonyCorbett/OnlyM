@@ -1,4 +1,4 @@
-﻿namespace OnlyMSlideManager.Behaviours
+﻿namespace OnlyM.CoreSys.Behaviours
 {
     using System;
     using System.ComponentModel;

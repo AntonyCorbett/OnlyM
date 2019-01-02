@@ -1,8 +1,8 @@
-﻿namespace OnlyMSlideManager.Services.UI
+﻿namespace OnlyM.CoreSys.Services.UI
 {
     using System;
 
-    internal class UserInterfaceService : IUserInterfaceService
+    public class UserInterfaceService : IUserInterfaceService
     {
         public UserInterfaceService()
         {

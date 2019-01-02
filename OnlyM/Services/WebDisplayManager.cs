@@ -17,8 +17,8 @@
     using OnlyM.Core.Services.Monitors;
     using OnlyM.Core.Services.Options;
     using OnlyM.Core.Services.WebShortcuts;
+    using OnlyM.CoreSys.Services.Snackbar;
     using OnlyM.Models;
-    using OnlyM.Services.Snackbar;
     using OnlyM.Services.WebBrowser;
     using Serilog;
 
@@ -414,7 +414,7 @@
 
                 if (_mirrorProcess.ExitCode == 5)
                 {
-                    _snackbarService.EnqueueWithOk(Properties.Resources.CHANGE_MIRROR_HOTKEY);
+                    _snackbarService.EnqueueWithOk(Properties.Resources.CHANGE_MIRROR_HOTKEY, Properties.Resources.OK);
                 }
             }
         }

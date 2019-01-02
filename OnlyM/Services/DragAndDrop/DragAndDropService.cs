@@ -10,10 +10,10 @@
     using Core.Services.Media;
     using Core.Services.Options;
     using Models;
+    using OnlyM.CoreSys.Services.Snackbar;
     using OnlyM.Slides;
     using Serilog;
-    using Snackbar;
-
+    
     // ReSharper disable once ClassNeverInstantiated.Global
     internal sealed class DragAndDropService : IDragAndDropService
     {
@@ -90,19 +90,19 @@
         {
             if (someError)
             {
-                _snackbarService.EnqueueWithOk(Properties.Resources.COPYING_ERROR);
+                _snackbarService.EnqueueWithOk(Properties.Resources.COPYING_ERROR, Properties.Resources.OK);
             }
             else if (count == 0)
             {
-                _snackbarService.EnqueueWithOk(Properties.Resources.NO_SUPPORTED_FILES);
+                _snackbarService.EnqueueWithOk(Properties.Resources.NO_SUPPORTED_FILES, Properties.Resources.OK);
             }
             else if (count == 1)
             {
-                _snackbarService.EnqueueWithOk(Properties.Resources.FILE_COPIED);
+                _snackbarService.EnqueueWithOk(Properties.Resources.FILE_COPIED, Properties.Resources.OK);
             }
             else
             {
-                _snackbarService.EnqueueWithOk(string.Format(Properties.Resources.FILES_COPIED, count));
+                _snackbarService.EnqueueWithOk(string.Format(Properties.Resources.FILES_COPIED, count), Properties.Resources.OK);
             }
         }
 

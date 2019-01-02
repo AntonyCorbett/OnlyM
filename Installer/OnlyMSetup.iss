@@ -70,6 +70,7 @@ Source: "bin\x86\Release\Microsoft.WindowsAPICodePack.ShellExtensions.dll"; Dest
 Source: "bin\x86\Release\NAudio.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\x86\Release\OnlyM.CoreSys.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.CustomControls.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.exe.config"; DestDir: "{app}"; Flags: ignoreversion

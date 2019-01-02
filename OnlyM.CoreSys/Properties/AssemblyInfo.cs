@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("OnlyM.Slides")]
+[assembly: AssemblyTitle("OnlyM.CoreSys")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4d79789c-5626-4c86-a31f-75b78385dc2a")]
+[assembly: Guid("bb5933cd-cbe4-47db-a2fc-82abde5be746")]

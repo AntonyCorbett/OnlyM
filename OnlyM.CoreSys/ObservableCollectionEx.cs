@@ -1,4 +1,4 @@
-﻿namespace OnlyM.Core.Utils
+﻿namespace OnlyM.CoreSys
 {
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;

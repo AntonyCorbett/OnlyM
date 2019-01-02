@@ -8,9 +8,9 @@
     using Core.Models;
     using Core.Services.Media;
     using Core.Services.Options;
-    using Core.Utils;
     using GalaSoft.MvvmLight.Threading;
     using Models;
+    using OnlyM.CoreSys;
     using OnlyM.Slides;
     using Serilog;
 

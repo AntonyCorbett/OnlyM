@@ -186,9 +186,6 @@
     <Compile Include="Subtitles\SubtitleTiming.cs" />
     <Compile Include="Utils\FFmpegUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
-    <Compile Include="Utils\GraphicsUtils.cs" />
-    <Compile Include="Utils\ObservableCollectionEx.cs" />
-    <Compile Include="Utils\ObservableCollectionSuppression.cs" />
     <Compile Include="Subtitles\SubtitleFile.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +234,10 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OnlyM.CoreSys\OnlyM.CoreSys.csproj">
+      <Project>{BB5933CD-CBE4-47DB-A2FC-82ABDE5BE746}</Project>
+      <Name>OnlyM.CoreSys</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OnlyM.Slides\OnlyM.Slides.csproj">
       <Project>{4d79789c-5626-4c86-a31f-75b78385dc2a}</Project>
       <Name>OnlyM.Slides</Name>

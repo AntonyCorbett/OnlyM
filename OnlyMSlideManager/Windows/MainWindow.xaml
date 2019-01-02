@@ -21,7 +21,7 @@
         xmlns:local="clr-namespace:OnlyMSlideManager"
         xmlns:models="clr-namespace:OnlyMSlideManager.Models"
         xmlns:converters="clr-namespace:OnlyMSlideManager.Converters"
-        xmlns:behaviours="clr-namespace:OnlyMSlideManager.Behaviours"
+        xmlns:behaviours="clr-namespace:OnlyM.CoreSys.Behaviours;assembly=OnlyM.CoreSys"
 
         behaviours:WindowClosingBehaviour.Closed="{Binding ClosedCommand}"
         behaviours:WindowClosingBehaviour.Closing="{Binding ClosingCommand}"

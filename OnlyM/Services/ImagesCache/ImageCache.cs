@@ -5,7 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Windows.Media.Imaging;
-    using Core.Utils;
+    using OnlyM.CoreSys;
     using Serilog;
 
     internal class ImageCache

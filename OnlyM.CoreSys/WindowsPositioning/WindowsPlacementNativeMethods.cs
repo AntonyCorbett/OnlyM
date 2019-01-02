@@ -1,6 +1,5 @@
-﻿namespace OnlyM.WindowsPositioning
+﻿namespace OnlyM.CoreSys.WindowsPositioning
 {
-#pragma warning disable SA1121 // Use built-in type alias
     // ReSharper disable IdentifierTypo
     // ReSharper disable UnusedMember.Global
     // ReSharper disable InconsistentNaming
@@ -135,13 +134,13 @@
         public static extern bool GetWindowPlacement(IntPtr hWnd, out WINDOWPLACEMENT lpwndpl);
 
         [DllImport("Shell32.dll", SetLastError = false)]
-        public static extern Int32 SHGetStockIconInfo(SHSTOCKICONID siid, SHGSI uFlags, ref SHSTOCKICONINFO psii);
+        public static extern int SHGetStockIconInfo(SHSTOCKICONID siid, SHGSI uFlags, ref SHSTOCKICONINFO psii);
 
         public static BitmapSource GetElevatedShieldBitmap()
         {
             var sii = new SHSTOCKICONINFO
             {
-                cbSize = (UInt32)Marshal.SizeOf(typeof(SHSTOCKICONINFO))
+                cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO))
             };
 
             Marshal.ThrowExceptionForHR(SHGetStockIconInfo(
@@ -162,16 +161,15 @@
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool DestroyIcon(IntPtr hIcon);
 
-        [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct SHSTOCKICONINFO
         {
-            public UInt32 cbSize;
+            public uint cbSize;
             public IntPtr hIcon;
-            public Int32 iSysIconIndex;
-            public Int32 iIcon;
+            public int iSysIconIndex;
+            public int iIcon;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
             public string szPath;
         }
     }
-#pragma warning restore SA1121 // Use built-in type alias
 }

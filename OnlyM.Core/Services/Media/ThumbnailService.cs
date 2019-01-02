@@ -11,6 +11,7 @@
     using Microsoft.WindowsAPICodePack.Shell;
     using Models;
     using OnlyM.Core.Services.WebShortcuts;
+    using OnlyM.CoreSys;
     using OnlyM.Slides;
     using Options;
     using Serilog;
@@ -105,7 +106,10 @@
             MediaClassification mediaClassification)
         {
             Log.Logger.Debug("Generating thumbnail");
-            
+
+            var tempThumbnailFolder = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyM", "TempThumbs");
+            FileUtils.CreateDirectory(tempThumbnailFolder);
+
             switch (mediaClassification)
             {
                 case MediaClassification.Image:
@@ -114,7 +118,8 @@
                 case MediaClassification.Video:
                     var tempFile = GraphicsUtils.CreateThumbnailForVideo(
                         originalPath, 
-                        ffmpegFolder, 
+                        ffmpegFolder,
+                        tempThumbnailFolder,
                         _optionsService.EmbeddedThumbnails);
 
                     if (string.IsNullOrEmpty(tempFile))

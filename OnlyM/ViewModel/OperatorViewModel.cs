@@ -17,7 +17,8 @@
     using GalaSoft.MvvmLight.Threading;
     using MediaElementAdaption;
     using Models;
-    using OnlyM.Services.Snackbar;
+    using OnlyM.CoreSys;
+    using OnlyM.CoreSys.Services.Snackbar;
     using OnlyM.Services.WebBrowser;
     using PubSubMessages;
     using Serilog;
@@ -581,7 +582,7 @@
                 }
                 else
                 {
-                    _snackbarService.EnqueueWithOk(Properties.Resources.CANNOT_DELETE_FILE);
+                    _snackbarService.EnqueueWithOk(Properties.Resources.CANNOT_DELETE_FILE, Properties.Resources.OK);
                 }
             }
         }
@@ -1006,7 +1007,7 @@
         {
             if (message.Starting)
             {
-                _snackbarService.EnqueueWithOk(Properties.Resources.GENERATING_SUBTITLES);
+                _snackbarService.EnqueueWithOk(Properties.Resources.GENERATING_SUBTITLES, Properties.Resources.OK);
             }
         }
 

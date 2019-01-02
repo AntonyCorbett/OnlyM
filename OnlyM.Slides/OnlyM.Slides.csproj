@@ -68,6 +68,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
     <Compile Include="Exceptions\SlideException.cs" />
     <Compile Include="Exceptions\SlideWithNameExistsException.cs" />
     <Compile Include="Models\Slide.cs" />

@@ -7,9 +7,9 @@
     using System.Windows.Shapes;
     using CommonServiceLocator;
     using GalaSoft.MvvmLight.Messaging;
+    using OnlyM.CoreSys.WindowsPositioning;
     using OnlyMSlideManager.PubSubMessages;
     using OnlyMSlideManager.Services.Options;
-    using OnlyMSlideManager.Services.WindowsPositioning;
     using OnlyMSlideManager.ViewModel;
 
     public partial class MainWindow : Window

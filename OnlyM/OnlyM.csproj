@@ -232,8 +232,6 @@
     <Compile Include="Services\MetaDataQueue\MetaDataQueueProducer.cs" />
     <Compile Include="Services\RecentlyUsedFolders.cs" />
     <Compile Include="Services\ScreenPositionHelper.cs" />
-    <Compile Include="Services\Snackbar\ISnackbarService.cs" />
-    <Compile Include="Services\Snackbar\SnackbarService.cs" />
     <Compile Include="Services\SubtitleFileGenerator.cs" />
     <Compile Include="Services\VideoDisplayManager.cs" />
     <Compile Include="Services\WaveStreamExtensions.cs" />
@@ -246,8 +244,6 @@
     <Compile Include="ViewModel\MediaViewModel.cs" />
     <Compile Include="ViewModel\OperatorViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
-    <Compile Include="WindowsPositioning\WindowPlacement.cs" />
-    <Compile Include="WindowsPositioning\WindowsPlacementNativeMethods.cs" />
     <Compile Include="Windows\MediaWindow.xaml.cs">
       <DependentUpon>MediaWindow.xaml</DependentUpon>
     </Compile>
@@ -339,6 +335,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OnlyM.CoreSys\OnlyM.CoreSys.csproj">
+      <Project>{bb5933cd-cbe4-47db-a2fc-82abde5be746}</Project>
+      <Name>OnlyM.CoreSys</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OnlyM.Core\OnlyM.Core.csproj">
       <Project>{ee384d4b-3a3b-4d9b-b2b6-cc71a6f87a97}</Project>
       <Name>OnlyM.Core</Name>
