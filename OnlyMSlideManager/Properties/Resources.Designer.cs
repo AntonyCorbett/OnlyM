@@ -278,15 +278,6 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One or more slide names are duplicated.
-        /// </summary>
-        public static string SAME_NAME_SLIDE_EXISTS {
-            get {
-                return ResourceManager.GetString("SAME_NAME_SLIDE_EXISTS", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Save slideshow.
         /// </summary>
         public static string SAVE_SLIDESHOW {

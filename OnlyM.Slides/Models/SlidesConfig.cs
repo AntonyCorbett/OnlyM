@@ -62,7 +62,7 @@
 
             foreach (var slide in slideNames)
             {
-                var originalSlide = originalList.SingleOrDefault(x => x.ArchiveEntryName.Equals(slide, StringComparison.Ordinal));
+                var originalSlide = originalList.SingleOrDefault(x => x.ArchiveEntryName.Equals(slide, StringComparison.OrdinalIgnoreCase));
                 if (originalSlide != null)
                 {
                     Slides.Add(originalSlide);

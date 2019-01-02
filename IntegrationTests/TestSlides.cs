@@ -12,7 +12,7 @@
         {
             string slideFilePath = "test" + SlideFile.FileExtension;
 
-            var fb = new SlideFileBuilder();
+            var fb = new SlideFileBuilder(1920, 1080);
             fb.AddSlide(@"TestImages\001.jpg", true, true, true, true);
             fb.AddSlide(@"TestImages\002.jpg", true, true, true, true);
             fb.AddSlide(@"TestImages\003.jpg", true, true, true, true);

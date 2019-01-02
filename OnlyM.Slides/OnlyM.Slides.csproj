@@ -72,7 +72,6 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Exceptions\SlideException.cs" />
-    <Compile Include="Exceptions\SlideWithNameExistsException.cs" />
     <Compile Include="Models\Slide.cs" />
     <Compile Include="Models\SlideDirection.cs" />
     <Compile Include="Models\SlidesConfig.cs" />
@@ -86,6 +85,12 @@
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OnlyM.CoreSys\OnlyM.CoreSys.csproj">
+      <Project>{bb5933cd-cbe4-47db-a2fc-82abde5be746}</Project>
+      <Name>OnlyM.CoreSys</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

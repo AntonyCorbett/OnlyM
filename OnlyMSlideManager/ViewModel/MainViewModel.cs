@@ -31,8 +31,8 @@ namespace OnlyMSlideManager.ViewModel
     {
         private const string AppName = @"O N L Y M  Slide Manager";
         private const int MaxSlideIndexNumber = 99;
-        private const int MaxImageWidth = 1280;
-        private const int MaxImageHeight = 720;
+        private const int MaxImageWidth = 1920;
+        private const int MaxImageHeight = 1080;
 
         private readonly IDialogService _dialogService;
         private readonly IDragAndDropServiceCustom _dragAndDropServiceCustom;
@@ -272,7 +272,7 @@ namespace OnlyMSlideManager.ViewModel
 
         private SlideItem GetSlideByName(string slideName)
         {
-            return SlideItems.SingleOrDefault(x => slideName.Equals(x.Name, StringComparison.Ordinal));
+            return SlideItems.SingleOrDefault(x => slideName.Equals(x.Name, StringComparison.OrdinalIgnoreCase));
         }
 
         private bool CanExecuteOpenFile()
@@ -497,7 +497,7 @@ namespace OnlyMSlideManager.ViewModel
 
         private void InitNewSlideshow(string optionalPathToExistingSlideshow)
         {
-            var builder = new SlideFileBuilder();
+            var builder = new SlideFileBuilder(MaxImageWidth, MaxImageHeight);
             if (!string.IsNullOrEmpty(optionalPathToExistingSlideshow))
             {
                 builder.Load(optionalPathToExistingSlideshow);
@@ -650,11 +650,6 @@ namespace OnlyMSlideManager.ViewModel
                                 _snackbarService.EnqueueWithOk(msg, Properties.Resources.OK);
                                 break;
                         }
-                    }
-                    catch (SlideWithNameExistsException ex)
-                    {
-                        Log.Logger.Warning(ex, "Could not add all images");
-                        _snackbarService.EnqueueWithOk(Properties.Resources.SAME_NAME_SLIDE_EXISTS, Properties.Resources.OK);
                     }
                     catch (Exception ex)
                     {

@@ -148,7 +148,10 @@
             var title = GetOnlyVTitle(data);
             if (!string.IsNullOrEmpty(title))
             {
-                var sfb = new SlideFileBuilder { AutoPlay = false, Loop = false };
+                const int maxSlideWidth = 1920;
+                const int maxSlideHeight = 1080;
+
+                var sfb = new SlideFileBuilder(maxSlideWidth, maxSlideHeight) { AutoPlay = false, Loop = false };
 
                 for (int n = 0; n < files.Length; ++n)
                 {

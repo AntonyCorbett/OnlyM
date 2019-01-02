@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Windows.Media.Imaging;
     using Newtonsoft.Json;
+    using OnlyM.CoreSys;
     using OnlyM.Slides.Exceptions;
     using OnlyM.Slides.Models;
 
@@ -14,13 +15,13 @@
     {
         private const string ConfigEntryName = @"config.json";
         private readonly SlidesConfig _config = new SlidesConfig();
+        private readonly int _maxSlideWidth;
+        private readonly int _maxSlideHeight;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SlideFileBuilder"/> class.
-        /// </summary>
-        /// <remarks>Use when creating a slideshow from scratch.</remarks>
-        public SlideFileBuilder()
+        public SlideFileBuilder(int maxSlideWidth, int maxSlideHeight)
         {
+            _maxSlideWidth = maxSlideWidth;
+            _maxSlideHeight = maxSlideHeight;
         }
 
         public bool AutoPlay
@@ -125,7 +126,7 @@
 
         public Slide GetSlide(string itemName)
         {
-            return _config.Slides.SingleOrDefault(x => x.ArchiveEntryName.Equals(itemName, StringComparison.Ordinal));
+            return _config.Slides.SingleOrDefault(x => x.ArchiveEntryName.Equals(itemName, StringComparison.OrdinalIgnoreCase));
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "trust streams behave properly")]
@@ -158,23 +159,7 @@
                         if (slide.Image != null)
                         {
                             // already have image data...
-
-                            // This is a little odd (multiple streams and rewinding the memory stream!).
-                            // I can't find a better way of saving a BitmapSource in the archive entry.
-                            BitmapEncoder encoder = new PngBitmapEncoder();
-                            encoder.Frames.Add(BitmapFrame.Create(slide.Image));
-
-                            using (var ms = new MemoryStream())
-                            {
-                                encoder.Save(ms);
-                                ms.Seek(0, SeekOrigin.Begin);
-
-                                var entry = zip.CreateEntry(slide.ArchiveEntryName);
-                                using (var entryStream = entry.Open())
-                                {
-                                    ms.CopyTo(entryStream);
-                                }
-                            }
+                            AdBitmapImageToArchive(zip, slide.ArchiveEntryName, slide.Image);
                         }
                         else
                         {
@@ -183,7 +168,10 @@
                                 throw new Exception($"Could not find image file: {slide.OriginalFilePath}");
                             }
 
-                            zip.CreateEntryFromFile(slide.OriginalFilePath, slide.ArchiveEntryName);
+                            var image = GraphicsUtils.GetImageAutoRotatedIfRequired(slide.OriginalFilePath);
+                            var downsized = GraphicsUtils.Downsize(image, _maxSlideWidth, _maxSlideHeight);
+
+                            AdBitmapImageToArchive(zip, slide.ArchiveEntryName, downsized);
                         }
                     }
                 }
@@ -212,6 +200,26 @@
             }
         }
 
+        private void AdBitmapImageToArchive(ZipArchive zip, string slideArchiveEntryName, BitmapSource slideImage)
+        {
+            // This is a little odd (multiple streams and rewinding the memory stream!).
+            // I can't find a better way of saving a BitmapSource in the archive entry.
+            BitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(slideImage));
+
+            using (var ms = new MemoryStream())
+            {
+                encoder.Save(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+
+                var entry = zip.CreateEntry(slideArchiveEntryName);
+                using (var entryStream = entry.Open())
+                {
+                    ms.CopyTo(entryStream);
+                }
+            }
+        }
+
         private Slide CreateSlide(
             string bitmapPath,
             bool fadeInForward,
@@ -225,12 +233,7 @@
                 throw new ArgumentException("Could not find file", nameof(bitmapPath));
             }
 
-            var archiveEntryName = Path.GetFileName(bitmapPath);
-
-            if (SlideExists(archiveEntryName))
-            {
-                throw new SlideWithNameExistsException(archiveEntryName);
-            }
+            var archiveEntryName = GenerateUniqueArchiveEntryName(bitmapPath);
 
             if (string.IsNullOrEmpty(archiveEntryName))
             {
@@ -251,9 +254,33 @@
             return result;
         }
 
-        private bool SlideExists(string archiveEntryName)
+        private string GenerateUniqueArchiveEntryName(string bitmapPath)
         {
-            return GetSlide(archiveEntryName) != null;
+            const int MaxAttempts = 100;
+
+            var baseName = Path.GetFileNameWithoutExtension(bitmapPath);
+
+            var similarSlideNames = GetSlideNamesStartingWith(baseName).ToArray();
+            if (similarSlideNames.Any())
+            {
+                for (int n = 2; n < MaxAttempts; ++n)
+                {
+                    var candidate = $"{baseName} {n:D3}";
+                    if (!similarSlideNames.Contains(candidate, StringComparer.OrdinalIgnoreCase))
+                    {
+                        return candidate;
+                    }
+                }
+
+                return null;
+            }
+
+            return baseName;
+        }
+
+        private IEnumerable<string> GetSlideNamesStartingWith(string s)
+        {
+            return _config.Slides.Where(x => x.ArchiveEntryName.StartsWith(s, StringComparison.OrdinalIgnoreCase)).Select(x => x.ArchiveEntryName);
         }
     }
 }
