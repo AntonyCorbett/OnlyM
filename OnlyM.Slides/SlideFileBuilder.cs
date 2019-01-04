@@ -8,7 +8,6 @@
     using System.Windows.Media.Imaging;
     using Newtonsoft.Json;
     using OnlyM.CoreSys;
-    using OnlyM.Slides.Exceptions;
     using OnlyM.Slides.Models;
 
     public class SlideFileBuilder
@@ -23,6 +22,8 @@
             _maxSlideWidth = maxSlideWidth;
             _maxSlideHeight = maxSlideHeight;
         }
+
+        public event EventHandler<BuildProgressEventArgs> BuildProgressEvent;
 
         public bool AutoPlay
         {
@@ -129,12 +130,58 @@
             return _config.Slides.SingleOrDefault(x => x.ArchiveEntryName.Equals(itemName, StringComparison.OrdinalIgnoreCase));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "trust streams behave properly")]
         public void Build(string path, bool overwrite)
+        {
+            BuildProgress(0);
+
+            int numEntriesToBuild = _config.SlideCount + 1;
+            int numEntriesBuilt = 0;
+
+            CreateEmptyArchive(path, overwrite);
+
+            BuildProgress(CalcPercentComplete(++numEntriesBuilt, numEntriesToBuild));
+
+            foreach (var slide in _config.Slides)
+            {
+                if (slide.Image != null)
+                {
+                    // already have image data...
+                    AddBitmapImageToArchive(path, slide.ArchiveEntryName, slide.Image);
+                }
+                else
+                {
+                    if (!File.Exists(slide.OriginalFilePath))
+                    {
+                        throw new Exception($"Could not find image file: {slide.OriginalFilePath}");
+                    }
+
+                    var image = GraphicsUtils.GetImageAutoRotatedIfRequired(slide.OriginalFilePath);
+                    var downsized = GraphicsUtils.Downsize(image, _maxSlideWidth, _maxSlideHeight);
+
+                    AddBitmapImageToArchive(path, slide.ArchiveEntryName, downsized);
+                }
+
+                BuildProgress(CalcPercentComplete(++numEntriesBuilt, numEntriesToBuild));
+            }
+        }
+
+        private double CalcPercentComplete(int numEntriesBuilt, int numEntriesToBuild)
+        {
+            return (double)numEntriesBuilt * 100 / numEntriesToBuild;
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "Trust streams")]
+        private void CreateEmptyArchive(string path, bool overwrite)
         {
             if (File.Exists(path) && !overwrite)
             {
                 throw new Exception("File already exists!");
+            }
+
+            File.Delete(path);
+            if (File.Exists(path))
+            {
+                throw new Exception("File could not be deleted!");
             }
 
             _config.Sanitize();
@@ -153,32 +200,6 @@
                     {
                         serializer.Serialize(jsonTextWriter, _config);
                     }
-
-                    foreach (var slide in _config.Slides)
-                    {
-                        if (slide.Image != null)
-                        {
-                            // already have image data...
-                            AdBitmapImageToArchive(zip, slide.ArchiveEntryName, slide.Image);
-                        }
-                        else
-                        {
-                            if (!File.Exists(slide.OriginalFilePath))
-                            {
-                                throw new Exception($"Could not find image file: {slide.OriginalFilePath}");
-                            }
-
-                            var image = GraphicsUtils.GetImageAutoRotatedIfRequired(slide.OriginalFilePath);
-                            var downsized = GraphicsUtils.Downsize(image, _maxSlideWidth, _maxSlideHeight);
-
-                            AdBitmapImageToArchive(zip, slide.ArchiveEntryName, downsized);
-                        }
-                    }
-                }
-
-                if (overwrite)
-                {
-                    File.Delete(path);
                 }
 
                 using (var fileStream = new FileStream(path, FileMode.Create))
@@ -189,18 +210,40 @@
             }
         }
 
-        private static byte[] ConvertToByteArray(BitmapImage image)
+        private void AddBitmapImageToArchive(
+            string zipArchivePath, string slideArchiveEntryName, BitmapSource slideImage)
         {
-            var encoder = new JpegBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(image));
-            using (MemoryStream ms = new MemoryStream())
+            var tmpPath = GetTempZipFilePath(Path.GetFileName(zipArchivePath));
+
+            if (File.Exists(tmpPath))
             {
-                encoder.Save(ms);
-                return ms.ToArray();
+                File.Delete(tmpPath);
             }
+
+            using (var tmpZip = ZipFile.Open(tmpPath, ZipArchiveMode.Create))
+            {
+                using (var zipFrom = ZipFile.Open(zipArchivePath, ZipArchiveMode.Read))
+                {
+                    foreach (var entry in zipFrom.Entries)
+                    {
+                        var targetEntry = tmpZip.CreateEntry(entry.FullName);
+
+                        using (var streamFrom = entry.Open())
+                        using (var streamTo = targetEntry.Open())
+                        {
+                            streamFrom.CopyTo(streamTo);
+                        }
+                    }
+                }
+
+                AddBitmapImageToArchive(tmpZip, slideArchiveEntryName, slideImage);
+            }
+
+            File.Delete(zipArchivePath);
+            File.Move(tmpPath, zipArchivePath);
         }
 
-        private void AdBitmapImageToArchive(ZipArchive zip, string slideArchiveEntryName, BitmapSource slideImage)
+        private void AddBitmapImageToArchive(ZipArchive zip, string slideArchiveEntryName, BitmapSource slideImage)
         {
             // This is a little odd (multiple streams and rewinding the memory stream!).
             // I can't find a better way of saving a BitmapSource in the archive entry.
@@ -212,7 +255,7 @@
                 encoder.Save(ms);
                 ms.Seek(0, SeekOrigin.Begin);
 
-                var entry = zip.CreateEntry(slideArchiveEntryName);
+                var entry = zip.CreateEntry(slideArchiveEntryName, CompressionLevel.Optimal);
                 using (var entryStream = entry.Open())
                 {
                     ms.CopyTo(entryStream);
@@ -281,6 +324,23 @@
         private IEnumerable<string> GetSlideNamesStartingWith(string s)
         {
             return _config.Slides.Where(x => x.ArchiveEntryName.StartsWith(s, StringComparison.OrdinalIgnoreCase)).Select(x => x.ArchiveEntryName);
+        }
+
+        private string GetTempZipFilePath(string fileName)
+        {
+            var tmpFolder = Path.Combine(Path.GetTempPath(), "OnlyMSlides");
+            Directory.CreateDirectory(tmpFolder);
+
+            return Path.ChangeExtension(Path.Combine(tmpFolder, fileName), ".tmp");
+        }
+
+        private void BuildProgress(double percentageComplete, string entryName = null)
+        {
+            BuildProgressEvent?.Invoke(this, new BuildProgressEventArgs
+            {
+                EntryName = entryName,
+                PercentageComplete = percentageComplete
+            });
         }
     }
 }

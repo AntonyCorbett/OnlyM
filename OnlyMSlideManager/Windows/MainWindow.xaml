@@ -181,6 +181,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
+                <RowDefinition Height="8" />
                 <RowDefinition Height="105" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
@@ -224,10 +225,19 @@
                     Width="30"
                     Kind="ContentSaveSettings" />
                 </Button>
+
             </ToolBar>
 
+            <!-- Progress bar -->
+            <!-- should disable on 2nd transition... -->
+            <ProgressBar Grid.Row="1" 
+                         Minimum="0"
+                         Maximum="100"
+                         Visibility="{Binding IsProgressVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                         Value="{Binding ProgressPercentageValue}" />
+
             <!-- Slideshow settings -->
-            <GroupBox Grid.Row="1" Header="{x:Static resx:Resources.AUTO_PLAY_SETTINGS}" Margin="5">
+            <GroupBox Grid.Row="2" Header="{x:Static resx:Resources.AUTO_PLAY_SETTINGS}" Margin="5,0,5,5">
                 <Grid IsEnabled="{Binding IsNotBusy}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200"/>
@@ -256,7 +266,7 @@
             </GroupBox>
 
             <!-- Slide Items -->
-            <ScrollViewer Grid.Row="2">
+            <ScrollViewer Grid.Row="3">
                 <ItemsControl ItemsSource="{Binding SlideItems}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -266,14 +276,14 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <StackPanel Grid.Row="2" Orientation="Horizontal" 
+            <StackPanel Grid.Row="3" Orientation="Horizontal" 
                         Visibility="{Binding HasNoSlides, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Margin="50,40,0,0">
                 <materialDesign:PackIcon Kind="ArrowLeftBold" />
                 <TextBlock Text="{x:Static resx:Resources.DRAG_IMAGES_HERE}"/>
             </StackPanel>
 
-            <materialDesign:Snackbar Grid.Row="2" 
+            <materialDesign:Snackbar Grid.Row="3" 
                                  MessageQueue="{Binding TheSnackbarMessageQueue}"/>
 
         </Grid>

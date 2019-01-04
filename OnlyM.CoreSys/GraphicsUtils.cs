@@ -187,11 +187,11 @@
 
             var img = new BitmapImage();
             var ms = new MemoryStream(imageData);
-
+            
             img.BeginInit();
             img.StreamSource = ms;
             img.EndInit();
-
+            
             return img;
         }
 

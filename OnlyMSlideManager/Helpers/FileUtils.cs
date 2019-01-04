@@ -52,5 +52,10 @@
                 optionsVersion.ToString(),
                 OptionsFileName);
         }
+
+        public static string GetUsersTempFolder()
+        {
+            return Path.GetTempPath();
+        }
     }
 }

@@ -48,7 +48,9 @@ namespace OnlyMSlideManager.ViewModel
         private bool? _loop;
         private int? _dwellTimeSeconds;
         private bool _busy;
-        
+        private bool _isProgressVisible;
+        private double _progressPercentageValue;
+
         public MainViewModel(
             IDialogService dialogService, 
             IDragAndDropServiceCustom dragAndDropServiceCustom,
@@ -71,6 +73,33 @@ namespace OnlyMSlideManager.ViewModel
             if (!IsInDesignMode)
             {
                 InitNewSlideshow(null);
+            }
+        }
+
+        public bool IsProgressVisible
+        {
+            get => _isProgressVisible;
+            set
+            {
+                if (_isProgressVisible != value)
+                {
+                    _isProgressVisible = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public double ProgressPercentageValue
+        {
+            get => _progressPercentageValue;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_progressPercentageValue != value)
+                {
+                    _progressPercentageValue = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -245,7 +274,7 @@ namespace OnlyMSlideManager.ViewModel
             NewFileCommand = new RelayCommand(NewFile, CanExecuteNewFile);
             OpenFileCommand = new RelayCommand(OpenFile, CanExecuteOpenFile);
             SaveFileCommand = new RelayCommand(DoSaveFile, CanExecuteSaveFile);
-            SaveFileAsCommand = new RelayCommand(SaveFileAs, CanExecuteSaveAsFile);
+            SaveFileAsCommand = new RelayCommand(DoSaveFileAs, CanExecuteSaveAsFile);
             ClosedCommand = new RelayCommand(ExecuteClosed);
             ClosingCommand = new RelayCommand(ExecuteClosing, CanExecuteClosing);
             CancelClosingCommand = new RelayCommand(ExecuteCancelClosing);
@@ -305,7 +334,7 @@ namespace OnlyMSlideManager.ViewModel
             return IsDirty && !Busy;
         }
 
-        private async void SaveFileAs()
+        private async Task SaveFileAs()
         {
             using (var d = new CommonSaveFileDialog())
             {
@@ -322,7 +351,7 @@ namespace OnlyMSlideManager.ViewModel
                 {
                     _defaultFileSaveFolder = System.IO.Path.GetDirectoryName(d.FileName);
 
-                    await SaveFileInternal(d.FileName);
+                    await SaveFileInternal(d.FileName, true);
                     
                     InitNewSlideshow(d.FileName);
                 }
@@ -334,23 +363,23 @@ namespace OnlyMSlideManager.ViewModel
             await SaveFile();
         }
 
+        private async void DoSaveFileAs()
+        {
+            await SaveFileAs();
+        }
+
         private async Task SaveFile()
         {
             try
             {
-                using (_userInterfaceService.BeginBusy())
+                if (string.IsNullOrEmpty(CurrentSlideshowPath))
                 {
-                    if (string.IsNullOrEmpty(CurrentSlideshowPath))
-                    {
-                        SaveFileAs();
-                    }
-                    else
-                    {
-                        await SaveFileInternal(CurrentSlideshowPath);
-                        SaveSignature();
-                    }
-                    
-                    _snackbarService.EnqueueWithOk(Properties.Resources.SAVED_FILE, Properties.Resources.OK);
+                    await SaveFileAs();
+                }
+                else
+                {
+                    await SaveFileInternal(CurrentSlideshowPath, true);
+                    SaveSignature();
                 }
             }
             catch (Exception ex)
@@ -360,11 +389,27 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private Task SaveFileInternal(string path)
+        private Task SaveFileInternal(string path, bool showNotificationWhenComplete)
         {
             return Task.Run(() =>
             {
-                CurrentSlideFileBuilder.Build(path, true);
+                using (_userInterfaceService.BeginBusy())
+                {
+                    IsProgressVisible = true;
+                    try
+                    {
+                        CurrentSlideFileBuilder.Build(path, true);
+
+                        if (showNotificationWhenComplete)
+                        {
+                            _snackbarService.EnqueueWithOk(Properties.Resources.SAVED_FILE, Properties.Resources.OK);
+                        }
+                    }
+                    finally
+                    {
+                        IsProgressVisible = false;
+                    }
+                }
             });
         }
 
@@ -375,10 +420,7 @@ namespace OnlyMSlideManager.ViewModel
                 var result = await _dialogService.ShouldSaveDirtyDataAsync().ConfigureAwait(true);
                 if (result == true)
                 {
-                    using (_userInterfaceService.BeginBusy())
-                    {
-                        await SaveFileInternal(CurrentSlideshowPath);
-                    }
+                    await SaveFileInternal(CurrentSlideshowPath, false);
                 }
                 else if (result == null)
                 {
@@ -503,7 +545,13 @@ namespace OnlyMSlideManager.ViewModel
                 builder.Load(optionalPathToExistingSlideshow);
             }
 
+            if (CurrentSlideFileBuilder != null)
+            {
+                CurrentSlideFileBuilder.BuildProgressEvent -= HandleBuildProgressEvent;
+            }
+
             CurrentSlideFileBuilder = builder;
+            CurrentSlideFileBuilder.BuildProgressEvent += HandleBuildProgressEvent;
 
             CurrentSlideshowPath = optionalPathToExistingSlideshow;
 
@@ -513,6 +561,11 @@ namespace OnlyMSlideManager.ViewModel
             SaveSignature();
 
             GenerateSlideItems();
+        }
+
+        private void HandleBuildProgressEvent(object sender, OnlyM.Slides.Models.BuildProgressEventArgs e)
+        {
+            ProgressPercentageValue = e.PercentageComplete;
         }
 
         private void AddDesignTimeItems()

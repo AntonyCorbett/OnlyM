@@ -30,15 +30,6 @@
         }
 
         /// <summary>
-        /// Gets system temp folder
-        /// </summary>
-        /// <returns>Temp folder</returns>
-        public static string GetUsersTempFolder()
-        {
-            return Path.GetTempPath();
-        }
-
-        /// <summary>
         /// Gets temp staging folder for slideshows
         /// </summary>
         /// <returns>Temp folder</returns>
@@ -177,6 +168,11 @@
             {
                 Log.Logger.Error(ex, "Could not purge browser cache");
             }
+        }
+
+        public static string GetUsersTempFolder()
+        {
+            return Path.GetTempPath();
         }
     }
 }

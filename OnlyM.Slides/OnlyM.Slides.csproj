@@ -72,6 +72,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Exceptions\SlideException.cs" />
+    <Compile Include="Models\BuildProgressEventArgs.cs" />
     <Compile Include="Models\Slide.cs" />
     <Compile Include="Models\SlideDirection.cs" />
     <Compile Include="Models\SlidesConfig.cs" />
