@@ -503,7 +503,15 @@ namespace OnlyMSlideManager.ViewModel
                     slide.FadeInReverse = item.FadeInReverse;
                     slide.FadeOutForward = item.FadeOutForward;
                     slide.FadeOutReverse = item.FadeOutReverse;
-                    slide.DwellTimeMilliseconds = item.DwellTimeSeconds ?? 0;
+
+                    if (item.DwellTimeSeconds == null)
+                    {
+                        slide.DwellTimeMilliseconds = 0;
+                    }
+                    else
+                    {
+                        slide.DwellTimeMilliseconds = item.DwellTimeSeconds.Value * 1000;
+                    }
 
                     RaisePropertyChanged(nameof(IsDirty));
                     CommandManager.InvalidateRequerySuggested();

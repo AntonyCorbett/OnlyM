@@ -213,6 +213,9 @@
         private void AddBitmapImageToArchive(
             string zipArchivePath, string slideArchiveEntryName, BitmapSource slideImage)
         {
+            // note that construction of large zip files must be done in this convoluted way
+            // (involving temp files) because attempting to do it all in memory (using ZipArchive.Update)
+            // caused an OutOfMemoryException.
             var tmpPath = GetTempZipFilePath(Path.GetFileName(zipArchivePath));
 
             if (File.Exists(tmpPath))
