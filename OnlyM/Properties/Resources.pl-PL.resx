@@ -409,7 +409,7 @@
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_WEB" xml:space="preserve">
-    <value>SIECI WEB</value>
+    <value>Strony internetowe</value>
     <comment>Section title for Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
@@ -445,15 +445,15 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="ALLOW_MIRROR" xml:space="preserve">
-    <value>Allow mirror window</value>
+    <value>Zezwalaj na klonowanie ekranu</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
-    <value>Mirror enabled by default</value>
+    <value>Klonowanie domyślnie włączone</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_ZOOM" xml:space="preserve">
-    <value>Mirror zoom</value>
+    <value>Powiększenie klonowanego okna</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_LOADING" xml:space="preserve">
@@ -461,23 +461,23 @@
     <comment>Displayed when a web page is loading</comment>
   </data>
   <data name="LAUNCHING_MIRROR" xml:space="preserve">
-    <value>Launching mirror...</value>
+    <value>Uruchamianie okna lustrzanego...</value>
     <comment>Displayed when mirror window is launching</comment>
   </data>
   <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
-    <value>Change the mirror hotkey!</value>
+    <value>Zmień klawisz skrótu klonowania!</value>
     <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
   </data>
   <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
-    <value>Logging level is high!</value>
+    <value>Wysoki poziom rejestrowania!</value>
     <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
   </data>
   <data name="MIRROR_HOTKEY" xml:space="preserve">
-    <value>Mirror hotkey</value>
+    <value>Klawisz skrótu klonowania</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR" xml:space="preserve">
-    <value>Mirror</value>
+    <value>Klonowanie</value>
     <comment>Checkbox caption in web and PDF media item</comment>
   </data>
   <data name="JWL_TRADEMARK" xml:space="preserve">
