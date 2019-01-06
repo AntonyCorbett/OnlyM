@@ -433,7 +433,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>WYCZYŚĆ PAMIĘĆ PODRĘCZNĄ PRZEGLĄDARKI</value>
+    <value>WYCZYŚĆ PAMIĘĆ PODRĘCZNĄ</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
