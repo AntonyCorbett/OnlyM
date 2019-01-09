@@ -360,11 +360,13 @@ namespace OnlyMSlideManager.ViewModel
 
         private async void DoSaveFile()
         {
+            Keyboard.ClearFocus();
             await SaveFile();
         }
 
         private async void DoSaveFileAs()
         {
+            Keyboard.ClearFocus();
             await SaveFileAs();
         }
 
@@ -415,6 +417,8 @@ namespace OnlyMSlideManager.ViewModel
 
         private async void OpenFile()
         {
+            Keyboard.ClearFocus();
+
             if (IsDirty)
             {
                 var result = await _dialogService.ShouldSaveDirtyDataAsync().ConfigureAwait(true);
@@ -565,6 +569,15 @@ namespace OnlyMSlideManager.ViewModel
 
             AutoPlay = CurrentSlideFileBuilder.AutoPlay;
             Loop = CurrentSlideFileBuilder.Loop;
+
+            if (CurrentSlideFileBuilder.DwellTimeMilliseconds == 0)
+            {
+                DwellTimeSeconds = null;
+            }
+            else
+            {
+                DwellTimeSeconds = CurrentSlideFileBuilder.DwellTimeMilliseconds / 1000;
+            }
 
             SaveSignature();
 

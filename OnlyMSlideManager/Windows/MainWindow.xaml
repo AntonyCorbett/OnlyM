@@ -261,7 +261,7 @@
                              IsEnabled="{Binding ElementName=AutoPlayCheckBox, Path=IsChecked}"
                              materialDesign:HintAssist.Hint="{x:Static resx:Resources.DWELL_SECONDS}"
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                             Text="{Binding DwellTimeSeconds}"/>
+                             Text="{Binding DwellTimeSeconds, TargetNullValue=''}"/>
                 </Grid>
             </GroupBox>
 
