@@ -5,6 +5,7 @@
     using System.IO;
     using System.Threading;
     using System.Windows;
+    using System.Windows.Threading;
     using AutoUpdates;
     using CefSharp;
     using CefSharp.Wpf;
@@ -29,14 +30,22 @@
 
         public App()
         {
-            DispatcherHelper.Initialize();
-            MediaElement.FFmpegDirectory = FMpegFolderName;
-            RegisterMappings();
+            try
+            {
+                DispatcherHelper.Initialize();
+                MediaElement.FFmpegDirectory = FMpegFolderName;
+                RegisterMappings();
 
-            // pre-load the CefSharp assemblies otherwise 1st instantiation is too long.
-            System.Reflection.Assembly.Load("CefSharp.Wpf");
+                // pre-load the CefSharp assemblies otherwise 1st instantiation is too long.
+                System.Reflection.Assembly.Load("CefSharp.Wpf");
 
-            _successCefSharp = InitCef();
+                _successCefSharp = InitCef();
+            }
+            catch (Exception ex)
+            {
+                AddEventLogEntry(ex.Message);
+                Current.Shutdown();
+            }
         }
 
         public static string FMpegFolderName { get; } = $"{AppDomain.CurrentDomain.BaseDirectory}\\FFmpeg";
@@ -56,6 +65,8 @@
             else
             {
                 ConfigureLogger();
+
+                Current.DispatcherUnhandledException += CurrentDispatcherUnhandledException;
             }
 
             if (!_successCefSharp)
@@ -125,6 +136,23 @@
             CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
 
             return Cef.Initialize(settings);
+        }
+
+        private void CurrentDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            // unhandled exceptions thrown from UI thread
+            e.Handled = true;
+            Log.Logger.Fatal(e.Exception, "Unhandled exception");
+            Current.Shutdown();
+        }
+
+        private void AddEventLogEntry(string msg)
+        {
+            using (var eventLog = new EventLog("Application"))
+            {
+                eventLog.Source = "Application";
+                eventLog.WriteEntry(msg, EventLogEntryType.Error);
+            }
         }
     }
 }
