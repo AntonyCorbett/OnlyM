@@ -32,6 +32,7 @@
         public void PlayAudio(
             string mediaItemFilePath,
             Guid mediaItemId,
+            TimeSpan startPosition,
             bool startFromPaused)
         {
             _mediaItemId = mediaItemId;
@@ -54,6 +55,11 @@
             {
                 _audioFileReader = new AudioFileReader(_mediaItemFilePath);
                 _outputDevice.Init(_audioFileReader);
+            }
+
+            if (!startFromPaused && startPosition != TimeSpan.Zero)
+            {
+                _audioFileReader.SetPosition(startPosition);
             }
 
             _outputDevice.Play();

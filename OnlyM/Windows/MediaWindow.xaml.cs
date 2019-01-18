@@ -345,9 +345,12 @@
 
         private void PlayAudio(MediaItem mediaItemToStart, bool startFromPaused)
         {
+            var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 100);
+
             _audioManager.PlayAudio(
                 mediaItemToStart.FilePath,
                 mediaItemToStart.Id,
+                startPosition,
                 startFromPaused);
         }
 
