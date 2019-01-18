@@ -290,6 +290,8 @@
                                            Orientation="Horizontal"
                                            TickFrequency="1"
                                            Margin="0,5,0,0"
+                                           SmallChange="10"
+                                           LargeChange="300"
                                            Visibility="{Binding Path=IsSliderVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                            Value="{Binding PlaybackPositionDeciseconds, Mode=TwoWay}" 
                                            Maximum="{Binding DurationDeciseconds}"/>
