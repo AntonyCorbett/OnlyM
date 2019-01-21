@@ -283,10 +283,8 @@
 
                     _mediaWindow.Topmost = true;
 
-                    _mediaWindow.WindowState = WindowState.Maximized;
-
                     _mediaWindow.Show();
-
+                    
                     if (!isVisible)
                     {
                         _mediaWindow.Hide();
@@ -315,7 +313,6 @@
             _mediaWindow.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _mediaWindow.MediaNearEndEvent += HandleMediaNearEndEvent;
             _mediaWindow.IsVisibleChanged += HandleMediaWindowVisibility;
-            _mediaWindow.Loaded += HandleLoaded;
             _mediaWindow.WebStatusEvent += HandleWebStatusEvent;
         }
 
@@ -336,7 +333,6 @@
             _mediaWindow.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
             _mediaWindow.MediaNearEndEvent -= HandleMediaNearEndEvent;
             _mediaWindow.IsVisibleChanged -= HandleMediaWindowVisibility;
-            _mediaWindow.Loaded -= HandleLoaded;
             _mediaWindow.WebStatusEvent -= HandleWebStatusEvent;
         }
 
@@ -347,11 +343,6 @@
                 JwLibHelper.BringToFront();
                 Thread.Sleep(100);
             }
-        }
-
-        private void HandleLoaded(object sender, RoutedEventArgs e)
-        {
-            ((Window)sender).WindowState = WindowState.Maximized;
         }
 
         private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
