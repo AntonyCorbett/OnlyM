@@ -15,6 +15,7 @@
     using MediaChanging;
     using MediaElementAdaption;
     using Models;
+    using OnlyM.Core.Services.CommandLine;
     using OnlyM.Core.Services.Database;
     using OnlyM.CoreSys.Services.Snackbar;
     using OnlyM.CoreSys.WindowsPositioning;
@@ -34,6 +35,7 @@
         private readonly ISnackbarService _snackbarService;
         private readonly IDatabaseService _databaseService;
         private readonly IActiveMediaItemsService _activeMediaItemsService;
+        private readonly ICommandLineService _commandLineService;
         private readonly (int dpiX, int dpiY) _systemDpi;
         
         private MediaWindow _mediaWindow;
@@ -45,14 +47,16 @@
             IOptionsService optionsService,
             IActiveMediaItemsService activeMediaItemsService,
             ISnackbarService snackbarService,
-            IDatabaseService databaseService)
+            IDatabaseService databaseService,
+            ICommandLineService commandLineService)
         {
             _monitorsService = monitorsService;
             _optionsService = optionsService;
             _snackbarService = snackbarService;
             _databaseService = databaseService;
             _activeMediaItemsService = activeMediaItemsService;
-            
+            _commandLineService = commandLineService;
+
             _optionsService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
             _optionsService.PermanentBackdropChangedEvent += HandlePermanentBackdropChangedEvent;
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
@@ -102,7 +106,7 @@
             // used to instantiate the media window and its controls (and then
             // possibly hide it immediately). Required to correctly configure
             // the CefSharp browser control.
-            OpenMediaWindow(requiresVisibleWindow: true);
+            OpenMediaWindow(requiresVisibleWindow: true, isVideo: false);
             ManageMediaWindowVisibility();
         }
 
@@ -137,35 +141,6 @@
             throw new ArgumentOutOfRangeException(nameof(pageName));
         }
         
-        public void OpenMediaWindow(bool requiresVisibleWindow)
-        {
-            try
-            {
-                EnsureMediaWindowCreated();
-
-                if (requiresVisibleWindow)
-                {
-                    var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
-                    if (targetMonitor != null)
-                    {
-                        Log.Logger.Information("Opening media window");
-
-                        LocateWindowAtOrigin(_mediaWindow, targetMonitor.Monitor);
-
-                        _mediaWindow.Topmost = true;
-
-                        _mediaWindow.Show();
-
-                        MediaWindowOpenedEvent?.Invoke(this, EventArgs.Empty);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not open media window");
-            }
-        }
-
         public void CacheImageItem(MediaItem mediaItem)
         {
             if (_mediaWindow != null && mediaItem != null)
@@ -192,7 +167,7 @@
             try
             {
                 bool requiresVisibleWindow = mediaItemToStart.MediaType.Classification != MediaClassification.Audio;
-                OpenMediaWindow(requiresVisibleWindow);
+                OpenMediaWindow(requiresVisibleWindow, mediaItemToStart.IsVideo);
 
                 await _mediaWindow.StartMedia(
                     mediaItemToStart,
@@ -224,23 +199,10 @@
             }
         }
 
-        private void LocateWindowAtOrigin(Window window, Screen monitor)
+        private void PositionMediaWindow(Window window, Screen monitor, bool isVideo)
         {
-            var area = monitor.WorkingArea;
-
-            var left = (area.Left * 96) / _systemDpi.dpiX;
-            var top = (area.Top * 96) / _systemDpi.dpiY;
-
-            Log.Logger.Verbose($"Monitor = {monitor.DeviceName} Left = {left}, top = {top}");
-
-            // these seemingly redundant sizing statements are required!
-            window.Left = 0;
-            window.Top = 0;
-            window.Width = 0;
-            window.Height = 0;
-
-            window.Left = left;
-            window.Top = top;
+            MediaWindowPositionHelper.PositionMediaWindow(
+                _optionsService, _commandLineService, window, monitor, _systemDpi, isVideo);
         }
 
         private void OnNavigationEvent(NavigationEventArgs e)
@@ -279,7 +241,7 @@
                     _mediaWindow.Hide();
                     _mediaWindow.WindowState = WindowState.Normal;
 
-                    LocateWindowAtOrigin(_mediaWindow, targetMonitor.Monitor);
+                    PositionMediaWindow(_mediaWindow, targetMonitor.Monitor, false);
 
                     _mediaWindow.Topmost = true;
 
@@ -293,7 +255,7 @@
             }
             else if (_optionsService.PermanentBackdrop)
             {
-                OpenMediaWindow(requiresVisibleWindow: true);
+                OpenMediaWindow(requiresVisibleWindow: true, isVideo: false);
             }
         }
 
@@ -427,7 +389,7 @@
         {
             if (_optionsService.PermanentBackdrop)
             {
-                OpenMediaWindow(requiresVisibleWindow: true);
+                OpenMediaWindow(requiresVisibleWindow: true, isVideo: false);
             }
             else if (!_activeMediaItemsService.Any())
             {
@@ -493,6 +455,35 @@
             if (_activeMediaItemsService.Exists(msg.MediaItemId))
             {
                 _mediaWindow.ShowMirror(msg.UseMirror);
+            }
+        }
+
+        private void OpenMediaWindow(bool requiresVisibleWindow, bool isVideo)
+        {
+            try
+            {
+                EnsureMediaWindowCreated();
+
+                if (requiresVisibleWindow)
+                {
+                    var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
+                    if (targetMonitor != null)
+                    {
+                        Log.Logger.Information("Opening media window");
+
+                        PositionMediaWindow(_mediaWindow, targetMonitor.Monitor, isVideo);
+
+                        _mediaWindow.Topmost = true;
+
+                        _mediaWindow.Show();
+
+                        MediaWindowOpenedEvent?.Invoke(this, EventArgs.Empty);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not open media window");
             }
         }
     }

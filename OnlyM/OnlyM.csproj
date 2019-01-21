@@ -201,6 +201,7 @@
     <Compile Include="Models\SlideTransition.cs" />
     <Compile Include="Models\SlideTransitionEventArgs.cs" />
     <Compile Include="Models\SubtitleFileEventArgs.cs" />
+    <Compile Include="Services\MediaWindowPositionHelper.cs" />
     <Compile Include="Services\WebNavHeaderManager\WebNavHeaderStatus.cs" />
     <Compile Include="Models\WindowVisibilityChangedEventArgs.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatedMessage.cs" />

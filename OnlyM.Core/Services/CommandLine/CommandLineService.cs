@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Core.Services.CommandLine
+﻿using System.Windows.Media;
+
+namespace OnlyM.Core.Services.CommandLine
 {
     using System;
     using Fclp;
@@ -28,6 +30,9 @@
             p.Setup<bool>("obs")
                 .Callback(s => { ObsCompatible = s; }).SetDefault(false);
 
+            p.Setup<bool>("novidfix")
+                .Callback(s => { DisableVideoRenderingFix = s; }).SetDefault(false);
+
             p.Parse(Environment.GetCommandLineArgs());
         }
 
@@ -42,5 +47,7 @@
         public string SourceFolder { get; set; }
 
         public bool ObsCompatible { get; set; }
+
+        public bool DisableVideoRenderingFix { get; set; }
     }
 }

@@ -7,8 +7,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Media.Animation;
     using CommonServiceLocator;
     using Core.Models;
     using Core.Services.Options;
@@ -352,11 +350,6 @@
                 mediaItemToStart.Id,
                 startPosition,
                 startFromPaused);
-        }
-
-        private void WindowLoaded(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Maximized;
         }
 
         private void WindowClosing(object sender, CancelEventArgs e)

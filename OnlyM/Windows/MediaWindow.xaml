@@ -16,7 +16,7 @@
         Title="MediaWindow" 
         Height="500"
         Width="500"
-        Loaded="WindowLoaded" Closing="WindowClosing" SizeChanged="WindowSizeChanged">
+        Closing="WindowClosing" SizeChanged="WindowSizeChanged">
 
     <Window.Resources>
         <ResourceDictionary>

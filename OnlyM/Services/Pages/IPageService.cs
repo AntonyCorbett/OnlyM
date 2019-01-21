@@ -49,8 +49,6 @@
 
         FrameworkElement GetPage(string pageName);
         
-        void OpenMediaWindow(bool requiresVisibleWindow);
-        
         Task StartMedia(MediaItem mediaItemToStart, IReadOnlyCollection<MediaItem> currentMediaItems, bool startFromPaused);
 
         Task StopMediaAsync(MediaItem mediaItem);
