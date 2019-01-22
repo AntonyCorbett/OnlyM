@@ -1,7 +1,12 @@
 ﻿namespace OnlyM.Services
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Forms;
+    using System.Windows.Media;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.CommandLine;
     using OnlyM.Core.Services.Options;
@@ -12,7 +17,7 @@
         public static void PositionMediaWindow(
             IOptionsService optionsService,
             ICommandLineService commandLineService,
-            Window window, 
+            Window mediaWindow, 
             Screen monitor, 
             (int dpiX, int dpiY) systemDpi, 
             bool isVideo)
@@ -26,58 +31,100 @@
 
             Log.Logger.Verbose($"Monitor = {monitor.DeviceName} Left = {left}, top = {top}");
 
+            var mainGrid = GetMainGrid(mediaWindow);
+            Debug.Assert(mainGrid != null || !isVideo, "mainGrid != null");
+
             if (WpfMediaFoundationHackRequired(optionsService, commandLineService, monitor, isVideo))
             {
-                PositionWindowUsingHack(window, monitor, left, top, width, height);
+                PositionWindowUsingHack(mediaWindow, mainGrid, monitor, left, top, width, height);
             }
             else
             {
-                window.Left = left;
-                window.Top = top;
-                window.Width = width;
-                window.Height = height;
+                mediaWindow.Left = left;
+                mediaWindow.Top = top;
+                mediaWindow.Width = width;
+                mediaWindow.Height = height;
+
+                if (mainGrid != null)
+                {
+                    mainGrid.Margin = new Thickness(0);
+                }
             }
         }
 
-        private static void PositionWindowUsingHack(
-            Window window, Screen monitor, int left, int top, int width, int height)
+        private static Grid GetMainGrid(Window mediaWindow)
         {
-            var primaryMonitor = Screen.PrimaryScreen;
+            return FindVisualChildren<Grid>(mediaWindow).FirstOrDefault();
+        }
 
+        private static void PositionWindowUsingHack(
+            Window mediaWindow, Grid mainGrid, Screen monitor, int left, int top, int width, int height)
+        {
+            Log.Logger.Verbose("Positioning media window according to WPF Media Foundation hack");
+
+            var primaryMonitor = Screen.PrimaryScreen;
+            
             if (MonitorToRightOf(monitor, primaryMonitor))
             {
-                window.Left = left - 1;
-                window.Top = top;
-                window.Width = width + 1;
-                window.Height = height;
+                mediaWindow.Left = left - 1;
+                mediaWindow.Top = top;
+                mediaWindow.Width = width + 1;
+                mediaWindow.Height = height;
+
+                if (mainGrid != null)
+                {
+                    mainGrid.Margin = new Thickness(1, 0, 0, 0);
+                }
             }
             else if (MonitorToLeftOf(monitor, primaryMonitor))
             {
-                window.Left = left;
-                window.Top = top;
-                window.Width = width + 1;
-                window.Height = height;
+                mediaWindow.Left = left;
+                mediaWindow.Top = top;
+                mediaWindow.Width = width + 1;
+                mediaWindow.Height = height;
+
+                if (mainGrid != null)
+                {
+                    mainGrid.Margin = new Thickness(0, 0, 1, 0);
+                }
             }
             else if (MonitorIsAbove(monitor, primaryMonitor))
             {
-                window.Left = left;
-                window.Top = top;
-                window.Width = width;
-                window.Height = height + 1;
+                mediaWindow.Left = left;
+                mediaWindow.Top = top;
+                mediaWindow.Width = width;
+                mediaWindow.Height = height + 1;
+
+                if (mainGrid != null)
+                {
+                    mainGrid.Margin = new Thickness(0, 0, 0, 1);
+                }
             }
             else if (MonitorIsBelow(monitor, primaryMonitor))
             {
-                window.Left = left;
-                window.Top = top - 1;
-                window.Width = width;
-                window.Height = height + 1;
+                mediaWindow.Left = left;
+                mediaWindow.Top = top - 1;
+                mediaWindow.Width = width;
+                mediaWindow.Height = height + 1;
+
+                if (mainGrid != null)
+                {
+                    mainGrid.Margin = new Thickness(0, 1, 0, 0);
+                }
             }
             else
             {
-                window.Left = left;
-                window.Top = top;
-                window.Width = width;
-                window.Height = height;
+                // media monitor does not abutt the primary monitor
+                // so the hack is abandoned.
+                mediaWindow.Left = left;
+                mediaWindow.Top = top;
+                mediaWindow.Width = width;
+                mediaWindow.Height = height;
+
+                if (mainGrid != null)
+                {
+                    mainGrid.Margin = new Thickness(0);
+                }
             }
         }
 
@@ -117,6 +164,27 @@
         private static bool MonitorIsBelow(Screen monitor1, Screen monitor2)
         {
             return monitor1.Bounds.Top <= monitor2.Bounds.Bottom;
+        }
+
+        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) 
+            where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    var child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child is T children)
+                    {
+                        yield return children;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
         }
     }
 }
