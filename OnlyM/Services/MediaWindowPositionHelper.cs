@@ -12,6 +12,17 @@
     using OnlyM.Core.Services.Options;
     using Serilog;
 
+    /// <summary>
+    /// Responsible for positioning the media window and working around the WPF MediaFoundation
+    /// issue that affects rendering of H265 video.
+    /// See http://stackoverflow.com/questions/4189660/why-does-wpf-mediaelement-not-work-on-secondary-monitor
+    /// See https://github.com/AntonyCorbett/OnlyM/issues/195
+    /// The fix is a bit of a hack - we force the media window to spill over onto the primary
+    /// monitor (if possible) by 1 pixel and then adjust the media window main grid margin
+    /// to ensure that the video isn't shown in that pixel. This leaves a black 1-pixel line
+    /// at the edge of the primary display and is rarely noticed.
+    /// We ensure that the hack is only implemented when absolutely necessary.
+    /// </summary>
     internal static class MediaWindowPositionHelper
     {
         public static void PositionMediaWindow(
@@ -134,8 +145,6 @@
             Screen monitor, 
             bool isVideo)
         {
-            // see http://stackoverflow.com/questions/4189660/why-does-wpf-mediaelement-not-work-on-secondary-monitor
-            // see https://github.com/AntonyCorbett/OnlyM/issues/195
             var primaryMonitor = Screen.PrimaryScreen;
 
             return
