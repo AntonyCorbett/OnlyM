@@ -1,4 +1,7 @@
-﻿namespace IntegrationTests
+﻿using System;
+using System.IO;
+
+namespace IntegrationTests
 {
     using System.Windows.Media.Imaging;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,13 +16,13 @@
             string slideFilePath = "test" + SlideFile.FileExtension;
 
             var fb = new SlideFileBuilder(1920, 1080);
-            fb.AddSlide(@"TestImages\001.jpg", true, true, true, true);
-            fb.AddSlide(@"TestImages\002.jpg", true, true, true, true);
-            fb.AddSlide(@"TestImages\003.jpg", true, true, true, true);
+            fb.AddSlide(GetAbsolutePath(@"TestImages\001.jpg"), true, true, true, true);
+            fb.AddSlide(GetAbsolutePath(@"TestImages\002.jpg"), true, true, true, true);
+            fb.AddSlide(GetAbsolutePath(@"TestImages\003.jpg"), true, true, true, true);
 
-            fb.AddSlide(@"TestImages\001.jpg", false, false, false, false);
-            fb.AddSlide(@"TestImages\002.jpg", false, false, false, false);
-            fb.AddSlide(@"TestImages\003.jpg", false, false, false, false);
+            fb.AddSlide(GetAbsolutePath(@"TestImages\001.jpg"), false, false, false, false);
+            fb.AddSlide(GetAbsolutePath(@"TestImages\002.jpg"), false, false, false, false);
+            fb.AddSlide(GetAbsolutePath(@"TestImages\003.jpg"), false, false, false, false);
 
             fb.Loop = true;
             fb.AutoPlay = true;
@@ -41,6 +44,11 @@
                     encoder.Save(fileStream);
                 }
             }
+        }
+
+        private string GetAbsolutePath(string relativePath)
+        {
+            return Path.GetFullPath(relativePath);
         }
     }
 }
