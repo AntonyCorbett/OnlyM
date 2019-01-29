@@ -1,6 +1,4 @@
-﻿using System.Windows.Media;
-
-namespace OnlyM.Core.Services.CommandLine
+﻿namespace OnlyM.Core.Services.CommandLine
 {
     using System;
     using Fclp;
