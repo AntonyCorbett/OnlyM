@@ -485,7 +485,7 @@
     <comment>See Settings =&gt; Main</comment>
   </data>
   <data name="CANNOT_DELETE_FILE" xml:space="preserve">
-    <value>Cannot delete file!</value>
+    <value>Súbor sa nedá vymazať!</value>
     <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
   </data>
 </root>
