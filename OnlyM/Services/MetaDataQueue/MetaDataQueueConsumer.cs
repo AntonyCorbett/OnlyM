@@ -118,7 +118,7 @@
         {
             PopulateSlideData(mediaItem);
             PopulateThumbnail(mediaItem);
-            PopulateDurationAndName(mediaItem);
+            PopulateDurationAndTitle(mediaItem);
         }
 
         private void PopulateSlideData(MediaItem mediaItem)
@@ -135,7 +135,7 @@
         private bool IsPopulated(MediaItem mediaItem)
         {
             return IsThumbnailPopulated(mediaItem) &&
-                   IsDurationAndNamePopulated(mediaItem) &&
+                   IsDurationAndTitlePopulated(mediaItem) &&
                    IsSlideDataPopulated(mediaItem);
         }
 
@@ -144,11 +144,11 @@
             return mediaItem.ThumbnailImageSource != null;
         }
 
-        private bool IsDurationAndNamePopulated(MediaItem mediaItem)
+        private bool IsDurationAndTitlePopulated(MediaItem mediaItem)
         {
             return 
                 (!mediaItem.HasDuration || mediaItem.DurationDeciseconds > 0) &&
-                !string.IsNullOrEmpty(mediaItem.Name);
+                !string.IsNullOrEmpty(mediaItem.Title);
         }
 
         private bool IsSlideDataPopulated(MediaItem mediaItem)
@@ -156,9 +156,9 @@
             return !mediaItem.IsSlideshow || mediaItem.SlideshowCount > 0;
         }
 
-        private void PopulateDurationAndName(MediaItem mediaItem)
+        private void PopulateDurationAndTitle(MediaItem mediaItem)
         {
-            if (!IsDurationAndNamePopulated(mediaItem))
+            if (!IsDurationAndTitlePopulated(mediaItem))
             {
                 var metaData = _metaDataService.GetMetaData(
                     mediaItem.FilePath, mediaItem.MediaType, _ffmpegFolder);
@@ -167,7 +167,10 @@
                 {
                     mediaItem.DurationDeciseconds =
                         metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
-                    mediaItem.Name = GetMediaTitle(mediaItem.FilePath, metaData);
+                    mediaItem.Title = GetMediaTitle(mediaItem.FilePath, metaData);
+                    mediaItem.FileNameAsSubTitle = _optionsService.UseInternalMediaTitles
+                        ? Path.GetFileName(mediaItem.FilePath)
+                        : null;
                 });
             }
         }

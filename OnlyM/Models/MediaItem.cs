@@ -26,7 +26,7 @@
         private bool _allowFreezeCommand;
         private bool _useMirror;
         private bool _isVisible;
-        private string _name;
+        private string _title;
         private bool _isPaused;
         private ImageSource _thumbnailImageSource;
         private bool _isMediaActive;
@@ -41,7 +41,7 @@
         private bool _isRollingSlideshow;
         private bool _allowUseMirror;
         private string _miscText;
-
+        
         public event EventHandler PlaybackPositionChangedEvent;
 
         public Guid Id { get; set; }
@@ -159,41 +159,49 @@
 
         public bool CommandPanelEnabled => !IsBlankScreen && !IsMediaActive;
 
-        public string Name
+        public string Title
         {
-            get => _name;
+            get => _title;
             set
             {
-                if (_name == null || !_name.Equals(value))
+                if (_title == null || !_title.Equals(value))
                 {
-                    _name = value;
+                    _title = value;
                     RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(AlphaNumericName));
                 }
             }
         }
 
-        public string AlphaNumericName
+        public string SortKey
         {
             get
             {
-                var prefix = Name.GetNumericPrefix();
+                if (string.IsNullOrEmpty(FilePath))
+                {
+                    return string.Empty;
+                }
+
+                var name = Path.GetFileNameWithoutExtension(FilePath);
+
+                var prefix = name.GetNumericPrefix();
                 if (string.IsNullOrEmpty(prefix))
                 {
-                    return Name;
+                    return name;
                 }
 
                 if (!int.TryParse(prefix, out var prefixNum))
                 {
-                    return Name;
+                    return name;
                 }
 
-                var remainder = Name.Replace(prefix, string.Empty).Trim();
+                var remainder = name.Replace(prefix, string.Empty).Trim();
                 return $"{prefixNum:D6} {remainder}";
             }
         }
 
         public string FilePath { get; set; }
+
+        public string FileNameAsSubTitle { get; set; }
 
         public long LastChanged { get; set; }
         

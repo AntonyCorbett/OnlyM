@@ -247,7 +247,8 @@
         {
             foreach (var item in MediaItems)
             {
-                item.Name = null;
+                item.Title = null;
+
             }
 
             FillThumbnailsAndMetaData();
@@ -309,14 +310,8 @@
                 _metaDataCancellationTokenSource.Token);
 
             _metaDataConsumer.ItemCompletedEvent += HandleItemCompletedEvent;
-            _metaDataConsumer.AllItemsCompletedEvent += HandleAllItemsCompletedEvent;
 
             _metaDataConsumer.Execute();
-        }
-
-        private void HandleAllItemsCompletedEvent(object sender, EventArgs e)
-        {
-            DispatcherHelper.CheckBeginInvokeOnUI(SortMediaItems);
         }
 
         private void HandleItemCompletedEvent(object sender, ItemMetaDataPopulatedEventArgs e)
@@ -428,7 +423,7 @@
                 return;
             }
 
-            Log.Debug(mediaItem.Name);
+            Log.Debug(mediaItem.Title);
 
             switch (e.Change)
             {
@@ -860,6 +855,8 @@
             _hiddenMediaItemsService.Init(MediaItems);
             _frozenVideosService.Init(MediaItems);
 
+            SortMediaItems();
+
             InsertBlankMediaItem();
         }
 
@@ -907,8 +904,9 @@
                     IsVisible = true,
                     AllowFreezeCommand = _optionsService.ShowFreezeCommand,
                     CommandPanelVisible = _optionsService.ShowMediaItemCommandPanel,
-                    Name = Properties.Resources.BLANK_SCREEN,
+                    Title = Properties.Resources.BLANK_SCREEN,
                     FilePath = blankScreenPath,
+                    FileNameAsSubTitle = null,
                     LastChanged = DateTime.UtcNow.Ticks
                 };
 
@@ -947,7 +945,7 @@
        
         private void SortMediaItems()
         {
-            List<MediaItem> sorted = MediaItems.OrderBy(x => x.AlphaNumericName).ToList();
+            var sorted = MediaItems.OrderBy(x => x.SortKey).ToList();
             var blank = sorted.SingleOrDefault(x => x.IsBlankScreen);
             if (blank != null && blank != sorted.First())
             {

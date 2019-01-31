@@ -1,8 +1,7 @@
-﻿using System;
-using System.IO;
-
-namespace IntegrationTests
+﻿namespace IntegrationTests
 {
+    using System;
+    using System.IO;
     using System.Windows.Media.Imaging;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using OnlyM.Slides;
