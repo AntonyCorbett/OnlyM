@@ -182,11 +182,14 @@
                                 </Grid.RowDefinitions>
 
                                 <!-- Media Title -->
-                                <TextBlock Grid.Row="0" 
-                                           TextTrimming="CharacterEllipsis" 
-                                           Style="{StaticResource MaterialDesignTitleTextBlock}">
-                                    <Run Text="{Binding Title, Mode=OneWay}"/><LineBreak/>
-                                    <Run Text="{Binding FileNameAsSubTitle, Mode=OneWay}" FontSize="10"/>
+                                <TextBlock Grid.Row="0">
+                                    <TextBlock Style="{StaticResource MaterialDesignTitleTextBlock}"
+                                               TextTrimming="CharacterEllipsis"
+                                               Text="{Binding Title, Mode=OneWay}"/>
+                                    <LineBreak />
+                                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                               TextTrimming="CharacterEllipsis"
+                                        Text="{Binding FileNameAsSubTitle, Mode=OneWay}"/>
                                 </TextBlock>
                                 <Grid Grid.Row="1">
                                     <Grid.RowDefinitions>
