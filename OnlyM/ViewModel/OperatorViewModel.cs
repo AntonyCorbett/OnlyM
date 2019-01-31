@@ -262,7 +262,6 @@
             foreach (var item in MediaItems)
             {
                 item.Title = null;
-
             }
 
             FillThumbnailsAndMetaData();
