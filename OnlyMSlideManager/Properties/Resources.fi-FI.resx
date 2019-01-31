@@ -122,7 +122,7 @@
     <value>..\Resources\flower.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SETTINGS" xml:space="preserve">
-    <value>SETTINGS</value>
+    <value>ASETUKSET</value>
     <comment>Title</comment>
   </data>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
@@ -142,7 +142,7 @@
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Could not create folder {0}</value>
+    <value>Kansion {0} luonti epäonnistui</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
@@ -154,15 +154,15 @@
     <comment>Used in File Open dialog</comment>
   </data>
   <data name="ANSWER_CANCEL" xml:space="preserve">
-    <value>CANCEL</value>
+    <value>PERUUTA</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_NO" xml:space="preserve">
-    <value>NO</value>
+    <value>EI</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_YES" xml:space="preserve">
-    <value>YES</value>
+    <value>KYLLÄ</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
@@ -174,19 +174,19 @@
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
-    <value>Auto-play</value>
+    <value>Automaattinen toisto</value>
     <comment>Slidehow option (automatically play)</comment>
   </data>
   <data name="LOOP" xml:space="preserve">
-    <value>Loop</value>
+    <value>Uudelleentoisto</value>
     <comment>Slidehow option (loop if automatic play is enabled)</comment>
   </data>
   <data name="WANT_TO_SAVE_TITLE" xml:space="preserve">
-    <value>Save?</value>
+    <value>Tallenna?</value>
     <comment>Title used in dialog prompt</comment>
   </data>
   <data name="FADE_IN_FORWARD" xml:space="preserve">
-    <value>Fade in</value>
+    <value>Häivytä sisään</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_IN_REVERSE" xml:space="preserve">
@@ -194,7 +194,7 @@
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_FORWARD" xml:space="preserve">
-    <value>Fade out</value>
+    <value>Häivytä ulos</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_REVERSE" xml:space="preserve">
@@ -219,7 +219,7 @@
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
-    <value>Drag your image(s) here!</value>
+    <value>Pudota kuva(t) tähän!</value>
     <comment>Instruction on empty window</comment>
   </data>
   <data name="DELETE_SLIDE" xml:space="preserve">
