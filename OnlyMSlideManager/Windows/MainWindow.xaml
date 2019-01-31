@@ -31,6 +31,13 @@
         Title="{Binding MainWindowCaption}" Height="450" Width="800" Icon="/OnlyMSlideManager;component/slides.ico">
     <Window.Resources>
 
+        <Style x:Key="SettingsComboBoxStyle" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignComboBox}">
+            <Setter Property="Margin" Value="10,0,0,0"/>
+            <Setter Property="Width" Value="420"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="materialDesign:ComboBoxAssist.ClassicMode" Value="true" />
+        </Style>
+
         <Style x:Key="SettingsCheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignCheckBox}">
             <Setter Property="Margin" Value="2" />
         </Style>
@@ -225,6 +232,28 @@
                     Width="30"
                     Kind="ContentSaveSettings" />
                 </Button>
+
+                <materialDesign:PopupBox StaysOpen="True" Padding="20" ToolTip="{x:Static resx:Resources.OPTIONS_TOOLTIP}">
+                    
+                    <StackPanel>
+                        <TextBlock 
+                            Margin="0,0,0,10"
+                            Style="{StaticResource MaterialDesignTitleTextBlock}"
+                            Text="{x:Static resx:Resources.OPTIONS}"/>
+
+                        <ComboBox ItemsSource="{Binding Languages}" 
+                              materialDesign:HintAssist.IsFloating="True"
+                              Width="200"
+                              Style="{StaticResource SettingsComboBoxStyle}"
+                              materialDesign:HintAssist.Hint="{x:Static resx:Resources.LANGUAGE}"
+                              SelectedValuePath="LanguageId" 
+                              DisplayMemberPath="LanguageName"
+                              SelectedValue="{Binding LanguageId, Mode=TwoWay}"/>
+
+                    </StackPanel>
+                   
+
+                </materialDesign:PopupBox>
 
             </ToolBar>
 

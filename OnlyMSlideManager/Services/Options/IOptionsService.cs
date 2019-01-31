@@ -4,6 +4,8 @@
     {
         string AppWindowPlacement { get; set; }
 
+        string Culture { get; set; }
+
         void Save();
     }
 }

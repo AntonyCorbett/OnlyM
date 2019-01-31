@@ -2,6 +2,8 @@ namespace OnlyMSlideManager.ViewModel
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -19,12 +21,12 @@ namespace OnlyMSlideManager.ViewModel
     using OnlyM.CoreSys.Services.Snackbar;
     using OnlyM.CoreSys.Services.UI;
     using OnlyM.Slides;
-    using OnlyM.Slides.Exceptions;
     using OnlyMSlideManager.Helpers;
     using OnlyMSlideManager.Models;
     using OnlyMSlideManager.PubSubMessages;
     using OnlyMSlideManager.Services;
     using OnlyMSlideManager.Services.DragAndDrop;
+    using OnlyMSlideManager.Services.Options;
     using Serilog;
 
     public class MainViewModel : ViewModelBase
@@ -38,6 +40,8 @@ namespace OnlyMSlideManager.ViewModel
         private readonly IDragAndDropServiceCustom _dragAndDropServiceCustom;
         private readonly ISnackbarService _snackbarService;
         private readonly IUserInterfaceService _userInterfaceService;
+        private readonly IOptionsService _optionsService;
+        private readonly LanguageItem[] _languages;
 
         private string _defaultFileOpenFolder;
         private string _defaultFileSaveFolder;
@@ -55,12 +59,15 @@ namespace OnlyMSlideManager.ViewModel
             IDialogService dialogService, 
             IDragAndDropServiceCustom dragAndDropServiceCustom,
             ISnackbarService snackbarService,
-            IUserInterfaceService userInterfaceService)
+            IUserInterfaceService userInterfaceService,
+            IOptionsService optionsService)
         {
             _dialogService = dialogService;
             _dragAndDropServiceCustom = dragAndDropServiceCustom;
             _snackbarService = snackbarService;
             _userInterfaceService = userInterfaceService;
+            _optionsService = optionsService;
+            _languages = GetSupportedLanguages();
 
             AddDesignTimeItems();
 
@@ -186,6 +193,23 @@ namespace OnlyMSlideManager.ViewModel
         public ISnackbarMessageQueue TheSnackbarMessageQueue => _snackbarService.TheSnackbarMessageQueue;
 
         public bool IsDirty => CreateSlideshowSignature() != _lastSavedSlideshowSignature;
+
+        public IEnumerable<LanguageItem> Languages => _languages;
+
+        public string LanguageId
+        {
+            get => _optionsService.Culture;
+            set
+            {
+                if (_optionsService.Culture != value)
+                {
+                    _optionsService.Culture = value;
+                    RaisePropertyChanged();
+
+                    _snackbarService.EnqueueWithOk(Properties.Resources.LANGUAGE_RESTART, Properties.Resources.OK);
+                }
+            }
+        }
 
         public ObservableCollectionEx<SlideItem> SlideItems { get; } = new ObservableCollectionEx<SlideItem>();
 
@@ -762,6 +786,47 @@ namespace OnlyMSlideManager.ViewModel
                 
                 return count;
             });
+        }
+
+        private LanguageItem[] GetSupportedLanguages()
+        {
+            var result = new List<LanguageItem>();
+
+            var subFolders = Directory.GetDirectories(AppDomain.CurrentDomain.BaseDirectory);
+
+            foreach (var folder in subFolders)
+            {
+                if (!string.IsNullOrEmpty(folder))
+                {
+                    try
+                    {
+                        var c = new CultureInfo(System.IO.Path.GetFileNameWithoutExtension(folder));
+                        result.Add(new LanguageItem
+                        {
+                            LanguageId = c.Name,
+                            LanguageName = c.EnglishName
+                        });
+                    }
+                    catch (CultureNotFoundException)
+                    {
+                        // expected
+                    }
+                }
+            }
+
+            // the native language
+            {
+                var c = new CultureInfo(System.IO.Path.GetFileNameWithoutExtension("en-GB"));
+                result.Add(new LanguageItem
+                {
+                    LanguageId = c.Name,
+                    LanguageName = c.EnglishName
+                });
+            }
+
+            result.Sort((x, y) => string.Compare(x.LanguageName, y.LanguageName, StringComparison.Ordinal));
+
+            return result.ToArray();
         }
     }
 }

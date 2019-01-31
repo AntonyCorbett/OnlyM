@@ -215,6 +215,24 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string LANGUAGE {
+            get {
+                return ResourceManager.GetString("LANGUAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart to change language.
+        /// </summary>
+        public static string LANGUAGE_RESTART {
+            get {
+                return ResourceManager.GetString("LANGUAGE_RESTART", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loop.
         /// </summary>
         public static string LOOP {
@@ -265,6 +283,24 @@ namespace OnlyMSlideManager.Properties {
         public static string OPEN_SLIDESHOW_TITLE {
             get {
                 return ResourceManager.GetString("OPEN_SLIDESHOW_TITLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OPTIONS.
+        /// </summary>
+        public static string OPTIONS {
+            get {
+                return ResourceManager.GetString("OPTIONS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string OPTIONS_TOOLTIP {
+            get {
+                return ResourceManager.GetString("OPTIONS_TOOLTIP", resourceCulture);
             }
         }
         
