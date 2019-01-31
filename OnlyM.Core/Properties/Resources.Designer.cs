@@ -278,7 +278,7 @@ namespace OnlyM.Core.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XXLarge.
+        ///   Looks up a localized string similar to XX Large.
         /// </summary>
         internal static string MAGNIFIER_SIZE_XXLARGE {
             get {
