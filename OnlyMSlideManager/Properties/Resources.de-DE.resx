@@ -126,19 +126,19 @@
     <comment>Title</comment>
   </data>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
-    <value>New slideshow</value>
+    <value>Neu</value>
     <comment>File command</comment>
   </data>
   <data name="OPEN_SLIDESHOW" xml:space="preserve">
-    <value>Open slideshow</value>
+    <value>Öffnen</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW" xml:space="preserve">
-    <value>Save slideshow</value>
+    <value>Speichern</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW_AS" xml:space="preserve">
-    <value>Save slideshow as...</value>
+    <value>Speichern unter...</value>
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
@@ -146,11 +146,11 @@
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Open Slideshow</value>
+    <value>Öffnen</value>
     <comment>File Open dialog caption</comment>
   </data>
   <data name="SLIDESHOW_FILE" xml:space="preserve">
-    <value>Slideshow file</value>
+    <value>Diashow-Datei</value>
     <comment>Used in File Open dialog</comment>
   </data>
   <data name="ANSWER_CANCEL" xml:space="preserve">
@@ -166,15 +166,15 @@
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
-    <value>The slideshow has changed. Do you want to save it?</value>
+    <value>Die Diashow wurde bearbeitet. Möchtest du sie speichern?</value>
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Save Slideshow</value>
+    <value>Speichern</value>
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
-    <value>Auto-play</value>
+    <value>Automatisch abspielen</value>
     <comment>Slidehow option (automatically play)</comment>
   </data>
   <data name="LOOP" xml:space="preserve">
@@ -190,7 +190,7 @@
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_IN_REVERSE" xml:space="preserve">
-    <value>Fade in (reversing)</value>
+    <value>Einblenden (rückwärts)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_FORWARD" xml:space="preserve">
@@ -198,7 +198,7 @@
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_REVERSE" xml:space="preserve">
-    <value>Fade out (reversing)</value>
+    <value>Ausblenden (rückwärts)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="DWELL_SECONDS" xml:space="preserve">
@@ -212,10 +212,10 @@
     <value>Datei konnte nicht gespeichert werden!</value>
   </data>
   <data name="SAVED_FILE" xml:space="preserve">
-    <value>Saved file</value>
+    <value>Datei gespeichert</value>
   </data>
   <data name="AUTO_PLAY_SETTINGS" xml:space="preserve">
-    <value>Auto-play settings</value>
+    <value>Einstellungen für die automatische Wiedergabe</value>
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
@@ -235,7 +235,7 @@
     <comment>Tooltip for 'back' button on slide edit page</comment>
   </data>
   <data name="NO_SLIDES_CREATED" xml:space="preserve">
-    <value>No slides created!</value>
+    <value>Keine Folien erstellt!</value>
     <comment>Message displayed following an unsuccessful drag and drop</comment>
   </data>
   <data name="SLIDE_CREATED" xml:space="preserve">
@@ -249,5 +249,21 @@
   <data name="ERROR_ADDING_IMAGES" xml:space="preserve">
     <value>Beim Hinzufügen der Bilder ist ein Fehler aufgetreten!</value>
     <comment>Error message</comment>
+  </data>
+  <data name="LANGUAGE" xml:space="preserve">
+    <value>Sprache</value>
+    <comment>Combobox title on toolbar</comment>
+  </data>
+  <data name="LANGUAGE_RESTART" xml:space="preserve">
+    <value>Neu starten, um die Sprache zu ändern</value>
+    <comment>Prompt displayed when language is selected</comment>
+  </data>
+  <data name="OPTIONS" xml:space="preserve">
+    <value>EINSTELLUNGEN</value>
+    <comment>Title of options popup</comment>
+  </data>
+  <data name="OPTIONS_TOOLTIP" xml:space="preserve">
+    <value>Einstellungen</value>
+    <comment>Tooltip for options toolbar button</comment>
   </data>
 </root>
