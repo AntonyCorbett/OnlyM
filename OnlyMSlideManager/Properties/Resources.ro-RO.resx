@@ -126,51 +126,51 @@
     <comment>Title</comment>
   </data>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
-    <value>New slideshow</value>
+    <value>Diapozitiv nou</value>
     <comment>File command</comment>
   </data>
   <data name="OPEN_SLIDESHOW" xml:space="preserve">
-    <value>Open slideshow</value>
+    <value>Deschide diapozitivul</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW" xml:space="preserve">
-    <value>Save slideshow</value>
+    <value>Salvează diapozitivul</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW_AS" xml:space="preserve">
-    <value>Save slideshow as...</value>
+    <value>Salvează diapozitivul ca...</value>
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Could not create folder {0}</value>
+    <value>Nu s-a putut crea dosarul {0}</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Open Slideshow</value>
+    <value>Deschide diapozitivul</value>
     <comment>File Open dialog caption</comment>
   </data>
   <data name="SLIDESHOW_FILE" xml:space="preserve">
-    <value>Slideshow file</value>
+    <value>Fișier diapozitiv</value>
     <comment>Used in File Open dialog</comment>
   </data>
   <data name="ANSWER_CANCEL" xml:space="preserve">
-    <value>CANCEL</value>
+    <value>ANULEAZĂ</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_NO" xml:space="preserve">
-    <value>NO</value>
+    <value>NU</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_YES" xml:space="preserve">
-    <value>YES</value>
+    <value>DA</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
-    <value>The slideshow has changed. Do you want to save it?</value>
+    <value>Diapozitivul s-a schimbat. Vrei să-l salvezi?</value>
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Save Slideshow</value>
+    <value>Salvează diapozitivul</value>
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
