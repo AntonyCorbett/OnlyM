@@ -118,114 +118,136 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
-  <data name="Audio" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Audio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="flower" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\flower.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SETTINGS" xml:space="preserve">
+    <value>SETTINGS</value>
+    <comment>Title</comment>
+  </data>
+  <data name="NEW_SLIDESHOW" xml:space="preserve">
+    <value>New slideshow</value>
+    <comment>File command</comment>
+  </data>
+  <data name="OPEN_SLIDESHOW" xml:space="preserve">
+    <value>Open slideshow</value>
+    <comment>File command</comment>
+  </data>
+  <data name="SAVE_SLIDESHOW" xml:space="preserve">
+    <value>Save slideshow</value>
+    <comment>File command</comment>
+  </data>
+  <data name="SAVE_SLIDESHOW_AS" xml:space="preserve">
+    <value>Save slideshow as...</value>
+    <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
     <value>Could not create folder {0}</value>
-    <comment>Error notification message if OnlyM fails to create a folder. Please retain the placeholder.</comment>
+    <comment>Error shown when a folder cannot be created</comment>
   </data>
-  <data name="FADE_CROSS" xml:space="preserve">
-    <value>Crossfade</value>
-    <comment>See Settings =&gt; Images =&gt; Fading style</comment>
+  <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
+    <value>Open Slideshow</value>
+    <comment>File Open dialog caption</comment>
   </data>
-  <data name="FADE_IN" xml:space="preserve">
+  <data name="SLIDESHOW_FILE" xml:space="preserve">
+    <value>Slideshow file</value>
+    <comment>Used in File Open dialog</comment>
+  </data>
+  <data name="ANSWER_CANCEL" xml:space="preserve">
+    <value>CANCEL</value>
+    <comment>Answer in prompt dialog (button caption)</comment>
+  </data>
+  <data name="ANSWER_NO" xml:space="preserve">
+    <value>NO</value>
+    <comment>Answer in prompt dialog (button caption)</comment>
+  </data>
+  <data name="ANSWER_YES" xml:space="preserve">
+    <value>YES</value>
+    <comment>Answer in prompt dialog (button caption)</comment>
+  </data>
+  <data name="WANT_TO_SAVE" xml:space="preserve">
+    <value>The slideshow has changed. Do you want to save it?</value>
+    <comment>Question used in dialog prompt</comment>
+  </data>
+  <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
+    <value>Save Slideshow</value>
+    <comment>Caption of File Save dialog</comment>
+  </data>
+  <data name="AUTO_PLAY" xml:space="preserve">
+    <value>Auto-play</value>
+    <comment>Slidehow option (automatically play)</comment>
+  </data>
+  <data name="LOOP" xml:space="preserve">
+    <value>Loop</value>
+    <comment>Slidehow option (loop if automatic play is enabled)</comment>
+  </data>
+  <data name="WANT_TO_SAVE_TITLE" xml:space="preserve">
+    <value>Save?</value>
+    <comment>Title used in dialog prompt</comment>
+  </data>
+  <data name="FADE_IN_FORWARD" xml:space="preserve">
     <value>Fade in</value>
-    <comment>See Settings =&gt; Images =&gt; Fading style</comment>
+    <comment>Checkbox on slide Edit page</comment>
   </data>
-  <data name="FADE_IN_OUT" xml:space="preserve">
-    <value>Fade in and out</value>
-    <comment>See Settings =&gt; Images =&gt; Fading style</comment>
+  <data name="FADE_IN_REVERSE" xml:space="preserve">
+    <value>Fade in (reversing)</value>
+    <comment>Checkbox on slide Edit page</comment>
   </data>
-  <data name="FADE_NONE" xml:space="preserve">
-    <value>None</value>
-    <comment>See Settings =&gt; Images =&gt; Fading style</comment>
-  </data>
-  <data name="FADE_OUT" xml:space="preserve">
+  <data name="FADE_OUT_FORWARD" xml:space="preserve">
     <value>Fade out</value>
-    <comment>See Settings =&gt; Images =&gt; Fading style</comment>
+    <comment>Checkbox on slide Edit page</comment>
   </data>
-  <data name="FADE_SPEED_FAST" xml:space="preserve">
-    <value>Fast</value>
-    <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
+  <data name="FADE_OUT_REVERSE" xml:space="preserve">
+    <value>Fade out (reversing)</value>
+    <comment>Checkbox on slide Edit page</comment>
   </data>
-  <data name="FADE_SPEED_NORMAL" xml:space="preserve">
-    <value>Normal</value>
-    <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
+  <data name="DWELL_SECONDS" xml:space="preserve">
+    <value>Dwell time (secs)</value>
+    <comment>The time a slide is displayed during automatic playback.</comment>
   </data>
-  <data name="FADE_SPEED_SLOW" xml:space="preserve">
-    <value>Slow</value>
-    <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
   </data>
-  <data name="FADE_SPEED_SUPER_FAST" xml:space="preserve">
-    <value>Super fast</value>
-    <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
+  <data name="COULD_NOT_SAVE" xml:space="preserve">
+    <value>Could not save file!</value>
   </data>
-  <data name="LOG_LEVEL_DEBUG" xml:space="preserve">
-    <value>Debug</value>
-    <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
+  <data name="SAVED_FILE" xml:space="preserve">
+    <value>Saved file</value>
   </data>
-  <data name="LOG_LEVEL_ERROR" xml:space="preserve">
-    <value>Error</value>
-    <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
+  <data name="AUTO_PLAY_SETTINGS" xml:space="preserve">
+    <value>Auto-play settings</value>
+    <comment>group box title</comment>
   </data>
-  <data name="LOG_LEVEL_FATAL" xml:space="preserve">
-    <value>Fatal</value>
-    <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
+  <data name="DRAG_IMAGES_HERE" xml:space="preserve">
+    <value>Drag your image(s) here!</value>
+    <comment>Instruction on empty window</comment>
   </data>
-  <data name="LOG_LEVEL_INFORMATION" xml:space="preserve">
-    <value>Information</value>
-    <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
+  <data name="DELETE_SLIDE" xml:space="preserve">
+    <value>Delete slide</value>
+    <comment>Tooltip for delete button on slide edit page</comment>
   </data>
-  <data name="LOG_LEVEL_VERBOSE" xml:space="preserve">
-    <value>Verbose</value>
-    <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
+  <data name="EDIT_SLIDE" xml:space="preserve">
+    <value>Edit slide</value>
+    <comment>Tooltip for edit button on slides</comment>
   </data>
-  <data name="LOG_LEVEL_WARNING" xml:space="preserve">
-    <value>Warning</value>
-    <comment>See Settings =&gt; Miscellaneous =&gt; Logging level</comment>
+  <data name="RETURN_TO_SLIDE" xml:space="preserve">
+    <value>Return</value>
+    <comment>Tooltip for 'back' button on slide edit page</comment>
   </data>
-  <data name="MAGNIFIER_SHAPE_CIRCLE" xml:space="preserve">
-    <value>Circle</value>
-    <comment>See Settings =&gt; Web (magnifier shape)</comment>
+  <data name="NO_SLIDES_CREATED" xml:space="preserve">
+    <value>No slides created!</value>
+    <comment>Message displayed following an unsuccessful drag and drop</comment>
   </data>
-  <data name="MAGNIFIER_SHAPE_SQUARE" xml:space="preserve">
-    <value>Square</value>
-    <comment>See Settings =&gt; Web (magnifier shape)</comment>
+  <data name="SLIDE_CREATED" xml:space="preserve">
+    <value>Slide created</value>
+    <comment>Message displayed when a slide is created following drag and drop</comment>
   </data>
-  <data name="MAGNIFIER_SIZE_LARGE" xml:space="preserve">
-    <value>Large</value>
-    <comment>See Settings =&gt; Web (magnifier size)</comment>
+  <data name="X_SLIDES_CREATED" xml:space="preserve">
+    <value>{0} slides created</value>
+    <comment>Message displayed when slides are created following drag and drop</comment>
   </data>
-  <data name="MAGNIFIER_SIZE_MEDIUM" xml:space="preserve">
-    <value>Medium</value>
-    <comment>See Settings =&gt; Web (magnifier size)</comment>
-  </data>
-  <data name="MAGNIFIER_SIZE_SMALL" xml:space="preserve">
-    <value>Small</value>
-    <comment>See Settings =&gt; Web (magnifier size)</comment>
-  </data>
-  <data name="MAGNIFIER_SIZE_XLARGE" xml:space="preserve">
-    <value>X Large</value>
-    <comment>See Settings =&gt; Web (magnifier size)</comment>
-  </data>
-  <data name="MAGNIFIER_SIZE_XSMALL" xml:space="preserve">
-    <value>X Small</value>
-    <comment>See Settings =&gt; Web (magnifier size)</comment>
-  </data>
-  <data name="MAGNIFIER_SIZE_XXLARGE" xml:space="preserve">
-    <value>XX Large</value>
-  </data>
-  <data name="MAGNIFIER_SIZE_XXSMALL" xml:space="preserve">
-    <value>XX Small</value>
-  </data>
-  <data name="PDF" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\PDF.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Unknown" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Unknown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Web" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Web.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ERROR_ADDING_IMAGES" xml:space="preserve">
+    <value>An error occurred adding images!</value>
+    <comment>Error message</comment>
   </data>
 </root>
