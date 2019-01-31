@@ -3,3 +3,5 @@ files:
     translation: /OnlyM/Properties/%file_name%.%locale%.resx
   - source: /OnlyM.Core/Properties/Resources.resx
     translation: /OnlyM.Core/Properties/%file_name%.%locale%.resx
+  - source: /OnlyMSlideManager/Properties/Resources.resx
+    translation: /OnlyMSlideManager/Properties/%file_name%.%locale%.resx
