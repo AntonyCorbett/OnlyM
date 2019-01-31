@@ -190,7 +190,7 @@
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_IN_REVERSE" xml:space="preserve">
-    <value>Fade in (reversing)</value>
+    <value>Afișare progresivă (sens invers)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_FORWARD" xml:space="preserve">
@@ -198,28 +198,28 @@
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_REVERSE" xml:space="preserve">
-    <value>Fade out (reversing)</value>
+    <value>Ascundere progresivă (sens invers)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="DWELL_SECONDS" xml:space="preserve">
-    <value>Dwell time (secs)</value>
+    <value>Timp de afișare (secunde)</value>
     <comment>The time a slide is displayed during automatic playback.</comment>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="COULD_NOT_SAVE" xml:space="preserve">
-    <value>Could not save file!</value>
+    <value>Nu s-a putut salva fișierul!</value>
   </data>
   <data name="SAVED_FILE" xml:space="preserve">
-    <value>Saved file</value>
+    <value>Fișier salvat</value>
   </data>
   <data name="AUTO_PLAY_SETTINGS" xml:space="preserve">
-    <value>Auto-play settings</value>
+    <value>Setări redare automată</value>
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
-    <value>Drag your image(s) here!</value>
+    <value>Trage imaginile tale aici!</value>
     <comment>Instruction on empty window</comment>
   </data>
   <data name="DELETE_SLIDE" xml:space="preserve">
