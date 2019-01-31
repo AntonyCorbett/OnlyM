@@ -20,7 +20,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DesignHeight="450" d:DesignWidth="600" >
+             d:DesignHeight="450" d:DesignWidth="600" SizeChanged="OnlyMOperatorPage_SizeChanged" >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -36,10 +36,10 @@
 
             <DataTemplate DataType="{x:Type models:MediaItem}">
                 <!-- Media Item Card -->
-                <materialDesign:Card Height="120" Margin="4" Padding="4"
+                <materialDesign:Card x:Name ="TheCard" Height="120" Margin="4" Padding="4"
                                          Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                          materialDesign:ShadowAssist.ShadowDepth="Depth1"
-                                         materialDesign:ShadowAssist.ShadowEdges="Bottom">
+                                         materialDesign:ShadowAssist.ShadowEdges="All">
                     
                     <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding IsCommandPanelOpen, Mode=TwoWay}">
                         
@@ -110,7 +110,7 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="{Binding CommandPanelBtnColWidth}"/>
-                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="{Binding Path=DataContext.ThumbnailColWidth, Source={x:Reference OnlyMOperatorPage}}"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
@@ -136,7 +136,23 @@
                             <!-- Thumbnail -->
                             <Border Grid.Column="1" Background="Black" Margin="0,0,5,0" BorderThickness="1" BorderBrush="Black">
                                 <Grid>
-                                    <Image Source="{Binding ThumbnailImageSource}" />
+                                    <Image Source="{Binding ThumbnailImageSource}">
+                                        <Image.ToolTip>
+                                            <ToolTip Placement="Center" 
+                                                     HorizontalOffset="54"
+                                                     Visibility="{Binding IsImagePopupEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                
+                                                <ToolTip.Template>
+                                                    <ControlTemplate>
+                                                        <Border BorderThickness="1" BorderBrush="Black" Background="Black">
+                                                            <Image Width="320" Height="180" Source="{Binding ThumbnailImageSource}">
+                                                        </Image>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </ToolTip.Template>
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
 
                                     <Ellipse 
                                         Width="33" Height="33" 

@@ -20,7 +20,7 @@
         WindowStyle="None"
         AllowsTransparency="{Binding AllowsTransparency}"
         ResizeMode="NoResize"
-        MinWidth="500"
+        MinWidth="366"
         MinHeight="500"
         Topmost="{Binding AlwaysOnTop, Mode=OneWay}"
         Title="S o u n d B o x - O N L Y M" Height="650" Width="500" Closing="WindowClosing" Activated="OnWindowActivated" Deactivated="OnWindowDeactivated" Icon="/OnlyM;component/icon3.ico">

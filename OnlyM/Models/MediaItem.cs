@@ -563,6 +563,23 @@
 
         public int CommandPanelBtnColWidth => CommandPanelVisible ? 12 : 0;
 
+        public bool IsImagePopupEnabled
+        {
+            get
+            {
+                switch (MediaType.Classification)
+                {
+                    case MediaClassification.Image:
+                    case MediaClassification.Video:
+                    case MediaClassification.Slideshow:
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        }
+
         private static string GenerateTimeString(long milliseconds)
         {
             return TimeSpan.FromMilliseconds(milliseconds).ToString(@"hh\:mm\:ss");

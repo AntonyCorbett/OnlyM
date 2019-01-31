@@ -48,6 +48,7 @@
         private MetaDataQueueConsumer _metaDataConsumer;
         private string _blankScreenImagePath;
         private bool _pendingLoadMediaItems;
+        private int _thumbnailColWidth = 180;
 
         public OperatorViewModel(
             IMediaProviderService mediaProviderService,
@@ -141,6 +142,19 @@
 
         public RelayCommand<Guid> NextSlideCommand { get; set; }
 
+        public int ThumbnailColWidth
+        {
+            get => _thumbnailColWidth;
+            set
+            {
+                if (_thumbnailColWidth != value)
+                {
+                    _thumbnailColWidth = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataCancellationTokenSource", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataProducer", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataConsumer", Justification = "False Positive")]

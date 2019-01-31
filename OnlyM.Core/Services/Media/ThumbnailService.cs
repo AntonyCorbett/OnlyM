@@ -19,7 +19,10 @@
 
     public sealed class ThumbnailService : IThumbnailService
     {
-        private const int MaxPixelDimension = 180;
+        // note that MaxPixelDimension should match the 
+        // image tooltip width in OperatorPage.xaml
+        private const int MaxPixelDimension = 320;
+
         private readonly IDatabaseService _databaseService;
         private readonly IOptionsService _optionsService;
 

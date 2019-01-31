@@ -7,6 +7,7 @@
     using CommonServiceLocator;
     using GalaSoft.MvvmLight.Messaging;
     using OnlyM.PubSubMessages;
+    using OnlyM.ViewModel;
     using Services.DragAndDrop;
 
     /// <summary>
@@ -38,6 +39,24 @@
             {
                 var mediaItemGuid = (Guid)cb.Tag;
                 Messenger.Default.Send(new MirrorWindowMessage { MediaItemId = mediaItemGuid, UseMirror = isChecked });
+            }
+        }
+
+        private void OnlyMOperatorPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            OperatorViewModel vm = (OperatorViewModel)DataContext;
+
+            if (e.NewSize.Width >= 500)
+            {
+                vm.ThumbnailColWidth = 180;
+            }
+            else if (e.NewSize.Width >= 400)
+            {
+                vm.ThumbnailColWidth = 100;
+            }
+            else
+            {
+                vm.ThumbnailColWidth = 46;
             }
         }
     }
