@@ -132,7 +132,8 @@
         {
             var count = 0;
             someError = false;
-            
+
+            OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs { Status = FileCopyStatus.StartingCopy });
             try
             {
                 var mediaFolder = _optionsService.MediaFolder;
@@ -156,10 +157,7 @@
             }
             finally
             {
-                OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
-                {
-                    Status = FileCopyStatus.FinishedCopy
-                });
+                OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs { Status = FileCopyStatus.FinishedCopy });
             }
 
             return count;
@@ -170,6 +168,7 @@
             var count = 0;
             someError = false;
 
+            OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs { Status = FileCopyStatus.StartingCopy });
             try
             {
                 var mediaFolder = _optionsService.MediaFolder;
@@ -189,10 +188,7 @@
             }
             finally
             {
-                OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
-                {
-                    Status = FileCopyStatus.FinishedCopy
-                });
+                OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs { Status = FileCopyStatus.FinishedCopy });
             }
 
             return count;
@@ -234,7 +230,6 @@
                 if (!string.IsNullOrEmpty(filename))
                 {
                     var destFile = Path.Combine(mediaFolder, filename);
-
                     if (CopyFileInternal(file, destFile))
                     {
                         ++count;
@@ -253,53 +248,106 @@
             {
                 if (!string.IsNullOrEmpty(uri))
                 {
-                    string sourceFile = null;
-                    string destFile;
-
                     if (IsMediaFileUrl(uri))
                     {
-                        // uri points to a media file so download a local copy.
-                        var filename = Path.GetFileName(uri);
-                        destFile = Path.Combine(mediaFolder, filename);
-
-                        if (!File.Exists(destFile))
+                        // uri points to a media item.
+                        if (CopyAsMediaFileFromUri(mediaFolder, uri))
                         {
-                            sourceFile = Path.Combine(GetWebDownloadTempFolder(), filename);
-
-                            var downloader = new FileDownloader();
-                            if (!downloader.Download(new Uri(uri), sourceFile, true))
-                            {
-                                sourceFile = null;
-                            }
+                            ++count;
                         }
                     }
                     else
                     {
                         // uri should be treated as a web shortcut.
-                        var url = new Uri(uri);
-
-                        var filename = GenerateLocalFileName(url);
-                        destFile = Path.Combine(mediaFolder, filename);
-
-                        if (!File.Exists(destFile))
+                        if (CreateShortcutFromUri(mediaFolder, uri))
                         {
-                            sourceFile = Path.Combine(GetWebDownloadTempFolder(), filename);
-                            WebShortcutHelper.Generate(sourceFile, url);
+                            ++count;
                         }
-                    }
-
-                    if (!string.IsNullOrEmpty(sourceFile) &&
-                        File.Exists(sourceFile) && 
-                        CopyFileInternal(sourceFile, destFile))
-                    {
-                        ++count;
-
-                        FileUtils.SafeDeleteFile(sourceFile);
                     }
                 }
             }
 
             return count;
+        }
+
+        private bool CreateShortcutFromUri(string mediaFolder, string uri)
+        {
+            var url = new Uri(uri);
+
+            var filename = GenerateLocalFileName(url);
+            var destFile = Path.Combine(mediaFolder, filename);
+
+            if (File.Exists(destFile))
+            {
+                return false;
+            }
+
+            var sourceFile = Path.Combine(GetWebDownloadTempFolder(), filename);
+
+            if (string.IsNullOrEmpty(sourceFile))
+            {
+                return false;
+            }
+
+            WebShortcutHelper.Generate(sourceFile, url);
+
+            if (!File.Exists(sourceFile))
+            {
+                return false;
+            }
+
+            if (!CopyFileInternal(sourceFile, destFile))
+            {
+                return false;
+            }
+
+            FileUtils.SafeDeleteFile(sourceFile);
+
+            return true;
+        }
+
+        private bool CopyAsMediaFileFromUri(string mediaFolder, string uri)
+        {
+            var filename = Path.GetFileName(uri);
+            if (string.IsNullOrEmpty(filename))
+            {
+                return false;
+            }
+
+            var destFile = Path.Combine(mediaFolder, filename);
+
+            if (File.Exists(destFile))
+            {
+                return false;
+            }
+
+            var sourceFile = Path.Combine(GetWebDownloadTempFolder(), filename);
+
+            if (string.IsNullOrEmpty(sourceFile))
+            {
+                return false;
+            }
+
+            // download a local copy of the media.
+            var downloader = new FileDownloader();
+            if (!downloader.Download(new Uri(uri), sourceFile, true))
+            {
+                return false;
+            }
+
+            if (!File.Exists(sourceFile))
+            {
+                return false;
+            }
+
+            if (!CopyFileInternal(sourceFile, destFile))
+            {
+                return false;
+            }
+
+            FileUtils.SafeDeleteFile(sourceFile);
+
+            return true;
         }
 
         private string GenerateLocalFileName(Uri uri)
@@ -326,20 +374,7 @@
         {
             if (!string.IsNullOrEmpty(destFile) && !File.Exists(destFile))
             {
-                OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
-                {
-                    FilePath = destFile,
-                    Status = FileCopyStatus.StartingCopy
-                });
-
                 File.Copy(sourceFile, destFile, false);
-                
-                OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
-                {
-                    FilePath = destFile,
-                    Status = FileCopyStatus.FinishedCopy
-                });
-
                 return true;
             }
 
