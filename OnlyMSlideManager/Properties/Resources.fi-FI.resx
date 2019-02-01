@@ -190,7 +190,7 @@
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_IN_REVERSE" xml:space="preserve">
-    <value>Fade in (reversing)</value>
+    <value>Häivytä sisään (takaperin)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_FORWARD" xml:space="preserve">
@@ -198,7 +198,7 @@
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_REVERSE" xml:space="preserve">
-    <value>Fade out (reversing)</value>
+    <value>Häivytä ulos (takaperin)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="DWELL_SECONDS" xml:space="preserve">
