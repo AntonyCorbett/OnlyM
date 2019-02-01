@@ -122,7 +122,7 @@
     <value>..\Resources\flower.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SETTINGS" xml:space="preserve">
-    <value>SETTINGS</value>
+    <value>CONFIGURACIÓ</value>
     <comment>Title</comment>
   </data>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
@@ -162,7 +162,7 @@
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_YES" xml:space="preserve">
-    <value>YES</value>
+    <value>SÍ</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
@@ -251,7 +251,7 @@
     <comment>Error message</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
-    <value>Language</value>
+    <value>Idioma</value>
     <comment>Combobox title on toolbar</comment>
   </data>
   <data name="LANGUAGE_RESTART" xml:space="preserve">
@@ -259,11 +259,11 @@
     <comment>Prompt displayed when language is selected</comment>
   </data>
   <data name="OPTIONS" xml:space="preserve">
-    <value>OPTIONS</value>
+    <value>OPCIONS</value>
     <comment>Title of options popup</comment>
   </data>
   <data name="OPTIONS_TOOLTIP" xml:space="preserve">
-    <value>Options</value>
+    <value>Opcions</value>
     <comment>Tooltip for options toolbar button</comment>
   </data>
 </root>
