@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -10,10 +9,12 @@
     using Core.Services.Media;
     using Core.Services.Options;
     using Models;
+    using OnlyM.Core.Services.WebShortcuts;
+    using OnlyM.Core.Utils;
     using OnlyM.CoreSys.Services.Snackbar;
     using OnlyM.Slides;
     using Serilog;
-    
+
     // ReSharper disable once ClassNeverInstantiated.Global
     internal sealed class DragAndDropService : IDragAndDropService
     {
@@ -44,10 +45,7 @@
         public void Paste()
         {
             var data = Clipboard.GetDataObject();
-            if (CanDropOrPaste(data))
-            {
-                CopyMediaFiles(data);
-            }
+            DoCopy(data);
         }
 
         private void HandleDragOver(object sender, DragEventArgs e)
@@ -56,15 +54,27 @@
             e.Handled = true;
         }
 
+        private void DoCopy(IDataObject data)
+        {
+            if (CanDropOrPasteFiles(data))
+            {
+                CopyMediaFiles(data);
+            }
+            else if (CanDropOrPasteUris(data))
+            {
+                CopyUris(data);
+            }
+        }
+
         private void HandleDrop(object sender, DragEventArgs e)
         {
-            CopyMediaFiles(e.Data);
+            DoCopy(e.Data);
         }
 
         private void HandleDragEnter(object sender, DragEventArgs e)
         {
             // do we allow drop of drag object?
-            _canDrop = CanDropOrPaste(e.Data);
+            _canDrop = CanDropOrPasteFiles(e.Data) || CanDropOrPasteUris(e.Data);
             SetEffects(e);
             e.Handled = true;
         }
@@ -81,6 +91,18 @@
                 Task.Run(() =>
                 {
                     int count = InternalCopyMediaFiles(data, out var someError);
+                    DisplaySnackbar(count, someError);
+                });
+            }
+        }
+
+        private void CopyUris(IDataObject data)
+        {
+            if (data != null)
+            {
+                Task.Run(() =>
+                {
+                    int count = InternalCopyUris(data, out var someError);
                     DisplaySnackbar(count, someError);
                 });
             }
@@ -143,6 +165,39 @@
             return count;
         }
 
+        private int InternalCopyUris(IDataObject data, out bool someError)
+        {
+            var count = 0;
+            someError = false;
+
+            try
+            {
+                var mediaFolder = _optionsService.MediaFolder;
+
+                var uriList = GetSupportedUrls(data).ToArray();
+                if (!uriList.Any())
+                {
+                    return 0;
+                }
+
+                count = CopyAsIndividualUris(mediaFolder, uriList);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not copy Uris");
+                someError = true;
+            }
+            finally
+            {
+                OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
+                {
+                    Status = FileCopyStatus.FinishedCopy
+                });
+            }
+
+            return count;
+        }
+
         private int CopyAsSlideshow(string mediaFolder, IDataObject data, string[] files)
         {
             var title = GetOnlyVTitle(data);
@@ -179,22 +234,10 @@
                 if (!string.IsNullOrEmpty(filename))
                 {
                     var destFile = Path.Combine(mediaFolder, filename);
-                    if (!File.Exists(destFile))
+
+                    if (CopyFileInternal(file, destFile))
                     {
-                        OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
-                        {
-                            FilePath = destFile,
-                            Status = FileCopyStatus.StartingCopy
-                        });
-
-                        File.Copy(file, destFile, false);
                         ++count;
-
-                        OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
-                        {
-                            FilePath = destFile,
-                            Status = FileCopyStatus.FinishedCopy
-                        });
                     }
                 }
             }
@@ -202,9 +245,121 @@
             return count;
         }
 
-        private bool CanDropOrPaste(IDataObject data)
+        private int CopyAsIndividualUris(string mediaFolder, string[] uriList)
+        {
+            int count = 0;
+
+            foreach (var uri in uriList)
+            {
+                if (!string.IsNullOrEmpty(uri))
+                {
+                    string sourceFile = null;
+                    string destFile;
+
+                    if (IsMediaFileUrl(uri))
+                    {
+                        // uri points to a media file so download a local copy.
+                        var filename = Path.GetFileName(uri);
+                        destFile = Path.Combine(mediaFolder, filename);
+
+                        if (!File.Exists(destFile))
+                        {
+                            sourceFile = Path.Combine(GetWebDownloadTempFolder(), filename);
+
+                            var downloader = new FileDownloader();
+                            if (!downloader.Download(new Uri(uri), sourceFile, true))
+                            {
+                                sourceFile = null;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // uri should be treated as a web shortcut.
+                        var url = new Uri(uri);
+
+                        var filename = GenerateLocalFileName(url);
+                        destFile = Path.Combine(mediaFolder, filename);
+
+                        if (!File.Exists(destFile))
+                        {
+                            sourceFile = Path.Combine(GetWebDownloadTempFolder(), filename);
+                            WebShortcutHelper.Generate(sourceFile, url);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(sourceFile) &&
+                        File.Exists(sourceFile) && 
+                        CopyFileInternal(sourceFile, destFile))
+                    {
+                        ++count;
+
+                        FileUtils.SafeDeleteFile(sourceFile);
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        private string GenerateLocalFileName(Uri uri)
+        {
+            var hashCode = uri.GetHashCode();
+
+            var webPageTitle = WebPageTitleHelper.Get(uri);
+            if (!string.IsNullOrEmpty(webPageTitle))
+            {
+                return $"{FileUtils.CoerceValidFileName(webPageTitle)}{hashCode}.url";
+            }
+            
+            return $"{FileUtils.CoerceValidFileName(uri.Host)}-{hashCode}.url";
+        }
+
+        private string GetWebDownloadTempFolder()
+        {
+            var result = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyM", "TempWebDownloads");
+            FileUtils.CreateDirectory(result);
+            return result;
+        }
+
+        private bool CopyFileInternal(string sourceFile, string destFile)
+        {
+            if (!string.IsNullOrEmpty(destFile) && !File.Exists(destFile))
+            {
+                OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
+                {
+                    FilePath = destFile,
+                    Status = FileCopyStatus.StartingCopy
+                });
+
+                File.Copy(sourceFile, destFile, false);
+                
+                OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs
+                {
+                    FilePath = destFile,
+                    Status = FileCopyStatus.FinishedCopy
+                });
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsMediaFileUrl(string uri)
+        {
+            var ext = Path.GetExtension(uri);
+            return !string.IsNullOrEmpty(ext) && _mediaProviderService.IsFileExtensionSupported(ext);
+        }
+
+        private bool CanDropOrPasteFiles(IDataObject data)
         {
             return GetSupportedFiles(data).Any();
+        }
+
+        private bool CanDropOrPasteUris(IDataObject data)
+        {
+            return GetSupportedUrls(data).Any();
         }
 
         private bool DataIsFromOnlyV(IDataObject data)
@@ -225,6 +380,40 @@
         {
             var s = (string)data.GetData(DataFormats.StringFormat);
             return s?.Split('|')[1];
+        }
+
+        private IEnumerable<string> GetSupportedUrls(IDataObject data)
+        {
+            var result = new List<string>();
+
+            if (data.GetDataPresent(DataFormats.StringFormat))
+            {
+                var s = (string)data.GetData(DataFormats.StringFormat);
+
+                if (!string.IsNullOrEmpty(s))
+                {
+                    using (var reader = new StringReader(s))
+                    {
+                        var line = reader.ReadLine();
+                        if (!string.IsNullOrEmpty(line))
+                        {
+                            if (IsAcceptableUri(line))
+                            {
+                                result.Add(line.Trim());
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private bool IsAcceptableUri(string uri)
+        {
+            return 
+                Uri.TryCreate(uri, UriKind.Absolute, out var uriResult) && 
+                (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
         private IEnumerable<string> GetSupportedFiles(IDataObject data)

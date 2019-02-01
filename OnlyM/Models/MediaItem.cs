@@ -41,7 +41,8 @@
         private bool _isRollingSlideshow;
         private bool _allowUseMirror;
         private string _miscText;
-        
+        private string _fileNameAsSubTitle;
+
         public event EventHandler PlaybackPositionChangedEvent;
 
         public Guid Id { get; set; }
@@ -201,7 +202,18 @@
 
         public string FilePath { get; set; }
 
-        public string FileNameAsSubTitle { get; set; }
+        public string FileNameAsSubTitle
+        {
+            get => _fileNameAsSubTitle;
+            set
+            {
+                if (_fileNameAsSubTitle != value)
+                {
+                    _fileNameAsSubTitle = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         public long LastChanged { get; set; }
         

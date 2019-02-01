@@ -23,7 +23,7 @@
 
             try
             {
-                using (var wc = new WebClient())
+                using (var wc = WebUtils.CreateWebClient())
                 {
                     var uri = new Uri(iconUrl, UriKind.RelativeOrAbsolute);
                     if (!uri.IsAbsoluteUri)
@@ -68,7 +68,7 @@
 
         private static string GetFaviconUrlFromHtml(string websiteUrl)
         {
-            using (var wc = new WebClient())
+            using (var wc = WebUtils.CreateWebClient())
             {
                 var pageHtml = wc.DownloadString(websiteUrl);
                 var htmlDocument = new HtmlDocument();

@@ -185,8 +185,11 @@
     <Compile Include="Subtitles\SubtitleStatus.cs" />
     <Compile Include="Subtitles\SubtitleTiming.cs" />
     <Compile Include="Utils\FFmpegUtils.cs" />
+    <Compile Include="Utils\FileDownloader.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Subtitles\SubtitleFile.cs" />
+    <Compile Include="Utils\WebPageTitleHelper.cs" />
+    <Compile Include="Utils\WebUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.ca-ES.resx" />
