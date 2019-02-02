@@ -166,96 +166,96 @@
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
-    <value>The slideshow has changed. Do you want to save it?</value>
+    <value>A apresentação de slides foi alterada. Deseja salvar?</value>
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Save Slideshow</value>
+    <value>Salvar apresentação de slides</value>
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
-    <value>Auto-play</value>
+    <value>Reproduzir automaticamente</value>
     <comment>Slidehow option (automatically play)</comment>
   </data>
   <data name="LOOP" xml:space="preserve">
-    <value>Loop</value>
+    <value>Repetir</value>
     <comment>Slidehow option (loop if automatic play is enabled)</comment>
   </data>
   <data name="WANT_TO_SAVE_TITLE" xml:space="preserve">
-    <value>Save?</value>
+    <value>Salvar?</value>
     <comment>Title used in dialog prompt</comment>
   </data>
   <data name="FADE_IN_FORWARD" xml:space="preserve">
-    <value>Fade in</value>
+    <value>Escurecer</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_IN_REVERSE" xml:space="preserve">
-    <value>Fade in (reversing)</value>
+    <value>Escurecer (invertido)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_FORWARD" xml:space="preserve">
-    <value>Fade out</value>
+    <value>Clarear</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_REVERSE" xml:space="preserve">
-    <value>Fade out (reversing)</value>
+    <value>Clarear (invertido)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="DWELL_SECONDS" xml:space="preserve">
-    <value>Dwell time (secs)</value>
+    <value>Tempo de apresentação (seg)</value>
     <comment>The time a slide is displayed during automatic playback.</comment>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="COULD_NOT_SAVE" xml:space="preserve">
-    <value>Could not save file!</value>
+    <value>Não foi possível salvar o arquivo!</value>
   </data>
   <data name="SAVED_FILE" xml:space="preserve">
-    <value>Saved file</value>
+    <value>Arquivo salvo</value>
   </data>
   <data name="AUTO_PLAY_SETTINGS" xml:space="preserve">
-    <value>Auto-play settings</value>
+    <value>Configurações de reprodução automática</value>
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
-    <value>Drag your image(s) here!</value>
+    <value>Solte suas imagens aqui!</value>
     <comment>Instruction on empty window</comment>
   </data>
   <data name="DELETE_SLIDE" xml:space="preserve">
-    <value>Delete slide</value>
+    <value>Excluir slide</value>
     <comment>Tooltip for delete button on slide edit page</comment>
   </data>
   <data name="EDIT_SLIDE" xml:space="preserve">
-    <value>Edit slide</value>
+    <value>Editar slides</value>
     <comment>Tooltip for edit button on slides</comment>
   </data>
   <data name="RETURN_TO_SLIDE" xml:space="preserve">
-    <value>Return</value>
+    <value>Retornar</value>
     <comment>Tooltip for 'back' button on slide edit page</comment>
   </data>
   <data name="NO_SLIDES_CREATED" xml:space="preserve">
-    <value>No slides created!</value>
+    <value>Não há slides criados!</value>
     <comment>Message displayed following an unsuccessful drag and drop</comment>
   </data>
   <data name="SLIDE_CREATED" xml:space="preserve">
-    <value>Slide created</value>
+    <value>Slide criado</value>
     <comment>Message displayed when a slide is created following drag and drop</comment>
   </data>
   <data name="X_SLIDES_CREATED" xml:space="preserve">
-    <value>{0} slides created</value>
+    <value>{0} slides criados</value>
     <comment>Message displayed when slides are created following drag and drop</comment>
   </data>
   <data name="ERROR_ADDING_IMAGES" xml:space="preserve">
-    <value>An error occurred adding images!</value>
+    <value>Ocorreu um erro ao adicionar imagens!</value>
     <comment>Error message</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
-    <value>Language</value>
+    <value>Idioma</value>
     <comment>Combobox title on toolbar</comment>
   </data>
   <data name="LANGUAGE_RESTART" xml:space="preserve">
-    <value>Restart to change language</value>
+    <value>Reinicie o aplicativo para alterar o idioma</value>
     <comment>Prompt displayed when language is selected</comment>
   </data>
   <data name="OPTIONS" xml:space="preserve">
@@ -263,7 +263,7 @@
     <comment>Title of options popup</comment>
   </data>
   <data name="OPTIONS_TOOLTIP" xml:space="preserve">
-    <value>Options</value>
+    <value>Opções</value>
     <comment>Tooltip for options toolbar button</comment>
   </data>
 </root>
