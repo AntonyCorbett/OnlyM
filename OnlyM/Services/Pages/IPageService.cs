@@ -62,5 +62,7 @@
         int GotoNextSlide();
 
         void InitMediaWindow();
+
+        void ForciblyStopAllPlayback(IReadOnlyCollection<MediaItem> activeItems);
     }
 }

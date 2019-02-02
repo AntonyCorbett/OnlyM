@@ -597,24 +597,24 @@
 
         private bool IsVideoOrAudio(MediaItem mediaItem)
         {
-            return
-                mediaItem.MediaType.Classification == MediaClassification.Audio ||
-                mediaItem.MediaType.Classification == MediaClassification.Video;
+            return 
+                mediaItem?.MediaType.Classification == MediaClassification.Audio ||
+                mediaItem?.MediaType.Classification == MediaClassification.Video;
         }
 
         private bool IsVideo(MediaItem mediaItem)
         {
-            return mediaItem.MediaType.Classification == MediaClassification.Video;
+            return mediaItem?.MediaType.Classification == MediaClassification.Video;
         }
 
         private bool IsRollingSlideshow(MediaItem mediaItem)
         {
-            return mediaItem.IsRollingSlideshow;
+            return mediaItem?.IsRollingSlideshow ?? false;
         }
 
         private bool IsWeb(MediaItem mediaItem)
         {
-            return mediaItem.IsWeb;
+            return mediaItem?.IsWeb ?? false;
         }
 
         private async Task MediaPauseControl(Guid mediaItemId)
@@ -844,6 +844,19 @@
                 destFilePaths.Add(item.FilePath);
             }
 
+            var currentItems = GetCurrentMediaItems();
+            var deletedCurrentItems = currentItems?.Intersect(itemsToRemove).ToArray();
+            var count = deletedCurrentItems?.Length ?? 0;
+            if (count > 0)
+            {
+                // we have deleted one or more items that are currently being displayed!
+                Log.Logger.Warning($"User deleted {count} active items");
+
+                ForciblyStopAllPlayback(currentItems);
+
+                _snackbarService.EnqueueWithOk(Properties.Resources.ACTIVE_ITEM_DELETED, Properties.Resources.OK);
+            }
+
             // remove old items.
             foreach (var item in itemsToRemove)
             {
@@ -871,6 +884,17 @@
             SortMediaItems();
 
             InsertBlankMediaItem();
+        }
+
+        private void ForciblyStopAllPlayback(IReadOnlyCollection<MediaItem> activeItems)
+        {
+            _pageService.ForciblyStopAllPlayback(activeItems);
+
+            foreach (var item in activeItems)
+            {
+                _mediaStatusChangingService.RemoveChangingItem(item.Id);
+                _activeMediaItemsService.Remove(item.Id);
+            }
         }
 
         private void TruncateMediaItemsToMaxCount()

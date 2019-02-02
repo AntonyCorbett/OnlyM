@@ -199,6 +199,14 @@
             }
         }
 
+        public async void ForciblyStopAllPlayback(IReadOnlyCollection<MediaItem> activeItems)
+        {
+            foreach (var item in activeItems)
+            {
+                await _mediaWindow.StopMediaAsync(item, true);
+            }
+        }
+
         private void PositionMediaWindow(Window window, Screen monitor, bool isVideo)
         {
             MediaWindowPositionHelper.PositionMediaWindow(
@@ -258,7 +266,7 @@
                 OpenMediaWindow(requiresVisibleWindow: true, isVideo: false);
             }
         }
-
+        
         private void CreateMediaWindow()
         {
             AllowMediaWindowToClose = false;

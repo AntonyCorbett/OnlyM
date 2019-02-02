@@ -61,6 +61,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The media file was deleted!.
+        /// </summary>
+        public static string ACTIVE_ITEM_DELETED {
+            get {
+                return ResourceManager.GetString("ACTIVE_ITEM_DELETED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow mirror window.
         /// </summary>
         public static string ALLOW_MIRROR {
