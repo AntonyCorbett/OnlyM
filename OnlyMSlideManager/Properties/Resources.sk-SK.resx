@@ -219,7 +219,7 @@
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
-    <value>Drag your image(s) here!</value>
+    <value>Sem presuňte obrázky</value>
     <comment>Instruction on empty window</comment>
   </data>
   <data name="DELETE_SLIDE" xml:space="preserve">
