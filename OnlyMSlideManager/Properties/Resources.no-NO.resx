@@ -263,7 +263,7 @@
     <comment>Title of options popup</comment>
   </data>
   <data name="OPTIONS_TOOLTIP" xml:space="preserve">
-    <value>Options</value>
+    <value>Alternativer</value>
     <comment>Tooltip for options toolbar button</comment>
   </data>
 </root>
