@@ -126,7 +126,7 @@
     <comment>Title</comment>
   </data>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
-    <value>New slideshow</value>
+    <value>Ny slideshow</value>
     <comment>File command</comment>
   </data>
   <data name="OPEN_SLIDESHOW" xml:space="preserve">
