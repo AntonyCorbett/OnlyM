@@ -377,7 +377,7 @@
     <comment>Button label in Command panel. Hide the media item.</comment>
   </data>
   <data name="PAUSE_FINAL_FRAME" xml:space="preserve">
-    <value>Pause på siste bilde</value>
+    <value>Frys siste bilde</value>
     <comment>Tooltip on Freeze button in Command panel</comment>
   </data>
   <data name="WILL_PAUSE" xml:space="preserve">
