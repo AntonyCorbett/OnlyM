@@ -188,6 +188,24 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (contains 1 rolling slide).
+        /// </summary>
+        public static string CONTAINS_1_ROLLING_SLIDE {
+            get {
+                return ResourceManager.GetString("CONTAINS_1_ROLLING_SLIDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (contains 1 slide).
+        /// </summary>
+        public static string CONTAINS_1_SLIDE {
+            get {
+                return ResourceManager.GetString("CONTAINS_1_SLIDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (contains {0} rolling slides).
         /// </summary>
         public static string CONTAINS_X_ROLLING_SLIDES {

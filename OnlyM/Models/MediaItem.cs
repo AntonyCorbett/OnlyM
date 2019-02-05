@@ -439,6 +439,13 @@
 
                 if (!IsMediaActive)
                 {
+                    if (SlideshowCount == 1)
+                    {
+                        return IsRollingSlideshow
+                            ? Properties.Resources.CONTAINS_1_ROLLING_SLIDE
+                            : Properties.Resources.CONTAINS_1_SLIDE;
+                    }
+
                     return string.Format(
                         IsRollingSlideshow
                             ? Properties.Resources.CONTAINS_X_ROLLING_SLIDES
