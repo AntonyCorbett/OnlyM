@@ -154,7 +154,7 @@
     <comment>Notification text displayed when there is a new version to download (can be translated the same as NEW_VERSION)</comment>
   </data>
   <data name="NO_SUPPORTED_FILES" xml:space="preserve">
-    <value>Arquivos de multimédia não suportados!</value>
+    <value>Ficheiros de multimédia não suportados!</value>
     <comment>Notification displayed if you drag and drop a file (or files) of a type that is not supported.</comment>
   </data>
   <data name="OK" xml:space="preserve">
@@ -345,7 +345,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
-    <value>Largue os seus arquivos de multimédia aqui!</value>
+    <value>Largue os seus ficheiros de multimédia aqui!</value>
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
@@ -489,7 +489,7 @@
     <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
   </data>
   <data name="ACTIVE_ITEM_DELETED" xml:space="preserve">
-    <value>The media file was deleted!</value>
+    <value>O ficheiro de multimédia foi eliminado!</value>
     <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
   </data>
 </root>
