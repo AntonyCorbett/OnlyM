@@ -121,10 +121,6 @@
   <data name="flower" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\flower.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SETTINGS" xml:space="preserve">
-    <value>ASETUKSET</value>
-    <comment>Title</comment>
-  </data>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
     <value>Uusi diaesitys</value>
     <comment>File command</comment>
@@ -244,7 +240,7 @@
   </data>
   <data name="X_SLIDES_CREATED" xml:space="preserve">
     <value>{0} diaa luotu</value>
-    <comment>Message displayed when slides are created following drag and drop</comment>
+    <comment>Message displayed when slides are created following drag and drop. The value is awlays &gt; 1</comment>
   </data>
   <data name="ERROR_ADDING_IMAGES" xml:space="preserve">
     <value>Virhe lisättäessä kuvia!</value>
@@ -265,5 +261,9 @@
   <data name="OPTIONS_TOOLTIP" xml:space="preserve">
     <value>Asetukset</value>
     <comment>Tooltip for options toolbar button</comment>
+  </data>
+  <data name="AUTO_CLOSE" xml:space="preserve">
+    <value>Auto-close</value>
+    <comment>Slidehow option (automatically close at end of slideshow)</comment>
   </data>
 </root>
