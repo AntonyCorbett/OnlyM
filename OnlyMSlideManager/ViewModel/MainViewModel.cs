@@ -49,6 +49,7 @@ namespace OnlyMSlideManager.ViewModel
         private string _currentSlideshowPath;
         private SlideFileBuilder _currentSlideFileBuilder;
         private bool? _autoPlay;
+        private bool? _autoClose;
         private bool? _loop;
         private int? _dwellTimeSeconds;
         private bool _busy;
@@ -138,6 +139,27 @@ namespace OnlyMSlideManager.ViewModel
                     }
 
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(CanLoop));
+                    RaisePropertyChanged(nameof(CanAutoClose));
+                }
+            }
+        }
+
+        public bool? AutoClose
+        {
+            get => _autoClose;
+            set
+            {
+                if (value != _autoClose)
+                {
+                    _autoClose = value;
+
+                    if (value != null && _currentSlideFileBuilder != null)
+                    {
+                        _currentSlideFileBuilder.AutoClose = value.Value;
+                    }
+
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -157,6 +179,7 @@ namespace OnlyMSlideManager.ViewModel
                     }
 
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(CanAutoClose));
                 }
             }
         }
@@ -195,6 +218,10 @@ namespace OnlyMSlideManager.ViewModel
         public bool IsDirty => CreateSlideshowSignature() != _lastSavedSlideshowSignature;
 
         public IEnumerable<LanguageItem> Languages => _languages;
+
+        public bool CanLoop => AutoPlay == true;
+
+        public bool CanAutoClose => AutoPlay == true && Loop == false;
 
         public string LanguageId
         {
@@ -592,6 +619,7 @@ namespace OnlyMSlideManager.ViewModel
             CurrentSlideshowPath = optionalPathToExistingSlideshow;
 
             AutoPlay = CurrentSlideFileBuilder.AutoPlay;
+            AutoClose = CurrentSlideFileBuilder.AutoClose;
             Loop = CurrentSlideFileBuilder.Loop;
 
             if (CurrentSlideFileBuilder.DwellTimeMilliseconds == 0)

@@ -88,6 +88,15 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto-close.
+        /// </summary>
+        public static string AUTO_CLOSE {
+            get {
+                return ResourceManager.GetString("AUTO_CLOSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto-play.
         /// </summary>
         public static string AUTO_PLAY {
@@ -346,15 +355,6 @@ namespace OnlyMSlideManager.Properties {
         public static string SAVED_FILE {
             get {
                 return ResourceManager.GetString("SAVED_FILE", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to SETTINGS.
-        /// </summary>
-        public static string SETTINGS {
-            get {
-                return ResourceManager.GetString("SETTINGS", resourceCulture);
             }
         }
         

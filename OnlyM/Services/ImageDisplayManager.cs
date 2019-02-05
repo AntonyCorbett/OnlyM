@@ -43,7 +43,9 @@
         private int _currentSlideshowImageIndex;
         private List<Slide> _slides;
         private bool _shouldLoopSlideshow;
+        private Guid _slideshowGuid;
         private bool _autoPlaySlideshow;
+        private bool _autoCloseSlideshow;
         private int _autoPlaySlideshowDwellTime;
         
         public ImageDisplayManager(Image image1, Image image2, IOptionsService optionsService)
@@ -126,7 +128,9 @@
         public void StartSlideshow(string mediaItemFilePath, Guid mediaItemId)
         {
             _currentSlideshowImageIndex = 0;
-            
+
+            _slideshowGuid = mediaItemId;
+
             InitFromSlideshowFile(mediaItemFilePath);
             
             DisplaySlide(GetCurrentSlide(), mediaItemId, null, 0, _currentSlideshowImageIndex);
@@ -421,6 +425,7 @@
             _slides = sf.GetSlides(includeBitmapImage: false).ToList();
             _shouldLoopSlideshow = sf.Loop;
             _autoPlaySlideshow = sf.AutoPlay;
+            _autoCloseSlideshow = sf.AutoClose;
             _autoPlaySlideshowDwellTime = sf.DwellTimeMilliseconds;
         }
 
@@ -449,6 +454,10 @@
             if (currentSlideIndex == newSlideIndex)
             {
                 // reached the end and no looping...
+                if (_autoCloseSlideshow)
+                {
+                    StopSlideshow(_slideshowGuid);
+                }
             }
             else
             {

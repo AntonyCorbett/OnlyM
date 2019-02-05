@@ -15,6 +15,8 @@
 
         public bool Loop { get; set; }
 
+        public bool AutoClose { get; set; }
+
         public int SlideCount => Slides.Count;
 
         public void Clear()
@@ -23,6 +25,7 @@
             AutoPlay = false;
             DwellTimeMilliseconds = 0;
             Loop = false;
+            AutoClose = false;
         }
 
         public void Sanitize()
@@ -41,6 +44,8 @@
             var sb = new StringBuilder();
 
             sb.Append(AutoPlay);
+            sb.Append("|");
+            sb.Append(AutoClose);
             sb.Append("|");
             sb.Append(DwellTimeMilliseconds);
             sb.Append("|");

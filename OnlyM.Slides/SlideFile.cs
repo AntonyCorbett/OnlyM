@@ -25,6 +25,8 @@
 
         public bool AutoPlay => _config.AutoPlay;
 
+        public bool AutoClose => _config.AutoClose;
+
         public int DwellTimeMilliseconds => _config.DwellTimeMilliseconds;
 
         public bool Loop => _config.Loop;

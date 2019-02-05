@@ -189,7 +189,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
                 <RowDefinition Height="8" />
-                <RowDefinition Height="105" />
+                <RowDefinition Height="120" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
@@ -280,9 +280,14 @@
                                   Content="{x:Static resx:Resources.AUTO_PLAY}" />
 
                         <CheckBox Style="{StaticResource SettingsCheckBox}" 
-                                  IsEnabled="{Binding ElementName=AutoPlayCheckBox, Path=IsChecked}"
+                                  IsEnabled="{Binding CanLoop}"
                                   IsChecked="{Binding Loop, Mode=TwoWay}"
                                   Content="{x:Static resx:Resources.LOOP}" />
+
+                        <CheckBox Style="{StaticResource SettingsCheckBox}" 
+                                  IsEnabled="{Binding CanAutoClose}"
+                                  IsChecked="{Binding AutoClose, Mode=TwoWay}"
+                                  Content="{x:Static resx:Resources.AUTO_CLOSE}" />
                     </StackPanel>
 
                     <TextBox Grid.Column="1" HorizontalAlignment="Left"

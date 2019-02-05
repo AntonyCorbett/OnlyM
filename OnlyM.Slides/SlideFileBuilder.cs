@@ -31,6 +31,12 @@
             set => _config.AutoPlay = value;
         }
 
+        public bool AutoClose
+        {
+            get => _config.AutoClose;
+            set => _config.AutoClose = value;
+        }
+
         public int DwellTimeMilliseconds
         {
             get => _config.DwellTimeMilliseconds;
@@ -72,6 +78,7 @@
 
             var f = new SlideFile(slideshowPath);
             AutoPlay = f.AutoPlay;
+            AutoClose = f.AutoClose;
             DwellTimeMilliseconds = f.DwellTimeMilliseconds;
             Loop = f.Loop;
 
