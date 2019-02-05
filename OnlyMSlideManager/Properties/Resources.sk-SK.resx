@@ -154,15 +154,15 @@
     <comment>Used in File Open dialog</comment>
   </data>
   <data name="ANSWER_CANCEL" xml:space="preserve">
-    <value>CANCEL</value>
+    <value>ZRUŠIŤ</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_NO" xml:space="preserve">
-    <value>NO</value>
+    <value>NIE</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_YES" xml:space="preserve">
-    <value>YES</value>
+    <value>ÁNO</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
@@ -182,7 +182,7 @@
     <comment>Slidehow option (loop if automatic play is enabled)</comment>
   </data>
   <data name="WANT_TO_SAVE_TITLE" xml:space="preserve">
-    <value>Save?</value>
+    <value>Uložiť?</value>
     <comment>Title used in dialog prompt</comment>
   </data>
   <data name="FADE_IN_FORWARD" xml:space="preserve">
@@ -209,7 +209,7 @@
     <value>OK</value>
   </data>
   <data name="COULD_NOT_SAVE" xml:space="preserve">
-    <value>Could not save file!</value>
+    <value>Nepodarilo sa uložiť súbor!</value>
   </data>
   <data name="SAVED_FILE" xml:space="preserve">
     <value>Saved file</value>
@@ -219,7 +219,7 @@
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
-    <value>Drag your image(s) here!</value>
+    <value>Sem presuňte obrázky</value>
     <comment>Instruction on empty window</comment>
   </data>
   <data name="DELETE_SLIDE" xml:space="preserve">
@@ -251,19 +251,19 @@
     <comment>Error message</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
-    <value>Language</value>
+    <value>Jazyk</value>
     <comment>Combobox title on toolbar</comment>
   </data>
   <data name="LANGUAGE_RESTART" xml:space="preserve">
-    <value>Restart to change language</value>
+    <value>Pre zmenu jazyka musíte reštartovať aplikáciu.</value>
     <comment>Prompt displayed when language is selected</comment>
   </data>
   <data name="OPTIONS" xml:space="preserve">
-    <value>OPTIONS</value>
+    <value>MOŽNOSTI</value>
     <comment>Title of options popup</comment>
   </data>
   <data name="OPTIONS_TOOLTIP" xml:space="preserve">
-    <value>Options</value>
+    <value>Možnosti</value>
     <comment>Tooltip for options toolbar button</comment>
   </data>
 </root>
