@@ -263,7 +263,7 @@
     <comment>Tooltip for options toolbar button</comment>
   </data>
   <data name="AUTO_CLOSE" xml:space="preserve">
-    <value>Auto-close</value>
+    <value>Chiudi automaticamente</value>
     <comment>Slidehow option (automatically close at end of slideshow)</comment>
   </data>
 </root>

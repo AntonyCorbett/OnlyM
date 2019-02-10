@@ -178,7 +178,7 @@
     <comment>Slidehow option (loop if automatic play is enabled)</comment>
   </data>
   <data name="WANT_TO_SAVE_TITLE" xml:space="preserve">
-    <value>Save?</value>
+    <value>Vols desar?</value>
     <comment>Title used in dialog prompt</comment>
   </data>
   <data name="FADE_IN_FORWARD" xml:space="preserve">
