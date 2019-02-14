@@ -122,148 +122,148 @@
     <value>..\Resources\flower.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
-    <value>New slideshow</value>
+    <value>Yeni slayt gösterisi</value>
     <comment>File command</comment>
   </data>
   <data name="OPEN_SLIDESHOW" xml:space="preserve">
-    <value>Open slideshow</value>
+    <value>Slayt gösterisi aç</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW" xml:space="preserve">
-    <value>Save slideshow</value>
+    <value>Slayt gösterisini kaydet</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW_AS" xml:space="preserve">
-    <value>Save slideshow as...</value>
+    <value>Slayt gösterisini farklı kaydet...</value>
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Could not create folder {0}</value>
+    <value>Klasör {0} oluşturulamadı</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Open Slideshow</value>
+    <value>Slayt Gösterisi Aç</value>
     <comment>File Open dialog caption</comment>
   </data>
   <data name="SLIDESHOW_FILE" xml:space="preserve">
-    <value>Slideshow file</value>
+    <value>Slayt dosyası</value>
     <comment>Used in File Open dialog</comment>
   </data>
   <data name="ANSWER_CANCEL" xml:space="preserve">
-    <value>CANCEL</value>
+    <value>İPTAL</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_NO" xml:space="preserve">
-    <value>NO</value>
+    <value>HAYIR</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_YES" xml:space="preserve">
-    <value>YES</value>
+    <value>EVET</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
-    <value>The slideshow has changed. Do you want to save it?</value>
+    <value>Slayt gösterisi değişti. Bunu kaydetmek istiyor musunuz?</value>
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Save Slideshow</value>
+    <value>Slayt Gösterisini Kaydet</value>
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
-    <value>Auto-play</value>
+    <value>Otomatik Oynat</value>
     <comment>Slidehow option (automatically play)</comment>
   </data>
   <data name="LOOP" xml:space="preserve">
-    <value>Loop</value>
+    <value>Döngü</value>
     <comment>Slidehow option (loop if automatic play is enabled)</comment>
   </data>
   <data name="WANT_TO_SAVE_TITLE" xml:space="preserve">
-    <value>Save?</value>
+    <value>Kaydedilsin mi?</value>
     <comment>Title used in dialog prompt</comment>
   </data>
   <data name="FADE_IN_FORWARD" xml:space="preserve">
-    <value>Fade in</value>
+    <value>Azalan</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_IN_REVERSE" xml:space="preserve">
-    <value>Fade in (reversing)</value>
+    <value>Azalan (ters)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_FORWARD" xml:space="preserve">
-    <value>Fade out</value>
+    <value>Kararma</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_REVERSE" xml:space="preserve">
-    <value>Fade out (reversing)</value>
+    <value>Kararma (ters)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="DWELL_SECONDS" xml:space="preserve">
-    <value>Dwell time (secs)</value>
+    <value>Bekleme süresi (saniye)</value>
     <comment>The time a slide is displayed during automatic playback.</comment>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>OK</value>
+    <value>Tamam</value>
   </data>
   <data name="COULD_NOT_SAVE" xml:space="preserve">
-    <value>Could not save file!</value>
+    <value>Dosya kaydedilemedi!</value>
   </data>
   <data name="SAVED_FILE" xml:space="preserve">
-    <value>Saved file</value>
+    <value>Kaydedilen dosya</value>
   </data>
   <data name="AUTO_PLAY_SETTINGS" xml:space="preserve">
-    <value>Auto-play settings</value>
+    <value>Otomatik yürütme ayarları</value>
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
-    <value>Drag your image(s) here!</value>
+    <value>Resimlerinizi buraya sürükleyin!</value>
     <comment>Instruction on empty window</comment>
   </data>
   <data name="DELETE_SLIDE" xml:space="preserve">
-    <value>Delete slide</value>
+    <value>Slaytı sil</value>
     <comment>Tooltip for delete button on slide edit page</comment>
   </data>
   <data name="EDIT_SLIDE" xml:space="preserve">
-    <value>Edit slide</value>
+    <value>Slaytı düzenle</value>
     <comment>Tooltip for edit button on slides</comment>
   </data>
   <data name="RETURN_TO_SLIDE" xml:space="preserve">
-    <value>Return</value>
+    <value>Geri Dön</value>
     <comment>Tooltip for 'back' button on slide edit page</comment>
   </data>
   <data name="NO_SLIDES_CREATED" xml:space="preserve">
-    <value>No slides created!</value>
+    <value>Hiçbir slayt oluşturulmadı!</value>
     <comment>Message displayed following an unsuccessful drag and drop</comment>
   </data>
   <data name="SLIDE_CREATED" xml:space="preserve">
-    <value>Slide created</value>
+    <value>Slayt oluşturuldu</value>
     <comment>Message displayed when a slide is created following drag and drop</comment>
   </data>
   <data name="X_SLIDES_CREATED" xml:space="preserve">
-    <value>{0} slides created</value>
+    <value>{0} slayt oluşturuldu</value>
     <comment>Message displayed when slides are created following drag and drop. The value is awlays &gt; 1</comment>
   </data>
   <data name="ERROR_ADDING_IMAGES" xml:space="preserve">
-    <value>An error occurred adding images!</value>
+    <value>Resimler eklenirken bir hata oluştu!</value>
     <comment>Error message</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
-    <value>Language</value>
+    <value>Dil</value>
     <comment>Combobox title on toolbar</comment>
   </data>
   <data name="LANGUAGE_RESTART" xml:space="preserve">
-    <value>Restart to change language</value>
+    <value>Dili değiştirmek için yeniden başlatın</value>
     <comment>Prompt displayed when language is selected</comment>
   </data>
   <data name="OPTIONS" xml:space="preserve">
-    <value>OPTIONS</value>
+    <value>SEÇENEKLER</value>
     <comment>Title of options popup</comment>
   </data>
   <data name="OPTIONS_TOOLTIP" xml:space="preserve">
-    <value>Options</value>
+    <value>Seçenekler</value>
     <comment>Tooltip for options toolbar button</comment>
   </data>
   <data name="AUTO_CLOSE" xml:space="preserve">
-    <value>Auto-close</value>
+    <value>Otomatik kapat</value>
     <comment>Slidehow option (automatically close at end of slideshow)</comment>
   </data>
 </root>

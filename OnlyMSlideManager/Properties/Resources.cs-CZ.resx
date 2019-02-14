@@ -122,148 +122,148 @@
     <value>..\Resources\flower.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
-    <value>New slideshow</value>
+    <value>Nová prezentace</value>
     <comment>File command</comment>
   </data>
   <data name="OPEN_SLIDESHOW" xml:space="preserve">
-    <value>Open slideshow</value>
+    <value>Otevřít prezentaci</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW" xml:space="preserve">
-    <value>Save slideshow</value>
+    <value>Uložit prezentaci</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW_AS" xml:space="preserve">
-    <value>Save slideshow as...</value>
+    <value>Uložit prezentaci jako...</value>
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Could not create folder {0}</value>
+    <value>Nepodařilo se vytvořit adresář {0}</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Open Slideshow</value>
+    <value>Otevřít prezentaci</value>
     <comment>File Open dialog caption</comment>
   </data>
   <data name="SLIDESHOW_FILE" xml:space="preserve">
-    <value>Slideshow file</value>
+    <value>Soubor prezentace</value>
     <comment>Used in File Open dialog</comment>
   </data>
   <data name="ANSWER_CANCEL" xml:space="preserve">
-    <value>CANCEL</value>
+    <value>ZRUŠIT</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_NO" xml:space="preserve">
-    <value>NO</value>
+    <value>NE</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_YES" xml:space="preserve">
-    <value>YES</value>
+    <value>ANO</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
-    <value>The slideshow has changed. Do you want to save it?</value>
+    <value>Prezentace byla změněna. Uložit změny?</value>
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Save Slideshow</value>
+    <value>Uložit prezentaci</value>
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
-    <value>Auto-play</value>
+    <value>Automatické přehrávání</value>
     <comment>Slidehow option (automatically play)</comment>
   </data>
   <data name="LOOP" xml:space="preserve">
-    <value>Loop</value>
+    <value>Smyčka</value>
     <comment>Slidehow option (loop if automatic play is enabled)</comment>
   </data>
   <data name="WANT_TO_SAVE_TITLE" xml:space="preserve">
-    <value>Save?</value>
+    <value>Uložit?</value>
     <comment>Title used in dialog prompt</comment>
   </data>
   <data name="FADE_IN_FORWARD" xml:space="preserve">
-    <value>Fade in</value>
+    <value>Postupné zobrazení</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_IN_REVERSE" xml:space="preserve">
-    <value>Fade in (reversing)</value>
+    <value>Postupné zobrazení (reverzní)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_FORWARD" xml:space="preserve">
-    <value>Fade out</value>
+    <value>Postupné skrytí</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_REVERSE" xml:space="preserve">
-    <value>Fade out (reversing)</value>
+    <value>Postupné skrytí (reverzní)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="DWELL_SECONDS" xml:space="preserve">
-    <value>Dwell time (secs)</value>
+    <value>Doba zobrazení snímku (sec)</value>
     <comment>The time a slide is displayed during automatic playback.</comment>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="COULD_NOT_SAVE" xml:space="preserve">
-    <value>Could not save file!</value>
+    <value>Soubor nelze uložit!</value>
   </data>
   <data name="SAVED_FILE" xml:space="preserve">
-    <value>Saved file</value>
+    <value>Uložený soubor</value>
   </data>
   <data name="AUTO_PLAY_SETTINGS" xml:space="preserve">
-    <value>Auto-play settings</value>
+    <value>Nastavení automatického přehrávání</value>
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
-    <value>Drag your image(s) here!</value>
+    <value>Sem přetáhněte obrázky!</value>
     <comment>Instruction on empty window</comment>
   </data>
   <data name="DELETE_SLIDE" xml:space="preserve">
-    <value>Delete slide</value>
+    <value>Smazat snímek</value>
     <comment>Tooltip for delete button on slide edit page</comment>
   </data>
   <data name="EDIT_SLIDE" xml:space="preserve">
-    <value>Edit slide</value>
+    <value>Upravit snímek</value>
     <comment>Tooltip for edit button on slides</comment>
   </data>
   <data name="RETURN_TO_SLIDE" xml:space="preserve">
-    <value>Return</value>
+    <value>Zpět</value>
     <comment>Tooltip for 'back' button on slide edit page</comment>
   </data>
   <data name="NO_SLIDES_CREATED" xml:space="preserve">
-    <value>No slides created!</value>
+    <value>Snímek nebyl vytvořen!</value>
     <comment>Message displayed following an unsuccessful drag and drop</comment>
   </data>
   <data name="SLIDE_CREATED" xml:space="preserve">
-    <value>Slide created</value>
+    <value>Snímek byl vytvořen</value>
     <comment>Message displayed when a slide is created following drag and drop</comment>
   </data>
   <data name="X_SLIDES_CREATED" xml:space="preserve">
-    <value>{0} slides created</value>
+    <value>Počet vytvořených snímků: {0}</value>
     <comment>Message displayed when slides are created following drag and drop. The value is awlays &gt; 1</comment>
   </data>
   <data name="ERROR_ADDING_IMAGES" xml:space="preserve">
-    <value>An error occurred adding images!</value>
+    <value>Došlo k chybě při přidávání obrázků!</value>
     <comment>Error message</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
-    <value>Language</value>
+    <value>Jazyk</value>
     <comment>Combobox title on toolbar</comment>
   </data>
   <data name="LANGUAGE_RESTART" xml:space="preserve">
-    <value>Restart to change language</value>
+    <value>Pro změnu jazyka je třeba aplikaci restartovat</value>
     <comment>Prompt displayed when language is selected</comment>
   </data>
   <data name="OPTIONS" xml:space="preserve">
-    <value>OPTIONS</value>
+    <value>MOŽNOSTI</value>
     <comment>Title of options popup</comment>
   </data>
   <data name="OPTIONS_TOOLTIP" xml:space="preserve">
-    <value>Options</value>
+    <value>Možnosti</value>
     <comment>Tooltip for options toolbar button</comment>
   </data>
   <data name="AUTO_CLOSE" xml:space="preserve">
-    <value>Auto-close</value>
+    <value>Automaticky zavřít</value>
     <comment>Slidehow option (automatically close at end of slideshow)</comment>
   </data>
 </root>

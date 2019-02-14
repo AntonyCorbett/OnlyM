@@ -489,7 +489,15 @@
     <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
   </data>
   <data name="ACTIVE_ITEM_DELETED" xml:space="preserve">
-    <value>The media file was deleted!</value>
+    <value>Plik multimedialny został usunięty!</value>
     <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
+  </data>
+  <data name="CONTAINS_1_ROLLING_SLIDE" xml:space="preserve">
+    <value>(zawiera 1 slajd)</value>
+    <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
+  </data>
+  <data name="CONTAINS_1_SLIDE" xml:space="preserve">
+    <value>(zawiera 1 slajd)</value>
+    <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
 </root>
