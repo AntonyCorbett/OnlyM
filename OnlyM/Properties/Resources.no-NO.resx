@@ -493,11 +493,11 @@
     <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
   </data>
   <data name="CONTAINS_1_ROLLING_SLIDE" xml:space="preserve">
-    <value>(contains 1 rolling slide)</value>
+    <value>(inneholder 1 rullende lysbilde)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="CONTAINS_1_SLIDE" xml:space="preserve">
-    <value>(contains 1 slide)</value>
+    <value>(inneholder 1 lysbilde)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
 </root>
