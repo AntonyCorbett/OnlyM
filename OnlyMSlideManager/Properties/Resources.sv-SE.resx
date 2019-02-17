@@ -162,7 +162,7 @@
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
-    <value>Bildspelet har ändrats. Vill du spara den?</value>
+    <value>Bildspelet har ändrats, vill du spara den?</value>
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
