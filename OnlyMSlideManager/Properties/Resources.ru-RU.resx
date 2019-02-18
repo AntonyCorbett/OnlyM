@@ -186,7 +186,7 @@
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_IN_REVERSE" xml:space="preserve">
-    <value>Плавное появление (обратно)</value>
+    <value>Плавное появление (в обратном)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_FORWARD" xml:space="preserve">
@@ -194,7 +194,7 @@
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_REVERSE" xml:space="preserve">
-    <value>Плавное затухание (обратно)</value>
+    <value>Плавное затухание (в обратном)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="DWELL_SECONDS" xml:space="preserve">
@@ -223,7 +223,7 @@
     <comment>Tooltip for delete button on slide edit page</comment>
   </data>
   <data name="EDIT_SLIDE" xml:space="preserve">
-    <value>Изменить слайд</value>
+    <value>Изменить</value>
     <comment>Tooltip for edit button on slides</comment>
   </data>
   <data name="RETURN_TO_SLIDE" xml:space="preserve">
