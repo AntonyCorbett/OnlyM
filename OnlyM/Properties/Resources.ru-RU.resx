@@ -161,7 +161,7 @@
     <value>ОК</value>
   </data>
   <data name="VIEW" xml:space="preserve">
-    <value>Просмотр</value>
+    <value>ПОСМОТРЕТЬ</value>
     <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
   </data>
   <data name="YES" xml:space="preserve">
@@ -489,15 +489,15 @@
     <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
   </data>
   <data name="ACTIVE_ITEM_DELETED" xml:space="preserve">
-    <value>The media file was deleted!</value>
+    <value>Файл удален!</value>
     <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
   </data>
   <data name="CONTAINS_1_ROLLING_SLIDE" xml:space="preserve">
-    <value>(contains 1 rolling slide)</value>
+    <value>(содержит 1 слайд)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="CONTAINS_1_SLIDE" xml:space="preserve">
-    <value>(contains 1 slide)</value>
+    <value>(содержит 1 слайд)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
 </root>
