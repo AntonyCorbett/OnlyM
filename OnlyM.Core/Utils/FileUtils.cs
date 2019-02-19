@@ -1,9 +1,8 @@
-﻿using System.Text.RegularExpressions;
-
-namespace OnlyM.Core.Utils
+﻿namespace OnlyM.Core.Utils
 {
     using System;
     using System.IO;
+    using System.Text.RegularExpressions;
     using Serilog;
 
     /// <summary>

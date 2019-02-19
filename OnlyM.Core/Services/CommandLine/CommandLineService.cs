@@ -60,8 +60,10 @@
             }
             catch (Exception)
             {
-                return null;
+                // ignored
             }
+
+            return null;
         }
     }
 }
