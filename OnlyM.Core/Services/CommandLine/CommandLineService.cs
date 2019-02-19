@@ -24,13 +24,7 @@
                 .Callback(s => { NoFolder = s; }).SetDefault(false);
 
             p.Setup<string>("source")
-                .Callback(s =>
-                {
-                    if (!string.IsNullOrEmpty(s))
-                    {
-                        SourceFolder = Path.GetFullPath(s);
-                    }
-                }).SetDefault(null);
+                .Callback(s => { SourceFolder = GetFullSourcePath(s); }).SetDefault(null);
 
             p.Setup<bool>("obs")
                 .Callback(s => { ObsCompatible = s; }).SetDefault(false);
@@ -54,5 +48,20 @@
         public bool ObsCompatible { get; set; }
 
         public bool DisableVideoRenderingFix { get; set; }
+
+        private string GetFullSourcePath(string sourcePath)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(sourcePath))
+                {
+                    return Path.GetFullPath(sourcePath);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }
