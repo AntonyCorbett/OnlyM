@@ -1,6 +1,7 @@
 ﻿namespace OnlyM.Core.Services.CommandLine
 {
     using System;
+    using System.IO;
     using Fclp;
 
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -23,7 +24,13 @@
                 .Callback(s => { NoFolder = s; }).SetDefault(false);
 
             p.Setup<string>("source")
-                .Callback(s => { SourceFolder = s; }).SetDefault(null);
+                .Callback(s =>
+                {
+                    if (!string.IsNullOrEmpty(s))
+                    {
+                        SourceFolder = Path.GetFullPath(s);
+                    }
+                }).SetDefault(null);
 
             p.Setup<bool>("obs")
                 .Callback(s => { ObsCompatible = s; }).SetDefault(false);
