@@ -458,6 +458,10 @@ namespace OnlyMSlideManager.ViewModel
                             _snackbarService.EnqueueWithOk(Properties.Resources.SAVED_FILE, Properties.Resources.OK);
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        Log.Logger.Error(ex, "Could not save");
+                    }
                     finally
                     {
                         IsProgressVisible = false;
