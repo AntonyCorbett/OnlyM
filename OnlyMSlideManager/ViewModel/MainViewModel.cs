@@ -39,6 +39,8 @@ namespace OnlyMSlideManager.ViewModel
         private const int MaxSlideIndexNumber = 99;
         private const int MaxImageWidth = 1920;
         private const int MaxImageHeight = 1080;
+        private const int ThumbnailWidth = 192;
+        private const int ThumbnailHeight = 108;
 
         private readonly IDialogService _dialogService;
         private readonly IDragAndDropServiceCustom _dragAndDropServiceCustom;
@@ -534,12 +536,12 @@ namespace OnlyMSlideManager.ViewModel
         {
             var image = slide.Image ?? 
                         GraphicsUtils.GetImageAutoRotatedAndPadded(slide.OriginalFilePath, MaxImageWidth, MaxImageHeight);
-            
+
             var newSlide = new SlideItem
             {
                 Name = slide.ArchiveEntryName,
                 OriginalFilePath = slide.OriginalFilePath,
-                Image = image,
+                ThumbnailImage = CreateThumbnailImage(image),
                 FadeInForward = slide.FadeInForward,
                 FadeInReverse = slide.FadeInReverse,
                 FadeOutForward = slide.FadeOutForward,
@@ -554,6 +556,11 @@ namespace OnlyMSlideManager.ViewModel
             newSlide.SlideItemModifiedEvent += HandleSlideItemModifiedEvent;
 
             return newSlide;
+        }
+
+        private ImageSource CreateThumbnailImage(BitmapSource image)
+        {
+            return GraphicsUtils.Downsize(image, ThumbnailWidth, ThumbnailHeight);
         }
 
         private void HandleSlideItemModifiedEvent(object sender, EventArgs e)
@@ -654,7 +661,7 @@ namespace OnlyMSlideManager.ViewModel
         {
             if (IsInDesignMode)
             {
-                var slides = DesignTimeSlideCreation.GenerateSlides(7);
+                var slides = DesignTimeSlideCreation.GenerateSlides(7, ThumbnailWidth, ThumbnailHeight);
 
                 foreach (var slide in slides)
                 {

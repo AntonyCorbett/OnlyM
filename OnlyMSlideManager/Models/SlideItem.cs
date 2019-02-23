@@ -14,14 +14,16 @@
         private int? _dwellTimeSeconds;
 
         public event EventHandler SlideItemModifiedEvent;
-
+        
         public string Name { get; set; }
 
         public bool IsEndMarker { get; set; }
 
         public string OriginalFilePath { get; set; }
 
-        public ImageSource Image { get; set; }
+        //public ImageSource Image { get; set; }
+
+        public ImageSource ThumbnailImage { get; set; }
 
         public int SlideIndex { get; set; }
 

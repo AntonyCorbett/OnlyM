@@ -125,7 +125,7 @@
                                            HorizontalAlignment="Left" 
                                            Text="{Binding SlideIndex}"/>
 
-                            <Image Grid.Row="1" Source="{Binding Image}" HorizontalAlignment="Center" Margin="10"/>
+                            <Image Grid.Row="1" Source="{Binding ThumbnailImage}" HorizontalAlignment="Center" Margin="10"/>
 
                             <Button Style="{StaticResource FlipBtnStyle}"
                                     ToolTip="{x:Static resx:Resources.EDIT_SLIDE}">

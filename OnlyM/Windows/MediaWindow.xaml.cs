@@ -25,7 +25,7 @@
     /// <summary>
     /// Interaction logic for MediaWindow.xaml
     /// </summary>
-    public partial class MediaWindow : Window, IDisposable
+    public sealed partial class MediaWindow : Window, IDisposable
     {
         private const int MediaConfirmStopWindowSeconds = 3;
 
