@@ -162,10 +162,8 @@
                         throw new Exception($"Could not find image file: {slide.OriginalFilePath}");
                     }
 
-                    var image = GraphicsUtils.GetImageAutoRotatedIfRequired(slide.OriginalFilePath);
-                    var downsized = GraphicsUtils.Downsize(image, _maxSlideWidth, _maxSlideHeight);
-
-                    AddBitmapImageToArchive(path, slide.ArchiveEntryName, downsized);
+                    var image = GraphicsUtils.GetImageAutoRotatedAndPadded(slide.OriginalFilePath, _maxSlideWidth, _maxSlideHeight);
+                    AddBitmapImageToArchive(path, slide.ArchiveEntryName, image);
                 }
 
                 BuildProgress(CalcPercentComplete(++numEntriesBuilt, numEntriesToBuild));
@@ -257,7 +255,7 @@
         {
             // This is a little odd (multiple streams and rewinding the memory stream!).
             // I can't find a better way of saving a BitmapSource in the archive entry.
-            BitmapEncoder encoder = new PngBitmapEncoder();
+            BitmapEncoder encoder = new JpegBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(slideImage));
 
             using (var ms = new MemoryStream())

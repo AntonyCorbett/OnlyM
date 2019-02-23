@@ -1,3 +1,7 @@
+using System.Windows.Media.Imaging;
+using GalaSoft.MvvmLight.Threading;
+using OnlyM.Slides.Models;
+
 namespace OnlyMSlideManager.ViewModel
 {
     using System;
@@ -503,12 +507,6 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private ImageSource CreateBitmapImage(string filePath)
-        {
-            var image = GraphicsUtils.GetImageAutoRotatedIfRequired(filePath);
-            return GraphicsUtils.Downsize(image, MaxImageWidth, MaxImageHeight);
-        }
-
         private void GenerateSlideItems()
         {
             using (new ObservableCollectionSuppression<SlideItem>(SlideItems))
@@ -521,26 +519,7 @@ namespace OnlyMSlideManager.ViewModel
 
                     foreach (var slide in _currentSlideFileBuilder.GetSlides())
                     {
-                        var image = slide.Image ?? CreateBitmapImage(slide.OriginalFilePath);
-
-                        var newSlide = new SlideItem
-                        {
-                            Name = slide.ArchiveEntryName,
-                            OriginalFilePath = slide.OriginalFilePath,
-                            Image = image,
-                            FadeInForward = slide.FadeInForward,
-                            FadeInReverse = slide.FadeInReverse,
-                            FadeOutForward = slide.FadeOutForward,
-                            FadeOutReverse = slide.FadeOutReverse,
-                            DwellTimeSeconds = slide.DwellTimeMilliseconds == 0
-                                ? (int?)null
-                                : slide.DwellTimeMilliseconds / 1000,
-                            DropZoneId = Guid.NewGuid().ToString(),
-                            SlideIndex = slideIndex == MaxSlideIndexNumber ? MaxSlideIndexNumber : slideIndex++
-                        };
-
-                        newSlide.SlideItemModifiedEvent += HandleSlideItemModifiedEvent;
-                        SlideItems.Add(newSlide);
+                        SlideItems.Add(GenerateSlideItem(slide, slideIndex++));
                     }
                 }
 
@@ -549,6 +528,32 @@ namespace OnlyMSlideManager.ViewModel
 
             RaisePropertyChanged(nameof(HasSlides));
             RaisePropertyChanged(nameof(HasNoSlides));
+        }
+
+        private SlideItem GenerateSlideItem(Slide slide, int slideIndex)
+        {
+            var image = slide.Image ?? 
+                        GraphicsUtils.GetImageAutoRotatedAndPadded(slide.OriginalFilePath, MaxImageWidth, MaxImageHeight);
+            
+            var newSlide = new SlideItem
+            {
+                Name = slide.ArchiveEntryName,
+                OriginalFilePath = slide.OriginalFilePath,
+                Image = image,
+                FadeInForward = slide.FadeInForward,
+                FadeInReverse = slide.FadeInReverse,
+                FadeOutForward = slide.FadeOutForward,
+                FadeOutReverse = slide.FadeOutReverse,
+                DwellTimeSeconds = slide.DwellTimeMilliseconds == 0
+                    ? (int?)null
+                    : slide.DwellTimeMilliseconds / 1000,
+                DropZoneId = Guid.NewGuid().ToString(),
+                SlideIndex = slideIndex >= MaxSlideIndexNumber ? MaxSlideIndexNumber : slideIndex
+            };
+
+            newSlide.SlideItemModifiedEvent += HandleSlideItemModifiedEvent;
+
+            return newSlide;
         }
 
         private void HandleSlideItemModifiedEvent(object sender, EventArgs e)

@@ -10,6 +10,7 @@
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using ImageProcessor;
+    using ImageProcessor.Imaging;
     using Serilog;
     using TagLib.Image;
 
@@ -71,6 +72,40 @@
                 }
 
                 return new BitmapImage(new Uri(itemFilePath, UriKind.Absolute));
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, $"Could not auto-rotate image {itemFilePath}");
+            }
+
+            return null;
+        }
+
+        public static BitmapSource GetImageAutoRotatedAndPadded(string itemFilePath, int width, int height)
+        {
+            try
+            {
+                bool requiresRotation = ImageRequiresRotation(itemFilePath);
+
+                using (var imageFactory = new ImageFactory())
+                {
+                    var resizeLayer = new ResizeLayer(new Size(width, height), ResizeMode.Pad);
+
+                    imageFactory
+                        .Load(itemFilePath)
+                        .Resize(resizeLayer);
+
+                    if (requiresRotation)
+                    {
+                        imageFactory.AutoRotate();
+                    }
+
+                    using (var ms = new MemoryStream())
+                    {
+                        imageFactory.Save(ms);
+                        return ByteArrayToImage(ms.ToArray());
+                    }
+                }
             }
             catch (Exception ex)
             {
