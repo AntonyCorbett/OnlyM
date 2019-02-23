@@ -10,7 +10,7 @@ namespace OnlyMSlideManager.ViewModel
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
-    using System.Windows.Media.Imaging;
+    using System.Windows.Media;
     using System.Windows.Shapes;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
@@ -503,7 +503,7 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private BitmapSource CreateBitmapImage(string filePath)
+        private ImageSource CreateBitmapImage(string filePath)
         {
             var image = GraphicsUtils.GetImageAutoRotatedIfRequired(filePath);
             return GraphicsUtils.Downsize(image, MaxImageWidth, MaxImageHeight);
