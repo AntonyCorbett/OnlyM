@@ -87,8 +87,8 @@ Source: "bin\x86\Release\System.Windows.Interactivity.dll"; DestDir: "{app}"; Fl
 Source: "bin\x86\Release\taglib-sharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Slide manager
-Source: "..\OnlyMSlideManager\bin\x86\Release\OnlyMSlideManager.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\OnlyMSlideManager.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\OnlyMSlideManager.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\OnlyMSlideManager.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 
 ; localisation..
 Source: "bin\x86\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
