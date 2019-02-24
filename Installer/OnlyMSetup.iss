@@ -118,31 +118,31 @@ Source: "bin\x86\Release\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignorevers
 Source: "bin\x86\Release\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
 
 ; SlideManager localisation
-Source: "..\OnlyMSlideManager\bin\x86\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\cs-CZ\*.dll"; DestDir: "{app}\cs-CZ"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\de-DE\*.dll"; DestDir: "{app}\de-DE"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\el-GR\*.dll"; DestDir: "{app}\el-GR"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\en-US\*.dll"; DestDir: "{app}\en-US"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\es-ES\*.dll"; DestDir: "{app}\es-ES"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\es-MX\*.dll"; DestDir: "{app}\es-MX"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\fi-FI\*.dll"; DestDir: "{app}\fi-FI"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\fr-FR\*.dll"; DestDir: "{app}\fr-FR"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\hr-HR\*.dll"; DestDir: "{app}\hr-HR"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\ka-GE\*.dll"; DestDir: "{app}\ka-GE"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
-; don't include this - Source: "bin\x86\Release\no-NO\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\pap\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
-; don't include this - Source: "bin\x86\Release\pap-PAP\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\pl-PL\*.dll"; DestDir: "{app}\pl-PL"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\pt-BR\*.dll"; DestDir: "{app}\pt-BR"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\pt-PT\*.dll"; DestDir: "{app}\pt-PT"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\ro-RO\*.dll"; DestDir: "{app}\ro-RO"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\ru-RU\*.dll"; DestDir: "{app}\ru-RU"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\sk-SK\*.dll"; DestDir: "{app}\sk-SK"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\x86\Release\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\cs-CZ\*.dll"; DestDir: "{app}\cs-CZ"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\de-DE\*.dll"; DestDir: "{app}\de-DE"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\el-GR\*.dll"; DestDir: "{app}\el-GR"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\en-US\*.dll"; DestDir: "{app}\en-US"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\es-ES\*.dll"; DestDir: "{app}\es-ES"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\es-MX\*.dll"; DestDir: "{app}\es-MX"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\fi-FI\*.dll"; DestDir: "{app}\fi-FI"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\fr-FR\*.dll"; DestDir: "{app}\fr-FR"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\hr-HR\*.dll"; DestDir: "{app}\hr-HR"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\ka-GE\*.dll"; DestDir: "{app}\ka-GE"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
+; don't include this - Source: "bin\Release\no-NO\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\pap\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
+; don't include this - Source: "bin\Release\pap-PAP\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\pl-PL\*.dll"; DestDir: "{app}\pl-PL"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\pt-BR\*.dll"; DestDir: "{app}\pt-BR"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\pt-PT\*.dll"; DestDir: "{app}\pt-PT"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\ro-RO\*.dll"; DestDir: "{app}\ro-RO"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\ru-RU\*.dll"; DestDir: "{app}\ru-RU"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\sk-SK\*.dll"; DestDir: "{app}\sk-SK"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
 
 ; CefSharp files...
 Source: "bin\x86\Release\locales\*"; DestDir: "{app}\locales"; Flags: ignoreversion
