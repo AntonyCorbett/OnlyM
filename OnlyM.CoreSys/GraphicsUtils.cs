@@ -16,6 +16,8 @@
 
     public static class GraphicsUtils
     {
+        private static readonly object _tagLibLocker = new object();
+
         public static bool AutoRotateIfRequired(string itemFilePath)
         {
             try
@@ -417,21 +419,25 @@
         {
             try
             {
-                using (var tf = TagLib.File.Create(imageFilePath))
+                // The TagLib call below is not thread-safe
+                lock (_tagLibLocker)
                 {
-                    tf.Mode = TagLib.File.AccessMode.Read;
-
-                    using (var imageFile = tf as TagLib.Image.File)
+                    using (var tf = TagLib.File.Create(imageFilePath))
                     {
-                        if (imageFile != null)
-                        {
-                            // see here for Exif discussion:
-                            // http://sylvana.net/jpegcrop/exif_orientation.html
-                            // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
-                            var orientation = imageFile.ImageTag.Orientation;
+                        tf.Mode = TagLib.File.AccessMode.Read;
 
-                            return orientation != ImageOrientation.None &&
-                                   orientation != ImageOrientation.TopLeft;
+                        using (var imageFile = tf as TagLib.Image.File)
+                        {
+                            if (imageFile != null)
+                            {
+                                // see here for Exif discussion:
+                                // http://sylvana.net/jpegcrop/exif_orientation.html
+                                // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
+                                var orientation = imageFile.ImageTag.Orientation;
+
+                                return orientation != ImageOrientation.None &&
+                                       orientation != ImageOrientation.TopLeft;
+                            }
                         }
                     }
                 }

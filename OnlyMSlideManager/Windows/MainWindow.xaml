@@ -120,7 +120,8 @@
                                         Width="50" Height="50" />
                             <TextBlock Grid.Row="0" Width="25" 
                                            TextAlignment="Center"
-                                           Margin="-3,-2,0,0"
+                                           Margin="-3,-4,0,0"
+                                           FontSize="10"
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Left" 
                                            Text="{Binding SlideIndex}"/>
@@ -233,7 +234,10 @@
                     Kind="ContentSaveSettings" />
                 </Button>
 
-                <materialDesign:PopupBox StaysOpen="True" Padding="20" ToolTip="{x:Static resx:Resources.OPTIONS_TOOLTIP}">
+                <materialDesign:PopupBox StaysOpen="True" 
+                                         IsEnabled="{Binding IsNotBusy}"
+                                         Padding="20" 
+                                         ToolTip="{x:Static resx:Resources.OPTIONS_TOOLTIP}">
                     
                     <StackPanel>
                         <TextBlock 

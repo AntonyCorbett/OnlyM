@@ -21,8 +21,6 @@
 
         public string OriginalFilePath { get; set; }
 
-        //public ImageSource Image { get; set; }
-
         public ImageSource ThumbnailImage { get; set; }
 
         public int SlideIndex { get; set; }

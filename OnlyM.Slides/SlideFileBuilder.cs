@@ -8,6 +8,7 @@
     using System.Windows.Media.Imaging;
     using Newtonsoft.Json;
     using OnlyM.CoreSys;
+    using OnlyM.Slides.Helpers;
     using OnlyM.Slides.Models;
 
     public class SlideFileBuilder
@@ -148,25 +149,15 @@
 
             BuildProgress(CalcPercentComplete(++numEntriesBuilt, numEntriesToBuild));
 
-            foreach (var slide in _config.Slides)
+            var batchSize = Environment.Is64BitProcess ? 8 : 4;
+            var batchHelper = new SlideArchiveEntryBatchHelper(_config.Slides, _maxSlideWidth, _maxSlideHeight, batchSize);
+
+            var batch = batchHelper.GetBatch();
+            while (batch != null)
             {
-                if (slide.Image != null)
-                {
-                    // already have image data...
-                    AddBitmapImageToArchive(path, slide.ArchiveEntryName, slide.Image);
-                }
-                else
-                {
-                    if (!File.Exists(slide.OriginalFilePath))
-                    {
-                        throw new Exception($"Could not find image file: {slide.OriginalFilePath}");
-                    }
-
-                    var image = GraphicsUtils.GetImageAutoRotatedAndPadded(slide.OriginalFilePath, _maxSlideWidth, _maxSlideHeight);
-                    AddBitmapImageToArchive(path, slide.ArchiveEntryName, image);
-                }
-
-                BuildProgress(CalcPercentComplete(++numEntriesBuilt, numEntriesToBuild));
+                AddBitmapImagesToArchive(path, batch, numEntriesBuilt, numEntriesToBuild);
+                numEntriesBuilt += batch.Count;
+                batch = batchHelper.GetBatch();
             }
         }
 
@@ -211,6 +202,19 @@
                 {
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     memoryStream.CopyTo(fileStream);
+                }
+            }
+        }
+
+        private void AddBitmapImagesToArchive(
+            string zipArchivePath, IReadOnlyList<SlideArchiveEntry> slides, int numEntriesBuilt, int numEntriesToBuild)
+        {
+            using (var zip = ZipFile.Open(zipArchivePath, ZipArchiveMode.Update))
+            {
+                foreach (var slide in slides)
+                {
+                    AddBitmapImageToArchive(zip, slide.ArchiveEntryName, slide.Image);
+                    BuildProgress(CalcPercentComplete(++numEntriesBuilt, numEntriesToBuild));
                 }
             }
         }

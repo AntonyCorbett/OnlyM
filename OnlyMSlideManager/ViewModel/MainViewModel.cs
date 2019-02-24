@@ -1,7 +1,3 @@
-using System.Windows.Media.Imaging;
-using GalaSoft.MvvmLight.Threading;
-using OnlyM.Slides.Models;
-
 namespace OnlyMSlideManager.ViewModel
 {
     using System;
@@ -15,6 +11,7 @@ namespace OnlyMSlideManager.ViewModel
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media;
+    using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
@@ -25,6 +22,7 @@ namespace OnlyMSlideManager.ViewModel
     using OnlyM.CoreSys.Services.Snackbar;
     using OnlyM.CoreSys.Services.UI;
     using OnlyM.Slides;
+    using OnlyM.Slides.Models;
     using OnlyMSlideManager.Helpers;
     using OnlyMSlideManager.Models;
     using OnlyMSlideManager.PubSubMessages;
@@ -36,7 +34,6 @@ namespace OnlyMSlideManager.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private const string AppName = @"O N L Y M  Slide Manager";
-        private const int MaxSlideIndexNumber = 99;
         private const int MaxImageWidth = 1920;
         private const int MaxImageHeight = 1080;
         private const int ThumbnailWidth = 192;
@@ -550,7 +547,7 @@ namespace OnlyMSlideManager.ViewModel
                     ? (int?)null
                     : slide.DwellTimeMilliseconds / 1000,
                 DropZoneId = Guid.NewGuid().ToString(),
-                SlideIndex = slideIndex >= MaxSlideIndexNumber ? MaxSlideIndexNumber : slideIndex
+                SlideIndex = slideIndex
             };
 
             newSlide.SlideItemModifiedEvent += HandleSlideItemModifiedEvent;
@@ -693,18 +690,14 @@ namespace OnlyMSlideManager.ViewModel
             {
                 if (slide.DropZoneId == message.TargetId)
                 {
-                    message.SourceItem.SlideIndex = slideIndex == MaxSlideIndexNumber
-                        ? MaxSlideIndexNumber
-                        : slideIndex++;
+                    message.SourceItem.SlideIndex = slideIndex++;
 
                     newOrder.Add(message.SourceItem);
                 }
 
                 if (slide != message.SourceItem)
                 {
-                    slide.SlideIndex = slideIndex == MaxSlideIndexNumber
-                        ? MaxSlideIndexNumber
-                        : slideIndex++;
+                    slide.SlideIndex = slideIndex++;
 
                     newOrder.Add(slide);
                 }
