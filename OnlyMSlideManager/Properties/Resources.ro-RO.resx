@@ -267,15 +267,15 @@
     <comment>Slidehow option (automatically close at end of slideshow)</comment>
   </data>
   <data name="IMPORTING" xml:space="preserve">
-    <value>Importing...</value>
+    <value>Se importă...</value>
     <comment>Displayed in the status bar when importing images (via drag and drop)</comment>
   </data>
   <data name="LOADING" xml:space="preserve">
-    <value>Loading...</value>
+    <value>Se încarcă...</value>
     <comment>Displayed in the status bar when loading a file</comment>
   </data>
   <data name="SAVING" xml:space="preserve">
-    <value>Saving...</value>
+    <value>Se salvează...</value>
     <comment>Displayed in the status bar when saving a file</comment>
   </data>
   <data name="SLIDE_COUNT_X" xml:space="preserve">
