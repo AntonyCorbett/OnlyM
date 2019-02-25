@@ -128,6 +128,7 @@
 
         public void StartSlideshow(string mediaItemFilePath, Guid mediaItemId)
         {
+            _slideshowTransitioning = false;
             _currentSlideshowImageIndex = 0;
 
             _slideshowGuid = mediaItemId;
