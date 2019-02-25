@@ -47,7 +47,8 @@
         private bool _autoPlaySlideshow;
         private bool _autoCloseSlideshow;
         private int _autoPlaySlideshowDwellTime;
-        
+        private bool _slideshowTransitioning;
+
         public ImageDisplayManager(Image image1, Image image2, IOptionsService optionsService)
         {
             _optionsService = optionsService;
@@ -165,7 +166,7 @@
             return _currentSlideshowImageIndex;
         }
 
-        public int GotoNextSlide()
+        public int GotoNextSlide(Action onTransitionFinished = null)
         {
             var oldSlide = GetCurrentSlide();
             var oldIndex = _currentSlideshowImageIndex;
@@ -185,8 +186,16 @@
 
                 if (mediaId != Guid.Empty)
                 {
-                    DisplaySlide(newSlide, mediaId, oldSlide, oldIndex, _currentSlideshowImageIndex);
+                    DisplaySlide(newSlide, mediaId, oldSlide, oldIndex, _currentSlideshowImageIndex, onTransitionFinished);
                 }
+                else
+                {
+                    onTransitionFinished?.Invoke();
+                }
+            }
+            else
+            {
+                onTransitionFinished?.Invoke();
             }
 
             return _currentSlideshowImageIndex;
@@ -194,6 +203,11 @@
 
         public void StopSlideshow(Guid mediaItemId)
         {
+            if (_slideshowTransitioning)
+            {
+                return;
+            }
+            
             _slideshowTimer.Stop();
             
             UnplaceImage(
@@ -446,10 +460,11 @@
 
         private void HandleSlideshowTimerTick(object sender, EventArgs e)
         {
+            _slideshowTransitioning = true;
             _slideshowTimer.Stop();
             
             var currentSlideIndex = _currentSlideshowImageIndex;
-            var newSlideIndex = GotoNextSlide();
+            var newSlideIndex = GotoNextSlide(() => { _slideshowTransitioning = false; });
 
             if (currentSlideIndex == newSlideIndex)
             {
@@ -459,13 +474,19 @@
                     StopSlideshow(_slideshowGuid);
                 }
             }
-            else
+            else 
             {
                 ConfigureSlideshowAutoPlayTimer();
             }
         }
 
-        private void DisplaySlide(Slide slide, Guid mediaItemId, Slide previousSlide, int oldIndex, int newIndex)
+        private void DisplaySlide(
+            Slide slide, 
+            Guid mediaItemId, 
+            Slide previousSlide, 
+            int oldIndex, 
+            int newIndex,
+            Action onTransitionFinished = null)
         {
             var direction = newIndex >= oldIndex ? SlideDirection.Forward : SlideDirection.Reverse;
 
@@ -517,6 +538,7 @@
                     else
                     {
                         OnSlideTransitionEvent(CreateSlideTransitionEventArgs(mediaItemId, SlideTransition.Finished, oldIndex, newIndex));
+                        onTransitionFinished?.Invoke();
                     }
                 });
         }
