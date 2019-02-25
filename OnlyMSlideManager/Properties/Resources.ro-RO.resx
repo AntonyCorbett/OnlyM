@@ -279,7 +279,7 @@
     <comment>Displayed in the status bar when saving a file</comment>
   </data>
   <data name="SLIDE_COUNT_X" xml:space="preserve">
-    <value>Slide count: {0}</value>
+    <value>Diapozitivul numărul: {0}</value>
     <comment>Displayed in the status bar</comment>
   </data>
 </root>
