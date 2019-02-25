@@ -51,6 +51,18 @@
         public static BitmapSource GetImageAutoRotatedAndResized(
             string itemFilePath, int width, int height, bool shouldPad)
         {
+            var bytes = GetRawImageAutoRotatedAndResized(itemFilePath, width, height, shouldPad);
+            if (bytes == null)
+            {
+                return null;
+            }
+
+            return ByteArrayToImage(bytes);
+        }
+
+        public static byte[] GetRawImageAutoRotatedAndResized(
+            string itemFilePath, int width, int height, bool shouldPad)
+        {
             try
             {
                 bool requiresRotation = ImageRequiresRotation(itemFilePath);
@@ -71,7 +83,7 @@
                     using (var ms = new MemoryStream())
                     {
                         imageFactory.Save(ms);
-                        return ByteArrayToImage(ms.ToArray());
+                        return ms.ToArray();
                     }
                 }
             }
@@ -136,6 +148,29 @@
             }
 
             return result;
+        }
+
+        public static byte[] ImageSourceToJpegBytes(ImageSource imageSource)
+        {
+            return ImageSourceToBytes(new JpegBitmapEncoder(), imageSource);
+        }
+
+        public static byte[] ImageSourceToBytes(BitmapEncoder encoder, ImageSource imageSource)
+        {
+            byte[] bytes = null;
+
+            if (imageSource is BitmapSource bitmapSource)
+            {
+                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+
+                using (var stream = new MemoryStream())
+                {
+                    encoder.Save(stream);
+                    bytes = stream.ToArray();
+                }
+            }
+
+            return bytes;
         }
 
         public static byte[] CreateThumbnailOfImage(BitmapImage srcBmp, int maxPixelDimension)

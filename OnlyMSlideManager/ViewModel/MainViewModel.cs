@@ -1,13 +1,11 @@
-using GalaSoft.MvvmLight.Threading;
-
 namespace OnlyMSlideManager.ViewModel
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
@@ -84,7 +82,7 @@ namespace OnlyMSlideManager.ViewModel
 
             if (!IsInDesignMode)
             {
-                InitNewSlideshow(null);
+                InitNewSlideshow(null).Wait();
             }
 
             StatusText = GetStandardStatusText();
@@ -366,6 +364,8 @@ namespace OnlyMSlideManager.ViewModel
                 RaisePropertyChanged(nameof(HasSlides));
                 RaisePropertyChanged(nameof(HasNoSlides));
                 RaisePropertyChanged(nameof(IsDirty));
+
+                StatusText = GetStandardStatusText();
             }
         }
 
@@ -423,7 +423,7 @@ namespace OnlyMSlideManager.ViewModel
 
                     await SaveFileInternal(d.FileName, true);
                     
-                    InitNewSlideshow(d.FileName);
+                    await InitNewSlideshow(d.FileName);
                 }
             }
         }
@@ -466,7 +466,7 @@ namespace OnlyMSlideManager.ViewModel
             return Task.Run(() =>
             {
                 using (_userInterfaceService.BeginBusy())
-                using (new StatusTextWriter(this, "Saving..."))
+                using (new StatusTextWriter(this, Properties.Resources.SAVING))
                 {
                     IsProgressVisible = true;
                     try
@@ -518,25 +518,46 @@ namespace OnlyMSlideManager.ViewModel
                 if (rv == CommonFileDialogResult.Ok)
                 {
                     _defaultFileOpenFolder = System.IO.Path.GetDirectoryName(d.FileName);
-                    InitNewSlideshow(d.FileName);
+                    await InitNewSlideshow(d.FileName);
                 }
             }
         }
 
-        private void GenerateSlideItems()
+        private async Task GenerateSlideItems(Action<double> onProgressPercentageChanged = null)
         {
             using (new ObservableCollectionSuppression<SlideItem>(SlideItems))
             {
+                var thumbnailCache = GetThumbnailCache();
                 SlideItems.Clear();
 
                 if (_currentSlideFileBuilder != null)
                 {
-                    int slideIndex = 1;
+                    int batchSize = 10;
+                    var batchHelper =
+                        new SlideBuilderBatchHelper(_currentSlideFileBuilder.GetSlides().ToList(), batchSize);
 
-                    foreach (var slide in _currentSlideFileBuilder.GetSlides())
+                    int batchCount = batchHelper.GetBatchCount();
+                    int batchesComplete = 0;
+
+                    var batch = batchHelper.GetBatch();
+                    while (batch != null)
                     {
-                        var slideItem = GenerateSlideItem(slide, slideIndex++);
-                        SlideItems.Add(slideItem);
+                        var thumbnails = await GenerateThumbnailsForBatch(batch, thumbnailCache);
+                        int slideIndex = 1;
+
+                        foreach (var slide in batch)
+                        {
+                            if (thumbnails.TryGetValue(slide, out var thumbnailBytes))
+                            {
+                                var slideItem = GenerateSlideItem(slide, thumbnailBytes, slideIndex++);
+                                SlideItems.Add(slideItem);
+                            }
+                        }
+                        
+                        ++batchesComplete;
+
+                        onProgressPercentageChanged?.Invoke((batchesComplete * 100F) / batchCount);
+                        batch = batchHelper.GetBatch();
                     }
                 }
 
@@ -547,18 +568,56 @@ namespace OnlyMSlideManager.ViewModel
             RaisePropertyChanged(nameof(HasNoSlides));
         }
 
-        private SlideItem GenerateSlideItem(Slide slide, int slideIndex)
+        private Dictionary<string, byte[]> GetThumbnailCache()
         {
-            // Note that we pad the thumbnails (so they are all identical sizes). If we don't,
-            // a WPF Presentation rendering issue causes an OutOfMemoryException.
-            var thumbnail = GraphicsUtils.GetImageAutoRotatedAndResized(
-                slide.OriginalFilePath, ThumbnailWidth, ThumbnailHeight, shouldPad: true);
+            var result = new Dictionary<string, byte[]>();
 
+            if (_currentSlideFileBuilder != null && _currentSlideFileBuilder.SlideCount > 0)
+            {
+                foreach (var slide in SlideItems)
+                {
+                    var bmp = GraphicsUtils.ImageSourceToJpegBytes(slide.ThumbnailImage);
+                    if (bmp != null)
+                    {
+                        result.Add(slide.OriginalFilePath, bmp);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private async Task<ConcurrentDictionary<Slide, byte[]>> GenerateThumbnailsForBatch(
+            IReadOnlyList<Slide> batch, Dictionary<string, byte[]> thumbnailCache)
+        {
+            var result = new ConcurrentDictionary<Slide, byte[]>();
+
+            await Task.Run(() =>
+            {
+                Parallel.ForEach(batch, slide =>
+                {
+                    if (!thumbnailCache.TryGetValue(slide.OriginalFilePath, out var thumbnailBytes))
+                    {
+                        // Note that we pad the thumbnails (so they are all identical sizes). If we don't,
+                        // a WPF Presentation rendering issue causes an OutOfMemoryException.
+                        thumbnailBytes = GraphicsUtils.GetRawImageAutoRotatedAndResized(
+                            slide.OriginalFilePath, ThumbnailWidth, ThumbnailHeight, shouldPad: true);
+                    }
+
+                    result.TryAdd(slide, thumbnailBytes);
+                });
+            });
+
+            return result;
+        }
+
+        private SlideItem GenerateSlideItem(Slide slide, byte[] thumbnailBytes, int slideIndex)
+        {
             var newSlide = new SlideItem
             {
                 Name = slide.ArchiveEntryName,
                 OriginalFilePath = slide.OriginalFilePath,
-                ThumbnailImage = thumbnail,
+                ThumbnailImage = GraphicsUtils.ByteArrayToImage(thumbnailBytes),
                 FadeInForward = slide.FadeInForward,
                 FadeInReverse = slide.FadeInReverse,
                 FadeOutForward = slide.FadeOutForward,
@@ -625,15 +684,39 @@ namespace OnlyMSlideManager.ViewModel
                 }
             }
 
-            InitNewSlideshow(null);
+            await InitNewSlideshow(null);
         }
 
-        private void InitNewSlideshow(string optionalPathToExistingSlideshow)
+        private async Task LoadShow(string path, SlideFileBuilder builder)
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    builder.Load(path);
+                }
+                catch (Exception ex)
+                {
+                    Log.Logger.Error(ex, "Could not load");
+                }
+            });
+        }
+
+        private async Task InitNewSlideshow(string optionalPathToExistingSlideshow)
+        {
+            using (_userInterfaceService.BeginBusy())
+            using (new StatusTextWriter(this, Properties.Resources.LOADING))
+            {
+                await InitNewSlideshowInternal(optionalPathToExistingSlideshow);
+            }
+        }
+
+        private async Task InitNewSlideshowInternal(string optionalPathToExistingSlideshow)
         {
             var builder = new SlideFileBuilder(MaxImageWidth, MaxImageHeight);
             if (!string.IsNullOrEmpty(optionalPathToExistingSlideshow))
             {
-                builder.Load(optionalPathToExistingSlideshow);
+                await LoadShow(optionalPathToExistingSlideshow, builder);
             }
 
             if (CurrentSlideFileBuilder != null)
@@ -661,7 +744,15 @@ namespace OnlyMSlideManager.ViewModel
 
             SaveSignature();
 
-            GenerateSlideItems();
+            IsProgressVisible = CurrentSlideFileBuilder.SlideCount > 4;
+            try
+            {
+                await GenerateSlideItems(percentageComplete => { ProgressPercentageValue = percentageComplete; });
+            }
+            finally
+            {
+                IsProgressVisible = false;
+            }
         }
 
         private void HandleBuildProgressEvent(object sender, OnlyM.Slides.Models.BuildProgressEventArgs e)
@@ -774,22 +865,23 @@ namespace OnlyMSlideManager.ViewModel
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private void OnDropImageFilesMessage(DropImagesMessage message)
+        private async void OnDropImageFilesMessage(DropImagesMessage message)
         {
-            DropImages(message.FileList, message.TargetId);
+            await DropImages(message.FileList, message.TargetId);
         }
 
-        private void DropImages(List<string> fileList, string targetDropZoneId)
+        private async Task DropImages(List<string> fileList, string targetDropZoneId)
         {
             if (!Busy)
             {
                 using (_userInterfaceService.BeginBusy())
-                using (new StatusTextWriter(this, "Importing images..."))
+                using (new StatusTextWriter(this, Properties.Resources.IMPORTING))
                 {
                     try
                     {
+                        IsProgressVisible = fileList.Count > 4;
                         var fileCount = AddImages(fileList, targetDropZoneId);
-                        GenerateSlideItems();
+                        await GenerateSlideItems((value) => { ProgressPercentageValue = value; });
 
                         switch (fileCount)
                         {
@@ -811,6 +903,10 @@ namespace OnlyMSlideManager.ViewModel
                     {
                         Log.Logger.Warning(ex, "Could not add all images");
                         _snackbarService.EnqueueWithOk(Properties.Resources.ERROR_ADDING_IMAGES, Properties.Resources.OK);
+                    }
+                    finally
+                    {
+                        IsProgressVisible = false;
                     }
                 }
             }
@@ -885,7 +981,7 @@ namespace OnlyMSlideManager.ViewModel
         private string GetStandardStatusText()
         {
             // note that there is always a dummy slide (hence "-1")
-            return $"Slide count: {SlideItems.Count - 1}";
+            return string.Format(Properties.Resources.SLIDE_COUNT_X, SlideItems.Count - 1);
         }
 
         private class StatusTextWriter : IDisposable

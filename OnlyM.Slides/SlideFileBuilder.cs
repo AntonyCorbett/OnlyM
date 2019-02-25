@@ -7,7 +7,6 @@
     using System.Linq;
     using System.Windows.Media.Imaging;
     using Newtonsoft.Json;
-    using OnlyM.CoreSys;
     using OnlyM.Slides.Helpers;
     using OnlyM.Slides.Models;
 
@@ -49,6 +48,8 @@
             get => _config.Loop;
             set => _config.Loop = value;
         }
+
+        public int SlideCount => _config.SlideCount;
 
         public string CreateSignature()
         {

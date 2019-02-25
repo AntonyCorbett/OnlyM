@@ -158,6 +158,7 @@
     </Compile>
     <Compile Include="Helpers\DesignTimeSlideCreation.cs" />
     <Compile Include="Helpers\FileUtils.cs" />
+    <Compile Include="Helpers\SlideBuilderBatchHelper.cs" />
     <Compile Include="Models\LanguageItem.cs" />
     <Compile Include="Models\SlideItem.cs" />
     <Compile Include="PubSubMessages\CloseAppMessage.cs" />

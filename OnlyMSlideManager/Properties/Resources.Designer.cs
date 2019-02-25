@@ -224,6 +224,15 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Importing....
+        /// </summary>
+        public static string IMPORTING {
+            get {
+                return ResourceManager.GetString("IMPORTING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string LANGUAGE {
@@ -238,6 +247,15 @@ namespace OnlyMSlideManager.Properties {
         public static string LANGUAGE_RESTART {
             get {
                 return ResourceManager.GetString("LANGUAGE_RESTART", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string LOADING {
+            get {
+                return ResourceManager.GetString("LOADING", resourceCulture);
             }
         }
         
@@ -355,6 +373,24 @@ namespace OnlyMSlideManager.Properties {
         public static string SAVED_FILE {
             get {
                 return ResourceManager.GetString("SAVED_FILE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving....
+        /// </summary>
+        public static string SAVING {
+            get {
+                return ResourceManager.GetString("SAVING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slide count: {0}.
+        /// </summary>
+        public static string SLIDE_COUNT_X {
+            get {
+                return ResourceManager.GetString("SLIDE_COUNT_X", resourceCulture);
             }
         }
         
