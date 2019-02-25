@@ -48,42 +48,8 @@
             return false;
         }
 
-        public static BitmapSource GetImageAutoRotatedIfRequired(string itemFilePath)
-        {
-            try
-            {
-                if (ImageRequiresRotation(itemFilePath))
-                {
-                    byte[] photoBytes = System.IO.File.ReadAllBytes(itemFilePath);
-
-                    using (var inStream = new MemoryStream(photoBytes))
-                    {
-                        using (var imageFactory = new ImageFactory())
-                        {
-                            using (var ms = new MemoryStream())
-                            {
-                                imageFactory
-                                    .Load(inStream)
-                                    .AutoRotate()
-                                    .Save(ms);
-
-                                return ByteArrayToImage(ms.ToArray());
-                            }
-                        }
-                    }
-                }
-
-                return new BitmapImage(new Uri(itemFilePath, UriKind.Absolute));
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, $"Could not auto-rotate image {itemFilePath}");
-            }
-
-            return null;
-        }
-
-        public static BitmapSource GetImageAutoRotatedAndPadded(string itemFilePath, int width, int height)
+        public static BitmapSource GetImageAutoRotatedAndResized(
+            string itemFilePath, int width, int height, bool shouldPad)
         {
             try
             {
@@ -91,16 +57,16 @@
 
                 using (var imageFactory = new ImageFactory())
                 {
-                    var resizeLayer = new ResizeLayer(new Size(width, height), ResizeMode.Pad);
+                    var resizeLayer = new ResizeLayer(new Size(width, height), shouldPad ? ResizeMode.Pad : ResizeMode.Max);
 
-                    imageFactory
-                        .Load(itemFilePath)
-                        .Resize(resizeLayer);
+                    imageFactory.Load(itemFilePath);
 
                     if (requiresRotation)
                     {
                         imageFactory.AutoRotate();
                     }
+
+                    imageFactory.Resize(resizeLayer);
 
                     using (var ms = new MemoryStream())
                     {
@@ -111,7 +77,7 @@
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, $"Could not auto-rotate image {itemFilePath}");
+                Log.Logger.Error(ex, $"Could not auto-rotate and resize image {itemFilePath}");
             }
 
             return null;

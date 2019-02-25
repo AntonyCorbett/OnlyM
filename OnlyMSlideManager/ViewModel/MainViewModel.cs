@@ -58,6 +58,7 @@ namespace OnlyMSlideManager.ViewModel
         private bool _busy;
         private bool _isProgressVisible;
         private double _progressPercentageValue;
+        private string _statusText;
 
         public MainViewModel(
             IDialogService dialogService, 
@@ -84,6 +85,21 @@ namespace OnlyMSlideManager.ViewModel
             if (!IsInDesignMode)
             {
                 InitNewSlideshow(null);
+            }
+
+            StatusText = GetStandardStatusText();
+        }
+        
+        public string StatusText
+        {
+            get => _statusText;
+            set
+            {
+                if (value != _statusText)
+                {
+                    _statusText = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -450,6 +466,7 @@ namespace OnlyMSlideManager.ViewModel
             return Task.Run(() =>
             {
                 using (_userInterfaceService.BeginBusy())
+                using (new StatusTextWriter(this, "Saving..."))
                 {
                     IsProgressVisible = true;
                     try
@@ -531,14 +548,16 @@ namespace OnlyMSlideManager.ViewModel
 
         private SlideItem GenerateSlideItem(Slide slide, int slideIndex)
         {
-            var image = slide.Image ?? 
-                        GraphicsUtils.GetImageAutoRotatedAndPadded(slide.OriginalFilePath, MaxImageWidth, MaxImageHeight);
+            // Note that we pad the thumbnails (so they are all identical sizes). If we don't,
+            // a WPF Presentation rendering issue causes an OutOfMemoryException.
+            var thumbnail = GraphicsUtils.GetImageAutoRotatedAndResized(
+                slide.OriginalFilePath, ThumbnailWidth, ThumbnailHeight, shouldPad: true);
 
             var newSlide = new SlideItem
             {
                 Name = slide.ArchiveEntryName,
                 OriginalFilePath = slide.OriginalFilePath,
-                ThumbnailImage = CreateThumbnailImage(image),
+                ThumbnailImage = thumbnail,
                 FadeInForward = slide.FadeInForward,
                 FadeInReverse = slide.FadeInReverse,
                 FadeOutForward = slide.FadeOutForward,
@@ -553,11 +572,6 @@ namespace OnlyMSlideManager.ViewModel
             newSlide.SlideItemModifiedEvent += HandleSlideItemModifiedEvent;
 
             return newSlide;
-        }
-
-        private ImageSource CreateThumbnailImage(BitmapSource image)
-        {
-            return GraphicsUtils.Downsize(image, ThumbnailWidth, ThumbnailHeight);
         }
 
         private void HandleSlideItemModifiedEvent(object sender, EventArgs e)
@@ -864,6 +878,28 @@ namespace OnlyMSlideManager.ViewModel
             result.Sort((x, y) => string.Compare(x.LanguageName, y.LanguageName, StringComparison.Ordinal));
 
             return result.ToArray();
+        }
+
+        private string GetStandardStatusText()
+        {
+            // note that there is always a dummy slide (hence "-1")
+            return $"Slide count: {SlideItems.Count - 1}";
+        }
+
+        private class StatusTextWriter : IDisposable
+        {
+            private readonly MainViewModel _vm;
+
+            public StatusTextWriter(MainViewModel vm, string text)
+            {
+                _vm = vm;
+                _vm.StatusText = text;
+            }
+
+            public void Dispose()
+            {
+                _vm.StatusText = _vm.GetStandardStatusText();
+            }
         }
     }
 }

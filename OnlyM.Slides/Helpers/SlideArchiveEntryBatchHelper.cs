@@ -69,8 +69,8 @@
                 throw new Exception($"Could not find image file: {slide.OriginalFilePath}");
             }
 
-            return GraphicsUtils.GetImageAutoRotatedAndPadded(
-                    slide.OriginalFilePath, _maxSlideWidth, _maxSlideHeight);
+            return GraphicsUtils.GetImageAutoRotatedAndResized(
+                    slide.OriginalFilePath, _maxSlideWidth, _maxSlideHeight, shouldPad: false);
         }
 
         private List<Slide> GetSlideBatch()

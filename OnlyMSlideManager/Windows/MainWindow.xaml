@@ -189,9 +189,9 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
-                <RowDefinition Height="8" />
                 <RowDefinition Height="120" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
 
             <!-- Command button panel -->
@@ -261,16 +261,8 @@
 
             </ToolBar>
 
-            <!-- Progress bar -->
-            <!-- should disable on 2nd transition... -->
-            <ProgressBar Grid.Row="1" 
-                         Minimum="0"
-                         Maximum="100"
-                         Visibility="{Binding IsProgressVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                         Value="{Binding ProgressPercentageValue}" />
-
             <!-- Slideshow settings -->
-            <GroupBox Grid.Row="2" Header="{x:Static resx:Resources.AUTO_PLAY_SETTINGS}" Margin="5,0,5,5">
+            <GroupBox Grid.Row="1" Header="{x:Static resx:Resources.AUTO_PLAY_SETTINGS}" Margin="5,0,5,5">
                 <Grid IsEnabled="{Binding IsNotBusy}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200"/>
@@ -304,7 +296,7 @@
             </GroupBox>
 
             <!-- Slide Items -->
-            <ScrollViewer Grid.Row="3">
+            <ScrollViewer Grid.Row="2">
                 <ItemsControl ItemsSource="{Binding SlideItems}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -314,14 +306,39 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <StackPanel Grid.Row="3" Orientation="Horizontal" 
+            <StackPanel Grid.Row="2" Orientation="Horizontal" 
                         Visibility="{Binding HasNoSlides, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Margin="50,40,0,0">
                 <materialDesign:PackIcon Kind="ArrowLeftBold" />
                 <TextBlock Text="{x:Static resx:Resources.DRAG_IMAGES_HERE}"/>
             </StackPanel>
 
-            <materialDesign:Snackbar Grid.Row="3" 
+            <Border Grid.Row="3" 
+                    BorderThickness="0,1,0,0"
+                    BorderBrush="{StaticResource MaterialDesignDivider}"
+                    Background="{StaticResource MaterialDesignToolBarBackground}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Progress bar -->
+                    <!-- should disable on 2nd transition... -->
+                    <ProgressBar Grid.Row="0"
+                                 Minimum="0"
+                                 Maximum="100"
+                                 Visibility="{Binding IsProgressVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                 Value="{Binding ProgressPercentageValue}" />
+
+                    <TextBlock Grid.Row="1" 
+                               Margin="10,0,10,0" 
+                               Text="{Binding StatusText}"/>
+
+                </Grid>
+            </Border>
+
+            <materialDesign:Snackbar Grid.Row="2" 
                                  MessageQueue="{Binding TheSnackbarMessageQueue}"/>
 
         </Grid>
