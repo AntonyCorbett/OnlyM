@@ -1,3 +1,5 @@
+using GalaSoft.MvvmLight.Threading;
+
 namespace OnlyMSlideManager.ViewModel
 {
     using System;
@@ -10,8 +12,6 @@ namespace OnlyMSlideManager.ViewModel
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
@@ -535,7 +535,8 @@ namespace OnlyMSlideManager.ViewModel
 
                     foreach (var slide in _currentSlideFileBuilder.GetSlides())
                     {
-                        SlideItems.Add(GenerateSlideItem(slide, slideIndex++));
+                        var slideItem = GenerateSlideItem(slide, slideIndex++);
+                        SlideItems.Add(slideItem);
                     }
                 }
 
@@ -773,15 +774,21 @@ namespace OnlyMSlideManager.ViewModel
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private async void OnDropImageFilesMessage(DropImagesMessage message)
+        private void OnDropImageFilesMessage(DropImagesMessage message)
+        {
+            DropImages(message.FileList, message.TargetId);
+        }
+
+        private void DropImages(List<string> fileList, string targetDropZoneId)
         {
             if (!Busy)
             {
                 using (_userInterfaceService.BeginBusy())
+                using (new StatusTextWriter(this, "Importing images..."))
                 {
                     try
                     {
-                        var fileCount = await AddImages(message.FileList, message.TargetId);
+                        var fileCount = AddImages(fileList, targetDropZoneId);
                         GenerateSlideItems();
 
                         switch (fileCount)
@@ -809,34 +816,29 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private Task<int> AddImages(List<string> files, string messageTargetId)
+        private int AddImages(List<string> files, string messageTargetId)
         {
-            return Task.Run(() =>
+            var count = 0;
+            if (CurrentSlideFileBuilder != null)
             {
-                Thread.Sleep(500);
+                var dropTargetSlide = SlideItems.SingleOrDefault(x => x.DropZoneId == messageTargetId);
+                var dropTargetSlideIndex = SlideItems.IndexOf(dropTargetSlide);
 
-                var count = 0;
-                if (CurrentSlideFileBuilder != null)
+                foreach (var file in files)
                 {
-                    var dropTargetSlide = SlideItems.SingleOrDefault(x => x.DropZoneId == messageTargetId);
-                    var dropTargetSlideIndex = SlideItems.IndexOf(dropTargetSlide);
+                    CurrentSlideFileBuilder.InsertSlide(
+                        dropTargetSlideIndex++,
+                        file,
+                        true,
+                        true,
+                        true,
+                        true);
 
-                    foreach (var file in files)
-                    {
-                        CurrentSlideFileBuilder.InsertSlide(
-                            dropTargetSlideIndex++,
-                            file,
-                            true,
-                            true,
-                            true,
-                            true);
-
-                        ++count;
-                    }
+                    ++count;
                 }
-                
-                return count;
-            });
+            }
+            
+            return count;
         }
 
         private LanguageItem[] GetSupportedLanguages()
