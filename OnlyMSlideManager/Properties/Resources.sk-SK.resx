@@ -126,27 +126,27 @@
     <comment>File command</comment>
   </data>
   <data name="OPEN_SLIDESHOW" xml:space="preserve">
-    <value>Open slideshow</value>
+    <value>Otvoriť prezentáciu</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW" xml:space="preserve">
-    <value>Save slideshow</value>
+    <value>Uložiť prezentáciu</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW_AS" xml:space="preserve">
-    <value>Save slideshow as...</value>
+    <value>Uložiť prezentáciu ako...</value>
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Could not create folder {0}</value>
+    <value>Nepodarilo sa vytvoriť priečinok {0}</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Open Slideshow</value>
+    <value>Otvoriť prezentáciu</value>
     <comment>File Open dialog caption</comment>
   </data>
   <data name="SLIDESHOW_FILE" xml:space="preserve">
-    <value>Slideshow file</value>
+    <value>Súbor prezentácie</value>
     <comment>Used in File Open dialog</comment>
   </data>
   <data name="ANSWER_CANCEL" xml:space="preserve">
@@ -162,19 +162,19 @@
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
-    <value>The slideshow has changed. Do you want to save it?</value>
+    <value>Prezentácia sa zmenila. Uložiť zmeny?</value>
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Save Slideshow</value>
+    <value>Uložiť prezentáciu</value>
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
-    <value>Auto-play</value>
+    <value>Automatické prehrávanie</value>
     <comment>Slidehow option (automatically play)</comment>
   </data>
   <data name="LOOP" xml:space="preserve">
-    <value>Loop</value>
+    <value>Opakovať</value>
     <comment>Slidehow option (loop if automatic play is enabled)</comment>
   </data>
   <data name="WANT_TO_SAVE_TITLE" xml:space="preserve">
@@ -182,23 +182,23 @@
     <comment>Title used in dialog prompt</comment>
   </data>
   <data name="FADE_IN_FORWARD" xml:space="preserve">
-    <value>Fade in</value>
+    <value>Postupné zobrazenie</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_IN_REVERSE" xml:space="preserve">
-    <value>Fade in (reversing)</value>
+    <value>Postupné zobrazenie (spätné)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_FORWARD" xml:space="preserve">
-    <value>Fade out</value>
+    <value>Postupné miznutie</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_REVERSE" xml:space="preserve">
-    <value>Fade out (reversing)</value>
+    <value>Postupné miznutie (spätné)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="DWELL_SECONDS" xml:space="preserve">
-    <value>Dwell time (secs)</value>
+    <value>Doba zobrazenia snímku (sek)</value>
     <comment>The time a slide is displayed during automatic playback.</comment>
   </data>
   <data name="OK" xml:space="preserve">
@@ -208,10 +208,10 @@
     <value>Nepodarilo sa uložiť súbor!</value>
   </data>
   <data name="SAVED_FILE" xml:space="preserve">
-    <value>Saved file</value>
+    <value>Uložený súbor</value>
   </data>
   <data name="AUTO_PLAY_SETTINGS" xml:space="preserve">
-    <value>Auto-play settings</value>
+    <value>Auto-play nastavenie</value>
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
@@ -219,31 +219,31 @@
     <comment>Instruction on empty window</comment>
   </data>
   <data name="DELETE_SLIDE" xml:space="preserve">
-    <value>Delete slide</value>
+    <value>Odstrániť snímok</value>
     <comment>Tooltip for delete button on slide edit page</comment>
   </data>
   <data name="EDIT_SLIDE" xml:space="preserve">
-    <value>Edit slide</value>
+    <value>Upraviť snímok</value>
     <comment>Tooltip for edit button on slides</comment>
   </data>
   <data name="RETURN_TO_SLIDE" xml:space="preserve">
-    <value>Return</value>
+    <value>Návrat</value>
     <comment>Tooltip for 'back' button on slide edit page</comment>
   </data>
   <data name="NO_SLIDES_CREATED" xml:space="preserve">
-    <value>No slides created!</value>
+    <value>Snímok nebol vytvorený!</value>
     <comment>Message displayed following an unsuccessful drag and drop</comment>
   </data>
   <data name="SLIDE_CREATED" xml:space="preserve">
-    <value>Slide created</value>
+    <value>Snímok bol vytvorený</value>
     <comment>Message displayed when a slide is created following drag and drop</comment>
   </data>
   <data name="X_SLIDES_CREATED" xml:space="preserve">
-    <value>{0} slides created</value>
+    <value>Počet vytvorených snímkov: {0}</value>
     <comment>Message displayed when slides are created following drag and drop. The value is awlays &gt; 1</comment>
   </data>
   <data name="ERROR_ADDING_IMAGES" xml:space="preserve">
-    <value>An error occurred adding images!</value>
+    <value>Vyskytla sa chyba pri pridávaní obrázkov!</value>
     <comment>Error message</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
