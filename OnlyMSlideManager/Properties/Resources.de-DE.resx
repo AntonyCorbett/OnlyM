@@ -275,7 +275,7 @@
     <comment>Displayed in the status bar when loading a file</comment>
   </data>
   <data name="SAVING" xml:space="preserve">
-    <value>Saving...</value>
+    <value>Speichere...</value>
     <comment>Displayed in the status bar when saving a file</comment>
   </data>
   <data name="SLIDE_COUNT_X" xml:space="preserve">
