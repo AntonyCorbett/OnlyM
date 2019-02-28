@@ -70,63 +70,6 @@
             optionsService.Save();
         }
 
-        private void OnMouseDoubleClickTitleBar(object sender, MouseButtonEventArgs e)
-        {
-            MaximizeOrRestore();
-        }
-
-        private void MaximizeOrRestore()
-        {
-            if (WindowState == WindowState.Maximized)
-            {
-                ResizeMode = ResizeMode.CanResizeWithGrip;
-                WindowState = WindowState.Normal;
-                MaxRestoreBtn.Content = new PackIcon { Kind = PackIconKind.WindowMaximize };
-            }
-            else
-            {
-                ResizeMode = ResizeMode.NoResize;
-                WindowState = WindowState.Maximized;
-                MaxRestoreBtn.Content = new PackIcon { Kind = PackIconKind.WindowRestore };
-            }
-        }
-
-        private void OnMouseLeftButtonDownTitleBar(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
-        }
-
-        private void MinimizeClick(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void MaximizeRestoreClick(object sender, RoutedEventArgs e)
-        {
-            MaximizeOrRestore();
-        }
-
-        private void CloseClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void OnWindowActivated(object sender, System.EventArgs e)
-        {
-            var converter = new BrushConverter();
-            TopBorderBrush.Opacity = 1.0;
-            BottomBorderBrush.Opacity = 1.0;
-            MainBorder.BorderBrush = (Brush)converter.ConvertFromString("#FF512DA8");
-        }
-
-        private void OnWindowDeactivated(object sender, System.EventArgs e)
-        {
-            var converter = new BrushConverter();
-            TopBorderBrush.Opacity = 0.65;
-            BottomBorderBrush.Opacity = 0.65;
-            MainBorder.BorderBrush = (Brush)converter.ConvertFromString("#FFB39DDB");
-        }
-
         private void OnPaste(object sender, ExecutedRoutedEventArgs e)
         {
             var dragAndDropService = ServiceLocator.Current.GetInstance<IDragAndDropService>();

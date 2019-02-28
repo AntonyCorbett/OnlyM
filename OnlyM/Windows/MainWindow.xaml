@@ -3,12 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OnlyM"
         DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:command="http://www.galasoft.ch/mvvmlight"
         xmlns:resx="clr-namespace:OnlyM.Properties"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -17,22 +14,14 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        WindowStyle="None"
-        AllowsTransparency="{Binding AllowsTransparency}"
         ResizeMode="NoResize"
         MinWidth="366"
         MinHeight="370"
         Topmost="{Binding AlwaysOnTop, Mode=OneWay}"
-        Title="S o u n d B o x - O N L Y M" Height="650" Width="500" Closing="WindowClosing" Activated="OnWindowActivated" Deactivated="OnWindowDeactivated" Icon="/OnlyM;component/icon3.ico">
+        Title="S o u n d B o x - O N L Y M" Height="650" Width="500" Closing="WindowClosing" Icon="/OnlyM;component/icon3.ico">
 
     <Window.Resources>
         <ResourceDictionary>
-            <Style x:Key="SystemButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatButton}">
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Height" Value="30" />
-                <Setter Property="Margin" Value="0,-8,0,0" />
-                <Setter Property="Foreground" Value="White" />
-            </Style>
 
             <!--Scrollbar Thumbs-->
             <Style x:Key="ScrollThumbs" TargetType="{x:Type Thumb}">
@@ -103,198 +92,145 @@
         <CommandBinding Command="ApplicationCommands.Paste" Executed="OnPaste" />
     </Window.CommandBindings>
 
-    <Border Name="MainBorder" BorderBrush="#FF512DA8" BorderThickness="1">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="38"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="74"/>
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="74"/>
+        </Grid.RowDefinitions>
 
-            <Border Grid.Row="0">
-                <Border.Background>
-                    <LinearGradientBrush x:Name="TopBorderBrush" EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF512DA8" Offset="1"/>
-                        <GradientStop Color="#FFB39DDB"/>
-                        <GradientStop Color="#FFB39DDB" Offset="0.821"/>
+        <Grid Grid.Row="0">
+            <ScrollViewer x:Name="MainScrollViewer" 
+                          VerticalScrollBarVisibility="Auto" 
+                          PanningMode="VerticalOnly">
+                <ContentControl Content="{Binding CurrentPage}" />
+            </ScrollViewer>
+            <TextBlock Visibility="{Binding Path=ShowDragAndDropHint, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                       Height="20"
+                       VerticalAlignment="Top"
+                       Text="{x:Static resx:Resources.DROP_HERE}"
+                       Margin="20,20,20,0" />
+
+            <materialDesign:Snackbar MessageQueue="{Binding TheSnackbarMessageQueue}"/>
+
+            <Rectangle Height="4" VerticalAlignment="Top">
+                <Rectangle.Fill>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#72000000" Offset="0"/>
+                        <GradientStop Color="#00FAFAFA" Offset="1"/>
                     </LinearGradientBrush>
-                </Border.Background>
-                <ContentControl
-                    MouseDoubleClick="OnMouseDoubleClickTitleBar"
-                    VerticalAlignment="Stretch">
-                
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="33"/>
-                            <ColumnDefinition Width="33"/>
-                            <ColumnDefinition Width="33"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Foreground="White" 
-                               MouseLeftButtonDown="OnMouseLeftButtonDownTitleBar"
-                               VerticalAlignment="Stretch"
-                               Padding="10"
-                               Grid.Column="0">S o u n d B o x - O N L Y M</TextBlock>
+                </Rectangle.Fill>
+            </Rectangle>
 
-                        <Button Grid.Column="1" 
-                            Style="{StaticResource SystemButtonStyle}"
-                            Content="{materialDesign:PackIcon WindowMinimize}" 
-                            Click="MinimizeClick">
-                        </Button>
-
-                        <Button Grid.Column="2" x:Name="MaxRestoreBtn"
-                            Style="{StaticResource SystemButtonStyle}"
-                            Content="{materialDesign:PackIcon WindowMaximize}" 
-                            Click="MaximizeRestoreClick">
-                        </Button>
-
-                        <Button Grid.Column="3" 
-                            Style="{StaticResource SystemButtonStyle}"
-                            Content="{materialDesign:PackIcon WindowClose}" 
-                            Click="CloseClick">
-                        </Button>
-
-                    </Grid>
-                </ContentControl>
-            </Border>
-
-            <Grid Grid.Row="1">
-                <ScrollViewer x:Name="MainScrollViewer" 
-                              VerticalScrollBarVisibility="Auto" 
-                              PanningMode="VerticalOnly">
-                    <ContentControl Content="{Binding CurrentPage}" />
-                </ScrollViewer>
-                <TextBlock Visibility="{Binding Path=ShowDragAndDropHint, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                           Height="20"
-                           VerticalAlignment="Top"
-                           Text="{x:Static resx:Resources.DROP_HERE}"
-                           Margin="20,20,20,0">
-
-                </TextBlock>
-
-                <materialDesign:Snackbar MessageQueue="{Binding TheSnackbarMessageQueue}"/>
-
-                <Rectangle Height="6" VerticalAlignment="Top">
-                    <Rectangle.Fill>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#72000000" Offset="0"/>
-                            <GradientStop Color="#00FAFAFA" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-            </Grid>
-
-            <Border Grid.Row="2">
-                <Border.Background>
-                    <LinearGradientBrush x:Name="BottomBorderBrush" EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FFB39DDB" Offset="0"/>
-                        <GradientStop Color="#FFB39DDB" Offset="1"/>
-                        <GradientStop Color="#FFFDFCFD" Offset="0.047"/>
-                        <GradientStop Color="#FFB39DDB" Offset="0.087"/>
+            <Rectangle Height="4" VerticalAlignment="Bottom">
+                <Rectangle.Fill>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#00FAFAFA" Offset="0"/>
+                        <GradientStop Color="#72000000" Offset="1"/>
                     </LinearGradientBrush>
-                </Border.Background>
-                <ContentControl
-            VerticalAlignment="Stretch"
-            Padding="10">
-                    <Grid Margin="10,0,10,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="50"/>
-                    </Grid.ColumnDefinitions>
+                </Rectangle.Fill>
+            </Rectangle>
+        </Grid>
 
-                        <Button Grid.Column="0"
-                        HorizontalAlignment="Left"
-                        Command="{Binding GotoOperatorCommand}"
-                        ToolTip="{x:Static resx:Resources.MEDIA_PAGE}"
-                        Visibility="{Binding Path=IsSettingsPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
-                            <materialDesign:PackIcon
-                            Kind="Backburger"
-                            Height="24"
-                            Width="24" />
-                    </Button>
+        <Border Grid.Row="1" Background="#FFB39DDB">
+            <ContentControl VerticalAlignment="Stretch" Padding="10">
+                <Grid Margin="10,0,10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
 
                     <Button Grid.Column="0"
-                        HorizontalAlignment="Left"
-                        Command="{Binding UnhideCommand}"
-                        Content="{x:Static resx:Resources.UNHIDE}"
-                        Visibility="{Binding Path=IsUnhideButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
-
-                    <materialDesign:Card
-                        Grid.Column="0"
-                        HorizontalAlignment="Left"
-                        UniformCornerRadius="14"
-                        VerticalAlignment="Center"
-                        Visibility="{Binding Path=ShowProgressBar, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Padding="4">
-                        <ProgressBar
-                            Style="{StaticResource MaterialDesignCircularProgressBar}"
-                            Value="0" 
-                            IsIndeterminate="True"/>
-                    </materialDesign:Card>
-
-                    <Button
-                        Command="{Binding LaunchReleasePageCommand}"
-                        Grid.Column="1"
-                        ToolTip="{x:Static resx:Resources.NEW_VERSION}"
-                        Visibility="{Binding Path=ShowNewVersionButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}">
+                    HorizontalAlignment="Left"
+                    Command="{Binding GotoOperatorCommand}"
+                    ToolTip="{x:Static resx:Resources.MEDIA_PAGE}"
+                    Visibility="{Binding Path=IsSettingsPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
                         <materialDesign:PackIcon
-                            Kind="Download"
-                            Height="24"
-                            Width="24" />
-                    </Button>
+                        Kind="Backburger"
+                        Height="24"
+                        Width="24" />
+                </Button>
 
-                    <Button
-                        Command="{Binding LaunchMediaFolderCommand}"
-                        Grid.Column="2"
-                        ToolTip="{Binding FolderHint}"
-                        IsEnabled ="{Binding Path=IsFolderEnabled}"
-                        ToolTipService.ShowOnDisabled="True"
-                        Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
-                        <materialDesign:PackIcon
-                            Kind="FolderOpen"
-                            Height="24"
-                            Width="24" />
-                    </Button>
+                <Button Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    Command="{Binding UnhideCommand}"
+                    Content="{x:Static resx:Resources.UNHIDE}"
+                    Visibility="{Binding Path=IsUnhideButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
 
-                    <Button
-                        Command="{Binding LaunchHelpPageCommand}"
-                        Grid.Column="3"
-                        ToolTip="{x:Static resx:Resources.DISPLAY_HELP}"
-                        Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
-                        <materialDesign:PackIcon
-                            Kind="Help"
-                            Height="24"
-                            Width="24" />
-                    </Button>
+                <materialDesign:Card
+                    Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    UniformCornerRadius="14"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding Path=ShowProgressBar, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Padding="4">
+                    <ProgressBar
+                        Style="{StaticResource MaterialDesignCircularProgressBar}"
+                        Value="0" 
+                        IsIndeterminate="True"/>
+                </materialDesign:Card>
 
-                    <Button
-                        Command="{Binding GotoSettingsCommand}"
-                        Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Grid.Column="4"
-                        IsEnabled ="{Binding Path=IsSettingsEnabled}"
-                        ToolTip="{Binding SettingsHint}"
-                        ToolTipService.ShowOnDisabled="True"
-                        Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
-                        <materialDesign:PackIcon
-                            Kind="Settings"
-                            Height="24"
-                            Width="24" />
-                    </Button>
-                </Grid>
+                <Button
+                    Command="{Binding LaunchReleasePageCommand}"
+                    Grid.Column="1"
+                    ToolTip="{x:Static resx:Resources.NEW_VERSION}"
+                    Visibility="{Binding Path=ShowNewVersionButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}">
+                    <materialDesign:PackIcon
+                        Kind="Download"
+                        Height="24"
+                        Width="24" />
+                </Button>
 
-            </ContentControl>
-            </Border>
+                <Button
+                    Command="{Binding LaunchMediaFolderCommand}"
+                    Grid.Column="2"
+                    ToolTip="{Binding FolderHint}"
+                    IsEnabled ="{Binding Path=IsFolderEnabled}"
+                    ToolTipService.ShowOnDisabled="True"
+                    Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
+                    <materialDesign:PackIcon
+                        Kind="FolderOpen"
+                        Height="24"
+                        Width="24" />
+                </Button>
 
-        </Grid>
-    </Border>
+                <Button
+                    Command="{Binding LaunchHelpPageCommand}"
+                    Grid.Column="3"
+                    ToolTip="{x:Static resx:Resources.DISPLAY_HELP}"
+                    Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
+                    <materialDesign:PackIcon
+                        Kind="Help"
+                        Height="24"
+                        Width="24" />
+                </Button>
+
+                <Button
+                    Command="{Binding GotoSettingsCommand}"
+                    Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Grid.Column="4"
+                    IsEnabled ="{Binding Path=IsSettingsEnabled}"
+                    ToolTip="{Binding SettingsHint}"
+                    ToolTipService.ShowOnDisabled="True"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
+                    <materialDesign:PackIcon
+                        Kind="Settings"
+                        Height="24"
+                        Width="24" />
+                </Button>
+            </Grid>
+
+        </ContentControl>
+        </Border>
+
+    </Grid>
 
 </Window>
 
