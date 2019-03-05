@@ -267,19 +267,19 @@
     <comment>Slidehow option (automatically close at end of slideshow)</comment>
   </data>
   <data name="IMPORTING" xml:space="preserve">
-    <value>Importing...</value>
+    <value>Importazione...</value>
     <comment>Displayed in the status bar when importing images (via drag and drop)</comment>
   </data>
   <data name="LOADING" xml:space="preserve">
-    <value>Loading...</value>
+    <value>Caricamento...</value>
     <comment>Displayed in the status bar when loading a file</comment>
   </data>
   <data name="SAVING" xml:space="preserve">
-    <value>Saving...</value>
+    <value>Salvataggio...</value>
     <comment>Displayed in the status bar when saving a file</comment>
   </data>
   <data name="SLIDE_COUNT_X" xml:space="preserve">
-    <value>Slide count: {0}</value>
+    <value>Numero diapositive: {0}</value>
     <comment>Displayed in the status bar</comment>
   </data>
 </root>
