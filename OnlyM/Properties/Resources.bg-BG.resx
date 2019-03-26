@@ -138,7 +138,7 @@
     <comment>Displayed as a notification message when several files are dropped onto the media list. Please leve the placeholder as it is.</comment>
   </data>
   <data name="FILE_COPIED" xml:space="preserve">
-    <value>File copied</value>
+    <value>Файлът е копиран</value>
     <comment>Displayed as a notification message when a single file is dropped onto the media list.</comment>
   </data>
   <data name="MEDIA_ACTIVE" xml:space="preserve">
