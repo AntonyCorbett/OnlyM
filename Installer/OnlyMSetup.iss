@@ -91,6 +91,7 @@ Source: "..\OnlyMSlideManager\bin\Release\OnlyMSlideManager.exe"; DestDir: "{app
 Source: "..\OnlyMSlideManager\bin\Release\OnlyMSlideManager.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 
 ; localisation..
+Source: "bin\x86\Release\bg-BG\*.dll"; DestDir: "{app}\bg-BG"; Flags: ignoreversion
 Source: "bin\x86\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
 Source: "bin\x86\Release\cs-CZ\*.dll"; DestDir: "{app}\cs-CZ"; Flags: ignoreversion
 Source: "bin\x86\Release\de-DE\*.dll"; DestDir: "{app}\de-DE"; Flags: ignoreversion
@@ -118,6 +119,7 @@ Source: "bin\x86\Release\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignorevers
 Source: "bin\x86\Release\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
 
 ; SlideManager localisation
+Source: "..\OnlyMSlideManager\bin\Release\bg-BG\*.dll"; DestDir: "{app}\bg-BG"; Flags: ignoreversion
 Source: "..\OnlyMSlideManager\bin\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
 Source: "..\OnlyMSlideManager\bin\Release\cs-CZ\*.dll"; DestDir: "{app}\cs-CZ"; Flags: ignoreversion
 Source: "..\OnlyMSlideManager\bin\Release\de-DE\*.dll"; DestDir: "{app}\de-DE"; Flags: ignoreversion
