@@ -8,8 +8,6 @@
     public sealed class BusyCursor : IDisposable
     {
         private static int busyCount;
-
-        private Cursor _originalCursor;
         
         public BusyCursor()
         {
@@ -17,7 +15,6 @@
             {
                 Interlocked.Increment(ref busyCount);
                 StatusChangedEvent?.Invoke(this, EventArgs.Empty);
-                _originalCursor = Mouse.OverrideCursor;
                 Mouse.OverrideCursor = Cursors.Wait;
             });
         }
@@ -35,7 +32,11 @@
             {
                 Interlocked.Decrement(ref busyCount);
                 StatusChangedEvent?.Invoke(this, EventArgs.Empty);
-                Mouse.OverrideCursor = _originalCursor; 
+
+                if (busyCount == 0)
+                {
+                    Mouse.OverrideCursor = null;
+                }
             });
         }
     }
