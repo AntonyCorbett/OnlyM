@@ -134,7 +134,7 @@
     <comment>Message displayed when there is an error copying media to the OnlyM media folder</comment>
   </data>
   <data name="FILES_COPIED" xml:space="preserve">
-    <value>Копирани {0} файл(а)</value>
+    <value>Копирани {0} файла</value>
     <comment>Displayed as a notification message when several files are dropped onto the media list. Please leve the placeholder as it is.</comment>
   </data>
   <data name="FILE_COPIED" xml:space="preserve">
