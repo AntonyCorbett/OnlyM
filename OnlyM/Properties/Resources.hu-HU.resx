@@ -385,7 +385,7 @@
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
-    <value>Nyelvek</value>
+    <value>Nyelv</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="RESTART_LANGUAGE" xml:space="preserve">
@@ -465,39 +465,39 @@
     <comment>Displayed when mirror window is launching</comment>
   </data>
   <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
-    <value>Change the mirror hotkey!</value>
+    <value>Tükör ablak gyorsbillentyűje módosítva!</value>
     <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
   </data>
   <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
-    <value>Logging level is high!</value>
+    <value>Naplózás szintje magas!</value>
     <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
   </data>
   <data name="MIRROR_HOTKEY" xml:space="preserve">
-    <value>Mirror hotkey</value>
+    <value>Tükör gyorsbillentyű</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR" xml:space="preserve">
-    <value>Mirror</value>
+    <value>Tükrözés</value>
     <comment>Checkbox caption in web and PDF media item</comment>
   </data>
   <data name="JWL_TRADEMARK" xml:space="preserve">
-    <value>"JW Library" is a registered trademark of Watch Tower Bible and Tract Society of Pennsylvania</value>
+    <value>"JW Library" a Watch Towert és Tract Society of Pennsylvania bejegyzett védjegye</value>
     <comment>See Settings =&gt; Main</comment>
   </data>
   <data name="CANNOT_DELETE_FILE" xml:space="preserve">
-    <value>Cannot delete file!</value>
+    <value>Nem lehet törölni a fájlt!</value>
     <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
   </data>
   <data name="ACTIVE_ITEM_DELETED" xml:space="preserve">
-    <value>The media file was deleted!</value>
+    <value>A médiafájl törölve lett!</value>
     <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
   </data>
   <data name="CONTAINS_1_ROLLING_SLIDE" xml:space="preserve">
-    <value>(contains 1 rolling slide)</value>
+    <value>( 1 gördülő képet tartalmaz)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="CONTAINS_1_SLIDE" xml:space="preserve">
-    <value>(contains 1 slide)</value>
+    <value>( 1 képet tartalmaz)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
 </root>
