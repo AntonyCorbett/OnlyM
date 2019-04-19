@@ -301,7 +301,7 @@
     <comment>Section title for Settings =&gt; Micellanesous</comment>
   </data>
   <data name="SECTION_VIDEO_AUDIO" xml:space="preserve">
-    <value>VIDEÓK &amp; AUDIO</value>
+    <value>VIDEÓK &amp; AUDIÓ</value>
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
@@ -433,7 +433,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>BÖNGÉSZŐ GYORSÍTÓTÁRÁNAK KIÜRÍTÉSE</value>
+    <value>GYORSÍTÓTÁR TÖRLÉSE</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
