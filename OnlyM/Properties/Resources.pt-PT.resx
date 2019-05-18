@@ -449,11 +449,11 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
-    <value>Espelho ativado por defeito</value>
+    <value>Espelhamento ativado por defeito</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_ZOOM" xml:space="preserve">
-    <value>Zoom do espelho</value>
+    <value>Zoom de espelhamento</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_LOADING" xml:space="preserve">
@@ -461,11 +461,11 @@
     <comment>Displayed when a web page is loading</comment>
   </data>
   <data name="LAUNCHING_MIRROR" xml:space="preserve">
-    <value>A iniciar espelho...</value>
+    <value>A iniciar o espelhamento...</value>
     <comment>Displayed when mirror window is launching</comment>
   </data>
   <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
-    <value>Altere a tecla de atalho para espelho!</value>
+    <value>Altere a tecla de atalho do espelhamento!</value>
     <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
   </data>
   <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
@@ -473,11 +473,11 @@
     <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
   </data>
   <data name="MIRROR_HOTKEY" xml:space="preserve">
-    <value>Tecla de atalho para espelho</value>
+    <value>Tecla de atalho do espelhamento</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR" xml:space="preserve">
-    <value>Espelho</value>
+    <value>Espelhamento</value>
     <comment>Checkbox caption in web and PDF media item</comment>
   </data>
   <data name="JWL_TRADEMARK" xml:space="preserve">
