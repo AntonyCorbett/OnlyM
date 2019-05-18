@@ -33,7 +33,7 @@
             (int dpiX, int dpiY) systemDpi, 
             bool isVideo)
         {
-            var area = monitor.WorkingArea;
+            var area = monitor.Bounds;
 
             var left = (area.Left * 96) / systemDpi.dpiX;
             var top = (area.Top * 96) / systemDpi.dpiY;
