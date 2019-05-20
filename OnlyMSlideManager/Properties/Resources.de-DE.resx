@@ -138,7 +138,7 @@
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Ordner {0} konnte nicht angelegt werden</value>
+    <value>Ordner {0} konnte nicht erstellt werden</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
@@ -198,7 +198,7 @@
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="DWELL_SECONDS" xml:space="preserve">
-    <value>Verweildauer (Sek.)</value>
+    <value>Anzeigedauer (Sek.)</value>
     <comment>The time a slide is displayed during automatic playback.</comment>
   </data>
   <data name="OK" xml:space="preserve">
@@ -215,7 +215,7 @@
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
-    <value>Bilddateien hierhin ziehen!</value>
+    <value>Bilddateien hier ablegen!</value>
     <comment>Instruction on empty window</comment>
   </data>
   <data name="DELETE_SLIDE" xml:space="preserve">
