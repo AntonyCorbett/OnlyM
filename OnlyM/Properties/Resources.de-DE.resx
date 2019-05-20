@@ -337,11 +337,11 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Eingebettete Vorschaubilder verwenden, wo verfügbar</value>
+    <value>Eingebettete Vorschaubilder verwenden, falls verfügbar</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Eingebettete Titel verwenden, wo verfügbar</value>
+    <value>Eingebettete Titel verwenden, falls verfügbar</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
@@ -433,11 +433,11 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>BROWSERCACHE LEEREN</value>
+    <value>BROWSERDATEN LÖSCHEN</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
-    <value>Der Browser-Cache wird beim nächsten Neustart geleert werden.</value>
+    <value>Die Browserdaten werden beim nächsten Neustart gelöscht.</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
