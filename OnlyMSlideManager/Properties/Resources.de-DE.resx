@@ -162,7 +162,7 @@
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
-    <value>Die Diashow wurde bearbeitet. Möchtest du sie speichern?</value>
+    <value>Die Diashow wurde bearbeitet. Änderung speichern?</value>
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
