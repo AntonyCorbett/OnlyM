@@ -138,7 +138,7 @@
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Ordner {0} konnte nicht angelegt werden</value>
+    <value>Ordner {0} konnte nicht erstellt werden</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
@@ -162,7 +162,7 @@
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
-    <value>Die Diashow wurde bearbeitet. Möchtest du sie speichern?</value>
+    <value>Die Diashow wurde bearbeitet. Änderung speichern?</value>
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
@@ -198,7 +198,7 @@
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="DWELL_SECONDS" xml:space="preserve">
-    <value>Verweildauer (Sek.)</value>
+    <value>Anzeigedauer (Sek.)</value>
     <comment>The time a slide is displayed during automatic playback.</comment>
   </data>
   <data name="OK" xml:space="preserve">
@@ -215,7 +215,7 @@
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
-    <value>Bilddateien hierhin ziehen!</value>
+    <value>Bilddateien hier ablegen!</value>
     <comment>Instruction on empty window</comment>
   </data>
   <data name="DELETE_SLIDE" xml:space="preserve">
@@ -243,7 +243,7 @@
     <comment>Message displayed when slides are created following drag and drop. The value is awlays &gt; 1</comment>
   </data>
   <data name="ERROR_ADDING_IMAGES" xml:space="preserve">
-    <value>Beim Hinzufügen der Bilder ist ein Fehler aufgetreten!</value>
+    <value>Fehler beim Hinzufügen der Bilder aufgetreten!</value>
     <comment>Error message</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
@@ -263,19 +263,19 @@
     <comment>Tooltip for options toolbar button</comment>
   </data>
   <data name="AUTO_CLOSE" xml:space="preserve">
-    <value>Automatisch schließen</value>
+    <value>Automatisch beenden</value>
     <comment>Slidehow option (automatically close at end of slideshow)</comment>
   </data>
   <data name="IMPORTING" xml:space="preserve">
-    <value>Importiere...</value>
+    <value>Wird importiert...</value>
     <comment>Displayed in the status bar when importing images (via drag and drop)</comment>
   </data>
   <data name="LOADING" xml:space="preserve">
-    <value>Lade...</value>
+    <value>Wird geladen...</value>
     <comment>Displayed in the status bar when loading a file</comment>
   </data>
   <data name="SAVING" xml:space="preserve">
-    <value>Speichere...</value>
+    <value>Wird gespeichert...</value>
     <comment>Displayed in the status bar when saving a file</comment>
   </data>
   <data name="SLIDE_COUNT_X" xml:space="preserve">

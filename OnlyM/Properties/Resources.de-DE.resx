@@ -205,11 +205,11 @@
     <comment>Displayed when showing a slideshow to indicate which slide is being viewed. Please retain the placeholders.</comment>
   </data>
   <data name="CONTAINS_X_ROLLING_SLIDES" xml:space="preserve">
-    <value>(enthält {0} selbstlaufende Folien)</value>
+    <value>(enthält {0} automatische Folien)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="ROLLING_SLIDE_X_OF_Y" xml:space="preserve">
-    <value>selbstlaufende Folie {0} von {1}</value>
+    <value>automatische Folie {0} von {1}</value>
     <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
   </data>
   <data name="MEDIA_MONITOR" xml:space="preserve">
@@ -241,7 +241,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Wenn pausiert Spulen erlauben</value>
+    <value>Spulen zulassen, wenn pausiert</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
@@ -265,7 +265,7 @@
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="FADING_STYLE" xml:space="preserve">
-    <value>Art des Blendeffekts</value>
+    <value>Stil des Blendeffekts</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>"Einfrieren" im Befehlsfeld anzeigen</value>
+    <value>"Einfrieren" im Medienmenü anzeigen</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
@@ -333,15 +333,15 @@
     <comment>See Settings =&gt; Display.</comment>
   </data>
   <data name="USE_CMD_PANEL" xml:space="preserve">
-    <value>Befehlsfeld aktivieren</value>
+    <value>Medienmenü aktivieren</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_THUMBS" xml:space="preserve">
-    <value>Eingebettete Vorschaubilder, so verfügbar, verwenden</value>
+    <value>Eingebettete Vorschaubilder verwenden, falls verfügbar</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Eingebettete Titel, so verfügbar, verwenden</value>
+    <value>Eingebettete Titel verwenden, falls verfügbar</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
@@ -429,15 +429,15 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
-    <value>Schrittweite Seitenzoom</value>
+    <value>Größe der Zoomintervalle</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>BROWSERCACHE LEEREN</value>
+    <value>BROWSERDATEN LÖSCHEN</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
-    <value>Der Browser-Cache wird beim nächsten Neustart geleert werden.</value>
+    <value>Die Browserdaten werden beim nächsten Neustart gelöscht.</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
@@ -445,7 +445,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="ALLOW_MIRROR" xml:space="preserve">
-    <value>Allow mirror window</value>
+    <value>Spiegeln zulassen</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
@@ -457,7 +457,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_LOADING" xml:space="preserve">
-    <value>Lade...</value>
+    <value>Wird geladen...</value>
     <comment>Displayed when a web page is loading</comment>
   </data>
   <data name="LAUNCHING_MIRROR" xml:space="preserve">
@@ -465,7 +465,7 @@
     <comment>Displayed when mirror window is launching</comment>
   </data>
   <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
-    <value>Change the mirror hotkey!</value>
+    <value>Spiegeln-Hotkey ändern!</value>
     <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
   </data>
   <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
@@ -473,7 +473,7 @@
     <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
   </data>
   <data name="MIRROR_HOTKEY" xml:space="preserve">
-    <value>Mirror hotkey</value>
+    <value>Spiegeln-Hotkey</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR" xml:space="preserve">
@@ -493,7 +493,7 @@
     <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
   </data>
   <data name="CONTAINS_1_ROLLING_SLIDE" xml:space="preserve">
-    <value>(enthält 1 selbstlaufende Folie)</value>
+    <value>(enthält 1 automatische Folie)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="CONTAINS_1_SLIDE" xml:space="preserve">
