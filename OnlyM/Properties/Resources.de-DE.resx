@@ -249,7 +249,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Bilder zwischenspeichern (bessere Leistung, aber mehr Speicherverbrauch)</value>
+    <value>Bilder puffern (bessere Leistung, mehr Speicherverbrauch)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
