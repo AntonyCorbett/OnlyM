@@ -94,6 +94,11 @@
                             AllItemsCompletedEvent?.Invoke(this, EventArgs.Empty);
                         }
                     }
+                    else
+                    {
+                        Log.Logger.Debug($"Done item {nextItem.FilePath}");
+                        ItemCompletedEvent?.Invoke(this, new ItemMetaDataPopulatedEventArgs { MediaItem = nextItem });
+                    }
                 }
             }
             catch (OperationCanceledException)
