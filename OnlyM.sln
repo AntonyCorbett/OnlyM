@@ -14,6 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlyM.Core", "OnlyM.Core\On
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{4BF3D9AD-4DD8-4676-81A2-E099BC2D10AD}"
 	ProjectSection(SolutionItems) = preProject
+		OnlyM.ruleset = OnlyM.ruleset
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject

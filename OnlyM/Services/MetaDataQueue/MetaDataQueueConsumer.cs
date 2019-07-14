@@ -83,8 +83,7 @@
                         }
                         else
                         {
-                            Log.Logger.Debug($"Done item {nextItem.FilePath}");
-                            ItemCompletedEvent?.Invoke(this, new ItemMetaDataPopulatedEventArgs { MediaItem = nextItem });
+                            ItemCompleted(nextItem);
                         }
 
                         Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _collection.Count);
@@ -96,8 +95,7 @@
                     }
                     else
                     {
-                        Log.Logger.Debug($"Done item {nextItem.FilePath}");
-                        ItemCompletedEvent?.Invoke(this, new ItemMetaDataPopulatedEventArgs { MediaItem = nextItem });
+                        ItemCompleted(nextItem);
                     }
                 }
             }
@@ -105,6 +103,12 @@
             {
                 Log.Logger.Debug("Metadata consumer closed");
             }
+        }
+
+        private void ItemCompleted(MediaItem nextItem)
+        {
+            Log.Logger.Debug($"Done item {nextItem.FilePath}");
+            ItemCompletedEvent?.Invoke(this, new ItemMetaDataPopulatedEventArgs { MediaItem = nextItem });
         }
 
         private void ReplaceInQueue(MediaItem mediaItem)
