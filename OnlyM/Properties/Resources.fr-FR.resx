@@ -405,7 +405,7 @@
     <comment>Progress message displayed when loading a web page</comment>
   </data>
   <data name="WEB_MARGINS" xml:space="preserve">
-    <value>Web Margins</value>
+    <value>Marges des pages internet</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_WEB" xml:space="preserve">
@@ -429,7 +429,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
-    <value>Page zoom increment</value>
+    <value>Incrément des niveaux de zoom</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
@@ -453,7 +453,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_ZOOM" xml:space="preserve">
-    <value>Mirror zoom</value>
+    <value>Zoom de la fenêtre miroir</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_LOADING" xml:space="preserve">
@@ -493,11 +493,11 @@
     <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
   </data>
   <data name="CONTAINS_1_ROLLING_SLIDE" xml:space="preserve">
-    <value>(contient une diapositive)</value>
+    <value>(contient une diapositive en lecture automatique)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="CONTAINS_1_SLIDE" xml:space="preserve">
-    <value>(contains 1 slide)</value>
+    <value>(contient une diapositive)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
 </root>
