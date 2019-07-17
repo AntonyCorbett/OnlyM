@@ -397,107 +397,107 @@
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
   <data name="WEB_LOAD_FAIL" xml:space="preserve">
-    <value>Failed to load URL {0} with error {1} ({2})</value>
+    <value>Erreur de chargement de l'URL {0} - Erreur {1} ({2})</value>
     <comment>Error message displayed when a web page cannot be loaded.</comment>
   </data>
   <data name="LOADING_FRAME" xml:space="preserve">
-    <value>Loading frame {0}</value>
+    <value>Chargement de l'élément {0}</value>
     <comment>Progress message displayed when loading a web page</comment>
   </data>
   <data name="WEB_MARGINS" xml:space="preserve">
-    <value>Web Margins</value>
+    <value>Marges des pages internet</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_WEB" xml:space="preserve">
-    <value>WEB</value>
+    <value>INTERNET</value>
     <comment>Section title for Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
-    <value>Show magnifier</value>
+    <value>Afficher la loupe</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
-    <value>Magnifier shape</value>
+    <value>Forme de la loupe</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
-    <value>Magnifier size</value>
+    <value>Taille de la loupe</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
-    <value>Magnifier magnification level</value>
+    <value>Niveau d'agrandissement</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
-    <value>Page zoom increment</value>
+    <value>Incrément des niveaux de zoom</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>PURGE BROWSER CACHE</value>
+    <value>Supprimer le cache internet</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
-    <value>The browser cache will be purged on next restart.</value>
+    <value>Le cache du navigateur internet sera supprimé lors du prochain redémarrage.</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
-    <value>Magnifier frame thickness</value>
+    <value>Épaisseur de la bordure de la loupe</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="ALLOW_MIRROR" xml:space="preserve">
-    <value>Allow mirror window</value>
+    <value>Autoriser la fenêtre miroir</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
-    <value>Mirror enabled by default</value>
+    <value>Fenêtre miroir activée par défaut</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR_ZOOM" xml:space="preserve">
-    <value>Mirror zoom</value>
+    <value>Zoom de la fenêtre miroir</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_LOADING" xml:space="preserve">
-    <value>Loading...</value>
+    <value>Chargement en cours...</value>
     <comment>Displayed when a web page is loading</comment>
   </data>
   <data name="LAUNCHING_MIRROR" xml:space="preserve">
-    <value>Launching mirror...</value>
+    <value>Lancement de la fenêtre miroir...</value>
     <comment>Displayed when mirror window is launching</comment>
   </data>
   <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
-    <value>Change the mirror hotkey!</value>
+    <value>Changez la touche de raccourci du miroir !</value>
     <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
   </data>
   <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
-    <value>Logging level is high!</value>
+    <value>Le niveau de détail du journal d'événements est élevé !</value>
     <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
   </data>
   <data name="MIRROR_HOTKEY" xml:space="preserve">
-    <value>Mirror hotkey</value>
+    <value>Touche de raccourci du miroir</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="MIRROR" xml:space="preserve">
-    <value>Mirror</value>
+    <value>Fenêtre miroir</value>
     <comment>Checkbox caption in web and PDF media item</comment>
   </data>
   <data name="JWL_TRADEMARK" xml:space="preserve">
-    <value>"JW Library" is a registered trademark of Watch Tower Bible and Tract Society of Pennsylvania</value>
+    <value>"JW Library" est une marque déposée de Watch Tower Bible and Tract Society of Pennsylvania</value>
     <comment>See Settings =&gt; Main</comment>
   </data>
   <data name="CANNOT_DELETE_FILE" xml:space="preserve">
-    <value>Cannot delete file!</value>
+    <value>Impossible de supprimer le fichier !</value>
     <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
   </data>
   <data name="ACTIVE_ITEM_DELETED" xml:space="preserve">
-    <value>The media file was deleted!</value>
+    <value>Le fichier a été supprimé !</value>
     <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
   </data>
   <data name="CONTAINS_1_ROLLING_SLIDE" xml:space="preserve">
-    <value>(contains 1 rolling slide)</value>
+    <value>(contient une diapositive en lecture automatique)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="CONTAINS_1_SLIDE" xml:space="preserve">
-    <value>(contains 1 slide)</value>
+    <value>(contient une diapositive)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
 </root>
