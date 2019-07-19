@@ -122,31 +122,31 @@
     <value>..\Resources\flower.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
-    <value>New slideshow</value>
+    <value>Nouveau diaporama</value>
     <comment>File command</comment>
   </data>
   <data name="OPEN_SLIDESHOW" xml:space="preserve">
-    <value>Open slideshow</value>
+    <value>Ouvrir diaporama</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW" xml:space="preserve">
-    <value>Save slideshow</value>
+    <value>Enregistrer diaporama</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW_AS" xml:space="preserve">
-    <value>Save slideshow as...</value>
+    <value>Enregistrer diaporama sous...</value>
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Could not create folder {0}</value>
+    <value>Impossible de créer le dossier {0}</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Open Slideshow</value>
+    <value>Ouvrir Diaporama</value>
     <comment>File Open dialog caption</comment>
   </data>
   <data name="SLIDESHOW_FILE" xml:space="preserve">
-    <value>Slideshow file</value>
+    <value>Fichier diaporama</value>
     <comment>Used in File Open dialog</comment>
   </data>
   <data name="ANSWER_CANCEL" xml:space="preserve">
@@ -162,31 +162,31 @@
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
-    <value>The slideshow has changed. Do you want to save it?</value>
+    <value>Le diaporama a changé. Voulez-vous l'enregistrer ?</value>
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Save Slideshow</value>
+    <value>Enregistrer Diaporama</value>
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
-    <value>Auto-play</value>
+    <value>Lecture automatique</value>
     <comment>Slidehow option (automatically play)</comment>
   </data>
   <data name="LOOP" xml:space="preserve">
-    <value>Loop</value>
+    <value>En boucle</value>
     <comment>Slidehow option (loop if automatic play is enabled)</comment>
   </data>
   <data name="WANT_TO_SAVE_TITLE" xml:space="preserve">
-    <value>Save?</value>
+    <value>Enregistrer ?</value>
     <comment>Title used in dialog prompt</comment>
   </data>
   <data name="FADE_IN_FORWARD" xml:space="preserve">
-    <value>Fade in</value>
+    <value>Fondu d'entrée</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_IN_REVERSE" xml:space="preserve">
-    <value>Fade in (reversing)</value>
+    <value>Fondu d'entrée (inversé)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_FORWARD" xml:space="preserve">
