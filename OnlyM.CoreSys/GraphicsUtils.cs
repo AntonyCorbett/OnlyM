@@ -381,8 +381,8 @@
                     FileName = ffmpegPath,
                     Arguments = arguments,
                     UseShellExecute = false,
-                    CreateNoWindow = true
-                }
+                    CreateNoWindow = true,
+                },
             };
 
             using (p)

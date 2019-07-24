@@ -7,26 +7,26 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Core.Models;
-    using Core.Services.Media;
-    using Core.Services.Options;
-    using Core.Utils;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
     using GalaSoft.MvvmLight.Messaging;
     using GalaSoft.MvvmLight.Threading;
-    using MediaElementAdaption;
-    using Models;
+    using OnlyM.Core.Models;
+    using OnlyM.Core.Services.Media;
+    using OnlyM.Core.Services.Options;
+    using OnlyM.Core.Utils;
     using OnlyM.CoreSys;
     using OnlyM.CoreSys.Services.Snackbar;
+    using OnlyM.MediaElementAdaption;
+    using OnlyM.Models;
+    using OnlyM.PubSubMessages;
+    using OnlyM.Services.FrozenVideoItems;
+    using OnlyM.Services.HiddenMediaItems;
+    using OnlyM.Services.MediaChanging;
+    using OnlyM.Services.MetaDataQueue;
+    using OnlyM.Services.Pages;
     using OnlyM.Services.WebBrowser;
-    using PubSubMessages;
     using Serilog;
-    using Services.FrozenVideoItems;
-    using Services.HiddenMediaItems;
-    using Services.MediaChanging;
-    using Services.MetaDataQueue;
-    using Services.Pages;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     internal sealed class OperatorViewModel : ViewModelBase, IDisposable

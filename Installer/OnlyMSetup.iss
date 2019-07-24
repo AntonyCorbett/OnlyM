@@ -118,6 +118,7 @@ Source: "bin\x86\Release\ru-RU\*.dll"; DestDir: "{app}\ru-RU"; Flags: ignorevers
 Source: "bin\x86\Release\sk-SK\*.dll"; DestDir: "{app}\sk-SK"; Flags: ignoreversion
 Source: "bin\x86\Release\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignoreversion
 Source: "bin\x86\Release\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
+Source: "bin\x86\Release\vi-VN\*.dll"; DestDir: "{app}\vi-VN"; Flags: ignoreversion
 
 ; SlideManager localisation
 Source: "..\OnlyMSlideManager\bin\Release\bg-BG\*.dll"; DestDir: "{app}\bg-BG"; Flags: ignoreversion
@@ -147,6 +148,7 @@ Source: "..\OnlyMSlideManager\bin\Release\ru-RU\*.dll"; DestDir: "{app}\ru-RU"; 
 Source: "..\OnlyMSlideManager\bin\Release\sk-SK\*.dll"; DestDir: "{app}\sk-SK"; Flags: ignoreversion
 Source: "..\OnlyMSlideManager\bin\Release\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignoreversion
 Source: "..\OnlyMSlideManager\bin\Release\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\vi-VN\*.dll"; DestDir: "{app}\vi-VN"; Flags: ignoreversion
 
 ; CefSharp files...
 Source: "bin\x86\Release\locales\*"; DestDir: "{app}\locales"; Flags: ignoreversion

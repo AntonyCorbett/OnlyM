@@ -6,12 +6,12 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
-    using Core.Services.Media;
-    using Core.Services.Options;
-    using Models;
+    using OnlyM.Core.Services.Media;
+    using OnlyM.Core.Services.Options;
     using OnlyM.Core.Services.WebShortcuts;
     using OnlyM.Core.Utils;
     using OnlyM.CoreSys.Services.Snackbar;
+    using OnlyM.Models;
     using OnlyM.Slides;
     using Serilog;
 

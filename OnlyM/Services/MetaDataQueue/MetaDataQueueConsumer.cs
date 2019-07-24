@@ -5,12 +5,12 @@
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
-    using Core.Models;
-    using Core.Services.Media;
-    using Core.Services.Options;
     using GalaSoft.MvvmLight.Threading;
-    using Models;
+    using OnlyM.Core.Models;
+    using OnlyM.Core.Services.Media;
+    using OnlyM.Core.Services.Options;
     using OnlyM.CoreSys;
+    using OnlyM.Models;
     using OnlyM.Slides;
     using Serilog;
 
@@ -174,12 +174,15 @@
 
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    mediaItem.DurationDeciseconds =
-                        metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
-                    mediaItem.Title = GetMediaTitle(mediaItem.FilePath, metaData);
-                    mediaItem.FileNameAsSubTitle = _optionsService.UseInternalMediaTitles
-                        ? Path.GetFileName(mediaItem.FilePath)
-                        : null;
+                    if (!IsDurationAndTitlePopulated(mediaItem))
+                    {
+                        mediaItem.DurationDeciseconds =
+                            metaData == null ? 0 : (int) (metaData.Duration.TotalSeconds * 10);
+                        mediaItem.Title = GetMediaTitle(mediaItem.FilePath, metaData);
+                        mediaItem.FileNameAsSubTitle = _optionsService.UseInternalMediaTitles
+                            ? Path.GetFileName(mediaItem.FilePath)
+                            : null;
+                    }
                 });
             }
         }
@@ -200,7 +203,10 @@
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
-                        mediaItem.ThumbnailImageSource = GraphicsUtils.ByteArrayToImage(thumb);
+                        if (!IsThumbnailPopulated(mediaItem))
+                        {
+                            mediaItem.ThumbnailImageSource = GraphicsUtils.ByteArrayToImage(thumb);
+                        }
                     });
                 }
             }
