@@ -112,7 +112,9 @@
             var result = _supportedMediaTypes.SingleOrDefault(x =>
                 x.FileExtension.Equals(extension, StringComparison.OrdinalIgnoreCase));
 
-            if (result != null && result.Classification == MediaClassification.Web)
+            if (result != null && 
+                result.Classification == MediaClassification.Web &&
+                IsPdf(fileName))
             {
                 // the CefBrowser doesn't support files with '#' character in path!
                 // work-around this by logging and saying unsupported...
@@ -121,6 +123,16 @@
             }
 
             return result;
+        }
+
+        private bool IsPdf(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return false;
+            }
+
+            return Path.GetExtension(fileName).Equals(".pdf", StringComparison.OrdinalIgnoreCase);
         }
 
         private IReadOnlyCollection<MediaFile> GetMediaFilesInFolder(string folder)
