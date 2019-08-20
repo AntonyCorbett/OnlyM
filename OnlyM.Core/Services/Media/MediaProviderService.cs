@@ -114,7 +114,8 @@
 
             if (result != null && 
                 result.Classification == MediaClassification.Web &&
-                IsPdf(fileName))
+                IsPdf(fileName) &&
+                fileName.Contains("#"))
             {
                 // the CefBrowser doesn't support files with '#' character in path!
                 // work-around this by logging and saying unsupported...
