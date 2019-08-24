@@ -1,8 +1,15 @@
 # OnlyM <img src="https://ci.appveyor.com/api/projects/status/0yvavr01rax9cus9?svg=true">
 
-A Media player using C# and WPF. Designed for media playback at Kingdom Halls in situations where JW Library - the recommended player - is unable to be used (e.g. 3rd-party images). The emphasis is on ease-of-use above advanced function. Please report any problems in the Project Issues section.
+A Windows Media player using C# and WPF. Designed for media playback at Kingdom Halls in situations where JW Library - the recommended player - is unable to be used (e.g. 3rd-party images). The emphasis is on ease-of-use above advanced function. Please report any problems in the Project Issues section.
 
 ![Main Window](http://cv8.org.uk/soundbox/OnlyM/Images/MainWindow.png)
+
+### System Requirements
+
+* Windows 10
+* .NET Framework 4.7 or later
+* 4GB RAM
+* 250MB Hard disk space
 
 ### Download
 
