@@ -500,4 +500,32 @@
     <value>(sisältää yhden dian)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
+  <data name="DLG_CANCEL" xml:space="preserve">
+    <value>CANCEL</value>
+    <comment>Button caption in dialog used to specify media start offset</comment>
+  </data>
+  <data name="DLG_OK" xml:space="preserve">
+    <value>OK</value>
+    <comment>Button caption in dialog used to specify media start offset</comment>
+  </data>
+  <data name="SET_MEDIA_START" xml:space="preserve">
+    <value>Media Start</value>
+    <comment>Caption of dialog used to specify start offset for media</comment>
+  </data>
+  <data name="HOURS" xml:space="preserve">
+    <value>Hours</value>
+    <comment>Column title in media start offset dialog (number of hours)</comment>
+  </data>
+  <data name="MINUTES" xml:space="preserve">
+    <value>Minutes</value>
+    <comment>Column title in media start offset dialog (number of minutes)</comment>
+  </data>
+  <data name="SECONDS" xml:space="preserve">
+    <value>Seconds</value>
+    <comment>Column title in media start offset dialog (number of seconds)</comment>
+  </data>
+  <data name="SHOW_START_OFFSET_DLG" xml:space="preserve">
+    <value>Adjust start time</value>
+    <comment>Tooltip for the button that allows you to adjust media start time</comment>
+  </data>
 </root>
