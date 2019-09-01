@@ -524,4 +524,8 @@
     <value>Seconds</value>
     <comment>Column title in media start offset dialog (number of seconds)</comment>
   </data>
+  <data name="SHOW_START_OFFSET_DLG" xml:space="preserve">
+    <value>Adjust start time</value>
+    <comment>Tooltip for the button that allows you to adjust media start time</comment>
+  </data>
 </root>

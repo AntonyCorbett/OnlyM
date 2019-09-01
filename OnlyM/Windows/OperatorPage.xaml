@@ -245,7 +245,7 @@
                                             Style="{StaticResource MaterialDesignFlatButton}"
                                             Command="{Binding Path=DataContext.EnterStartOffsetEditModeCommand, Source={x:Reference OnlyMOperatorPage}}"
                                             CommandParameter="{Binding Id}"
-                                            ToolTip="Show Start Time dialog">
+                                            ToolTip="{x:Static resx:Resources.SHOW_START_OFFSET_DLG}">
                                             <materialDesign:PackIcon
                                                 Margin="-13,-13,0,0"
                                                 Kind="DotsHorizontal"

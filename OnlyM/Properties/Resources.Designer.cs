@@ -809,6 +809,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjust start time.
+        /// </summary>
+        public static string SHOW_START_OFFSET_DLG {
+            get {
+                return ResourceManager.GetString("SHOW_START_OFFSET_DLG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show subtitles if available.
         /// </summary>
         public static string SHOW_SUBTITLES {
