@@ -5,7 +5,7 @@
 
     public interface IDialogService
     {
-        Task<TimeSpan?> GetStartOffsetAsync();
+        Task<TimeSpan?> GetStartOffsetAsync(TimeSpan maxStartTime);
 
         bool IsDialogVisible();
     }
