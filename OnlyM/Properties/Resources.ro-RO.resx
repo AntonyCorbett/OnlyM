@@ -509,7 +509,7 @@
     <comment>Button caption in dialog used to specify media start offset</comment>
   </data>
   <data name="SET_MEDIA_START" xml:space="preserve">
-    <value>Media Start</value>
+    <value>Pornire media</value>
     <comment>Caption of dialog used to specify start offset for media</comment>
   </data>
   <data name="HOURS" xml:space="preserve">
@@ -517,15 +517,15 @@
     <comment>Column title in media start offset dialog (number of hours)</comment>
   </data>
   <data name="MINUTES" xml:space="preserve">
-    <value>Minutes</value>
+    <value>Minute</value>
     <comment>Column title in media start offset dialog (number of minutes)</comment>
   </data>
   <data name="SECONDS" xml:space="preserve">
-    <value>Seconds</value>
+    <value>Secunde</value>
     <comment>Column title in media start offset dialog (number of seconds)</comment>
   </data>
   <data name="SHOW_START_OFFSET_DLG" xml:space="preserve">
-    <value>Adjust start time</value>
+    <value>Ajustați timpul de pornire</value>
     <comment>Tooltip for the button that allows you to adjust media start time</comment>
   </data>
 </root>
