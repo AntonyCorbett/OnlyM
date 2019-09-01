@@ -501,7 +501,7 @@
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="DLG_CANCEL" xml:space="preserve">
-    <value>CANCEL</value>
+    <value>PERUUTA</value>
     <comment>Button caption in dialog used to specify media start offset</comment>
   </data>
   <data name="DLG_OK" xml:space="preserve">
@@ -513,15 +513,15 @@
     <comment>Caption of dialog used to specify start offset for media</comment>
   </data>
   <data name="HOURS" xml:space="preserve">
-    <value>Hours</value>
+    <value>Tuntia</value>
     <comment>Column title in media start offset dialog (number of hours)</comment>
   </data>
   <data name="MINUTES" xml:space="preserve">
-    <value>Minutes</value>
+    <value>Minuuttia</value>
     <comment>Column title in media start offset dialog (number of minutes)</comment>
   </data>
   <data name="SECONDS" xml:space="preserve">
-    <value>Seconds</value>
+    <value>Sekuntia</value>
     <comment>Column title in media start offset dialog (number of seconds)</comment>
   </data>
   <data name="SHOW_START_OFFSET_DLG" xml:space="preserve">
