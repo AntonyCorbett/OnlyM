@@ -509,7 +509,7 @@
     <comment>Button caption in dialog used to specify media start offset</comment>
   </data>
   <data name="SET_MEDIA_START" xml:space="preserve">
-    <value>Media Start</value>
+    <value>Início de Multimédia</value>
     <comment>Caption of dialog used to specify start offset for media</comment>
   </data>
   <data name="HOURS" xml:space="preserve">
