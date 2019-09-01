@@ -3,9 +3,9 @@
     using System;
     using System.IO;
     using System.Windows.Media;
-    using Core.Extensions;
-    using Core.Models;
     using GalaSoft.MvvmLight;
+    using OnlyM.Core.Extensions;
+    using OnlyM.Core.Models;
 
     public sealed class MediaItem : ObservableObject
     {
@@ -42,7 +42,7 @@
         private bool _allowUseMirror;
         private string _miscText;
         private string _fileNameAsSubTitle;
-
+        
         public event EventHandler PlaybackPositionChangedEvent;
 
         public Guid Id { get; set; }
@@ -230,6 +230,7 @@
                     RaisePropertyChanged(nameof(PauseIconKind));
                     RaisePropertyChanged(nameof(HasDurationAndIsPlaying));
                     RaisePropertyChanged(nameof(IsSliderVisible));
+                    RaisePropertyChanged(nameof(IsStartOffsetButtonEnabled));
                 }
             }
         }
@@ -286,6 +287,7 @@
                     RaisePropertyChanged(nameof(IsPreviousSlideButtonEnabled));
                     RaisePropertyChanged(nameof(IsNextSlideButtonEnabled));
                     RaisePropertyChanged(nameof(SlideshowProgressString));
+                    RaisePropertyChanged(nameof(IsStartOffsetButtonEnabled));
                 }
             }
         }
@@ -376,7 +378,11 @@
             MediaType.Classification == MediaClassification.Audio ||
             MediaType.Classification == MediaClassification.Video;
 
+        public bool IsStartOffsetButtonVisible => HasDuration && AllowPositionSeeking;
+
         public bool HasDurationAndIsPlaying => HasDuration && IsMediaActive && !IsPaused;
+
+        public bool IsStartOffsetButtonEnabled => !IsMediaActive || IsPaused;
 
         public bool AllowPositionSeeking
         {
@@ -388,6 +394,7 @@
                     _allowPositionSeeking = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(IsSliderVisible));
+                    RaisePropertyChanged(nameof(IsStartOffsetButtonVisible));
                 }
             }
         }
@@ -493,7 +500,7 @@
         }
 
         public string DurationString => GenerateTimeString(_durationDeciseconds * 100);
-        
+
         public int DurationDeciseconds
         {
             get => _durationDeciseconds;
@@ -598,7 +605,7 @@
                 }
             }
         }
-
+        
         private static string GenerateTimeString(long milliseconds)
         {
             return TimeSpan.FromMilliseconds(milliseconds).ToString(@"hh\:mm\:ss");

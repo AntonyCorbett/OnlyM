@@ -92,6 +92,7 @@
         <CommandBinding Command="ApplicationCommands.Paste" Executed="OnPaste" />
     </Window.CommandBindings>
 
+    <materialDesign:DialogHost>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -231,6 +232,11 @@
         </Border>
 
     </Grid>
+        <materialDesign:DialogHost.DialogContent>
+            <StackPanel Margin="16">
+            </StackPanel>
+        </materialDesign:DialogHost.DialogContent>
+    </materialDesign:DialogHost>
 
 </Window>
 

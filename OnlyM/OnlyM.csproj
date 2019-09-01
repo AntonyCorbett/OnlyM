@@ -176,6 +176,9 @@
     </Compile>
     <Compile Include="AutoUpdates\VersionDetection.cs" />
     <Compile Include="Controls\PathTextBlock.cs" />
+    <Compile Include="Dialogs\StartOffsetDialog.xaml.cs">
+      <DependentUpon>StartOffsetDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MediaElementAdaption\IMediaElement.cs" />
     <Compile Include="MediaElementAdaption\LogMessageEventArgs.cs" />
     <Compile Include="MediaElementAdaption\MediaElementMediaFoundation.cs" />
@@ -201,6 +204,8 @@
     <Compile Include="Models\SlideTransition.cs" />
     <Compile Include="Models\SlideTransitionEventArgs.cs" />
     <Compile Include="Models\SubtitleFileEventArgs.cs" />
+    <Compile Include="Services\Dialogs\DialogService.cs" />
+    <Compile Include="Services\Dialogs\IDialogService.cs" />
     <Compile Include="Services\MediaWindowPositionHelper.cs" />
     <Compile Include="Services\WebNavHeaderManager\WebNavHeaderStatus.cs" />
     <Compile Include="Models\WindowVisibilityChangedEventArgs.cs" />
@@ -245,6 +250,7 @@
     <Compile Include="ViewModel\MediaViewModel.cs" />
     <Compile Include="ViewModel\OperatorViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
+    <Compile Include="ViewModel\StartOffsetViewModel.cs" />
     <Compile Include="Windows\MediaWindow.xaml.cs">
       <DependentUpon>MediaWindow.xaml</DependentUpon>
     </Compile>
@@ -254,6 +260,10 @@
     <Compile Include="Windows\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
+    <Page Include="Dialogs\StartOffsetDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

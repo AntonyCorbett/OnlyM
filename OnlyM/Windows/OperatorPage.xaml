@@ -217,23 +217,48 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
+                                    
                                     <!-- TextBlocks generally used to show media length and duration -->
+
                                     <TextBlock Grid.Row="0" Grid.Column="0"
                                                Style="{StaticResource MaterialDesignBody1TextBlock}"
                                                Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                FontSize="16"
                                                Foreground="{Binding DurationColorBrush}"
                                                Text="{Binding DurationString}"/>
-                                    <TextBlock Grid.Row="1" Grid.Column="0"
+
+                                    <StackPanel Orientation="Horizontal"
+                                                Grid.Row="1" Grid.Column="0">
+
+                                        <TextBlock 
                                                Style="{StaticResource MaterialDesignBody1TextBlock}"
                                                Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                FontSize="16"
                                                Foreground="{Binding PlaybackTimeColorBrush}"
                                                Text="{Binding PlaybackTimeString}"/>
 
+                                        <Button
+                                            HorizontalAlignment="Left"
+                                            Margin="10,0,0,0"
+                                            Visibility="{Binding Path=IsStartOffsetButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            IsEnabled="{Binding IsStartOffsetButtonEnabled}"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            Command="{Binding Path=DataContext.EnterStartOffsetEditModeCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                            CommandParameter="{Binding Id}"
+                                            ToolTip="Show Start Time dialog">
+                                            <materialDesign:PackIcon
+                                                Margin="-13,-13,0,0"
+                                                Kind="DotsHorizontal"
+                                                Height="18"
+                                                Width="18" />
+                                        </Button>
+
+                                    </StackPanel>
+
                                     <!-- Pause button -->
                                     <Button Style="{StaticResource MaterialDesignRaisedLightButton}"
-                                            Width="50"
+                                            Width="45"
+                                            Margin="5,0,0,0"
                                             VerticalAlignment="Stretch"
                                             Command="{Binding Path=DataContext.MediaControlPauseCommand, Source={x:Reference OnlyMOperatorPage}}"
                                             CommandParameter="{Binding Id}"

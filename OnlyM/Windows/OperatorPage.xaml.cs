@@ -46,6 +46,11 @@
         {
             OperatorViewModel vm = (OperatorViewModel)DataContext;
 
+            if (vm == null)
+            {
+                return;
+            }
+
             if (e.NewSize.Width >= 500)
             {
                 vm.ThumbnailColWidth = 180;

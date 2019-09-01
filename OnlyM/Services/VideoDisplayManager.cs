@@ -91,7 +91,9 @@
                 Log.Debug($"Firing Started - Media Id = {_mediaItemId}");
 
                 await CreateSubtitleFile(mediaItemFilePath);
-                
+
+                //_mediaElement.Position = _startPosition;
+
                 await _mediaElement.Play(new Uri(mediaItemFilePath), MediaClassification.Video).ConfigureAwait(true);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
             }

@@ -20,6 +20,7 @@
     using OnlyM.MediaElementAdaption;
     using OnlyM.Models;
     using OnlyM.PubSubMessages;
+    using OnlyM.Services.Dialogs;
     using OnlyM.Services.FrozenVideoItems;
     using OnlyM.Services.HiddenMediaItems;
     using OnlyM.Services.MediaChanging;
@@ -41,7 +42,8 @@
         private readonly IFrozenVideosService _frozenVideosService;
         private readonly IActiveMediaItemsService _activeMediaItemsService;
         private readonly ISnackbarService _snackbarService;
-
+        private readonly IDialogService _dialogService;
+        
         private readonly MetaDataQueueProducer _metaDataProducer = new MetaDataQueueProducer();
         private readonly CancellationTokenSource _metaDataCancellationTokenSource = new CancellationTokenSource();
         
@@ -61,7 +63,8 @@
             IHiddenMediaItemsService hiddenMediaItemsService,
             IActiveMediaItemsService activeMediaItemsService,
             IFrozenVideosService frozenVideosService,
-            ISnackbarService snackbarService)
+            ISnackbarService snackbarService,
+            IDialogService dialogService)
         {
             _mediaProviderService = mediaProviderService;
             _mediaStatusChangingService = mediaStatusChangingService;
@@ -70,6 +73,7 @@
             _hiddenMediaItemsService.UnhideAllEvent += HandleUnhideAllEvent;
 
             _snackbarService = snackbarService;
+            _dialogService = dialogService;
 
             _activeMediaItemsService = activeMediaItemsService;
             _frozenVideosService = frozenVideosService;
@@ -142,6 +146,8 @@
 
         public RelayCommand<Guid> NextSlideCommand { get; set; }
 
+        public RelayCommand<Guid> EnterStartOffsetEditModeCommand { get; set; }
+
         public int ThumbnailColWidth
         {
             get => _thumbnailColWidth;
@@ -154,7 +160,7 @@
                 }
             }
         }
-    
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataCancellationTokenSource", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataProducer", Justification = "False Positive")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataConsumer", Justification = "False Positive")]
@@ -172,14 +178,18 @@
 
         private void HandleNavigationEvent(object sender, NavigationEventArgs e)
         {
-            if (e.PageName.Equals(_pageService.OperatorPageName))
+            if (!e.PageName.Equals(_pageService.OperatorPageName))
             {
-                if (_pendingLoadMediaItems)
-                {
-                    _pendingLoadMediaItems = false;
-                    LoadMediaItems();
-                }
+                return;
             }
+
+            if (!_pendingLoadMediaItems)
+            {
+                return;
+            }
+
+            _pendingLoadMediaItems = false;
+            LoadMediaItems();
         }
 
         private void HandleOperatingDateChangedEvent(object sender, EventArgs e)
@@ -288,12 +298,9 @@
         private async Task HandleMediaNearEndEvent(object sender, MediaNearEndEventArgs e)
         {
             var item = GetMediaItem(e.MediaItemId);
-            if (item != null)
+            if (item != null && item.PauseOnLastFrame)
             {
-                if (item.PauseOnLastFrame)
-                {
-                    await MediaPauseControl(item.Id);
-                }
+                await MediaPauseControl(item.Id);
             }
         }
 
@@ -500,6 +507,25 @@
             PreviousSlideCommand = new RelayCommand<Guid>(GotoPreviousSlide);
 
             NextSlideCommand = new RelayCommand<Guid>(GotoNextSlide);
+            
+            EnterStartOffsetEditModeCommand = new RelayCommand<Guid>(EnterStartOffsetEditMode);
+        }
+
+        private async void EnterStartOffsetEditMode(Guid mediaItemId)
+        {
+            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItem != null && (!mediaItem.IsMediaActive || mediaItem.IsPaused))
+            {
+                var start = await _dialogService.GetStartOffsetAsync();
+                if (start != null)
+                {
+                    var deciSecs = (int)(start.Value.TotalSeconds * 10);
+                    if (deciSecs < mediaItem.DurationDeciseconds)
+                    {
+                        mediaItem.PlaybackPositionDeciseconds = deciSecs;
+                    }
+                }
+            }
         }
 
         private void FreezeVideoOnLastFrame(Guid mediaItemId)
@@ -919,7 +945,7 @@
                 AllowPause = _optionsService.AllowVideoPause,
                 AllowPositionSeeking = _optionsService.AllowVideoPositionSeeking,
                 AllowUseMirror = _optionsService.AllowMirror,
-                UseMirror = _optionsService.UseMirrorByDefault
+                UseMirror = _optionsService.UseMirrorByDefault,
             };
             
             return result;
@@ -944,7 +970,7 @@
                     Title = Properties.Resources.BLANK_SCREEN,
                     FilePath = blankScreenPath,
                     FileNameAsSubTitle = null,
-                    LastChanged = DateTime.UtcNow.Ticks
+                    LastChanged = DateTime.UtcNow.Ticks,
                 };
 
                 MediaItems.Insert(0, item);
@@ -1006,20 +1032,22 @@
 
         private bool AutoRotateImageIfRequired(MediaItem item)
         {
-            if (item.MediaType.Classification == MediaClassification.Image)
+            if (item.MediaType.Classification != MediaClassification.Image)
             {
-                if (GraphicsUtils.AutoRotateIfRequired(item.FilePath))
-                {
-                    // auto-rotated so refresh the thumbnail...
-                    item.ThumbnailImageSource = null;
-                    item.LastChanged = DateTime.UtcNow.Ticks;
-                    _metaDataProducer.Add(item);
-
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            if (!GraphicsUtils.AutoRotateIfRequired(item.FilePath))
+            {
+                return false;
+            }
+
+            // auto-rotated so refresh the thumbnail...
+            item.ThumbnailImageSource = null;
+            item.LastChanged = DateTime.UtcNow.Ticks;
+            _metaDataProducer.Add(item);
+
+            return true;
         }
 
         private void HandleAutoRotateChangedEvent(object sender, EventArgs e)

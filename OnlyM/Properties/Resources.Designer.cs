@@ -260,6 +260,24 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CANCEL.
+        /// </summary>
+        public static string DLG_CANCEL {
+            get {
+                return ResourceManager.GetString("DLG_CANCEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string DLG_OK {
+            get {
+                return ResourceManager.GetString("DLG_OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Drop your media files here!.
         /// </summary>
         public static string DROP_HERE {
@@ -346,6 +364,15 @@ namespace OnlyM.Properties {
         public static string HIDE {
             get {
                 return ResourceManager.GetString("HIDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hours.
+        /// </summary>
+        public static string HOURS {
+            get {
+                return ResourceManager.GetString("HOURS", resourceCulture);
             }
         }
         
@@ -490,6 +517,15 @@ namespace OnlyM.Properties {
         public static string MEDIA_PAGE {
             get {
                 return ResourceManager.GetString("MEDIA_PAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minutes.
+        /// </summary>
+        public static string MINUTES {
+            get {
+                return ResourceManager.GetString("MINUTES", resourceCulture);
             }
         }
         
@@ -665,6 +701,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Seconds.
+        /// </summary>
+        public static string SECONDS {
+            get {
+                return ResourceManager.GetString("SECONDS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DISPLAY.
         /// </summary>
         public static string SECTION_DISPLAY {
@@ -724,6 +769,15 @@ namespace OnlyM.Properties {
         public static string SECTION_WEB {
             get {
                 return ResourceManager.GetString("SECTION_WEB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Media Start.
+        /// </summary>
+        public static string SET_MEDIA_START {
+            get {
+                return ResourceManager.GetString("SET_MEDIA_START", resourceCulture);
             }
         }
         
