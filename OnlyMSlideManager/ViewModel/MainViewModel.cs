@@ -74,6 +74,9 @@ namespace OnlyMSlideManager.ViewModel
 
             AddDesignTimeItems();
 
+            // init options so that UI locale is set
+            var _ = _optionsService.Culture;
+
             InitCommands();
             Messenger.Default.Register<ReorderMessage>(this, OnReorderMessage);
             Messenger.Default.Register<DropImagesMessage>(this, OnDropImageFilesMessage);

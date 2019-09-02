@@ -21,8 +21,7 @@
             dc.ChosenHours = 0;
             dc.ChosenMinutes = 0;
             dc.ChosenSeconds = 0;
-
-            // dirty data.
+            
             await DialogHost.Show(
                     dialog,
                     (object sender, DialogClosingEventArgs args) => { _isDialogVisible = false; })

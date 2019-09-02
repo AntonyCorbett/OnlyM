@@ -6,14 +6,14 @@
     using System.Threading;
     using System.Windows;
     using System.Windows.Threading;
-    using AutoUpdates;
     using CefSharp;
     using CefSharp.Wpf;
-    using Core.Models;
-    using Core.Services.Options;
-    using Core.Utils;
     using GalaSoft.MvvmLight.Threading;
-    using Models;
+    using OnlyM.AutoUpdates;
+    using OnlyM.Core.Models;
+    using OnlyM.Core.Services.Options;
+    using OnlyM.Core.Utils;
+    using OnlyM.Models;
     using OnlyM.Services.WebBrowser;
     using Serilog;
     using Unosquare.FFME;
@@ -113,7 +113,7 @@
             {
                 CachePath = FileUtils.GetBrowserCacheFolder(),
                 LogFile = FileUtils.GetBrowserLogFilePath(),
-                LogSeverity = LogSeverity.Info
+                LogSeverity = LogSeverity.Info,
             };
 
             settings.CefCommandLineArgs.Add("no-proxy-server", "1");
@@ -128,7 +128,7 @@
             {
                 SchemeName = PdfSchemeHandlerFactory.SchemeName,
                 SchemeHandlerFactory = new PdfSchemeHandlerFactory(),
-                IsCSPBypassing = true
+                IsCSPBypassing = true,
             });
 
             // prevents orphaned CelSharp.BrowserSubprocess.exe instances
