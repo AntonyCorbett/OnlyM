@@ -177,6 +177,12 @@ Source: "..\UrlLinkFiles\JW Broadcasting.url"; DestDir: "{commonappdata}\OnlyM\W
 Source: "..\UrlLinkFiles\JW.org website.url"; DestDir: "{commonappdata}\OnlyM\Websites"
 Source: "..\UrlLinkFiles\Watchtower online library.url"; DestDir: "{commonappdata}\OnlyM\Websites"
 
+
+; remove legacy shortcuts (wrongly named SlideManagerAppExeName instead of SlideManagerAppName)
+[InstallDelete]
+Type: files; Name: "{group}\{#SlideManagerAppExeName}.lnk"
+Type: files; Name: "{commondesktop}\{#SlideManagerAppExeName}.lnk"
+
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{#SlideManagerAppName}"; Filename: "{app}\{#SlideManagerAppExeName}"
