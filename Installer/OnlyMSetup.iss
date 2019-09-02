@@ -7,6 +7,7 @@
 #define MyAppExeName "OnlyM.exe"
 #define MySource "d:\ProjectsPersonal\OnlyM\OnlyM"
 #define SlideManagerAppExeName "OnlyMSlideManager.exe"
+#define SlideManagerAppName "OnlyM Slide Manager"
 
 #define MyAppVersion GetFileVersion(MySource + '\bin\x86\Release\OnlyM.exe');
 
@@ -178,9 +179,9 @@ Source: "..\UrlLinkFiles\Watchtower online library.url"; DestDir: "{commonappdat
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{group}\{#SlideManagerAppExeName}"; Filename: "{app}\{#SlideManagerAppExeName}"
+Name: "{group}\{#SlideManagerAppName}"; Filename: "{app}\{#SlideManagerAppExeName}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
-Name: "{commondesktop}\{#SlideManagerAppExeName}"; Filename: "{app}\{#SlideManagerAppExeName}"; Tasks: desktopicon
+Name: "{commondesktop}\{#SlideManagerAppName}"; Filename: "{app}\{#SlideManagerAppExeName}"; Tasks: desktopicon
 
 [ThirdParty]
 UseRelativePaths=True
