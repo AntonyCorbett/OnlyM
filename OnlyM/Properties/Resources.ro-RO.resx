@@ -533,7 +533,7 @@
     <comment>Combobox label in Start Offset Times dialog</comment>
   </data>
   <data name="CLEAR_RECENTS" xml:space="preserve">
-    <value>CLEAR</value>
+    <value>ȘTERGE</value>
     <comment>Command label at the bottom of the recent times list in the start offset dialog</comment>
   </data>
 </root>
