@@ -608,7 +608,7 @@
         
         private static string GenerateTimeString(long milliseconds)
         {
-            return TimeSpan.FromMilliseconds(milliseconds).ToString(@"hh\:mm\:ss");
+            return TimeSpan.FromMilliseconds(milliseconds).AsMediaDurationString();
         }
 
         private void OnPlaybackPositionChangedEvent()

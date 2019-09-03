@@ -20,6 +20,6 @@
         /// <summary>
         /// Super fade speed.
         /// </summary>
-        SuperFast
+        SuperFast,
     }
 }

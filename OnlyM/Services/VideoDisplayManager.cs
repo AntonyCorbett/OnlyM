@@ -5,11 +5,11 @@
     using System.Threading.Tasks;
     using System.Windows.Controls;
     using GalaSoft.MvvmLight.Messaging;
-    using MediaElementAdaption;
-    using Models;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Options;
     using OnlyM.Core.Subtitles;
+    using OnlyM.MediaElementAdaption;
+    using OnlyM.Models;
     using OnlyM.PubSubMessages;
     using Serilog;
     using Serilog.Events;
@@ -91,8 +91,6 @@
                 Log.Debug($"Firing Started - Media Id = {_mediaItemId}");
 
                 await CreateSubtitleFile(mediaItemFilePath);
-
-                //_mediaElement.Position = _startPosition;
 
                 await _mediaElement.Play(new Uri(mediaItemFilePath), MediaClassification.Video).ConfigureAwait(true);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
@@ -244,7 +242,7 @@
             {
                 MediaItemId = id,
                 Classification = MediaClassification.Video,
-                Change = change
+                Change = change,
             };
         }
 

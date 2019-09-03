@@ -3,6 +3,6 @@
     public enum SlideDirection
     {
         Forward,
-        Reverse
+        Reverse,
     }
 }

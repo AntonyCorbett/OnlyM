@@ -21,7 +21,7 @@
                 result.Add(new SlideItem
                 {
                     Name = $"Slide {n + 1}",
-                    ThumbnailImage = CreateThumbnailImage(image, thumbnailWidth, thumbnailHeight)
+                    ThumbnailImage = CreateThumbnailImage(image, thumbnailWidth, thumbnailHeight),
                 });
             }
 

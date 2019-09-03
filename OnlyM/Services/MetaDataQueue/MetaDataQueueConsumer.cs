@@ -177,7 +177,7 @@
                     if (!IsDurationAndTitlePopulated(mediaItem))
                     {
                         mediaItem.DurationDeciseconds =
-                            metaData == null ? 0 : (int) (metaData.Duration.TotalSeconds * 10);
+                            metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
                         mediaItem.Title = GetMediaTitle(mediaItem.FilePath, metaData);
                         mediaItem.FileNameAsSubTitle = _optionsService.UseInternalMediaTitles
                             ? Path.GetFileName(mediaItem.FilePath)

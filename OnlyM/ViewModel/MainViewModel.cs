@@ -7,22 +7,22 @@ namespace OnlyM.ViewModel
     using System.Windows;
     using System.Windows.Interop;
     using System.Windows.Media;
-    using AutoUpdates;
-    using Core.Services.CommandLine;
-    using Core.Services.Options;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
     using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
-    using Models;
+    using OnlyM.AutoUpdates;
+    using OnlyM.Core.Services.CommandLine;
+    using OnlyM.Core.Services.Options;
     using OnlyM.Core.Utils;
     using OnlyM.CoreSys.Services.Snackbar;
-    using PubSubMessages;
+    using OnlyM.Models;
+    using OnlyM.PubSubMessages;
+    using OnlyM.Services.DragAndDrop;
+    using OnlyM.Services.HiddenMediaItems;
+    using OnlyM.Services.MediaChanging;
+    using OnlyM.Services.Pages;
     using Serilog.Events;
-    using Services.DragAndDrop;
-    using Services.HiddenMediaItems;
-    using Services.MediaChanging;
-    using Services.Pages;
     
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class MainViewModel : ViewModelBase

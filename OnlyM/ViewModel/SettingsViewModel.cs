@@ -6,23 +6,23 @@
     using System.Globalization;
     using System.IO;
     using System.Linq;
-    using AutoUpdates;
-    using Core.Extensions;
-    using Core.Models;
-    using Core.Services.Media;
-    using Core.Services.Monitors;
-    using Core.Services.Options;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
     using GalaSoft.MvvmLight.Messaging;
     using Microsoft.WindowsAPICodePack.Dialogs;
-    using Models;
+    using OnlyM.AutoUpdates;
+    using OnlyM.Core.Extensions;
+    using OnlyM.Core.Models;
+    using OnlyM.Core.Services.Media;
+    using OnlyM.Core.Services.Monitors;
+    using OnlyM.Core.Services.Options;
     using OnlyM.CoreSys.Services.Snackbar;
-    using PubSubMessages;
+    using OnlyM.Models;
+    using OnlyM.PubSubMessages;
+    using OnlyM.Services;
+    using OnlyM.Services.MediaChanging;
+    using OnlyM.Services.Pages;
     using Serilog.Events;
-    using Services;
-    using Services.MediaChanging;
-    using Services.Pages;
     
     // ReSharper disable once UnusedMember.Global
     internal class SettingsViewModel : ViewModelBase
@@ -851,7 +851,7 @@
                 result.Add(new MagnifierShapeItem
                 {
                     Shape = v,
-                    Name = v.GetDescriptiveName()
+                    Name = v.GetDescriptiveName(),
                 });
             }
 
@@ -867,7 +867,7 @@
                 result.Add(new MagnifierSizeItem
                 {
                     Size = v,
-                    Name = v.GetDescriptiveName()
+                    Name = v.GetDescriptiveName(),
                 });
             }
 
@@ -883,7 +883,7 @@
                 result.Add(new ImageFadeSpeed
                 {
                     Speed = v,
-                    Name = v.GetDescriptiveName()
+                    Name = v.GetDescriptiveName(),
                 });
             }
 
@@ -899,7 +899,7 @@
                 result.Add(new ImageFade
                 {
                     Fade = v,
-                    Name = v.GetDescriptiveName()
+                    Name = v.GetDescriptiveName(),
                 });
             }
 
@@ -915,7 +915,7 @@
                 result.Add(new LoggingLevel
                 {
                     Level = v,
-                    Name = v.GetDescriptiveName()
+                    Name = v.GetDescriptiveName(),
                 });
             }
 
@@ -928,7 +928,7 @@
             return new[]
             {
                 new RenderingMethodItem { Method = RenderingMethod.MediaFoundation, Name = @"Media Foundation" },
-                new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = @"Ffmpeg" }
+                new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = @"Ffmpeg" },
             };
         }
 
@@ -940,8 +940,8 @@
                 new MonitorItem
                 {
                     MonitorName = Properties.Resources.MONITOR_NONE,
-                    FriendlyName = Properties.Resources.MONITOR_NONE
-                }
+                    FriendlyName = Properties.Resources.MONITOR_NONE,
+                },
             };
 
             var monitors = _monitorsService.GetSystemMonitors();
@@ -994,7 +994,7 @@
                 EnsureReadOnly = false,
                 EnsureValidNames = true,
                 Multiselect = false,
-                ShowPlacesList = true
+                ShowPlacesList = true,
             };
 
             var result = dialog.ShowDialog();
@@ -1037,7 +1037,7 @@
                         result.Add(new LanguageItem
                         {
                             LanguageId = c.Name,
-                            LanguageName = c.EnglishName
+                            LanguageName = c.EnglishName,
                         });
                     }
                     catch (CultureNotFoundException)
@@ -1053,7 +1053,7 @@
                 result.Add(new LanguageItem
                 {
                     LanguageId = c.Name,
-                    LanguageName = c.EnglishName
+                    LanguageName = c.EnglishName,
                 });
             }
 

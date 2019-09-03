@@ -304,7 +304,7 @@
                 FadeInReverse = fadeInReverse,
                 FadeOutForward = fadeOutForward,
                 FadeOutReverse = fadeOutReverse,
-                DwellTimeMilliseconds = dwellTimeMilliseconds
+                DwellTimeMilliseconds = dwellTimeMilliseconds,
             };
 
             return result;
@@ -352,7 +352,7 @@
             BuildProgressEvent?.Invoke(this, new BuildProgressEventArgs
             {
                 EntryName = entryName,
-                PercentageComplete = percentageComplete
+                PercentageComplete = percentageComplete,
             });
         }
     }

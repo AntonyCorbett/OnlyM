@@ -6,6 +6,6 @@
         Showing,
         Visible,
         Hiding,
-        InPreview
+        InPreview,
     }
 }

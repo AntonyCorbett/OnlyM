@@ -111,7 +111,7 @@
             SIID_MEDIABDR = 138,
             SIID_MEDIABDRE = 139,
             SIID_CLUSTEREDDRIVE = 140,
-            SIID_MAX_ICONS = 175
+            SIID_MAX_ICONS = 175,
         }
 
         [Flags]
@@ -124,7 +124,7 @@
             SHGSI_SELECTED = 0x000010000,
             SHGSI_LARGEICON = 0x000000000,
             SHGSI_SMALLICON = 0x000000001,
-            SHGSI_SHELLICONSIZE = 0x000000004
+            SHGSI_SHELLICONSIZE = 0x000000004,
         }
 
         [DllImport("user32.dll")]
@@ -140,7 +140,7 @@
         {
             var sii = new SHSTOCKICONINFO
             {
-                cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO))
+                cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO)),
             };
 
             Marshal.ThrowExceptionForHR(SHGetStockIconInfo(

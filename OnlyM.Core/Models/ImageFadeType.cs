@@ -25,6 +25,6 @@
         /// <summary>
         /// Cross fade.
         /// </summary>
-        CrossFade
+        CrossFade,
     }
 }

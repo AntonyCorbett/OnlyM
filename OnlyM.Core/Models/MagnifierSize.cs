@@ -9,6 +9,6 @@
         Medium,
         Large,
         XLarge,
-        XXLarge
+        XXLarge,
     }
 }

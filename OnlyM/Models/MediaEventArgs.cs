@@ -1,7 +1,7 @@
 ﻿namespace OnlyM.Models
 {
     using System;
-    using Core.Models;
+    using OnlyM.Core.Models;
 
     public class MediaEventArgs : EventArgs
     {

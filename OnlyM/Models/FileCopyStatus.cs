@@ -10,6 +10,6 @@
         /// <summary>
         /// Finished copying.
         /// </summary>
-        FinishedCopy
+        FinishedCopy,
     }
 }

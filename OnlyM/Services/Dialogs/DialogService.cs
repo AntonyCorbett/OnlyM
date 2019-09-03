@@ -10,17 +10,14 @@
     {
         private bool _isDialogVisible;
 
-        public async Task<TimeSpan?> GetStartOffsetAsync(TimeSpan maxStartTime)
+        public async Task<TimeSpan?> GetStartOffsetAsync(string mediaFileNameWithExtension, int maxStartTimeSeconds)
         {
             _isDialogVisible = true;
 
             var dialog = new StartOffsetDialog();
             var dc = (StartOffsetViewModel)dialog.DataContext;
 
-            dc.MaxStartTime = maxStartTime;
-            dc.ChosenHours = 0;
-            dc.ChosenMinutes = 0;
-            dc.ChosenSeconds = 0;
+            dc.Init(mediaFileNameWithExtension, maxStartTimeSeconds);
             
             await DialogHost.Show(
                     dialog,

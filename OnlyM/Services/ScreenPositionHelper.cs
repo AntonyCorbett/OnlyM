@@ -4,8 +4,8 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
-    using Models;
     using OnlyM.Core.Models;
+    using OnlyM.Models;
 
     internal static class ScreenPositionHelper
     {

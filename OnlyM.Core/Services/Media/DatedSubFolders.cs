@@ -32,7 +32,7 @@
                 $"{theDate.Year}-{theDate.Month:D2}-{theDate.Day:D2}",
                 $"{theDate.Year}-{theDate.Month}-{theDate.Day}",
                 $"{theDate.Year}-{theDate.Month:D2}-{theDate.Day}",
-                $"{theDate.Year}-{theDate.Month}-{theDate.Day:D2}"
+                $"{theDate.Year}-{theDate.Month}-{theDate.Day:D2}",
             };
             
             return result;

@@ -1,6 +1,6 @@
 ﻿namespace OnlyM.Core.Services.Media
 {
-    using Models;
+    using OnlyM.Core.Models;
 
     public interface IMediaMetaDataService
     {

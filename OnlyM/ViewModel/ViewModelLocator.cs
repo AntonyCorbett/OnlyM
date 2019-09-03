@@ -14,7 +14,8 @@ namespace OnlyM.ViewModel
     using OnlyM.Services.HiddenMediaItems;
     using OnlyM.Services.MediaChanging;
     using OnlyM.Services.Pages;
-    
+    using OnlyM.Services.StartOffsetStorage;
+
     /// <summary>
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.
@@ -43,6 +44,7 @@ namespace OnlyM.ViewModel
             SimpleIoc.Default.Register<ICommandLineService, CommandLineService>();
             SimpleIoc.Default.Register<IActiveMediaItemsService, ActiveMediaItemsService>();
             SimpleIoc.Default.Register<IDialogService, DialogService>();
+            SimpleIoc.Default.Register<IStartOffsetStorageService, StartOffsetStorageService>();
 
             // view models.
             SimpleIoc.Default.Register<StartOffsetViewModel>();

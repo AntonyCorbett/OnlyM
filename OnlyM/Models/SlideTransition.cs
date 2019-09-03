@@ -3,6 +3,6 @@
     public enum SlideTransition
     {
         Started,
-        Finished
+        Finished,
     }
 }

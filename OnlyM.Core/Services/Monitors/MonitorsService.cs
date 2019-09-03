@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Forms;
-    using Models;
+    using OnlyM.Core.Models;
     using Serilog;
 
     /// <summary>
@@ -37,7 +37,7 @@
                     Monitor = screen,
                     MonitorName = deviceData?.DeviceString ?? SanitizeScreenDeviceName(screen.DeviceName),
                     MonitorId = deviceData?.DeviceId ?? screen.DeviceName,
-                    FriendlyName = screen.DeviceFriendlyName()
+                    FriendlyName = screen.DeviceFriendlyName(),
                 };
 
                 if (string.IsNullOrEmpty(monitor.FriendlyName))

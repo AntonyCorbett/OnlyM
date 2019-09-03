@@ -3,10 +3,10 @@
     using System;
     using System.Windows;
     using CefSharp.Wpf;
-    using Core.Models;
-    using Core.Services.Options;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
+    using OnlyM.Core.Models;
+    using OnlyM.Core.Services.Options;
     using OnlyM.CustomControls.MagnifierControl;
 
     // ReSharper disable once ClassNeverInstantiated.Global

@@ -2,17 +2,15 @@
 {
     using System.Windows;
     using System.Windows.Input;
-    using System.Windows.Media;
     using CommonServiceLocator;
-    using Core.Services.Options;
     using GalaSoft.MvvmLight.Messaging;
-    using MaterialDesignThemes.Wpf;
+    using OnlyM.Core.Services.Options;
     using OnlyM.CoreSys.Services.Snackbar;
     using OnlyM.CoreSys.WindowsPositioning;
+    using OnlyM.PubSubMessages;
     using OnlyM.Services.DragAndDrop;
-    using PubSubMessages;
-    using Services.MediaChanging;
-    using Services.Pages;
+    using OnlyM.Services.MediaChanging;
+    using OnlyM.Services.Pages;
     
     /// <summary>
     /// Interaction logic for MainWindow.xaml

@@ -8,19 +8,19 @@
     using System.Threading.Tasks;
     using System.Windows;
     using CommonServiceLocator;
-    using Core.Models;
-    using Core.Services.Options;
-    using MediaElementAdaption;
-    using Models;
+    using OnlyM.Core.Models;
     using OnlyM.Core.Services.Database;
     using OnlyM.Core.Services.Monitors;
+    using OnlyM.Core.Services.Options;
     using OnlyM.CoreSys.Services.Snackbar;
+    using OnlyM.MediaElementAdaption;
+    using OnlyM.Models;
+    using OnlyM.Services;
+    using OnlyM.Services.Pages;
     using OnlyM.Services.WebBrowser;
     using OnlyM.Services.WebNavHeaderManager;
     using OnlyM.ViewModel;
     using Serilog;
-    using Services;
-    using Services.Pages;
     
     /// <summary>
     /// Interaction logic for MediaWindow.xaml

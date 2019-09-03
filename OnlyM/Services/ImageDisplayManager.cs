@@ -12,13 +12,13 @@
     using System.Windows.Media.Animation;
     using System.Windows.Media.Imaging;
     using System.Windows.Threading;
-    using Core.Models;
-    using Core.Services.Options;
     using GalaSoft.MvvmLight.Threading;
-    using ImagesCache;
-    using Models;
     using OnlyM.Core.Extensions;
+    using OnlyM.Core.Models;
+    using OnlyM.Core.Services.Options;
     using OnlyM.Core.Utils;
+    using OnlyM.Models;
+    using OnlyM.Services.ImagesCache;
     using OnlyM.Slides;
     using OnlyM.Slides.Models;
     using Serilog;
@@ -266,7 +266,7 @@
             {
                 MediaItemId = id,
                 Classification = mediaClassification,
-                Change = change
+                Change = change,
             };
         }
 
@@ -277,7 +277,7 @@
                 MediaItemId = id,
                 Transition = change,
                 OldSlideIndex = oldIndex,
-                NewSlideIndex = newIndex
+                NewSlideIndex = newIndex,
             };
         }
 
@@ -351,7 +351,7 @@
                 {
                     Duration = TimeSpan.FromSeconds(fadeTime),
                     From = 1.0,
-                    To = 0.0
+                    To = 0.0,
                 };
 
                 fadeOut.Completed += (sender, args) =>
@@ -400,7 +400,7 @@
                             // note that the fade in time is longer than fade out - just seems to look better
                             Duration = TimeSpan.FromSeconds(fadeTime * 1.2),
                             From = 0.0,
-                            To = 1.0
+                            To = 1.0,
                         };
 
                         if (completed != null)

@@ -1,16 +1,17 @@
 ﻿namespace OnlyM.Core.Services.Database
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.SQLite;
     using System.IO;
     using System.Text;
+    using OnlyM.Core.Utils;
     using Serilog;
-    using Utils;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     public class DatabaseService : IDatabaseService
     {
-        private const int CurrentSchemaVersion = 3;
+        private const int CurrentSchemaVersion = 4;
 
         public DatabaseService()
         {
@@ -105,6 +106,59 @@
             }
         }
 
+        public void AddMediaStartOffsetData(string fileName, string startOffsets, int lengthSeconds)
+        {
+            using (var c = CreateConnection())
+            using (var cmd = c.CreateCommand())
+            {
+                Log.Logger.Verbose($"Inserting into mediaOptions table: {fileName}");
+
+                var sb = new StringBuilder();
+
+                sb.AppendLine("insert into mediaOptions (fileName, startOffsets, lengthSeconds)");
+                sb.AppendLine("values (@F, @S, @L)");
+                sb.AppendLine("on conflict(fileName) do update set startOffsets=@S, lengthSeconds=@L");
+
+                cmd.CommandText = sb.ToString();
+                cmd.Parameters.AddWithValue("@F", fileName.Trim());
+                cmd.Parameters.AddWithValue("@S", startOffsets);
+                cmd.Parameters.AddWithValue("@L", lengthSeconds);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public MediaStartOffsetData GetMediaStartOffsetData(string fileName)
+        {
+            using (var c = CreateConnection())
+            using (var cmd = c.CreateCommand())
+            {
+                Log.Logger.Verbose($"Selecting from mediaOptions table: {fileName}");
+
+                cmd.CommandText = "select id, fileName, startOffsets, lengthSeconds from mediaOptions where fileName = @F";
+                cmd.Parameters.AddWithValue("@F", fileName.Trim());
+
+                using (var r = cmd.ExecuteReader())
+                {
+                    if (r.Read())
+                    {
+                        var result = new MediaStartOffsetData
+                        {
+                            Id = Convert.ToInt32(r["id"]),
+                            FileName = (string)r["fileName"],
+                            StartOffsets = ParseStartOffsets((string)r["startOffsets"]),
+                            LengthSeconds = Convert.ToInt32(r["lengthSeconds"]),
+                        };
+
+                        result.Sanitize();
+                        return result;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public BrowserData GetBrowserData(string url)
         {
             using (var c = CreateConnection())
@@ -123,7 +177,7 @@
                         {
                             Id = Convert.ToInt32(r["id"]),
                             Url = (string)r["url"],
-                            ZoomLevel = Convert.ToDouble(r["zoom"])
+                            ZoomLevel = Convert.ToDouble(r["zoom"]),
                         };
 
                         result.Sanitize();
@@ -138,12 +192,9 @@
         private void EnsureDatabaseExists()
         {
             var path = GetDatabasePath();
-            if (File.Exists(path))
+            if (File.Exists(path) && IsUnsupportedVersion())
             {
-                if (IsUnsupportedVersion())
-                {
-                    DeleteDatabase();
-                }
+                DeleteDatabase();
             }
 
             if (!File.Exists(path))
@@ -218,6 +269,7 @@
 
                 CreateThumbTable(c);
                 CreateBrowserTable(c);
+                CreateMediaOptionsTable(c);
                 SetDatabaseSchemaVersion(c, CurrentSchemaVersion);
             }
         }
@@ -248,7 +300,28 @@
                 sb.AppendLine("[image] BLOB NOT NULL,");
                 sb.AppendLine("[changed] INTEGER NOT NULL);");
 
-                sb.AppendLine("CREATE UNIQUE INDEX[PathIndex] ON[thumb]([path]);");
+                sb.AppendLine("CREATE UNIQUE INDEX[pathIndex] ON[thumb]([path]);");
+
+                cmd.CommandText = sb.ToString();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
+        private void CreateMediaOptionsTable(SQLiteConnection connection)
+        {
+            using (var cmd = connection.CreateCommand())
+            {
+                Log.Logger.Verbose("Creating media options table");
+
+                var sb = new StringBuilder();
+                sb.AppendLine("CREATE TABLE[mediaOptions](");
+                sb.AppendLine("[id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,");
+                sb.AppendLine("[fileName] TEXT NOT NULL COLLATE NOCASE,");
+                sb.AppendLine("[startOffsets] TEXT NULL,");
+                sb.AppendLine("[lengthSeconds] INTEGER NOT NULL);");
+
+                sb.AppendLine("CREATE UNIQUE INDEX[fileNameIndex] ON[mediaOptions]([fileName]);");
 
                 cmd.CommandText = sb.ToString();
                 cmd.ExecuteNonQuery();
@@ -268,11 +341,30 @@
                 sb.AppendLine("[url] TEXT NOT NULL COLLATE NOCASE,");
                 sb.AppendLine("[zoom] NUMBER NOT NULL);");
                 
-                sb.AppendLine("CREATE UNIQUE INDEX[UrlIndex] ON[browser]([url]);");
+                sb.AppendLine("CREATE UNIQUE INDEX[urlIndex] ON[browser]([url]);");
 
                 cmd.CommandText = sb.ToString();
                 cmd.ExecuteNonQuery();
             }
+        }
+
+        private List<int> ParseStartOffsets(string s)
+        {
+            var result = new List<int>();
+
+            if (!string.IsNullOrEmpty(s))
+            {
+                var tokens = s.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var token in tokens)
+                {
+                    if (int.TryParse(token, out var seconds))
+                    {
+                        result.Add(seconds);
+                    }
+                }
+            }
+            
+            return result;
         }
     }
 }

@@ -20,7 +20,7 @@
             ".bmp",
             ".png",
             ".jpg",
-            ".jpeg"
+            ".jpeg",
         };
 
         private readonly IUserInterfaceService _userInterfaceService;
@@ -80,7 +80,7 @@
                     Messenger.Default.Send(new ReorderMessage
                     {
                         SourceItem = sourceCardViewModel,
-                        TargetId = targetCardViewModel.DropZoneId
+                        TargetId = targetCardViewModel.DropZoneId,
                     });
                 }
                 else
@@ -102,7 +102,7 @@
             Messenger.Default.Send(new DropImagesMessage
             {
                 FileList = files,
-                TargetId = targetCardViewModel.DropZoneId
+                TargetId = targetCardViewModel.DropZoneId,
             });
         }
 
@@ -115,7 +115,7 @@
 
                 var objectToDrag = new SourceCard
                 {
-                    Name = cardViewModel.Name
+                    Name = cardViewModel.Name,
                 };
 
                 var data = new DataObject(DataFormats.Serializable, objectToDrag);

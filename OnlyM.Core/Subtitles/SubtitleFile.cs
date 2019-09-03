@@ -90,7 +90,7 @@
                 {
                     Number = number,
                     Timing = timing,
-                    Text = StripHtml(text)
+                    Text = StripHtml(text),
                 };
 
                 _subtitles.Add(entry);

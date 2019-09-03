@@ -170,6 +170,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CLEAR.
+        /// </summary>
+        public static string CLEAR_RECENTS {
+            get {
+                return ResourceManager.GetString("CLEAR_RECENTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm when stopping.
         /// </summary>
         public static string CONFIRM_STOP {
@@ -670,6 +679,15 @@ namespace OnlyM.Properties {
         public static string PURGE_WEB_CACHE_RESTART {
             get {
                 return ResourceManager.GetString("PURGE_WEB_CACHE_RESTART", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent.
+        /// </summary>
+        public static string RECENT_TIMES {
+            get {
+                return ResourceManager.GetString("RECENT_TIMES", resourceCulture);
             }
         }
         

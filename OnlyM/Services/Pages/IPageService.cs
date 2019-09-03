@@ -5,8 +5,8 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
-    using MediaElementAdaption;
-    using Models;
+    using OnlyM.MediaElementAdaption;
+    using OnlyM.Models;
     using OnlyM.Services.WebBrowser;
 
     internal interface IPageService

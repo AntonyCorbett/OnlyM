@@ -516,7 +516,12 @@
             var mediaItem = GetMediaItem(mediaItemId);
             if (mediaItem != null && (!mediaItem.IsMediaActive || mediaItem.IsPaused))
             {
-                var start = await _dialogService.GetStartOffsetAsync(TimeSpan.FromSeconds((int)((double)mediaItem.DurationDeciseconds / 10)));
+                var maxStartTimeSeconds = (int)((double)mediaItem.DurationDeciseconds / 10);
+
+                var start = await _dialogService.GetStartOffsetAsync(
+                    Path.GetFileName(mediaItem.FilePath), 
+                    maxStartTimeSeconds);
+
                 if (start != null)
                 {
                     var deciSecs = (int)(start.Value.TotalSeconds * 10);

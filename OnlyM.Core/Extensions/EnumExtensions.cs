@@ -1,7 +1,7 @@
 ﻿namespace OnlyM.Core.Extensions
 {
-    using Models;
-    using Properties;
+    using OnlyM.Core.Models;
+    using OnlyM.Core.Properties;
     using Serilog.Events;
 
     public static class EnumExtensions

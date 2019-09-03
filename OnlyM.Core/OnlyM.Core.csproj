@@ -131,6 +131,7 @@
     </Compile>
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\TimeSpanExtensions.cs" />
     <Compile Include="Extensions\UriExtensions.cs" />
     <Compile Include="Models\DisplayDeviceData.cs" />
     <Compile Include="Models\FadeSpeed.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Services\Database\BrowserData.cs" />
     <Compile Include="Services\Database\DatabaseService.cs" />
     <Compile Include="Services\Database\IDatabaseService.cs" />
+    <Compile Include="Services\Database\MediaStartOffsetData.cs" />
     <Compile Include="Services\Media\DatedSubFolders.cs" />
     <Compile Include="Utils\FaviconHelper.cs" />
     <Compile Include="Services\Media\FolderWatcherService.cs" />

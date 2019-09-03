@@ -30,6 +30,6 @@
         /// <summary>
         /// A web address shortcut (*.url)
         /// </summary>
-        Web
+        Web,
     }
 }

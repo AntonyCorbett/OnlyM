@@ -8,14 +8,14 @@
     using System.Threading;
     using System.Windows;
     using System.Windows.Markup;
-    using CommandLine;
     using CommonServiceLocator;
-    using Models;
-    using Monitors;
     using Newtonsoft.Json;
+    using OnlyM.Core.Models;
+    using OnlyM.Core.Services.CommandLine;
+    using OnlyM.Core.Services.Monitors;
+    using OnlyM.Core.Utils;
     using Serilog;
     using Serilog.Events;
-    using Utils;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     public sealed class OptionsService : IOptionsService
@@ -640,7 +640,7 @@
                 new MonitorChangedEventArgs
                 {
                     OriginalMonitorId = originalMonitorId,
-                    NewMonitorId = newMonitorId
+                    NewMonitorId = newMonitorId,
                 });
         }
 

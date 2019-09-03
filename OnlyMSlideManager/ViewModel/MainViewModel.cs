@@ -75,7 +75,7 @@ namespace OnlyMSlideManager.ViewModel
             AddDesignTimeItems();
 
             // init options so that UI locale is set
-            var _ = _optionsService.Culture;
+            var dummy = _optionsService.Culture;
 
             InitCommands();
             Messenger.Default.Register<ReorderMessage>(this, OnReorderMessage);
@@ -629,7 +629,7 @@ namespace OnlyMSlideManager.ViewModel
                     ? (int?)null
                     : slide.DwellTimeMilliseconds / 1000,
                 DropZoneId = Guid.NewGuid().ToString(),
-                SlideIndex = slideIndex
+                SlideIndex = slideIndex,
             };
 
             newSlide.SlideItemModifiedEvent += HandleSlideItemModifiedEvent;
@@ -668,7 +668,7 @@ namespace OnlyMSlideManager.ViewModel
         {
             SlideItems.Add(new SlideItem
             {
-                IsEndMarker = true
+                IsEndMarker = true,
             });
         }
 
@@ -956,7 +956,7 @@ namespace OnlyMSlideManager.ViewModel
                         result.Add(new LanguageItem
                         {
                             LanguageId = c.Name,
-                            LanguageName = c.EnglishName
+                            LanguageName = c.EnglishName,
                         });
                     }
                     catch (CultureNotFoundException)
@@ -972,7 +972,7 @@ namespace OnlyMSlideManager.ViewModel
                 result.Add(new LanguageItem
                 {
                     LanguageId = c.Name,
-                    LanguageName = c.EnglishName
+                    LanguageName = c.EnglishName,
                 });
             }
 

@@ -20,6 +20,6 @@
         /// <summary>
         /// Bottom side.
         /// </summary>
-        Bottom
+        Bottom,
     }
 }

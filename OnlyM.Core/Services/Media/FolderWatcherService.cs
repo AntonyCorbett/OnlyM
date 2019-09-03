@@ -4,8 +4,8 @@
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
-    using Models;
-    using Options;
+    using OnlyM.Core.Models;
+    using OnlyM.Core.Services.Options;
     using Serilog;
 
     // ReSharper disable once ClassNeverInstantiated.Global

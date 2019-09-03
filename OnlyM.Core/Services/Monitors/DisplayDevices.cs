@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
-    using Models;
+    using OnlyM.Core.Models;
     using Serilog;
 
     /// <summary>
@@ -56,7 +56,7 @@
                             Name = device2.DeviceName,
                             DeviceId = device2.DeviceID,
                             DeviceString = device2.DeviceString,
-                            DeviceKey = device2.DeviceKey
+                            DeviceKey = device2.DeviceKey,
                         });
                     }
                 }

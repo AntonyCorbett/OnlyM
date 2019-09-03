@@ -7,8 +7,8 @@
     using CommonServiceLocator;
     using GalaSoft.MvvmLight.Messaging;
     using OnlyM.PubSubMessages;
+    using OnlyM.Services.DragAndDrop;
     using OnlyM.ViewModel;
-    using Services.DragAndDrop;
 
     /// <summary>
     /// Interaction logic for OperatorPage.xaml

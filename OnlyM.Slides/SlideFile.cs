@@ -57,7 +57,7 @@
                     FadeOutForward = slide.FadeOutForward,
                     FadeOutReverse = slide.FadeOutReverse,
                     DwellTimeMilliseconds = slide.DwellTimeMilliseconds,
-                    Image = image
+                    Image = image,
                 };
             }
         }
@@ -83,7 +83,7 @@
                         FadeOutForward = slide.FadeOutForward,
                         FadeOutReverse = slide.FadeOutReverse,
                         DwellTimeMilliseconds = slide.DwellTimeMilliseconds,
-                        Image = image
+                        Image = image,
                     });
                 }
             }

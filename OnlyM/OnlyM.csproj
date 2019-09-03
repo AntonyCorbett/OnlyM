@@ -199,6 +199,7 @@
     <Compile Include="Models\MediaEventArgs.cs" />
     <Compile Include="Models\MediaNearEndEventArgs.cs" />
     <Compile Include="Models\MonitorItem.cs" />
+    <Compile Include="Models\RecentTimesItem.cs" />
     <Compile Include="Models\RenderingMethodItem.cs" />
     <Compile Include="Models\ScreenMarginSide.cs" />
     <Compile Include="Models\SlideTransition.cs" />
@@ -207,6 +208,8 @@
     <Compile Include="Services\Dialogs\DialogService.cs" />
     <Compile Include="Services\Dialogs\IDialogService.cs" />
     <Compile Include="Services\MediaWindowPositionHelper.cs" />
+    <Compile Include="Services\StartOffsetStorage\IStartOffsetStorageService.cs" />
+    <Compile Include="Services\StartOffsetStorage\StartOffsetStorageService.cs" />
     <Compile Include="Services\WebNavHeaderManager\WebNavHeaderStatus.cs" />
     <Compile Include="Models\WindowVisibilityChangedEventArgs.cs" />
     <Compile Include="PubSubMessages\MediaListUpdatedMessage.cs" />
@@ -423,6 +426,7 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

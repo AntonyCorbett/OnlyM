@@ -8,7 +8,7 @@
     {
         public static readonly LoggingLevelSwitch LevelSwitch = new LoggingLevelSwitch
         {
-            MinimumLevel = LogEventLevel.Information
+            MinimumLevel = LogEventLevel.Information,
         };
 
         public void SetMinimumLevel(LogEventLevel level)

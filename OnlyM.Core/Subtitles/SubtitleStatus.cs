@@ -3,6 +3,6 @@
     public enum SubtitleStatus
     {
         NotShowing,
-        Showing
+        Showing,
     }
 }

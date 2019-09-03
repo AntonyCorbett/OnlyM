@@ -1,7 +1,7 @@
 ﻿namespace OnlyM.Core.Services.Media
 {
     using System;
-    using Models;
+    using OnlyM.Core.Models;
 
     public interface IThumbnailService
     {

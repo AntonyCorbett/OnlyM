@@ -139,7 +139,7 @@
             {
                 MediaItemId = id,
                 Classification = MediaClassification.Audio,
-                Change = change
+                Change = change,
             };
         }
 

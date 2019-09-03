@@ -89,7 +89,7 @@
             {
                 From = from,
                 To = to,
-                Duration = TimeSpan.FromSeconds(0.5)
+                Duration = TimeSpan.FromSeconds(0.5),
             };
 
             anim.Completed += (sender, args) =>

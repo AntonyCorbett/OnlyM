@@ -1,7 +1,7 @@
 ﻿namespace OnlyM.Services.FrozenVideoItems
 {
     using System.Collections.Generic;
-    using Models;
+    using OnlyM.Models;
 
     internal class FrozenVideosService : IFrozenVideosService
     {

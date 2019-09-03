@@ -38,7 +38,7 @@
 
             Remote = 0x4000000,
 
-            Disconnect = 0x2000000
+            Disconnect = 0x2000000,
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]

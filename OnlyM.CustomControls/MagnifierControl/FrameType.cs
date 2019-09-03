@@ -18,6 +18,6 @@ namespace OnlyM.CustomControls.MagnifierControl
     public enum FrameType
     {
         Circle,
-        Rectangle
+        Rectangle,
     }
 }

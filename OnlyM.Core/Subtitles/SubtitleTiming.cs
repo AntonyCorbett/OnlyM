@@ -36,7 +36,7 @@
             value = new SubtitleTiming
             {
                 Start = start,
-                End = end
+                End = end,
             };
 
             return true;

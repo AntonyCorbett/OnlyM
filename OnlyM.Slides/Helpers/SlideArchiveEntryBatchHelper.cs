@@ -50,7 +50,7 @@
                 result.Add(new SlideArchiveEntry
                 {
                     ArchiveEntryName = slide.ArchiveEntryName,
-                    Image = map[slide]
+                    Image = map[slide],
                 });
             }
 

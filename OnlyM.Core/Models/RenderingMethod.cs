@@ -10,6 +10,6 @@
         /// <summary>
         /// Using ffmpeg.
         /// </summary>
-        Ffmpeg
+        Ffmpeg,
     }
 }

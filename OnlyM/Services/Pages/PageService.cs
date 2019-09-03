@@ -7,22 +7,22 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Forms;
-    using Core.Models;
-    using Core.Services.Monitors;
-    using Core.Services.Options;
     using GalaSoft.MvvmLight.Messaging;
     using GalaSoft.MvvmLight.Threading;
-    using MediaChanging;
-    using MediaElementAdaption;
-    using Models;
+    using OnlyM.Core.Models;
     using OnlyM.Core.Services.CommandLine;
     using OnlyM.Core.Services.Database;
+    using OnlyM.Core.Services.Monitors;
+    using OnlyM.Core.Services.Options;
     using OnlyM.CoreSys.Services.Snackbar;
     using OnlyM.CoreSys.WindowsPositioning;
+    using OnlyM.MediaElementAdaption;
+    using OnlyM.Models;
+    using OnlyM.PubSubMessages;
+    using OnlyM.Services.MediaChanging;
     using OnlyM.Services.WebBrowser;
-    using PubSubMessages;
+    using OnlyM.Windows;
     using Serilog;
-    using Windows;
     
     // ReSharper disable once ClassNeverInstantiated.Global
     internal sealed class PageService : IPageService

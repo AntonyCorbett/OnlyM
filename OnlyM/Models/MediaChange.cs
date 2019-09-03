@@ -30,6 +30,6 @@
         /// <summary>
         /// Media is paused.
         /// </summary>
-        Paused
+        Paused,
     }
 }

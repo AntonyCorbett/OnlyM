@@ -6,8 +6,8 @@
     using System.Windows.Controls;
     using System.Windows.Media;
     using System.Windows.Threading;
-    using Core.Services.Options;
     using OnlyM.Core.Models;
+    using OnlyM.Core.Services.Options;
 
     internal sealed class MediaElementMediaFoundation : IMediaElement
     {
@@ -219,7 +219,7 @@
             var result = new MediaPlayer
             {
                 Volume = 1.0,
-                ScrubbingEnabled = _optionsService.AllowVideoScrubbing
+                ScrubbingEnabled = _optionsService.AllowVideoScrubbing,
             };
 
             result.MediaOpened += HandleMediaOpened2;
