@@ -529,7 +529,7 @@
     <comment>Tooltip for the button that allows you to adjust media start time</comment>
   </data>
   <data name="RECENT_TIMES" xml:space="preserve">
-    <value>Recent</value>
+    <value>Ostatnie</value>
     <comment>Combobox label in Start Offset Times dialog</comment>
   </data>
   <data name="CLEAR_RECENTS" xml:space="preserve">
