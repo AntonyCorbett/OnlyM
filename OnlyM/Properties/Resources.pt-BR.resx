@@ -501,7 +501,7 @@
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="DLG_CANCEL" xml:space="preserve">
-    <value>CANCEL</value>
+    <value>CANCELAR</value>
     <comment>Button caption in dialog used to specify media start offset</comment>
   </data>
   <data name="DLG_OK" xml:space="preserve">
@@ -509,31 +509,31 @@
     <comment>Button caption in dialog used to specify media start offset</comment>
   </data>
   <data name="SET_MEDIA_START" xml:space="preserve">
-    <value>Media Start</value>
+    <value>Início da mídia</value>
     <comment>Caption of dialog used to specify start offset for media</comment>
   </data>
   <data name="HOURS" xml:space="preserve">
-    <value>Hours</value>
+    <value>Horas</value>
     <comment>Column title in media start offset dialog (number of hours)</comment>
   </data>
   <data name="MINUTES" xml:space="preserve">
-    <value>Minutes</value>
+    <value>Minutos</value>
     <comment>Column title in media start offset dialog (number of minutes)</comment>
   </data>
   <data name="SECONDS" xml:space="preserve">
-    <value>Seconds</value>
+    <value>Segundos</value>
     <comment>Column title in media start offset dialog (number of seconds)</comment>
   </data>
   <data name="SHOW_START_OFFSET_DLG" xml:space="preserve">
-    <value>Adjust start time</value>
+    <value>Ajustar início</value>
     <comment>Tooltip for the button that allows you to adjust media start time</comment>
   </data>
   <data name="RECENT_TIMES" xml:space="preserve">
-    <value>Recent</value>
+    <value>Recentes</value>
     <comment>Combobox label in Start Offset Times dialog</comment>
   </data>
   <data name="CLEAR_RECENTS" xml:space="preserve">
-    <value>CLEAR</value>
+    <value>LIMPAR</value>
     <comment>Command label at the bottom of the recent times list in the start offset dialog</comment>
   </data>
 </root>
