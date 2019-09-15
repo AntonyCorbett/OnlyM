@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="APP_VER" xml:space="preserve">
-    <value>Szoftver verzió {0}</value>
+    <value>OnlyM szoftver verzió: {0}</value>
     <comment>See Settings =&gt; Images. Please retain the "{0}" - it's a placeholder for the version number</comment>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
@@ -501,7 +501,7 @@
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="DLG_CANCEL" xml:space="preserve">
-    <value>CANCEL</value>
+    <value>MÉGSE</value>
     <comment>Button caption in dialog used to specify media start offset</comment>
   </data>
   <data name="DLG_OK" xml:space="preserve">
@@ -509,23 +509,31 @@
     <comment>Button caption in dialog used to specify media start offset</comment>
   </data>
   <data name="SET_MEDIA_START" xml:space="preserve">
-    <value>Media Start</value>
+    <value>Média Kezdés</value>
     <comment>Caption of dialog used to specify start offset for media</comment>
   </data>
   <data name="HOURS" xml:space="preserve">
-    <value>Hours</value>
+    <value>Óra</value>
     <comment>Column title in media start offset dialog (number of hours)</comment>
   </data>
   <data name="MINUTES" xml:space="preserve">
-    <value>Minutes</value>
+    <value>Perc</value>
     <comment>Column title in media start offset dialog (number of minutes)</comment>
   </data>
   <data name="SECONDS" xml:space="preserve">
-    <value>Seconds</value>
+    <value>Másodperc</value>
     <comment>Column title in media start offset dialog (number of seconds)</comment>
   </data>
   <data name="SHOW_START_OFFSET_DLG" xml:space="preserve">
-    <value>Adjust start time</value>
+    <value>Kezdési idő beállítása</value>
     <comment>Tooltip for the button that allows you to adjust media start time</comment>
+  </data>
+  <data name="RECENT_TIMES" xml:space="preserve">
+    <value>Legutóbbi</value>
+    <comment>Combobox label in Start Offset Times dialog</comment>
+  </data>
+  <data name="CLEAR_RECENTS" xml:space="preserve">
+    <value>TÖRLÉS</value>
+    <comment>Command label at the bottom of the recent times list in the start offset dialog</comment>
   </data>
 </root>
