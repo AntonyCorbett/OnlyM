@@ -509,7 +509,7 @@
     <comment>Button caption in dialog used to specify media start offset</comment>
   </data>
   <data name="SET_MEDIA_START" xml:space="preserve">
-    <value>Punto d'inizio</value>
+    <value>Inizio riproduzione</value>
     <comment>Caption of dialog used to specify start offset for media</comment>
   </data>
   <data name="HOURS" xml:space="preserve">
@@ -525,7 +525,15 @@
     <comment>Column title in media start offset dialog (number of seconds)</comment>
   </data>
   <data name="SHOW_START_OFFSET_DLG" xml:space="preserve">
-    <value>Regola punto d'inizio</value>
+    <value>Regola punto iniziale</value>
     <comment>Tooltip for the button that allows you to adjust media start time</comment>
+  </data>
+  <data name="RECENT_TIMES" xml:space="preserve">
+    <value>Recenti</value>
+    <comment>Combobox label in Start Offset Times dialog</comment>
+  </data>
+  <data name="CLEAR_RECENTS" xml:space="preserve">
+    <value>CANCELLA</value>
+    <comment>Command label at the bottom of the recent times list in the start offset dialog</comment>
   </data>
 </root>
