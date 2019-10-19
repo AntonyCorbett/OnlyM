@@ -10,13 +10,13 @@
     using System.Windows.Controls;
     using System.Windows.Media;
     using System.Windows.Media.Animation;
-    using System.Windows.Media.Imaging;
     using System.Windows.Threading;
     using GalaSoft.MvvmLight.Threading;
     using OnlyM.Core.Extensions;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Options;
     using OnlyM.Core.Utils;
+    using OnlyM.CoreSys;
     using OnlyM.Models;
     using OnlyM.Services.ImagesCache;
     using OnlyM.Slides;
@@ -373,7 +373,7 @@
 
             var imageSrc = _optionsService.CacheImages
                 ? ImageCache.GetImage(imageFile)
-                : GetBitmapImageWithCacheOnLoad(imageFile);
+                : GraphicsUtils.GetBitmapImageWithCacheOnLoad(imageFile);
 
             if (!shouldFadeIn)
             {
@@ -412,19 +412,6 @@
                     });
                 }).ConfigureAwait(false);
             }
-        }
-
-        private BitmapImage GetBitmapImageWithCacheOnLoad(string imageFile)
-        {
-            var bmp = new BitmapImage();
-
-            bmp.BeginInit();
-            bmp.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-            bmp.UriSource = new Uri(imageFile);
-            bmp.CacheOption = BitmapCacheOption.OnLoad;
-            bmp.EndInit();
-
-            return bmp;
         }
 
         private void InitFromSlideshowFile(string mediaItemFilePath)
