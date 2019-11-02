@@ -676,14 +676,15 @@ namespace OnlyMSlideManager.ViewModel
         {
             if (IsDirty)
             {
-                var result = await _dialogService.ShouldSaveDirtyDataAsync().ConfigureAwait(true);
-                if (result == true)
+                bool? result = await _dialogService.ShouldSaveDirtyDataAsync().ConfigureAwait(true);
+                switch (result)
                 {
-                    await SaveFile();
-                }
-                else if (result == null)
-                {
-                    return;
+                    case true:
+                        await SaveFile();
+                        break;
+
+                    case null:
+                        return;
                 }
             }
 
@@ -716,6 +717,17 @@ namespace OnlyMSlideManager.ViewModel
 
         private async Task InitNewSlideshowInternal(string optionalPathToExistingSlideshow)
         {
+            using (new ObservableCollectionSuppression<SlideItem>(SlideItems))
+            {
+                SlideItems.Clear();
+            }
+
+            RaisePropertyChanged(nameof(HasSlides));
+            RaisePropertyChanged(nameof(HasNoSlides));
+            RaisePropertyChanged(nameof(IsDirty));
+
+            StatusText = GetStandardStatusText();
+
             var builder = new SlideFileBuilder(MaxImageWidth, MaxImageHeight);
             if (!string.IsNullOrEmpty(optionalPathToExistingSlideshow))
             {
