@@ -194,8 +194,8 @@
                 {
                     return name;
                 }
-
-                var remainder = name.Replace(prefix, string.Empty).Trim();
+                
+                var remainder = name.Substring(prefix.Length).Trim();
                 return $"{prefixNum:D6} {remainder}";
             }
         }
