@@ -238,11 +238,19 @@
 
         private int GetDatabaseSchemaVersion()
         {
-            using (var c = CreateConnection())
-            using (var cmd = c.CreateCommand())
+            try
             {
-                cmd.CommandText = "select * from pragma_user_version()";
-                return Convert.ToInt32(cmd.ExecuteScalar());
+                using (var c = CreateConnection())
+                using (var cmd = c.CreateCommand())
+                {
+                    cmd.CommandText = "select * from pragma_user_version()";
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not get database schema version");
+                return 0;
             }
         }
 
