@@ -208,6 +208,7 @@
     <EmbeddedResource Include="Properties\Resources.hu-HU.resx" />
     <EmbeddedResource Include="Properties\Resources.it-IT.resx" />
     <EmbeddedResource Include="Properties\Resources.ka-GE.resx" />
+    <EmbeddedResource Include="Properties\Resources.lv-LV.resx" />
     <EmbeddedResource Include="Properties\Resources.nl-NL.resx" />
     <EmbeddedResource Include="Properties\Resources.no-NO.resx" />
     <EmbeddedResource Include="Properties\Resources.no.resx" />
