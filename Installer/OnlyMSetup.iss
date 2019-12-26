@@ -106,6 +106,7 @@ Source: "bin\x86\Release\hr-HR\*.dll"; DestDir: "{app}\hr-HR"; Flags: ignorevers
 Source: "bin\x86\Release\hu-HU\*.dll"; DestDir: "{app}\hu-HU"; Flags: ignoreversion
 Source: "bin\x86\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
 Source: "bin\x86\Release\ka-GE\*.dll"; DestDir: "{app}\ka-GE"; Flags: ignoreversion
+; Source: "bin\x86\Release\lv-LV\*.dll"; DestDir: "{app}\lv-LV"; Flags: ignoreversion
 Source: "bin\x86\Release\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
 Source: "bin\x86\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
 ; don't include this - Source: "bin\x86\Release\no-NO\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
@@ -136,6 +137,7 @@ Source: "..\OnlyMSlideManager\bin\Release\hr-HR\*.dll"; DestDir: "{app}\hr-HR"; 
 Source: "..\OnlyMSlideManager\bin\Release\hu-HU\*.dll"; DestDir: "{app}\hu-HU"; Flags: ignoreversion
 Source: "..\OnlyMSlideManager\bin\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
 Source: "..\OnlyMSlideManager\bin\Release\ka-GE\*.dll"; DestDir: "{app}\ka-GE"; Flags: ignoreversion
+; Source: "..\OnlyMSlideManager\bin\Release\lv-LV\*.dll"; DestDir: "{app}\lv-LV"; Flags: ignoreversion
 Source: "..\OnlyMSlideManager\bin\Release\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
 Source: "..\OnlyMSlideManager\bin\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
 ; don't include this - Source: "bin\Release\no-NO\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
