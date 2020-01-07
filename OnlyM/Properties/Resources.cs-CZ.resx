@@ -241,11 +241,11 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Zobrazit živý náhled při přetáčení videa během pauzy</value>
+    <value>Povolit přetáčení videa videa během pauzy</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
-    <value>Povolit přetáčení</value>
+    <value>Umožnit ruční nastavení času začátku videa</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
@@ -469,7 +469,7 @@
     <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
   </data>
   <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
-    <value>Úroveň logování je vysoká!</value>
+    <value>Vysoko nastavená úroveň logování!</value>
     <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
   </data>
   <data name="MIRROR_HOTKEY" xml:space="preserve">
