@@ -61,6 +61,8 @@
         public void ShowWeb(
             string mediaItemFilePath,
             Guid mediaItemId,
+            int pdfStartingPage,
+            PdfViewStyle pdfViewStyle,
             bool showMirror,
             ScreenPosition screenPosition)
         {
@@ -81,7 +83,12 @@
             string webAddress;
             if (Path.GetExtension(mediaItemFilePath).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
             {
-                webAddress = $"pdf://{mediaItemFilePath}";
+                // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
+
+                var viewString = GetPdfViewString(pdfViewStyle);
+                var cacheBusterString = DateTime.Now.Ticks.ToString();
+
+                webAddress = $"pdf://{mediaItemFilePath}?t={cacheBusterString}#view={viewString}&page={pdfStartingPage}";
             }
             else
             {
@@ -92,13 +99,13 @@
             _currentMediaItemUrl = webAddress;
 
             RemoveAnimation();
-
+            
             _browserGrid.Visibility = Visibility.Visible;
 
             _browser.Load(webAddress);
         }
 
-        public void HideWeb(string mediaItemFilePath)
+        public void HideWeb()
         {
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopping));
 
@@ -413,6 +420,21 @@
                 {
                     _snackbarService.EnqueueWithOk(Properties.Resources.CHANGE_MIRROR_HOTKEY, Properties.Resources.OK);
                 }
+            }
+        }
+
+        private string GetPdfViewString(PdfViewStyle pdfViewStyle)
+        {
+            switch (pdfViewStyle)
+            {
+                case PdfViewStyle.HorizontalFit:
+                    return "FitH";
+                case PdfViewStyle.VerticalFit:
+                    return "FitV";
+
+                default:
+                case PdfViewStyle.Default:
+                    return "";
             }
         }
     }

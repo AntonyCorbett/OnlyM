@@ -214,6 +214,9 @@
     <Compile Include="Models\MediaEventArgs.cs" />
     <Compile Include="Models\MediaNearEndEventArgs.cs" />
     <Compile Include="Models\MonitorItem.cs" />
+    <Compile Include="Models\PdfOptions.cs" />
+    <Compile Include="Models\PdfViewStyle.cs" />
+    <Compile Include="Models\PdfViewStyleAndDescription.cs" />
     <Compile Include="Models\RecentTimesItem.cs" />
     <Compile Include="Models\RenderingMethodItem.cs" />
     <Compile Include="Models\ScreenMarginSide.cs" />
@@ -223,6 +226,8 @@
     <Compile Include="Services\Dialogs\DialogService.cs" />
     <Compile Include="Services\Dialogs\IDialogService.cs" />
     <Compile Include="Services\MediaWindowPositionHelper.cs" />
+    <Compile Include="Services\PdfOptions\PdfOptionsService.cs" />
+    <Compile Include="Services\PdfOptions\IPdfOptionsService.cs" />
     <Compile Include="Services\StartOffsetStorage\IStartOffsetStorageService.cs" />
     <Compile Include="Services\StartOffsetStorage\StartOffsetStorageService.cs" />
     <Compile Include="Services\WebNavHeaderManager\WebNavHeaderStatus.cs" />
@@ -454,6 +459,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

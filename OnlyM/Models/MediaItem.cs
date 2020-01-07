@@ -1,6 +1,7 @@
 ﻿namespace OnlyM.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Windows.Media;
     using GalaSoft.MvvmLight;
@@ -42,7 +43,9 @@
         private bool _allowUseMirror;
         private string _miscText;
         private string _fileNameAsSubTitle;
-        
+        private PdfViewStyle _pdfViewStyle = PdfViewStyle.Default;
+        private string _chosenPdfPage = "1";
+
         public event EventHandler PlaybackPositionChangedEvent;
 
         public Guid Id { get; set; }
@@ -131,6 +134,51 @@
         }
 
         public bool ShouldDisplayFreezeCommand => IsVideo && AllowFreezeCommand;
+
+        public bool ShouldDisplayPdfViewCombo => IsPdf;
+
+        public bool ShouldDisplayPdfPageTextBox => IsPdf;
+
+        public IEnumerable<PdfViewStyleAndDescription> PdfViewStyles
+        {
+            get
+            {
+                return new[]
+                {
+                    new PdfViewStyleAndDescription { Style = PdfViewStyle.Default, Description = Properties.Resources.PDF_VIEW_STYLE_DEFAULT },
+                    new PdfViewStyleAndDescription { Style = PdfViewStyle.VerticalFit, Description = Properties.Resources.PDF_VIEW_STYLE_VERT },
+                    new PdfViewStyleAndDescription { Style = PdfViewStyle.HorizontalFit, Description = Properties.Resources.PDF_VIEW_STYLE_HORZ },
+                };
+            }
+        }
+
+        public string ChosenPdfPage
+        {
+            get => _chosenPdfPage;
+            set
+            {
+                if (_chosenPdfPage != value && 
+                    int.TryParse(value, out var pageNumber) && 
+                    pageNumber > 0)
+                {
+                    _chosenPdfPage = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public PdfViewStyle ChosenPdfViewStyle
+        {
+            get => _pdfViewStyle;
+            set
+            {
+                if (_pdfViewStyle != value)
+                {
+                    _pdfViewStyle = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         public bool IsCommandPanelOpen
         {

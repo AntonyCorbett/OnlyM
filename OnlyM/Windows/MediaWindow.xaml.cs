@@ -294,9 +294,13 @@
 
             var showMirrorWindow = mediaItem.UseMirror && mediaItem.AllowUseMirror;
 
+            int.TryParse(mediaItem.ChosenPdfPage, out var pdfStartingPage);
+
             _webDisplayManager.ShowWeb(
                 mediaItem.FilePath, 
                 mediaItem.Id,
+                pdfStartingPage,
+                mediaItem.ChosenPdfViewStyle,
                 showMirrorWindow,
                 _optionsService.WebScreenPosition);
 
@@ -308,7 +312,7 @@
 
         private void StopWeb(MediaItem mediaItem)
         {
-            _webDisplayManager.HideWeb(mediaItem.FilePath);
+            _webDisplayManager.HideWeb();
         }
 
         private void StartSlideshow(MediaItem mediaItem)

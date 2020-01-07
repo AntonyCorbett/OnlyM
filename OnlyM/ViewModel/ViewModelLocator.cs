@@ -1,3 +1,5 @@
+using OnlyM.Services.PdfOptions;
+
 namespace OnlyM.ViewModel
 {
     using CommonServiceLocator;
@@ -41,6 +43,7 @@ namespace OnlyM.ViewModel
             SimpleIoc.Default.Register<IMediaStatusChangingService, MediaStatusChangingService>();
             SimpleIoc.Default.Register<IHiddenMediaItemsService, HiddenMediaItemsService>();
             SimpleIoc.Default.Register<IFrozenVideosService, FrozenVideosService>();
+            SimpleIoc.Default.Register<IPdfOptionsService, PdfOptionsService>();
             SimpleIoc.Default.Register<ICommandLineService, CommandLineService>();
             SimpleIoc.Default.Register<IActiveMediaItemsService, ActiveMediaItemsService>();
             SimpleIoc.Default.Register<IDialogService, DialogService>();

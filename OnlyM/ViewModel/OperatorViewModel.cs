@@ -17,6 +17,7 @@
     using OnlyM.Core.Utils;
     using OnlyM.CoreSys;
     using OnlyM.CoreSys.Services.Snackbar;
+    using OnlyM.Services.PdfOptions;
     using OnlyM.MediaElementAdaption;
     using OnlyM.Models;
     using OnlyM.PubSubMessages;
@@ -40,6 +41,7 @@
         private readonly IMediaStatusChangingService _mediaStatusChangingService;
         private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
         private readonly IFrozenVideosService _frozenVideosService;
+        private readonly IPdfOptionsService _pdfOptionsService;
         private readonly IActiveMediaItemsService _activeMediaItemsService;
         private readonly ISnackbarService _snackbarService;
         private readonly IDialogService _dialogService;
@@ -63,6 +65,7 @@
             IHiddenMediaItemsService hiddenMediaItemsService,
             IActiveMediaItemsService activeMediaItemsService,
             IFrozenVideosService frozenVideosService,
+            IPdfOptionsService pdfOptionsService,
             ISnackbarService snackbarService,
             IDialogService dialogService)
         {
@@ -77,6 +80,7 @@
 
             _activeMediaItemsService = activeMediaItemsService;
             _frozenVideosService = frozenVideosService;
+            _pdfOptionsService = pdfOptionsService;
 
             _thumbnailService = thumbnailService;
             _thumbnailService.ThumbnailsPurgedEvent += HandleThumbnailsPurgedEvent;
@@ -558,8 +562,20 @@
             var mediaItem = GetMediaItem(mediaItemId);
             if (mediaItem != null)
             {
+                SavePdfOptions(mediaItem);
                 mediaItem.IsCommandPanelOpen = false;
             }
+        }
+
+        private void SavePdfOptions(MediaItem mediaItem)
+        {
+            _pdfOptionsService.Add(
+                mediaItem.FilePath, 
+                new PdfOptions
+                {
+                    PageNumber = Convert.ToInt32(mediaItem.ChosenPdfPage),
+                    Style = mediaItem.ChosenPdfViewStyle,
+                });
         }
 
         private void OpenCommandPanel(Guid mediaItemId)
@@ -911,6 +927,7 @@
             
             _hiddenMediaItemsService.Init(MediaItems);
             _frozenVideosService.Init(MediaItems);
+            _pdfOptionsService.Init(MediaItems);
 
             SortMediaItems();
 

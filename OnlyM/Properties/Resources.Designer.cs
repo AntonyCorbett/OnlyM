@@ -19,7 +19,7 @@ namespace OnlyM.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -643,6 +643,51 @@ namespace OnlyM.Properties {
         public static string PAUSE_FINAL_FRAME {
             get {
                 return ResourceManager.GetString("PAUSE_FINAL_FRAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting page.
+        /// </summary>
+        public static string PDF_PAGENUM {
+            get {
+                return ResourceManager.GetString("PDF_PAGENUM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        public static string PDF_VIEW {
+            get {
+                return ResourceManager.GetString("PDF_VIEW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        public static string PDF_VIEW_STYLE_DEFAULT {
+            get {
+                return ResourceManager.GetString("PDF_VIEW_STYLE_DEFAULT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizontal fit.
+        /// </summary>
+        public static string PDF_VIEW_STYLE_HORZ {
+            get {
+                return ResourceManager.GetString("PDF_VIEW_STYLE_HORZ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical fit.
+        /// </summary>
+        public static string PDF_VIEW_STYLE_VERT {
+            get {
+                return ResourceManager.GetString("PDF_VIEW_STYLE_VERT", resourceCulture);
             }
         }
         

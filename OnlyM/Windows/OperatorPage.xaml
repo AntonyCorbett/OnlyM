@@ -83,6 +83,26 @@
                                             Command="{Binding Path=DataContext.FreezeVideoCommand, Source={x:Reference OnlyMOperatorPage}}"
                                             CommandParameter="{Binding Id}" />
 
+                                    <ComboBox 
+                                        Grid.Column="1" Grid.Row="0"
+                                        Margin="10,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        Visibility="{Binding ShouldDisplayPdfViewCombo, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                        ItemsSource="{Binding PdfViewStyles}"
+                                        SelectedValuePath="Style"
+                                        SelectedValue="{Binding ChosenPdfViewStyle}"
+                                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.PDF_VIEW}" />
+
+                                    <TextBox
+                                        Grid.Column="1" Grid.Row="1"
+                                        HorizontalAlignment="Stretch"
+                                        Visibility="{Binding ShouldDisplayPdfPageTextBox, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Margin="10,0,0,0"
+                                        Text="{Binding ChosenPdfPage}"
+                                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.PDF_PAGENUM}"
+                                        Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+
                                 </Grid>
 
                                 <!-- 'Left' arrow button to close Command Panel -->
