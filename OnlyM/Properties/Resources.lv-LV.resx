@@ -305,7 +305,7 @@
     <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_FREEZE" xml:space="preserve">
-    <value>Parādīt komandu "Apstādināt" komandpanelī</value>
+    <value>Parādīt komandu "Iesaldēt" komandpanelī</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SHOW_SUBTITLES" xml:space="preserve">
@@ -365,11 +365,11 @@
     <comment>Tooltip for the download button when a new version is ready (can be translated the same as NEW_UPDATE_AVAILABLE)</comment>
   </data>
   <data name="DELETE" xml:space="preserve">
-    <value>DELETE</value>
+    <value>IZDZĒST</value>
     <comment>Button label in Command panel</comment>
   </data>
   <data name="FREEZE" xml:space="preserve">
-    <value>Freeze</value>
+    <value>Iesaldēt</value>
     <comment>Button label in Command panel. Freeze the video on the final frame.</comment>
   </data>
   <data name="HIDE" xml:space="preserve">
@@ -377,35 +377,35 @@
     <comment>Button label in Command panel. Hide the media item.</comment>
   </data>
   <data name="PAUSE_FINAL_FRAME" xml:space="preserve">
-    <value>Pause on final frame</value>
+    <value>Apstādināt uz pēdējo kadru</value>
     <comment>Tooltip on Freeze button in Command panel</comment>
   </data>
   <data name="WILL_PAUSE" xml:space="preserve">
-    <value>Will pause on final frame</value>
+    <value>Apstāsies uz pēdējo kadru</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
-    <value>Language</value>
+    <value>Valoda</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="RESTART_LANGUAGE" xml:space="preserve">
-    <value>Please restart OnlyM after changing the language.</value>
+    <value>Lūdzu restartē OnlyM pēc valodas izmaiņas.</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="GENERATING_SUBTITLES" xml:space="preserve">
-    <value>Generating subtitles</value>
+    <value>Veido subtitrus</value>
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
   <data name="WEB_LOAD_FAIL" xml:space="preserve">
-    <value>Failed to load URL {0} with error {1} ({2})</value>
+    <value>Neizdevās atvērt URL-adresi {0} ar kļūdu {1} ({2})</value>
     <comment>Error message displayed when a web page cannot be loaded.</comment>
   </data>
   <data name="LOADING_FRAME" xml:space="preserve">
-    <value>Loading frame {0}</value>
+    <value>Lejupielādē kadru {0}</value>
     <comment>Progress message displayed when loading a web page</comment>
   </data>
   <data name="WEB_MARGINS" xml:space="preserve">
-    <value>Web Margins</value>
+    <value>Web margināli</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="SECTION_WEB" xml:space="preserve">
@@ -413,15 +413,15 @@
     <comment>Section title for Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
-    <value>Show magnifier</value>
+    <value>Parādīt palielinātāju</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
-    <value>Magnifier shape</value>
+    <value>Palielinātāja forma</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
-    <value>Magnifier size</value>
+    <value>Palielinātāja izmērs</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
