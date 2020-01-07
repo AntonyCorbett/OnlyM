@@ -241,43 +241,43 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Allow scrubbing when paused</value>
+    <value>Atļaut vietas meklēšanu, kamēr apturēts</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
-    <value>Allow position seeking</value>
+    <value>Atļaut sākumvietas izvēli</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
   </data>
   <data name="CACHE_IMAGES" xml:space="preserve">
-    <value>Cache images (better performance but more memory)</value>
+    <value>Saglabāt attēlus kešatmiņā (uzlabo veiktspēju, bet lieto vairāk atmiņu)</value>
     <comment>See Settings =&gt; Images.</comment>
   </data>
   <data name="CONFIRM_STOP" xml:space="preserve">
-    <value>Confirm when stopping</value>
+    <value>Apstiprināt pirms apstādināšanas</value>
     <comment>See Settings =&gt; Videos and Audio.</comment>
   </data>
   <data name="CURRENT_DATE" xml:space="preserve">
-    <value>Current date</value>
+    <value>Pašreizējais datums</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="FADING_SPEED" xml:space="preserve">
-    <value>Fading speed</value>
+    <value>Pakāpeniskās pārejas ātrums</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="FADING_STYLE" xml:space="preserve">
-    <value>Fading style</value>
+    <value>Pakāpeniskās pārejas stils</value>
     <comment>See Settings =&gt; Images</comment>
   </data>
   <data name="IMAGE_MARGINS" xml:space="preserve">
-    <value>Image Margins</value>
+    <value>Attēlu margināli</value>
     <comment>See Settings =&gt; Margins</comment>
   </data>
   <data name="LOGGING_LEVEL" xml:space="preserve">
-    <value>Logging level</value>
+    <value>Reģistrēšanas līmenis</value>
     <comment>See Settings =&gt; Miscellaneous.</comment>
   </data>
   <data name="ON_TOP" xml:space="preserve">
-    <value>Main window always on top</value>
+    <value>Galvenais logs vienmēr priekšā</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="PURGE_THUMBS" xml:space="preserve">
