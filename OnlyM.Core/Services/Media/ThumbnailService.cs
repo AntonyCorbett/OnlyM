@@ -175,6 +175,10 @@
             try
             {
                 var o = ShellObject.FromParsingName(originalPath);
+                if (o?.Thumbnail?.BitmapSource == null)
+                {
+                    return _standardPdfThumbnail.Value;
+                }
 
                 var encoder = new JpegBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(o.Thumbnail.BitmapSource));

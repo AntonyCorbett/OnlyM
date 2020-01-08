@@ -59,7 +59,7 @@
 
         private void RunConsumer()
         {
-            Task.Run(() => { RunConsumerTask(); }, _cancellationToken);
+            Task.Run(RunConsumerTask, _cancellationToken);
         }
 
         private void RunConsumerTask()
