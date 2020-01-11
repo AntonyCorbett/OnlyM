@@ -545,11 +545,11 @@
     <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
   </data>
   <data name="PDF_VIEW_STYLE_HORZ" xml:space="preserve">
-    <value>Horizontal fit</value>
+    <value>Dopasowanie poziome</value>
     <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
   </data>
   <data name="PDF_VIEW_STYLE_VERT" xml:space="preserve">
-    <value>Vertical fit</value>
+    <value>Dopasowanie pionowe</value>
     <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
   </data>
   <data name="PDF_PAGENUM" xml:space="preserve">
