@@ -170,48 +170,48 @@
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
-    <value>Auto-play</value>
+    <value>Automātiskā palaišana</value>
     <comment>Slidehow option (automatically play)</comment>
   </data>
   <data name="LOOP" xml:space="preserve">
-    <value>Loop</value>
+    <value>Atkārtošana</value>
     <comment>Slidehow option (loop if automatic play is enabled)</comment>
   </data>
   <data name="WANT_TO_SAVE_TITLE" xml:space="preserve">
-    <value>Save?</value>
+    <value>Saglabāt?</value>
     <comment>Title used in dialog prompt</comment>
   </data>
   <data name="FADE_IN_FORWARD" xml:space="preserve">
-    <value>Fade in</value>
+    <value>Parādīties</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_IN_REVERSE" xml:space="preserve">
-    <value>Fade in (reversing)</value>
+    <value>Parādīties (atpakaļgaitā)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_FORWARD" xml:space="preserve">
-    <value>Fade out</value>
+    <value>Izgaist</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="FADE_OUT_REVERSE" xml:space="preserve">
-    <value>Fade out (reversing)</value>
+    <value>Izgaist (atpakaļgaitā)</value>
     <comment>Checkbox on slide Edit page</comment>
   </data>
   <data name="DWELL_SECONDS" xml:space="preserve">
-    <value>Dwell time (secs)</value>
+    <value>Parādīšanas laiks (sekundes)</value>
     <comment>The time a slide is displayed during automatic playback.</comment>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>OK</value>
+    <value>LABI</value>
   </data>
   <data name="COULD_NOT_SAVE" xml:space="preserve">
-    <value>Could not save file!</value>
+    <value>Nevarēja saglabāt failu!</value>
   </data>
   <data name="SAVED_FILE" xml:space="preserve">
-    <value>Saved file</value>
+    <value>Fails saglabāts</value>
   </data>
   <data name="AUTO_PLAY_SETTINGS" xml:space="preserve">
-    <value>Auto-play settings</value>
+    <value>Automātiskās palaišanas iestatījumi</value>
     <comment>group box title</comment>
   </data>
   <data name="DRAG_IMAGES_HERE" xml:space="preserve">
