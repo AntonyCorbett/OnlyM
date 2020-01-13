@@ -122,51 +122,51 @@
     <value>..\Resources\flower.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
-    <value>New slideshow</value>
+    <value>Jauna slaidrāde</value>
     <comment>File command</comment>
   </data>
   <data name="OPEN_SLIDESHOW" xml:space="preserve">
-    <value>Open slideshow</value>
+    <value>Atvērt slaidrādi</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW" xml:space="preserve">
-    <value>Save slideshow</value>
+    <value>Saglabāt slaidrādi</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW_AS" xml:space="preserve">
-    <value>Save slideshow as...</value>
+    <value>Saglabāt slaidrādi kā...</value>
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Could not create folder {0}</value>
+    <value>Nevarēja veidot mapi {0}</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Open Slideshow</value>
+    <value>Atvērt slaidrādi</value>
     <comment>File Open dialog caption</comment>
   </data>
   <data name="SLIDESHOW_FILE" xml:space="preserve">
-    <value>Slideshow file</value>
+    <value>Slaidrādes fails</value>
     <comment>Used in File Open dialog</comment>
   </data>
   <data name="ANSWER_CANCEL" xml:space="preserve">
-    <value>CANCEL</value>
+    <value>ATCELT</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_NO" xml:space="preserve">
-    <value>NO</value>
+    <value>NĒ</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="ANSWER_YES" xml:space="preserve">
-    <value>YES</value>
+    <value>JĀ</value>
     <comment>Answer in prompt dialog (button caption)</comment>
   </data>
   <data name="WANT_TO_SAVE" xml:space="preserve">
-    <value>The slideshow has changed. Do you want to save it?</value>
+    <value>Slaidrāde ir mainīta. Vai saglabāt to?</value>
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Save Slideshow</value>
+    <value>Saglabāt slaidrādi</value>
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
