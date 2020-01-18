@@ -150,7 +150,7 @@
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="FADE_SPEED_NORMAL" xml:space="preserve">
-    <value>Normāls</value>
+    <value>Vidējais</value>
     <comment>See Settings =&gt; Images =&gt; Fading speed</comment>
   </data>
   <data name="FADE_SPEED_SLOW" xml:space="preserve">
