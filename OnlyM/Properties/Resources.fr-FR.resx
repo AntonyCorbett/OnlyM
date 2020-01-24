@@ -537,19 +537,19 @@
     <comment>Command label at the bottom of the recent times list in the start offset dialog</comment>
   </data>
   <data name="PDF_VIEW" xml:space="preserve">
-    <value>View</value>
+    <value>Vue</value>
     <comment>Caption for the combobox in the PDF command panel. The combo allows you to select the default "view" when the PDF is displayed, e.g. "Horizontal Fit"</comment>
   </data>
   <data name="PDF_VIEW_STYLE_DEFAULT" xml:space="preserve">
-    <value>Default</value>
+    <value>Par défaut</value>
     <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
   </data>
   <data name="PDF_VIEW_STYLE_HORZ" xml:space="preserve">
-    <value>Horizontal fit</value>
+    <value>Ajuster horizontalement</value>
     <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
   </data>
   <data name="PDF_VIEW_STYLE_VERT" xml:space="preserve">
-    <value>Vertical fit</value>
+    <value>Ajuster verticalement</value>
     <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
   </data>
   <data name="PDF_PAGENUM" xml:space="preserve">
