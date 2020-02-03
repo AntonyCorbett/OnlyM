@@ -374,7 +374,19 @@
         {
             if (!string.IsNullOrEmpty(destFile) && !File.Exists(destFile))
             {
-                File.Copy(sourceFile, destFile, false);
+                var destFolder = Path.GetDirectoryName(destFile);
+                if (string.IsNullOrEmpty(destFolder))
+                {
+                    return false;
+                }
+
+                // this is better for ths folder watcher which triggers as soon as a file write 
+                // begins. A large file would not be completely written before the folder watcher
+                // triggers an attempt to analyse the file, extract thumbnail etc.
+                var tempFileName = Path.Combine(destFolder, Path.GetRandomFileName());
+                File.Copy(sourceFile, tempFileName, true);
+                File.Move(tempFileName, destFile);
+
                 return true;
             }
 
