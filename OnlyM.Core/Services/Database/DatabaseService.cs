@@ -215,7 +215,7 @@
 
         private SQLiteConnection CreateConnection()
         {
-            var c = new SQLiteConnection($"Data source={GetDatabasePath()};Version=3;");
+            var c = new SQLiteConnection($"Data source={GetDatabasePath()};Version=3;", true);
             c.Open();
             return c;
         }
