@@ -341,7 +341,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="USE_TITLES" xml:space="preserve">
-    <value>Eingebettete Titel verwenden, falls verfügbar</value>
+    <value>Eingebettete Untertitel verwenden, falls verfügbar</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
