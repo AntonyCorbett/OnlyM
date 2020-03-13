@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -422,13 +421,20 @@
                 return;
             }
 
-            sf.ExtractImages(_slideshowStagingFolder);
+            sf.ExtractImages(GetStagingFolderForSlideshow());
 
             _slides = sf.GetSlides(includeBitmapImage: false).ToList();
             _shouldLoopSlideshow = sf.Loop;
             _autoPlaySlideshow = sf.AutoPlay;
             _autoCloseSlideshow = sf.AutoClose;
             _autoPlaySlideshowDwellTime = sf.DwellTimeMilliseconds;
+        }
+
+        private string GetStagingFolderForSlideshow()
+        {
+            var folder = Path.Combine(_slideshowStagingFolder, _slideshowGuid.ToString("N"));
+            Directory.CreateDirectory(folder);
+            return folder;
         }
 
         private void ConfigureSlideshowAutoPlayTimer()
@@ -480,7 +486,7 @@
 
             var fadeType = GetSlideFadeType(slide, previousSlide, direction);
             
-            var imageFilePath = Path.Combine(_slideshowStagingFolder, slide.ArchiveEntryName);
+            var imageFilePath = Path.Combine(GetStagingFolderForSlideshow(), slide.ArchiveEntryName);
 
             PlaceImage(
                 mediaItemId,
