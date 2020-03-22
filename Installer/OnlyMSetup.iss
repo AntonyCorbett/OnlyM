@@ -77,7 +77,7 @@ Source: "bin\x86\Release\OnlyM.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyM.Slides.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\OnlyMMirror.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\policy.2.0.taglib-sharp.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\x86\Release\TagLibSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\Serilog.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\Serilog.Sinks.Console.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\Serilog.Sinks.File.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -85,7 +85,6 @@ Source: "bin\x86\Release\Serilog.Sinks.RollingFile.dll"; DestDir: "{app}"; Flags
 Source: "bin\x86\Release\System.Data.SQLite.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\System.ValueTuple.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\x86\Release\System.Windows.Interactivity.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\taglib-sharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Slide manager
 Source: "..\OnlyMSlideManager\bin\Release\OnlyMSlideManager.exe"; DestDir: "{app}"; Flags: ignoreversion
