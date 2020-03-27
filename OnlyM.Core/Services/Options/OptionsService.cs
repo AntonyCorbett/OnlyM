@@ -421,9 +421,24 @@
             {
                 if (_options.Value.MediaMonitorId != value)
                 {
-                    var originalMonitorId = _options.Value.MediaMonitorId;
+                    var original = _options.Value.MediaMonitorId;
                     _options.Value.MediaMonitorId = value;
-                    OnMediaMonitorChangedEvent(originalMonitorId, value);
+
+                    OnMediaMonitorChangedEvent(GetChange(original, value));
+                }
+            }
+        }
+
+        public bool MediaWindowed
+        {
+            get => _options.Value.MediaWindowed;
+            set
+            {
+                if (_options.Value.MediaWindowed != value)
+                {
+                    _options.Value.MediaWindowed = value;
+
+                    OnMediaMonitorChangedEvent(GetChange(value, MediaMonitorId));
                 }
             }
         }
@@ -633,15 +648,9 @@
             return JsonConvert.SerializeObject(options);
         }
 
-        private void OnMediaMonitorChangedEvent(string originalMonitorId, string newMonitorId)
+        private void OnMediaMonitorChangedEvent(MonitorChangeDescription change)
         {
-            MediaMonitorChangedEvent?.Invoke(
-                this,
-                new MonitorChangedEventArgs
-                {
-                    OriginalMonitorId = originalMonitorId,
-                    NewMonitorId = newMonitorId,
-                });
+            MediaMonitorChangedEvent?.Invoke(this, new MonitorChangedEventArgs { Change = change });
         }
 
         private Options OptionsFactory()
@@ -748,6 +757,35 @@
                     _originalOptionsSignature = GetOptionsSignature(options);
                 }
             }
+        }
+
+        private MonitorChangeDescription GetChange(string originalMonitor, string newMonitor)
+        {
+            if (string.IsNullOrEmpty(originalMonitor))
+            {
+                return MonitorChangeDescription.NoneToMonitor;
+            }
+
+            if (string.IsNullOrEmpty(newMonitor))
+            {
+                return MonitorChangeDescription.MonitorToNone;
+            }
+
+            return MonitorChangeDescription.MonitorToMonitor;
+        }
+
+        private MonitorChangeDescription GetChange(bool newWindowedSetting, string monitorId)
+        {
+            if (newWindowedSetting)
+            {
+                return string.IsNullOrEmpty(monitorId) 
+                    ? MonitorChangeDescription.NoneToWindow 
+                    : MonitorChangeDescription.MonitorToWindow;
+            }
+
+            return string.IsNullOrEmpty(monitorId)
+                ? MonitorChangeDescription.WindowToNone
+                : MonitorChangeDescription.WindowToMonitor;
         }
     }
 }

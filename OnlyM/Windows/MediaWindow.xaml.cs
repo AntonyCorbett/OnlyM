@@ -180,7 +180,7 @@
                     break;
 
                 case MediaClassification.Web:
-                    StopWeb(mediaItem);
+                    StopWeb();
                     break;
             }
         }
@@ -310,7 +310,7 @@
             HideImageOrSlideshow(currentMediaItems);
         }
 
-        private void StopWeb(MediaItem mediaItem)
+        private void StopWeb()
         {
             _webDisplayManager.HideWeb();
         }
@@ -479,13 +479,6 @@
             _videoDisplayManager.ShowSubtitles = _optionsService.ShowVideoSubtitles;
         }
 
-        private bool IsVideoOrAudio(MediaItem mediaItem)
-        {
-            return
-                mediaItem.MediaType.Classification == MediaClassification.Audio ||
-                mediaItem.MediaType.Classification == MediaClassification.Video;
-        }
-
         private bool ShouldConfirmMediaStop(MediaItem mediaItem)
         {
             switch (mediaItem.MediaType.Classification)
@@ -544,11 +537,13 @@
                 case RenderingMethod.Ffmpeg:
                     _videoElement = new MediaElementUnoSquare(VideoElementFfmpeg);
                     break;
-
-                default:
+                    
                 case RenderingMethod.MediaFoundation:
                     _videoElement = new MediaElementMediaFoundation(VideoElementMediaFoundation, _optionsService);
                     break;
+
+                default:
+                    throw new NotImplementedException();
             }
 
             _currentRenderingMethod = _optionsService.RenderingMethod;

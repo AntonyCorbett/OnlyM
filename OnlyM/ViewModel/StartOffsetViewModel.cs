@@ -121,12 +121,15 @@
             {
                 var result = new List<RecentTimesItem>();
 
-                foreach (var item in _recentTimes)
+                if (_recentTimes != null)
                 {
-                    result.Add(new RecentTimesItem
+                    foreach (var item in _recentTimes)
                     {
-                        Seconds = item,
-                    });
+                        result.Add(new RecentTimesItem
+                        {
+                            Seconds = item,
+                        });
+                    }
                 }
 
                 if (result.Any())

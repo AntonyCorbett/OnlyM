@@ -67,6 +67,8 @@
 
         public string MediaMonitorId { get; set; }
 
+        public bool MediaWindowed { get; set; }
+
         public RenderingMethod RenderingMethod { get; set; }
         
         [JsonIgnore]

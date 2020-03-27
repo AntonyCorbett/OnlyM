@@ -118,9 +118,7 @@
 
         public void GotoSettingsPage()
         {
-#pragma warning disable SA1312 // Variable names must begin with lower-case letter
             var _ = _settingsPage.Value;   // ensure created otherwise doesn't receive navigation event
-#pragma warning restore SA1312 // Variable names must begin with lower-case letter
 
             _operatorPageScrollerPosition = ScrollViewer.VerticalOffset;
             OnNavigationEvent(new NavigationEventArgs { PageName = SettingsPageName });
@@ -365,7 +363,7 @@
                 MediaClassification.Web);
         }
 
-        private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
+        private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)
         {
             UpdateMediaMonitor();
         }

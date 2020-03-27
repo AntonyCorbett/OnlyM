@@ -107,13 +107,12 @@
             get => _optionsService.MaxItemCount.ToString();
             set
             {
-                if (!string.IsNullOrEmpty(value) && !_optionsService.MaxItemCount.ToString().Equals(value))
+                if (!string.IsNullOrEmpty(value) && 
+                    !_optionsService.MaxItemCount.ToString().Equals(value) && 
+                    int.TryParse(value, out var count))
                 {
-                    if (int.TryParse(value, out var count))
-                    {
-                        _optionsService.MaxItemCount = count;
-                        RaisePropertyChanged();
-                    }
+                    _optionsService.MaxItemCount = count;
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -832,6 +831,19 @@
                         _optionsService.MediaMonitorId = value;
                         RaisePropertyChanged();
                     }
+                }
+            }
+        }
+
+        public bool MediaWindowed
+        {
+            get => _optionsService.MediaWindowed;
+            set
+            {
+                if (_optionsService.MediaWindowed != value)
+                {
+                    _optionsService.MediaWindowed = value;
+                    RaisePropertyChanged();
                 }
             }
         }

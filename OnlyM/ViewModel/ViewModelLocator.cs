@@ -1,5 +1,3 @@
-using OnlyM.Services.PdfOptions;
-
 namespace OnlyM.ViewModel
 {
     using CommonServiceLocator;
@@ -16,6 +14,7 @@ namespace OnlyM.ViewModel
     using OnlyM.Services.HiddenMediaItems;
     using OnlyM.Services.MediaChanging;
     using OnlyM.Services.Pages;
+    using OnlyM.Services.PdfOptions;
     using OnlyM.Services.StartOffsetStorage;
 
     /// <summary>
@@ -70,6 +69,7 @@ namespace OnlyM.ViewModel
 
         public static void Cleanup()
         {
+            // not required
         }
     }
 }

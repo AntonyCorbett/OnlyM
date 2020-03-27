@@ -101,6 +101,8 @@
 
         string MediaMonitorId { get; set; }
 
+        bool MediaWindowed { get; set; }
+
         double BrowserZoomLevelIncrement { get; set; }
         
         LogEventLevel LogEventLevel { get; set; }

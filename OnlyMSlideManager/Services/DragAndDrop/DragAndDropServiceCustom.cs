@@ -11,7 +11,6 @@
     using OnlyM.CoreSys.Services.UI;
     using OnlyMSlideManager.Models;
     using OnlyMSlideManager.PubSubMessages;
-    using Serilog;
 
     internal class DragAndDropServiceCustom : IDragAndDropServiceCustom
     {
@@ -49,13 +48,10 @@
                 return;
             }
 
-            if (!_isDragging)
+            if (!_isDragging && (Math.Abs(position.X - _startDragPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                                 Math.Abs(position.Y - _startDragPoint.Y) > SystemParameters.MinimumVerticalDragDistance))
             {
-                if (Math.Abs(position.X - _startDragPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                    Math.Abs(position.Y - _startDragPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
-                {
-                    StartDrag(position);
-                }
+                StartDrag();
             }
         }
 
@@ -106,7 +102,7 @@
             });
         }
 
-        private void StartDrag(Point position)
+        private void StartDrag()
         {
             if (_dragSourceCard?.DataContext is SlideItem cardViewModel)
             {

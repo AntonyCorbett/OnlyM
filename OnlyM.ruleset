@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Rules for OnlyM" Description="Code analysis rules for OnlyM.csproj." ToolsVersion="15.0">
+<RuleSet Name="Rules for OnlyM" Description="Code analysis rules for OnlyM.csproj." ToolsVersion="16.0">
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1001" Action="Warning" />
     <Rule Id="CA1009" Action="Warning" />
@@ -70,8 +70,10 @@
     <Rule Id="SA1101" Action="None" />
     <Rule Id="SA1118" Action="None" />
     <Rule Id="SA1309" Action="None" />
+    <Rule Id="SA1512" Action="None" />
     <Rule Id="SA1600" Action="None" />
     <Rule Id="SA1602" Action="None" />
+    <Rule Id="SA1629" Action="None" />
     <Rule Id="SA1633" Action="None" />
     <Rule Id="SA1652" Action="None" />
     <Rule Id="SX1309" Action="Warning" />

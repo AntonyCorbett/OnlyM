@@ -434,7 +434,7 @@
 
                 default:
                 case PdfViewStyle.Default:
-                    return "";
+                    return string.Empty;
             }
         }
     }

@@ -17,7 +17,6 @@
     using OnlyM.Core.Utils;
     using OnlyM.CoreSys;
     using OnlyM.CoreSys.Services.Snackbar;
-    using OnlyM.Services.PdfOptions;
     using OnlyM.MediaElementAdaption;
     using OnlyM.Models;
     using OnlyM.PubSubMessages;
@@ -27,6 +26,7 @@
     using OnlyM.Services.MediaChanging;
     using OnlyM.Services.MetaDataQueue;
     using OnlyM.Services.Pages;
+    using OnlyM.Services.PdfOptions;
     using OnlyM.Services.WebBrowser;
     using Serilog;
 
@@ -523,7 +523,7 @@
                 var maxStartTimeSeconds = (int)((double)mediaItem.DurationDeciseconds / 10);
 
                 var start = await _dialogService.GetStartOffsetAsync(
-                    Path.GetFileName(mediaItem.FilePath), 
+                    Path.GetFileName(mediaItem.FilePath),
                     maxStartTimeSeconds);
 
                 if (start != null)
@@ -1052,24 +1052,22 @@
             }
         }
 
-        private bool AutoRotateImageIfRequired(MediaItem item)
+        private void AutoRotateImageIfRequired(MediaItem item)
         {
             if (item.MediaType.Classification != MediaClassification.Image)
             {
-                return false;
+                return;
             }
 
             if (!GraphicsUtils.AutoRotateIfRequired(item.FilePath))
             {
-                return false;
+                return;
             }
 
             // auto-rotated so refresh the thumbnail...
             item.ThumbnailImageSource = null;
             item.LastChanged = DateTime.UtcNow.Ticks;
             _metaDataProducer.Add(item);
-
-            return true;
         }
 
         private void HandleAutoRotateChangedEvent(object sender, EventArgs e)
