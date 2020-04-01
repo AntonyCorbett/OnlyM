@@ -12,6 +12,7 @@ namespace OnlyM.ViewModel
     using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
     using OnlyM.AutoUpdates;
+    using OnlyM.Core.Models;
     using OnlyM.Core.Services.CommandLine;
     using OnlyM.Core.Services.Options;
     using OnlyM.Core.Utils;
@@ -237,7 +238,7 @@ namespace OnlyM.ViewModel
             RaisePropertyChanged(nameof(IsUnhideButtonVisible));
         }
 
-        private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)
+        private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
         {
             RaisePropertyChanged(nameof(AlwaysOnTop));
         }

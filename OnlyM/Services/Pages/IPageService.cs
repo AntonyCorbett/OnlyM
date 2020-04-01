@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
+    using OnlyM.Core.Models;
     using OnlyM.MediaElementAdaption;
     using OnlyM.Models;
     using OnlyM.Services.WebBrowser;
@@ -13,7 +14,7 @@
     {
         event EventHandler<NavigationEventArgs> NavigationEvent;
 
-        event EventHandler MediaMonitorChangedEvent;
+        event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
         event EventHandler<MediaEventArgs> MediaChangeEvent;
 

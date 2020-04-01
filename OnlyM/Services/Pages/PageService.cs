@@ -67,7 +67,7 @@
             Messenger.Default.Register<MirrorWindowMessage>(this, OnMirrorWindowMessage);
         }
 
-        public event EventHandler MediaMonitorChangedEvent;
+        public event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
         public event EventHandler<NavigationEventArgs> NavigationEvent;
 
@@ -363,26 +363,37 @@
                 MediaClassification.Web);
         }
 
-        private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)
+        private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
         {
-            UpdateMediaMonitor();
+            UpdateMediaMonitor(e.Change);
         }
 
-        private void UpdateMediaMonitor()
+        private void UpdateMediaMonitor(MonitorChangeDescription change)
         {
             try
             {
-                if (_optionsService.IsMediaMonitorSpecified)
+                switch (change)
                 {
-                    RelocateMediaWindow();
-                }
-                else
-                {
-                    // media monitor = "None"
-                    CloseMediaWindow();
+                    case MonitorChangeDescription.NoneToMonitor:
+                    case MonitorChangeDescription.MonitorToMonitor:
+                        RelocateMediaWindow();
+                        break;
+
+                    case MonitorChangeDescription.MonitorToNone:
+                        CloseMediaWindow();
+                        break;
+
+                    case MonitorChangeDescription.MonitorToWindow:
+                        break;
+
+                    case MonitorChangeDescription.NoneToWindow:
+                    case MonitorChangeDescription.WindowToMonitor:
+                    case MonitorChangeDescription.WindowToNone:
+                        // todo:
+                        break;
                 }
 
-                MediaMonitorChangedEvent?.Invoke(this, EventArgs.Empty);
+                MediaMonitorChangedEvent?.Invoke(this, new MonitorChangedEventArgs { Change = change });
                 System.Windows.Application.Current.MainWindow?.Activate();
             }
             catch (Exception ex)

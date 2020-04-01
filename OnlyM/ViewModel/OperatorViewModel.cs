@@ -353,7 +353,7 @@
             DispatcherHelper.CheckBeginInvokeOnUI(LoadMediaItems);
         }
 
-        private void HandleMediaMonitorChangedEvent(object sender, EventArgs e)
+        private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
         {
             ChangePlayButtonEnabledStatus();
         }
