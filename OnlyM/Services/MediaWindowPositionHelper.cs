@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Services
+﻿using OnlyM.Windows;
+
+namespace OnlyM.Services
 {
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -42,6 +44,8 @@
 
             Log.Logger.Verbose($"Monitor = {monitor.DeviceName} Left = {left}, top = {top}");
 
+            PrepareForFullScreenMonitorDisplay(mediaWindow);
+
             var mainGrid = GetMainGrid(mediaWindow);
             Debug.Assert(mainGrid != null || !isVideo, "mainGrid != null");
 
@@ -61,6 +65,27 @@
                     mainGrid.Margin = new Thickness(0);
                 }
             }
+        }
+
+        public static void PositionMediaWindowWindowed(MediaWindow mediaWindow)
+        {
+            mediaWindow.IsWindowed = true;
+            PrepareForWindowedDisplay(mediaWindow);
+            mediaWindow.RestoreWindowPositionAndSize();
+        }
+
+        private static void PrepareForFullScreenMonitorDisplay(Window mediaWindow)
+        {
+            mediaWindow.ResizeMode = ResizeMode.NoResize;
+            mediaWindow.ShowInTaskbar = false;
+            mediaWindow.WindowStyle = WindowStyle.None;
+        }
+
+        private static void PrepareForWindowedDisplay(Window mediaWindow)
+        {
+            mediaWindow.ResizeMode = ResizeMode.CanResize;
+            mediaWindow.ShowInTaskbar = true;
+            mediaWindow.WindowStyle = WindowStyle.SingleBorderWindow;
         }
 
         private static Grid GetMainGrid(Window mediaWindow)

@@ -13,6 +13,7 @@
     using OnlyM.Core.Services.Monitors;
     using OnlyM.Core.Services.Options;
     using OnlyM.CoreSys.Services.Snackbar;
+    using OnlyM.CoreSys.WindowsPositioning;
     using OnlyM.MediaElementAdaption;
     using OnlyM.Models;
     using OnlyM.Services;
@@ -32,7 +33,7 @@
         private readonly ImageDisplayManager _imageDisplayManager;
         private readonly WebDisplayManager _webDisplayManager;
         private readonly AudioManager _audioManager;
-
+        
         private readonly WebNavHeaderAdmin _webNavHeaderAdmin;
 
         private readonly IOptionsService _optionsService;
@@ -80,6 +81,8 @@
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
         public event EventHandler<WebBrowserProgressEventArgs> WebStatusEvent;
+
+        public bool IsWindowed { get; set; }
 
         public void Dispose()
         {
@@ -205,6 +208,35 @@
         public int GotoNextSlide()
         {
             return _imageDisplayManager.GotoNextSlide();
+        }
+
+        public void SaveWindowPos()
+        {
+            if (IsWindowed)
+            {
+                _optionsService.MediaWindowPlacement = this.GetPlacement();
+                _optionsService.Save();
+            }
+        }
+
+        public void RestoreWindowPositionAndSize()
+        {
+            if (IsWindowed && !string.IsNullOrEmpty(_optionsService.MediaWindowPlacement))
+            {
+                this.SetPlacement(_optionsService.MediaWindowPlacement);
+            }
+        }
+
+        protected override void OnSourceInitialized(System.EventArgs e)
+        {
+            RestoreWindowPositionAndSize();
+            base.OnSourceInitialized(e);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            SaveWindowPos();
+            base.OnClosing(e);
         }
 
         private async Task PauseVideoOrAudioAsync(MediaItem mediaItem)

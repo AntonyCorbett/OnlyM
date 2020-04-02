@@ -104,6 +104,18 @@
             }
         }
 
+        public string MediaWindowPlacement
+        {
+            get => _options.Value.MediaWindowPlacement;
+            set
+            {
+                if (_options.Value.MediaWindowPlacement != value)
+                {
+                    _options.Value.MediaWindowPlacement = value;
+                }
+            }
+        }
+
         public List<string> RecentlyUsedMediaFolders
         {
             get => _options.Value.RecentlyUsedMediaFolders;

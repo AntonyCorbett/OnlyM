@@ -57,6 +57,8 @@
 
         string AppWindowPlacement { get; set; }
 
+        string MediaWindowPlacement { get; set; }
+
         List<string> RecentlyUsedMediaFolders { get; set; }
 
         string Culture { get; set; }

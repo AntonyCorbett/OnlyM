@@ -205,10 +205,20 @@
             }
         }
 
-        private void PositionMediaWindow(Window window, Screen monitor, bool isVideo)
+        private void PositionMediaWindowWindowed()
+        {
+            MediaWindowPositionHelper.PositionMediaWindowWindowed(_mediaWindow);
+            _mediaWindow.Show();
+        }
+
+        private void PositionMediaWindowFullScreenMonitor(Screen monitor, bool isVideo)
         {
             MediaWindowPositionHelper.PositionMediaWindow(
-                _optionsService, _commandLineService, window, monitor, _systemDpi, isVideo);
+                _optionsService, _commandLineService, _mediaWindow, monitor, _systemDpi, isVideo);
+
+            _mediaWindow.Topmost = true;
+
+            _mediaWindow.Show();
         }
 
         private void OnNavigationEvent(NavigationEventArgs e)
@@ -234,7 +244,7 @@
             ApplicationIsClosing = true;
             CloseMediaWindow();
         }
-        
+
         private void RelocateMediaWindow()
         {
             if (_mediaWindow != null)
@@ -247,12 +257,8 @@
                     _mediaWindow.Hide();
                     _mediaWindow.WindowState = WindowState.Normal;
 
-                    PositionMediaWindow(_mediaWindow, targetMonitor.Monitor, false);
-
-                    _mediaWindow.Topmost = true;
-
-                    _mediaWindow.Show();
-                    
+                    PositionMediaWindowFullScreenMonitor(targetMonitor.Monitor, false);
+                   
                     if (!isVisible)
                     {
                         _mediaWindow.Hide();
@@ -453,7 +459,7 @@
                 BringJwlToFront();
 
                 UnsubscribeMediaWindowEvents();
-
+                
                 _mediaWindow.Close();
                 _mediaWindow.Dispose();
                 _mediaWindow = null;
@@ -483,16 +489,29 @@
 
                 if (requiresVisibleWindow)
                 {
-                    var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
-                    if (targetMonitor != null)
+                    var isWindowed = _optionsService.MediaWindowed;
+                    if (isWindowed)
                     {
-                        Log.Logger.Information("Opening media window");
+                        Log.Logger.Information("Opening media window (windowed)");
 
-                        PositionMediaWindow(_mediaWindow, targetMonitor.Monitor, isVideo);
+                        PositionMediaWindowWindowed();
 
-                        _mediaWindow.Topmost = true;
+                        MediaWindowOpenedEvent?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
 
-                        _mediaWindow.Show();
+                        if (targetMonitor == null)
+                        {
+                            return;
+                        }
+
+                        Log.Logger.Information("Opening media window in monitor");
+
+                        _mediaWindow.IsWindowed = false;
+
+                        PositionMediaWindowFullScreenMonitor(targetMonitor.Monitor, isVideo);
 
                         MediaWindowOpenedEvent?.Invoke(this, EventArgs.Empty);
                     }

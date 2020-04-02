@@ -100,6 +100,8 @@
         
         public string AppWindowPlacement { get; set; }
 
+        public string MediaWindowPlacement { get; set; }
+
         public bool JwLibraryCompatibilityMode { get; set; }
 
         public bool ConfirmVideoStop { get; set; }
