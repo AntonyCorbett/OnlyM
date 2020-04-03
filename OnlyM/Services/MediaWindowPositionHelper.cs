@@ -1,6 +1,4 @@
-﻿using OnlyM.Windows;
-
-namespace OnlyM.Services
+﻿namespace OnlyM.Services
 {
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -12,6 +10,7 @@ namespace OnlyM.Services
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.CommandLine;
     using OnlyM.Core.Services.Options;
+    using OnlyM.Windows;
     using Serilog;
 
     /// <summary>

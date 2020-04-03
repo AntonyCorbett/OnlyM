@@ -104,7 +104,7 @@
             };
             _optionsService.IncludeBlankScreenItemChangedEvent += async (sender, e) =>
             {
-                await HandleIncludeBlankScreenItemChangedEvent(sender, e);
+                await HandleIncludeBlankScreenItemChangedEvent();
             };
 
             folderWatcherService.ChangesFoundEvent += HandleFileChangesFoundEvent;
@@ -116,7 +116,7 @@
             _pageService.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _pageService.MediaNearEndEvent += async (sender, e) =>
             {
-                await HandleMediaNearEndEvent(sender, e);
+                await HandleMediaNearEndEvent(e);
             };
             _pageService.NavigationEvent += HandleNavigationEvent;
             _pageService.WebStatusEvent += HandleWebStatusEvent;
@@ -229,7 +229,7 @@
             }
         }
 
-        private async Task HandleIncludeBlankScreenItemChangedEvent(object sender, EventArgs e)
+        private async Task HandleIncludeBlankScreenItemChangedEvent()
         {
             if (!_optionsService.IncludeBlankScreenItem)
             {
@@ -299,7 +299,7 @@
             }
         }
 
-        private async Task HandleMediaNearEndEvent(object sender, MediaNearEndEventArgs e)
+        private async Task HandleMediaNearEndEvent(MediaNearEndEventArgs e)
         {
             var item = GetMediaItem(e.MediaItemId);
             if (item != null && item.PauseOnLastFrame)

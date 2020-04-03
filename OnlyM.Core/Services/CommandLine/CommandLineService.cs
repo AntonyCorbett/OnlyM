@@ -26,9 +26,6 @@
             p.Setup<string>("source")
                 .Callback(s => { SourceFolder = GetFullSourcePath(s); }).SetDefault(null);
 
-            p.Setup<bool>("obs")
-                .Callback(s => { ObsCompatible = s; }).SetDefault(false);
-
             p.Setup<bool>("novidfix")
                 .Callback(s => { DisableVideoRenderingFix = s; }).SetDefault(false);
 
@@ -44,8 +41,6 @@
         public bool NoFolder { get; set; }
 
         public string SourceFolder { get; set; }
-
-        public bool ObsCompatible { get; set; }
 
         public bool DisableVideoRenderingFix { get; set; }
 

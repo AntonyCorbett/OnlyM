@@ -1,5 +1,3 @@
-using Serilog;
-
 namespace OnlyM.ViewModel
 {
     using System;
@@ -25,6 +23,7 @@ namespace OnlyM.ViewModel
     using OnlyM.Services.HiddenMediaItems;
     using OnlyM.Services.MediaChanging;
     using OnlyM.Services.Pages;
+    using Serilog;
     using Serilog.Events;
     
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -202,8 +201,6 @@ namespace OnlyM.ViewModel
                 }
             }
         }
-
-        public object AllowsTransparency => !_commandLineService.ObsCompatible;
 
         private void OnMediaListUpdating(MediaListUpdatingMessage message)
         {

@@ -12,8 +12,6 @@
 
         string SourceFolder { get; set; }
 
-        bool ObsCompatible { get; set; }
-
         bool DisableVideoRenderingFix { get; set; }
     }
 }
