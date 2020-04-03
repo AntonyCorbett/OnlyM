@@ -207,11 +207,13 @@
 
         private void PositionMediaWindowWindowed()
         {
-            if (!_mediaWindow.IsWindowed)
+            if (_mediaWindow.IsWindowed && _mediaWindow.IsVisible)
             {
-                MediaWindowPositionHelper.PositionMediaWindowWindowed(_mediaWindow);
-                _mediaWindow.Show();
+                return;
             }
+            
+            MediaWindowPositionHelper.PositionMediaWindowWindowed(_mediaWindow);
+            _mediaWindow.Show();
         }
 
         private void PositionMediaWindowFullScreenMonitor(Screen monitor, bool isVideo)

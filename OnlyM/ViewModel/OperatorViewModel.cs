@@ -360,7 +360,7 @@
 
         private void ChangePlayButtonEnabledStatus()
         {
-            var monitorSpecified = _optionsService.IsMediaMonitorSpecified;
+            var monitorSpecified = _optionsService.IsMediaMonitorSpecified || _optionsService.MediaWindowed;
             var videoOrAudioIsActive = VideoOrAudioIsActive();
             var videoIsActive = VideoIsActive();
             var rollingSlideshowIsActive = RollingSlideshowIsActive();
