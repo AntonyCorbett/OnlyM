@@ -10,7 +10,7 @@
         DataContext="{Binding Media, Mode=OneWay, Source={StaticResource Locator}}"
         Background="Black" 
         mc:Ignorable="d"
-        Title="MediaWindow" 
+        Title="OnlyM Media Window" 
         Height="500"
         Width="500"
         Closing="WindowClosing" 
