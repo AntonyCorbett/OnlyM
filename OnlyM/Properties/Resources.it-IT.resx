@@ -325,7 +325,7 @@
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
-    <value>JW Library® compatibility mode</value>
+    <value>Modalità compatibilità con JW Library®</value>
     <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
   </data>
   <data name="PERMANENT_BACKDROP" xml:space="preserve">
