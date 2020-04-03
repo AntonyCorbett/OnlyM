@@ -560,4 +560,8 @@
     <value>Windowed</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
+  <data name="ALLOW_DB_ACCESS" xml:space="preserve">
+    <value>Access to the OnlyM database is required!</value>
+    <comment>Error message that is displayed at startup if OnlyM cannot access its database folder (e.g. if Windows controlled folder access is enabled)</comment>
+  </data>
 </root>

@@ -19,8 +19,7 @@
             ".bmp",
             ".png",
             ".jpg",
-            ".jpeg",
-            ".jfif",
+            ".jpeg"
         };
 
         private readonly IUserInterfaceService _userInterfaceService;

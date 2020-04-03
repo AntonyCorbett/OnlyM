@@ -1,3 +1,5 @@
+using Serilog;
+
 namespace OnlyM.ViewModel
 {
     using System;
@@ -95,8 +97,7 @@ namespace OnlyM.ViewModel
                 _pageService.InitMediaWindow();
             }
 
-            GetVersionData();
-            CheckLogLevel();
+            SanityChecks();
         }
 
         // commands...
@@ -242,41 +243,75 @@ namespace OnlyM.ViewModel
         {
             RaisePropertyChanged(nameof(AlwaysOnTop));
         }
-
-        private void CheckLogLevel()
+        
+        private void SanityChecks()
         {
-            Task.Delay(3000).ContinueWith(_ =>
-            {
-                switch (_optionsService.LogEventLevel)
-                {
-                    case LogEventLevel.Debug:
-                    case LogEventLevel.Verbose:
-                        _snackbarService.EnqueueWithOk(Properties.Resources.LOGGING_LEVEL_HIGH, Properties.Resources.OK);
-                        break;
-                }
-            });
+            // checks are performed in order of importance and subsequent
+            // checks only made if previous ones pass.
+            Task.Delay(2000).ContinueWith(_ => CheckControlledFolderAccess() &&
+                                               CheckVersionData() && CheckLogLevel());
         }
 
-        private void GetVersionData()
+        private bool CheckControlledFolderAccess()
         {
-            Task.Delay(2000).ContinueWith(_ =>
-            {
-                var latestVersion = VersionDetection.GetLatestReleaseVersion();
-                if (latestVersion != null)
-                {
-                    if (latestVersion > VersionDetection.GetCurrentVersion())
-                    {
-                        // there is a new version....
-                        _newVersionAvailable = true;
-                        RaisePropertyChanged(nameof(ShowNewVersionButton));
+            // Windows 10 Controlled folder access may be enabled preventing
+            // OnlyM from writing to its database.
+            var databaseFolder = FileUtils.GetOnlyMDatabaseFolder();
 
-                        _snackbarService.Enqueue(
-                            Properties.Resources.NEW_UPDATE_AVAILABLE, 
-                            Properties.Resources.VIEW, 
-                            LaunchReleasePage);
-                    }
-                }
-            });
+            var tempFileName = Guid.NewGuid().ToString("N");
+            var fullPath = Path.Combine(databaseFolder, tempFileName);
+
+            try
+            {
+                File.Create(fullPath).Close();
+                File.Delete(fullPath);
+
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Log.Logger.Warning("OnlyM cannot write to its database folder. Perhaps controlled folder access is enabled");
+                _snackbarService.EnqueueWithOk(Properties.Resources.ALLOW_DB_ACCESS, Properties.Resources.OK);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Checking controlled folder access");
+            }
+
+            return false;
+        }
+        
+        private bool CheckLogLevel()
+        {
+            switch (_optionsService.LogEventLevel)
+            {
+                case LogEventLevel.Debug:
+                case LogEventLevel.Verbose:
+                    _snackbarService.EnqueueWithOk(Properties.Resources.LOGGING_LEVEL_HIGH, Properties.Resources.OK);
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool CheckVersionData()
+        {
+            var latestVersion = VersionDetection.GetLatestReleaseVersion();
+            if (latestVersion != null && latestVersion > VersionDetection.GetCurrentVersion())
+            {
+                // there is a new version....
+                _newVersionAvailable = true;
+                RaisePropertyChanged(nameof(ShowNewVersionButton));
+
+                _snackbarService.Enqueue(
+                    Properties.Resources.NEW_UPDATE_AVAILABLE, 
+                    Properties.Resources.VIEW, 
+                    LaunchReleasePage);
+
+                return false;
+            }
+
+            return true;
         }
 
         private void InitCommands()

@@ -70,6 +70,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access to the OnlyM database is required!.
+        /// </summary>
+        public static string ALLOW_DB_ACCESS {
+            get {
+                return ResourceManager.GetString("ALLOW_DB_ACCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow mirror window.
         /// </summary>
         public static string ALLOW_MIRROR {

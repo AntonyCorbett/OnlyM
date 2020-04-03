@@ -207,8 +207,11 @@
 
         private void PositionMediaWindowWindowed()
         {
-            MediaWindowPositionHelper.PositionMediaWindowWindowed(_mediaWindow);
-            _mediaWindow.Show();
+            if (!_mediaWindow.IsWindowed)
+            {
+                MediaWindowPositionHelper.PositionMediaWindowWindowed(_mediaWindow);
+                _mediaWindow.Show();
+            }
         }
 
         private void PositionMediaWindowFullScreenMonitor(Screen monitor, bool isVideo)
@@ -249,7 +252,7 @@
         {
             if (_mediaWindow != null)
             {
-                var isOriginallyVisible = _mediaWindow.IsVisible;
+                var isOriginallyVisible = _mediaWindow.IsVisible || _optionsService.PermanentBackdrop;
 
                 if (_optionsService.MediaWindowed)
                 {
@@ -268,6 +271,9 @@
                     var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
                     if (targetMonitor != null)
                     {
+                        _mediaWindow.SaveWindowPos();
+                        _mediaWindow.IsWindowed = false;
+
                         _mediaWindow.Hide();
                         _mediaWindow.WindowState = WindowState.Normal;
 
