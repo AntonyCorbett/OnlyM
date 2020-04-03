@@ -20,6 +20,7 @@
             ".png",
             ".jpg",
             ".jpeg",
+            ".jfif",
         };
 
         private readonly IUserInterfaceService _userInterfaceService;

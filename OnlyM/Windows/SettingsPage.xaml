@@ -147,6 +147,7 @@
                           materialDesign:HintAssist.Hint="{x:Static resx:Resources.MEDIA_MONITOR}"
                           SelectedValuePath="MonitorId" 
                           DisplayMemberPath="FriendlyName"
+                          IsEnabled="{Binding CanChangeMonitor}"
                           SelectedValue="{Binding MonitorId, Mode=TwoWay}">
                 </ComboBox>
 

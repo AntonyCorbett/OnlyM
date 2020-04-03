@@ -31,6 +31,7 @@
             new SupportedMediaType { Name = "GIF Image", Classification = MediaClassification.Image, FileExtension = ".gif" },
             new SupportedMediaType { Name = "ICO Image", Classification = MediaClassification.Image, FileExtension = ".ico" },
             new SupportedMediaType { Name = "TIFF Image", Classification = MediaClassification.Image, FileExtension = ".tiff" },
+            new SupportedMediaType { Name = "TIFF Image", Classification = MediaClassification.Image, FileExtension = ".jfif" },
 
             new SupportedMediaType { Name = "MP3 Audio", Classification = MediaClassification.Audio, FileExtension = ".mp3" },
             new SupportedMediaType { Name = "M4A Audio", Classification = MediaClassification.Audio, FileExtension = ".m4a" },

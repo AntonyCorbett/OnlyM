@@ -249,19 +249,34 @@
         {
             if (_mediaWindow != null)
             {
-                var isVisible = _mediaWindow.IsVisible;
+                var isOriginallyVisible = _mediaWindow.IsVisible;
 
-                var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
-                if (targetMonitor != null)
+                if (_optionsService.MediaWindowed)
                 {
                     _mediaWindow.Hide();
                     _mediaWindow.WindowState = WindowState.Normal;
 
-                    PositionMediaWindowFullScreenMonitor(targetMonitor.Monitor, false);
-                   
-                    if (!isVisible)
+                    PositionMediaWindowWindowed();
+
+                    if (!isOriginallyVisible)
                     {
                         _mediaWindow.Hide();
+                    }
+                }
+                else
+                {
+                    var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
+                    if (targetMonitor != null)
+                    {
+                        _mediaWindow.Hide();
+                        _mediaWindow.WindowState = WindowState.Normal;
+
+                        PositionMediaWindowFullScreenMonitor(targetMonitor.Monitor, false);
+
+                        if (!isOriginallyVisible)
+                        {
+                            _mediaWindow.Hide();
+                        }
                     }
                 }
             }
@@ -382,20 +397,15 @@
                 {
                     case MonitorChangeDescription.NoneToMonitor:
                     case MonitorChangeDescription.MonitorToMonitor:
+                    case MonitorChangeDescription.MonitorToWindow:
+                    case MonitorChangeDescription.NoneToWindow:
+                    case MonitorChangeDescription.WindowToMonitor:
                         RelocateMediaWindow();
                         break;
 
+                    case MonitorChangeDescription.WindowToNone:
                     case MonitorChangeDescription.MonitorToNone:
                         CloseMediaWindow();
-                        break;
-
-                    case MonitorChangeDescription.MonitorToWindow:
-                        break;
-
-                    case MonitorChangeDescription.NoneToWindow:
-                    case MonitorChangeDescription.WindowToMonitor:
-                    case MonitorChangeDescription.WindowToNone:
-                        // todo:
                         break;
                 }
 

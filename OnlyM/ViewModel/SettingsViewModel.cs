@@ -814,6 +814,8 @@
 
         public IEnumerable<MonitorItem> Monitors => _monitors;
 
+        public bool CanChangeMonitor => !MediaWindowed;
+
         public string MonitorId
         {
             get => _optionsService.MediaMonitorId;
@@ -844,6 +846,7 @@
                 {
                     _optionsService.MediaWindowed = value;
                     RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(CanChangeMonitor));
                 }
             }
         }
