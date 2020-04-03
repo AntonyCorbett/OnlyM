@@ -844,9 +844,17 @@
             {
                 if (_optionsService.MediaWindowed != value)
                 {
-                    _optionsService.MediaWindowed = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(CanChangeMonitor));
+                    if (!value && IsMediaActive && _optionsService.MediaMonitorId == null)
+                    {
+                        // prevent unchecking of windowed mode when media is active.
+                        _snackbarService.EnqueueWithOk(Properties.Resources.NO_DESELECT_WINDOWED, Properties.Resources.OK);
+                    }
+                    else
+                    {
+                        _optionsService.MediaWindowed = value;
+                        RaisePropertyChanged();
+                        RaisePropertyChanged(nameof(CanChangeMonitor));
+                    }
                 }
             }
         }

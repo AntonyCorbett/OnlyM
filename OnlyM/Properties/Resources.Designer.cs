@@ -629,6 +629,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot deselect windowed mode when media is active.
+        /// </summary>
+        public static string NO_DESELECT_WINDOWED {
+            get {
+                return ResourceManager.GetString("NO_DESELECT_WINDOWED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No supported media files!.
         /// </summary>
         public static string NO_SUPPORTED_FILES {
