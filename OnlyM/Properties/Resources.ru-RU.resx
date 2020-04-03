@@ -325,7 +325,7 @@
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
-    <value>Режим совместимости с JW Library</value>
+    <value>JW Library® compatibility mode</value>
     <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
   </data>
   <data name="PERMANENT_BACKDROP" xml:space="preserve">
@@ -555,5 +555,17 @@
   <data name="PDF_PAGENUM" xml:space="preserve">
     <value>Начальная страница</value>
     <comment>See PDF media item command panel. This is the title for the textbox that is used to enter the PDF page number that is shown when it is first opened.</comment>
+  </data>
+  <data name="MEDIA_WINDOWED" xml:space="preserve">
+    <value>Windowed</value>
+    <comment>See Settings =&gt; Display</comment>
+  </data>
+  <data name="ALLOW_DB_ACCESS" xml:space="preserve">
+    <value>Access to the OnlyM database is required!</value>
+    <comment>Error message that is displayed at startup if OnlyM cannot access its database folder (e.g. if Windows controlled folder access is enabled)</comment>
+  </data>
+  <data name="NO_DESELECT_WINDOWED" xml:space="preserve">
+    <value>Cannot deselect windowed mode when media is active</value>
+    <comment>Notification message displayed if you try to uncheck the windowed mode while media is being displayed and there is no chosen monitor. Try to keep this text short!</comment>
   </data>
 </root>
