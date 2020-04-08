@@ -11,10 +11,19 @@
         Background="Black" 
         mc:Ignorable="d"
         Title="OnlyM Media Window" 
+        AllowsTransparency="False"
         Height="500"
         Width="500"
+        MinHeight="160"
+        MinWidth="200"
         Closing="WindowClosing" 
-        SizeChanged="WindowSizeChanged" >
+        SizeChanged="WindowSizeChanged" MouseDown="Window_MouseDown" >
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome 
+            CaptionHeight="0"
+            ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
         <ResourceDictionary>

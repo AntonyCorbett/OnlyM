@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Input;
     using CommonServiceLocator;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Database;
@@ -601,6 +602,15 @@
         {
             var pos = e.GetPosition(this);
             _webNavHeaderAdmin.MouseMove(pos);
+        }
+
+        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // allow drag when no title bar is shown
+            if (IsWindowed && e.ChangedButton == MouseButton.Left && WindowStyle == WindowStyle.None)
+            {
+                DragMove();
+            }
         }
     }
 }

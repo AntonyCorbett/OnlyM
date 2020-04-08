@@ -84,7 +84,7 @@
         {
             mediaWindow.ResizeMode = ResizeMode.CanResize;
             mediaWindow.ShowInTaskbar = true;
-            mediaWindow.WindowStyle = WindowStyle.SingleBorderWindow;
+            mediaWindow.WindowStyle = WindowStyle.None;
         }
 
         private static Grid GetMainGrid(Window mediaWindow)

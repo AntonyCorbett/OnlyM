@@ -378,6 +378,7 @@
         {
             if (!_optionsService.PermanentBackdrop && !AnyActiveMediaRequiringVisibleMediaWindow())
             {
+                _mediaWindow.SaveWindowPos();
                 _mediaWindow?.Hide();
                 BringJwlToFront();
             }
