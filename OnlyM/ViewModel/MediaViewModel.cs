@@ -288,6 +288,10 @@
 
             switch (_optionsService.MagnifierSize)
             {
+                default:
+                case MagnifierSize.Medium:
+                    return delta * 6;
+
                 case MagnifierSize.XXSmall:
                     return delta;
 
@@ -296,10 +300,6 @@
 
                 case MagnifierSize.Small:
                     return delta * 4;
-
-                default:
-                case MagnifierSize.Medium:
-                    return delta * 6;
 
                 case MagnifierSize.Large:
                     return delta * 8;

@@ -214,12 +214,9 @@
 
         private string GetMediaTitle(string filePath, MediaMetaData metaData)
         {
-            if (_optionsService.UseInternalMediaTitles && metaData != null)
+            if (_optionsService.UseInternalMediaTitles && metaData != null && !string.IsNullOrEmpty(metaData.Title))
             {
-                if (!string.IsNullOrEmpty(metaData.Title))
-                {
-                    return metaData.Title;
-                }
+                return metaData.Title;
             }
 
             return Path.GetFileNameWithoutExtension(filePath);
