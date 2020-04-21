@@ -193,7 +193,7 @@
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>No se puede deseleccionar el monitor cuando el archivo multimedia está en uso</value>
+    <value>No se puede deseleccionar el monitor cuando un archivo multimedia está en uso</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
@@ -565,7 +565,7 @@
     <comment>Error message that is displayed at startup if OnlyM cannot access its database folder (e.g. if Windows controlled folder access is enabled)</comment>
   </data>
   <data name="NO_DESELECT_WINDOWED" xml:space="preserve">
-    <value>Cannot deselect windowed mode when media is active</value>
+    <value>No se puede deseleccionar el modo "Mostrar en una ventana" cuando un archivo multimedia está en uso</value>
     <comment>Notification message displayed if you try to uncheck the windowed mode while media is being displayed and there is no chosen monitor. Try to keep this text short!</comment>
   </data>
 </root>
