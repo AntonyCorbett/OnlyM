@@ -325,7 +325,7 @@
     <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
   </data>
   <data name="JW_COMPAT_MODE" xml:space="preserve">
-    <value>JW Library® compatibility mode</value>
+    <value>Mode de compatibilitat amb JW Library®</value>
     <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
   </data>
   <data name="PERMANENT_BACKDROP" xml:space="preserve">
@@ -501,7 +501,7 @@
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="DLG_CANCEL" xml:space="preserve">
-    <value>CANCEL</value>
+    <value>CANCEL·LA</value>
     <comment>Button caption in dialog used to specify media start offset</comment>
   </data>
   <data name="DLG_OK" xml:space="preserve">
