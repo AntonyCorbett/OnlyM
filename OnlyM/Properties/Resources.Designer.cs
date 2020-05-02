@@ -548,6 +548,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Always on top (windowed).
+        /// </summary>
+        public static string MEDIA_WINDOWED_ON_TOP {
+            get {
+                return ResourceManager.GetString("MEDIA_WINDOWED_ON_TOP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Minutes.
         /// </summary>
         public static string MINUTES {

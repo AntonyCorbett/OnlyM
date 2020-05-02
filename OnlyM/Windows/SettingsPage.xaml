@@ -155,6 +155,10 @@
                           Content="{x:Static resx:Resources.MEDIA_WINDOWED}"
                           Style="{StaticResource SettingsCheckBoxStyle}"/>
 
+                <CheckBox IsChecked="{Binding WindowedAlwaysOnTop, Mode=TwoWay}"
+                          Content="{x:Static resx:Resources.MEDIA_WINDOWED_ON_TOP}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+
                 <CheckBox IsChecked="{Binding PermanentBackdrop, Mode=TwoWay}"
                           IsEnabled="{Binding JwLibModeNotSet, Mode=OneWay}"
                           Content="{x:Static resx:Resources.PERMANENT_BACKDROP}"

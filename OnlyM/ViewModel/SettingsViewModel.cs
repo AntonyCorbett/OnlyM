@@ -837,6 +837,19 @@
             }
         }
 
+        public bool WindowedAlwaysOnTop
+        {
+            get => _optionsService.WindowedAlwaysOnTop;
+            set
+            {
+                if (_optionsService.WindowedAlwaysOnTop != value)
+                {
+                    _optionsService.WindowedAlwaysOnTop = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public bool MediaWindowed
         {
             get => _optionsService.MediaWindowed;

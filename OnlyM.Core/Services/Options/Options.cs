@@ -30,6 +30,7 @@
         {
             // defaults
             AlwaysOnTop = true;
+            WindowedAlwaysOnTop = true;
             LogEventLevel = LogEventLevel.Information;
             MediaFolder = FileUtils.GetOnlyMDefaultMediaFolder();
             ImageFadeType = ImageFadeType.CrossFade;
@@ -97,7 +98,9 @@
         public bool AllowVideoScrubbing { get; set; }
 
         public bool AlwaysOnTop { get; set; }
-        
+
+        public bool WindowedAlwaysOnTop { get; set; }
+
         public string AppWindowPlacement { get; set; }
 
         public string MediaWindowPlacement { get; set; }

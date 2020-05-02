@@ -50,6 +50,8 @@
 
         public event EventHandler AlwaysOnTopChangedEvent;
 
+        public event EventHandler WindowedMediaAlwaysOnTopChangedEvent;
+
         public event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
         public event EventHandler RenderingMethodChangedEvent;
@@ -451,6 +453,19 @@
                     _options.Value.MediaWindowed = value;
 
                     OnMediaMonitorChangedEvent(GetChange(value, MediaMonitorId));
+                }
+            }
+        }
+
+        public bool WindowedAlwaysOnTop
+        {
+            get => _options.Value.WindowedAlwaysOnTop;
+            set
+            {
+                if (_options.Value.WindowedAlwaysOnTop != value)
+                {
+                    _options.Value.WindowedAlwaysOnTop = value;
+                    WindowedMediaAlwaysOnTopChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }

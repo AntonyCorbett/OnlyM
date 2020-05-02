@@ -60,6 +60,7 @@
             _optionsService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
             _optionsService.PermanentBackdropChangedEvent += HandlePermanentBackdropChangedEvent;
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
+            _optionsService.WindowedMediaAlwaysOnTopChangedEvent += HandleWindowedAlwaysOnTopChangedEvent;
 
             _systemDpi = WindowsPlacement.GetDpiSettings();
             
@@ -106,6 +107,7 @@
             // used to instantiate the media window and its controls (and then
             // possibly hide it immediately). Required to correctly configure
             // the CefSharp browser control.
+            
             OpenMediaWindow(requiresVisibleWindow: true, isVideo: false);
             ManageMediaWindowVisibility();
         }
@@ -213,6 +215,9 @@
             }
             
             MediaWindowPositionHelper.PositionMediaWindowWindowed(_mediaWindow);
+            
+            _mediaWindow.Topmost = _optionsService.WindowedAlwaysOnTop;
+
             _mediaWindow.Show();
         }
 
@@ -484,6 +489,14 @@
                 _mediaWindow = null;
 
                 MediaWindowClosedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void HandleWindowedAlwaysOnTopChangedEvent(object sender, EventArgs e)
+        {
+            if (_mediaWindow != null && _mediaWindow.IsWindowed)
+            {
+                _mediaWindow.Topmost = _optionsService.WindowedAlwaysOnTop;
             }
         }
 

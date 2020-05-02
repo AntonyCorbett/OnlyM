@@ -17,6 +17,8 @@
 
         event EventHandler AlwaysOnTopChangedEvent;
 
+        event EventHandler WindowedMediaAlwaysOnTopChangedEvent;
+
         event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
         event EventHandler RenderingMethodChangedEvent;
@@ -104,6 +106,8 @@
         string MediaMonitorId { get; set; }
 
         bool MediaWindowed { get; set; }
+
+        bool WindowedAlwaysOnTop { get; set; }
 
         double BrowserZoomLevelIncrement { get; set; }
         
