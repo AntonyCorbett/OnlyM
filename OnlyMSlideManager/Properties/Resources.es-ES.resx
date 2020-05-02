@@ -138,7 +138,7 @@
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>No se pudo crear la carpeta {0}</value>
+    <value>No se ha podido crear la carpeta {0}</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
@@ -205,7 +205,7 @@
     <value>OK</value>
   </data>
   <data name="COULD_NOT_SAVE" xml:space="preserve">
-    <value>¡No se pudo guardar el archivo!</value>
+    <value>¡No se ha podido guardar el archivo!</value>
   </data>
   <data name="SAVED_FILE" xml:space="preserve">
     <value>Archivo guardado</value>
@@ -231,7 +231,7 @@
     <comment>Tooltip for 'back' button on slide edit page</comment>
   </data>
   <data name="NO_SLIDES_CREATED" xml:space="preserve">
-    <value>¡No hay diapositivas creadas!</value>
+    <value>¡No se ha creado ninguna diapositiva!</value>
     <comment>Message displayed following an unsuccessful drag and drop</comment>
   </data>
   <data name="SLIDE_CREATED" xml:space="preserve">
