@@ -63,7 +63,13 @@
         <MediaElement x:Name="VideoElementMediaFoundation"
                       Visibility="{Binding Path=EngineIsMediaFoundation, Converter={StaticResource BooleanToVisibilityConverter}}"
                       LoadedBehavior="Manual"
-                      UnloadedBehavior="Manual" />
+                      UnloadedBehavior="Manual">
+            <MediaElement.LayoutTransform>
+                <TransformGroup>
+                    <RotateTransform Angle="{Binding VideoRotation}"/>
+                </TransformGroup>
+            </MediaElement.LayoutTransform>
+        </MediaElement>
 
         <TextBlock x:Name="SubtitleBlock" 
                    VerticalAlignment="Bottom" 

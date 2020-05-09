@@ -30,6 +30,9 @@
             InitCommands();
         }
 
+        // todo: Media Foundation doesn't auto rotate videos, so we need to read rotation meta data and then rotate here (only for MediaFoundation; ffmpeg is fine)
+        public int VideoRotation { get; set; }
+
         public bool EngineIsMediaFoundation => _optionsService.RenderingMethod == RenderingMethod.MediaFoundation;
 
         public bool EngineIsFfmpeg => _optionsService.RenderingMethod == RenderingMethod.Ffmpeg;
