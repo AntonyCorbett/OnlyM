@@ -525,7 +525,7 @@
     <comment>Column title in media start offset dialog (number of seconds)</comment>
   </data>
   <data name="SHOW_START_OFFSET_DLG" xml:space="preserve">
-    <value>Ajustar hora de inicio</value>
+    <value>Ajustar tiempo de inicio</value>
     <comment>Tooltip for the button that allows you to adjust media start time</comment>
   </data>
   <data name="RECENT_TIMES" xml:space="preserve">
@@ -533,7 +533,7 @@
     <comment>Combobox label in Start Offset Times dialog</comment>
   </data>
   <data name="CLEAR_RECENTS" xml:space="preserve">
-    <value>LIMPAR</value>
+    <value>LIMPIAR</value>
     <comment>Command label at the bottom of the recent times list in the start offset dialog</comment>
   </data>
   <data name="PDF_VIEW" xml:space="preserve">
