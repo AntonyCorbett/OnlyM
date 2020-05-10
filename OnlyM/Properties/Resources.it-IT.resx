@@ -569,7 +569,7 @@
     <comment>Notification message displayed if you try to uncheck the windowed mode while media is being displayed and there is no chosen monitor. Try to keep this text short!</comment>
   </data>
   <data name="MEDIA_WINDOWED_ON_TOP" xml:space="preserve">
-    <value>Always on top (windowed)</value>
+    <value>Sempre in primo piano (finestra)</value>
     <comment>Option in Settings =&gt; Display</comment>
   </data>
 </root>
