@@ -12,13 +12,13 @@ namespace OnlyM.Core.Utils
         public static Uri FixUnicodeUri(Uri uri)
         {
             return uri;
-            //return new Uri(FixUnicodeString(uri.ToString()));
+            // return new Uri(FixUnicodeString(uri.ToString()));
         }
 
         public static string FixUnicodeString(string s)
         {
             return s;
-            //return Encoding.GetEncoding(0).GetString(Encoding.UTF8.GetBytes(s));
+            // return Encoding.GetEncoding(0).GetString(Encoding.UTF8.GetBytes(s));
         }
     }
 }

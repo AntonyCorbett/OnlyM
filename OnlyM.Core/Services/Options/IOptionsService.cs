@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using OnlyM.Core.Models;
 using Serilog.Events;
 
@@ -20,6 +21,8 @@ namespace OnlyM.Core.Services.Options
         event EventHandler WindowedMediaAlwaysOnTopChangedEvent;
 
         event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
+
+        event EventHandler MediaWindowSizeChangedEvent;
 
         event EventHandler RenderingMethodChangedEvent;
 
@@ -106,6 +109,8 @@ namespace OnlyM.Core.Services.Options
         string? MediaMonitorId { get; set; }
 
         bool MediaWindowed { get; set; }
+
+        Size MediaWindowSize { get; set; }
 
         bool WindowedAlwaysOnTop { get; set; }
 

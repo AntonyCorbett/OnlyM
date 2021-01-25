@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows;
 using Newtonsoft.Json;
 using OnlyM.Core.Models;
 using OnlyM.Core.Utils;
@@ -49,6 +50,8 @@ namespace OnlyM.Core.Services.Options
             MagnifierSize = MagnifierSize.Medium;
             MagnifierFrameThickness = DefaultBrowserFrameThickness;
 
+            MediaWindowSize = Size.Empty;
+
             VideoScreenPosition = new ScreenPosition();
             ImageScreenPosition = new ScreenPosition();
             WebScreenPosition = new ScreenPosition();
@@ -68,6 +71,8 @@ namespace OnlyM.Core.Services.Options
         public string? MediaMonitorId { get; set; }
 
         public bool MediaWindowed { get; set; }
+
+        public Size MediaWindowSize { get; set; }
 
         public RenderingMethod RenderingMethod { get; set; }
         
