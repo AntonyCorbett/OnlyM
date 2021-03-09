@@ -33,7 +33,7 @@
                 {
                     Log.Logger.Debug($"Image in cache: {fullPath}");
                     result.LastUsedUtc = DateTime.UtcNow;
-                    return result;
+                    return result.BitmapImage;
                 }
 
                 // Cached item is invalid. Delete and recreate
