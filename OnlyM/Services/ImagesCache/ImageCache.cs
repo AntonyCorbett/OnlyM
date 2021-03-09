@@ -15,49 +15,57 @@
         private const int MaxImageWidth = 1920;
         private const int MaxImageHeight = 1080;
 
-        private readonly ConcurrentDictionary<string, ImageAndLastUsed> _cache = 
+        private readonly ConcurrentDictionary<string, ImageAndLastUsed> _cache =
             new ConcurrentDictionary<string, ImageAndLastUsed>(StringComparer.OrdinalIgnoreCase);
 
         public BitmapSource GetImage(string fullPath)
         {
-            if (!_cache.TryGetValue(fullPath, out var result))
+            if (!File.Exists(fullPath))
             {
-                if (!File.Exists(fullPath))
+                _cache.TryRemove(fullPath, out _);
+                return null;
+            }
+
+            DateTime fileLastChangedUtc = File.GetLastWriteTimeUtc(filePath);
+            if (_cache.TryGetValue(fullPath, out var result))
+            {
+                if (result.LastChangedUtc == fileLastChangedUtc)
                 {
-                    return null;
+                    Log.Logger.Debug($"Image in cache: {fullPath}");
+                    result.LastUsedUtc = DateTime.UtcNow;
+                    return result;
                 }
 
-                try
+                // Cached item is invalid. Delete and recreate
+                Log.Logger.Debug($"Image in cache, but invalid: {fullPath}");
+                _cache.TryRemove(fullPath, out _);
+            }
+
+            try
+            {
+                var image = GraphicsUtils.Downsize(fullPath, MaxImageWidth, MaxImageHeight);
+                if (image != null)
                 {
-                    var image = GraphicsUtils.Downsize(fullPath, MaxImageWidth, MaxImageHeight);
-                    if (image != null)
-                    {
-                        result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow };
+                    result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow, LastChangedUtc = fileLastChangedUtc };
 
-                        _cache.AddOrUpdate(
-                            fullPath,
-                            result,
-                            (s, value) =>
-                            {
-                                value.LastUsedUtc = DateTime.UtcNow;
-                                return value;
-                            });
-                    }
-
-                    if (_cache.Count > MaxItemCount)
-                    {
-                        RemoveOldImages();
-                    }
+                    _cache.AddOrUpdate(
+                        fullPath,
+                        result,
+                        (s, value) =>
+                        {
+                            value.LastUsedUtc = DateTime.UtcNow;
+                            return value;
+                        });
                 }
-                catch (Exception ex)
+
+                if (_cache.Count > MaxItemCount)
                 {
-                    Log.Logger.Error(ex, $"Could not cache image {fullPath}");
+                    RemoveOldImages();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                Log.Logger.Debug($"Image in cache: {fullPath}");
-                result.LastUsedUtc = DateTime.UtcNow;
+                Log.Logger.Error(ex, $"Could not cache image {fullPath}");
             }
 
             return result?.BitmapImage;
