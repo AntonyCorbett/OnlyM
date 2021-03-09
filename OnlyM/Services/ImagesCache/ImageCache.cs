@@ -26,7 +26,7 @@
                 return null;
             }
 
-            DateTime fileLastChangedUtc = File.GetLastWriteTimeUtc(filePath);
+            DateTime fileLastChangedUtc = File.GetLastWriteTimeUtc(fullPath);
             if (_cache.TryGetValue(fullPath, out var result))
             {
                 if (result.LastChangedUtc == fileLastChangedUtc)
