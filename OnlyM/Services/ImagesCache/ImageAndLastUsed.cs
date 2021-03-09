@@ -7,6 +7,8 @@
     {
         public BitmapSource BitmapImage { get; set; }
 
+        public DateTime LastChangedUtc { get; set; }
+
         public DateTime LastUsedUtc { get; set; }
     }
 }
