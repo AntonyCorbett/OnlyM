@@ -98,7 +98,7 @@
 
         public static BitmapSource Downsize(string imageFilePath, int maxImageWidth, int maxImageHeight)
         {
-            var image = GetBitmapImageWithCacheOnLoad(imageFilePath);
+            var image = GetBitmapImage(imageFilePath);
             return Downsize(image, maxImageWidth, maxImageHeight);
         }
 
@@ -237,26 +237,18 @@
             return img;
         }
 
-        public static BitmapImage GetBitmapImageWithCacheOnLoad(string imageFile)
+        public static BitmapImage GetBitmapImage(string imageFile)
         {
-            var bmp = new BitmapImage();
+            var bmp = new Bitmap(imageFile);
             
-            // BitmapCacheOption.OnLoad prevents the source image file remaining
-            // in use when the bitmap is used as an ImageSource.
-            bmp.BeginInit();
-            bmp.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-            bmp.UriSource = new Uri(imageFile);
-            bmp.CacheOption = BitmapCacheOption.OnLoad;
-            bmp.EndInit();
-
             if (IsBadDpi(bmp))
             {
                 // NB - if the DpiX and DpiY metadata is bad then the bitmap can't be displayed
                 // correctly, so fix it here...
-                return FixBadDpi(imageFile);
+                bmp = FixBadDpi(imageFile);
             }
 
-            return bmp;
+            return BitmapToBitmapImage(bmp);
         }
 
         /// <summary>
@@ -462,12 +454,12 @@
             return false;
         }
 
-        private static bool IsBadDpi(BitmapImage bmp)
+        private static bool IsBadDpi(Bitmap bmp)
         {
-            return bmp.DpiX > MaxDpi || bmp.DpiY > MaxDpi;
+            return bmp.HorizontalResolution > MaxDpi || bmp.VerticalResolution > MaxDpi;
         }
 
-        private static BitmapImage FixBadDpi(string imageFile)
+        private static Bitmap FixBadDpi(string imageFile)
         {
             using (var imageFactory = new ImageFactory())
             {
@@ -478,14 +470,7 @@
                         .Resolution(96, 96)
                         .Save(outStream);
 
-                    var bitmapImage = new BitmapImage();
-
-                    bitmapImage.BeginInit();
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.StreamSource = outStream;
-                    bitmapImage.EndInit();
-
-                    return bitmapImage;
+                    return new Bitmap(outStream);
                 }
             }
         }
