@@ -239,16 +239,20 @@
 
         public static BitmapImage GetBitmapImage(string imageFile)
         {
-            var bmp = new Bitmap(imageFile);
-            
-            if (IsBadDpi(bmp))
+            using (var bmp = new Bitmap(imageFile))
             {
-                // NB - if the DpiX and DpiY metadata is bad then the bitmap can't be displayed
-                // correctly, so fix it here...
-                bmp = FixBadDpi(imageFile);
+                if (!IsBadDpi(bmp))
+                {
+                    return BitmapToBitmapImage(bmp);
+                }
             }
 
-            return BitmapToBitmapImage(bmp);
+            // NB - if the DpiX and DpiY metadata is bad then the bitmap can't be displayed
+            // correctly, so fix it here...
+            using (var bmp = FixBadDpi(imageFile))
+            {
+                return BitmapToBitmapImage(bmp);
+            }
         }
 
         /// <summary>
