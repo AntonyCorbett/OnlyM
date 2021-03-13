@@ -65,12 +65,12 @@
 
         private static bool ShouldCreate(string srtFile, DateTime videoFileCreationTimeUtc)
         {
-            if (!File.Exists(srtFile))
+            var fileInfo = new FileInfo(srtFile);
+            if (!fileInfo.Exists)
             {
                 return true;
             }
 
-            var fileInfo = new FileInfo(srtFile);
             if (fileInfo.CreationTimeUtc != videoFileCreationTimeUtc)
             {
                 Log.Logger.Debug("Old subtitle file found");

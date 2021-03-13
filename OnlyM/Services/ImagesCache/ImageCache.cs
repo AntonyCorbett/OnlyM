@@ -20,16 +20,16 @@
 
         public BitmapSource GetImage(string fullPath)
         {
-            if (!File.Exists(fullPath))
+            FileInfo fileInfo = new FileInfo(fullPath);
+            if (!fileInfo.Exists)
             {
                 _cache.TryRemove(fullPath, out _);
                 return null;
             }
 
-            DateTime fileLastChangedUtc = File.GetLastWriteTimeUtc(fullPath);
             if (_cache.TryGetValue(fullPath, out var result))
             {
-                if (result.LastChangedUtc == fileLastChangedUtc)
+                if (result.LastChangedUtc == fileInfo.LastWriteTimeUtc)
                 {
                     Log.Logger.Debug($"Image in cache: {fullPath}");
                     result.LastUsedUtc = DateTime.UtcNow;
@@ -46,7 +46,7 @@
                 var image = GraphicsUtils.Downsize(fullPath, MaxImageWidth, MaxImageHeight);
                 if (image != null)
                 {
-                    result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow, LastChangedUtc = fileLastChangedUtc };
+                    result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow, LastChangedUtc = fileInfo.LastWriteTimeUtc };
 
                     _cache.AddOrUpdate(
                         fullPath,
