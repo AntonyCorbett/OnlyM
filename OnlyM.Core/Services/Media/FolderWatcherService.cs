@@ -87,6 +87,7 @@
                 _watcher = new FileSystemWatcher { IncludeSubdirectories = true };
 
                 _watcher.Created += HandleContentModified;
+                _watcher.Changed += HandleContentModified;
                 _watcher.Deleted += HandleContentModified;
                 _watcher.Renamed += HandleContentRenamed;
             }
@@ -139,6 +140,7 @@
             switch (e.ChangeType)
             {
                 case WatcherChangeTypes.Created:
+                case WatcherChangeTypes.Changed:
                 case WatcherChangeTypes.Deleted:
                     if (!_mediaProviderService.IsFileExtensionSupported(Path.GetExtension(e.FullPath)))
                     {

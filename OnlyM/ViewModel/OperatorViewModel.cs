@@ -870,25 +870,37 @@
         private void LoadMediaItemsInternal()
         {
             var files = _mediaProviderService.GetMediaFiles();
-            var sourceFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var destFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var sourceFilePaths = new Dictionary<string, MediaFile>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var file in files)
             {
-                sourceFilePaths.Add(file.FullPath);
+                sourceFilePaths.Add(file.FullPath, file);
             }
 
             var itemsToRemove = new List<MediaItem>();
+            var filePathsToAdd = new Dictionary<string, MediaFile>(sourceFilePaths, StringComparer.OrdinalIgnoreCase);
 
             foreach (var item in MediaItems)
             {
-                if (!sourceFilePaths.Contains(item.FilePath))
+                sourceFilePaths.TryGetValue(item.FilePath, out var existingMedia);
+                
+                if (existingMedia == null || existingMedia.LastChanged != item.LastChanged)
                 {
+                    // Note that the blank media item (if present) will get removed on every refresh.
+                    // This is not to worry. It will get added back at the very end of this function.
+
+                    Log.Logger.Debug($"Removing media item {item.FilePath}");
+
                     // remove this item.
                     itemsToRemove.Add(item);
                 }
+                else
+                {
+                    Log.Logger.Verbose($"File has not changed {item.FilePath}");
 
-                destFilePaths.Add(item.FilePath);
+                    // item already exists in the medialist
+                    filePathsToAdd.Remove(item.FilePath);
+                }
             }
 
             var currentItems = GetCurrentMediaItems();
@@ -911,16 +923,14 @@
             }
 
             // add new items.
-            foreach (var file in files)
+            foreach (var file in filePathsToAdd)
             {
-                if (!destFilePaths.Contains(file.FullPath))
-                {
-                    var item = CreateNewMediaItem(file);
+                var item = CreateNewMediaItem(file.Value);
+                Log.Logger.Debug($"Adding file {item.FilePath}");
 
-                    MediaItems.Add(item);
+                MediaItems.Add(item);
 
-                    _metaDataProducer.Add(item);
-                }
+                _metaDataProducer.Add(item);
             }
             
             TruncateMediaItemsToMaxCount();
