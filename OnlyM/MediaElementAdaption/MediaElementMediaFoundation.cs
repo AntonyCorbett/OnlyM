@@ -110,7 +110,11 @@
 
                 return _mediaElement.NaturalDuration;
             }
-        } 
+        }
+
+        public int NaturalVideoWidth => _mediaElement.NaturalVideoWidth;
+
+        public int NaturalVideoHeight => _mediaElement.NaturalVideoHeight;
 
         public Task Play(Uri mediaPath, MediaClassification mediaClassification)
         {

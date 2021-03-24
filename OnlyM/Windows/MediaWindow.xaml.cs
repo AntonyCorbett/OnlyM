@@ -417,6 +417,7 @@
         { 
             _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
             _imageDisplayManager.SlideTransitionEvent += HandleSlideTransitionEvent;
+            _imageDisplayManager.NewMediaSizeEvent += HandleNewMediaSizeEvent;
         }
 
         private void SubscribeVideoEvents()
@@ -425,6 +426,7 @@
             _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent += HandleMediaNearEndEvent;
             _videoDisplayManager.SubtitleEvent += HandleMediaFoundationSubtitleEvent;
+            _videoDisplayManager.NewMediaSizeEvent += HandleNewMediaSizeEvent;
         }
 
         private void SubscribeWebEvents()
@@ -471,6 +473,7 @@
         {
             _imageDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
             _imageDisplayManager.SlideTransitionEvent -= HandleSlideTransitionEvent;
+            _imageDisplayManager.NewMediaSizeEvent -= HandleNewMediaSizeEvent;
         }
 
         private void UnsubscribeVideoEvents()
@@ -479,6 +482,7 @@
             _videoDisplayManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent -= HandleMediaNearEndEvent;
             _videoDisplayManager.SubtitleEvent -= HandleMediaFoundationSubtitleEvent;
+            _videoDisplayManager.NewMediaSizeEvent -= HandleNewMediaSizeEvent;
         }
 
         private void UnsubscribeWebEvents()
@@ -510,6 +514,28 @@
         private void HandleShowSubtitlesChangedEvent(object sender, EventArgs e)
         {
             _videoDisplayManager.ShowSubtitles = _optionsService.ShowVideoSubtitles;
+        }
+
+        private void HandleNewMediaSizeEvent(object sender, NewMediaSizeEventArgs e)
+        {
+            ResizeWindowToMediaSize(e.Width, e.Height);
+        }
+
+        private void ResizeWindowToMediaSize(int width, int height)
+        {
+            var wFactor = width / 1920.0;
+            var hFactor = height / 1080.0;
+            if (wFactor > 1 || hFactor > 1)
+            {
+                var transform = Math.Max(wFactor, hFactor);
+                Width = width / transform;
+                Height = height / transform;
+            }
+            else
+            {
+                Width = width;
+                Height = height;
+            }
         }
 
         private bool ShouldConfirmMediaStop(MediaItem mediaItem)

@@ -25,6 +25,10 @@
 
         Duration NaturalDuration { get; }
 
+        int NaturalVideoWidth { get; }
+
+        int NaturalVideoHeight { get; }
+
         bool IsPaused { get; }
 
         Guid MediaItemId { get; set; }
