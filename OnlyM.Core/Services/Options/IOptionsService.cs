@@ -108,6 +108,8 @@
         bool MediaWindowed { get; set; }
 
         bool WindowedAlwaysOnTop { get; set; }
+        
+        bool AutoResizeMediaWindow { get; set; }
 
         double BrowserZoomLevelIncrement { get; set; }
         

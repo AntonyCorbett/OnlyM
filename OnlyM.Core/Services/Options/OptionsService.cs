@@ -52,6 +52,8 @@
 
         public event EventHandler WindowedMediaAlwaysOnTopChangedEvent;
 
+        public event EventHandler AutoResizeMediaWindowChangedEvent;
+
         public event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
         public event EventHandler RenderingMethodChangedEvent;
@@ -466,6 +468,19 @@
                 {
                     _options.Value.WindowedAlwaysOnTop = value;
                     WindowedMediaAlwaysOnTopChangedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public bool AutoResizeMediaWindow
+        {
+            get => _options.Value.AutoResizeMediaWindow;
+            set
+            {
+                if (_options.Value.AutoResizeMediaWindow != value)
+                {
+                    _options.Value.AutoResizeMediaWindow = value;
+                    AutoResizeMediaWindowChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }

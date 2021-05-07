@@ -518,7 +518,10 @@
 
         private void HandleNewMediaSizeEvent(object sender, NewMediaSizeEventArgs e)
         {
-            ResizeWindowToMediaSize(e.Width, e.Height);
+            if (_optionsService.MediaWindowed && _optionsService.AutoResizeMediaWindow)
+            {
+                ResizeWindowToMediaSize(e.Width, e.Height);                
+            }
         }
 
         private void ResizeWindowToMediaSize(int width, int height)

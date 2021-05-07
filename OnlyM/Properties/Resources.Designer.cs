@@ -19,7 +19,7 @@ namespace OnlyM.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -120,6 +120,15 @@ namespace OnlyM.Properties {
         public static string APP_VER {
             get {
                 return ResourceManager.GetString("APP_VER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto-resize media window.
+        /// </summary>
+        public static string AUTO_RESIZE_MEDIA_WINDOW {
+            get {
+                return ResourceManager.GetString("AUTO_RESIZE_MEDIA_WINDOW", resourceCulture);
             }
         }
         
