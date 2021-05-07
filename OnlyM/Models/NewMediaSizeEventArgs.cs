@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OnlyM.Models
+﻿namespace OnlyM.Models
 {
+    using System;
+
     public class NewMediaSizeEventArgs : EventArgs
     {
         public int Width { get; set; }
-        public int Height { get; set; }
 
+        public int Height { get; set; }
     }
 }
