@@ -3,7 +3,6 @@
     using System.Windows;
     using System.Windows.Input;
     using CommonServiceLocator;
-    using GalaSoft.MvvmLight.Messaging;
     using OnlyM.Core.Services.Options;
     using OnlyM.CoreSys.Services.Snackbar;
     using OnlyM.CoreSys.WindowsPositioning;

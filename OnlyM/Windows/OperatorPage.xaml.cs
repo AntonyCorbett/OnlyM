@@ -5,7 +5,6 @@
     using System.Windows.Controls;
     using System.Windows.Input;
     using CommonServiceLocator;
-    using GalaSoft.MvvmLight.Messaging;
     using OnlyM.PubSubMessages;
     using OnlyM.Services.DragAndDrop;
     using OnlyM.ViewModel;

@@ -5,8 +5,7 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media.Animation;
-    using GalaSoft.MvvmLight.Threading;
-
+    
     internal class WebNavHeaderAdmin
     {
         private const int WebHeaderHeight = 76;

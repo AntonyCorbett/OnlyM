@@ -7,8 +7,6 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Forms;
-    using GalaSoft.MvvmLight.Messaging;
-    using GalaSoft.MvvmLight.Threading;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.CommandLine;
     using OnlyM.Core.Services.Database;

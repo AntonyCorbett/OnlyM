@@ -1,7 +1,6 @@
 namespace OnlyM.ViewModel
 {
     using CommonServiceLocator;
-    using GalaSoft.MvvmLight.Ioc;
     using OnlyM.Core.Services.CommandLine;
     using OnlyM.Core.Services.Database;
     using OnlyM.Core.Services.Media;

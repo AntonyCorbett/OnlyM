@@ -1,10 +1,11 @@
-﻿namespace OnlyM.Models
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+
+namespace OnlyM.Models
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Windows.Media;
-    using GalaSoft.MvvmLight;
     using OnlyM.Core.Extensions;
     using OnlyM.Core.Models;
 

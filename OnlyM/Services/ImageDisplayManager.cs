@@ -10,7 +10,6 @@
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Threading;
-    using GalaSoft.MvvmLight.Threading;
     using OnlyM.Core.Extensions;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Options;

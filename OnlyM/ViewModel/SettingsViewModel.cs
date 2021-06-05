@@ -1,4 +1,7 @@
-﻿namespace OnlyM.ViewModel
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+
+namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -6,9 +9,6 @@
     using System.Globalization;
     using System.IO;
     using System.Linq;
-    using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.CommandWpf;
-    using GalaSoft.MvvmLight.Messaging;
     using Microsoft.WindowsAPICodePack.Dialogs;
     using OnlyM.AutoUpdates;
     using OnlyM.Core.Extensions;
@@ -25,7 +25,7 @@
     using Serilog.Events;
     
     // ReSharper disable once UnusedMember.Global
-    internal class SettingsViewModel : ViewModelBase
+    internal class SettingsViewModel : ObservableObject
     {
         private readonly IPageService _pageService;
         private readonly IMonitorsService _monitorsService;

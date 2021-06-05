@@ -1,4 +1,8 @@
-﻿namespace OnlyM.ViewModel
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+using WpfApp1;
+
+namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -7,10 +11,6 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.CommandWpf;
-    using GalaSoft.MvvmLight.Messaging;
-    using GalaSoft.MvvmLight.Threading;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Media;
     using OnlyM.Core.Services.Options;
@@ -31,7 +31,7 @@
     using Serilog;
 
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal sealed class OperatorViewModel : ViewModelBase, IDisposable
+    internal sealed class OperatorViewModel : ObservableObject, IDisposable
     {
         private readonly IMediaProviderService _mediaProviderService;
         private readonly IThumbnailService _thumbnailService;

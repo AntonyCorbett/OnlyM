@@ -11,7 +11,6 @@
     using System.Windows.Media.Animation;
     using CefSharp;
     using CefSharp.Wpf;
-    using GalaSoft.MvvmLight.Threading;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Database;
     using OnlyM.Core.Services.Monitors;

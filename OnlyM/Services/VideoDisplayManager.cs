@@ -4,7 +4,6 @@
     using System.Diagnostics;
     using System.Threading.Tasks;
     using System.Windows.Controls;
-    using GalaSoft.MvvmLight.Messaging;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Options;
     using OnlyM.Core.Subtitles;

@@ -1,17 +1,18 @@
-﻿namespace OnlyM.ViewModel
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+
+namespace OnlyM.ViewModel
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Media;
-    using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.CommandWpf;
     using MaterialDesignThemes.Wpf;
     using OnlyM.Core.Extensions;
     using OnlyM.Models;
     using OnlyM.Services.StartOffsetStorage;
 
-    internal class StartOffsetViewModel : ViewModelBase
+    internal class StartOffsetViewModel : ObservableObject
     {
         private const int MaxRecentItemsCount = 10;
 

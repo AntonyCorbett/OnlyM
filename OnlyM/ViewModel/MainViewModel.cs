@@ -1,3 +1,6 @@
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+
 namespace OnlyM.ViewModel
 {
     using System;
@@ -7,9 +10,6 @@ namespace OnlyM.ViewModel
     using System.Windows;
     using System.Windows.Interop;
     using System.Windows.Media;
-    using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.CommandWpf;
-    using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
     using OnlyM.AutoUpdates;
     using OnlyM.Core.Models;
@@ -27,7 +27,7 @@ namespace OnlyM.ViewModel
     using Serilog.Events;
     
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class MainViewModel : ViewModelBase
+    internal class MainViewModel : ObservableObject
     {
         private readonly IPageService _pageService;
         private readonly IOptionsService _optionsService;

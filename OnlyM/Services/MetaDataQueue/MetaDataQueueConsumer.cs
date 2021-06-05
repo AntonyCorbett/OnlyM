@@ -5,7 +5,6 @@
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
-    using GalaSoft.MvvmLight.Threading;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Media;
     using OnlyM.Core.Services.Options;

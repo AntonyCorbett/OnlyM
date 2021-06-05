@@ -1,446 +1,142 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7873ABB8-C3F2-455A-9B2B-64FCD65B378A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>OnlyM</RootNamespace>
-    <AssemblyName>OnlyM</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\OnlyM.ruleset</CodeAnalysisRuleSet>
-    <NoWarn>SA1008;SA1009</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\OnlyM.ruleset</CodeAnalysisRuleSet>
-    <NoWarn>SA1008;SA1009</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWPF>true</UseWPF>
     <ApplicationIcon>icon3.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <NoWarn>SA1008;SA1009</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>..\OnlyM.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <NoWarn>SA1008;SA1009</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>..\OnlyM.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="TagLibSharp, Version=2.2.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
-      <HintPath>..\packages\TagLibSharp.2.2.0\lib\net45\TagLibSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <None Remove="icon3.ico" />
+    <None Remove="Images\freeze2.png" />
   </ItemGroup>
+
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="..\SolutionInfo.cs">
-      <Link>Properties\SolutionInfo.cs</Link>
-    </Compile>
-    <Compile Include="AutoUpdates\VersionDetection.cs" />
-    <Compile Include="Controls\PathTextBlock.cs" />
-    <Compile Include="Dialogs\StartOffsetDialog.xaml.cs">
-      <DependentUpon>StartOffsetDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MediaElementAdaption\IMediaElement.cs" />
-    <Compile Include="MediaElementAdaption\LogMessageEventArgs.cs" />
-    <Compile Include="MediaElementAdaption\MediaElementMediaFoundation.cs" />
-    <Compile Include="MediaElementAdaption\MediaElementUnoSquare.cs" />
-    <Compile Include="MediaElementAdaption\PositionChangedEventArgs.cs" />
-    <Compile Include="MediaElementAdaption\RenderSubtitlesEventArgs.cs" />
-    <Compile Include="Models\FileCopyStatus.cs" />
-    <Compile Include="Models\FilesCopyProgressEventArgs.cs" />
-    <Compile Include="Models\ImageFade.cs" />
-    <Compile Include="Models\ImageFadeSpeed.cs" />
-    <Compile Include="Models\MirrorHotKeyItem.cs" />
-    <Compile Include="Models\LanguageItem.cs" />
-    <Compile Include="Models\LoggingLevel.cs" />
-    <Compile Include="Models\MagnifierShapeItem.cs" />
-    <Compile Include="Models\MagnifierSizeItem.cs" />
-    <Compile Include="Models\MediaChange.cs" />
-    <Compile Include="Models\MediaItem.cs" />
-    <Compile Include="Models\MediaEventArgs.cs" />
-    <Compile Include="Models\MediaNearEndEventArgs.cs" />
-    <Compile Include="Models\MonitorItem.cs" />
-    <Compile Include="Models\PdfOptions.cs" />
-    <Compile Include="Models\PdfViewStyle.cs" />
-    <Compile Include="Models\PdfViewStyleAndDescription.cs" />
-    <Compile Include="Models\RecentTimesItem.cs" />
-    <Compile Include="Models\RenderingMethodItem.cs" />
-    <Compile Include="Models\ScreenMarginSide.cs" />
-    <Compile Include="Models\SlideTransition.cs" />
-    <Compile Include="Models\SlideTransitionEventArgs.cs" />
-    <Compile Include="Models\SubtitleFileEventArgs.cs" />
-    <Compile Include="Services\Dialogs\DialogService.cs" />
-    <Compile Include="Services\Dialogs\IDialogService.cs" />
-    <Compile Include="Services\MediaWindowPositionHelper.cs" />
-    <Compile Include="Services\PdfOptions\PdfOptionsService.cs" />
-    <Compile Include="Services\PdfOptions\IPdfOptionsService.cs" />
-    <Compile Include="Services\StartOffsetStorage\IStartOffsetStorageService.cs" />
-    <Compile Include="Services\StartOffsetStorage\StartOffsetStorageService.cs" />
-    <Compile Include="Services\WebNavHeaderManager\WebNavHeaderStatus.cs" />
-    <Compile Include="Models\WindowVisibilityChangedEventArgs.cs" />
-    <Compile Include="PubSubMessages\MediaListUpdatedMessage.cs" />
-    <Compile Include="PubSubMessages\MediaListUpdatingMessage.cs" />
-    <Compile Include="PubSubMessages\MirrorWindowMessage.cs" />
-    <Compile Include="PubSubMessages\ShutDownMessage.cs" />
-    <Compile Include="PubSubMessages\SubtitleFileMessage.cs" />
-    <Compile Include="Services\AudioManager.cs" />
-    <Compile Include="Services\DragAndDrop\DragAndDropService.cs" />
-    <Compile Include="Services\DragAndDrop\IDragAndDropService.cs" />
-    <Compile Include="Services\FrozenVideoItems\FrozenVideosService.cs" />
-    <Compile Include="Services\FrozenVideoItems\IFrozenVideosService.cs" />
-    <Compile Include="Services\HiddenMediaItems\HiddenMediaItemsService.cs" />
-    <Compile Include="Services\HiddenMediaItems\IHiddenMediaItemsService.cs" />
-    <Compile Include="Services\ImagesCache\ImageAndLastUsed.cs" />
-    <Compile Include="Services\ImagesCache\ImageCache.cs" />
-    <Compile Include="Services\ImageDisplayManager.cs" />
-    <Compile Include="Services\JwLibHelperNativeMethods.cs" />
-    <Compile Include="Services\JwLibHelper.cs" />
-    <Compile Include="Services\MediaChanging\ActiveMediaItemsService.cs" />
-    <Compile Include="Services\MediaChanging\IActiveMediaItemsService.cs" />
-    <Compile Include="Services\MediaChanging\IMediaStatusChangingService.cs" />
-    <Compile Include="Services\MediaChanging\MediaStatusChangingService.cs" />
-    <Compile Include="Services\MetaDataQueue\ItemMetaDataPopulatedEventArgs.cs" />
-    <Compile Include="Services\Pages\IPageService.cs" />
-    <Compile Include="Services\Pages\NavigationEventArgs.cs" />
-    <Compile Include="Services\Pages\PageService.cs" />
-    <Compile Include="Services\MetaDataQueue\MetaDataQueueConsumer.cs" />
-    <Compile Include="Services\MetaDataQueue\MetaDataQueueProducer.cs" />
-    <Compile Include="Services\RecentlyUsedFolders.cs" />
-    <Compile Include="Services\ScreenPositionHelper.cs" />
-    <Compile Include="Services\SubtitleFileGenerator.cs" />
-    <Compile Include="Services\VideoDisplayManager.cs" />
-    <Compile Include="Services\WaveStreamExtensions.cs" />
-    <Compile Include="Services\WebBrowser\BrowserLifeSpanHandler.cs" />
-    <Compile Include="Services\WebBrowser\PdfSchemeHandler.cs" />
-    <Compile Include="Services\WebBrowser\PdfSchemeHandlerFactory.cs" />
-    <Compile Include="Services\WebBrowser\WebBrowserProgressEventArgs.cs" />
-    <Compile Include="Services\WebDisplayManager.cs" />
-    <Compile Include="Services\WebNavHeaderManager\WebNavHeaderAdmin.cs" />
-    <Compile Include="ViewModel\MediaViewModel.cs" />
-    <Compile Include="ViewModel\OperatorViewModel.cs" />
-    <Compile Include="ViewModel\SettingsViewModel.cs" />
-    <Compile Include="ViewModel\StartOffsetViewModel.cs" />
-    <Compile Include="Windows\MediaWindow.xaml.cs">
-      <DependentUpon>MediaWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\OperatorPage.xaml.cs">
-      <DependentUpon>OperatorPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\SettingsPage.xaml.cs">
-      <DependentUpon>SettingsPage.xaml</DependentUpon>
-    </Compile>
-    <Page Include="Dialogs\StartOffsetDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="Windows\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Windows\MediaWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\OperatorPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\SettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.bg-BG.resx" />
-    <EmbeddedResource Include="Properties\Resources.ca-ES.resx" />
-    <EmbeddedResource Include="Properties\Resources.cs-CZ.resx" />
-    <EmbeddedResource Include="Properties\Resources.de-DE.resx" />
-    <EmbeddedResource Include="Properties\Resources.el-GR.resx" />
-    <EmbeddedResource Include="Properties\Resources.en-US.resx" />
-    <EmbeddedResource Include="Properties\Resources.es-ES.resx" />
-    <EmbeddedResource Include="Properties\Resources.es-MX.resx" />
-    <EmbeddedResource Include="Properties\Resources.fi-FI.resx" />
-    <EmbeddedResource Include="Properties\Resources.fr-FR.resx" />
-    <EmbeddedResource Include="Properties\Resources.hr-HR.resx" />
-    <EmbeddedResource Include="Properties\Resources.hu-HU.resx" />
-    <EmbeddedResource Include="Properties\Resources.it-IT.resx" />
-    <EmbeddedResource Include="Properties\Resources.ka-GE.resx" />
-    <EmbeddedResource Include="Properties\Resources.lv-LV.resx" />
-    <EmbeddedResource Include="Properties\Resources.nl-NL.resx" />
-    <EmbeddedResource Include="Properties\Resources.no-NO.resx" />
-    <EmbeddedResource Include="Properties\Resources.no.resx" />
-    <EmbeddedResource Include="Properties\Resources.pap-PAP.resx" />
-    <EmbeddedResource Include="Properties\Resources.pap.resx" />
-    <EmbeddedResource Include="Properties\Resources.pl-PL.resx" />
-    <EmbeddedResource Include="Properties\Resources.pt-BR.resx" />
-    <EmbeddedResource Include="Properties\Resources.pt-PT.resx" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.ro-RO.resx" />
-    <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
-    <EmbeddedResource Include="Properties\Resources.sk-SK.resx" />
-    <EmbeddedResource Include="Properties\Resources.sv-SE.resx" />
-    <EmbeddedResource Include="Properties\Resources.tr-TR.resx" />
-    <EmbeddedResource Include="Properties\Resources.vi-VN.resx" />
-    <None Include="..\.editorconfig">
-      <Link>.editorconfig</Link>
-    </None>
-    <None Include="app.manifest" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
+    <Content Include="..\FFmpeg\LICENSE.txt" Link="FFmpeg\LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\FFmpeg\avcodec-58.dll">
-      <Link>FFmpeg\avcodec-58.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\FFmpeg\avdevice-58.dll">
-      <Link>FFmpeg\avdevice-58.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\FFmpeg\avfilter-7.dll">
-      <Link>FFmpeg\avfilter-7.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\FFmpeg\avformat-58.dll">
-      <Link>FFmpeg\avformat-58.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\FFmpeg\avutil-56.dll">
-      <Link>FFmpeg\avutil-56.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\FFmpeg\ffmpeg.exe">
-      <Link>FFmpeg\ffmpeg.exe</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\FFmpeg\ffplay.exe">
-      <Link>FFmpeg\ffplay.exe</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\FFmpeg\ffprobe.exe">
-      <Link>FFmpeg\ffprobe.exe</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="icon3.ico" />
     <Resource Include="Images\freeze2.png" />
-    <None Include="Resources\blank.png" />
-    <Resource Include="..\FFmpeg\LICENSE.txt">
-      <Link>FFmpeg\LICENSE.txt</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Content Include="..\FFmpeg\postproc-55.dll">
-      <Link>FFmpeg\postproc-55.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\FFmpeg\swresample-3.dll">
-      <Link>FFmpeg\swresample-3.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\FFmpeg\swscale-5.dll">
-      <Link>FFmpeg\swscale-5.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
+
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.7">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.7 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
+    <Compile Update="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Windows\MainWindow.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Windows\MediaWindow.xaml.cs">
+      <DependentUpon>MediaWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Windows\OperatorPage.xaml.cs">
+      <DependentUpon>OperatorPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Windows\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="AutoMapper">
-      <Version>8.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="CefSharp.Wpf">
-      <Version>71.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="CommonServiceLocator">
-      <Version>2.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="FFME.Windows">
-      <Version>4.0.270</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="FFmpeg.AutoGen">
-      <Version>4.0.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="FluentCommandLineParser">
-      <Version>1.4.3</Version>
-    </PackageReference>
-    <PackageReference Include="ImageProcessor">
-      <Version>2.7.0.100</Version>
-    </PackageReference>
-    <PackageReference Include="MaterialDesignColors">
-      <Version>1.2.0</Version>
-    </PackageReference>
-    <PackageReference Include="MaterialDesignThemes">
-      <Version>2.6.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.WindowsAPICodePack-Core">
-      <Version>1.1.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.WindowsAPICodePack-Shell">
-      <Version>1.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="MvvmLight">
-      <Version>5.4.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="MvvmLightLibs">
-      <Version>5.4.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="NAudio">
-      <Version>1.9.0</Version>
-    </PackageReference>
-    <PackageReference Include="Serilog">
-      <Version>2.8.0</Version>
-    </PackageReference>
-    <PackageReference Include="Serilog.Sinks.Console">
-      <Version>3.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="Serilog.Sinks.File">
-      <Version>4.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Serilog.Sinks.RollingFile">
-      <Version>3.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="StyleCop.Analyzers">
-      <Version>1.1.118</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="System.Data.SQLite.Core">
-      <Version>1.0.112.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.ValueTuple">
-      <Version>4.5.0</Version>
-    </PackageReference>
-    <PackageReference Include="TagLibSharp">
-      <Version>2.2.0</Version>
-    </PackageReference>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>copy "$(ProjectDir)Properties\Resources.no-NO.resx" "$(ProjectDir)Properties\Resources.no.resx"
-copy "$(ProjectDir)Properties\Resources.pap-PAP.resx" "$(ProjectDir)Properties\Resources.pap.resx"</PreBuildEvent>
-  </PropertyGroup>
+
+  <ItemGroup>
+    <Page Update="Windows\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\MediaWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\OperatorPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="FFmpeg\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\FFmpeg\avcodec-58.dll" Link="FFmpeg\avcodec-58.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\FFmpeg\avdevice-58.dll" Link="FFmpeg\avdevice-58.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\FFmpeg\avfilter-7.dll" Link="FFmpeg\avfilter-7.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\FFmpeg\avformat-58.dll" Link="FFmpeg\avformat-58.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\FFmpeg\avutil-56.dll" Link="FFmpeg\avutil-56.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\FFmpeg\ffmpeg.exe" Link="FFmpeg\ffmpeg.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\FFmpeg\ffplay.exe" Link="FFmpeg\ffplay.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\FFmpeg\ffprobe.exe" Link="FFmpeg\ffprobe.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\FFmpeg\postproc-55.dll" Link="FFmpeg\postproc-55.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\FFmpeg\swresample-3.dll" Link="FFmpeg\swresample-3.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\FFmpeg\swscale-5.dll" Link="FFmpeg\swscale-5.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CefSharp.Wpf.NETCore" Version="90.6.70" />
+    <PackageReference Include="FFME.Windows" Version="4.3.340" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
+    <PackageReference Include="NAudio" Version="2.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OnlyM.Core\OnlyM.Core.csproj" />
+    <ProjectReference Include="..\OnlyM.CustomControls\OnlyM.CustomControls.csproj" />
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="copy &quot;$(ProjectDir)Properties\Resources.no-NO.resx&quot; &quot;$(ProjectDir)Properties\Resources.no.resx&quot;&#xD;&#xA;copy &quot;$(ProjectDir)Properties\Resources.pap-PAP.resx&quot; &quot;$(ProjectDir)Properties\Resources.pap.resx&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <EditorConfigFiles Update="D:\ProjectsPersonal\OnlyM\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,6 @@
-﻿namespace OnlyM.MediaElementAdaption
+﻿using Unosquare.FFME.Common;
+
+namespace OnlyM.MediaElementAdaption
 {
     using System;
     using System.Threading.Tasks;
@@ -6,8 +8,7 @@
     using OnlyM.Core.Models;
     using OnlyM.Core.Utils;
     using Serilog.Events;
-    using Unosquare.FFME.Shared;
-
+    
     internal sealed class MediaElementUnoSquare : IMediaElement
     {
         private readonly Unosquare.FFME.MediaElement _mediaElement;
@@ -26,13 +27,13 @@
             _mediaElement.MessageLogged += HandleMessageLogged;
         }
 
-        public event EventHandler<RoutedEventArgs> MediaOpened;
+        public event EventHandler<MediaOpenedEventArgs> MediaOpened;
 
-        public event EventHandler<RoutedEventArgs> MediaClosed;
+        public event EventHandler<EventArgs> MediaClosed;
 
-        public event EventHandler<RoutedEventArgs> MediaEnded;
+        public event EventHandler<EventArgs> MediaEnded;
 
-        public event EventHandler<ExceptionRoutedEventArgs> MediaFailed;
+        public event EventHandler<MediaFailedEventArgs> MediaFailed;
 
         public event EventHandler<RenderSubtitlesEventArgs> RenderingSubtitles;
 
@@ -46,7 +47,7 @@
             set => _mediaElement.Position = value;
         }
 
-        public Duration NaturalDuration => _mediaElement.NaturalDuration;
+        public Duration NaturalDuration => new(_mediaElement.NaturalDuration ?? default);
 
         public FrameworkElement FrameworkElement => _mediaElement;
 
@@ -62,7 +63,7 @@
 
             if (_mediaElement.Source != mediaPath)
             {
-                _mediaElement.Source = mediaPath;
+                await _mediaElement.Open(mediaPath);
             }
             else
             {
@@ -70,16 +71,16 @@
             }
         }
 
-        public Task Pause()
+        public async Task Pause()
         {
             IsPaused = true;
-            return _mediaElement.Pause();
+            await _mediaElement.Pause();
         }
 
-        public Task Close()
+        public async Task Close()
         {
             IsPaused = false;
-            return _mediaElement.Close();
+            await _mediaElement.Close();
         }
 
         public void UnsubscribeEvents()
@@ -93,40 +94,40 @@
             _mediaElement.MessageLogged -= HandleMessageLogged;
         }
 
-        private async void HandleMediaOpened(object sender, RoutedEventArgs e)
+        private async void HandleMediaOpened(object sender, MediaOpenedEventArgs e)
         {
             await _mediaElement.Play();
             MediaOpened?.Invoke(sender, e);
         }
 
-        private void HandleMediaClosed(object sender, RoutedEventArgs e)
+        private void HandleMediaClosed(object sender, EventArgs e)
         {
             MediaClosed?.Invoke(sender, e);
         }
 
-        private void HandleMediaEnded(object sender, RoutedEventArgs e)
+        private void HandleMediaEnded(object sender, EventArgs e)
         {
             MediaEnded?.Invoke(sender, e);
         }
 
-        private void HandleMediaFailed(object sender, ExceptionRoutedEventArgs e)
+        private void HandleMediaFailed(object sender, MediaFailedEventArgs e)
         {
             MediaFailed?.Invoke(sender, e);
         }
 
-        private void HandleRenderingSubtitles(object sender, Unosquare.FFME.Events.RenderingSubtitlesEventArgs e)
+        private void HandleRenderingSubtitles(object sender, RenderingSubtitlesEventArgs e)
         {
             var args = new RenderSubtitlesEventArgs { Cancel = e.Cancel };
             RenderingSubtitles?.Invoke(sender, args);
             e.Cancel = args.Cancel;
         }
 
-        private void HandlePositionChanged(object sender, Unosquare.FFME.Events.PositionChangedRoutedEventArgs e)
+        private void HandlePositionChanged(object sender, Unosquare.FFME.Common.PositionChangedEventArgs e)
         {
             PositionChanged?.Invoke(sender, new PositionChangedEventArgs(MediaItemId, e.Position));
         }
 
-        private void HandleMessageLogged(object sender, Unosquare.FFME.Events.MediaLogMessageEventArgs e)
+        private void HandleMessageLogged(object sender, MediaLogMessageEventArgs e)
         {
             var level = LogEventLevel.Information;
 

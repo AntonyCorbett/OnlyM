@@ -1,16 +1,17 @@
-﻿namespace OnlyM.ViewModel
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+
+namespace OnlyM.ViewModel
 {
     using System;
     using System.Windows;
     using CefSharp.Wpf;
-    using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.CommandWpf;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Options;
     using OnlyM.CustomControls.MagnifierControl;
 
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class MediaViewModel : ViewModelBase
+    internal class MediaViewModel : ObservableObject
     {
         private readonly IOptionsService _optionsService;
         private string _subtitleText;
