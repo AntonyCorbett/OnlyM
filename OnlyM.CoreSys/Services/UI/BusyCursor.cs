@@ -1,9 +1,10 @@
-﻿namespace OnlyM.CoreSys.Services.UI
+﻿using System.Windows;
+
+namespace OnlyM.CoreSys.Services.UI
 {
     using System;
     using System.Threading;
     using System.Windows.Input;
-    using GalaSoft.MvvmLight.Threading;
 
     public sealed class BusyCursor : IDisposable
     {
@@ -11,7 +12,7 @@
         
         public BusyCursor()
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 Interlocked.Increment(ref busyCount);
                 StatusChangedEvent?.Invoke(this, EventArgs.Empty);
@@ -28,7 +29,7 @@
 
         public void Dispose()
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 Interlocked.Decrement(ref busyCount);
                 StatusChangedEvent?.Invoke(this, EventArgs.Empty);

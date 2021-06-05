@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Core.Services.Media
+﻿using Microsoft.WindowsAPICodePack.Shell;
+
+namespace OnlyM.Core.Services.Media
 {
     using System;
     using System.Drawing;
@@ -7,7 +9,6 @@
     using System.Windows;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
-    using Microsoft.WindowsAPICodePack.Shell;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Database;
     using OnlyM.Core.Services.Options;

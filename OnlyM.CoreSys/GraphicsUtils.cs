@@ -1,4 +1,6 @@
-﻿namespace OnlyM.CoreSys
+﻿using PhotoSauce.MagicScaler;
+
+namespace OnlyM.CoreSys
 {
     using System;
     using System.Diagnostics;
@@ -9,8 +11,6 @@
     using System.Text;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
-    using ImageProcessor;
-    using ImageProcessor.Imaging;
     using Serilog;
     using TagLib.Image;
 
@@ -25,20 +25,12 @@
             {
                 if (ImageRequiresRotation(itemFilePath))
                 {
-                    byte[] photoBytes = System.IO.File.ReadAllBytes(itemFilePath);
+                    var settings = new ProcessImageSettings { OrientationMode = OrientationMode.Normalize };
 
-                    using (var inStream = new MemoryStream(photoBytes))
-                    {
-                        using (var imageFactory = new ImageFactory())
-                        {
-                            imageFactory
-                                .Load(inStream)
-                                .AutoRotate()
-                                .Save(itemFilePath);
-
-                            return true;
-                        }
-                    }
+                    using var outStream = new MemoryStream();
+                    MagicImageProcessor.ProcessImage(itemFilePath, outStream, settings);
+                    outStream.Seek(0L, SeekOrigin.Begin);
+                    System.IO.File.WriteAllBytes(itemFilePath, outStream.ToArray());
                 }
             }
             catch (Exception ex)
@@ -66,27 +58,14 @@
         {
             try
             {
-                bool requiresRotation = ImageRequiresRotation(itemFilePath);
+                AutoRotateIfRequired(itemFilePath);
 
-                using (var imageFactory = new ImageFactory())
-                {
-                    var resizeLayer = new ResizeLayer(new Size(width, height), shouldPad ? ResizeMode.Pad : ResizeMode.Max);
+                var settings = new ProcessImageSettings { Width = width, Height = height };
 
-                    imageFactory.Load(itemFilePath);
-
-                    if (requiresRotation)
-                    {
-                        imageFactory.AutoRotate();
-                    }
-
-                    imageFactory.Resize(resizeLayer);
-
-                    using (var ms = new MemoryStream())
-                    {
-                        imageFactory.Save(ms);
-                        return ms.ToArray();
-                    }
-                }
+                using var outStream = new MemoryStream();
+                MagicImageProcessor.ProcessImage(itemFilePath, outStream, settings);
+                outStream.Seek(0L, SeekOrigin.Begin);
+                return outStream.ToArray();
             }
             catch (Exception ex)
             {
@@ -469,25 +448,23 @@
 
         private static BitmapImage FixBadDpi(string imageFile)
         {
-            using (var imageFactory = new ImageFactory())
-            {
-                using (MemoryStream outStream = new MemoryStream())
-                {
-                    imageFactory
-                        .Load(imageFile)
-                        .Resolution(96, 96)
-                        .Save(outStream);
+            var settings = new ProcessImageSettings { DpiX = 96, DpiY = 96 };
 
-                    var bitmapImage = new BitmapImage();
+            using var outStream = new MemoryStream();
+            MagicImageProcessor.ProcessImage(imageFile, outStream, settings);
+            outStream.Seek(0L, SeekOrigin.Begin);
+            System.IO.File.WriteAllBytes(imageFile, outStream.ToArray());
 
-                    bitmapImage.BeginInit();
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.StreamSource = outStream;
-                    bitmapImage.EndInit();
+            outStream.Seek(0L, SeekOrigin.Begin);
 
-                    return bitmapImage;
-                }
-            }
+            var bitmapImage = new BitmapImage();
+
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.StreamSource = outStream;
+            bitmapImage.EndInit();
+
+            return bitmapImage;
         }
     }
 }

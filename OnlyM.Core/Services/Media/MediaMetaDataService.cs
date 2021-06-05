@@ -1,12 +1,13 @@
-﻿namespace OnlyM.Core.Services.Media
+﻿using Unosquare.FFME.Common;
+
+namespace OnlyM.Core.Services.Media
 {
     using System;
     using System.IO;
     using OnlyM.Core.Models;
     using OnlyM.Core.Utils;
     using Serilog;
-    using Unosquare.FFME.Shared;
-
+    
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MediaMetaDataService : IMediaMetaDataService
     {
@@ -61,12 +62,12 @@
 
         private MediaMetaData GetVideoMetaData(string mediaItemFilePath, string ffmpegFolder)
         {
-            Unosquare.FFME.MediaEngine.FFmpegDirectory = ffmpegFolder;
-            Unosquare.FFME.MediaEngine.LoadFFmpeg();
+            Unosquare.FFME.Library.FFmpegDirectory = ffmpegFolder;
+            Unosquare.FFME.Library.LoadFFmpeg();
 
             try
             {
-                var info = Unosquare.FFME.MediaEngine.RetrieveMediaInfo(FFmpegUtils.FixUnicodeString(mediaItemFilePath));
+                var info = Unosquare.FFME.Library.RetrieveMediaInfo(FFmpegUtils.FixUnicodeString(mediaItemFilePath));
 
                 string title = null;
                 info.Metadata?.TryGetValue("title", out title);
