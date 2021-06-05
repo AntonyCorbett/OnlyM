@@ -1,0 +1,575 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="APP_VER" xml:space="preserve">
+    <value>OnlyM programmas versija: {0}</value>
+    <comment>See Settings =&gt; Images. Please retain the "{0}" - it's a placeholder for the version number</comment>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
+  <data name="blank" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\blank.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CONFIRM_STOP_MEDIA" xml:space="preserve">
+    <value>Vai tiešām apstādināt atskaņošanu?</value>
+    <comment>Prompt that is displayed when you attempt to stop playback</comment>
+  </data>
+  <data name="COPYING_ERROR" xml:space="preserve">
+    <value>Radās kļūda!</value>
+    <comment>Message displayed when there is an error copying media to the OnlyM media folder</comment>
+  </data>
+  <data name="FILES_COPIED" xml:space="preserve">
+    <value>{0} faili pārkopēti</value>
+    <comment>Displayed as a notification message when several files are dropped onto the media list. Please leve the placeholder as it is.</comment>
+  </data>
+  <data name="FILE_COPIED" xml:space="preserve">
+    <value>Fails ir pārkopēts</value>
+    <comment>Displayed as a notification message when a single file is dropped onto the media list.</comment>
+  </data>
+  <data name="MEDIA_ACTIVE" xml:space="preserve">
+    <value>Nevar aizvērt notiekot atskaņošanai!</value>
+    <comment>This is the notification displayed if you try to close OnlyM when media is playing.</comment>
+  </data>
+  <data name="MONITOR_NONE" xml:space="preserve">
+    <value>Nav izvēlēts</value>
+    <comment>Default (blank) menu item in Settings =&gt; Display =&gt; Media monitor</comment>
+  </data>
+  <data name="NEW_UPDATE_AVAILABLE" xml:space="preserve">
+    <value>Pieejami atjauninājumi!</value>
+    <comment>Notification text displayed when there is a new version to download (can be translated the same as NEW_VERSION)</comment>
+  </data>
+  <data name="NO_SUPPORTED_FILES" xml:space="preserve">
+    <value>Nevarēja atrast atbalstītos media failus!</value>
+    <comment>Notification displayed if you drag and drop a file (or files) of a type that is not supported.</comment>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>LABI</value>
+  </data>
+  <data name="VIEW" xml:space="preserve">
+    <value>PARĀDĪT</value>
+    <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
+  </data>
+  <data name="YES" xml:space="preserve">
+    <value>JĀ</value>
+    <comment>Caption of the notification bar button to confirm that media should be stopped.</comment>
+  </data>
+  <data name="BLANK_SCREEN" xml:space="preserve">
+    <value>Melns ekrāns</value>
+    <comment>Title of the "Blank Screen" item</comment>
+  </data>
+  <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
+    <value>Izvēlēties media mapi</value>
+    <comment>Title of the "Open Folder" dialog that is displayed when you click the folder button in Settings =&gt; Media Files</comment>
+  </data>
+  <data name="SETTINGS" xml:space="preserve">
+    <value>Iestatījumi</value>
+    <comment>Tooltip for the main page, Settings button</comment>
+  </data>
+  <data name="SETTINGS_DISABLED" xml:space="preserve">
+    <value>Administrators ir bloķējis iestatījumus!</value>
+    <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
+  </data>
+  <data name="FOLDER" xml:space="preserve">
+    <value>Atvērt media mapi</value>
+    <comment>Tooltip on the main page Folder button</comment>
+  </data>
+  <data name="FOLDER_DISABLED" xml:space="preserve">
+    <value>Administrators ir bloķējis media mapi!</value>
+    <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
+  </data>
+  <data name="NO_DESELECT_MONITOR" xml:space="preserve">
+    <value>Nevar noņemt monitoru, kamēr tiek parādīta media</value>
+    <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
+  </data>
+  <data name="CONTAINS_X_SLIDES" xml:space="preserve">
+    <value>(satur {0} slaidus)</value>
+    <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
+  </data>
+  <data name="SLIDE_X_OF_Y" xml:space="preserve">
+    <value>slaids {0} no {1}</value>
+    <comment>Displayed when showing a slideshow to indicate which slide is being viewed. Please retain the placeholders.</comment>
+  </data>
+  <data name="CONTAINS_X_ROLLING_SLIDES" xml:space="preserve">
+    <value>(satur {0} mainīgos slaidus)</value>
+    <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
+  </data>
+  <data name="ROLLING_SLIDE_X_OF_Y" xml:space="preserve">
+    <value>mainīgs slaids {0} no {1}</value>
+    <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
+  </data>
+  <data name="MEDIA_MONITOR" xml:space="preserve">
+    <value>Monitors</value>
+    <comment>See Settings =&gt; Display</comment>
+  </data>
+  <data name="SECTION_DISPLAY" xml:space="preserve">
+    <value>EKRĀNS</value>
+    <comment>Section title for Settings =&gt; Display</comment>
+  </data>
+  <data name="MEDIA_FOLDER" xml:space="preserve">
+    <value>Media mape</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="SECTION_MEDIA_FILES" xml:space="preserve">
+    <value>MEDIA FAILI</value>
+    <comment>Section title for Settings =&gt; Media Files</comment>
+  </data>
+  <data name="MAX_ITEMS" xml:space="preserve">
+    <value>Maksimālais failu skaits</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
+    <value>Media mapi ir iestatīta no komandrindas</value>
+    <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
+  </data>
+  <data name="ALLOW_PAUSE" xml:space="preserve">
+    <value>Atļaut apturēšanu</value>
+    <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
+  </data>
+  <data name="ALLOW_SCRUB" xml:space="preserve">
+    <value>Atļaut vietas meklēšanu, kamēr apturēts</value>
+    <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
+  </data>
+  <data name="ALLOW_SEEK" xml:space="preserve">
+    <value>Atļaut sākumvietas izvēli</value>
+    <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
+  </data>
+  <data name="CACHE_IMAGES" xml:space="preserve">
+    <value>Saglabāt attēlus kešatmiņā (uzlabo veiktspēju, bet lieto vairāk atmiņu)</value>
+    <comment>See Settings =&gt; Images.</comment>
+  </data>
+  <data name="CONFIRM_STOP" xml:space="preserve">
+    <value>Apstiprināt pirms apstādināšanas</value>
+    <comment>See Settings =&gt; Videos and Audio.</comment>
+  </data>
+  <data name="CURRENT_DATE" xml:space="preserve">
+    <value>Pašreizējais datums</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
+  </data>
+  <data name="FADING_SPEED" xml:space="preserve">
+    <value>Pakāpeniskās pārejas ātrums</value>
+    <comment>See Settings =&gt; Images</comment>
+  </data>
+  <data name="FADING_STYLE" xml:space="preserve">
+    <value>Pakāpeniskās pārejas stils</value>
+    <comment>See Settings =&gt; Images</comment>
+  </data>
+  <data name="IMAGE_MARGINS" xml:space="preserve">
+    <value>Attēlu margināli</value>
+    <comment>See Settings =&gt; Margins</comment>
+  </data>
+  <data name="LOGGING_LEVEL" xml:space="preserve">
+    <value>Reģistrēšanas līmenis</value>
+    <comment>See Settings =&gt; Miscellaneous.</comment>
+  </data>
+  <data name="ON_TOP" xml:space="preserve">
+    <value>Galvenais logs vienmēr priekšā</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
+  </data>
+  <data name="PURGE_THUMBS" xml:space="preserve">
+    <value>IZTUKŠOT ATTĒLU KEŠATMIŅU</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="RENDERING_ENGINE" xml:space="preserve">
+    <value>Renderēšanas programma</value>
+    <comment>See Settings =&gt; Videos &amp; Audio</comment>
+  </data>
+  <data name="SECTION_IMAGES" xml:space="preserve">
+    <value>ATTĒLI</value>
+    <comment>Section title for Settings =&gt; Images</comment>
+  </data>
+  <data name="SECTION_MARGINS" xml:space="preserve">
+    <value>MARGINĀLI (procentos no ekrāna izmēriem)</value>
+    <comment>Section title for Settings =&gt; Margins</comment>
+  </data>
+  <data name="SECTION_MISC" xml:space="preserve">
+    <value>DAŽĀDI</value>
+    <comment>Section title for Settings =&gt; Micellanesous</comment>
+  </data>
+  <data name="SECTION_VIDEO_AUDIO" xml:space="preserve">
+    <value>VIDEO &amp; AUDIO</value>
+    <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
+  </data>
+  <data name="SHOW_FREEZE" xml:space="preserve">
+    <value>Parādīt komandu "Iesaldēt" komandpanelī</value>
+    <comment>See Settings =&gt; Videos &amp; Audio</comment>
+  </data>
+  <data name="SHOW_SUBTITLES" xml:space="preserve">
+    <value>Parādīt subtitrus, ja pieejami</value>
+    <comment>See Settings =&gt; Videos &amp; Audio</comment>
+  </data>
+  <data name="VIDEO_MARGINS" xml:space="preserve">
+    <value>Video margināli</value>
+    <comment>See Settings =&gt; Margins</comment>
+  </data>
+  <data name="AUTO_ROTATE" xml:space="preserve">
+    <value>Automātiska pagriešana</value>
+    <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
+  </data>
+  <data name="INCLUDE_BLANK" xml:space="preserve">
+    <value>Parādīt "Melns ekrāns" izvēli</value>
+    <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
+  </data>
+  <data name="JW_COMPAT_MODE" xml:space="preserve">
+    <value>JW Library® atbalsta režīms</value>
+    <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
+  </data>
+  <data name="PERMANENT_BACKDROP" xml:space="preserve">
+    <value>Pastāvīgs fona attēls</value>
+    <comment>See Settings =&gt; Display.</comment>
+  </data>
+  <data name="USE_CMD_PANEL" xml:space="preserve">
+    <value>Ieslēgt komandpaneli</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="USE_THUMBS" xml:space="preserve">
+    <value>Izmantot iegultus sīktēlus, ja pieejami</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="USE_TITLES" xml:space="preserve">
+    <value>Izmantot iegultus nosaukumus, ja pieejami</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="DROP_HERE" xml:space="preserve">
+    <value>Nomest media failus šeit!</value>
+    <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
+  </data>
+  <data name="MEDIA_PAGE" xml:space="preserve">
+    <value>Uz media sarakstu</value>
+    <comment>Tooltip for the Settings page "Back" button </comment>
+  </data>
+  <data name="UNHIDE" xml:space="preserve">
+    <value>PARĀDĪT</value>
+    <comment>If you have hidden any of the media items (using the command panel), an "Unhide" button is displayed on the main page. This is the button caption.</comment>
+  </data>
+  <data name="DISPLAY_HELP" xml:space="preserve">
+    <value>Parādīt palīdzību</value>
+    <comment>Tooltip for the Help button in the main window</comment>
+  </data>
+  <data name="NEW_VERSION" xml:space="preserve">
+    <value>Pieejama jauna versija!</value>
+    <comment>Tooltip for the download button when a new version is ready (can be translated the same as NEW_UPDATE_AVAILABLE)</comment>
+  </data>
+  <data name="DELETE" xml:space="preserve">
+    <value>IZDZĒST</value>
+    <comment>Button label in Command panel</comment>
+  </data>
+  <data name="FREEZE" xml:space="preserve">
+    <value>Iesaldēt</value>
+    <comment>Button label in Command panel. Freeze the video on the final frame.</comment>
+  </data>
+  <data name="HIDE" xml:space="preserve">
+    <value>SLĒPT</value>
+    <comment>Button label in Command panel. Hide the media item.</comment>
+  </data>
+  <data name="PAUSE_FINAL_FRAME" xml:space="preserve">
+    <value>Apstādināt uz pēdējo kadru</value>
+    <comment>Tooltip on Freeze button in Command panel</comment>
+  </data>
+  <data name="WILL_PAUSE" xml:space="preserve">
+    <value>Apstāsies uz pēdējo kadru</value>
+    <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
+  </data>
+  <data name="LANGUAGE" xml:space="preserve">
+    <value>Valoda</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
+  </data>
+  <data name="RESTART_LANGUAGE" xml:space="preserve">
+    <value>Lūdzu restartē OnlyM pēc valodas izmaiņas.</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
+  </data>
+  <data name="GENERATING_SUBTITLES" xml:space="preserve">
+    <value>Veido subtitrus</value>
+    <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
+  </data>
+  <data name="WEB_LOAD_FAIL" xml:space="preserve">
+    <value>Neizdevās atvērt URL-adresi {0} ar kļūdu {1} ({2})</value>
+    <comment>Error message displayed when a web page cannot be loaded.</comment>
+  </data>
+  <data name="LOADING_FRAME" xml:space="preserve">
+    <value>Lejupielādē kadru {0}</value>
+    <comment>Progress message displayed when loading a web page</comment>
+  </data>
+  <data name="WEB_MARGINS" xml:space="preserve">
+    <value>Web margināli</value>
+    <comment>See Settings =&gt; Margins</comment>
+  </data>
+  <data name="SECTION_WEB" xml:space="preserve">
+    <value>WEB</value>
+    <comment>Section title for Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
+    <value>Parādīt palielinātāju</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
+    <value>Palielinātāja forma</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
+    <value>Palielinātāja izmērs</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
+    <value>Palielinātāja palielinājuma līmenis</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
+    <value>Lapas tuvinājuma pakāpe</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="PURGE_WEB_CACHE" xml:space="preserve">
+    <value>IZDZĒST PĀRLŪKA KEŠATMIŅU</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
+    <value>Pārlūkprogrammas kešatmiņa tiks izdzēsta pēc pārstartēšanas.</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
+    <value>Palielinātāja rāmja biezums</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="ALLOW_MIRROR" xml:space="preserve">
+    <value>Atļaut spoguļattēla logu</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
+    <value>Spogulis ieslēgts pēc noklusējuma</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR_ZOOM" xml:space="preserve">
+    <value>Spoguļa tuvinājums</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_LOADING" xml:space="preserve">
+    <value>Notiek ielāde...</value>
+    <comment>Displayed when a web page is loading</comment>
+  </data>
+  <data name="LAUNCHING_MIRROR" xml:space="preserve">
+    <value>Notiek spoguļa atvēršana...</value>
+    <comment>Displayed when mirror window is launching</comment>
+  </data>
+  <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
+    <value>Mainīt spoguļa karsto taustiņu!</value>
+    <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
+  </data>
+  <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
+    <value>Reģistrēšanas līmenis ir augsts!</value>
+    <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
+  </data>
+  <data name="MIRROR_HOTKEY" xml:space="preserve">
+    <value>Spoguļa karstais taustiņš</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR" xml:space="preserve">
+    <value>Spogulis</value>
+    <comment>Checkbox caption in web and PDF media item</comment>
+  </data>
+  <data name="JWL_TRADEMARK" xml:space="preserve">
+    <value>"JW Library" ir Watch Tower Bible and Tract Society of Pennsylvania reģistrēta prečzīme</value>
+    <comment>See Settings =&gt; Main</comment>
+  </data>
+  <data name="CANNOT_DELETE_FILE" xml:space="preserve">
+    <value>Nevar izdzēst failu!</value>
+    <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
+  </data>
+  <data name="ACTIVE_ITEM_DELETED" xml:space="preserve">
+    <value>Media fails tika izdzēsts!</value>
+    <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
+  </data>
+  <data name="CONTAINS_1_ROLLING_SLIDE" xml:space="preserve">
+    <value>(satur 1 mainīgo slaidu)</value>
+    <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
+  </data>
+  <data name="CONTAINS_1_SLIDE" xml:space="preserve">
+    <value>(satur 1 slaidu)</value>
+    <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
+  </data>
+  <data name="DLG_CANCEL" xml:space="preserve">
+    <value>ATCELT</value>
+    <comment>Button caption in dialog used to specify media start offset</comment>
+  </data>
+  <data name="DLG_OK" xml:space="preserve">
+    <value>LABI</value>
+    <comment>Button caption in dialog used to specify media start offset</comment>
+  </data>
+  <data name="SET_MEDIA_START" xml:space="preserve">
+    <value>Media sākums</value>
+    <comment>Caption of dialog used to specify start offset for media</comment>
+  </data>
+  <data name="HOURS" xml:space="preserve">
+    <value>Stundas</value>
+    <comment>Column title in media start offset dialog (number of hours)</comment>
+  </data>
+  <data name="MINUTES" xml:space="preserve">
+    <value>Minūtes</value>
+    <comment>Column title in media start offset dialog (number of minutes)</comment>
+  </data>
+  <data name="SECONDS" xml:space="preserve">
+    <value>Sekundes</value>
+    <comment>Column title in media start offset dialog (number of seconds)</comment>
+  </data>
+  <data name="SHOW_START_OFFSET_DLG" xml:space="preserve">
+    <value>Rediģēt sākuma laiku</value>
+    <comment>Tooltip for the button that allows you to adjust media start time</comment>
+  </data>
+  <data name="RECENT_TIMES" xml:space="preserve">
+    <value>Nesenie</value>
+    <comment>Combobox label in Start Offset Times dialog</comment>
+  </data>
+  <data name="CLEAR_RECENTS" xml:space="preserve">
+    <value>IZDZĒST</value>
+    <comment>Command label at the bottom of the recent times list in the start offset dialog</comment>
+  </data>
+  <data name="PDF_VIEW" xml:space="preserve">
+    <value>Skatījums</value>
+    <comment>Caption for the combobox in the PDF command panel. The combo allows you to select the default "view" when the PDF is displayed, e.g. "Horizontal Fit"</comment>
+  </data>
+  <data name="PDF_VIEW_STYLE_DEFAULT" xml:space="preserve">
+    <value>Pēc noklusējuma</value>
+    <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
+  </data>
+  <data name="PDF_VIEW_STYLE_HORZ" xml:space="preserve">
+    <value>Pielāgot horizontāli</value>
+    <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
+  </data>
+  <data name="PDF_VIEW_STYLE_VERT" xml:space="preserve">
+    <value>Pielāgot vertikāli</value>
+    <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
+  </data>
+  <data name="PDF_PAGENUM" xml:space="preserve">
+    <value>Sākumlapa</value>
+    <comment>See PDF media item command panel. This is the title for the textbox that is used to enter the PDF page number that is shown when it is first opened.</comment>
+  </data>
+  <data name="MEDIA_WINDOWED" xml:space="preserve">
+    <value>Parādīt logā</value>
+    <comment>See Settings =&gt; Display</comment>
+  </data>
+  <data name="ALLOW_DB_ACCESS" xml:space="preserve">
+    <value>Nevar atvērt OnlyM bez pieejas uz tās datubāzi!</value>
+    <comment>Error message that is displayed at startup if OnlyM cannot access its database folder (e.g. if Windows controlled folder access is enabled)</comment>
+  </data>
+  <data name="NO_DESELECT_WINDOWED" xml:space="preserve">
+    <value>Nevar izslēgt parādīšanu logā, kamēr tiek parādīta media</value>
+    <comment>Notification message displayed if you try to uncheck the windowed mode while media is being displayed and there is no chosen monitor. Try to keep this text short!</comment>
+  </data>
+  <data name="MEDIA_WINDOWED_ON_TOP" xml:space="preserve">
+    <value>Vienmēr priekšā (logā)</value>
+    <comment>Option in Settings =&gt; Display</comment>
+  </data>
+</root>

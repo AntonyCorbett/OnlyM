@@ -1,0 +1,297 @@
+﻿<Window x:Class="OnlyM.Windows.MediaWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
+        xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:magnifierControl="clr-namespace:OnlyM.CustomControls.MagnifierControl;assembly=OnlyM.CustomControls"
+        DataContext="{Binding Media, Mode=OneWay, Source={StaticResource Locator}}"
+        Background="Black" 
+        mc:Ignorable="d"
+        Title="OnlyM Media Window" 
+        AllowsTransparency="False"
+        Height="500"
+        Width="500"
+        MinHeight="160"
+        MinWidth="200"
+        Closing="WindowClosing" 
+        SizeChanged="WindowSizeChanged" MouseDown="Window_MouseDown" >
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome 
+            CaptionHeight="0"
+            ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <ResourceDictionary>
+       
+            <Style x:Key="NavButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
+                <Setter Property="Margin" Value="0,0,5,0"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style x:Key="RefreshButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
+                <Setter Property="Margin" Value="0,0,5,0"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style x:Key="ZoomButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}">
+                <Setter Property="Margin" Value="5,0,0,0"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style x:Key="ToggleBtnStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+                <Setter Property="Width" Value="40"/>
+                <Setter Property="Height" Value="40"/>
+                <Setter Property="Margin" Value="0,0,10,0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style x:Key="MagnifierSizeButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}">
+                <Setter Property="Margin" Value="0,0,10,0"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+            
+        </ResourceDictionary>
+    </Window.Resources>
+
+
+    <Grid>
+        <MediaElement x:Name="VideoElementMediaFoundation"
+                      Visibility="{Binding Path=EngineIsMediaFoundation, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      LoadedBehavior="Manual"
+                      UnloadedBehavior="Manual">
+            <MediaElement.LayoutTransform>
+                <TransformGroup>
+                    <RotateTransform Angle="{Binding VideoRotation}"/>
+                </TransformGroup>
+            </MediaElement.LayoutTransform>
+        </MediaElement>
+
+        <TextBlock x:Name="SubtitleBlock" 
+                   VerticalAlignment="Bottom" 
+                   Foreground="White"
+                   Background="#7F000000"
+                   Padding="15"
+                   Visibility="{Binding Path=SubTitleTextIsNotEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   FontSize="50"
+                   TextAlignment="Center"
+                   Text="{Binding SubTitleText}"
+                   HorizontalAlignment="Center" />
+
+        <ffme:MediaElement x:Name="VideoElementFfmpeg" 
+                           Visibility="{Binding Path=EngineIsFfmpeg, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Background="Black"
+                           LoadedBehavior="Manual" 
+                           UnloadedBehavior="Manual" />
+
+        <!--WebBrowser browser Grid-->
+        
+        <Grid x:Name="BrowserGrid" 
+              Background="White" 
+              Opacity="0.0" 
+              Focusable="True" MouseMove="BrowserGrid_MouseMove">
+            <Grid.InputBindings>
+                <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="Add" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ZoomInCommand}" Key="OemPlus" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ZoomOutCommand}" Key="Subtract" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ZoomOutCommand}" Key="OemMinus" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ZoomResetCommand}" Key="D0" Modifiers="Control"/>
+
+                <KeyBinding Command="{Binding WebBrowser.BackCommand}" Key="BrowserBack" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ForwardCommand}" Key="BrowserForward" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ReloadCommand}" Key="BrowserRefresh" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.ReloadCommand}" Key="F5" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.StopCommand}" Key="BrowserStop" Modifiers="Control"/>
+                <KeyBinding Command="{Binding WebBrowser.StopCommand}" Key="Escape" Modifiers="Control"/>
+
+                <KeyBinding Command="{Binding ToggleMagnifier}" Key="F1" />
+                <KeyBinding Command="{Binding ToggleMagnifierFrame}" Key="F2" />
+                <KeyBinding Command="{Binding MagnifierLarger}" Key="F3" />
+                <KeyBinding Command="{Binding MagnifierSmaller}" Key="F4" />
+                
+            </Grid.InputBindings>
+
+            <!--<Grid.RowDefinitions>
+                <RowDefinition Height="76"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>-->
+
+            <!--Actual web browser-->
+            <Grid Grid.Row="0" Background="White">
+                <wpf:ChromiumWebBrowser 
+                    x:Name="Browser" 
+                    ZoomLevelIncrement="{Binding BrowserZoomLevelIncrement}"
+                    WebBrowser="{Binding WebBrowser, Mode=OneWayToSource}" />
+
+                <magnifierControl:MagnifierManager.Magnifier>
+                    <magnifierControl:Magnifier BorderBrush="Red" 
+                                    BorderThickness="{Binding MagnifierFrameThickness}" 
+                                    Visibility="{Binding Path=IsMagnifierVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Radius="{Binding MagnifierRadius}"
+                                    FrameType="{Binding MagnifierFrameType}"
+                                    ZoomFactor="{Binding MagnifierZoomLevel}"/>
+                </magnifierControl:MagnifierManager.Magnifier>
+            </Grid>
+
+            <!--Row 0 = Web header panel with navigation and command buttons-->
+            <Grid Name="WebNavHeader"
+                  Grid.Row="0" 
+                  VerticalAlignment="Top"
+                  Height="0"
+                  Background="Black">
+                <Grid.Effect>
+                    <DropShadowEffect Opacity="0.4" ShadowDepth="10" BlurRadius="10" />
+                </Grid.Effect>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="190"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="395"/>
+                </Grid.ColumnDefinitions>
+
+                <!--Web navigation buttons stack panel-->
+                <StackPanel Orientation="Horizontal" 
+                            Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Grid.Column="0" Margin="5,0,0,0">
+                    <Button
+                        Style="{StaticResource NavButtonStyle}"
+                        Command="{Binding WebBrowser.BackCommand}">
+                        <materialDesign:PackIcon
+                            Kind="ArrowLeftBold"
+                            Height="32"
+                            Width="32"/>
+                    </Button>
+
+                    <Button
+                        Style="{StaticResource NavButtonStyle}"
+                        Command="{Binding WebBrowser.ForwardCommand}">
+                        <materialDesign:PackIcon
+                            Kind="ArrowRightBold"
+                            Height="32"
+                            Width="32"/>
+                    </Button>
+
+                    <Button
+                        Style="{StaticResource RefreshButtonStyle}"
+                        Command="{Binding WebBrowser.ReloadCommand}">
+                        <materialDesign:PackIcon
+                            Kind="Refresh"
+                            Height="32"
+                            Width="32"/>
+                    </Button>
+                </StackPanel>
+
+                <!--Web page title-->
+                <TextBlock Grid.Column="1" 
+                           Text="{Binding WebBrowser.Title}"
+                           Margin="0,0,0,0"
+                           Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource PrimaryHueLightBrush}"
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="28"/>
+
+                <!--Web page magnifier buttons etc-->
+                <StackPanel Orientation="Horizontal" 
+                            Grid.Column="2"
+                            HorizontalAlignment="Right" Margin="0,0,5,0">
+                    <ToggleButton Style="{StaticResource ToggleBtnStyle}"
+                                  IsChecked="{Binding IsMagnifierVisible, Mode=TwoWay}">
+                        <ToggleButton.Content>
+                            <Grid>
+                                <materialDesign:PackIcon
+                                Height="28"
+                                Width="28"
+                                Kind="Close" />
+                            </Grid>
+                        </ToggleButton.Content>
+                        <materialDesign:ToggleButtonAssist.OnContent>
+                            <materialDesign:PackIcon
+                                Height="28"
+                                Width="28"
+                                Kind="Check" />
+                        </materialDesign:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
+
+                    <ToggleButton Style="{StaticResource ToggleBtnStyle}"
+                                  IsChecked="{Binding IsMagnifierFrameSquare, Mode=TwoWay}">
+                        <ToggleButton.Content>
+                            <materialDesign:PackIcon
+                                Height="28"
+                                Width="28"
+                                Kind="CircleOutline" />
+                        </ToggleButton.Content>
+                        <materialDesign:ToggleButtonAssist.OnContent>
+                            <materialDesign:PackIcon
+                                Height="28"
+                                Width="28"
+                                Kind="SquareOutline" />
+                        </materialDesign:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
+
+                    <Button
+                        Style="{StaticResource MagnifierSizeButtonStyle}"
+                        Command="{Binding MagnifierLarger}">
+                        <materialDesign:PackIcon
+                            Kind="Plus"
+                            Height="24"
+                            Width="24" />
+                    </Button>
+
+                    <Button
+                        Style="{StaticResource MagnifierSizeButtonStyle}"
+                        Command="{Binding MagnifierSmaller}">
+                        <materialDesign:PackIcon
+                            Kind="Minus"
+                            Height="24"
+                            Width="24" />
+                    </Button>
+
+                    <Button
+                        Style="{StaticResource ZoomButtonStyle}"
+                        Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Command="{Binding WebBrowser.ZoomInCommand}">
+                        <materialDesign:PackIcon
+                            Kind="PlusCircleOutline"
+                            Height="32"
+                            Width="32"/>
+                    </Button>
+
+                    <Button
+                        Style="{StaticResource ZoomButtonStyle}"
+                        Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Command="{Binding WebBrowser.ZoomOutCommand}">
+                        <materialDesign:PackIcon
+                            Kind="MinusCircleOutline"
+                            Height="32"
+                            Width="32"/>
+                    </Button>
+
+                    <Button
+                        Style="{StaticResource ZoomButtonStyle}"
+                        Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Command="{Binding WebBrowser.ZoomResetCommand}">
+                        <materialDesign:PackIcon
+                            Kind="CircleOutline"
+                            Height="32"
+                            Width="32"/>
+                    </Button>
+
+                </StackPanel>
+
+            </Grid>
+
+            <!--End of web page header panel-->
+        
+        </Grid>
+        <!--End of page grid-->
+
+        <Image x:Name="Image1Element" />
+
+        <Image x:Name="Image2Element" />
+    </Grid>
+</Window>

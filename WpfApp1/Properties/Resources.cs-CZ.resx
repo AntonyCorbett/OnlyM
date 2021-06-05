@@ -1,0 +1,575 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="APP_VER" xml:space="preserve">
+    <value>Verze programu OnlyM: {0}</value>
+    <comment>See Settings =&gt; Images. Please retain the "{0}" - it's a placeholder for the version number</comment>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
+  <data name="blank" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\blank.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CONFIRM_STOP_MEDIA" xml:space="preserve">
+    <value>Chcete zastavit přehrávání?</value>
+    <comment>Prompt that is displayed when you attempt to stop playback</comment>
+  </data>
+  <data name="COPYING_ERROR" xml:space="preserve">
+    <value>Při kopírování došlo k chybě!</value>
+    <comment>Message displayed when there is an error copying media to the OnlyM media folder</comment>
+  </data>
+  <data name="FILES_COPIED" xml:space="preserve">
+    <value>{0} zkopírovaných souborů</value>
+    <comment>Displayed as a notification message when several files are dropped onto the media list. Please leve the placeholder as it is.</comment>
+  </data>
+  <data name="FILE_COPIED" xml:space="preserve">
+    <value>Kopírování dokončeno</value>
+    <comment>Displayed as a notification message when a single file is dropped onto the media list.</comment>
+  </data>
+  <data name="MEDIA_ACTIVE" xml:space="preserve">
+    <value>Není možné zavřít program během přehrávání!</value>
+    <comment>This is the notification displayed if you try to close OnlyM when media is playing.</comment>
+  </data>
+  <data name="MONITOR_NONE" xml:space="preserve">
+    <value>Žádný</value>
+    <comment>Default (blank) menu item in Settings =&gt; Display =&gt; Media monitor</comment>
+  </data>
+  <data name="NEW_UPDATE_AVAILABLE" xml:space="preserve">
+    <value>Je k dispozici nová verze!</value>
+    <comment>Notification text displayed when there is a new version to download (can be translated the same as NEW_VERSION)</comment>
+  </data>
+  <data name="NO_SUPPORTED_FILES" xml:space="preserve">
+    <value>Tento typ souboru není podporován!</value>
+    <comment>Notification displayed if you drag and drop a file (or files) of a type that is not supported.</comment>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="VIEW" xml:space="preserve">
+    <value>ZOBRAZIT</value>
+    <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
+  </data>
+  <data name="YES" xml:space="preserve">
+    <value>ANO</value>
+    <comment>Caption of the notification bar button to confirm that media should be stopped.</comment>
+  </data>
+  <data name="BLANK_SCREEN" xml:space="preserve">
+    <value>Černá obrazovka</value>
+    <comment>Title of the "Blank Screen" item</comment>
+  </data>
+  <data name="MEDIA_FOLDER_BROWSE" xml:space="preserve">
+    <value>Vyberte složku se soubory k zobrazení</value>
+    <comment>Title of the "Open Folder" dialog that is displayed when you click the folder button in Settings =&gt; Media Files</comment>
+  </data>
+  <data name="SETTINGS" xml:space="preserve">
+    <value>Nastavení</value>
+    <comment>Tooltip for the main page, Settings button</comment>
+  </data>
+  <data name="SETTINGS_DISABLED" xml:space="preserve">
+    <value>Nastavení zakázáno administrátorem!</value>
+    <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
+  </data>
+  <data name="FOLDER" xml:space="preserve">
+    <value>Otevřít složku multimédií</value>
+    <comment>Tooltip on the main page Folder button</comment>
+  </data>
+  <data name="FOLDER_DISABLED" xml:space="preserve">
+    <value>Složka multimédií zakázána administrátorem!</value>
+    <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
+  </data>
+  <data name="NO_DESELECT_MONITOR" xml:space="preserve">
+    <value>Během zobrazení není možné měnit nastavení monitoru</value>
+    <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
+  </data>
+  <data name="CONTAINS_X_SLIDES" xml:space="preserve">
+    <value>(obsahuje {0} obrázků)</value>
+    <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
+  </data>
+  <data name="SLIDE_X_OF_Y" xml:space="preserve">
+    <value>obrázek {0} z {1}</value>
+    <comment>Displayed when showing a slideshow to indicate which slide is being viewed. Please retain the placeholders.</comment>
+  </data>
+  <data name="CONTAINS_X_ROLLING_SLIDES" xml:space="preserve">
+    <value>(prezentace obsahuje {0} obrázků)</value>
+    <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
+  </data>
+  <data name="ROLLING_SLIDE_X_OF_Y" xml:space="preserve">
+    <value>obrázek {0} z {1}</value>
+    <comment>Displayed when an automatic slideshow is being played. Please retain the placeholders.</comment>
+  </data>
+  <data name="MEDIA_MONITOR" xml:space="preserve">
+    <value>Monitor</value>
+    <comment>See Settings =&gt; Display</comment>
+  </data>
+  <data name="SECTION_DISPLAY" xml:space="preserve">
+    <value>DRUHÝ MONITOR</value>
+    <comment>Section title for Settings =&gt; Display</comment>
+  </data>
+  <data name="MEDIA_FOLDER" xml:space="preserve">
+    <value>Složka multimédií</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="SECTION_MEDIA_FILES" xml:space="preserve">
+    <value>MULTIMÉDIA</value>
+    <comment>Section title for Settings =&gt; Media Files</comment>
+  </data>
+  <data name="MAX_ITEMS" xml:space="preserve">
+    <value>Maximální počet položek</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
+    <value>Složka multimédií nastavena přes příkazový řádek</value>
+    <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
+  </data>
+  <data name="ALLOW_PAUSE" xml:space="preserve">
+    <value>Povolit pauzu</value>
+    <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
+  </data>
+  <data name="ALLOW_SCRUB" xml:space="preserve">
+    <value>Povolit přetáčení videa videa během pauzy</value>
+    <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
+  </data>
+  <data name="ALLOW_SEEK" xml:space="preserve">
+    <value>Umožnit ruční nastavení času začátku videa</value>
+    <comment>See Settings =&gt; Videos and Audio. Allow the media play position to be set manually</comment>
+  </data>
+  <data name="CACHE_IMAGES" xml:space="preserve">
+    <value>Vyrovnávací paměť obrázků (lepší výkon, ale víc paměti)</value>
+    <comment>See Settings =&gt; Images.</comment>
+  </data>
+  <data name="CONFIRM_STOP" xml:space="preserve">
+    <value>Potvrdit zastavení přehrávání</value>
+    <comment>See Settings =&gt; Videos and Audio.</comment>
+  </data>
+  <data name="CURRENT_DATE" xml:space="preserve">
+    <value>Aktuální datum</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
+  </data>
+  <data name="FADING_SPEED" xml:space="preserve">
+    <value>Rychlost prolínání</value>
+    <comment>See Settings =&gt; Images</comment>
+  </data>
+  <data name="FADING_STYLE" xml:space="preserve">
+    <value>Styl prolínání</value>
+    <comment>See Settings =&gt; Images</comment>
+  </data>
+  <data name="IMAGE_MARGINS" xml:space="preserve">
+    <value>Šířka okrajů kolem obrázku</value>
+    <comment>See Settings =&gt; Margins</comment>
+  </data>
+  <data name="LOGGING_LEVEL" xml:space="preserve">
+    <value>Úroveň logování</value>
+    <comment>See Settings =&gt; Miscellaneous.</comment>
+  </data>
+  <data name="ON_TOP" xml:space="preserve">
+    <value>Hlavní okno vždy navrchu</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
+  </data>
+  <data name="PURGE_THUMBS" xml:space="preserve">
+    <value>SMAZAT PAMĚŤ MINIATUR</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="RENDERING_ENGINE" xml:space="preserve">
+    <value>Vykreslovací jádro</value>
+    <comment>See Settings =&gt; Videos &amp; Audio</comment>
+  </data>
+  <data name="SECTION_IMAGES" xml:space="preserve">
+    <value>OBRÁZKY</value>
+    <comment>Section title for Settings =&gt; Images</comment>
+  </data>
+  <data name="SECTION_MARGINS" xml:space="preserve">
+    <value>OKRAJE (v procentech velikosti obrazovky)</value>
+    <comment>Section title for Settings =&gt; Margins</comment>
+  </data>
+  <data name="SECTION_MISC" xml:space="preserve">
+    <value>RŮZNÉ</value>
+    <comment>Section title for Settings =&gt; Micellanesous</comment>
+  </data>
+  <data name="SECTION_VIDEO_AUDIO" xml:space="preserve">
+    <value>VIDEA A ZVUKY</value>
+    <comment>Section title for Settings =&gt; Videos &amp; Audio</comment>
+  </data>
+  <data name="SHOW_FREEZE" xml:space="preserve">
+    <value>V menu zobrazovat položku "Zmrazit"</value>
+    <comment>See Settings =&gt; Videos &amp; Audio</comment>
+  </data>
+  <data name="SHOW_SUBTITLES" xml:space="preserve">
+    <value>Zobrazovat titulky pokud jsou k dispozici</value>
+    <comment>See Settings =&gt; Videos &amp; Audio</comment>
+  </data>
+  <data name="VIDEO_MARGINS" xml:space="preserve">
+    <value>Šířka okrajů kolem videa</value>
+    <comment>See Settings =&gt; Margins</comment>
+  </data>
+  <data name="AUTO_ROTATE" xml:space="preserve">
+    <value>Automatické otáčení</value>
+    <comment>See Settings =&gt; Images. Automatically rotate images (typically photos) that have been taken with the camera rotated sideways.</comment>
+  </data>
+  <data name="INCLUDE_BLANK" xml:space="preserve">
+    <value>V seznamu zobrazit položku "Černá obrazovka"</value>
+    <comment>See Settings =&gt; Display. Includes a blank image at the top of the list of media items.</comment>
+  </data>
+  <data name="JW_COMPAT_MODE" xml:space="preserve">
+    <value>Režim kompatibility s JW Library®</value>
+    <comment>See Settings =&gt; Display. Enables JW Library compatibility mode</comment>
+  </data>
+  <data name="PERMANENT_BACKDROP" xml:space="preserve">
+    <value>Zobrazovat černé pozadí</value>
+    <comment>See Settings =&gt; Display.</comment>
+  </data>
+  <data name="USE_CMD_PANEL" xml:space="preserve">
+    <value>Zobrazit menu s dalšími možnostmi</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="USE_THUMBS" xml:space="preserve">
+    <value>Použít miniatury, pokud jsou k dispozici</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="USE_TITLES" xml:space="preserve">
+    <value>Použít vložené titulky, pokud jsou k dispozici</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
+  <data name="DROP_HERE" xml:space="preserve">
+    <value>Sem přesuňte soubory k zobrazení!</value>
+    <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
+  </data>
+  <data name="MEDIA_PAGE" xml:space="preserve">
+    <value>Stránka multimédií</value>
+    <comment>Tooltip for the Settings page "Back" button </comment>
+  </data>
+  <data name="UNHIDE" xml:space="preserve">
+    <value>ZOBRAZIT SKRYTÉ</value>
+    <comment>If you have hidden any of the media items (using the command panel), an "Unhide" button is displayed on the main page. This is the button caption.</comment>
+  </data>
+  <data name="DISPLAY_HELP" xml:space="preserve">
+    <value>Zobrazit nápovědu</value>
+    <comment>Tooltip for the Help button in the main window</comment>
+  </data>
+  <data name="NEW_VERSION" xml:space="preserve">
+    <value>Je dostupná nová verze!</value>
+    <comment>Tooltip for the download button when a new version is ready (can be translated the same as NEW_UPDATE_AVAILABLE)</comment>
+  </data>
+  <data name="DELETE" xml:space="preserve">
+    <value>ODSTRANIT</value>
+    <comment>Button label in Command panel</comment>
+  </data>
+  <data name="FREEZE" xml:space="preserve">
+    <value>Zmrazit</value>
+    <comment>Button label in Command panel. Freeze the video on the final frame.</comment>
+  </data>
+  <data name="HIDE" xml:space="preserve">
+    <value>SKRÝT</value>
+    <comment>Button label in Command panel. Hide the media item.</comment>
+  </data>
+  <data name="PAUSE_FINAL_FRAME" xml:space="preserve">
+    <value>Zastavit na posledním snímku</value>
+    <comment>Tooltip on Freeze button in Command panel</comment>
+  </data>
+  <data name="WILL_PAUSE" xml:space="preserve">
+    <value>Zastaví na posledním snímku</value>
+    <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
+  </data>
+  <data name="LANGUAGE" xml:space="preserve">
+    <value>Jazyk</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
+  </data>
+  <data name="RESTART_LANGUAGE" xml:space="preserve">
+    <value>Po změně jazyka prosím restartujte OnlyM.</value>
+    <comment>See Settings =&gt; Miscellaneous</comment>
+  </data>
+  <data name="GENERATING_SUBTITLES" xml:space="preserve">
+    <value>Vytváření titulků</value>
+    <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
+  </data>
+  <data name="WEB_LOAD_FAIL" xml:space="preserve">
+    <value>Nepodařilo se načíst adresu {0}. Chyba {1} ({2})</value>
+    <comment>Error message displayed when a web page cannot be loaded.</comment>
+  </data>
+  <data name="LOADING_FRAME" xml:space="preserve">
+    <value>Načítám snímek {0}</value>
+    <comment>Progress message displayed when loading a web page</comment>
+  </data>
+  <data name="WEB_MARGINS" xml:space="preserve">
+    <value>Šířka okrajů kolem webové stránky</value>
+    <comment>See Settings =&gt; Margins</comment>
+  </data>
+  <data name="SECTION_WEB" xml:space="preserve">
+    <value>WEBOVÝ PROHLÍŽEČ</value>
+    <comment>Section title for Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
+    <value>Zobrazit lupu</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
+    <value>Tvar lupy</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
+    <value>Velikost lupy</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
+    <value>Úroveň zvětšení lupy</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
+    <value>Krok zvětšení lupy</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="PURGE_WEB_CACHE" xml:space="preserve">
+    <value>VYMAZAT CACHE PROHLÍŽEČE</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
+    <value>Mezipaměť prohlížeče bude vymazána po restartu.</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_FRAME_THICKNESS" xml:space="preserve">
+    <value>Šířka rámečku lupy</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="ALLOW_MIRROR" xml:space="preserve">
+    <value>Povolit okno zrcadlení</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR_BY_DEFAULT" xml:space="preserve">
+    <value>Zrcadlení je ve výchozím nastavení zapnuté</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR_ZOOM" xml:space="preserve">
+    <value>Zoom zrcadlení</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="WEB_LOADING" xml:space="preserve">
+    <value>Načítám...</value>
+    <comment>Displayed when a web page is loading</comment>
+  </data>
+  <data name="LAUNCHING_MIRROR" xml:space="preserve">
+    <value>Inicializace zrcadlení...</value>
+    <comment>Displayed when mirror window is launching</comment>
+  </data>
+  <data name="CHANGE_MIRROR_HOTKEY" xml:space="preserve">
+    <value>Změňte klávesovou zkratku pro zrcadlení!</value>
+    <comment>Warning displaed in the notification bar if the mirror window hotkey is in use by another application.</comment>
+  </data>
+  <data name="LOGGING_LEVEL_HIGH" xml:space="preserve">
+    <value>Vysoko nastavená úroveň logování!</value>
+    <comment>Warning shown in notification bar if logging level is set to Debug or Verbose</comment>
+  </data>
+  <data name="MIRROR_HOTKEY" xml:space="preserve">
+    <value>Klávesa pro zrcadlení</value>
+    <comment>See Settings =&gt; Web</comment>
+  </data>
+  <data name="MIRROR" xml:space="preserve">
+    <value>Zrcadlit</value>
+    <comment>Checkbox caption in web and PDF media item</comment>
+  </data>
+  <data name="JWL_TRADEMARK" xml:space="preserve">
+    <value>"JW Library" je registrovaná ochranná známka společnosti Watch Tower Bible and Tract Society of Pennsylvania</value>
+    <comment>See Settings =&gt; Main</comment>
+  </data>
+  <data name="CANNOT_DELETE_FILE" xml:space="preserve">
+    <value>Soubor nelze odstranit!</value>
+    <comment>Displayed in notification bar when a media item caanot be deleted.</comment>
+  </data>
+  <data name="ACTIVE_ITEM_DELETED" xml:space="preserve">
+    <value>Soubor byl odstraněn!</value>
+    <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
+  </data>
+  <data name="CONTAINS_1_ROLLING_SLIDE" xml:space="preserve">
+    <value>(obsahuje 1 prezentaci obrázků)</value>
+    <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
+  </data>
+  <data name="CONTAINS_1_SLIDE" xml:space="preserve">
+    <value>(obsahuje 1 obrázek)</value>
+    <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
+  </data>
+  <data name="DLG_CANCEL" xml:space="preserve">
+    <value>ZRUŠIT</value>
+    <comment>Button caption in dialog used to specify media start offset</comment>
+  </data>
+  <data name="DLG_OK" xml:space="preserve">
+    <value>OK</value>
+    <comment>Button caption in dialog used to specify media start offset</comment>
+  </data>
+  <data name="SET_MEDIA_START" xml:space="preserve">
+    <value>Začátek přehrávání</value>
+    <comment>Caption of dialog used to specify start offset for media</comment>
+  </data>
+  <data name="HOURS" xml:space="preserve">
+    <value>Hodin</value>
+    <comment>Column title in media start offset dialog (number of hours)</comment>
+  </data>
+  <data name="MINUTES" xml:space="preserve">
+    <value>Minut</value>
+    <comment>Column title in media start offset dialog (number of minutes)</comment>
+  </data>
+  <data name="SECONDS" xml:space="preserve">
+    <value>Sekund</value>
+    <comment>Column title in media start offset dialog (number of seconds)</comment>
+  </data>
+  <data name="SHOW_START_OFFSET_DLG" xml:space="preserve">
+    <value>Upravit začátek přehrávání</value>
+    <comment>Tooltip for the button that allows you to adjust media start time</comment>
+  </data>
+  <data name="RECENT_TIMES" xml:space="preserve">
+    <value>Nedávné</value>
+    <comment>Combobox label in Start Offset Times dialog</comment>
+  </data>
+  <data name="CLEAR_RECENTS" xml:space="preserve">
+    <value>Vynulovat</value>
+    <comment>Command label at the bottom of the recent times list in the start offset dialog</comment>
+  </data>
+  <data name="PDF_VIEW" xml:space="preserve">
+    <value>Způsob zobrazení</value>
+    <comment>Caption for the combobox in the PDF command panel. The combo allows you to select the default "view" when the PDF is displayed, e.g. "Horizontal Fit"</comment>
+  </data>
+  <data name="PDF_VIEW_STYLE_DEFAULT" xml:space="preserve">
+    <value>Výchozí</value>
+    <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
+  </data>
+  <data name="PDF_VIEW_STYLE_HORZ" xml:space="preserve">
+    <value>Přizpůsobit šířce stránky</value>
+    <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
+  </data>
+  <data name="PDF_VIEW_STYLE_VERT" xml:space="preserve">
+    <value>Přizpůsobit výšce stránky</value>
+    <comment>See command panel of PDF media type. This is one of the items in the "View style" combo.</comment>
+  </data>
+  <data name="PDF_PAGENUM" xml:space="preserve">
+    <value>Číslo počáteční stránky</value>
+    <comment>See PDF media item command panel. This is the title for the textbox that is used to enter the PDF page number that is shown when it is first opened.</comment>
+  </data>
+  <data name="MEDIA_WINDOWED" xml:space="preserve">
+    <value>Místo druhého monitoru zobrazit v okně</value>
+    <comment>See Settings =&gt; Display</comment>
+  </data>
+  <data name="ALLOW_DB_ACCESS" xml:space="preserve">
+    <value>Je vyžadován přístup k adresáři s databází OnlyM!</value>
+    <comment>Error message that is displayed at startup if OnlyM cannot access its database folder (e.g. if Windows controlled folder access is enabled)</comment>
+  </data>
+  <data name="NO_DESELECT_WINDOWED" xml:space="preserve">
+    <value>Při zobrazování nelze zrušit režim zobrazení v okně</value>
+    <comment>Notification message displayed if you try to uncheck the windowed mode while media is being displayed and there is no chosen monitor. Try to keep this text short!</comment>
+  </data>
+  <data name="MEDIA_WINDOWED_ON_TOP" xml:space="preserve">
+    <value>Vždy navrchu (při zobrazení v okně)</value>
+    <comment>Option in Settings =&gt; Display</comment>
+  </data>
+</root>
