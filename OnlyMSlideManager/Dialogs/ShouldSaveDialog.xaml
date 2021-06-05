@@ -33,7 +33,7 @@
     <Border Padding="30">
         <Grid>
             <StackPanel Orientation="Vertical">
-                <TextBlock Style="{StaticResource MaterialDesignDisplay1TextBlock}"
+                <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                    Text="{x:Static resx:Resources.WANT_TO_SAVE_TITLE}"
                    Margin="0,0,0,20"/>
 
@@ -49,7 +49,7 @@
                     <TextBlock
                 VerticalAlignment="Center"
                 Grid.Column="1"
-                Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+                Style="{StaticResource MaterialDesignBody2TextBlock}"
                 Text="{x:Static resx:Resources.WANT_TO_SAVE}"/>
                 </Grid>
                 <StackPanel Orientation="Horizontal">

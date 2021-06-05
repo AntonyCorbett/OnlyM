@@ -1,3 +1,9 @@
+using System.ComponentModel;
+using System.Diagnostics;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Messaging;
+
 namespace OnlyMSlideManager.ViewModel
 {
     using System;
@@ -11,9 +17,6 @@ namespace OnlyMSlideManager.ViewModel
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Shapes;
-    using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.CommandWpf;
-    using GalaSoft.MvvmLight.Messaging;
     using MaterialDesignThemes.Wpf;
     using Microsoft.WindowsAPICodePack.Dialogs;
     using OnlyM.CoreSys;
@@ -29,7 +32,7 @@ namespace OnlyMSlideManager.ViewModel
     using OnlyMSlideManager.Services.Options;
     using Serilog;
 
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ObservableObject
     {
         private const string AppName = @"O N L Y M  Slide Manager";
         private const int MaxImageWidth = 1920;
@@ -78,12 +81,12 @@ namespace OnlyMSlideManager.ViewModel
             var dummy = _optionsService.Culture;
 
             InitCommands();
-            Messenger.Default.Register<ReorderMessage>(this, OnReorderMessage);
-            Messenger.Default.Register<DropImagesMessage>(this, OnDropImageFilesMessage);
+            WeakReferenceMessenger.Default.Register<ReorderMessage>(this, OnReorderMessage);
+            WeakReferenceMessenger.Default.Register<DropImagesMessage>(this, OnDropImageFilesMessage);
 
             _userInterfaceService.BusyStatusChangedEvent += HandleBusyStatusChangedEvent;
 
-            if (!IsInDesignMode)
+            if (!IsInDesignMode())
             {
                 InitNewSlideshow(null).Wait();
             }
@@ -99,7 +102,7 @@ namespace OnlyMSlideManager.ViewModel
                 if (value != _statusText)
                 {
                     _statusText = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -112,7 +115,7 @@ namespace OnlyMSlideManager.ViewModel
                 if (_isProgressVisible != value)
                 {
                     _isProgressVisible = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -126,7 +129,7 @@ namespace OnlyMSlideManager.ViewModel
                 if (_progressPercentageValue != value)
                 {
                     _progressPercentageValue = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -139,7 +142,7 @@ namespace OnlyMSlideManager.ViewModel
                 if (_currentSlideFileBuilder != value)
                 {
                     _currentSlideFileBuilder = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -158,9 +161,9 @@ namespace OnlyMSlideManager.ViewModel
                         _currentSlideFileBuilder.AutoPlay = value.Value;
                     }
 
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(CanLoop));
-                    RaisePropertyChanged(nameof(CanAutoClose));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(CanLoop));
+                    OnPropertyChanged(nameof(CanAutoClose));
                 }
             }
         }
@@ -179,7 +182,7 @@ namespace OnlyMSlideManager.ViewModel
                         _currentSlideFileBuilder.AutoClose = value.Value;
                     }
 
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -198,8 +201,8 @@ namespace OnlyMSlideManager.ViewModel
                         _currentSlideFileBuilder.Loop = value.Value;
                     }
 
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(CanAutoClose));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(CanAutoClose));
                 }
             }
         }
@@ -224,7 +227,7 @@ namespace OnlyMSlideManager.ViewModel
                         }
                     }
 
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -251,7 +254,7 @@ namespace OnlyMSlideManager.ViewModel
                 if (_optionsService.Culture != value)
                 {
                     _optionsService.Culture = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     _snackbarService.EnqueueWithOk(Properties.Resources.LANGUAGE_RESTART, Properties.Resources.OK);
                 }
@@ -284,8 +287,8 @@ namespace OnlyMSlideManager.ViewModel
                 if (_currentSlideshowPath == null || _currentSlideshowPath != value)
                 {
                     _currentSlideshowPath = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(MainWindowCaption));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(MainWindowCaption));
                 }
             }
         }
@@ -311,8 +314,8 @@ namespace OnlyMSlideManager.ViewModel
                 if (_busy != value)
                 {
                     _busy = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsNotBusy));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsNotBusy));
                 }
             }
         }
@@ -364,9 +367,9 @@ namespace OnlyMSlideManager.ViewModel
                 SlideItems.Remove(slide);
                 CurrentSlideFileBuilder.RemoveSlide(slide.Name);
 
-                RaisePropertyChanged(nameof(HasSlides));
-                RaisePropertyChanged(nameof(HasNoSlides));
-                RaisePropertyChanged(nameof(IsDirty));
+                OnPropertyChanged(nameof(HasSlides));
+                OnPropertyChanged(nameof(HasNoSlides));
+                OnPropertyChanged(nameof(IsDirty));
 
                 StatusText = GetStandardStatusText();
             }
@@ -567,8 +570,8 @@ namespace OnlyMSlideManager.ViewModel
                 AddEndMarker();
             }
 
-            RaisePropertyChanged(nameof(HasSlides));
-            RaisePropertyChanged(nameof(HasNoSlides));
+            OnPropertyChanged(nameof(HasSlides));
+            OnPropertyChanged(nameof(HasNoSlides));
         }
 
         private Dictionary<string, byte[]> GetThumbnailCache()
@@ -658,7 +661,7 @@ namespace OnlyMSlideManager.ViewModel
                         slide.DwellTimeMilliseconds = item.DwellTimeSeconds.Value * 1000;
                     }
 
-                    RaisePropertyChanged(nameof(IsDirty));
+                    OnPropertyChanged(nameof(IsDirty));
                     CommandManager.InvalidateRequerySuggested();
                 }
             }
@@ -722,9 +725,9 @@ namespace OnlyMSlideManager.ViewModel
                 SlideItems.Clear();
             }
 
-            RaisePropertyChanged(nameof(HasSlides));
-            RaisePropertyChanged(nameof(HasNoSlides));
-            RaisePropertyChanged(nameof(IsDirty));
+            OnPropertyChanged(nameof(HasSlides));
+            OnPropertyChanged(nameof(HasNoSlides));
+            OnPropertyChanged(nameof(IsDirty));
 
             StatusText = GetStandardStatusText();
 
@@ -775,9 +778,10 @@ namespace OnlyMSlideManager.ViewModel
             ProgressPercentageValue = e.PercentageComplete;
         }
 
+        [Conditional("DEBUG")]
         private void AddDesignTimeItems()
         {
-            if (IsInDesignMode)
+            if (IsInDesignMode())
             {
                 var slides = DesignTimeSlideCreation.GenerateSlides(7, ThumbnailWidth, ThumbnailHeight);
 
@@ -796,12 +800,12 @@ namespace OnlyMSlideManager.ViewModel
         private void SaveSignature()
         {
             _lastSavedSlideshowSignature = CreateSlideshowSignature();
-            RaisePropertyChanged(nameof(IsDirty));
+            OnPropertyChanged(nameof(IsDirty));
 
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private void OnReorderMessage(ReorderMessage message)
+        private void OnReorderMessage(object sender, ReorderMessage message)
         {
             var newOrder = new List<SlideItem>();
 
@@ -835,8 +839,8 @@ namespace OnlyMSlideManager.ViewModel
             }
 
             CurrentSlideFileBuilder.SyncSlideOrder(newOrder.Select(x => x.Name));
-            
-            RaisePropertyChanged(nameof(IsDirty));
+
+            OnPropertyChanged(nameof(IsDirty));
             CommandManager.InvalidateRequerySuggested();
         }
 
@@ -870,7 +874,7 @@ namespace OnlyMSlideManager.ViewModel
             {
                 // User answered "No". Make the data not dirty by saving current sig...
                 SaveSignature();
-                Messenger.Default.Send(new CloseAppMessage());
+                WeakReferenceMessenger.Default.Send(new CloseAppMessage());
             }
         }
 
@@ -880,7 +884,7 @@ namespace OnlyMSlideManager.ViewModel
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private async void OnDropImageFilesMessage(DropImagesMessage message)
+        private async void OnDropImageFilesMessage(object sender, DropImagesMessage message)
         {
             await DropImages(message.FileList, message.TargetId);
         }
@@ -997,6 +1001,16 @@ namespace OnlyMSlideManager.ViewModel
         {
             // note that there is always a dummy slide (hence "-1")
             return string.Format(Properties.Resources.SLIDE_COUNT_X, SlideItems.Count - 1);
+        }
+
+        private static bool IsInDesignMode()
+        {
+#if DEBUG
+            DependencyObject dep = new();
+            return DesignerProperties.GetIsInDesignMode(dep);
+#else
+            return false;
+#endif
         }
 
         private class StatusTextWriter : IDisposable

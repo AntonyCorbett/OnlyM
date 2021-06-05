@@ -1,12 +1,13 @@
-﻿namespace OnlyMSlideManager.Windows
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Microsoft.Toolkit.Mvvm.Messaging;
+
+namespace OnlyMSlideManager.Windows
 {
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Shapes;
-    using CommonServiceLocator;
-    using GalaSoft.MvvmLight.Messaging;
     using OnlyM.CoreSys.WindowsPositioning;
     using OnlyMSlideManager.PubSubMessages;
     using OnlyMSlideManager.Services.Options;
@@ -18,7 +19,7 @@
         {
             InitializeComponent();
 
-            Messenger.Default.Register<CloseAppMessage>(this, OnCloseAppMessage);
+            WeakReferenceMessenger.Default.Register<CloseAppMessage>(this, OnCloseAppMessage);
         }
 
         protected override void OnSourceInitialized(System.EventArgs e)
@@ -35,14 +36,14 @@
 
         private void SaveWindowPos()
         {
-            var optionsService = ServiceLocator.Current.GetInstance<IOptionsService>();
+            var optionsService = Ioc.Default.GetService<IOptionsService>();
             optionsService.AppWindowPlacement = this.GetPlacement();
             optionsService.Save();
         }
 
         private void AdjustMainWindowPositionAndSize()
         {
-            var optionsService = ServiceLocator.Current.GetInstance<IOptionsService>();
+            var optionsService = Ioc.Default.GetService<IOptionsService>();
             if (!string.IsNullOrEmpty(optionsService.AppWindowPlacement))
             {
                 ResizeMode = WindowState == WindowState.Maximized
@@ -91,7 +92,7 @@
             }
         }
 
-        private void OnCloseAppMessage(CloseAppMessage message)
+        private void OnCloseAppMessage(object recipient, CloseAppMessage message)
         {
             Close();
         }

@@ -1,4 +1,6 @@
-﻿namespace OnlyMSlideManager.Services.DragAndDrop
+﻿using Microsoft.Toolkit.Mvvm.Messaging;
+
+namespace OnlyMSlideManager.Services.DragAndDrop
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +9,6 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Shapes;
-    using GalaSoft.MvvmLight.Messaging;
     using OnlyM.CoreSys.Services.UI;
     using OnlyMSlideManager.Models;
     using OnlyMSlideManager.PubSubMessages;
@@ -73,7 +74,7 @@
             {
                 if (_dragSourceCard?.DataContext is SlideItem sourceCardViewModel)
                 {
-                    Messenger.Default.Send(new ReorderMessage
+                    WeakReferenceMessenger.Default.Send(new ReorderMessage
                     {
                         SourceItem = sourceCardViewModel,
                         TargetId = targetCardViewModel.DropZoneId,
@@ -95,7 +96,7 @@
             var files = GetSupportedFiles(data).ToList();
             files.Sort();
 
-            Messenger.Default.Send(new DropImagesMessage
+            WeakReferenceMessenger.Default.Send(new DropImagesMessage
             {
                 FileList = files,
                 TargetId = targetCardViewModel.DropZoneId,

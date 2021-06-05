@@ -1,6 +1,7 @@
-﻿namespace OnlyMSlideManager.ViewModel
+﻿using Microsoft.Toolkit.Mvvm.Input;
+
+namespace OnlyMSlideManager.ViewModel
 {
-    using GalaSoft.MvvmLight.CommandWpf;
     using MaterialDesignThemes.Wpf;
 
     internal class ShouldSaveViewModel

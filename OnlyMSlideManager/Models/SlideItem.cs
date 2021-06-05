@@ -1,10 +1,11 @@
-﻿namespace OnlyMSlideManager.Models
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+
+namespace OnlyMSlideManager.Models
 {
     using System;
     using System.Windows.Media;
-    using GalaSoft.MvvmLight;
 
-    public sealed class SlideItem : ViewModelBase
+    public sealed class SlideItem : ObservableObject
     {
         private bool _showCardBorder;
         private bool _fadeInForward;
@@ -33,7 +34,7 @@
                 if (_fadeInForward != value)
                 {
                     _fadeInForward = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                     OnSlideItemModifiedEvent();
                 }
             }
@@ -47,7 +48,7 @@
                 if (_fadeInReverse != value)
                 {
                     _fadeInReverse = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                     OnSlideItemModifiedEvent();
                 }
             }
@@ -61,7 +62,7 @@
                 if (_fadeOutForward != value)
                 {
                     _fadeOutForward = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                     OnSlideItemModifiedEvent();
                 }
             }
@@ -75,7 +76,7 @@
                 if (_fadeOutReverse != value)
                 {
                     _fadeOutReverse = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                     OnSlideItemModifiedEvent();
                 }
             }
@@ -89,7 +90,7 @@
                 if (_dwellTimeSeconds != value)
                 {
                     _dwellTimeSeconds = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                     OnSlideItemModifiedEvent();
                 }
             }
@@ -103,7 +104,7 @@
                 if (_showCardBorder != value)
                 {
                     _showCardBorder = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }

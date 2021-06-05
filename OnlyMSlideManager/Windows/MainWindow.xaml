@@ -65,7 +65,7 @@
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
             <Setter Property="Text" Value="{Binding Name}" />
-            <Setter Property="VerticalAlignment" Value="Bottom"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
         </Style>
 
         <Style x:Key="FlipBtnStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
@@ -97,6 +97,7 @@
                         IsEnabled="{Binding Path=DataContext.IsNotBusy, ElementName=OnlyMSlideManagerWindow}"
                         PreviewMouseLeftButtonDown="DragSourcePreviewMouseDown"
                         PreviewMouseMove="DragSourcePreviewMouseMove"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth1"
                         Style="{StaticResource MaterialDesignCardFlipper}">
 
                     <materialDesign:Flipper.FrontContent>
@@ -108,12 +109,12 @@
                             </Grid.RowDefinitions>
 
                             <Border BorderBrush="{StaticResource PrimaryHueMidBrush}" 
-                                        Grid.RowSpan="3"
-                                        BorderThickness="{Binding ShowCardBorder, Converter={StaticResource BooleanToBorderThicknessConverter}}" />
+                                    Grid.RowSpan="3"
+                                    BorderThickness="{Binding ShowCardBorder, Converter={StaticResource BooleanToBorderThicknessConverter}}" />
 
                             <!-- Card title (front) -->
-                            <TextBlock Grid.Row="0" Style="{StaticResource SlideTitleStyle}" Margin="25,0,25,5"/>
-                            <Ellipse Grid.Row="0" Fill="{StaticResource SecondaryAccentBrush}" 
+                            <TextBlock Grid.Row="0" Style="{StaticResource SlideTitleStyle}" Margin="25,0,25,0"/>
+                            <Ellipse Grid.Row="0" Fill="{StaticResource SecondaryHueMidBrush}" 
                                         Margin="-25,-25"
                                         VerticalAlignment="Top"
                                         HorizontalAlignment="Left"
@@ -242,7 +243,7 @@
                     <StackPanel>
                         <TextBlock 
                             Margin="0,0,0,10"
-                            Style="{StaticResource MaterialDesignTitleTextBlock}"
+                            Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                             Text="{x:Static resx:Resources.OPTIONS}"/>
 
                         <ComboBox ItemsSource="{Binding Languages}" 
