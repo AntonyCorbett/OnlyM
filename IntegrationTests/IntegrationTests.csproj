@@ -8,9 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\OnlyM.Slides\SampleImages\001.jpg" Link="TestImages\001.jpg" />
-    <Content Include="..\OnlyM.Slides\SampleImages\002.jpg" Link="TestImages\002.jpg" />
-    <Content Include="..\OnlyM.Slides\SampleImages\003.jpg" Link="TestImages\003.jpg" />
+    <Content Include="..\OnlyM.Slides\SampleImages\001.jpg" Link="TestImages\001.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\OnlyM.Slides\SampleImages\002.jpg" Link="TestImages\002.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\OnlyM.Slides\SampleImages\003.jpg" Link="TestImages\003.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +47,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OnlyM\OnlyM.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="SubtitleFiles\sample.srt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

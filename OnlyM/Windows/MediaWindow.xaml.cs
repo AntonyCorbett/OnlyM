@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Windows
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+
+namespace OnlyM.Windows
 {
     using System;
     using System.Collections.Generic;
@@ -8,7 +10,6 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
-    using CommonServiceLocator;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.Database;
     using OnlyM.Core.Services.Monitors;
@@ -392,7 +393,7 @@
         private void WindowClosing(object sender, CancelEventArgs e)
         {
             // prevent window from being closed independently of application.
-            var pageService = ServiceLocator.Current.GetInstance<IPageService>();
+            var pageService = Ioc.Default.GetService<IPageService>();
             e.Cancel = !pageService.ApplicationIsClosing && !pageService.AllowMediaWindowToClose;
 
             if (!e.Cancel)

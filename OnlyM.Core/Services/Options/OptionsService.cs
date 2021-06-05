@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Core.Services.Options
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+
+namespace OnlyM.Core.Services.Options
 {
     using System;
     using System.Collections.Generic;
@@ -8,7 +10,6 @@
     using System.Threading;
     using System.Windows;
     using System.Windows.Markup;
-    using CommonServiceLocator;
     using Newtonsoft.Json;
     using OnlyM.Core.Models;
     using OnlyM.Core.Services.CommandLine;
@@ -765,7 +766,7 @@
             var result = new Options();
 
             // first time launched so set the monitor to the first one we find
-            var monitorService = ServiceLocator.Current.GetInstance<IMonitorsService>();
+            var monitorService = Ioc.Default.GetService<IMonitorsService>();
             result.MediaMonitorId = monitorService.GetSystemMonitors().First().MonitorId;
 
             WriteOptions(result);

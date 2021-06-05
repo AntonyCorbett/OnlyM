@@ -1,12 +1,11 @@
-﻿using Microsoft.Toolkit.Mvvm.Messaging;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Microsoft.Toolkit.Mvvm.Messaging;
 
 namespace OnlyM.Windows
 {
     using System;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Input;
-    using CommonServiceLocator;
     using OnlyM.PubSubMessages;
     using OnlyM.Services.DragAndDrop;
     using OnlyM.ViewModel;
@@ -20,7 +19,7 @@ namespace OnlyM.Windows
         {
             InitializeComponent();
 
-            var dragAndDropService = ServiceLocator.Current.GetInstance<IDragAndDropService>();
+            var dragAndDropService = Ioc.Default.GetService<IDragAndDropService>();
             dragAndDropService.Init(this);
         }
 
