@@ -61,6 +61,11 @@ namespace OnlyM.CoreSys
                 AutoRotateIfRequired(itemFilePath);
 
                 var settings = new ProcessImageSettings { Width = width, Height = height };
+                if (shouldPad)
+                {
+                    settings.ResizeMode = CropScaleMode.Pad;
+                    settings.MatteColor = System.Drawing.Color.Black;
+                }
 
                 using var outStream = new MemoryStream();
                 MagicImageProcessor.ProcessImage(itemFilePath, outStream, settings);

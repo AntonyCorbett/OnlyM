@@ -97,7 +97,7 @@
                         IsEnabled="{Binding Path=DataContext.IsNotBusy, ElementName=OnlyMSlideManagerWindow}"
                         PreviewMouseLeftButtonDown="DragSourcePreviewMouseDown"
                         PreviewMouseMove="DragSourcePreviewMouseMove"
-                        materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2"
                         Style="{StaticResource MaterialDesignCardFlipper}">
 
                     <materialDesign:Flipper.FrontContent>
