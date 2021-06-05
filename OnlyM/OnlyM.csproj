@@ -299,12 +299,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OnlyM.CustomControls\OnlyM.CustomControls.csproj">
-      <Project>{99e74b18-eba2-47df-a325-beeab6fe8c25}</Project>
-      <Name>OnlyM.CustomControls</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="..\FFmpeg\avcodec-58.dll">
       <Link>FFmpeg\avcodec-58.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlyM.CustomControls", "OnlyM.CustomControls\OnlyM.CustomControls.csproj", "{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OnlyMMirror", "OnlyMMirror\OnlyMMirror.vcxproj", "{2B2D1430-B933-4C74-8B0F-6943D6E2ED5F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlyMSlideManager", "OnlyMSlideManager\OnlyMSlideManager.csproj", "{C49EE33A-1653-4D59-ABF5-E395611FAD73}"
@@ -27,6 +25,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlyM.CoreSys", "OnlyM.CoreSys\OnlyM.CoreSys.csproj", "{12E6B96C-ED88-4ADB-8CBD-4FCDA34E2BED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlyM.Slides", "OnlyM.Slides\OnlyM.Slides.csproj", "{1C481C12-EC58-42E6-B88A-94E83E9206C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlyM.CustomControls", "OnlyM.CustomControls\OnlyM.CustomControls.csproj", "{9787681A-EB7C-432F-98DD-3DF78E52053A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,18 +62,6 @@ Global
 		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Release|x64.Build.0 = Release|Any CPU
 		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Release|x86.ActiveCfg = Release|x86
 		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Release|x86.Build.0 = Release|x86
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Debug|x64.Build.0 = Debug|Any CPU
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Debug|x86.ActiveCfg = Debug|x86
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Debug|x86.Build.0 = Debug|x86
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Release|x64.ActiveCfg = Release|Any CPU
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Release|x64.Build.0 = Release|Any CPU
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Release|x86.ActiveCfg = Release|x86
-		{99E74B18-EBA2-47DF-A325-BEEAB6FE8C25}.Release|x86.Build.0 = Release|x86
 		{2B2D1430-B933-4C74-8B0F-6943D6E2ED5F}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{2B2D1430-B933-4C74-8B0F-6943D6E2ED5F}.Debug|Any CPU.Build.0 = Debug|Win32
 		{2B2D1430-B933-4C74-8B0F-6943D6E2ED5F}.Debug|x64.ActiveCfg = Debug|x64
@@ -134,6 +122,18 @@ Global
 		{1C481C12-EC58-42E6-B88A-94E83E9206C8}.Release|x64.Build.0 = Release|Any CPU
 		{1C481C12-EC58-42E6-B88A-94E83E9206C8}.Release|x86.ActiveCfg = Release|Any CPU
 		{1C481C12-EC58-42E6-B88A-94E83E9206C8}.Release|x86.Build.0 = Release|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Debug|x64.Build.0 = Debug|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Debug|x86.Build.0 = Debug|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Release|x64.ActiveCfg = Release|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Release|x64.Build.0 = Release|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Release|x86.ActiveCfg = Release|Any CPU
+		{9787681A-EB7C-432F-98DD-3DF78E52053A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
