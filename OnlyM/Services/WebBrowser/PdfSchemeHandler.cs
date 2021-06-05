@@ -8,7 +8,7 @@
 
     internal class PdfSchemeHandler : ResourceHandler
     {
-        public override bool ProcessRequestAsync(IRequest request, ICallback callback)
+        public override CefReturnValue ProcessRequestAsync(IRequest request, ICallback callback)
         {
             var uri = new Uri(request.Url);
             
@@ -38,7 +38,7 @@
                 }
             });
 
-            return true;
+            return CefReturnValue.Continue;
         }
     }
 }

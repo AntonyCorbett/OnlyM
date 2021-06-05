@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Messaging;
 
 namespace OnlyM.ViewModel
 {
@@ -77,7 +78,7 @@ namespace OnlyM.ViewModel
             _pageService.NavigationEvent += HandleNavigationEvent;
             
             InitCommands();
-            Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+            WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
         
         public RelayCommand PurgeThumbnailCacheCommand { get; set; }
@@ -112,7 +113,7 @@ namespace OnlyM.ViewModel
                     int.TryParse(value, out var count))
                 {
                     _optionsService.MaxItemCount = count;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -125,7 +126,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.OperatingDate != value)
                 {
                     _optionsService.OperatingDate = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -138,7 +139,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.AlwaysOnTop != value)
                 {
                     _optionsService.AlwaysOnTop = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -154,11 +155,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Left, value, out var opposingMarginChanged);
 
                     _optionsService.VideoScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(VideoScreenRightMargin));
+                        OnPropertyChanged(nameof(VideoScreenRightMargin));
                     }
                 }
             }
@@ -175,11 +176,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Right, value, out var opposingMarginChanged);
 
                     _optionsService.VideoScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(VideoScreenLeftMargin));
+                        OnPropertyChanged(nameof(VideoScreenLeftMargin));
                     }
                 }
             }
@@ -196,11 +197,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Top, value, out var opposingMarginChanged);
 
                     _optionsService.VideoScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(VideoScreenBottomMargin));
+                        OnPropertyChanged(nameof(VideoScreenBottomMargin));
                     }
                 }
             }
@@ -217,11 +218,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Bottom, value, out var opposingMarginChanged);
 
                     _optionsService.VideoScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(VideoScreenTopMargin));
+                        OnPropertyChanged(nameof(VideoScreenTopMargin));
                     }
                 }
             }
@@ -238,11 +239,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Left, value, out var opposingMarginChanged);
 
                     _optionsService.ImageScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(ImageScreenRightMargin));
+                        OnPropertyChanged(nameof(ImageScreenRightMargin));
                     }
                 }
             }
@@ -259,11 +260,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Right, value, out var opposingMarginChanged);
 
                     _optionsService.ImageScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(ImageScreenLeftMargin));
+                        OnPropertyChanged(nameof(ImageScreenLeftMargin));
                     }
                 }
             }
@@ -280,11 +281,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Top, value, out var opposingMarginChanged);
 
                     _optionsService.ImageScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(ImageScreenBottomMargin));
+                        OnPropertyChanged(nameof(ImageScreenBottomMargin));
                     }
                 }
             }
@@ -301,11 +302,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Bottom, value, out var opposingMarginChanged);
 
                     _optionsService.ImageScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(ImageScreenTopMargin));
+                        OnPropertyChanged(nameof(ImageScreenTopMargin));
                     }
                 }
             }
@@ -322,11 +323,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Left, value, out var opposingMarginChanged);
 
                     _optionsService.WebScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(WebScreenRightMargin));
+                        OnPropertyChanged(nameof(WebScreenRightMargin));
                     }
                 }
             }
@@ -343,11 +344,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Right, value, out var opposingMarginChanged);
 
                     _optionsService.WebScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(WebScreenLeftMargin));
+                        OnPropertyChanged(nameof(WebScreenLeftMargin));
                     }
                 }
             }
@@ -364,11 +365,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Top, value, out var opposingMarginChanged);
 
                     _optionsService.WebScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(WebScreenBottomMargin));
+                        OnPropertyChanged(nameof(WebScreenBottomMargin));
                     }
                 }
             }
@@ -385,11 +386,11 @@ namespace OnlyM.ViewModel
                     ScreenPositionHelper.ModifyScreenPosition(newPos, ScreenMarginSide.Bottom, value, out var opposingMarginChanged);
 
                     _optionsService.WebScreenPosition = newPos;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
 
                     if (opposingMarginChanged)
                     {
-                        RaisePropertyChanged(nameof(WebScreenTopMargin));
+                        OnPropertyChanged(nameof(WebScreenTopMargin));
                     }
                 }
             }
@@ -403,7 +404,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.AllowMirror != value)
                 {
                     _optionsService.AllowMirror = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -416,7 +417,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.UseMirrorByDefault != value)
                 {
                     _optionsService.UseMirrorByDefault = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -430,7 +431,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.MirrorZoom != value)
                 {
                     _optionsService.MirrorZoom = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -443,7 +444,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.MirrorHotKey != value)
                 {
                     _optionsService.MirrorHotKey = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -456,7 +457,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.ShowMediaItemCommandPanel != value)
                 {
                     _optionsService.ShowMediaItemCommandPanel = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -469,7 +470,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.UseInternalMediaTitles != value)
                 {
                     _optionsService.UseInternalMediaTitles = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -482,7 +483,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.IncludeBlankScreenItem != value)
                 {
                     _optionsService.IncludeBlankScreenItem = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -497,8 +498,8 @@ namespace OnlyM.ViewModel
                 if (_optionsService.JwLibraryCompatibilityMode != value)
                 {
                     _optionsService.JwLibraryCompatibilityMode = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(JwLibModeNotSet));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(JwLibModeNotSet));
 
                     if (value)
                     {
@@ -516,8 +517,8 @@ namespace OnlyM.ViewModel
                 if (_optionsService.PermanentBackdrop != value)
                 {
                     _optionsService.PermanentBackdrop = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(NotPermanentBackdrop));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(NotPermanentBackdrop));
                 }
             }
         }
@@ -532,7 +533,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.ShowVideoSubtitles != value)
                 {
                     _optionsService.ShowVideoSubtitles = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -545,7 +546,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.AllowVideoScrubbing != value)
                 {
                     _optionsService.AllowVideoScrubbing = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -558,7 +559,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.AllowVideoPositionSeeking != value)
                 {
                     _optionsService.AllowVideoPositionSeeking = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -571,7 +572,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.ConfirmVideoStop != value)
                 {
                     _optionsService.ConfirmVideoStop = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -584,7 +585,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.AllowVideoPause != value)
                 {
                     _optionsService.AllowVideoPause = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -597,7 +598,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.ShowFreezeCommand != value)
                 {
                     _optionsService.ShowFreezeCommand = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -610,8 +611,8 @@ namespace OnlyM.ViewModel
                 if (_isMediaActive != value)
                 {
                     _isMediaActive = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsMediaInactive));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsMediaInactive));
                 }
             }
         }
@@ -628,7 +629,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.EmbeddedThumbnails != value)
                 {
                     _optionsService.EmbeddedThumbnails = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                     PurgeThumbnailCache();
                 }
             }
@@ -642,7 +643,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.CacheImages != value)
                 {
                     _optionsService.CacheImages = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -655,7 +656,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.AutoRotateImages != value)
                 {
                     _optionsService.AutoRotateImages = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -668,7 +669,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.MediaFolder != value)
                 {
                     _optionsService.MediaFolder = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -681,7 +682,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.ImageFadeType != value)
                 {
                     _optionsService.ImageFadeType = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -694,7 +695,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.MagnifierShape != value)
                 {
                     _optionsService.MagnifierShape = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -707,7 +708,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.MagnifierSize != value)
                 {
                     _optionsService.MagnifierSize = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -721,7 +722,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.MagnifierZoomLevel != value)
                 {
                     _optionsService.MagnifierZoomLevel = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -735,7 +736,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.MagnifierFrameThickness != value)
                 {
                     _optionsService.MagnifierFrameThickness = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -749,7 +750,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.BrowserZoomLevelIncrement != value)
                 {
                     _optionsService.BrowserZoomLevelIncrement = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -762,7 +763,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.ImageFadeSpeed != value)
                 {
                     _optionsService.ImageFadeSpeed = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -777,7 +778,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.LogEventLevel != value)
                 {
                     _optionsService.LogEventLevel = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -792,7 +793,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.RenderingMethod != value)
                 {
                     _optionsService.RenderingMethod = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -807,7 +808,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.Culture != value)
                 {
                     _optionsService.Culture = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -831,7 +832,7 @@ namespace OnlyM.ViewModel
                     else
                     {
                         _optionsService.MediaMonitorId = value;
-                        RaisePropertyChanged();
+                        OnPropertyChanged();
                     }
                 }
             }
@@ -845,7 +846,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.WindowedAlwaysOnTop != value)
                 {
                     _optionsService.WindowedAlwaysOnTop = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -865,14 +866,14 @@ namespace OnlyM.ViewModel
                     else
                     {
                         _optionsService.MediaWindowed = value;
-                        RaisePropertyChanged();
-                        RaisePropertyChanged(nameof(CanChangeMonitor));
+                        OnPropertyChanged();
+                        OnPropertyChanged(nameof(CanChangeMonitor));
                     }
                 }
             }
         }
 
-        private void OnShutDown(ShutDownMessage obj)
+        private void OnShutDown(object sender, ShutDownMessage obj)
         {
             _optionsService.RecentlyUsedMediaFolders = _recentlyUsedMediaFolders.GetFolders().ToList();
             _optionsService.Save();
@@ -981,7 +982,7 @@ namespace OnlyM.ViewModel
             };
 
             var monitors = _monitorsService.GetSystemMonitors();
-            result.AddRange(monitors.Select(AutoMapper.Mapper.Map<MonitorItem>));
+            result.AddRange(monitors.Select(x => new MonitorItem(x)));
 
             return result.ToArray();
         }
@@ -1013,7 +1014,7 @@ namespace OnlyM.ViewModel
         private void PurgeWebCache()
         {
             _optionsService.ShouldPurgeBrowserCacheOnStartup = true;
-            RaisePropertyChanged(nameof(IsBrowserCachePurgeQueued));
+            OnPropertyChanged(nameof(IsBrowserCachePurgeQueued));
         }
 
         private void OpenMediaFolder()
@@ -1038,7 +1039,7 @@ namespace OnlyM.ViewModel
             {
                 _recentlyUsedMediaFolders.Add(dialog.FileName);
                 MediaFolder = dialog.FileName;
-                RaisePropertyChanged(nameof(RecentMediaFolders));
+                OnPropertyChanged(nameof(RecentMediaFolders));
             }
         }
 

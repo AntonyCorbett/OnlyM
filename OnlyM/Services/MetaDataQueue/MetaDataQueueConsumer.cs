@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Services.MetaDataQueue
+﻿using System.Windows;
+
+namespace OnlyM.Services.MetaDataQueue
 {
     using System;
     using System.Collections.Concurrent;
@@ -171,7 +173,7 @@
                 var metaData = _metaDataService.GetMetaData(
                     mediaItem.FilePath, mediaItem.MediaType, _ffmpegFolder);
 
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     if (!IsDurationAndTitlePopulated(mediaItem))
                     {
@@ -193,14 +195,14 @@
                 // ReSharper disable once StyleCop.SA1117
                 byte[] thumb = _thumbnailService.GetThumbnail(
                     mediaItem.FilePath,
-                    Unosquare.FFME.MediaElement.FFmpegDirectory,
+                    Unosquare.FFME.Library.FFmpegDirectory,
                     mediaItem.MediaType.Classification,
                     mediaItem.LastChanged,
                     out var _);
 
                 if (thumb != null)
                 {
-                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         if (!IsThumbnailPopulated(mediaItem))
                         {

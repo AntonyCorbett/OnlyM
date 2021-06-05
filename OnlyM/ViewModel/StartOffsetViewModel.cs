@@ -70,10 +70,10 @@ namespace OnlyM.ViewModel
                 if (_chosenHours != value)
                 {
                     _chosenHours = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(ChosenTimeAsString));
-                    RaisePropertyChanged(nameof(ChosenTimeBrush));
-                    RaisePropertyChanged(nameof(IsTimeValid));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ChosenTimeAsString));
+                    OnPropertyChanged(nameof(ChosenTimeBrush));
+                    OnPropertyChanged(nameof(IsTimeValid));
                 }
             }
         }
@@ -86,10 +86,10 @@ namespace OnlyM.ViewModel
                 if (_chosenMinutes != value)
                 {
                     _chosenMinutes = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(ChosenTimeAsString));
-                    RaisePropertyChanged(nameof(ChosenTimeBrush));
-                    RaisePropertyChanged(nameof(IsTimeValid));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ChosenTimeAsString));
+                    OnPropertyChanged(nameof(ChosenTimeBrush));
+                    OnPropertyChanged(nameof(IsTimeValid));
                 }
             }
         }
@@ -102,10 +102,10 @@ namespace OnlyM.ViewModel
                 if (_chosenSeconds != value)
                 {
                     _chosenSeconds = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(ChosenTimeAsString));
-                    RaisePropertyChanged(nameof(ChosenTimeBrush));
-                    RaisePropertyChanged(nameof(IsTimeValid));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ChosenTimeAsString));
+                    OnPropertyChanged(nameof(ChosenTimeBrush));
+                    OnPropertyChanged(nameof(IsTimeValid));
                 }
             }
         }
@@ -175,8 +175,8 @@ namespace OnlyM.ViewModel
             ChosenMinutes = 0;
             ChosenSeconds = 0;
 
-            RaisePropertyChanged(nameof(RecentTimes));
-            RaisePropertyChanged(nameof(HasRecentTimes));
+            OnPropertyChanged(nameof(RecentTimes));
+            OnPropertyChanged(nameof(HasRecentTimes));
         }
 
         private void Cancel()
@@ -224,8 +224,8 @@ namespace OnlyM.ViewModel
             _startOffsetStorageService.Store(_mediaFileName, _mediaDurationSeconds, null);
             _recentTimes = _startOffsetStorageService.ReadOffsets(_mediaFileName, _mediaDurationSeconds).ToList();
 
-            RaisePropertyChanged(nameof(RecentTimes));
-            RaisePropertyChanged(nameof(HasRecentTimes));
+            OnPropertyChanged(nameof(RecentTimes));
+            OnPropertyChanged(nameof(HasRecentTimes));
         }
 
         private void RemoveRecentTime(int timeSeconds)
@@ -234,8 +234,8 @@ namespace OnlyM.ViewModel
 
             _startOffsetStorageService.Store(_mediaFileName, _mediaDurationSeconds, _recentTimes);
 
-            RaisePropertyChanged(nameof(RecentTimes));
-            RaisePropertyChanged(nameof(HasRecentTimes));
+            OnPropertyChanged(nameof(RecentTimes));
+            OnPropertyChanged(nameof(HasRecentTimes));
         }
     }
 }

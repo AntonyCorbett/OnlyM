@@ -25,7 +25,7 @@
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
-        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
+        public event EventHandler<OnlyMPositionChangedEventArgs> MediaPositionChangedEvent;
 
         public bool IsPaused => _outputDevice != null && _outputDevice.PlaybackState == PlaybackState.Paused;
 
@@ -147,7 +147,7 @@
         {
             if (!_manuallySettingPlaybackPosition)
             {
-                MediaPositionChangedEvent?.Invoke(this, new PositionChangedEventArgs(_mediaItemId, GetPlaybackPosition()));
+                MediaPositionChangedEvent?.Invoke(this, new OnlyMPositionChangedEventArgs(_mediaItemId, GetPlaybackPosition()));
             }
         }
     }

@@ -77,7 +77,7 @@
 
         public event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
 
-        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
+        public event EventHandler<OnlyMPositionChangedEventArgs> MediaPositionChangedEvent;
 
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
@@ -497,7 +497,7 @@
             SlideTransitionEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
+        private void HandleMediaPositionChangedEvent(object sender, OnlyMPositionChangedEventArgs e)
         {
             MediaPositionChangedEvent?.Invoke(this, e);
         }

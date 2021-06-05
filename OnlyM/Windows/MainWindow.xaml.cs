@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Windows
+﻿using Microsoft.Toolkit.Mvvm.Messaging;
+
+namespace OnlyM.Windows
 {
     using System.Windows;
     using System.Windows.Input;
@@ -43,7 +45,7 @@
             else
             {
                 SaveWindowPos();
-                Messenger.Default.Send(new ShutDownMessage());
+                WeakReferenceMessenger.Default.Send(new ShutDownMessage());
             }
         }
 

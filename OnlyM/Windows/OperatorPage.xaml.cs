@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Windows
+﻿using Microsoft.Toolkit.Mvvm.Messaging;
+
+namespace OnlyM.Windows
 {
     using System;
     using System.Windows;
@@ -37,7 +39,7 @@
             if (sender is CheckBox cb)
             {
                 var mediaItemGuid = (Guid)cb.Tag;
-                Messenger.Default.Send(new MirrorWindowMessage { MediaItemId = mediaItemGuid, UseMirror = isChecked });
+                WeakReferenceMessenger.Default.Send(new MirrorWindowMessage { MediaItemId = mediaItemGuid, UseMirror = isChecked });
             }
         }
 

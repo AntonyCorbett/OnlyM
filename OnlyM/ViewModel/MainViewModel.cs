@@ -1,5 +1,7 @@
+using System.ComponentModel;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Messaging;
 
 namespace OnlyM.ViewModel
 {
@@ -60,8 +62,8 @@ namespace OnlyM.ViewModel
                 RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
             }
 
-            Messenger.Default.Register<MediaListUpdatingMessage>(this, OnMediaListUpdating);
-            Messenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
+            WeakReferenceMessenger.Default.Register<MediaListUpdatingMessage>(this, OnMediaListUpdating);
+            WeakReferenceMessenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
 
             _mediaStatusChangingService = mediaStatusChangingService;
             _hiddenMediaItemsService = hiddenMediaItemsService;
@@ -91,7 +93,7 @@ namespace OnlyM.ViewModel
 
             InitCommands();
 
-            if (!IsInDesignMode)
+            if (!IsInDesignMode())
             {
                 _pageService.InitMediaWindow();
             }
@@ -144,14 +146,14 @@ namespace OnlyM.ViewModel
                 if (_isMediaListEmpty != value)
                 {
                     _isMediaListEmpty = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(ShowDragAndDropHint));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ShowDragAndDropHint));
                 }
             }
         }
 
         public bool IsUnhideButtonVisible =>
-            IsInDesignMode || (IsOperatorPageActive && !ShowProgressBar && _hiddenMediaItemsService.SomeHiddenMediaItems());
+            IsInDesignMode() || (IsOperatorPageActive && !ShowProgressBar && _hiddenMediaItemsService.SomeHiddenMediaItems());
 
         public bool ShowProgressBar => IsBusy;
 
@@ -165,9 +167,9 @@ namespace OnlyM.ViewModel
                 if (_isBusy != value)
                 {
                     _isBusy = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsUnhideButtonVisible));
-                    RaisePropertyChanged(nameof(ShowProgressBar));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsUnhideButtonVisible));
+                    OnPropertyChanged(nameof(ShowProgressBar));
                 }
             }
         }
@@ -180,11 +182,11 @@ namespace OnlyM.ViewModel
                 if (_currentPage == null || !_currentPage.Equals(value))
                 {
                     _currentPage = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsSettingsPageActive));
-                    RaisePropertyChanged(nameof(IsOperatorPageActive));
-                    RaisePropertyChanged(nameof(ShowNewVersionButton));
-                    RaisePropertyChanged(nameof(ShowDragAndDropHint));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsSettingsPageActive));
+                    OnPropertyChanged(nameof(IsOperatorPageActive));
+                    OnPropertyChanged(nameof(ShowNewVersionButton));
+                    OnPropertyChanged(nameof(ShowDragAndDropHint));
                 }
             }
         }
@@ -197,17 +199,17 @@ namespace OnlyM.ViewModel
                 if (_isMediaListLoading != value)
                 {
                     _isMediaListLoading = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
 
-        private void OnMediaListUpdating(MediaListUpdatingMessage message)
+        private void OnMediaListUpdating(object sender, MediaListUpdatingMessage message)
         {
             IsMediaListLoading = true;
         }
 
-        private void OnMediaListUpdated(MediaListUpdatedMessage message)
+        private void OnMediaListUpdated(object sender, MediaListUpdatedMessage message)
         {
             IsMediaListLoading = false;
             IsMediaListEmpty = message.Count == 0;
@@ -220,12 +222,12 @@ namespace OnlyM.ViewModel
                 Application.Current.MainWindow?.Activate();
             }
 
-            RaisePropertyChanged(nameof(AlwaysOnTop));
+            OnPropertyChanged(nameof(AlwaysOnTop));
         }
 
         private void HandleAlwaysOnTopChangedEvent(object sender, EventArgs e)
         {
-            RaisePropertyChanged(nameof(AlwaysOnTop));
+            OnPropertyChanged(nameof(AlwaysOnTop));
         }
 
         private void HandlePageNavigationEvent(object sender, NavigationEventArgs e)
@@ -233,12 +235,12 @@ namespace OnlyM.ViewModel
             _currentPageName = e.PageName;
             CurrentPage = _pageService.GetPage(e.PageName);
 
-            RaisePropertyChanged(nameof(IsUnhideButtonVisible));
+            OnPropertyChanged(nameof(IsUnhideButtonVisible));
         }
 
         private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
         {
-            RaisePropertyChanged(nameof(AlwaysOnTop));
+            OnPropertyChanged(nameof(AlwaysOnTop));
         }
         
         private void SanityChecks()
@@ -298,7 +300,7 @@ namespace OnlyM.ViewModel
             {
                 // there is a new version....
                 _newVersionAvailable = true;
-                RaisePropertyChanged(nameof(ShowNewVersionButton));
+                OnPropertyChanged(nameof(ShowNewVersionButton));
 
                 _snackbarService.Enqueue(
                     Properties.Resources.NEW_UPDATE_AVAILABLE, 
@@ -383,7 +385,17 @@ namespace OnlyM.ViewModel
 
         private void HandleHiddenItemsChangedEvent(object sender, EventArgs e)
         {
-            RaisePropertyChanged(nameof(IsUnhideButtonVisible));
+            OnPropertyChanged(nameof(IsUnhideButtonVisible));
+        }
+
+        private static bool IsInDesignMode()
+        {
+#if DEBUG
+            DependencyObject dep = new();
+            return DesignerProperties.GetIsInDesignMode(dep);
+#else
+            return false;
+#endif
         }
     }
 }

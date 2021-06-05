@@ -210,7 +210,7 @@
             {
                 Task.Delay(1000).ContinueWith(t =>
                 {
-                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty });
                     });
@@ -312,7 +312,7 @@
                 StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty });
             }
 
-            DispatcherHelper.CheckBeginInvokeOnUI(async () =>
+            Application.Current.Dispatcher.Invoke(async () =>
             {
                 Log.Debug(e.IsLoading ? $"Loading web page = {_browser.Address}" : "Loaded web page");
 

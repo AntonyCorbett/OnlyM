@@ -27,19 +27,19 @@ namespace OnlyM.MediaElementAdaption
             _mediaElement.MessageLogged += HandleMessageLogged;
         }
 
-        public event EventHandler<MediaOpenedEventArgs> MediaOpened;
+        public event EventHandler<OnlyMMediaOpenedEventArgs> MediaOpened;
 
-        public event EventHandler<EventArgs> MediaClosed;
+        public event EventHandler<OnlyMMediaClosedEventArgs> MediaClosed;
 
-        public event EventHandler<EventArgs> MediaEnded;
+        public event EventHandler<OnlyMMediaEndedEventArgs> MediaEnded;
 
-        public event EventHandler<MediaFailedEventArgs> MediaFailed;
+        public event EventHandler<OnlyMMediaFailedEventArgs> MediaFailed;
 
-        public event EventHandler<RenderSubtitlesEventArgs> RenderingSubtitles;
+        public event EventHandler<OnlyMRenderSubtitlesEventArgs> RenderingSubtitles;
 
-        public event EventHandler<PositionChangedEventArgs> PositionChanged;
+        public event EventHandler<OnlyMPositionChangedEventArgs> PositionChanged;
 
-        public event EventHandler<LogMessageEventArgs> MessageLogged;
+        public event EventHandler<OnlyMLogMessageEventArgs> MessageLogged;
 
         public TimeSpan Position
         {
@@ -97,34 +97,34 @@ namespace OnlyM.MediaElementAdaption
         private async void HandleMediaOpened(object sender, MediaOpenedEventArgs e)
         {
             await _mediaElement.Play();
-            MediaOpened?.Invoke(sender, e);
+            MediaOpened?.Invoke(sender, new OnlyMMediaOpenedEventArgs());
         }
 
         private void HandleMediaClosed(object sender, EventArgs e)
         {
-            MediaClosed?.Invoke(sender, e);
+            MediaClosed?.Invoke(sender, new OnlyMMediaClosedEventArgs());
         }
 
         private void HandleMediaEnded(object sender, EventArgs e)
         {
-            MediaEnded?.Invoke(sender, e);
+            MediaEnded?.Invoke(sender, new OnlyMMediaEndedEventArgs());
         }
 
         private void HandleMediaFailed(object sender, MediaFailedEventArgs e)
         {
-            MediaFailed?.Invoke(sender, e);
+            MediaFailed?.Invoke(sender, new OnlyMMediaFailedEventArgs { Error = e.ErrorException });
         }
 
         private void HandleRenderingSubtitles(object sender, RenderingSubtitlesEventArgs e)
         {
-            var args = new RenderSubtitlesEventArgs { Cancel = e.Cancel };
+            var args = new OnlyMRenderSubtitlesEventArgs { Cancel = e.Cancel };
             RenderingSubtitles?.Invoke(sender, args);
             e.Cancel = args.Cancel;
         }
 
-        private void HandlePositionChanged(object sender, Unosquare.FFME.Common.PositionChangedEventArgs e)
+        private void HandlePositionChanged(object sender, PositionChangedEventArgs e)
         {
-            PositionChanged?.Invoke(sender, new PositionChangedEventArgs(MediaItemId, e.Position));
+            PositionChanged?.Invoke(sender, new OnlyMPositionChangedEventArgs(MediaItemId, e.Position));
         }
 
         private void HandleMessageLogged(object sender, MediaLogMessageEventArgs e)
@@ -154,7 +154,7 @@ namespace OnlyM.MediaElementAdaption
                     break;
             }
 
-            MessageLogged?.Invoke(sender, new LogMessageEventArgs(level, e.Message));
+            MessageLogged?.Invoke(sender, new OnlyMLogMessageEventArgs(level, e.Message));
         }
     }
 }

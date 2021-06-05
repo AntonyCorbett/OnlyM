@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Services.Pages
+﻿using Microsoft.Toolkit.Mvvm.Messaging;
+
+namespace OnlyM.Services.Pages
 {
     using System;
     using System.Collections.Generic;
@@ -62,8 +64,8 @@
 
             _systemDpi = WindowsPlacement.GetDpiSettings();
             
-            Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
-            Messenger.Default.Register<MirrorWindowMessage>(this, OnMirrorWindowMessage);
+            WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+            WeakReferenceMessenger.Default.Register<MirrorWindowMessage>(this, OnMirrorWindowMessage);
         }
 
         public event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
@@ -74,7 +76,7 @@
 
         public event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
 
-        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
+        public event EventHandler<OnlyMPositionChangedEventArgs> MediaPositionChangedEvent;
 
         public event EventHandler MediaWindowOpenedEvent;
 
@@ -183,7 +185,7 @@
             if (_mediaWindow != null)
             {
                 // close any mirror...
-                Messenger.Default.Send(new MirrorWindowMessage { MediaItemId = mediaItem.Id, UseMirror = false });
+                WeakReferenceMessenger.Default.Send(new MirrorWindowMessage { MediaItemId = mediaItem.Id, UseMirror = false });
 
                 await _mediaWindow.StopMediaAsync(mediaItem);
             }
@@ -247,7 +249,7 @@
             }
         }
 
-        private void OnShutDown(ShutDownMessage message)
+        private void OnShutDown(object sender, ShutDownMessage message)
         {
             ApplicationIsClosing = true;
             CloseMediaWindow();
@@ -345,7 +347,7 @@
             }
         }
 
-        private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
+        private void HandleMediaPositionChangedEvent(object sender, OnlyMPositionChangedEventArgs e)
         {
             MediaPositionChangedEvent?.Invoke(this, e);
         }
@@ -455,7 +457,7 @@
 
                 Task.Delay(10).ContinueWith(t =>
                 {
-                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
                         RelocateMediaWindow();
                         _mediaWindow.Hide();
@@ -503,7 +505,7 @@
             _mediaWindow?.UpdateRenderingMethod();
         }
 
-        private void OnMirrorWindowMessage(MirrorWindowMessage msg)
+        private void OnMirrorWindowMessage(object sender, MirrorWindowMessage msg)
         {
             if (_activeMediaItemsService.Exists(msg.MediaItemId))
             {

@@ -7,19 +7,19 @@
 
     internal interface IMediaElement
     {
-        event EventHandler<RoutedEventArgs> MediaOpened;
+        event EventHandler<OnlyMMediaOpenedEventArgs> MediaOpened;
 
-        event EventHandler<RoutedEventArgs> MediaClosed;
+        event EventHandler<OnlyMMediaClosedEventArgs> MediaClosed;
 
-        event EventHandler<RoutedEventArgs> MediaEnded;
+        event EventHandler<OnlyMMediaEndedEventArgs> MediaEnded;
 
-        event EventHandler<ExceptionRoutedEventArgs> MediaFailed;
+        event EventHandler<OnlyMMediaFailedEventArgs> MediaFailed;
 
-        event EventHandler<RenderSubtitlesEventArgs> RenderingSubtitles;
+        event EventHandler<OnlyMRenderSubtitlesEventArgs> RenderingSubtitles;
 
-        event EventHandler<PositionChangedEventArgs> PositionChanged;
+        event EventHandler<OnlyMPositionChangedEventArgs> PositionChanged;
 
-        event EventHandler<LogMessageEventArgs> MessageLogged;
+        event EventHandler<OnlyMLogMessageEventArgs> MessageLogged;
 
         TimeSpan Position { get; set; }
 

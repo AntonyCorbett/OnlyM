@@ -336,7 +336,7 @@
 
             if (!shouldFadeOut)
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     completed?.Invoke();
                     imageCtrl.Source = null;
@@ -375,7 +375,7 @@
 
             if (!shouldFadeIn)
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     RemoveAnimation(imageCtrl);
                     imageCtrl.Source = imageSrc;
@@ -391,7 +391,7 @@
                 // the first time an image is loaded. There must be a better way!
                 Task.Delay(10).ContinueWith(t =>
                 {
-                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         var fadeIn = new DoubleAnimation
                         {

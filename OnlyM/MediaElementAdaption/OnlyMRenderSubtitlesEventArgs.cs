@@ -1,6 +1,6 @@
 ﻿namespace OnlyM.MediaElementAdaption
 {
-    internal class RenderSubtitlesEventArgs
+    internal class OnlyMRenderSubtitlesEventArgs
     {
         public bool Cancel { get; set; }
     }

@@ -52,7 +52,7 @@
                     // completed animation
                     Task.Delay(3000).ContinueWith(t =>
                     {
-                        DispatcherHelper.CheckBeginInvokeOnUI(HideWebNavHeader);
+                        Application.Current.Dispatcher.Invoke(HideWebNavHeader);
                     });
                 });
         }

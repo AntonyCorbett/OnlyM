@@ -69,7 +69,7 @@ namespace OnlyM.Models
                 if (_useMirror != value)
                 {
                     _useMirror = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -82,8 +82,8 @@ namespace OnlyM.Models
                 if (_allowUseMirror != value)
                 {
                     _allowUseMirror = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsWebAndAllowMirror));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsWebAndAllowMirror));
                 }
             }
         }
@@ -96,8 +96,8 @@ namespace OnlyM.Models
                 if (_commandPanelVisible != value)
                 {
                     _commandPanelVisible = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(CommandPanelBtnColWidth));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(CommandPanelBtnColWidth));
 
                     if (!_commandPanelVisible && IsCommandPanelOpen)
                     {
@@ -115,7 +115,7 @@ namespace OnlyM.Models
                 if (_pauseOnLastFrame != value)
                 {
                     _pauseOnLastFrame = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -128,8 +128,8 @@ namespace OnlyM.Models
                 if (_allowFreezeCommand != value)
                 {
                     _allowFreezeCommand = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(ShouldDisplayFreezeCommand));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ShouldDisplayFreezeCommand));
                 }
             }
         }
@@ -163,7 +163,7 @@ namespace OnlyM.Models
                     pageNumber > 0)
                 {
                     _chosenPdfPage = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -176,7 +176,7 @@ namespace OnlyM.Models
                 if (_pdfViewStyle != value)
                 {
                     _pdfViewStyle = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -189,7 +189,7 @@ namespace OnlyM.Models
                 if (_isCommandPanelOpen != value)
                 {
                     _isCommandPanelOpen = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -202,7 +202,7 @@ namespace OnlyM.Models
                 if (_isVisible != value)
                 {
                     _isVisible = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -217,7 +217,7 @@ namespace OnlyM.Models
                 if (_title == null || !_title.Equals(value))
                 {
                     _title = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -259,7 +259,7 @@ namespace OnlyM.Models
                 if (_fileNameAsSubTitle != value)
                 {
                     _fileNameAsSubTitle = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -275,11 +275,11 @@ namespace OnlyM.Models
                 if (_isPaused != value)
                 {
                     _isPaused = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(PauseIconKind));
-                    RaisePropertyChanged(nameof(HasDurationAndIsPlaying));
-                    RaisePropertyChanged(nameof(IsSliderVisible));
-                    RaisePropertyChanged(nameof(IsStartOffsetButtonEnabled));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(PauseIconKind));
+                    OnPropertyChanged(nameof(HasDurationAndIsPlaying));
+                    OnPropertyChanged(nameof(IsSliderVisible));
+                    OnPropertyChanged(nameof(IsStartOffsetButtonEnabled));
                 }
             }
         }
@@ -300,10 +300,10 @@ namespace OnlyM.Models
                 {
                     _thumbnailImageSource = value;
 
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsPlayButtonVisible));
-                    RaisePropertyChanged(nameof(IsStopButtonVisible));
-                    RaisePropertyChanged(nameof(IsPreparingMedia));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsPlayButtonVisible));
+                    OnPropertyChanged(nameof(IsStopButtonVisible));
+                    OnPropertyChanged(nameof(IsPreparingMedia));
                 }
             }
         }
@@ -324,19 +324,19 @@ namespace OnlyM.Models
                 if (_isMediaActive != value)
                 {
                     _isMediaActive = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(HasDurationAndIsPlaying));
-                    RaisePropertyChanged(nameof(IsPauseButtonVisible));
-                    RaisePropertyChanged(nameof(IsPlayButtonVisible));
-                    RaisePropertyChanged(nameof(IsStopButtonVisible));
-                    RaisePropertyChanged(nameof(IsSliderVisible));
-                    RaisePropertyChanged(nameof(PlaybackTimeColorBrush));
-                    RaisePropertyChanged(nameof(DurationColorBrush));
-                    RaisePropertyChanged(nameof(CommandPanelEnabled));
-                    RaisePropertyChanged(nameof(IsPreviousSlideButtonEnabled));
-                    RaisePropertyChanged(nameof(IsNextSlideButtonEnabled));
-                    RaisePropertyChanged(nameof(SlideshowProgressString));
-                    RaisePropertyChanged(nameof(IsStartOffsetButtonEnabled));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(HasDurationAndIsPlaying));
+                    OnPropertyChanged(nameof(IsPauseButtonVisible));
+                    OnPropertyChanged(nameof(IsPlayButtonVisible));
+                    OnPropertyChanged(nameof(IsStopButtonVisible));
+                    OnPropertyChanged(nameof(IsSliderVisible));
+                    OnPropertyChanged(nameof(PlaybackTimeColorBrush));
+                    OnPropertyChanged(nameof(DurationColorBrush));
+                    OnPropertyChanged(nameof(CommandPanelEnabled));
+                    OnPropertyChanged(nameof(IsPreviousSlideButtonEnabled));
+                    OnPropertyChanged(nameof(IsNextSlideButtonEnabled));
+                    OnPropertyChanged(nameof(SlideshowProgressString));
+                    OnPropertyChanged(nameof(IsStartOffsetButtonEnabled));
                 }
             }
         }
@@ -349,7 +349,7 @@ namespace OnlyM.Models
                 if (_isMediaChanging != value)
                 {
                     _isMediaChanging = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -362,7 +362,7 @@ namespace OnlyM.Models
                 if (_isPlayButtonEnabled != value)
                 {
                     _isPlayButtonEnabled = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -375,8 +375,8 @@ namespace OnlyM.Models
                 if (_slideshowCount != value)
                 {
                     _slideshowCount = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(SlideshowProgressString));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SlideshowProgressString));
                 }
             }
         }
@@ -389,8 +389,8 @@ namespace OnlyM.Models
                 if (_isRollingSlideshow != value)
                 {
                     _isRollingSlideshow = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(SlideshowProgressString));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SlideshowProgressString));
                 }
             }
         }
@@ -405,10 +405,10 @@ namespace OnlyM.Models
                 if (_currentSlideshowIndex != value)
                 {
                     _currentSlideshowIndex = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsPreviousSlideButtonEnabled));
-                    RaisePropertyChanged(nameof(IsNextSlideButtonEnabled));
-                    RaisePropertyChanged(nameof(SlideshowProgressString));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsPreviousSlideButtonEnabled));
+                    OnPropertyChanged(nameof(IsNextSlideButtonEnabled));
+                    OnPropertyChanged(nameof(SlideshowProgressString));
                 }
             }
         }
@@ -441,9 +441,9 @@ namespace OnlyM.Models
                 if (_allowPositionSeeking != value)
                 {
                     _allowPositionSeeking = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsSliderVisible));
-                    RaisePropertyChanged(nameof(IsStartOffsetButtonVisible));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsSliderVisible));
+                    OnPropertyChanged(nameof(IsStartOffsetButtonVisible));
                 }
             }
         }
@@ -456,8 +456,8 @@ namespace OnlyM.Models
                 if (_allowPause != value)
                 {
                     _allowPause = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsPauseButtonVisible));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsPauseButtonVisible));
                 }
             }
         }
@@ -474,7 +474,7 @@ namespace OnlyM.Models
                 if (_miscText != value)
                 {
                     _miscText = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -529,7 +529,7 @@ namespace OnlyM.Models
 
                     PlaybackTimeString = GenerateTimeString(_playbackPositionDeciseconds * 100);
 
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                     OnPlaybackPositionChangedEvent();
                 }
             }
@@ -543,7 +543,7 @@ namespace OnlyM.Models
                 if (!_playbackTimeString.Equals(value))
                 {
                     _playbackTimeString = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -559,10 +559,10 @@ namespace OnlyM.Models
                 if (_durationDeciseconds != value)
                 {
                     _durationDeciseconds = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(DurationString));
-                    RaisePropertyChanged(nameof(IsPreparingMedia));
-                    RaisePropertyChanged(nameof(IsPlayButtonVisible));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(DurationString));
+                    OnPropertyChanged(nameof(IsPreparingMedia));
+                    OnPropertyChanged(nameof(IsPlayButtonVisible));
                 }
             }
         }

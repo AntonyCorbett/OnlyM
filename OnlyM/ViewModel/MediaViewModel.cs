@@ -49,7 +49,7 @@ namespace OnlyM.ViewModel
         public IWpfWebBrowser WebBrowser
         {
             get => _webBrowser;
-            set => Set(ref _webBrowser, value);
+            set => SetProperty(ref _webBrowser, value);
         }
 
         public Size WindowSize
@@ -60,8 +60,8 @@ namespace OnlyM.ViewModel
                 if (_windowSize != value)
                 {
                     _windowSize = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(MagnifierRadius));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(MagnifierRadius));
                 }
             }
         }
@@ -75,7 +75,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.BrowserZoomLevelIncrement != value)
                 {
                     _optionsService.BrowserZoomLevelIncrement = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -88,7 +88,7 @@ namespace OnlyM.ViewModel
                 if (_isWebPage != value)
                 {
                     _isWebPage = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -101,7 +101,7 @@ namespace OnlyM.ViewModel
                 if (_isMagnifierVisible != value)
                 {
                     _isMagnifierVisible = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -115,7 +115,7 @@ namespace OnlyM.ViewModel
                 if (_optionsService.MagnifierZoomLevel != value)
                 {
                     _optionsService.MagnifierZoomLevel = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -128,8 +128,8 @@ namespace OnlyM.ViewModel
                 if (_subtitleText != value)
                 {
                     _subtitleText = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(SubTitleTextIsNotEmpty));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SubTitleTextIsNotEmpty));
                 }
             }
         }
@@ -186,16 +186,16 @@ namespace OnlyM.ViewModel
                 {
                     _optionsService.MagnifierShape = value;
 
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsMagnifierFrameSquare));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsMagnifierFrameSquare));
                 }
             }
         }
 
         private void HandleRenderingMethodChangedEvent(object sender, System.EventArgs e)
         {
-            RaisePropertyChanged(nameof(EngineIsFfmpeg));
-            RaisePropertyChanged(nameof(EngineIsMediaFoundation));
+            OnPropertyChanged(nameof(EngineIsFfmpeg));
+            OnPropertyChanged(nameof(EngineIsMediaFoundation));
         }
 
         private void InitCommands()
@@ -318,17 +318,17 @@ namespace OnlyM.ViewModel
 
         private void HandleMagnifierChangedEvent(object sender, System.EventArgs e)
         {
-            RaisePropertyChanged(nameof(IsMagnifierVisible));
-            RaisePropertyChanged(nameof(IsMagnifierFrameSquare));
-            RaisePropertyChanged(nameof(MagnifierFrameType));
-            RaisePropertyChanged(nameof(MagnifierZoomLevel));
-            RaisePropertyChanged(nameof(MagnifierRadius));
-            RaisePropertyChanged(nameof(MagnifierFrameThickness));
+            OnPropertyChanged(nameof(IsMagnifierVisible));
+            OnPropertyChanged(nameof(IsMagnifierFrameSquare));
+            OnPropertyChanged(nameof(MagnifierFrameType));
+            OnPropertyChanged(nameof(MagnifierZoomLevel));
+            OnPropertyChanged(nameof(MagnifierRadius));
+            OnPropertyChanged(nameof(MagnifierFrameThickness));
         }
 
         private void HandleBrowserChangedEvent(object sender, EventArgs e)
         {
-            RaisePropertyChanged(nameof(BrowserZoomLevelIncrement));
+            OnPropertyChanged(nameof(BrowserZoomLevelIncrement));
         }
     }
 }

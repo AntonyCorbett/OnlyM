@@ -2,9 +2,9 @@
 {
     using System;
 
-    public class PositionChangedEventArgs : EventArgs
+    public class OnlyMPositionChangedEventArgs : EventArgs
     {
-        public PositionChangedEventArgs(Guid mediaItemId, TimeSpan position)
+        public OnlyMPositionChangedEventArgs(Guid mediaItemId, TimeSpan position)
         {
             MediaItemId = mediaItemId;
             Position = position;

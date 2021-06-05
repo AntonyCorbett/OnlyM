@@ -2,9 +2,9 @@
 {
     using Serilog.Events;
 
-    internal class LogMessageEventArgs
+    internal class OnlyMLogMessageEventArgs
     {
-        public LogMessageEventArgs(LogEventLevel level, string message)
+        public OnlyMLogMessageEventArgs(LogEventLevel level, string message)
         {
             Level = level;
             Message = message;

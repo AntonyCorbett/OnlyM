@@ -44,25 +44,25 @@
             _timer.Tick += TimerFire;
         }
 
-        public event EventHandler<RoutedEventArgs> MediaOpened;
+        public event EventHandler<OnlyMMediaOpenedEventArgs> MediaOpened;
 
-        public event EventHandler<RoutedEventArgs> MediaClosed;
+        public event EventHandler<OnlyMMediaClosedEventArgs> MediaClosed;
 
-        public event EventHandler<RoutedEventArgs> MediaEnded;
+        public event EventHandler<OnlyMMediaEndedEventArgs> MediaEnded;
 
-        public event EventHandler<ExceptionRoutedEventArgs> MediaFailed;
+        public event EventHandler<OnlyMMediaFailedEventArgs> MediaFailed;
 
         // not supported in MediaFoundation
-        public event EventHandler<RenderSubtitlesEventArgs> RenderingSubtitles
+        public event EventHandler<OnlyMRenderSubtitlesEventArgs> RenderingSubtitles
         {
             add { }
             remove { }
         }
 
-        public event EventHandler<PositionChangedEventArgs> PositionChanged;
+        public event EventHandler<OnlyMPositionChangedEventArgs> PositionChanged;
 
         // not supported in MediaFoundation
-        public event EventHandler<LogMessageEventArgs> MessageLogged
+        public event EventHandler<OnlyMLogMessageEventArgs> MessageLogged
         {
             add { }
             remove { }
@@ -196,22 +196,22 @@
 
         private void HandleMediaOpened(object sender, RoutedEventArgs e)
         {
-            MediaOpened?.Invoke(sender, e);
+            MediaOpened?.Invoke(sender, new OnlyMMediaOpenedEventArgs());
         }
 
         private void HandleMediaEnded(object sender, RoutedEventArgs e)
         {
-            MediaEnded?.Invoke(sender, e);
+            MediaEnded?.Invoke(sender, new OnlyMMediaEndedEventArgs());
         }
 
         private void HandleMediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            MediaFailed?.Invoke(sender, e);
+            MediaFailed?.Invoke(sender, new OnlyMMediaFailedEventArgs { Error = e.ErrorException });
         }
 
         private void TimerFire(object sender, EventArgs e)
         {
-            PositionChanged?.Invoke(this, new PositionChangedEventArgs(MediaItemId, Position));
+            PositionChanged?.Invoke(this, new OnlyMPositionChangedEventArgs(MediaItemId, Position));
         }
 
         private MediaPlayer MediaPlayerFactory()

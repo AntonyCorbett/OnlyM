@@ -8,11 +8,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlyM", "OnlyM\OnlyM.csproj
 		{2B2D1430-B933-4C74-8B0F-6943D6E2ED5F} = {2B2D1430-B933-4C74-8B0F-6943D6E2ED5F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{4BF3D9AD-4DD8-4676-81A2-E099BC2D10AD}"
 	ProjectSection(SolutionItems) = preProject
-		OnlyM.ruleset = OnlyM.ruleset
+		.editorconfig = .editorconfig
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject
@@ -27,11 +27,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlyM.Slides", "OnlyM.Slides\OnlyM.Slides.csproj", "{1C481C12-EC58-42E6-B88A-94E83E9206C8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlyM.CustomControls", "OnlyM.CustomControls\OnlyM.CustomControls.csproj", "{9787681A-EB7C-432F-98DD-3DF78E52053A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{86C8D545-84CD-4921-AE56-86FBE5B2CAFB}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,8 +54,8 @@ Global
 		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Debug|x64.Build.0 = Debug|Any CPU
-		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Debug|x86.ActiveCfg = Debug|x86
-		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Debug|x86.Build.0 = Debug|x86
+		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Debug|x86.Build.0 = Debug|Any CPU
 		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A7CEA7B8-3E61-4D62-ADDF-3576E30660B3}.Release|x64.ActiveCfg = Release|Any CPU

@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Services
+﻿using Microsoft.Toolkit.Mvvm.Messaging;
+
+namespace OnlyM.Services
 {
     using System;
     using System.Diagnostics;
@@ -42,7 +44,7 @@
 
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
-        public event EventHandler<PositionChangedEventArgs> MediaPositionChangedEvent;
+        public event EventHandler<OnlyMPositionChangedEventArgs> MediaPositionChangedEvent;
 
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
@@ -145,7 +147,7 @@
             MediaChangeEvent?.Invoke(this, e);
         }
 
-        private async void HandleMediaOpened(object sender, System.Windows.RoutedEventArgs e)
+        private async void HandleMediaOpened(object sender, OnlyMMediaOpenedEventArgs e)
         {
             Log.Logger.Information("Opened");
 
@@ -157,7 +159,7 @@
             await CreateSubtitleProvider(_mediaItemFilePath, _startPosition);
         }
 
-        private void HandleMediaClosed(object sender, System.Windows.RoutedEventArgs e)
+        private void HandleMediaClosed(object sender, OnlyMMediaClosedEventArgs e)
         {
             Log.Logger.Debug("Media closed");
 
@@ -166,7 +168,7 @@
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
         }
 
-        private async void HandleMediaEnded(object sender, System.Windows.RoutedEventArgs e)
+        private async void HandleMediaEnded(object sender, OnlyMMediaEndedEventArgs e)
         {
             Log.Logger.Debug("Media ended");
 
@@ -177,13 +179,13 @@
             }
         }
 
-        private void HandleMediaFailed(object sender, System.Windows.ExceptionRoutedEventArgs e)
+        private void HandleMediaFailed(object sender, OnlyMMediaFailedEventArgs e)
         {
             Log.Logger.Debug("Media failed");
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
         }
 
-        private void HandlePositionChanged(object sender, PositionChangedEventArgs e)
+        private void HandlePositionChanged(object sender, OnlyMPositionChangedEventArgs e)
         {
             if (!_manuallySettingPlaybackPosition)
             {
@@ -204,12 +206,12 @@
             }
         }
 
-        private void HandleRenderingSubtitles(object sender, RenderSubtitlesEventArgs e)
+        private void HandleRenderingSubtitles(object sender, OnlyMRenderSubtitlesEventArgs e)
         {
             e.Cancel = !ShowSubtitles;
         }
 
-        private void HandleMediaElementMessageLogged(object sender, LogMessageEventArgs e)
+        private void HandleMediaElementMessageLogged(object sender, OnlyMLogMessageEventArgs e)
         {
             switch (e.Level)
             {
@@ -293,7 +295,7 @@
 
         private void HandleSubtitleFileEvent(object sender, SubtitleFileEventArgs e)
         {
-            Messenger.Default.Send(new SubtitleFileMessage { MediaItemId = e.MediaItemId, Starting = e.Starting });
+            WeakReferenceMessenger.Default.Send(new SubtitleFileMessage { MediaItemId = e.MediaItemId, Starting = e.Starting });
         }
 
         private void SubscribeEvents()

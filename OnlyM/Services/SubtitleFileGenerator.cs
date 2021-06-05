@@ -16,7 +16,7 @@
             {
                 Log.Logger.Debug($"Generating subtitle file for media {mediaItemFilePath}");
 
-                var ffmpegFolder = Unosquare.FFME.MediaElement.FFmpegDirectory;
+                var ffmpegFolder = Unosquare.FFME.Library.FFmpegDirectory;
 
                 var destFolder = Path.GetDirectoryName(mediaItemFilePath);
                 if (destFolder == null)

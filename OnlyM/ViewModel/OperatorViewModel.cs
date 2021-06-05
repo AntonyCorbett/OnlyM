@@ -1,5 +1,8 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using System.ComponentModel;
+using System.Windows;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using WpfApp1;
 
 namespace OnlyM.ViewModel
@@ -126,8 +129,8 @@ namespace OnlyM.ViewModel
 
             LaunchThumbnailQueueConsumer();
 
-            Messenger.Default.Register<ShutDownMessage>(this, OnShutDown);
-            Messenger.Default.Register<SubtitleFileMessage>(this, OnSubtitleFileActivity);
+            WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
+            WeakReferenceMessenger.Default.Register<SubtitleFileMessage>(this, OnSubtitleFileActivity);
         }
 
         public ObservableCollectionEx<MediaItem> MediaItems { get; } = new ObservableCollectionEx<MediaItem>();
@@ -160,7 +163,7 @@ namespace OnlyM.ViewModel
                 if (_thumbnailColWidth != value)
                 {
                     _thumbnailColWidth = value;
-                    RaisePropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -308,7 +311,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleMediaPositionChangedEvent(object sender, PositionChangedEventArgs e)
+        private void HandleMediaPositionChangedEvent(object sender, OnlyMPositionChangedEventArgs e)
         {
             var item = GetMediaItem(e.MediaItemId);
             if (item != null && !item.IsPaused)
@@ -317,7 +320,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void OnShutDown(ShutDownMessage message)
+        private void OnShutDown(object sender, ShutDownMessage message)
         {
             // cancel the thumbnail consumer thread.
             _metaDataCancellationTokenSource.Cancel();
@@ -350,7 +353,7 @@ namespace OnlyM.ViewModel
 
         private void HandleFileChangesFoundEvent(object sender, EventArgs e)
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(LoadMediaItems);
+            Application.Current.Dispatcher.Invoke(LoadMediaItems);
         }
 
         private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
@@ -846,14 +849,14 @@ namespace OnlyM.ViewModel
 
         private void LoadMediaItems()
         {
-            if (IsInDesignMode)
+            if (IsInDesignMode())
             {
                 return;
             }
 
             Log.Logger.Debug("Loading media items");
-            
-            Messenger.Default.Send(new MediaListUpdatingMessage());
+
+            WeakReferenceMessenger.Default.Send(new MediaListUpdatingMessage());
 
             using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
             {
@@ -862,7 +865,7 @@ namespace OnlyM.ViewModel
 
             ChangePlayButtonEnabledStatus();
 
-            Messenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
+            WeakReferenceMessenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
             
             Log.Logger.Debug("Completed loading media items");
         }
@@ -1086,7 +1089,7 @@ namespace OnlyM.ViewModel
             });
         }
 
-        private void OnSubtitleFileActivity(SubtitleFileMessage message)
+        private void OnSubtitleFileActivity(object sender, SubtitleFileMessage message)
         {
             if (message.Starting)
             {
@@ -1096,7 +1099,7 @@ namespace OnlyM.ViewModel
 
         private void HandleWebStatusEvent(object sender, WebBrowserProgressEventArgs e)
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 var item = GetActiveWebItem();
                 if (item != null)
@@ -1114,6 +1117,16 @@ namespace OnlyM.ViewModel
             {
                 item.AllowUseMirror = allow;
             }
+        }
+
+        private static bool IsInDesignMode()
+        {
+#if DEBUG
+            DependencyObject dep = new();
+            return DesignerProperties.GetIsInDesignMode(dep);
+#else
+            return false;
+#endif
         }
     }
 }
