@@ -28,17 +28,17 @@
             var sb = new StringBuilder();
 
             sb.Append(FadeInForward);
-            sb.Append("|");
+            sb.Append('|');
             sb.Append(FadeInReverse);
-            sb.Append("|");
+            sb.Append('|');
             sb.Append(FadeOutForward);
-            sb.Append("|");
+            sb.Append('|');
             sb.Append(FadeOutReverse);
-            sb.Append("|");
+            sb.Append('|');
             sb.Append(DwellTimeMilliseconds);
-            sb.Append("|");
+            sb.Append('|');
             sb.Append(ArchiveEntryName);
-            sb.Append("|");
+            sb.Append('|');
             sb.Append(OriginalFilePath);
             
             return sb.ToString();

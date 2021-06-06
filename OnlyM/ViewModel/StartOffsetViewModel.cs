@@ -114,7 +114,7 @@ namespace OnlyM.ViewModel
 
         public Brush ChosenTimeBrush => IsTimeValid ? GreenBrush : RedBrush;
 
-        public bool HasRecentTimes => _recentTimes != null && _recentTimes.Any();
+        public bool HasRecentTimes => _recentTimes != null && _recentTimes.Count > 0;
 
         public IEnumerable<RecentTimesItem> RecentTimes
         {
@@ -133,7 +133,7 @@ namespace OnlyM.ViewModel
                     }
                 }
 
-                if (result.Any())
+                if (result.Count > 0)
                 {
                     result.Add(new RecentTimesItem());  // "Clear"
                 }

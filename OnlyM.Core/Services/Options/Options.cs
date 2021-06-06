@@ -164,7 +164,7 @@
             ImageScreenPosition.Sanitize();
             WebScreenPosition.Sanitize();
 
-            if (!RecentlyUsedMediaFolders.Any())
+            if (RecentlyUsedMediaFolders.Count == 0)
             {
                 RecentlyUsedMediaFolders.Add(!string.IsNullOrEmpty(MediaFolder)
                     ? MediaFolder

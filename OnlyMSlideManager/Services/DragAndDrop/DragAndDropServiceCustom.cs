@@ -137,7 +137,7 @@ namespace OnlyMSlideManager.Services.DragAndDrop
                 // Note that you can have more than one file...
                 string[] files = (string[])data.GetData(DataFormats.FileDrop);
 
-                if (files != null && files.Any())
+                if (files != null && files.Length > 0)
                 {
                     foreach (var file in files)
                     {

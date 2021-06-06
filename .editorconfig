@@ -2,3 +2,15 @@
 
 # CA1416: Validate platform compatibility
 dotnet_diagnostic.CA1416.severity = silent
+
+# RCS1037: Remove trailing white-space.
+dotnet_diagnostic.RCS1037.severity = silent
+
+# U2U1108: StringBuilders should be initialized with capacity
+dotnet_diagnostic.U2U1108.severity = silent
+
+# U2U1103: Index strings correctly
+dotnet_diagnostic.U2U1103.severity = silent
+
+# U2U1009: Async or iterator methods should avoid state machine generation for early exits (throws or synchronous returns)
+dotnet_diagnostic.U2U1009.severity = silent

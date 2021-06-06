@@ -314,9 +314,10 @@
 
             for (var i = 0; i < modeCount; i++)
             {
-                if (displayModes[i].infoType == DISPLAYCONFIG_MODE_INFO_TYPE.DISPLAYCONFIG_MODE_INFO_TYPE_TARGET)
+                var displayMode = displayModes[i];
+                if (displayMode.infoType == DISPLAYCONFIG_MODE_INFO_TYPE.DISPLAYCONFIG_MODE_INFO_TYPE_TARGET)
                 {
-                    yield return MonitorFriendlyName(displayModes[i].adapterId, displayModes[i].id);
+                    yield return MonitorFriendlyName(displayMode.adapterId, displayMode.id);
                 }
             }
         }

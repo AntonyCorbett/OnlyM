@@ -1,11 +1,10 @@
-﻿namespace OnlyM.AutoUpdates
-{
-    using System;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Reflection;
-    using Serilog;
+﻿using System;
+using System.Net.Http;
+using System.Reflection;
+using Serilog;
 
+namespace OnlyM.AutoUpdates
+{
     /// <summary>
     /// Used to get the installed OnlyM version and the 
     /// latest OnlyM release version from the github webpage.
@@ -20,19 +19,20 @@
 
             try
             {
-                using (var client = new HttpClient())
+#pragma warning disable U2U1025 // Avoid instantiating HttpClient
+                using var client = new HttpClient();
+#pragma warning restore U2U1025 // Avoid instantiating HttpClient
+
+                var response = client.GetAsync(LatestReleaseUrl).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    var response = client.GetAsync(LatestReleaseUrl).Result;
-                    if (response.IsSuccessStatusCode)
+                    var latestVersionUri = response.RequestMessage?.RequestUri;
+                    if (latestVersionUri != null)
                     {
-                        var latestVersionUri = response.RequestMessage.RequestUri;
-                        if (latestVersionUri != null)
+                        var segments = latestVersionUri.Segments;
+                        if (segments.Length > 0)
                         {
-                            var segments = latestVersionUri.Segments;
-                            if (segments.Any())
-                            {
-                                version = segments[segments.Length - 1];
-                            }
+                            version = segments[^1];
                         }
                     }
                 }

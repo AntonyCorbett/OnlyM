@@ -139,7 +139,7 @@
                 var mediaFolder = _optionsService.MediaFolder;
 
                 var files = GetSupportedFiles(data).ToArray();
-                if (!files.Any())
+                if (files.Length == 0)
                 {
                     return 0;
                 }
@@ -174,7 +174,7 @@
                 var mediaFolder = _optionsService.MediaFolder;
 
                 var uriList = GetSupportedUrls(data).ToArray();
-                if (!uriList.Any())
+                if (uriList.Length == 0)
                 {
                     return 0;
                 }
@@ -472,7 +472,7 @@
                 // Note that you can have more than one file...
                 string[] files = (string[])data.GetData(DataFormats.FileDrop);
 
-                if (files == null || !files.Any())
+                if (files == null || files.Length == 0)
                 {
                     return result;
                 }

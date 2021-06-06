@@ -294,11 +294,11 @@ namespace OnlyM.CoreSys
                 var arguments = new StringBuilder();
 
                 arguments.Append("-i ");
-                arguments.Append("\"");
+                arguments.Append('\"');
                 arguments.Append(videoFilePath);
                 arguments.Append("\" ");
                 arguments.Append("-map 0:s:0 ");
-                arguments.Append("\"");
+                arguments.Append('\"');
                 arguments.Append(destinationSrtFilePath);
                 arguments.Append("\" -y");
 
@@ -324,11 +324,11 @@ namespace OnlyM.CoreSys
             var arguments = new StringBuilder();
 
             arguments.Append("-i ");
-            arguments.Append("\"");
+            arguments.Append('\"');
             arguments.Append(originalPath);
             arguments.Append("\" ");
             arguments.Append("-vf \"thumbnail,scale=320:180\" -y -frames:v 1 ");
-            arguments.Append("\"");
+            arguments.Append('\"');
             arguments.Append(tempThumbnailPath);
             arguments.Append("\" ");
 
@@ -347,11 +347,11 @@ namespace OnlyM.CoreSys
             // get the internal thumbnail provided in the video itself.
             var arguments = new StringBuilder();
             arguments.Append("-i ");
-            arguments.Append("\"");
+            arguments.Append('\"');
             arguments.Append(originalPath);
             arguments.Append("\" ");
             arguments.Append("-map 0 -map -V -map -d -map -s -map -t -map -a -y ");
-            arguments.Append("\"");
+            arguments.Append('\"');
             arguments.Append(tempThumbnailPath);
             arguments.Append("\" ");
 

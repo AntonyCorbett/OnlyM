@@ -44,13 +44,13 @@
             var sb = new StringBuilder();
 
             sb.Append(AutoPlay);
-            sb.Append("|");
+            sb.Append('|');
             sb.Append(AutoClose);
-            sb.Append("|");
+            sb.Append('|');
             sb.Append(DwellTimeMilliseconds);
-            sb.Append("|");
+            sb.Append('|');
             sb.Append(Loop);
-            sb.Append("|");
+            sb.Append('|');
 
             foreach (var slide in Slides)
             {

@@ -50,11 +50,8 @@
             OnHiddenItemsChangedEvent();
         }
 
-        public bool SomeHiddenMediaItems()
-        {
-            return _hiddenItemsInCurrentMediaFolder.Any();
-        }
-
+        public bool SomeHiddenMediaItems() => _hiddenItemsInCurrentMediaFolder.Count > 0;
+        
         public void Add(string path)
         {
             _hiddenItemsInCurrentMediaFolder.Add(path);

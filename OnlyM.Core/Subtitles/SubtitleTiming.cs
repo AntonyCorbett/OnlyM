@@ -12,7 +12,7 @@
         {
             value = null;
 
-            var tokens = line.Replace("-->", "|").Replace(",", ".").Split('|');
+            var tokens = line.Replace("-->", "|").Replace(',', '.').Split('|');
             if (tokens.Length != 2)
             {
                 return false;

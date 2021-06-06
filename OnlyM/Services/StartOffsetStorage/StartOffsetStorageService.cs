@@ -60,7 +60,7 @@
         {
             try
             {
-                var timesAsString = recentTimes == null || !recentTimes.Any()
+                var timesAsString = recentTimes == null || recentTimes.Count == 0
                     ? string.Empty
                     : string.Join(",", recentTimes);
 

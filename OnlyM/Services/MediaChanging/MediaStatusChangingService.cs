@@ -29,7 +29,7 @@
         {
             lock (_locker)
             {
-                return _changingMediaItems.Any();
+                return _changingMediaItems.Count > 0;
             }
         }
     }

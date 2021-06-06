@@ -317,7 +317,7 @@
             var baseName = Path.GetFileNameWithoutExtension(bitmapPath);
 
             var similarSlideNames = GetSlideNamesStartingWith(baseName).ToArray();
-            if (similarSlideNames.Any())
+            if (similarSlideNames.Length > 0)
             {
                 for (int n = 2; n < MaxAttempts; ++n)
                 {

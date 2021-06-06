@@ -131,13 +131,11 @@
     [StructLayout(LayoutKind.Sequential)]
     public struct WINDOWPLACEMENT
     {
-#pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
         public int length;
         public int flags;
         public int showCmd;
         public POINT minPosition;
         public POINT maxPosition;
         public RECT normalPosition;
-#pragma warning restore SA1307 // Accessible fields must begin with upper-case letter
     }
 }

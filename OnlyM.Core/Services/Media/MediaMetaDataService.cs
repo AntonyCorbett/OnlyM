@@ -57,7 +57,7 @@ namespace OnlyM.Core.Services.Media
                 return s;
             }
 
-            return s.Replace("\r\n", " ").Replace("\n", " ");
+            return s.Replace("\r\n", " ").Replace('\n', ' ');
         }
 
         private MediaMetaData GetVideoMetaData(string mediaItemFilePath, string ffmpegFolder)

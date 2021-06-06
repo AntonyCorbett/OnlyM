@@ -75,7 +75,7 @@
                 htmlDocument.LoadHtml(pageHtml);
 
                 var appleIcon = htmlDocument.DocumentNode.SelectNodes("//link[contains(@rel, 'apple-touch-icon')]");
-                if (appleIcon != null && appleIcon.Any())
+                if (appleIcon != null && appleIcon.Count > 0)
                 {
                     var favicon = appleIcon.First();
                     var icon = favicon.GetAttributeValue("href", null);
@@ -86,7 +86,7 @@
                 }
 
                 var elements = htmlDocument.DocumentNode.SelectNodes("//link[contains(@rel, 'icon')]");
-                if (elements != null && elements.Any())
+                if (elements != null && elements.Count > 0)
                 {
                     var favicon = elements.First();
                     var icon = favicon.GetAttributeValue("href", null);
