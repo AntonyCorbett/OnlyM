@@ -5,11 +5,10 @@
 #define MyAppPublisher "Antony Corbett"
 #define MyAppURL "https://soundboxsoftware.com"
 #define MyAppExeName "OnlyM.exe"
-#define MySource "d:\ProjectsPersonal\OnlyM\OnlyM"
 #define SlideManagerAppExeName "OnlyMSlideManager.exe"
 #define SlideManagerAppName "OnlyM Slide Manager"
 
-#define MyAppVersion GetFileVersion(MySource + '\bin\x86\Release\OnlyM.exe');
+#define MyAppVersion GetFileVersion('..\OnlyM\bin\Release\net5.0-windows\OnlyM.exe');
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -26,8 +25,7 @@ DefaultDirName={pf}\OnlyM
 DefaultGroupName={#MyAppName}
 OutputDir="..\Installer\Output"
 OutputBaseFilename=OnlyMSetup
-SetupIconFile=icon3.ico
-SourceDir={#MySource}
+SetupIconFile=..\Images\icon3.ico
 Compression=lzma
 SolidCompression=yes
 AppContact=antony@corbetts.org.uk
@@ -37,137 +35,167 @@ RestartApplications=False
 CloseApplications=False
 AppMutex=OnlyMMeetingMedia,OnlyMSlideManagerTool
 
-; for CefSharp refer here: https://github.com/cefsharp/CefSharp/wiki/Output-files-description-table-(Redistribution)
+[InstallDelete]
+; remove legacy shortcuts (wrongly named SlideManagerAppExeName instead of SlideManagerAppName)
+Type: files; Name: "{group}\{#SlideManagerAppExeName}.lnk"
+Type: files; Name: "{commondesktop}\{#SlideManagerAppExeName}.lnk"
+
+; files from pre-net-5 edition
+Type: filesandordirs; Name: "{app}\swiftshader"
+Type: filesandordirs; Name: "{app}\locales"
+Type: filesandordirs; Name: "{app}\x64"
+Type: filesandordirs; Name: "{app}\x86"
+Type: files; Name: "{app}\AutoMapper.dll"
+Type: files; Name: "{app}\cef.pak"
+Type: files; Name: "{app}\cef_100_percent.pak"
+Type: files; Name: "{app}\cef_200_percent.pak"
+Type: files; Name: "{app}\CefSharp.BrowserSubprocess.Core.dll"
+Type: files; Name: "{app}\CefSharp.BrowserSubprocess.exe"
+Type: files; Name: "{app}\CefSharp.Core.dll"
+Type: files; Name: "{app}\CefSharp.dll"
+Type: files; Name: "{app}\chrome_elf.dll"
+Type: files; Name: "{app}\CommonServiceLocator.dll"
+Type: files; Name: "{app}\concrt140.dll"
+Type: files; Name: "{app}\d3dcompiler_47.dll"
+Type: files; Name: "{app}\devtools_resources.pak"
+Type: files; Name: "{app}\ffme.common.dll"
+Type: files; Name: "{app}\GalaSoft.MvvmLight.dll"
+Type: files; Name: "{app}\GalaSoft.MvvmLight.Extras.dll"
+Type: files; Name: "{app}\GalaSoft.MvvmLight.Platform.dll"
+Type: files; Name: "{app}\icudtl.dat"
+Type: files; Name: "{app}\ImageProcessor.dll"
+Type: files; Name: "{app}\libcef.dll"
+Type: files; Name: "{app}\libEGL.dll"
+Type: files; Name: "{app}\libGLESv2.dll"
+Type: files; Name: "{app}\Microsoft.WindowsAPICodePack.ShellExtensions.dll"
+Type: files; Name: "{app}\msvcp140.dll"
+Type: files; Name: "{app}\msvcp140_1.dll"
+Type: files; Name: "{app}\msvcp140_2.dll"
+Type: files; Name: "{app}\natives_blob.bin"
+Type: files; Name: "{app}\OnlyM.exe.config"
+Type: files; Name: "{app}\OnlyMSlideManager.exe.config"
+Type: files; Name: "{app}\Serilog.Sinks.Console.dll"
+Type: files; Name: "{app}\Serilog.Sinks.RollingFile.dll"
+Type: files; Name: "{app}\snapshot_blob.bin"
+Type: files; Name: "{app}\System.ValueTuple.dll"
+Type: files; Name: "{app}\System.Windows.Interactivity.dll"
+Type: files; Name: "{app}\v8_context_snapshot.bin"
+Type: files; Name: "{app}\vccorlib140.dll"
+Type: files; Name: "{app}\vcruntime140.dll"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
-Source: "bin\x86\Release\FFmpeg\*"; DestDir: "{app}\FFmpeg"; Flags: ignoreversion
-Source: "bin\x86\Release\x64\*"; DestDir: "{app}\x64"; Flags: ignoreversion
-Source: "bin\x86\Release\x86\*"; DestDir: "{app}\x86"; Flags: ignoreversion
-
-Source: "bin\x86\Release\AutoMapper.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\CommonServiceLocator.dll"; DestDir: "{app}"; Flags: ignoreversion
-; temp inclusion of updated ffme assemblies to correct subtitle bug  (awaiting fix in 2.80)
-Source: "D:\ProjectsMisc\ffmediaelement-master\Unosquare.FFME.Windows.Sample\bin\Release\ffme.common.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\ProjectsMisc\ffmediaelement-master\Unosquare.FFME.Windows.Sample\bin\Release\ffme.win.dll"; DestDir: "{app}"; Flags: ignoreversion
-
-;Source: "bin\Release\ffme.common.dll"; DestDir: "{app}"; Flags: ignoreversion
-;Source: "bin\Release\ffme.win.dll"; DestDir: "{app}"; Flags: ignoreversion
-
-Source: "bin\x86\Release\FFmpeg.AutoGen.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\FluentCommandLineParser.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\GalaSoft.MvvmLight.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\GalaSoft.MvvmLight.Extras.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\GalaSoft.MvvmLight.Platform.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\HtmlAgilityPack.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\ImageProcessor.dll"; DestDir: "{app}"; Flags: ignoreversion 
-Source: "bin\x86\Release\MaterialDesignColors.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\MaterialDesignThemes.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\Microsoft.WindowsAPICodePack.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\Microsoft.WindowsAPICodePack.Shell.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\Microsoft.WindowsAPICodePack.ShellExtensions.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\NAudio.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\OnlyM.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\OnlyM.CoreSys.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\OnlyM.CustomControls.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\OnlyM.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\OnlyM.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\OnlyM.Slides.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\OnlyMMirror.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\TagLibSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\Serilog.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\Serilog.Sinks.Console.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\Serilog.Sinks.File.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\Serilog.Sinks.RollingFile.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\System.Data.SQLite.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\System.ValueTuple.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\System.Windows.Interactivity.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\FFmpeg\*"; DestDir: "{app}\FFmpeg"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\runtimes\win\*"; DestDir: "{app}\runtimes\win"; Flags: ignoreversion recursesubdirs
+Source: "..\OnlyM\bin\Release\net5.0-windows\runtimes\win-x86\*"; DestDir: "{app}\runtimes\win-x86"; Flags: ignoreversion recursesubdirs
+Source: "..\OnlyM\bin\Release\net5.0-windows\CefSharp.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\ffme.win.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\FFmpeg.AutoGen.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\FluentCommandLineParser.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\HtmlAgilityPack.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\MaterialDesignColors.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\MaterialDesignThemes.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\Microsoft.Extensions.DependencyInjection.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\Microsoft.Toolkit.Mvvm.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\Microsoft.WindowsAPICodePack.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\Microsoft.WindowsAPICodePack.Shell.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\NAudio.Asio.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\NAudio.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\NAudio.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\NAudio.Midi.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\NAudio.Wasapi.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\NAudio.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\NAudio.WinMM.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\OnlyM.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\OnlyM.CoreSys.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\OnlyM.CustomControls.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\OnlyM.deps.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\OnlyM.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\OnlyM.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\OnlyM.runtimeconfig.dev.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\OnlyM.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\OnlyM.Slides.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\PhotoSauce.MagicScaler.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\x86\Release\OnlyMMirror.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\Serilog.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\Serilog.Sinks.File.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\System.Data.SQLite.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\System.Drawing.Common.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\TagLibSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Slide manager
-Source: "..\OnlyMSlideManager\bin\Release\OnlyMSlideManager.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\OnlyMSlideManager.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\OnlyMSlideManager.deps.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\OnlyMSlideManager.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\OnlyMSlideManager.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\OnlyMSlideManager.runtimeconfig.dev.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\OnlyMSlideManager.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\OnlyMSlideManager.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 ; localisation..
-Source: "bin\x86\Release\bg-BG\*.dll"; DestDir: "{app}\bg-BG"; Flags: ignoreversion
-Source: "bin\x86\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
-Source: "bin\x86\Release\cs-CZ\*.dll"; DestDir: "{app}\cs-CZ"; Flags: ignoreversion
-Source: "bin\x86\Release\de-DE\*.dll"; DestDir: "{app}\de-DE"; Flags: ignoreversion
-Source: "bin\x86\Release\el-GR\*.dll"; DestDir: "{app}\el-GR"; Flags: ignoreversion
-Source: "bin\x86\Release\en-US\*.dll"; DestDir: "{app}\en-US"; Flags: ignoreversion
-Source: "bin\x86\Release\es-ES\*.dll"; DestDir: "{app}\es-ES"; Flags: ignoreversion
-Source: "bin\x86\Release\es-MX\*.dll"; DestDir: "{app}\es-MX"; Flags: ignoreversion
-Source: "bin\x86\Release\fi-FI\*.dll"; DestDir: "{app}\fi-FI"; Flags: ignoreversion
-Source: "bin\x86\Release\fr-FR\*.dll"; DestDir: "{app}\fr-FR"; Flags: ignoreversion
-Source: "bin\x86\Release\hr-HR\*.dll"; DestDir: "{app}\hr-HR"; Flags: ignoreversion
-Source: "bin\x86\Release\hu-HU\*.dll"; DestDir: "{app}\hu-HU"; Flags: ignoreversion
-Source: "bin\x86\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
-Source: "bin\x86\Release\ka-GE\*.dll"; DestDir: "{app}\ka-GE"; Flags: ignoreversion
-Source: "bin\x86\Release\lv-LV\*.dll"; DestDir: "{app}\lv-LV"; Flags: ignoreversion
-Source: "bin\x86\Release\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
-Source: "bin\x86\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
-; don't include this - Source: "bin\x86\Release\no-NO\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
-Source: "bin\x86\Release\pap\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
-; don't include this - Source: "bin\x86\Release\pap-PAP\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
-Source: "bin\x86\Release\pl-PL\*.dll"; DestDir: "{app}\pl-PL"; Flags: ignoreversion
-Source: "bin\x86\Release\pt-BR\*.dll"; DestDir: "{app}\pt-BR"; Flags: ignoreversion
-Source: "bin\x86\Release\pt-PT\*.dll"; DestDir: "{app}\pt-PT"; Flags: ignoreversion
-Source: "bin\x86\Release\ro-RO\*.dll"; DestDir: "{app}\ro-RO"; Flags: ignoreversion
-Source: "bin\x86\Release\ru-RU\*.dll"; DestDir: "{app}\ru-RU"; Flags: ignoreversion
-Source: "bin\x86\Release\sk-SK\*.dll"; DestDir: "{app}\sk-SK"; Flags: ignoreversion
-Source: "bin\x86\Release\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignoreversion
-Source: "bin\x86\Release\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
-Source: "bin\x86\Release\vi-VN\*.dll"; DestDir: "{app}\vi-VN"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\bg-BG\*.dll"; DestDir: "{app}\bg-BG"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\cs-CZ\*.dll"; DestDir: "{app}\cs-CZ"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\de-DE\*.dll"; DestDir: "{app}\de-DE"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\el-GR\*.dll"; DestDir: "{app}\el-GR"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\en-US\*.dll"; DestDir: "{app}\en-US"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\es-ES\*.dll"; DestDir: "{app}\es-ES"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\es-MX\*.dll"; DestDir: "{app}\es-MX"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\fi-FI\*.dll"; DestDir: "{app}\fi-FI"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\fr-FR\*.dll"; DestDir: "{app}\fr-FR"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\hr-HR\*.dll"; DestDir: "{app}\hr-HR"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\hu-HU\*.dll"; DestDir: "{app}\hu-HU"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\ka-GE\*.dll"; DestDir: "{app}\ka-GE"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\lv-LV\*.dll"; DestDir: "{app}\lv-LV"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
+; don't include this - Source: "..\OnlyM\bin\Release\net5.0-windows\no-NO\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\pap\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
+; don't include this - Source: "..\OnlyM\bin\Release\net5.0-windows\pap-PAP\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\pl-PL\*.dll"; DestDir: "{app}\pl-PL"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\pt-BR\*.dll"; DestDir: "{app}\pt-BR"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\pt-PT\*.dll"; DestDir: "{app}\pt-PT"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\ro-RO\*.dll"; DestDir: "{app}\ro-RO"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\ru-RU\*.dll"; DestDir: "{app}\ru-RU"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\sk-SK\*.dll"; DestDir: "{app}\sk-SK"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
+Source: "..\OnlyM\bin\Release\net5.0-windows\vi-VN\*.dll"; DestDir: "{app}\vi-VN"; Flags: ignoreversion
 
 ; SlideManager localisation
-Source: "..\OnlyMSlideManager\bin\Release\bg-BG\*.dll"; DestDir: "{app}\bg-BG"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\cs-CZ\*.dll"; DestDir: "{app}\cs-CZ"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\de-DE\*.dll"; DestDir: "{app}\de-DE"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\el-GR\*.dll"; DestDir: "{app}\el-GR"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\en-US\*.dll"; DestDir: "{app}\en-US"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\es-ES\*.dll"; DestDir: "{app}\es-ES"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\es-MX\*.dll"; DestDir: "{app}\es-MX"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\fi-FI\*.dll"; DestDir: "{app}\fi-FI"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\fr-FR\*.dll"; DestDir: "{app}\fr-FR"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\hr-HR\*.dll"; DestDir: "{app}\hr-HR"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\hu-HU\*.dll"; DestDir: "{app}\hu-HU"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\ka-GE\*.dll"; DestDir: "{app}\ka-GE"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\lv-LV\*.dll"; DestDir: "{app}\lv-LV"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
-; don't include this - Source: "bin\Release\no-NO\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\pap\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
-; don't include this - Source: "bin\Release\pap-PAP\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\pl-PL\*.dll"; DestDir: "{app}\pl-PL"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\pt-BR\*.dll"; DestDir: "{app}\pt-BR"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\pt-PT\*.dll"; DestDir: "{app}\pt-PT"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\ro-RO\*.dll"; DestDir: "{app}\ro-RO"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\ru-RU\*.dll"; DestDir: "{app}\ru-RU"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\sk-SK\*.dll"; DestDir: "{app}\sk-SK"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
-Source: "..\OnlyMSlideManager\bin\Release\vi-VN\*.dll"; DestDir: "{app}\vi-VN"; Flags: ignoreversion
-
-; CefSharp files...
-Source: "bin\x86\Release\locales\*"; DestDir: "{app}\locales"; Flags: ignoreversion
-Source: "bin\x86\Release\swiftshader\*"; DestDir: "{app}\swiftshader"; Flags: ignoreversion
-Source: "bin\x86\Release\cef*.pak"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\CefSharp*.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\CefSharp.BrowserSubprocess.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\chrome_elf.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\d3dcompiler_47.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\devtools_resources.pak"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\icudtl.dat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\libcef.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\libEGL.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\libGLESv2.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\natives_blob.bin"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\snapshot_blob.bin"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\x86\Release\v8_context_snapshot.bin"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\bg-BG\*.dll"; DestDir: "{app}\bg-BG"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\ca-ES\*.dll"; DestDir: "{app}\ca-ES"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\cs-CZ\*.dll"; DestDir: "{app}\cs-CZ"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\de-DE\*.dll"; DestDir: "{app}\de-DE"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\el-GR\*.dll"; DestDir: "{app}\el-GR"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\en-US\*.dll"; DestDir: "{app}\en-US"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\es-ES\*.dll"; DestDir: "{app}\es-ES"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\es-MX\*.dll"; DestDir: "{app}\es-MX"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\fi-FI\*.dll"; DestDir: "{app}\fi-FI"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\fr-FR\*.dll"; DestDir: "{app}\fr-FR"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\hr-HR\*.dll"; DestDir: "{app}\hr-HR"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\hu-HU\*.dll"; DestDir: "{app}\hu-HU"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\it-IT\*.dll"; DestDir: "{app}\it-IT"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\ka-GE\*.dll"; DestDir: "{app}\ka-GE"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\lv-LV\*.dll"; DestDir: "{app}\lv-LV"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\nl-NL\*.dll"; DestDir: "{app}\nl-NL"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\no\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
+; don't include this - Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\no-NO\*.dll"; DestDir: "{app}\no"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\pap\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
+; don't include this - Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\pap-PAP\*.dll"; DestDir: "{app}\pap"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\pl-PL\*.dll"; DestDir: "{app}\pl-PL"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\pt-BR\*.dll"; DestDir: "{app}\pt-BR"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\pt-PT\*.dll"; DestDir: "{app}\pt-PT"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\ro-RO\*.dll"; DestDir: "{app}\ro-RO"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\ru-RU\*.dll"; DestDir: "{app}\ru-RU"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\sk-SK\*.dll"; DestDir: "{app}\sk-SK"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\sv-SE\*.dll"; DestDir: "{app}\sv-SE"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\tr-TR\*.dll"; DestDir: "{app}\tr-TR"; Flags: ignoreversion
+Source: "..\OnlyMSlideManager\bin\Release\net5.0-windows\vi-VN\*.dll"; DestDir: "{app}\vi-VN"; Flags: ignoreversion
 
 ; c rtl required by CefSharp
 ; I have chosen to install locally to allow for "xcopy" style install
@@ -177,12 +205,6 @@ Source: "..\VCRTL\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\UrlLinkFiles\JW Broadcasting.url"; DestDir: "{commonappdata}\OnlyM\Websites"
 Source: "..\UrlLinkFiles\JW.org website.url"; DestDir: "{commonappdata}\OnlyM\Websites"
 Source: "..\UrlLinkFiles\Watchtower online library.url"; DestDir: "{commonappdata}\OnlyM\Websites"
-
-
-; remove legacy shortcuts (wrongly named SlideManagerAppExeName instead of SlideManagerAppName)
-[InstallDelete]
-Type: files; Name: "{group}\{#SlideManagerAppExeName}.lnk"
-Type: files; Name: "{commondesktop}\{#SlideManagerAppExeName}.lnk"
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
