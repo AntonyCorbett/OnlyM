@@ -330,19 +330,37 @@ namespace OnlyM.ViewModel
 
         private void LaunchReleasePage()
         {
-            Process.Start(VersionDetection.LatestReleaseUrl);
+            var psi = new ProcessStartInfo
+            {
+                FileName = VersionDetection.LatestReleaseUrl,
+                UseShellExecute = true
+            };
+
+            Process.Start(psi);
         }
 
         private void LaunchHelpPage()
         {
-            Process.Start(@"https://github.com/AntonyCorbett/OnlyM/wiki");
+            var psi = new ProcessStartInfo
+            {
+                FileName = "https://github.com/AntonyCorbett/OnlyM/wiki",
+                UseShellExecute = true
+            };
+
+            Process.Start(psi);
         }
 
         private void LaunchMediaFolder()
         {
             if (Directory.Exists(_optionsService.MediaFolder))
             {
-                Process.Start(_optionsService.MediaFolder);
+                var psi = new ProcessStartInfo
+                {
+                    FileName = _optionsService.MediaFolder,
+                    UseShellExecute = true
+                };
+
+                Process.Start(psi);
             }
         }
 

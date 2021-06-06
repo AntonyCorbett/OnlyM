@@ -36,7 +36,7 @@ namespace OnlyM.ViewModel
 
             OkCommand = new RelayCommand(Ok);
             CancelCommand = new RelayCommand(Cancel);
-            RemoveRecentTimeCommand = new RelayCommand<int>(RemoveRecentTime);
+            RemoveRecentTimeCommand = new RelayCommand<int?>(RemoveRecentTime);
         }
 
         public TimeSpan? Result { get; private set; }
@@ -45,7 +45,7 @@ namespace OnlyM.ViewModel
 
         public RelayCommand CancelCommand { get; set; }
 
-        public RelayCommand<int> RemoveRecentTimeCommand { get; set; }
+        public RelayCommand<int?> RemoveRecentTimeCommand { get; set; }
 
         public IEnumerable<int> Hours => Enumerable.Range(0, 12);
 
@@ -228,9 +228,14 @@ namespace OnlyM.ViewModel
             OnPropertyChanged(nameof(HasRecentTimes));
         }
 
-        private void RemoveRecentTime(int timeSeconds)
+        private void RemoveRecentTime(int? timeSeconds)
         {
-            _recentTimes.Remove(timeSeconds);
+            if (timeSeconds == null)
+            {
+                return;
+            }
+
+            _recentTimes.Remove(timeSeconds.Value);
 
             _startOffsetStorageService.Store(_mediaFileName, _mediaDurationSeconds, _recentTimes);
 

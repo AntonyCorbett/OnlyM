@@ -383,7 +383,7 @@
         <GroupBox Header="{x:Static resx:Resources.SECTION_MARGINS}" Style="{StaticResource SettingsGroupBoxStyle}">
 
             <StackPanel Margin="0,0,0,30">
-                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
+                <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
                            Text="{x:Static resx:Resources.VIDEO_MARGINS}"
                            Margin="0,0,0,-20"/>
 
@@ -422,7 +422,7 @@
                             Value="{Binding VideoScreenBottomMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
-                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
+                <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
                            Text="{x:Static resx:Resources.IMAGE_MARGINS}"
                            Margin="0,40,0,-20"/>
 
@@ -467,7 +467,7 @@
 
 
 
-                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" 
+                <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
                            Text="{x:Static resx:Resources.WEB_MARGINS}"
                            Margin="0,40,0,-20"/>
 

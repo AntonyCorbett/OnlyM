@@ -3,7 +3,6 @@ using System.Windows;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
-using WpfApp1;
 
 namespace OnlyM.ViewModel
 {
@@ -134,26 +133,26 @@ namespace OnlyM.ViewModel
         }
 
         public ObservableCollectionEx<MediaItem> MediaItems { get; } = new ObservableCollectionEx<MediaItem>();
+        
+        public RelayCommand<Guid?> MediaControlCommand1 { get; set; }
 
-        public RelayCommand<Guid> MediaControlCommand1 { get; set; }
+        public RelayCommand<Guid?> MediaControlPauseCommand { get; set; }
 
-        public RelayCommand<Guid> MediaControlPauseCommand { get; set; }
+        public RelayCommand<Guid?> HideMediaItemCommand { get; set; }
 
-        public RelayCommand<Guid> HideMediaItemCommand { get; set; }
+        public RelayCommand<Guid?> DeleteMediaItemCommand { get; set; }
 
-        public RelayCommand<Guid> DeleteMediaItemCommand { get; set; }
+        public RelayCommand<Guid?> OpenCommandPanelCommand { get; set; }
 
-        public RelayCommand<Guid> OpenCommandPanelCommand { get; set; }
+        public RelayCommand<Guid?> CloseCommandPanelCommand { get; set; }
 
-        public RelayCommand<Guid> CloseCommandPanelCommand { get; set; }
+        public RelayCommand<Guid?> FreezeVideoCommand { get; set; }
 
-        public RelayCommand<Guid> FreezeVideoCommand { get; set; }
+        public RelayCommand<Guid?> PreviousSlideCommand { get; set; }
 
-        public RelayCommand<Guid> PreviousSlideCommand { get; set; }
+        public RelayCommand<Guid?> NextSlideCommand { get; set; }
 
-        public RelayCommand<Guid> NextSlideCommand { get; set; }
-
-        public RelayCommand<Guid> EnterStartOffsetEditModeCommand { get; set; }
+        public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; set; }
 
         public int ThumbnailColWidth
         {
@@ -168,9 +167,6 @@ namespace OnlyM.ViewModel
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataCancellationTokenSource", Justification = "False Positive")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataProducer", Justification = "False Positive")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_metaDataConsumer", Justification = "False Positive")]
         public void Dispose()
         {
             _metaDataProducer?.Dispose();
@@ -491,36 +487,35 @@ namespace OnlyM.ViewModel
 
         private void InitCommands()
         {
-            MediaControlCommand1 = new RelayCommand<Guid>(async (mediaItemId) =>
-            {
-                await MediaControl1(mediaItemId);
-            });
+            MediaControlCommand1 = new RelayCommand<Guid?>(async (mediaItemId) => await MediaControl1(mediaItemId));
 
-            MediaControlPauseCommand = new RelayCommand<Guid>(async (mediaItemId) =>
-            {
-                await MediaPauseControl(mediaItemId);
-            });
+            MediaControlPauseCommand = new RelayCommand<Guid?>(async (mediaItemId) => await MediaPauseControl(mediaItemId));
 
-            HideMediaItemCommand = new RelayCommand<Guid>(HideMediaItem);
+            HideMediaItemCommand = new RelayCommand<Guid?>(HideMediaItem);
 
-            DeleteMediaItemCommand = new RelayCommand<Guid>(DeleteMediaItem);
+            DeleteMediaItemCommand = new RelayCommand<Guid?>(DeleteMediaItem);
 
-            OpenCommandPanelCommand = new RelayCommand<Guid>(OpenCommandPanel);
+            OpenCommandPanelCommand = new RelayCommand<Guid?>(OpenCommandPanel);
 
-            CloseCommandPanelCommand = new RelayCommand<Guid>(CloseCommandPanel);
+            CloseCommandPanelCommand = new RelayCommand<Guid?>(CloseCommandPanel);
 
-            FreezeVideoCommand = new RelayCommand<Guid>(FreezeVideoOnLastFrame);
+            FreezeVideoCommand = new RelayCommand<Guid?>(FreezeVideoOnLastFrame);
 
-            PreviousSlideCommand = new RelayCommand<Guid>(GotoPreviousSlide);
+            PreviousSlideCommand = new RelayCommand<Guid?>(GotoPreviousSlide);
 
-            NextSlideCommand = new RelayCommand<Guid>(GotoNextSlide);
+            NextSlideCommand = new RelayCommand<Guid?>(GotoNextSlide);
             
-            EnterStartOffsetEditModeCommand = new RelayCommand<Guid>(EnterStartOffsetEditMode);
+            EnterStartOffsetEditModeCommand = new RelayCommand<Guid?>(EnterStartOffsetEditMode);
         }
 
-        private async void EnterStartOffsetEditMode(Guid mediaItemId)
+        private async void EnterStartOffsetEditMode(Guid? mediaItemId)
         {
-            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItemId == null)
+            {
+                return;
+            }
+
+            var mediaItem = GetMediaItem(mediaItemId.Value);
             if (mediaItem != null && (!mediaItem.IsMediaActive || mediaItem.IsPaused))
             {
                 var maxStartTimeSeconds = (int)((double)mediaItem.DurationDeciseconds / 10);
@@ -540,9 +535,14 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void FreezeVideoOnLastFrame(Guid mediaItemId)
+        private void FreezeVideoOnLastFrame(Guid? mediaItemId)
         {
-            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItemId == null)
+            {
+                return;
+            }
+
+            var mediaItem = GetMediaItem(mediaItemId.Value);
             if (mediaItem != null)
             {
                 Debug.Assert(
@@ -560,9 +560,14 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void CloseCommandPanel(Guid mediaItemId)
+        private void CloseCommandPanel(Guid? mediaItemId)
         {
-            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItemId == null)
+            {
+                return;
+            }
+
+            var mediaItem = GetMediaItem(mediaItemId.Value);
             if (mediaItem != null)
             {
                 SavePdfOptions(mediaItem);
@@ -581,20 +586,30 @@ namespace OnlyM.ViewModel
                 });
         }
 
-        private void OpenCommandPanel(Guid mediaItemId)
+        private void OpenCommandPanel(Guid? mediaItemId)
         {
-            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItemId == null)
+            {
+                return;
+            }
+
+            var mediaItem = GetMediaItem(mediaItemId.Value);
             if (mediaItem != null)
             {
                 mediaItem.IsCommandPanelOpen = true;
             }
         }
 
-        private void GotoPreviousSlide(Guid mediaItemId)
+        private void GotoPreviousSlide(Guid? mediaItemId)
         {
+            if (mediaItemId == null)
+            {
+                return;
+            }
+
             if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
-                var mediaItem = GetMediaItem(mediaItemId);
+                var mediaItem = GetMediaItem(mediaItemId.Value);
                 if (!mediaItem.IsMediaChanging)
                 {
                     mediaItem.CurrentSlideshowIndex = _pageService.GotoPreviousSlide();
@@ -602,11 +617,16 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void GotoNextSlide(Guid mediaItemId)
+        private void GotoNextSlide(Guid? mediaItemId)
         {
+            if (mediaItemId == null)
+            {
+                return;
+            }
+
             if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
-                var mediaItem = GetMediaItem(mediaItemId);
+                var mediaItem = GetMediaItem(mediaItemId.Value);
                 if (!mediaItem.IsMediaChanging)
                 {
                     mediaItem.CurrentSlideshowIndex = _pageService.GotoNextSlide();
@@ -614,9 +634,14 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HideMediaItem(Guid mediaItemId)
+        private void HideMediaItem(Guid? mediaItemId)
         {
-            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItemId == null)
+            {
+                return;
+            }
+
+            var mediaItem = GetMediaItem(mediaItemId.Value);
             if (mediaItem != null)
             {
                 mediaItem.IsCommandPanelOpen = false;
@@ -629,9 +654,14 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void DeleteMediaItem(Guid mediaItemId)
+        private void DeleteMediaItem(Guid? mediaItemId)
         {
-            var mediaItem = GetMediaItem(mediaItemId);
+            if (mediaItemId == null)
+            {
+                return;
+            }
+
+            var mediaItem = GetMediaItem(mediaItemId.Value);
             if (mediaItem != null)
             {
                 if (FileUtils.SafeDeleteFile(mediaItem.FilePath))
@@ -667,12 +697,17 @@ namespace OnlyM.ViewModel
             return mediaItem?.IsWeb ?? false;
         }
 
-        private async Task MediaPauseControl(Guid mediaItemId)
+        private async Task MediaPauseControl(Guid? mediaItemId)
         {
+            if (mediaItemId == null)
+            {
+                return;
+            }
+
             // only allow pause media when nothing is changing.
             if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
-                var mediaItem = GetMediaItem(mediaItemId);
+                var mediaItem = GetMediaItem(mediaItemId.Value);
                 if (mediaItem == null || !IsVideoOrAudio(mediaItem))
                 {
                     Log.Error($"Media Item not found (id = {mediaItemId})");
@@ -693,14 +728,19 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private async Task MediaControl1(Guid mediaItemId)
+        private async Task MediaControl1(Guid? mediaItemId)
         {
+            if (mediaItemId == null)
+            {
+                return;
+            }
+
             // only allow start/stop media when nothing is changing.
             if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
                 Log.Debug($"MediaControl1 (id = {mediaItemId})");
 
-                var mediaItem = GetMediaItem(mediaItemId);
+                var mediaItem = GetMediaItem(mediaItemId.Value);
                 if (mediaItem == null)
                 {
                     Log.Error($"Media Item not found (id = {mediaItemId})");
@@ -921,7 +961,7 @@ namespace OnlyM.ViewModel
                     var item = CreateNewMediaItem(file);
 
                     MediaItems.Add(item);
-
+                    
                     _metaDataProducer.Add(item);
                 }
             }
@@ -972,7 +1012,7 @@ namespace OnlyM.ViewModel
                 AllowUseMirror = _optionsService.AllowMirror,
                 UseMirror = _optionsService.UseMirrorByDefault,
             };
-            
+
             return result;
         }
 

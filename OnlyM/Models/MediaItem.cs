@@ -356,7 +356,10 @@ namespace OnlyM.Models
         
         public bool IsPlayButtonEnabled
         {
-            get => _isPlayButtonEnabled;
+            get
+            {
+                return _isPlayButtonEnabled;
+            }
             set
             {
                 if (_isPlayButtonEnabled != value)

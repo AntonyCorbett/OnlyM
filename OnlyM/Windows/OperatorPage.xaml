@@ -63,13 +63,13 @@
                                     </Grid.RowDefinitions>
 
                                     <Button Grid.Column="0" Grid.Row="0"
-                                            Command="{Binding Path=DataContext.DeleteMediaItemCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                            Command="{Binding Path=DataContext.DeleteMediaItemCommand, ElementName=OnlyMOperatorPage}"
                                             CommandParameter="{Binding Id}"
                                             Content="{x:Static resx:Resources.DELETE}"
                                             Style="{StaticResource MaterialDesignRaisedAccentButton}"/>
 
                                     <Button Grid.Column="0" Grid.Row="1"
-                                            Command="{Binding Path=DataContext.HideMediaItemCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                            Command="{Binding Path=DataContext.HideMediaItemCommand, ElementName=OnlyMOperatorPage}"
                                             CommandParameter="{Binding Id}"
                                             Content="{x:Static resx:Resources.HIDE}"
                                             Style="{StaticResource MaterialDesignRaisedLightButton}"/>
@@ -80,7 +80,7 @@
                                             ToolTip="{x:Static resx:Resources.PAUSE_FINAL_FRAME}"
                                             Content="{x:Static resx:Resources.FREEZE}"
                                             IsChecked="{Binding PauseOnLastFrame, Mode=TwoWay}"
-                                            Command="{Binding Path=DataContext.FreezeVideoCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                            Command="{Binding Path=DataContext.FreezeVideoCommand, ElementName=OnlyMOperatorPage}"
                                             CommandParameter="{Binding Id}" />
 
                                     <ComboBox 
@@ -112,7 +112,7 @@
                                         Margin="0,0,2,0"
                                         Padding="0"
                                         HorizontalAlignment="Left"
-                                        Command="{Binding Path=DataContext.CloseCommandPanelCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                        Command="{Binding Path=DataContext.CloseCommandPanelCommand, ElementName=OnlyMOperatorPage}"
                                         CommandParameter="{Binding Id}">
 
                                     <materialDesign:PackIcon 
@@ -130,7 +130,7 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="{Binding CommandPanelBtnColWidth}"/>
-                                <ColumnDefinition Width="{Binding Path=DataContext.ThumbnailColWidth, Source={x:Reference OnlyMOperatorPage}}"/>
+                                <ColumnDefinition Width="{Binding Path=DataContext.ThumbnailColWidth, ElementName=OnlyMOperatorPage}"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
@@ -143,7 +143,7 @@
                                     Margin="0,0,2,0"
                                     Padding="0"
                                     HorizontalAlignment="Left"
-                                    Command="{Binding Path=DataContext.OpenCommandPanelCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                    Command="{Binding Path=DataContext.OpenCommandPanelCommand, ElementName=OnlyMOperatorPage}"
                                     CommandParameter="{Binding Id}">
 
                                 <materialDesign:PackIcon 
@@ -219,7 +219,7 @@
 
                                 <!-- Media Title -->
                                 <TextBlock Grid.Row="0">
-                                    <TextBlock Style="{StaticResource MaterialDesignTitleTextBlock}"
+                                    <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                                                TextTrimming="CharacterEllipsis"
                                                Text="{Binding Title, Mode=OneWay}"/>
                                     <LineBreak />
@@ -263,7 +263,7 @@
                                             Visibility="{Binding Path=IsStartOffsetButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                             IsEnabled="{Binding IsStartOffsetButtonEnabled}"
                                             Style="{StaticResource MaterialDesignFlatButton}"
-                                            Command="{Binding Path=DataContext.EnterStartOffsetEditModeCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                            Command="{Binding Path=DataContext.EnterStartOffsetEditModeCommand, ElementName=OnlyMOperatorPage}"
                                             CommandParameter="{Binding Id}"
                                             ToolTip="{x:Static resx:Resources.SHOW_START_OFFSET_DLG}">
                                             <materialDesign:PackIcon
@@ -280,7 +280,7 @@
                                             Width="45"
                                             Margin="5,0,0,0"
                                             VerticalAlignment="Stretch"
-                                            Command="{Binding Path=DataContext.MediaControlPauseCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                            Command="{Binding Path=DataContext.MediaControlPauseCommand, ElementName=OnlyMOperatorPage}"
                                             CommandParameter="{Binding Id}"
                                             Visibility="{Binding Path=IsPauseButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                                             HorizontalAlignment="Left"
@@ -317,7 +317,7 @@
                                                 Grid.RowSpan="2">
                                         <Button Style="{StaticResource SlideshowButtonStyle}"
                                             IsEnabled="{Binding IsPreviousSlideButtonEnabled}"
-                                            Command="{Binding Path=DataContext.PreviousSlideCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                            Command="{Binding Path=DataContext.PreviousSlideCommand, ElementName=OnlyMOperatorPage}"
                                             CommandParameter="{Binding Id}"
                                             Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
 
@@ -329,7 +329,7 @@
                                         </Button>
                                         <Button Style="{StaticResource SlideshowButtonStyle}"
                                             IsEnabled="{Binding IsNextSlideButtonEnabled}"
-                                            Command="{Binding Path=DataContext.NextSlideCommand, Source={x:Reference OnlyMOperatorPage}}"
+                                            Command="{Binding Path=DataContext.NextSlideCommand, ElementName=OnlyMOperatorPage}"
                                             CommandParameter="{Binding Id}"
                                             Margin="6,0,0,0"
                                             Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -353,14 +353,18 @@
                                            Value="{Binding PlaybackPositionDeciseconds, Mode=OneWay}" 
                                            Maximum="{Binding DurationDeciseconds}"/>
                                 <Slider Grid.Row="2" 
-                                           Orientation="Horizontal"
-                                           TickFrequency="1"
-                                           Margin="0,5,0,0"
-                                           SmallChange="10"
-                                           LargeChange="300"
-                                           Visibility="{Binding Path=IsSliderVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                           Value="{Binding PlaybackPositionDeciseconds, Mode=TwoWay}" 
-                                           Maximum="{Binding DurationDeciseconds}"/>
+                                        Orientation="Horizontal"
+                                        TickFrequency="1"
+                                        Margin="0,5,0,0"
+                                        SmallChange="10"
+                                        LargeChange="300"
+                                        Visibility="{Binding Path=IsSliderVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Value="{Binding PlaybackPositionDeciseconds, Mode=TwoWay}" 
+                                        Maximum="{Binding DurationDeciseconds}">
+                                    <Slider.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                                    </Slider.LayoutTransform>
+                                </Slider>
                                 <TextBlock Grid.Row="2"
                                            Text="{Binding SlideshowProgressString}"
                                            FontSize="12"
@@ -384,7 +388,7 @@
                                 Grid.Column="3"
                                 IsEnabled="{Binding IsPlayButtonEnabled}"
                                 Visibility="{Binding Path=IsPlayButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Command="{Binding Path=DataContext.MediaControlCommand1, Source={x:Reference OnlyMOperatorPage}}"
+                                Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
                                 CommandParameter="{Binding Id}"
                                 Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
                                 <materialDesign:PackIcon
@@ -398,7 +402,7 @@
                                 Height="50"
                                 Grid.Column="3"
                                 Visibility="{Binding Path=IsStopButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Command="{Binding Path=DataContext.MediaControlCommand1, Source={x:Reference OnlyMOperatorPage}}"
+                                Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
                                 CommandParameter="{Binding Id}"
                                 Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
                                 <materialDesign:PackIcon

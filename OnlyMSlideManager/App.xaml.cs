@@ -71,12 +71,12 @@ namespace OnlyMSlideManager
 #if DEBUG
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .WriteTo.File(Path.Combine(logsDirectory, "log-{Date}.txt"), retainedFileCountLimit: 28)
+                .WriteTo.File(Path.Combine(logsDirectory, "log-.txt"), retainedFileCountLimit: 28, rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 #else
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
-                .WriteTo.File(Path.Combine(logsDirectory, "log-{Date}.txt"), retainedFileCountLimit: 28)
+                .WriteTo.File(Path.Combine(logsDirectory, "log-.txt"), retainedFileCountLimit: 28, rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 #endif
 

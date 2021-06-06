@@ -135,7 +135,7 @@ namespace OnlyM
 
             Log.Logger = new LoggerConfiguration()
                .MinimumLevel.ControlledBy(LogLevelSwitchService.LevelSwitch)
-               .WriteTo.File(Path.Combine(logsDirectory, "log-{Date}.txt"), retainedFileCountLimit: 28)
+               .WriteTo.File(Path.Combine(logsDirectory, "log-.txt"), retainedFileCountLimit: 28, rollingInterval: RollingInterval.Day)
                .CreateLogger();
 
             Log.Logger.Information("==== Launched ====");

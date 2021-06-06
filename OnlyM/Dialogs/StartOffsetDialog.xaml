@@ -51,7 +51,7 @@
                     
                     <TextBlock 
                         Grid.Column="0"
-                        Style="{StaticResource MaterialDesignTitleTextBlock}"
+                        Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                         Margin="0,0,0,20"
                         Foreground="{Binding ChosenTimeBrush}"
                         Text="{Binding ChosenTimeAsString}" />
@@ -73,7 +73,7 @@
                                         Text="{Binding AsString}" />
                                     <Button 
                                         Visibility="{Binding Path=IsNotZero, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        Command="{Binding Path=DataContext.RemoveRecentTimeCommand, Source={x:Reference OnlyMStartOffsetDialog}}"
+                                        Command="{Binding Path=DataContext.RemoveRecentTimeCommand, ElementName=OnlyMStartOffsetDialog}"
                                         CommandParameter="{Binding Seconds}"
                                         Padding="0"
                                         Margin="0"
