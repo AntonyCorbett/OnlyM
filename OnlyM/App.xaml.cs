@@ -157,7 +157,7 @@ namespace OnlyM
             {
                 CachePath = FileUtils.GetBrowserCacheFolder(),
                 LogFile = FileUtils.GetBrowserLogFilePath(),
-                LogSeverity = LogSeverity.Info,
+                LogSeverity = LogSeverity.Error,
             };
 
             settings.CefCommandLineArgs.Add("no-proxy-server", "1");

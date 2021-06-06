@@ -38,7 +38,7 @@
                 }
             });
 
-            return CefReturnValue.Continue;
+            return CefReturnValue.ContinueAsync;
         }
     }
 }

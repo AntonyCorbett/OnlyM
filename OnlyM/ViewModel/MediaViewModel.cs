@@ -316,7 +316,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleMagnifierChangedEvent(object sender, System.EventArgs e)
+        private void HandleMagnifierChangedEvent(object sender, EventArgs e)
         {
             OnPropertyChanged(nameof(IsMagnifierVisible));
             OnPropertyChanged(nameof(IsMagnifierFrameSquare));

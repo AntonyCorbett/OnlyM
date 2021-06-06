@@ -54,10 +54,7 @@ namespace OnlyM.Services.WebNavHeaderManager
                 () =>
                 {
                     // completed animation
-                    Task.Delay(3000).ContinueWith(t =>
-                    {
-                        Application.Current.Dispatcher.Invoke(HideWebNavHeader);
-                    });
+                    Task.Delay(3000).ContinueWith(_ => Application.Current.Dispatcher.Invoke(HideWebNavHeader));
                 });
         }
 
@@ -95,7 +92,7 @@ namespace OnlyM.Services.WebNavHeaderManager
                 Duration = TimeSpan.FromSeconds(0.5),
             };
 
-            anim.Completed += (sender, args) =>
+            anim.Completed += (_, _) =>
             {
                 _webHeaderStatus = endStatus;
                 onCompleted?.Invoke();
