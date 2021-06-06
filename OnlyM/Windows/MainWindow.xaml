@@ -37,7 +37,7 @@
                 </Setter>
             </Style>
             <!--ScrollBars-->
-            <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
+            <Style TargetType="{x:Type ScrollBar}">
                 <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
                 <Setter Property="Foreground" Value="#FFE8E3F3" />
                 <Setter Property="Background" Value="Transparent" />

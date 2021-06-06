@@ -40,7 +40,7 @@
     <Border Padding="20">
         <Grid>
             <StackPanel Orientation="Vertical" Margin="0,0,0,10">
-                <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                            Text="{x:Static resx:Resources.SET_MEDIA_START}" />
 
                 <Grid>

@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Services.WebNavHeaderManager
+﻿using System.Diagnostics;
+
+namespace OnlyM.Services.WebNavHeaderManager
 {
     using System;
     using System.Threading.Tasks;
@@ -9,7 +11,7 @@
     internal class WebNavHeaderAdmin
     {
         private const int WebHeaderHeight = 76;
-        private const int WebHeaderActionPixels = 5;
+        private const int WebHeaderActionPixels = 15;
         private readonly Grid _webNavHeader;
         private WebNavHeaderStatus _webHeaderStatus;
 
@@ -20,6 +22,8 @@
 
         public void MouseMove(Point pos)
         {
+            Debug.WriteLine(pos.Y);
+
             switch (_webHeaderStatus)
             {
                 case WebNavHeaderStatus.NotVisible:

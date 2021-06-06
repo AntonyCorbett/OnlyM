@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OnlyM.Windows"
              mc:Ignorable="d" 
              DataContext="{Binding Settings, Mode=OneWay, Source={StaticResource Locator}}"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -38,7 +37,8 @@
             </Style>
 
             <Style x:Key="SettingsMarginStackPanelStyle" TargetType="{x:Type StackPanel}">
-                <Setter Property="Margin" Value="10,0,0,-20"/>
+                <Setter Property="Margin" Value="10,0,0,0"/>
+                <Setter Property="Height" Value="45"/>
                 <Setter Property="Orientation" Value="Horizontal"/>
             </Style>
 
@@ -72,11 +72,12 @@
             </Style>
 
             <Style x:Key="MarginsSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignDiscreteSlider}">
-                <Setter Property="Margin" Value="0,3,0,3"/>
+                <Setter Property="Margin" Value="10,3,0,3"/>
                 <Setter Property="Width" Value="380"/>
                 <Setter Property="Minimum" Value="0"/>
                 <Setter Property="Maximum" Value="90"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="TickFrequency" Value="10"/>
             </Style>
 
@@ -382,14 +383,14 @@
 
         <GroupBox Header="{x:Static resx:Resources.SECTION_MARGINS}" Style="{StaticResource SettingsGroupBoxStyle}">
 
-            <StackPanel Margin="0,0,0,30">
+            <StackPanel Margin="0,0,0,10" Orientation="Vertical">
                 <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
                            Text="{x:Static resx:Resources.VIDEO_MARGINS}"
-                           Margin="0,0,0,-20"/>
+                           Margin="0,10,0,4"/>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                     <materialDesign:PackIcon Kind="BorderLeft" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
 
                     <Slider Style="{StaticResource MarginsSliderStyle}" 
@@ -398,7 +399,7 @@
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                     <materialDesign:PackIcon Kind="BorderTop" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
 
                     <Slider Style="{StaticResource MarginsSliderStyle}" 
@@ -407,7 +408,7 @@
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                     <materialDesign:PackIcon Kind="BorderRight" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
                     <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding VideoScreenRightMargin, Mode=TwoWay}"/>
@@ -415,7 +416,7 @@
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                     <materialDesign:PackIcon Kind="BorderBottom" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
 
                     <Slider Style="{StaticResource MarginsSliderStyle}" 
@@ -424,11 +425,11 @@
 
                 <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
                            Text="{x:Static resx:Resources.IMAGE_MARGINS}"
-                           Margin="0,40,0,-20"/>
+                           Margin="0,10,0,4"/>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                     <materialDesign:PackIcon Kind="BorderLeft" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
 
                     <Slider Style="{StaticResource MarginsSliderStyle}" 
@@ -438,7 +439,7 @@
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
 
                     <materialDesign:PackIcon Kind="BorderTop" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
 
                     <Slider Style="{StaticResource MarginsSliderStyle}" 
@@ -448,9 +449,8 @@
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
 
                     <materialDesign:PackIcon Kind="BorderRight" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
-
 
                     <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding ImageScreenRightMargin, Mode=TwoWay}"/>
@@ -458,22 +458,20 @@
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                     <materialDesign:PackIcon Kind="BorderBottom" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
 
                     <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding ImageScreenBottomMargin, Mode=TwoWay}"/>
                 </StackPanel>
 
-
-
                 <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
                            Text="{x:Static resx:Resources.WEB_MARGINS}"
-                           Margin="0,40,0,-20"/>
+                           Margin="0,10,0,4"/>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                     <materialDesign:PackIcon Kind="BorderLeft" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
 
                     <Slider Style="{StaticResource MarginsSliderStyle}" 
@@ -483,7 +481,7 @@
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
 
                     <materialDesign:PackIcon Kind="BorderTop" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
 
                     <Slider Style="{StaticResource MarginsSliderStyle}" 
@@ -493,9 +491,8 @@
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
 
                     <materialDesign:PackIcon Kind="BorderRight" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
-
 
                     <Slider Style="{StaticResource MarginsSliderStyle}" 
                             Value="{Binding WebScreenRightMargin, Mode=TwoWay}"/>
@@ -503,7 +500,7 @@
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                     <materialDesign:PackIcon Kind="BorderBottom" 
-                                             VerticalAlignment="Bottom"
+                                             VerticalAlignment="Center"
                                              Width="24" Height="24"/>
 
                     <Slider Style="{StaticResource MarginsSliderStyle}" 

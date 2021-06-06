@@ -4,11 +4,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OnlyM.Windows"
              mc:Ignorable="d" 
              DataContext="{Binding Operator, Mode=OneWay, Source={StaticResource Locator}}"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
              xmlns:models="clr-namespace:OnlyM.Models"
              xmlns:resx="clr-namespace:OnlyM.Properties"
              xmlns:controls="clr-namespace:OnlyM.Controls"
@@ -241,9 +239,8 @@
                                     <!-- TextBlocks generally used to show media length and duration -->
 
                                     <TextBlock Grid.Row="0" Grid.Column="0"
-                                               Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                               Style="{StaticResource MaterialDesignBody2TextBlock}"
                                                Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                               FontSize="16"
                                                Foreground="{Binding DurationColorBrush}"
                                                Text="{Binding DurationString}"/>
 
@@ -251,9 +248,8 @@
                                                 Grid.Row="1" Grid.Column="0">
 
                                         <TextBlock 
-                                               Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                               Style="{StaticResource MaterialDesignBody2TextBlock}"
                                                Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                               FontSize="16"
                                                Foreground="{Binding PlaybackTimeColorBrush}"
                                                Text="{Binding PlaybackTimeString}"/>
 
@@ -351,11 +347,12 @@
                                 <ProgressBar Grid.Row="2" 
                                            Visibility="{Binding Path=HasDurationAndIsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
                                            Value="{Binding PlaybackPositionDeciseconds, Mode=OneWay}" 
+                                           Margin="0,2,0,0"
                                            Maximum="{Binding DurationDeciseconds}"/>
                                 <Slider Grid.Row="2" 
                                         Orientation="Horizontal"
                                         TickFrequency="1"
-                                        Margin="0,5,0,0"
+                                        Margin="0,10,0,0"
                                         SmallChange="10"
                                         LargeChange="300"
                                         Visibility="{Binding Path=IsSliderVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
