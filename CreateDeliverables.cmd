@@ -4,6 +4,7 @@ cd \ProjectsPersonal\OnlyM
 rd OnlyM\bin /q /s
 rd OnlyMSlideManager\bin /q /s
 rd OnlyMMirror\OnlyM /q /s
+rd Installer\Output /q /s
 
 REM build / publish
 dotnet publish OnlyM\OnlyM.csproj -p:PublishProfile=FolderProfile -c:Release
@@ -21,3 +22,6 @@ del OnlyM\bin\Release\net5.0-windows\publish\pap-PAP\*.dll
 
 REM Create installer
 "C:\Program Files (x86)\Inno Setup 6\iscc" Installer\onlymsetup.iss
+
+REM create portable zip
+powershell Compress-Archive -Path OnlyM\bin\Release\net5.0-windows\publish\* -DestinationPath Installer\Output\OnlyMPortable.zip 
