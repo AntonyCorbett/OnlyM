@@ -127,7 +127,7 @@
                     return screenPosition.BottomMarginPercentage;
             }
 
-            throw new ArgumentException();
+            throw new NotSupportedException();
         }
 
         private static void SetScreenMarginValue(

@@ -120,7 +120,9 @@ namespace OnlyM.Services.Pages
 
         public void GotoSettingsPage()
         {
+#pragma warning disable S1481 // Unused local variables should be removed
             var _ = _settingsPage.Value;   // ensure created otherwise doesn't receive navigation event
+#pragma warning restore S1481 // Unused local variables should be removed
 
             _operatorPageScrollerPosition = ScrollViewer.VerticalOffset;
             OnNavigationEvent(new NavigationEventArgs { PageName = SettingsPageName });

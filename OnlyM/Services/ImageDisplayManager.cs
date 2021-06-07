@@ -663,38 +663,32 @@
 
             stopping?.Invoke(mediaItemId, mediaClassification);
             
-            if (_image1MediaItemId == mediaItemId)
+            if (_image1MediaItemId == mediaItemId && (int)_image1.GetValue(Panel.ZIndexProperty) == 1)
             {
-                if ((int)_image1.GetValue(Panel.ZIndexProperty) == 1)
-                {
-                    HideImageInControl(
-                        _image1,
-                        fadeType,
-                        fadeTime,
-                        () =>
-                        {
-                            stopped?.Invoke(mediaItemId, mediaClassification);
-                            _image1MediaItemId = Guid.Empty;
-                            _mediaClassification1 = MediaClassification.Unknown;
-                        });
-                }
+                HideImageInControl(
+                    _image1,
+                    fadeType,
+                    fadeTime,
+                    () =>
+                    {
+                        stopped?.Invoke(mediaItemId, mediaClassification);
+                        _image1MediaItemId = Guid.Empty;
+                        _mediaClassification1 = MediaClassification.Unknown;
+                    });
             }
 
-            if (_image2MediaItemId == mediaItemId)
+            if (_image2MediaItemId == mediaItemId && (int)_image2.GetValue(Panel.ZIndexProperty) == 1)
             {
-                if ((int)_image2.GetValue(Panel.ZIndexProperty) == 1)
-                {
-                    HideImageInControl(
-                        _image2,
-                        fadeType,
-                        fadeTime,
-                        () =>
-                        {
-                            stopped?.Invoke(mediaItemId, mediaClassification);
-                            _image2MediaItemId = Guid.Empty;
-                            _mediaClassification2 = MediaClassification.Unknown;
-                        });
-                }
+                HideImageInControl(
+                    _image2,
+                    fadeType,
+                    fadeTime,
+                    () =>
+                    {
+                        stopped?.Invoke(mediaItemId, mediaClassification);
+                        _image2MediaItemId = Guid.Empty;
+                        _mediaClassification2 = MediaClassification.Unknown;
+                    });
             }
         }
 

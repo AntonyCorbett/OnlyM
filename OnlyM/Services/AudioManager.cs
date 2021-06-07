@@ -16,7 +16,6 @@
         private WaveOutEvent _outputDevice;
         private AudioFileReader _audioFileReader;
         private bool _manuallySettingPlaybackPosition;
-        private string _mediaItemFilePath;
         
         public AudioManager()
         {
@@ -36,8 +35,7 @@
             bool startFromPaused)
         {
             _mediaItemId = mediaItemId;
-            _mediaItemFilePath = mediaItemFilePath;
-
+            
             if (!startFromPaused)
             {
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
@@ -53,7 +51,7 @@
 
             if (_audioFileReader == null)
             {
-                _audioFileReader = new AudioFileReader(_mediaItemFilePath);
+                _audioFileReader = new AudioFileReader(mediaItemFilePath);
                 _outputDevice.Init(_audioFileReader);
             }
 

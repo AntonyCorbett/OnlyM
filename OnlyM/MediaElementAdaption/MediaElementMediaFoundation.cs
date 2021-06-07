@@ -1,18 +1,18 @@
-﻿namespace OnlyM.MediaElementAdaption
-{
-    using System;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Media;
-    using System.Windows.Threading;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Options;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.Options;
 
+namespace OnlyM.MediaElementAdaption
+{
     internal sealed class MediaElementMediaFoundation : IMediaElement
     {
-        // note that _audioPlayer is used for audio-only playback (e.g. MP3 files);
-        // videos are rendered using _mediaElement. It should be possible to use MediaElement
+        // note that _audioPlayer is used for audio-only playback (e.g. MP3 files).
+        // Videos are rendered using _mediaElement. It should be possible to use MediaElement
         // exclusively, but it must be part of the visual tree in order to work correctly
         // and we want to be able to play audio without the need to create the MediaWindow.
         private readonly Lazy<MediaPlayer> _audioPlayer;
@@ -55,8 +55,10 @@
         // not supported in MediaFoundation
         public event EventHandler<OnlyMRenderSubtitlesEventArgs> RenderingSubtitles
         {
+#pragma warning disable S108 // Nested blocks of code should not be left empty
             add { }
             remove { }
+#pragma warning restore S108 // Nested blocks of code should not be left empty
         }
 
         public event EventHandler<OnlyMPositionChangedEventArgs> PositionChanged;
@@ -64,8 +66,10 @@
         // not supported in MediaFoundation
         public event EventHandler<OnlyMLogMessageEventArgs> MessageLogged
         {
+#pragma warning disable S108 // Nested blocks of code should not be left empty
             add { }
             remove { }
+#pragma warning restore S108 // Nested blocks of code should not be left empty
         }
 
         public bool IsPaused { get; private set; }
@@ -174,7 +178,9 @@
 
             IsPaused = false;
 
+#pragma warning disable S4220 // Events should have proper arguments
             MediaClosed?.Invoke(this, null);
+#pragma warning restore S4220 // Events should have proper arguments
             return Task.CompletedTask;
         }
 

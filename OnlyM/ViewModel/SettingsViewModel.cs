@@ -1085,14 +1085,12 @@ namespace OnlyM.ViewModel
             }
 
             // the native language
+            var cNative = new CultureInfo(Path.GetFileNameWithoutExtension("en-GB"));
+            result.Add(new LanguageItem
             {
-                var c = new CultureInfo(Path.GetFileNameWithoutExtension("en-GB"));
-                result.Add(new LanguageItem
-                {
-                    LanguageId = c.Name,
-                    LanguageName = c.EnglishName,
-                });
-            }
+                LanguageId = cNative.Name,
+                LanguageName = cNative.EnglishName,
+            });
 
             result.Sort((x, y) => string.Compare(x.LanguageName, y.LanguageName, StringComparison.Ordinal));
 

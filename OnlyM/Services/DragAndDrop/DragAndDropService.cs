@@ -435,12 +435,9 @@
                     using (var reader = new StringReader(s))
                     {
                         var line = reader.ReadLine();
-                        if (!string.IsNullOrEmpty(line))
+                        if (!string.IsNullOrEmpty(line) && IsAcceptableUri(line))
                         {
-                            if (IsAcceptableUri(line))
-                            {
-                                result.Add(line.Trim());
-                            }
+                            result.Add(line.Trim());
                         }
                     }
                 }

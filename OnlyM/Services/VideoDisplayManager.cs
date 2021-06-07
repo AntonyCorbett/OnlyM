@@ -187,21 +187,18 @@ namespace OnlyM.Services
 
         private void HandlePositionChanged(object sender, OnlyMPositionChangedEventArgs e)
         {
-            if (!_manuallySettingPlaybackPosition)
+            if (!_manuallySettingPlaybackPosition && (e.Position - _lastPosition).TotalMilliseconds > 60)
             {
                 // only fire every 60ms
-                if ((e.Position - _lastPosition).TotalMilliseconds > 60)
-                {
-                    _lastPosition = e.Position;
-                    MediaPositionChangedEvent?.Invoke(this, e);
+                _lastPosition = e.Position;
+                MediaPositionChangedEvent?.Invoke(this, e);
 
-                    if (!_firedNearEndEvent &&
-                        _mediaElement.NaturalDuration.HasTimeSpan &&
-                        (_mediaElement.NaturalDuration.TimeSpan - e.Position).TotalMilliseconds < FreezeMillisecsFromEnd)
-                    {
-                        _firedNearEndEvent = true;
-                        MediaNearEndEvent?.Invoke(this, new MediaNearEndEventArgs { MediaItemId = _mediaItemId });
-                    }
+                if (!_firedNearEndEvent &&
+                    _mediaElement.NaturalDuration.HasTimeSpan &&
+                    (_mediaElement.NaturalDuration.TimeSpan - e.Position).TotalMilliseconds < FreezeMillisecsFromEnd)
+                {
+                    _firedNearEndEvent = true;
+                    MediaNearEndEvent?.Invoke(this, new MediaNearEndEventArgs { MediaItemId = _mediaItemId });
                 }
             }
         }

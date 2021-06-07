@@ -100,14 +100,8 @@ namespace OnlyM.ViewModel
             _optionsService.ShowFreezeCommandChangedEvent += HandleShowFreezeCommandChangedEvent;
             _optionsService.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
             _optionsService.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
-            _optionsService.PermanentBackdropChangedEvent += async (sender, e) =>
-            {
-                await HandlePermanentBackdropChangedEvent(sender, e);
-            };
-            _optionsService.IncludeBlankScreenItemChangedEvent += async (sender, e) =>
-            {
-                await HandleIncludeBlankScreenItemChangedEvent();
-            };
+            _optionsService.PermanentBackdropChangedEvent += async (sender, e) => await HandlePermanentBackdropChangedEvent();
+            _optionsService.IncludeBlankScreenItemChangedEvent += async (sender, e) => await HandleIncludeBlankScreenItemChangedEvent();
 
             folderWatcherService.ChangesFoundEvent += HandleFileChangesFoundEvent;
 
@@ -116,10 +110,7 @@ namespace OnlyM.ViewModel
             _pageService.SlideTransitionEvent += HandleSlideTransitionEvent;
             _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
             _pageService.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
-            _pageService.MediaNearEndEvent += async (sender, e) =>
-            {
-                await HandleMediaNearEndEvent(e);
-            };
+            _pageService.MediaNearEndEvent += async (sender, e) => await HandleMediaNearEndEvent(e);
             _pageService.NavigationEvent += HandleNavigationEvent;
             _pageService.WebStatusEvent += HandleWebStatusEvent;
 
@@ -238,7 +229,7 @@ namespace OnlyM.ViewModel
             _pendingLoadMediaItems = true;
         }
 
-        private async Task HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
+        private async Task HandlePermanentBackdropChangedEvent()
         {
             if (_optionsService.PermanentBackdrop)
             {
@@ -508,7 +499,22 @@ namespace OnlyM.ViewModel
             EnterStartOffsetEditModeCommand = new RelayCommand<Guid?>(EnterStartOffsetEditMode);
         }
 
+#pragma warning disable S3168 // "async" methods should not return "void"
+        // Exceptions handled
         private async void EnterStartOffsetEditMode(Guid? mediaItemId)
+#pragma warning restore S3168 // "async" methods should not return "void"
+        {
+            try
+            {
+                await InternalEnterStartOffsetEditMode(mediaItemId);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not enter StartOffset mode");
+            }
+        }
+
+        private async Task InternalEnterStartOffsetEditMode(Guid? mediaItemId)
         {
             if (mediaItemId == null)
             {

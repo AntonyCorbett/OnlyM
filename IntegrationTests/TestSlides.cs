@@ -1,18 +1,18 @@
-﻿namespace IntegrationTests
-{
-    using System;
-    using System.IO;
-    using System.Windows.Media.Imaging;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using OnlyM.Slides;
+﻿using System;
+using System.IO;
+using System.Windows.Media.Imaging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OnlyM.Slides;
 
+namespace IntegrationTests
+{
     [TestClass]
     public class TestSlides
     {
         [TestMethod]
         public void TestSlideCreation()
         {
-            string slideFilePath = "test" + SlideFile.FileExtension;
+            var slideFilePath = "test" + SlideFile.FileExtension;
 
             var fb = new SlideFileBuilder(1920, 1080);
             fb.AddSlide(GetAbsolutePath(@"TestImages\001.jpg"), true, true, true, true);
@@ -31,23 +31,20 @@
 
             var file = new SlideFile(slideFilePath);
 
-            for (int n = 0; n < file.SlideCount; ++n)
+            for (var n = 0; n < file.SlideCount; ++n)
             {
                 var slide = file.GetSlide(n);
 
                 BitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(slide.Image));
 
-                using (var fileStream = new System.IO.FileStream(slide.ArchiveEntryName, System.IO.FileMode.Create))
+                using (var fileStream = new FileStream(slide.ArchiveEntryName, FileMode.Create))
                 {
                     encoder.Save(fileStream);
                 }
             }
         }
 
-        private string GetAbsolutePath(string relativePath)
-        {
-            return Path.GetFullPath(relativePath);
-        }
+        private static string GetAbsolutePath(string relativePath) => Path.GetFullPath(relativePath);
     }
 }

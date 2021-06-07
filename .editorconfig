@@ -228,3 +228,9 @@ dotnet_diagnostic.S4136.severity = silent
 
 # S2346: Flags enumerations zero-value members should be named "None"
 dotnet_diagnostic.S2346.severity = silent
+
+# S3358: Ternary operators should not be nested
+dotnet_diagnostic.S3358.severity = silent
+
+# S2699: Test method should contain assertion
+dotnet_diagnostic.S2699.severity = none
