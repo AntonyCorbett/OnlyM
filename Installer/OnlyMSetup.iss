@@ -71,7 +71,7 @@ Type: files; Name: "{app}\System.Windows.Interactivity.dll"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
-Source: "..\OnlyM\bin\Release\net5.0-windows\publish\*"; DestDir: "{app}\FFmpeg"; Flags: ignoreversion recursesubdirs
+Source: "..\OnlyM\bin\Release\net5.0-windows\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 
 ; web shortcuts...
 Source: "..\UrlLinkFiles\JW Broadcasting.url"; DestDir: "{commonappdata}\OnlyM\Websites"
