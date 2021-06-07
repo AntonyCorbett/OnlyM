@@ -1,7 +1,7 @@
-﻿namespace OnlyM.CoreSys.Services.UI
-{
-    using System;
+﻿using System;
 
+namespace OnlyM.CoreSys.Services.UI
+{ 
     public class UserInterfaceService : IUserInterfaceService
     {
         public UserInterfaceService()
@@ -11,19 +11,11 @@
 
         public event EventHandler BusyStatusChangedEvent;
 
-        public BusyCursor BeginBusy()
-        {
-            return new BusyCursor();
-        }
+        public BusyCursor BeginBusy() => new();
 
-        public bool IsBusy()
-        {
-            return BusyCursor.IsBusy();
-        }
-
-        private void HandleBusyStatusChangedEvent(object sender, System.EventArgs e)
-        {
-            BusyStatusChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
+        public bool IsBusy() => BusyCursor.IsBusy();
+        
+        private void HandleBusyStatusChangedEvent(object sender, EventArgs e) 
+            => BusyStatusChangedEvent?.Invoke(this, EventArgs.Empty);
     }
 }

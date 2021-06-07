@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Core.Models
-{
-    using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
+namespace OnlyM.Core.Models
+{
     public class SystemMonitor
     {
         public Screen Monitor { get; set; }

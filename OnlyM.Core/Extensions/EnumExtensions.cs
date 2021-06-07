@@ -1,9 +1,9 @@
-﻿namespace OnlyM.Core.Extensions
-{
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Properties;
-    using Serilog.Events;
+﻿using OnlyM.Core.Models;
+using OnlyM.Core.Properties;
+using Serilog.Events;
 
+namespace OnlyM.Core.Extensions
+{
     public static class EnumExtensions
     {
         public static string GetDescriptiveName(this MagnifierShape shape)
@@ -31,8 +31,7 @@
 
                 case MagnifierSize.Small:
                     return Resources.MAGNIFIER_SIZE_SMALL;
-
-                default:
+                    
                 case MagnifierSize.Medium:
                     return Resources.MAGNIFIER_SIZE_MEDIUM;
 
@@ -44,6 +43,9 @@
 
                 case MagnifierSize.XXLarge:
                     return Resources.MAGNIFIER_SIZE_XXLARGE;
+
+                default:
+                    return Resources.MAGNIFIER_SIZE_MEDIUM;
             }
         }
 

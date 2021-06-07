@@ -1,9 +1,9 @@
-﻿namespace OnlyM.Core.Services.CommandLine
-{
-    using System;
-    using System.IO;
-    using Fclp;
+﻿using System;
+using System.IO;
+using Fclp;
 
+namespace OnlyM.Core.Services.CommandLine
+{
     // ReSharper disable once ClassNeverInstantiated.Global
     public class CommandLineService : ICommandLineService
     {
@@ -44,7 +44,7 @@
 
         public bool DisableVideoRenderingFix { get; set; }
 
-        private string GetFullSourcePath(string sourcePath)
+        private static string GetFullSourcePath(string sourcePath)
         {
             try
             {
@@ -53,7 +53,9 @@
                     return Path.GetFullPath(sourcePath);
                 }
             }
+#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
             catch (Exception)
+#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
             {
                 // ignored
             }

@@ -9,6 +9,10 @@
     // ReSharper disable StyleCop.SA1203
     // ReSharper disable StyleCop.SA1310
     // ReSharper disable UnusedMember.Global
+
+#pragma warning disable S101 // Types should be named in PascalCase
+#pragma warning disable U2U1004 // Public value types should implement equality
+
     // adapted from david Rickard's Tech Blog
     using System;
     using System.IO;
@@ -35,13 +39,19 @@
 
             if (!string.IsNullOrEmpty(placementJson))
             {
-                byte[] xmlBytes = Encoding.GetBytes(placementJson);
+                var xmlBytes = Encoding.GetBytes(placementJson);
                 try
                 {
                     WINDOWPLACEMENT placement;
                     using (var memoryStream = new MemoryStream(xmlBytes))
                     {
-                        placement = (WINDOWPLACEMENT)Serializer.Deserialize(memoryStream);
+                        var obj = (WINDOWPLACEMENT?)Serializer.Deserialize(memoryStream);
+                        if (obj == null)
+                        {
+                            return;
+                        }
+
+                        placement = obj.Value;
                     }
 
                     placement.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
@@ -63,15 +73,17 @@
 
         public static (int x, int y) GetDpiSettings()
         {
+#pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             var dpiYProperty = typeof(SystemParameters).GetProperty("Dpi", BindingFlags.NonPublic | BindingFlags.Static);
+#pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
 
             if (dpiXProperty == null || dpiYProperty == null)
             {
                 return (96, 96);
             }
 
-            return ((int)dpiXProperty.GetValue(null, null), (int)dpiYProperty.GetValue(null, null));
+            return ((int)(dpiXProperty.GetValue(null, null) ?? 96), (int)(dpiYProperty.GetValue(null, null) ?? 96));
         }
 
         private static string GetPlacement(IntPtr windowHandle)
@@ -134,4 +146,7 @@
         public POINT maxPosition;
         public RECT normalPosition;
     }
+
+#pragma warning restore U2U1004 // Public value types should implement equality
+#pragma warning restore S101 // Types should be named in PascalCase
 }

@@ -92,7 +92,7 @@ namespace OnlyM
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
         }
 
-        private void ConfigureServices()
+        private static void ConfigureServices()
         {
             var serviceCollection = new ServiceCollection();
 
@@ -129,9 +129,9 @@ namespace OnlyM
             Ioc.Default.ConfigureServices(serviceProvider);
         }
 
-        private void ConfigureLogger()
+        private static void ConfigureLogger()
         {
-            string logsDirectory = FileUtils.GetLogFolder();
+            var logsDirectory = FileUtils.GetLogFolder();
 
             Log.Logger = new LoggerConfiguration()
                .MinimumLevel.ControlledBy(LogLevelSwitchService.LevelSwitch)
@@ -148,7 +148,7 @@ namespace OnlyM
             return !newInstance;
         }
 
-        private bool InitCef()
+        private static bool InitCef()
         {
             //// refer here:
             //// https://github.com/cefsharp/CefSharp/blob/cefsharp/43/CefSharp.Example/CefExample.cs#L54
@@ -190,7 +190,7 @@ namespace OnlyM
             Current.Shutdown();
         }
 
-        private void AddEventLogEntry(string msg)
+        private static void AddEventLogEntry(string msg)
         {
             using (var eventLog = new EventLog("Application"))
             {

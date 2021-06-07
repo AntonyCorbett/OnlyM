@@ -1,10 +1,10 @@
-﻿namespace OnlyM.Core.Services.Options
-{
-    using System;
-    using System.Collections.Generic;
-    using OnlyM.Core.Models;
-    using Serilog.Events;
+﻿using System;
+using System.Collections.Generic;
+using OnlyM.Core.Models;
+using Serilog.Events;
 
+namespace OnlyM.Core.Services.Options
+{
     public interface IOptionsService
     {
         event EventHandler MediaFolderChangedEvent;

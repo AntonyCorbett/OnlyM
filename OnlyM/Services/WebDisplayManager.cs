@@ -283,9 +283,9 @@
             }
         }
 
-        private MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
+        private static MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
         {
-            return new MediaEventArgs
+            return new()
             {
                 MediaItemId = id,
                 Classification = MediaClassification.Web,
@@ -422,7 +422,7 @@
             }
         }
 
-        private string GetPdfViewString(PdfViewStyle pdfViewStyle)
+        private static string GetPdfViewString(PdfViewStyle pdfViewStyle)
         {
             switch (pdfViewStyle)
             {

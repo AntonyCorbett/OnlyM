@@ -1,10 +1,10 @@
-﻿namespace OnlyM.Core.Services.Monitors
-{
-    using System.Collections.Generic;
-    using System.Runtime.InteropServices;
-    using OnlyM.Core.Models;
-    using Serilog;
+﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using OnlyM.Core.Models;
+using Serilog;
 
+namespace OnlyM.Core.Services.Monitors
+{
     /// <summary>
     /// Queries the system for information regarding display devices
     /// </summary>

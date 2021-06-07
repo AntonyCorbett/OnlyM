@@ -1,4 +1,12 @@
-﻿namespace OnlyM.Core.Services.Monitors
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Serilog;
+
+namespace OnlyM.Core.Services.Monitors
 {
     // ReSharper disable FieldCanBeMadeReadOnly.Local
     // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -6,14 +14,10 @@
     // ReSharper disable UnusedMember.Global
     // ReSharper disable InconsistentNaming
     // ReSharper disable IdentifierTypo
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Runtime.InteropServices;
-    using System.Windows.Forms;
-    using Serilog;
 
+#pragma warning disable S101 // Types should be named in PascalCase
+#pragma warning disable U2U1004 // Public value types should implement equality
+    
     //// see https://stackoverflow.com/a/28257839/8576725
 
     public static class ScreenQuery
@@ -26,7 +30,9 @@
 #pragma warning disable IDE0044 // Add readonly modifier
         private const int ErrorSuccess = 0;
 
+#pragma warning disable S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
         public enum QUERY_DEVICE_CONFIG_FLAGS : uint
+#pragma warning restore S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
         {
             QDC_ALL_PATHS = 0x00000001,
             QDC_ONLY_ACTIVE_PATHS = 0x00000002,
@@ -252,11 +258,11 @@
         }
 
         [DllImport("user32.dll")]
-        public static extern int GetDisplayConfigBufferSizes(
+        private static extern int GetDisplayConfigBufferSizes(
             QUERY_DEVICE_CONFIG_FLAGS flags, out uint numPathArrayElements, out uint numModeInfoArrayElements);
 
         [DllImport("user32.dll")]
-        public static extern int QueryDisplayConfig(
+        private static extern int QueryDisplayConfig(
             QUERY_DEVICE_CONFIG_FLAGS flags,
             ref uint numPathArrayElements,
             [Out] DISPLAYCONFIG_PATH_INFO[] PathInfoArray,
@@ -265,7 +271,7 @@
             IntPtr currentTopologyId);
 
         [DllImport("user32.dll")]
-        public static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME deviceName);
+        private static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME deviceName);
 
         private static string MonitorFriendlyName(LUID adapterId, uint targetId)
         {
@@ -344,7 +350,10 @@
             return null;
         }
 
+#pragma warning restore U2U1004 // Public value types should implement equality
+#pragma warning restore S101 // Types should be named in PascalCase
 #pragma warning restore IDE0044 // Add readonly modifier
+
 #pragma warning restore SA1313 // Parameter names must begin with lower-case letter
 #pragma warning restore SA1201 // Elements must appear in the correct order
 #pragma warning restore SA1202 // Elements must be ordered by access

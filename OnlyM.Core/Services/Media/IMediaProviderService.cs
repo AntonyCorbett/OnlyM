@@ -1,9 +1,9 @@
-﻿namespace OnlyM.Core.Services.Media
-{
-    using System;
-    using System.Collections.Generic;
-    using OnlyM.Core.Models;
+﻿using System;
+using System.Collections.Generic;
+using OnlyM.Core.Models;
 
+namespace OnlyM.Core.Services.Media
+{
     public interface IMediaProviderService
     {
         IReadOnlyCollection<MediaFile> GetMediaFiles();

@@ -133,7 +133,7 @@
             MediaChangeEvent?.Invoke(this, e);
         }
 
-        private MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
+        private static MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
         {
             return new MediaEventArgs
             {

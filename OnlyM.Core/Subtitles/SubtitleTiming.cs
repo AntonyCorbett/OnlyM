@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Core.Subtitles
-{
-    using System;
+﻿using System;
 
+namespace OnlyM.Core.Subtitles
+{
     public class SubtitleTiming
     {
         public TimeSpan Start { get; set; }

@@ -1,8 +1,8 @@
-﻿namespace OnlyM.CoreSys.Services.Snackbar
-{
-    using System;
-    using MaterialDesignThemes.Wpf;
+﻿using System;
+using MaterialDesignThemes.Wpf;
 
+namespace OnlyM.CoreSys.Services.Snackbar
+{
     public interface ISnackbarService
     {
         ISnackbarMessageQueue TheSnackbarMessageQueue { get; }

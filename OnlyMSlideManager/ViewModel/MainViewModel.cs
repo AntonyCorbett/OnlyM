@@ -76,8 +76,10 @@ namespace OnlyMSlideManager.ViewModel
 
             AddDesignTimeItems();
 
-            // init options so that UI locale is set
+#pragma warning disable S1481 // Unused local variables should be removed
+            // init options so that UI locale is set (forces lazy init)
             var _ = _optionsService.Culture;
+#pragma warning restore S1481 // Unused local variables should be removed
 
             InitCommands();
             WeakReferenceMessenger.Default.Register<ReorderMessage>(this, OnReorderMessage);
@@ -385,16 +387,30 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
+#pragma warning disable S3168 // "async" methods should not return "void"
+        // exceptions caught in SaveFile()
         private async void DoSaveFile()
+#pragma warning restore S3168 // "async" methods should not return "void"
         {
             Keyboard.ClearFocus();
             await SaveFile();
         }
 
+#pragma warning disable S3168 // "async" methods should not return "void"
+        // All exceptions handled
         private async void DoSaveFileAs()
+#pragma warning restore S3168 // "async" methods should not return "void"
         {
-            Keyboard.ClearFocus();
-            await SaveFileAs();
+            try
+            {
+                Keyboard.ClearFocus();
+                await SaveFileAs();
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not save file");
+                _snackbarService.EnqueueWithOk(Properties.Resources.COULD_NOT_SAVE, Properties.Resources.OK);
+            }
         }
 
         private async Task SaveFile()
@@ -447,7 +463,23 @@ namespace OnlyMSlideManager.ViewModel
             });
         }
 
+#pragma warning disable S3168 // "async" methods should not return "void"
+        // All exceptions handled
         private async void OpenFile()
+#pragma warning restore S3168 // "async" methods should not return "void"
+        {
+            try
+            {
+                await InternalOpenFile();
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not open file");
+                _snackbarService.EnqueueWithOk(Properties.Resources.ERROR_OPEN_FILE, Properties.Resources.OK);
+            }
+        }
+
+        private async Task InternalOpenFile()
         {
             Keyboard.ClearFocus();
 
@@ -630,7 +662,23 @@ namespace OnlyMSlideManager.ViewModel
             });
         }
 
+#pragma warning disable S3168 // "async" methods should not return "void"
+        // all exceptions handled
         private async void NewFile()
+#pragma warning restore S3168 // "async" methods should not return "void"
+        {
+            try
+            {
+                await InternalNewFile();
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Warning(ex, "Could not create new file");
+                _snackbarService.EnqueueWithOk(Properties.Resources.ERROR_NEW_FILE, Properties.Resources.OK);
+            }
+        }
+
+        private async Task InternalNewFile()
         {
             if (IsDirty)
             {
@@ -814,7 +862,22 @@ namespace OnlyMSlideManager.ViewModel
             return !_dialogService.IsDialogVisible() && !IsDirty && !Busy;
         }
 
+#pragma warning disable S3168 // "async" methods should not return "void"
+        // Exceptions handled
         private async void ExecuteCancelClosing()
+#pragma warning restore S3168 // "async" methods should not return "void"
+        {
+            try
+            {
+                await InternalExecuteCancelClosing();
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Executing CancelClosing");
+            }
+        }
+
+        private async Task InternalExecuteCancelClosing()
         {
             if (_dialogService.IsDialogVisible() || Busy)
             {

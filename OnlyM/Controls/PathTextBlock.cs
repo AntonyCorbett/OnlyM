@@ -94,7 +94,7 @@
             return new Tuple<string, Size>(result, size);
         }
 
-        private bool IsPathOrUrl(string path)
+        private static bool IsPathOrUrl(string path)
         {
             if (Uri.IsWellFormedUriString(path, UriKind.RelativeOrAbsolute))
             {
@@ -105,7 +105,7 @@
             return isValidUri && pathUri != null && pathUri.IsLoopback;
         }
 
-        private string MidTrim(string s, int charsToTrim)
+        private static string MidTrim(string s, int charsToTrim)
         {
             var targetLength = s.Length - charsToTrim;
             var beginLength = targetLength / 2;

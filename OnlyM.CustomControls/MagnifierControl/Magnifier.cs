@@ -12,14 +12,13 @@ For more features, controls, and fast professional support,
 pick up the Plus Edition at http://xceed.com/wpf_toolkit
 Stay informed: follow @datagrid on Twitter or Like http://facebook.com/datagrids
 ***********************************************************************************/
+using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace OnlyM.CustomControls.MagnifierControl
 {
-    using System;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Media;
-
     [TemplatePart(Name = PartVisualBrush, Type = typeof(VisualBrush))]
     public class Magnifier : Control
     {
@@ -63,7 +62,7 @@ namespace OnlyM.CustomControls.MagnifierControl
         private const double DefaultSize = 100d;
         private const string PartVisualBrush = "PART_VisualBrush";
         
-        private VisualBrush _visualBrush = new VisualBrush();
+        private VisualBrush _visualBrush = new();
 
         static Magnifier()
         {
@@ -143,21 +142,12 @@ namespace OnlyM.CustomControls.MagnifierControl
             IsFrozen = freeze;
         }
 
-        protected virtual void OnFrameTypeChanged(FrameType oldValue, FrameType newValue)
-        {
-            UpdateSizeFromRadius();
-        }
-
-        protected virtual void OnRadiusChanged(DependencyPropertyChangedEventArgs e)
-        {
-            UpdateSizeFromRadius();
-        }
-
-        protected virtual void OnZoomFactorChanged(DependencyPropertyChangedEventArgs e)
-        {
-            UpdateViewBox();
-        }
-
+        protected virtual void OnFrameTypeChanged(FrameType oldValue, FrameType newValue) => UpdateSizeFromRadius();
+        
+        protected virtual void OnRadiusChanged(DependencyPropertyChangedEventArgs e) => UpdateSizeFromRadius();
+        
+        protected virtual void OnZoomFactorChanged(DependencyPropertyChangedEventArgs e) => UpdateViewBox();
+        
         protected virtual void OnZoomFactorOnMouseWheelChanged(DependencyPropertyChangedEventArgs e)
         {
         }
@@ -198,30 +188,23 @@ namespace OnlyM.CustomControls.MagnifierControl
             m.OnZoomFactorOnMouseWheelChanged(e);
         }
 
-        private void OnSizeChangedEvent(object sender, SizeChangedEventArgs e)
-        {
-            UpdateViewBox();
-        }
-
+        private void OnSizeChangedEvent(object sender, SizeChangedEventArgs e) => UpdateViewBox();
+        
         private void UpdateSizeFromRadius()
         {
-            // APC removed so that Rectangle can be sized too
-            ////if (FrameType == FrameType.Circle)
+            var newSize = Radius * 2;
+            if (!AreVirtuallyEqual(Width, newSize))
             {
-                double newSize = Radius * 2;
-                if (!AreVirtuallyEqual(Width, newSize))
-                {
-                    Width = newSize;
-                }
+                Width = newSize;
+            }
 
-                if (!AreVirtuallyEqual(Height, newSize))
-                {
-                    Height = newSize;
-                }
+            if (!AreVirtuallyEqual(Height, newSize))
+            {
+                Height = newSize;
             }
         }
 
-        private bool AreVirtuallyEqual(double d1, double d2)
+        private static bool AreVirtuallyEqual(double d1, double d2)
         {
             var difference = Math.Abs(d1 * .00001);
             return Math.Abs(d1 - d2) <= difference;

@@ -1,8 +1,8 @@
-﻿namespace OnlyM.Core.Utils
-{
-    using System.Net;
-    using System.Text;
+﻿using System.Net;
+using System.Text;
 
+namespace OnlyM.Core.Utils
+{
     public static class WebUtils
     {
         private const string UserAgent = "SoundBox (+https://soundboxsoftware.com)";

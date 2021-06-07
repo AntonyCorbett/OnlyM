@@ -1,13 +1,13 @@
-﻿namespace OnlyM.Core.Services.Database
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.SQLite;
-    using System.IO;
-    using System.Text;
-    using OnlyM.Core.Utils;
-    using Serilog;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SQLite;
+using System.IO;
+using System.Text;
+using OnlyM.Core.Utils;
+using Serilog;
 
+namespace OnlyM.Core.Services.Database
+{
     // ReSharper disable once ClassNeverInstantiated.Global
     public class DatabaseService : IDatabaseService
     {
@@ -30,7 +30,6 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
         public void AddThumbnailToCache(string originalPath, long originalLastChanged, byte[] thumbnail)
         {
             using (var c = CreateConnection())
@@ -67,8 +66,8 @@
                 {
                     if (r.Read())
                     {
-                        int id = Convert.ToInt32(r["id"]);
-                        long lastChanged = Convert.ToInt64(r["changed"]);
+                        var id = Convert.ToInt32(r["id"]);
+                        var lastChanged = Convert.ToInt64(r["changed"]);
 
                         if (lastChanged != originalLastChanged)
                         {
@@ -189,7 +188,7 @@
             return null;
         }
 
-        private void EnsureDatabaseExists()
+        private static void EnsureDatabaseExists()
         {
             var path = GetDatabasePath();
             if (File.Exists(path) && IsUnsupportedVersion())
@@ -208,19 +207,16 @@
             }
         }
 
-        private string GetDatabasePath()
-        {
-            return Path.Combine(FileUtils.GetOnlyMDatabaseFolder(), "OnlyMDatabase.db");
-        }
-
-        private SQLiteConnection CreateConnection()
+        private static string GetDatabasePath() => Path.Combine(FileUtils.GetOnlyMDatabaseFolder(), "OnlyMDatabase.db");
+        
+        private static SQLiteConnection CreateConnection()
         {
             var c = new SQLiteConnection($"Data source={GetDatabasePath()};Version=3;", true);
             c.Open();
             return c;
         }
 
-        private void DeleteDatabase()
+        private static void DeleteDatabase()
         {
             Log.Logger.Verbose("Deleting database");
 
@@ -236,7 +232,7 @@
             }
         }
 
-        private int GetDatabaseSchemaVersion()
+        private static int GetDatabaseSchemaVersion()
         {
             try
             {
@@ -254,8 +250,7 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
-        private void SetDatabaseSchemaVersion(SQLiteConnection connection, int version)
+        private static void SetDatabaseSchemaVersion(SQLiteConnection connection, int version)
         {
             using (var cmd = connection.CreateCommand())
             {
@@ -264,12 +259,9 @@
             }
         }
 
-        private bool IsUnsupportedVersion()
-        {
-            return GetDatabaseSchemaVersion() != CurrentSchemaVersion;
-        }
-
-        private void CreateDatabase()
+        private static bool IsUnsupportedVersion() => GetDatabaseSchemaVersion() != CurrentSchemaVersion;
+        
+        private static void CreateDatabase()
         {
             using (var c = CreateConnection())
             {
@@ -282,8 +274,7 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
-        private void DeleteThumbRow(SQLiteConnection connection, int id)
+        private static void DeleteThumbRow(SQLiteConnection connection, int id)
         {
             using (var cmd = connection.CreateCommand())
             {
@@ -294,8 +285,7 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
-        private void CreateThumbTable(SQLiteConnection connection)
+        private static void CreateThumbTable(SQLiteConnection connection)
         {
             using (var cmd = connection.CreateCommand())
             {
@@ -315,8 +305,7 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
-        private void CreateMediaOptionsTable(SQLiteConnection connection)
+        private static void CreateMediaOptionsTable(SQLiteConnection connection)
         {
             using (var cmd = connection.CreateCommand())
             {
@@ -336,8 +325,7 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "There is no danger of sql injection")]
-        private void CreateBrowserTable(SQLiteConnection connection)
+        private static void CreateBrowserTable(SQLiteConnection connection)
         {
             using (var cmd = connection.CreateCommand())
             {
@@ -356,7 +344,7 @@
             }
         }
 
-        private List<int> ParseStartOffsets(string s)
+        private static List<int> ParseStartOffsets(string s)
         {
             var result = new List<int>();
 

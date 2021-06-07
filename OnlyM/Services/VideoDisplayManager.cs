@@ -237,9 +237,9 @@ namespace OnlyM.Services
             }
         }
 
-        private MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
+        private static MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
         {
-            return new MediaEventArgs
+            return new()
             {
                 MediaItemId = id,
                 Classification = MediaClassification.Video,

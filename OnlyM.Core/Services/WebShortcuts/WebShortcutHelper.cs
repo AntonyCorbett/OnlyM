@@ -1,9 +1,9 @@
-﻿namespace OnlyM.Core.Services.WebShortcuts
-{
-    using System;
-    using System.IO;
-    using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 
+namespace OnlyM.Core.Services.WebShortcuts
+{
     public class WebShortcutHelper
     {
         private const string UrlToken = "URL";
@@ -53,7 +53,9 @@
                         }
                     }
                 }
+#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
                 catch (Exception)
+#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
                 {
                     // nothing
                 }

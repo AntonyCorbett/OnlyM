@@ -1,11 +1,11 @@
-﻿namespace OnlyM.Core.Subtitles
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Text;
-    using HtmlAgilityPack;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using HtmlAgilityPack;
 
+namespace OnlyM.Core.Subtitles
+{
     /// <summary>
     /// Simple SRT file parser
     /// </summary>
@@ -13,7 +13,7 @@
     {
         private const string AssStartToken = "{\\";
         
-        private readonly List<SubtitleEntry> _subtitles = new List<SubtitleEntry>();
+        private readonly List<SubtitleEntry> _subtitles = new();
         private int _index = -1;
 
         public SubtitleFile(string srtPath)
@@ -45,7 +45,7 @@
         {
             var lines = File.ReadAllLines(srtPath);
             
-            for (int n = 0; n < lines.Length; ++n)
+            for (var n = 0; n < lines.Length; ++n)
             {
                 var line = lines[n];
                 if (string.IsNullOrEmpty(line))
@@ -99,14 +99,14 @@
             return true;
         }
 
-        private string StripHtml(IReadOnlyCollection<string> lines)
+        private static string StripHtml(IReadOnlyCollection<string> lines)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(string.Join(Environment.NewLine, lines));
-            return StripASSCodes(doc.DocumentNode.InnerText);
+            return StripAssCodes(doc.DocumentNode.InnerText);
         }
 
-        private string StripASSCodes(string s)
+        private static string StripAssCodes(string s)
         {
             if (string.IsNullOrEmpty(s))
             {
@@ -120,8 +120,8 @@
 
             var sb = new StringBuilder();
 
-            int assCodeLevel = 0;
-            for (int n = 0; n < s.Length; ++n)
+            var assCodeLevel = 0;
+            for (var n = 0; n < s.Length; ++n)
             {
                 var ch = s[n];
 

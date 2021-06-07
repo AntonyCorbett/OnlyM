@@ -1,13 +1,13 @@
-﻿namespace OnlyM.Slides.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
+namespace OnlyM.Slides.Models
+{
     internal class SlidesConfig
     {
-        public List<Slide> Slides { get; } = new List<Slide>();
+        public List<Slide> Slides { get; } = new();
 
         public bool AutoPlay { get; set; }
 
@@ -30,12 +30,12 @@
 
         public void Sanitize()
         {
-            const int OneSecond = 1000;
-            const int TenSeconds = 10000;
+            const int oneSecond = 1000;
+            const int tenSeconds = 10000;
 
-            if (AutoPlay && DwellTimeMilliseconds < OneSecond)
+            if (AutoPlay && DwellTimeMilliseconds < oneSecond)
             {
-                DwellTimeMilliseconds = TenSeconds;
+                DwellTimeMilliseconds = tenSeconds;
             }
         }
 

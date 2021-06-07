@@ -13,13 +13,13 @@ Original copyright is shown below.
    Stay informed: follow @datagrid on Twitter or Like http://facebook.com/datagrids
   ***********************************************************************************/
 
+using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+
 namespace OnlyM.CustomControls.MagnifierControl
 {
-    using System.Windows;
-    using System.Windows.Documents;
-    using System.Windows.Input;
-    using System.Windows.Media;
-
     public class MagnifierAdorner : Adorner
     {
         private readonly Magnifier _magnifier;
@@ -34,8 +34,8 @@ namespace OnlyM.CustomControls.MagnifierControl
             UpdateViewBox();
             AddVisualChild(_magnifier);
 
-            Loaded += (s, e) => InputManager.Current.PostProcessInput += OnProcessInput;
-            Unloaded += (s, e) => InputManager.Current.PostProcessInput -= OnProcessInput;
+            Loaded += (_, _) => InputManager.Current.PostProcessInput += OnProcessInput;
+            Unloaded += (_, _) => InputManager.Current.PostProcessInput -= OnProcessInput;
         }
 
         protected override int VisualChildrenCount => 1;

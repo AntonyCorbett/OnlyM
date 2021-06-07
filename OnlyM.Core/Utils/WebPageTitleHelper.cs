@@ -1,8 +1,8 @@
-﻿namespace OnlyM.Core.Utils
-{
-    using System;
-    using HtmlAgilityPack;
+﻿using System;
+using HtmlAgilityPack;
 
+namespace OnlyM.Core.Utils
+{
     public static class WebPageTitleHelper
     {
         public static string Get(Uri webPageAddress)

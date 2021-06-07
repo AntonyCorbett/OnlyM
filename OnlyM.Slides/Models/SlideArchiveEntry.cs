@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Slides.Models
-{
-    using System.Windows.Media.Imaging;
+﻿using System.Windows.Media.Imaging;
 
+namespace OnlyM.Slides.Models
+{
     internal class SlideArchiveEntry
     {
         public string ArchiveEntryName { get; set; }

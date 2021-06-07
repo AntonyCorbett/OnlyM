@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Core.Subtitles
-{
-    using System;
+﻿using System;
 
+namespace OnlyM.Core.Subtitles
+{
     public class SubtitleEventArgs : EventArgs
     {
         public SubtitleStatus Status { get; set; }

@@ -1,23 +1,22 @@
 ﻿using PhotoSauce.MagicScaler;
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Text;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Serilog;
+using TagLib.Image;
 
 namespace OnlyM.CoreSys
 {
-    using System;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Drawing.Drawing2D;
-    using System.Drawing.Imaging;
-    using System.IO;
-    using System.Text;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using Serilog;
-    using TagLib.Image;
-
     public static class GraphicsUtils
     {
         private const int MaxDpi = 1200;
-        private static readonly object _tagLibLocker = new object();
+        private static readonly object TagLibLocker = new();
 
         public static bool AutoRotateIfRequired(string itemFilePath)
         {
@@ -101,36 +100,35 @@ namespace OnlyM.CoreSys
 
             var factor = Math.Min(factorWidth, factorHeight);
 
-            var t = new TransformedBitmap(image, new ScaleTransform(factor, factor));
-            return t;
+            return new TransformedBitmap(image, new ScaleTransform(factor, factor));
         }
 
         public static byte[] CreateThumbnailOfImage(string path, int maxPixelDimension, ImageFormat imageFormat)
         {
-            byte[] result = null;
-
-            if (System.IO.File.Exists(path))
+            if (!System.IO.File.Exists(path))
             {
-                using (var srcBmp = new Bitmap(path))
-                {
-                    SizeF newSize = srcBmp.Width > srcBmp.Height
-                        ? new SizeF(maxPixelDimension, maxPixelDimension * (float)srcBmp.Height / srcBmp.Width)
-                        : new SizeF(maxPixelDimension * (float)srcBmp.Width / srcBmp.Height, maxPixelDimension);
+                return null;
+            }
 
-                    using (var target = new Bitmap((int)newSize.Width, (int)newSize.Height))
+            byte[] result;
+
+            using (var srcBmp = new Bitmap(path))
+            {
+                var newSize = srcBmp.Width > srcBmp.Height
+                    ? new SizeF(maxPixelDimension, maxPixelDimension * (float)srcBmp.Height / srcBmp.Width)
+                    : new SizeF(maxPixelDimension * (float)srcBmp.Width / srcBmp.Height, maxPixelDimension);
+
+                using (var target = new Bitmap((int)newSize.Width, (int)newSize.Height))
+                using (var graphics = Graphics.FromImage(target))
+                {
+                    graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    graphics.CompositingMode = CompositingMode.SourceCopy;
+                    graphics.DrawImage(srcBmp, 0, 0, newSize.Width, newSize.Height);
+                    using (var memoryStream = new MemoryStream())
                     {
-                        using (var graphics = Graphics.FromImage(target))
-                        {
-                            graphics.CompositingQuality = CompositingQuality.HighSpeed;
-                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            graphics.CompositingMode = CompositingMode.SourceCopy;
-                            graphics.DrawImage(srcBmp, 0, 0, newSize.Width, newSize.Height);
-                            using (var memoryStream = new MemoryStream())
-                            {
-                                target.Save(memoryStream, imageFormat);
-                                result = memoryStream.ToArray();
-                            }
-                        }
+                        target.Save(memoryStream, imageFormat);
+                        result = memoryStream.ToArray();
                     }
                 }
             }
@@ -138,11 +136,8 @@ namespace OnlyM.CoreSys
             return result;
         }
 
-        public static byte[] ImageSourceToJpegBytes(ImageSource imageSource)
-        {
-            return ImageSourceToBytes(new JpegBitmapEncoder(), imageSource);
-        }
-
+        public static byte[] ImageSourceToJpegBytes(ImageSource imageSource) => ImageSourceToBytes(new JpegBitmapEncoder(), imageSource);
+        
         public static byte[] ImageSourceToBytes(BitmapEncoder encoder, ImageSource imageSource)
         {
             byte[] bytes = null;
@@ -195,7 +190,7 @@ namespace OnlyM.CoreSys
         public static BitmapImage BitmapToBitmapImage(Bitmap src)
         {
             var ms = new MemoryStream();
-            src.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            src.Save(ms, ImageFormat.Bmp);
             var image = new BitmapImage();
             image.BeginInit();
             ms.Seek(0, SeekOrigin.Begin);
@@ -387,7 +382,7 @@ namespace OnlyM.CoreSys
                 p.BeginOutputReadLine();
                 p.StandardError.ReadToEnd();
 
-                bool rv = p.WaitForExit(5000);
+                var rv = p.WaitForExit(5000);
                 if (!p.HasExited)
                 {
                     p.Kill();
@@ -409,14 +404,13 @@ namespace OnlyM.CoreSys
 
             return Path.Combine(tempThumbnailFolder, Path.ChangeExtension(origFileName, ".png"));
         }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "trust taglib objects behave properly")]
+        
         private static bool ImageRequiresRotation(string imageFilePath)
         {
             try
             {
                 // The TagLib call below is not thread-safe
-                lock (_tagLibLocker)
+                lock (TagLibLocker)
                 {
                     using (var tf = TagLib.File.Create(imageFilePath))
                     {
@@ -446,11 +440,8 @@ namespace OnlyM.CoreSys
             return false;
         }
 
-        private static bool IsBadDpi(BitmapImage bmp)
-        {
-            return bmp.DpiX > MaxDpi || bmp.DpiY > MaxDpi;
-        }
-
+        private static bool IsBadDpi(BitmapImage bmp) => bmp.DpiX > MaxDpi || bmp.DpiY > MaxDpi;
+        
         private static BitmapImage FixBadDpi(string imageFile)
         {
             var settings = new ProcessImageSettings { DpiX = 96, DpiY = 96 };

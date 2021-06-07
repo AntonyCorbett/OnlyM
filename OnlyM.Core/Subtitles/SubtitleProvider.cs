@@ -1,8 +1,8 @@
-﻿namespace OnlyM.Core.Subtitles
-{
-    using System;
-    using System.Windows.Threading;
+﻿using System;
+using System.Windows.Threading;
 
+namespace OnlyM.Core.Subtitles
+{
     public class SubtitleProvider
     {
         private readonly SubtitleFile _file;

@@ -1,9 +1,9 @@
-﻿namespace OnlyM.Slides.Models
-{
-    using System.Text;
-    using System.Windows.Media.Imaging;
-    using Newtonsoft.Json;
+﻿using System.Text;
+using System.Windows.Media.Imaging;
+using Newtonsoft.Json;
 
+namespace OnlyM.Slides.Models
+{
     public class Slide
     {
         public string ArchiveEntryName { get; set; }

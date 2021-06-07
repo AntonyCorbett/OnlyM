@@ -194,7 +194,7 @@
             return count;
         }
 
-        private int CopyAsSlideshow(string mediaFolder, IDataObject data, string[] files)
+        private static int CopyAsSlideshow(string mediaFolder, IDataObject data, string[] files)
         {
             var title = GetOnlyVTitle(data);
             if (!string.IsNullOrEmpty(title))
@@ -204,7 +204,7 @@
 
                 var sfb = new SlideFileBuilder(maxSlideWidth, maxSlideHeight) { AutoPlay = false, Loop = false };
 
-                for (int n = 0; n < files.Length; ++n)
+                for (var n = 0; n < files.Length; ++n)
                 {
                     var file = files[n];
                     sfb.AddSlide(file, n == 0, false, n == file.Length - 1, false);
@@ -219,9 +219,9 @@
             return 0;
         }
 
-        private int CopyAsIndividualFiles(string mediaFolder, string[] files)
+        private static int CopyAsIndividualFiles(string mediaFolder, string[] files)
         {
-            int count = 0;
+            var count = 0;
 
             foreach (var file in files)
             {
@@ -270,7 +270,7 @@
             return count;
         }
 
-        private bool CreateShortcutFromUri(string mediaFolder, string uri)
+        private static bool CreateShortcutFromUri(string mediaFolder, string uri)
         {
             var url = new Uri(uri);
 
@@ -306,7 +306,7 @@
             return true;
         }
 
-        private bool CopyAsMediaFileFromUri(string mediaFolder, string uri)
+        private static bool CopyAsMediaFileFromUri(string mediaFolder, string uri)
         {
             var filename = Path.GetFileName(uri);
             if (string.IsNullOrEmpty(filename))
@@ -329,8 +329,7 @@
             }
 
             // download a local copy of the media.
-            var downloader = new FileDownloader();
-            if (!downloader.Download(new Uri(uri), sourceFile, true))
+            if (!FileDownloader.Download(new Uri(uri), sourceFile, true))
             {
                 return false;
             }
@@ -350,7 +349,7 @@
             return true;
         }
 
-        private string GenerateLocalFileName(Uri uri)
+        private static string GenerateLocalFileName(Uri uri)
         {
             var hashCode = uri.GetHashCode();
 
@@ -363,14 +362,14 @@
             return $"{FileUtils.CoerceValidFileName(uri.Host)}-{hashCode}.url";
         }
 
-        private string GetWebDownloadTempFolder()
+        private static string GetWebDownloadTempFolder()
         {
             var result = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyM", "TempWebDownloads");
             FileUtils.CreateDirectory(result);
             return result;
         }
 
-        private bool CopyFileInternal(string sourceFile, string destFile)
+        private static bool CopyFileInternal(string sourceFile, string destFile)
         {
             if (!string.IsNullOrEmpty(destFile) && !File.Exists(destFile))
             {
@@ -399,17 +398,11 @@
             return !string.IsNullOrEmpty(ext) && _mediaProviderService.IsFileExtensionSupported(ext);
         }
 
-        private bool CanDropOrPasteFiles(IDataObject data)
-        {
-            return GetSupportedFiles(data).Any();
-        }
-
-        private bool CanDropOrPasteUris(IDataObject data)
-        {
-            return GetSupportedUrls(data).Any();
-        }
-
-        private bool DataIsFromOnlyV(IDataObject data)
+        private bool CanDropOrPasteFiles(IDataObject data) => GetSupportedFiles(data).Any();
+        
+        private static bool CanDropOrPasteUris(IDataObject data) => GetSupportedUrls(data).Any();
+        
+        private static bool DataIsFromOnlyV(IDataObject data)
         {
             if (data.GetDataPresent(DataFormats.StringFormat))
             {
@@ -423,13 +416,13 @@
             return false;
         }
 
-        private string GetOnlyVTitle(IDataObject data)
+        private static string GetOnlyVTitle(IDataObject data)
         {
             var s = (string)data.GetData(DataFormats.StringFormat);
             return s?.Split('|')[1];
         }
 
-        private IEnumerable<string> GetSupportedUrls(IDataObject data)
+        private static IEnumerable<string> GetSupportedUrls(IDataObject data)
         {
             var result = new List<string>();
 
@@ -456,7 +449,7 @@
             return result;
         }
 
-        private bool IsAcceptableUri(string uri)
+        private static bool IsAcceptableUri(string uri)
         {
             return 
                 Uri.TryCreate(uri, UriKind.Absolute, out var uriResult) && 

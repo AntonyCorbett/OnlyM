@@ -379,7 +379,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private bool ForceSoftwareRendering()
+        private static bool ForceSoftwareRendering()
         {
             // https://blogs.msdn.microsoft.com/jgoldb/2010/06/22/software-rendering-usage-in-wpf/
             // renderingTier values:
@@ -392,7 +392,7 @@ namespace OnlyM.ViewModel
             //      should use hardware acceleration provided the necessary system resources have 
             //      not been exhausted. This corresponds to a DirectX version that is greater 
             //      than or equal to 9.0.
-            int renderingTier = RenderCapability.Tier >> 16;
+            var renderingTier = RenderCapability.Tier >> 16;
             return renderingTier == 0;
         }
 

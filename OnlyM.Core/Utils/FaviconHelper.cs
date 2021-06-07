@@ -1,11 +1,11 @@
-﻿namespace OnlyM.Core.Utils
-{
-    using System;
-    using System.Linq;
-    using System.Net;
-    using HtmlAgilityPack;
-    using OnlyM.Core.Extensions;
+﻿using System;
+using System.Linq;
+using System.Net;
+using HtmlAgilityPack;
+using OnlyM.Core.Extensions;
 
+namespace OnlyM.Core.Utils
+{
     internal static class FaviconHelper
     {
         public static byte[] GetIconImage(string websiteUrl)

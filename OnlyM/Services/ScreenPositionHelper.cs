@@ -107,7 +107,7 @@
                     return ScreenMarginSide.Top;
             }
 
-            throw new ArgumentException();
+            throw new NotSupportedException();
         }
 
         private static int GetScreenMarginValue(ScreenPosition screenPosition, ScreenMarginSide marginSide)
@@ -154,7 +154,7 @@
                     break;
 
                 default:
-                    throw new ArgumentException();
+                    throw new NotSupportedException();
             }
         }
     }

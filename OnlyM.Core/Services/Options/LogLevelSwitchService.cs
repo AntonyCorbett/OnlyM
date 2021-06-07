@@ -1,8 +1,8 @@
-﻿namespace OnlyM.Core.Services.Options
-{
-    using Serilog.Core;
-    using Serilog.Events;
+﻿using Serilog.Core;
+using Serilog.Events;
 
+namespace OnlyM.Core.Services.Options
+{
     // ReSharper disable once ClassNeverInstantiated.Global
     public class LogLevelSwitchService : ILogLevelSwitchService
     {

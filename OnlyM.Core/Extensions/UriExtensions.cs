@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Core.Extensions
-{
-    using System;
+﻿using System;
 
+namespace OnlyM.Core.Extensions
+{
     internal static class UriExtensions
     {
         public static string ToRelative(this Uri uri)

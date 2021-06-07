@@ -1,8 +1,8 @@
-﻿namespace OnlyM.Core.Services.Media
-{
-    using System;
-    using OnlyM.Core.Models;
+﻿using System;
+using OnlyM.Core.Models;
 
+namespace OnlyM.Core.Services.Media
+{
     public interface IThumbnailService
     {
         event EventHandler ThumbnailsPurgedEvent;

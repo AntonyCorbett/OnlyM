@@ -1,14 +1,14 @@
-﻿namespace OnlyM.Slides.Helpers
-{
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-    using System.Windows.Media.Imaging;
-    using OnlyM.CoreSys;
-    using OnlyM.Slides.Models;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using OnlyM.CoreSys;
+using OnlyM.Slides.Models;
 
+namespace OnlyM.Slides.Helpers
+{
     internal class SlideArchiveEntryBatchHelper
     {
         private readonly IReadOnlyList<Slide> _slides;

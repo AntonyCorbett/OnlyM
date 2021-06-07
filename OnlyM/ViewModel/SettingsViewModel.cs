@@ -879,7 +879,7 @@ namespace OnlyM.ViewModel
             _optionsService.Save();
         }
 
-        private MagnifierShapeItem[] GetMagnifierShapes()
+        private static MagnifierShapeItem[] GetMagnifierShapes()
         {
             var result = new List<MagnifierShapeItem>();
 
@@ -895,7 +895,7 @@ namespace OnlyM.ViewModel
             return result.ToArray();
         }
 
-        private MagnifierSizeItem[] GetMagnifierSizes()
+        private static MagnifierSizeItem[] GetMagnifierSizes()
         {
             var result = new List<MagnifierSizeItem>();
 
@@ -911,7 +911,7 @@ namespace OnlyM.ViewModel
             return result.ToArray();
         }
 
-        private ImageFadeSpeed[] GetFadingSpeedTypes()
+        private static ImageFadeSpeed[] GetFadingSpeedTypes()
         {
             var result = new List<ImageFadeSpeed>();
 
@@ -927,7 +927,7 @@ namespace OnlyM.ViewModel
             return result.ToArray();
         }
         
-        private ImageFade[] GetImageFadingTypes()
+        private static ImageFade[] GetImageFadingTypes()
         {
             var result = new List<ImageFade>();
 
@@ -943,7 +943,7 @@ namespace OnlyM.ViewModel
             return result.ToArray();
         }
 
-        private LoggingLevel[] GetLoggingLevels()
+        private static LoggingLevel[] GetLoggingLevels()
         {
             var result = new List<LoggingLevel>();
 
@@ -959,7 +959,7 @@ namespace OnlyM.ViewModel
             return result.ToArray();
         }
 
-        private RenderingMethodItem[] GetRenderingMethods()
+        private static RenderingMethodItem[] GetRenderingMethods()
         {
             // don't localize these strings!
             return new[]
@@ -1058,7 +1058,7 @@ namespace OnlyM.ViewModel
             _thumbnailService.ClearThumbCache();
         }
 
-        private LanguageItem[] GetSupportedLanguages()
+        private static LanguageItem[] GetSupportedLanguages()
         {
             var result = new List<LanguageItem>();
 
@@ -1099,7 +1099,7 @@ namespace OnlyM.ViewModel
             return result.ToArray();
         }
 
-        private MirrorHotKeyItem[] GetMirrorHotKeys()
+        private static MirrorHotKeyItem[] GetMirrorHotKeys()
         {
             var result = new List<MirrorHotKeyItem>();
 

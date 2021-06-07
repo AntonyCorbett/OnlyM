@@ -1,4 +1,9 @@
-﻿namespace OnlyM.CoreSys.WindowsPositioning
+﻿using System;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Media.Imaging;
+
+namespace OnlyM.CoreSys.WindowsPositioning
 {
     // ReSharper disable IdentifierTypo
     // ReSharper disable UnusedMember.Global
@@ -7,10 +12,8 @@
     // ReSharper disable StyleCop.SA1121
     // ReSharper disable MemberCanBePrivate.Global
     // ReSharper disable FieldCanBeMadeReadOnly.Global
-    using System;
-    using System.Runtime.InteropServices;
-    using System.Windows;
-    using System.Windows.Media.Imaging;
+
+#pragma warning disable S101 // Types should be named in PascalCase
 
     internal static class WindowsPlacementNativeMethods
     {
@@ -172,4 +175,6 @@
             public string szPath;
         }
     }
+
+#pragma warning restore S101 // Types should be named in PascalCase
 }

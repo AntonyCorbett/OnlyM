@@ -131,7 +131,7 @@ namespace OnlyM.Services.MetaDataQueue
             PopulateDurationAndTitle(mediaItem);
         }
 
-        private void PopulateSlideData(MediaItem mediaItem)
+        private static void PopulateSlideData(MediaItem mediaItem)
         {
             if (!IsSlideDataPopulated(mediaItem))
             {
@@ -142,30 +142,24 @@ namespace OnlyM.Services.MetaDataQueue
             }
         }
 
-        private bool IsPopulated(MediaItem mediaItem)
+        private static bool IsPopulated(MediaItem mediaItem)
         {
             return IsThumbnailPopulated(mediaItem) &&
                    IsDurationAndTitlePopulated(mediaItem) &&
                    IsSlideDataPopulated(mediaItem);
         }
 
-        private bool IsThumbnailPopulated(MediaItem mediaItem)
-        {
-            return mediaItem.ThumbnailImageSource != null;
-        }
-
-        private bool IsDurationAndTitlePopulated(MediaItem mediaItem)
+        private static bool IsThumbnailPopulated(MediaItem mediaItem) => mediaItem.ThumbnailImageSource != null;
+        
+        private static bool IsDurationAndTitlePopulated(MediaItem mediaItem)
         {
             return 
                 (!mediaItem.HasDuration || mediaItem.DurationDeciseconds > 0) &&
                 !string.IsNullOrEmpty(mediaItem.Title);
         }
 
-        private bool IsSlideDataPopulated(MediaItem mediaItem)
-        {
-            return !mediaItem.IsSlideshow || mediaItem.SlideshowCount > 0;
-        }
-
+        private static bool IsSlideDataPopulated(MediaItem mediaItem) => !mediaItem.IsSlideshow || mediaItem.SlideshowCount > 0;
+        
         private void PopulateDurationAndTitle(MediaItem mediaItem)
         {
             if (!IsDurationAndTitlePopulated(mediaItem))

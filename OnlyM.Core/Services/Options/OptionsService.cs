@@ -1,23 +1,22 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Windows;
+using System.Windows.Markup;
+using Newtonsoft.Json;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.CommandLine;
+using OnlyM.Core.Services.Monitors;
+using OnlyM.Core.Utils;
+using Serilog;
+using Serilog.Events;
 
 namespace OnlyM.Core.Services.Options
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Threading;
-    using System.Windows;
-    using System.Windows.Markup;
-    using Newtonsoft.Json;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.CommandLine;
-    using OnlyM.Core.Services.Monitors;
-    using OnlyM.Core.Utils;
-    using Serilog;
-    using Serilog.Events;
-
     // ReSharper disable once ClassNeverInstantiated.Global
     public sealed class OptionsService : IOptionsService
     {
@@ -670,7 +669,7 @@ namespace OnlyM.Core.Services.Options
             SetCommandLineMediaFolder(null);
         }
 
-        private string GetOptionsSignature(Options options)
+        private static string GetOptionsSignature(Options options)
         {
             // config data is small so simple solution is best...
             return JsonConvert.SerializeObject(options);
@@ -729,15 +728,15 @@ namespace OnlyM.Core.Services.Options
             {
                 var serializer = new JsonSerializer();
                 var result = (Options)serializer.Deserialize(file, typeof(Options));
-                result.Sanitize();
+                result?.Sanitize();
 
-                SetCulture(result.Culture);
+                SetCulture(result?.Culture);
 
                 return result;
             }
         }
 
-        private void SetCulture(string cultureString)
+        private static void SetCulture(string cultureString)
         {
             var culture = cultureString;
 
@@ -787,7 +786,7 @@ namespace OnlyM.Core.Services.Options
             }
         }
 
-        private MonitorChangeDescription GetChange(string originalMonitor, string newMonitor)
+        private static MonitorChangeDescription GetChange(string originalMonitor, string newMonitor)
         {
             if (string.IsNullOrEmpty(originalMonitor))
             {
@@ -802,7 +801,7 @@ namespace OnlyM.Core.Services.Options
             return MonitorChangeDescription.MonitorToMonitor;
         }
 
-        private MonitorChangeDescription GetChange(bool newWindowedSetting, string monitorId)
+        private static MonitorChangeDescription GetChange(bool newWindowedSetting, string monitorId)
         {
             if (newWindowedSetting)
             {

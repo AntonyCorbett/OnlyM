@@ -1,8 +1,8 @@
-﻿namespace OnlyM.CoreSys
-{
-    using System.Collections.ObjectModel;
-    using System.Collections.Specialized;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
+namespace OnlyM.CoreSys
+{
     public class ObservableCollectionEx<T> : ObservableCollection<T>
     {
         private bool _notificationSuppressed;
@@ -15,7 +15,7 @@
             {
                 _suppressNotification = value;
 
-                if (_suppressNotification == false && _notificationSuppressed)
+                if (!_suppressNotification && _notificationSuppressed)
                 {
                     OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                     _notificationSuppressed = false;

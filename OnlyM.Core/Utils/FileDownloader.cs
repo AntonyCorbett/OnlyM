@@ -1,12 +1,12 @@
-﻿namespace OnlyM.Core.Utils
-{
-    using System;
-    using System.IO;
-    using Serilog;
+﻿using System;
+using System.IO;
+using Serilog;
 
-    public class FileDownloader
+namespace OnlyM.Core.Utils
+{
+    public static class FileDownloader
     {
-        public bool Download(Uri remoteUri, string localFile, bool overwrite)
+        public static bool Download(Uri remoteUri, string localFile, bool overwrite)
         {
             if (File.Exists(localFile) && !overwrite)
             {

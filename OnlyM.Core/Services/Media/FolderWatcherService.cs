@@ -1,13 +1,13 @@
-﻿namespace OnlyM.Core.Services.Media
-{
-    using System;
-    using System.IO;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Options;
-    using Serilog;
+﻿using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.Options;
+using Serilog;
 
+namespace OnlyM.Core.Services.Media
+{
     // ReSharper disable once ClassNeverInstantiated.Global
     public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
     {
@@ -61,7 +61,7 @@
         {
             var currentChangeVersion = _changeVersion;
             
-            for (; ;)
+            while (true)
             {
                 _signalFolderChange.Wait();
 

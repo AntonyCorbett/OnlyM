@@ -253,7 +253,7 @@
             SlideTransitionEvent?.Invoke(this, e);
         }
 
-        private MediaEventArgs CreateMediaEventArgs(Guid id, MediaClassification mediaClassification, MediaChange change)
+        private static MediaEventArgs CreateMediaEventArgs(Guid id, MediaClassification mediaClassification, MediaChange change)
         {
             if (id == Guid.Empty)
             {
@@ -268,7 +268,7 @@
             };
         }
 
-        private SlideTransitionEventArgs CreateSlideTransitionEventArgs(Guid id, SlideTransition change, int oldIndex, int newIndex)
+        private static SlideTransitionEventArgs CreateSlideTransitionEventArgs(Guid id, SlideTransition change, int oldIndex, int newIndex)
         {
             return new SlideTransitionEventArgs
             {
@@ -321,13 +321,13 @@
             }
         }
 
-        private void RemoveAnimation(Image imageControl)
+        private static void RemoveAnimation(Image imageControl)
         {
             imageControl.BeginAnimation(UIElement.OpacityProperty, null);
             imageControl.Opacity = 1.0;
         }
 
-        private void HideImageInControl(Image imageCtrl, ImageFadeType fadeType, double fadeTime, Action completed)
+        private static void HideImageInControl(Image imageCtrl, ImageFadeType fadeType, double fadeTime, Action completed)
         {
             var shouldFadeOut = imageCtrl.Source != null &&
                                 (fadeType == ImageFadeType.FadeOut ||

@@ -1,12 +1,12 @@
-﻿namespace OnlyM.Core.Services.Monitors
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Windows.Forms;
-    using OnlyM.Core.Models;
-    using Serilog;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+using OnlyM.Core.Models;
+using Serilog;
 
+namespace OnlyM.Core.Services.Monitors
+{
     /// <summary>
     /// Service to get display device information
     /// </summary>
@@ -62,18 +62,18 @@
             return GetSystemMonitors().SingleOrDefault(x => x.Monitor.DeviceName.Equals(screen.DeviceName));
         }
 
-        private DisplayDeviceData GetDeviceMatchingScreen(DisplayDeviceData[] devices, Screen screen)
+        private static DisplayDeviceData GetDeviceMatchingScreen(DisplayDeviceData[] devices, Screen screen)
         {
             var deviceName = screen.DeviceName + "\\";
             return devices.SingleOrDefault(x => x.Name.StartsWith(deviceName));
         }
 
-        private string SanitizeScreenDeviceName(string name)
+        private static string SanitizeScreenDeviceName(string name)
         {
             return name.Replace(@"\\.\", string.Empty);
         }
 
-        private List<(Screen, DisplayDeviceData)> GetDisplayScreens(DisplayDeviceData[] devices)
+        private static List<(Screen, DisplayDeviceData)> GetDisplayScreens(DisplayDeviceData[] devices)
         {
             var result = new List<(Screen, DisplayDeviceData)>();
 

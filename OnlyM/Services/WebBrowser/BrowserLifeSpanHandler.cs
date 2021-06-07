@@ -1,11 +1,11 @@
-﻿namespace OnlyM.Services.WebBrowser
-{
-    using CefSharp;
+﻿using CefSharp;
 
+namespace OnlyM.Services.WebBrowser
+{
     public class BrowserLifeSpanHandler : ILifeSpanHandler
     {
         public bool OnBeforePopup(
-            IWebBrowser browserControl, 
+            IWebBrowser chromiumWebBrowser, 
             IBrowser browser, 
             IFrame frame, 
             string targetUrl, 
@@ -23,17 +23,17 @@
             return true;
         }
 
-        public void OnAfterCreated(IWebBrowser browserControl, IBrowser browser)
+        public void OnAfterCreated(IWebBrowser chromiumWebBrowser, IBrowser browser)
         {
             // nothing
         }
 
-        public bool DoClose(IWebBrowser browserControl, IBrowser browser)
+        public bool DoClose(IWebBrowser chromiumWebBrowser, IBrowser browser)
         {
             return false;
         }
 
-        public void OnBeforeClose(IWebBrowser browserControl, IBrowser browser)
+        public void OnBeforeClose(IWebBrowser chromiumWebBrowser, IBrowser browser)
         {
             // nothing
         }

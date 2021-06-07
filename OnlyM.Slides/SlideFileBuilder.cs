@@ -1,19 +1,19 @@
-﻿namespace OnlyM.Slides
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.IO.Compression;
-    using System.Linq;
-    using System.Windows.Media.Imaging;
-    using Newtonsoft.Json;
-    using OnlyM.Slides.Helpers;
-    using OnlyM.Slides.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Windows.Media.Imaging;
+using Newtonsoft.Json;
+using OnlyM.Slides.Helpers;
+using OnlyM.Slides.Models;
 
+namespace OnlyM.Slides
+{
     public class SlideFileBuilder
     {
-        private const string ConfigEntryName = @"config.json";
-        private readonly SlidesConfig _config = new SlidesConfig();
+        private const string ConfigEntryName = "config.json";
+        private readonly SlidesConfig _config = new();
         private readonly int _maxSlideWidth;
         private readonly int _maxSlideHeight;
 
@@ -51,26 +51,14 @@
 
         public int SlideCount => _config.SlideCount;
 
-        public string CreateSignature()
-        {
-            return _config.CreateSignature();
-        }
-
-        public IReadOnlyCollection<Slide> GetSlides()
-        {
-            return _config.Slides;
-        }
-
-        public void RemoveSlide(string slideName)
-        {
-            _config.RemoveSlide(slideName);
-        }
-
-        public void SyncSlideOrder(IEnumerable<string> slideNames)
-        {
-            _config.SyncSlideOrder(slideNames);
-        }
-
+        public string CreateSignature() => _config.CreateSignature();
+        
+        public IReadOnlyCollection<Slide> GetSlides() => _config.Slides;
+        
+        public void RemoveSlide(string slideName) => _config.RemoveSlide(slideName);
+        
+        public void SyncSlideOrder(IEnumerable<string> slideNames) => _config.SyncSlideOrder(slideNames);
+        
         public void Load(string slideshowPath)
         {
             if (string.IsNullOrEmpty(slideshowPath))
@@ -143,8 +131,8 @@
         {
             BuildProgress(0);
 
-            int numEntriesToBuild = _config.SlideCount + 1;
-            int numEntriesBuilt = 0;
+            var numEntriesToBuild = _config.SlideCount + 1;
+            var numEntriesBuilt = 0;
 
             CreateEmptyArchive(path, overwrite);
 
@@ -162,12 +150,9 @@
             }
         }
 
-        private double CalcPercentComplete(int numEntriesBuilt, int numEntriesToBuild)
-        {
-            return (double)numEntriesBuilt * 100 / numEntriesToBuild;
-        }
+        private static double CalcPercentComplete(int numEntriesBuilt, int numEntriesToBuild)
+            => (double)numEntriesBuilt * 100 / numEntriesToBuild;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "Trust streams")]
         private void CreateEmptyArchive(string path, bool overwrite)
         {
             if (File.Exists(path) && !overwrite)
@@ -220,43 +205,7 @@
             }
         }
 
-        private void AddBitmapImageToArchive(
-            string zipArchivePath, string slideArchiveEntryName, BitmapSource slideImage)
-        {
-            // note that construction of large zip files must be done in this convoluted way
-            // (involving temp files) because attempting to do it all in memory (using ZipArchive.Update)
-            // caused an OutOfMemoryException.
-            var tmpPath = GetTempZipFilePath(Path.GetFileName(zipArchivePath));
-
-            if (File.Exists(tmpPath))
-            {
-                File.Delete(tmpPath);
-            }
-
-            using (var tmpZip = ZipFile.Open(tmpPath, ZipArchiveMode.Create))
-            {
-                using (var zipFrom = ZipFile.Open(zipArchivePath, ZipArchiveMode.Read))
-                {
-                    foreach (var entry in zipFrom.Entries)
-                    {
-                        var targetEntry = tmpZip.CreateEntry(entry.FullName);
-
-                        using (var streamFrom = entry.Open())
-                        using (var streamTo = targetEntry.Open())
-                        {
-                            streamFrom.CopyTo(streamTo);
-                        }
-                    }
-                }
-
-                AddBitmapImageToArchive(tmpZip, slideArchiveEntryName, slideImage);
-            }
-
-            File.Delete(zipArchivePath);
-            File.Move(tmpPath, zipArchivePath);
-        }
-
-        private void AddBitmapImageToArchive(ZipArchive zip, string slideArchiveEntryName, BitmapSource slideImage)
+        private static void AddBitmapImageToArchive(ZipArchive zip, string slideArchiveEntryName, BitmapSource slideImage)
         {
             // This is a little odd (multiple streams and rewinding the memory stream!).
             // I can't find a better way of saving a BitmapSource in the archive entry.
@@ -312,14 +261,14 @@
 
         private string GenerateUniqueArchiveEntryName(string bitmapPath)
         {
-            const int MaxAttempts = 100;
+            const int maxAttempts = 100;
 
             var baseName = Path.GetFileNameWithoutExtension(bitmapPath);
 
             var similarSlideNames = GetSlideNamesStartingWith(baseName).ToArray();
             if (similarSlideNames.Length > 0)
             {
-                for (int n = 2; n < MaxAttempts; ++n)
+                for (var n = 2; n < maxAttempts; ++n)
                 {
                     var candidate = $"{baseName} {n:D3}";
                     if (!similarSlideNames.Contains(candidate, StringComparer.OrdinalIgnoreCase))
@@ -337,14 +286,6 @@
         private IEnumerable<string> GetSlideNamesStartingWith(string s)
         {
             return _config.Slides.Where(x => x.ArchiveEntryName.StartsWith(s, StringComparison.OrdinalIgnoreCase)).Select(x => x.ArchiveEntryName);
-        }
-
-        private string GetTempZipFilePath(string fileName)
-        {
-            var tmpFolder = Path.Combine(Path.GetTempPath(), "OnlyMSlides");
-            Directory.CreateDirectory(tmpFolder);
-
-            return Path.ChangeExtension(Path.Combine(tmpFolder, fileName), ".tmp");
         }
 
         private void BuildProgress(double percentageComplete, string entryName = null)

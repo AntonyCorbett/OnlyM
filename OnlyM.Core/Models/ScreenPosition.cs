@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Core.Models
-{
-    using System;
+﻿using System;
 
+namespace OnlyM.Core.Models
+{
     public class ScreenPosition : ICloneable
     {
         public ScreenPosition()

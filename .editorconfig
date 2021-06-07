@@ -222,3 +222,9 @@ dotnet_diagnostic.S112.severity = silent
 
 # S1168: Empty arrays and collections should be returned instead of null
 dotnet_diagnostic.S1168.severity = silent
+
+# S4136: Method overloads should be grouped together
+dotnet_diagnostic.S4136.severity = silent
+
+# S2346: Flags enumerations zero-value members should be named "None"
+dotnet_diagnostic.S2346.severity = silent

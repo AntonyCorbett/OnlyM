@@ -1,8 +1,8 @@
-﻿namespace OnlyM.Core.Utils
-{
-    using System;
-    using System.Text;
+﻿using System;
+using System.Text;
 
+namespace OnlyM.Core.Utils
+{
     public static class FFmpegUtils
     {
         // there is an issue in ffmpeg (https://trac.ffmpeg.org/ticket/819)

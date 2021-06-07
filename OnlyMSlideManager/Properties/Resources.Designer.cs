@@ -178,6 +178,24 @@ namespace OnlyMSlideManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not create new file!.
+        /// </summary>
+        public static string ERROR_NEW_FILE {
+            get {
+                return ResourceManager.GetString("ERROR_NEW_FILE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not open file!.
+        /// </summary>
+        public static string ERROR_OPEN_FILE {
+            get {
+                return ResourceManager.GetString("ERROR_OPEN_FILE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fade in.
         /// </summary>
         public static string FADE_IN_FORWARD {

@@ -1,15 +1,14 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using System;
+using System.Windows;
+using System.Windows.Controls;
+using OnlyM.PubSubMessages;
+using OnlyM.Services.DragAndDrop;
+using OnlyM.ViewModel;
 
 namespace OnlyM.Windows
 {
-    using System;
-    using System.Windows;
-    using System.Windows.Controls;
-    using OnlyM.PubSubMessages;
-    using OnlyM.Services.DragAndDrop;
-    using OnlyM.ViewModel;
-
     /// <summary>
     /// Interaction logic for OperatorPage.xaml
     /// </summary>
@@ -20,7 +19,7 @@ namespace OnlyM.Windows
             InitializeComponent();
 
             var dragAndDropService = Ioc.Default.GetService<IDragAndDropService>();
-            dragAndDropService.Init(this);
+            dragAndDropService?.Init(this);
         }
 
         private void MirrorCheckBoxChecked(object sender, RoutedEventArgs e)
@@ -33,7 +32,7 @@ namespace OnlyM.Windows
             HandleMirrorCheckBoxChanged(sender, false);
         }
 
-        private void HandleMirrorCheckBoxChanged(object sender, bool isChecked)
+        private static void HandleMirrorCheckBoxChanged(object sender, bool isChecked)
         {
             if (sender is CheckBox cb)
             {

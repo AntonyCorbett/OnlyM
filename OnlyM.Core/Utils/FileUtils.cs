@@ -1,10 +1,10 @@
-﻿namespace OnlyM.Core.Utils
-{
-    using System;
-    using System.IO;
-    using System.Text.RegularExpressions;
-    using Serilog;
+﻿using System;
+using System.IO;
+using System.Text.RegularExpressions;
+using Serilog;
 
+namespace OnlyM.Core.Utils
+{
     /// <summary>
     /// General file / folder utilities
     /// </summary>

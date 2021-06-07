@@ -1,7 +1,7 @@
-﻿namespace OnlyM.CoreSys
-{
-    using System;
+﻿using System;
 
+namespace OnlyM.CoreSys
+{
     public sealed class ObservableCollectionSuppression<T> : IDisposable
     {
         private readonly ObservableCollectionEx<T> _collection;

@@ -13,13 +13,13 @@ Original copyright is shown below.
    Stay informed: follow @datagrid on Twitter or Like http://facebook.com/datagrids
   ***********************************************************************************/
 
+using System;
+using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Input;
+
 namespace OnlyM.CustomControls.MagnifierControl
 {
-    using System;
-    using System.Windows;
-    using System.Windows.Documents;
-    using System.Windows.Input;
-
     public class MagnifierManager : DependencyObject
     {
         public static readonly DependencyProperty CurrentProperty = DependencyProperty.RegisterAttached(
@@ -31,16 +31,10 @@ namespace OnlyM.CustomControls.MagnifierControl
         private MagnifierAdorner _adorner;
         private UIElement _element;
         
-        public static void SetMagnifier(UIElement element, Magnifier value)
-        {
-            element.SetValue(CurrentProperty, value);
-        }
-
-        public static Magnifier GetMagnifier(UIElement element)
-        {
-            return (Magnifier)element.GetValue(CurrentProperty);
-        }
-
+        public static void SetMagnifier(UIElement element, Magnifier value) => element.SetValue(CurrentProperty, value);
+        
+        public static Magnifier GetMagnifier(UIElement element) => (Magnifier)element.GetValue(CurrentProperty);
+        
         private static void OnMagnifierChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var target = d as UIElement;
@@ -109,22 +103,16 @@ namespace OnlyM.CustomControls.MagnifierControl
             _adorner.Visibility = Visibility.Visible;
         }
 
-        private bool VerifyAdornerLayer()
+        private void VerifyAdornerLayer()
         {
             if (_adorner.Parent != null)
             {
-                return true;
+                return;
             }
 
             var layer = AdornerLayer.GetAdornerLayer(_element);
-            if (layer == null)
-            {
-                return false;
-            }
 
-            layer.Add(_adorner);
-
-            return true;
+            layer?.Add(_adorner);
         }
 
         private void HideAdorner()

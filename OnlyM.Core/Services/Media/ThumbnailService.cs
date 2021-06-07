@@ -1,23 +1,22 @@
 ﻿using Microsoft.WindowsAPICodePack.Shell;
+using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.Database;
+using OnlyM.Core.Services.Options;
+using OnlyM.Core.Services.WebShortcuts;
+using OnlyM.Core.Utils;
+using OnlyM.CoreSys;
+using OnlyM.Slides;
+using Serilog;
 
 namespace OnlyM.Core.Services.Media
 {
-    using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.IO;
-    using System.Windows;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Database;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.Core.Services.WebShortcuts;
-    using OnlyM.Core.Utils;
-    using OnlyM.CoreSys;
-    using OnlyM.Slides;
-    using Serilog;
-
     public sealed class ThumbnailService : IThumbnailService
     {
         // note that MaxPixelDimension should match the 
@@ -41,14 +40,14 @@ namespace OnlyM.Core.Services.Media
             return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
         });
 
-        private readonly Lazy<byte[]> _standardWebThumbnail = new Lazy<byte[]>(() =>
+        private readonly Lazy<byte[]> _standardWebThumbnail = new(() =>
         {
             var bmp = Properties.Resources.Web;
             var converter = new ImageConverter();
             return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
         });
 
-        private readonly Lazy<byte[]> _standardUnknownThumbnail = new Lazy<byte[]>(() =>
+        private readonly Lazy<byte[]> _standardUnknownThumbnail = new(() =>
         {
             var bmp = Properties.Resources.Unknown;
             var converter = new ImageConverter();
@@ -72,7 +71,7 @@ namespace OnlyM.Core.Services.Media
         {
             Log.Logger.Debug($"Getting thumbnail: {originalPath}");
             
-            byte[] result = _databaseService.GetThumbnailFromCache(originalPath, originalLastChanged);
+            var result = _databaseService.GetThumbnailFromCache(originalPath, originalLastChanged);
             if (result != null)
             {
                 Log.Logger.Verbose("Found thumbnail in cache");
@@ -196,7 +195,7 @@ namespace OnlyM.Core.Services.Media
             }
         }
 
-        private byte[] CreateFramedSmallIcon(byte[] bytes)
+        private static byte[] CreateFramedSmallIcon(byte[] bytes)
         {
             const int pixelSize = 100;
 

@@ -1,7 +1,7 @@
-﻿namespace OnlyM.CoreSys.Services.UI
-{
-    using System;
+﻿using System;
 
+namespace OnlyM.CoreSys.Services.UI
+{
     public interface IUserInterfaceService
     {
         event EventHandler BusyStatusChangedEvent;

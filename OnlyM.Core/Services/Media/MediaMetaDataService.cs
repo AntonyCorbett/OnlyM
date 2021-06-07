@@ -1,13 +1,13 @@
 ﻿using Unosquare.FFME.Common;
+using System;
+using System.IO;
+using OnlyM.Core.Models;
+using OnlyM.Core.Utils;
+using Serilog;
 
 namespace OnlyM.Core.Services.Media
 {
-    using System;
-    using System.IO;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Utils;
-    using Serilog;
-    
+   
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MediaMetaDataService : IMediaMetaDataService
     {
@@ -38,7 +38,7 @@ namespace OnlyM.Core.Services.Media
             {
                 Log.Logger.Information($"Waiting for file to become available: {mediaItemFilePath}");
             }
-            catch (System.IO.IOException)
+            catch (IOException)
             {
                 Log.Logger.Error($"Could not get metadata from file: {mediaItemFilePath} (in use)");
             }
@@ -50,7 +50,7 @@ namespace OnlyM.Core.Services.Media
             return null;
         }
 
-        private string StripNewLines(string s)
+        private static string StripNewLines(string s)
         {
             if (string.IsNullOrEmpty(s))
             {
@@ -60,7 +60,7 @@ namespace OnlyM.Core.Services.Media
             return s.Replace("\r\n", " ").Replace('\n', ' ');
         }
 
-        private MediaMetaData GetVideoMetaData(string mediaItemFilePath, string ffmpegFolder)
+        private static MediaMetaData GetVideoMetaData(string mediaItemFilePath, string ffmpegFolder)
         {
             Unosquare.FFME.Library.FFmpegDirectory = ffmpegFolder;
             Unosquare.FFME.Library.LoadFFmpeg();
@@ -90,25 +90,16 @@ namespace OnlyM.Core.Services.Media
             }
         }
 
-        private MediaMetaData GetWebPageMetaData(string mediaItemFilePath)
+        private static MediaMetaData GetWebPageMetaData(string mediaItemFilePath)
         {
-            return new MediaMetaData
+            return new()
             {
                 Title = Path.GetFileNameWithoutExtension(mediaItemFilePath),
                 Duration = TimeSpan.Zero,
             };
         }
 
-        private MediaMetaData GetPdfMetaData(string mediaItemFilePath)
-        {
-            return new MediaMetaData
-            {
-                Title = Path.GetFileNameWithoutExtension(mediaItemFilePath),
-                Duration = TimeSpan.Zero,
-            };
-        }
-
-        private MediaMetaData GetNonVideoMetaData(string mediaItemFilePath)
+        private static MediaMetaData GetNonVideoMetaData(string mediaItemFilePath)
         {
             using (var tf = TagLib.File.Create(mediaItemFilePath))
             {

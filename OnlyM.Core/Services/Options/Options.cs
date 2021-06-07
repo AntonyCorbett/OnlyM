@@ -1,14 +1,13 @@
-﻿namespace OnlyM.Core.Services.Options
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using Newtonsoft.Json;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Utils;
-    using Serilog.Events;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Newtonsoft.Json;
+using OnlyM.Core.Models;
+using OnlyM.Core.Utils;
+using Serilog.Events;
 
+namespace OnlyM.Core.Services.Options
+{
     public sealed class Options
     {
         private const int AbsoluteMaxItemCount = 200;

@@ -1,16 +1,16 @@
-﻿namespace OnlyM.Slides
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.IO.Compression;
-    using System.Windows.Media.Imaging;
-    using Newtonsoft.Json;
-    using OnlyM.Slides.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Windows.Media.Imaging;
+using Newtonsoft.Json;
+using OnlyM.Slides.Models;
 
+namespace OnlyM.Slides
+{
     public class SlideFile
     {
-        private const string ConfigEntryName = @"config.json";
+        private const string ConfigEntryName = "config.json";
         private readonly SlidesConfig _config;
         
         public SlideFile(string path)
@@ -64,7 +64,7 @@
 
         public IReadOnlyCollection<Slide> GetSlides(bool includeBitmapImage)
         {
-            var result = new List<Slide>();
+            var result = new List<Slide>(_config.SlideCount);
 
             using (var zip = ZipFile.OpenRead(FilePath))
             {
@@ -100,12 +100,11 @@
                 foreach (var slide in _config.Slides)
                 {
                     var entry = zip.GetEntry(slide.ArchiveEntryName);
-                    entry.ExtractToFile(Path.Combine(folder, slide.ArchiveEntryName), overwrite: true);
+                    entry?.ExtractToFile(Path.Combine(folder, slide.ArchiveEntryName), overwrite: true);
                 }
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "trust streams behave properly")]
         private SlidesConfig Load()
         {
             using (var zip = ZipFile.OpenRead(FilePath))
@@ -135,7 +134,7 @@
             }
         }
         
-        private BitmapImage ReadBackgroundImage(ZipArchive zip, string entryName)
+        private static BitmapImage ReadBackgroundImage(ZipArchive zip, string entryName)
         {
             var entry = zip.GetEntry(entryName);
             if (entry == null)

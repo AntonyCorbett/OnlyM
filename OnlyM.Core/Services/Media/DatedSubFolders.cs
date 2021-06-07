@@ -1,9 +1,9 @@
-﻿namespace OnlyM.Core.Services.Media
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
+namespace OnlyM.Core.Services.Media
+{
     internal static class DatedSubFolders
     {
         public static string GetDatedSubFolder(string rootFolder, DateTime theDate)
