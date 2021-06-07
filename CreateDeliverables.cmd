@@ -13,7 +13,7 @@ msbuild OnlyMMirror\OnlyMMirror.vcxproj -t:Rebuild -p:Configuration=Release
 REM copy items into delivery
 copy OnlyMMirror\OnlyM\bin\x86\Release\OnlyMMirror.exe OnlyM\bin\Release\net5.0-windows\publish
 xcopy OnlyMSlideManager\bin\Release\net5.0-windows\publish\*.* OnlyM\bin\Release\net5.0-windows\publish /q /s /y /d
-xcopy VCRTL\*.* OnlyM\bin\Release\net5.0-windows\publish
+xcopy VCRTL\*.* OnlyM\bin\Release\net5.0-windows\publish /q
 
 REM Remove unwanted language files
 del OnlyM\bin\Release\net5.0-windows\publish\no-NO\*.dll
