@@ -22,8 +22,6 @@ namespace OnlyM.Services.WebNavHeaderManager
 
         public void MouseMove(Point pos)
         {
-            Debug.WriteLine(pos.Y);
-
             switch (_webHeaderStatus)
             {
                 case WebNavHeaderStatus.NotVisible:
