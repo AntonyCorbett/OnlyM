@@ -1,7 +1,7 @@
-﻿namespace OnlyMSlideManager.Services
-{
-    using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
+namespace OnlyMSlideManager.Services
+{
     public interface IDialogService
     {
         Task<bool?> ShouldSaveDirtyDataAsync();

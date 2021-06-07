@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FFME.Windows" Version="4.3.340" />
+    <PackageReference Include="FFME.Windows" Version="4.4.350" />
     <PackageReference Include="FluentCommandLineParser-netstandard" Version="1.4.3.13" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.33" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.34" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.0.2" />

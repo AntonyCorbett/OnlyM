@@ -17,8 +17,8 @@ xcopy OnlyMSlideManager\bin\Release\net5.0-windows\publish\*.* OnlyM\bin\Release
 xcopy VCRTL\*.* OnlyM\bin\Release\net5.0-windows\publish /q
 
 REM Remove unwanted language files
-del OnlyM\bin\Release\net5.0-windows\publish\no-NO\*.dll
-del OnlyM\bin\Release\net5.0-windows\publish\pap-PAP\*.dll
+rd OnlyM\bin\Release\net5.0-windows\publish\no-NO /q /s
+rd OnlyM\bin\Release\net5.0-windows\publish\pap-PAP /q /s
 
 REM Create installer
 "C:\Program Files (x86)\Inno Setup 6\iscc" Installer\onlymsetup.iss

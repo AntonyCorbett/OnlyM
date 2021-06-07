@@ -1,7 +1,7 @@
-﻿namespace OnlyMSlideManager.PubSubMessages
-{
-    using OnlyMSlideManager.Models;
+﻿using OnlyMSlideManager.Models;
 
+namespace OnlyMSlideManager.PubSubMessages
+{
     internal class ReorderMessage
     {
         public SlideItem SourceItem { get; set; }

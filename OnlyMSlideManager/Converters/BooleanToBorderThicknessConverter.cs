@@ -1,10 +1,10 @@
-﻿namespace OnlyMSlideManager.Converters
-{
-    using System;
-    using System.Globalization;
-    using System.Windows;
-    using System.Windows.Data;
+﻿using System;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
 
+namespace OnlyMSlideManager.Converters
+{
     [ValueConversion(typeof(bool), typeof(Thickness))]
     public class BooleanToBorderThicknessConverter : IValueConverter
     {

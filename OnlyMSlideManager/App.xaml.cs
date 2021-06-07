@@ -1,29 +1,24 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.IO;
+using System.Threading;
+using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.CoreSys.Services.UI;
+using OnlyMSlideManager.Helpers;
 using OnlyMSlideManager.Services;
 using OnlyMSlideManager.Services.DragAndDrop;
 using OnlyMSlideManager.Services.Options;
 using OnlyMSlideManager.ViewModel;
+using Serilog;
 
 namespace OnlyMSlideManager
 {
-    using System.IO;
-    using System.Threading;
-    using System.Windows;
-    using OnlyMSlideManager.Helpers;
-    using Serilog;
-
     public partial class App : Application
     {
         private readonly string _appString = "OnlyMSlideManagerTool";
         private Mutex _appMutex;
-
-        public App()
-        {
-        }
-
+        
         protected override void OnExit(ExitEventArgs e)
         {
             _appMutex?.Dispose();
@@ -41,7 +36,7 @@ namespace OnlyMSlideManager
             ConfigureServices();
         }
 
-        private void ConfigureServices()
+        private static void ConfigureServices()
         {
             var serviceCollection = new ServiceCollection();
 
@@ -64,9 +59,9 @@ namespace OnlyMSlideManager
             return !newInstance;
         }
 
-        private void ConfigureLogger()
+        private static void ConfigureLogger()
         {
-            string logsDirectory = FileUtils.GetLogFolder();
+            var logsDirectory = FileUtils.GetLogFolder();
 
 #if DEBUG
             Log.Logger = new LoggerConfiguration()

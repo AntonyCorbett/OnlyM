@@ -1,18 +1,17 @@
 ﻿using Microsoft.Toolkit.Mvvm.Messaging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Shapes;
+using OnlyM.CoreSys.Services.UI;
+using OnlyMSlideManager.Models;
+using OnlyMSlideManager.PubSubMessages;
 
 namespace OnlyMSlideManager.Services.DragAndDrop
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Shapes;
-    using OnlyM.CoreSys.Services.UI;
-    using OnlyMSlideManager.Models;
-    using OnlyMSlideManager.PubSubMessages;
-
     internal class DragAndDropServiceCustom : IDragAndDropServiceCustom
     {
         private readonly string[] _supportedImageExtensions =
@@ -105,24 +104,26 @@ namespace OnlyMSlideManager.Services.DragAndDrop
 
         private void StartDrag()
         {
-            if (_dragSourceCard?.DataContext is SlideItem cardViewModel)
+            if (_dragSourceCard?.DataContext is not SlideItem cardViewModel)
             {
-                _isDragging = true;
-                cardViewModel.ShowCardBorder = true;
-
-                var objectToDrag = new SourceCard
-                {
-                    Name = cardViewModel.Name,
-                };
-
-                var data = new DataObject(DataFormats.Serializable, objectToDrag);
-
-                DragDrop.DoDragDrop(_dragSourceCard, data, DragDropEffects.Move);
-
-                cardViewModel.ShowCardBorder = false;
-                _dragSourceCard = null;
-                _isDragging = false;
+                return;
             }
+
+            _isDragging = true;
+            cardViewModel.ShowCardBorder = true;
+
+            var objectToDrag = new SourceCard
+            {
+                Name = cardViewModel.Name,
+            };
+
+            var data = new DataObject(DataFormats.Serializable, objectToDrag);
+
+            DragDrop.DoDragDrop(_dragSourceCard, data, DragDropEffects.Move);
+
+            cardViewModel.ShowCardBorder = false;
+            _dragSourceCard = null;
+            _isDragging = false;
         }
 
         private bool CanDropOrPaste(IDataObject data)
@@ -132,34 +133,36 @@ namespace OnlyMSlideManager.Services.DragAndDrop
 
         private IEnumerable<string> GetSupportedFiles(IDataObject data)
         {
-            if (data.GetDataPresent(DataFormats.FileDrop))
+            if (!data.GetDataPresent(DataFormats.FileDrop))
             {
-                // Note that you can have more than one file...
-                string[] files = (string[])data.GetData(DataFormats.FileDrop);
+                yield break;
+            }
 
-                if (files != null && files.Length > 0)
+            // Note that you can have more than one file...
+            var files = (string[])data.GetData(DataFormats.FileDrop);
+
+            if (files != null && files.Length > 0)
+            {
+                foreach (var file in files)
                 {
-                    foreach (var file in files)
+                    if (Directory.Exists(file))
                     {
-                        if (Directory.Exists(file))
+                        // a folder rather than a file.
+                        foreach (var fileInFolder in Directory.EnumerateFiles(file))
                         {
-                            // a folder rather than a file.
-                            foreach (var fileInFolder in Directory.EnumerateFiles(file))
-                            {
-                                var fileToAdd = GetSupportedFile(fileInFolder);
-                                if (fileToAdd != null)
-                                {
-                                    yield return fileToAdd;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            var fileToAdd = GetSupportedFile(file);
+                            var fileToAdd = GetSupportedFile(fileInFolder);
                             if (fileToAdd != null)
                             {
                                 yield return fileToAdd;
                             }
+                        }
+                    }
+                    else
+                    {
+                        var fileToAdd = GetSupportedFile(file);
+                        if (fileToAdd != null)
+                        {
+                            yield return fileToAdd;
                         }
                     }
                 }
@@ -182,7 +185,7 @@ namespace OnlyMSlideManager.Services.DragAndDrop
             return _supportedImageExtensions.Contains(ext.ToLower());
         }
 
-        private void SetEffects(DragEventArgs e, bool canDrop)
+        private static void SetEffects(DragEventArgs e, bool canDrop)
         {
             e.Effects = canDrop
                 ? DragDropEffects.Copy

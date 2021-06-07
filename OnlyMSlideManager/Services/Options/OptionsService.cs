@@ -1,16 +1,16 @@
-﻿namespace OnlyMSlideManager.Services.Options
-{
-    using System;
-    using System.Globalization;
-    using System.IO;
-    using System.Threading;
-    using System.Windows;
-    using System.Windows.Markup;
-    using Newtonsoft.Json;
-    using OnlyMSlideManager.Helpers;
-    using Serilog;
-    using Serilog.Events;
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Threading;
+using System.Windows;
+using System.Windows.Markup;
+using Newtonsoft.Json;
+using OnlyMSlideManager.Helpers;
+using Serilog;
+using Serilog.Events;
 
+namespace OnlyMSlideManager.Services.Options
+{
     internal class OptionsService : IOptionsService
     {
         private readonly int _optionsVersion = 1;
@@ -65,6 +65,7 @@
             try
             {
                 var newSignature = GetOptionsSignature(_options.Value);
+
                 if (_originalOptionsSignature != newSignature)
                 {
                     // changed...
@@ -78,7 +79,7 @@
             }
         }
 
-        private string GetOptionsSignature(Options options)
+        private static string GetOptionsSignature(Options options)
         {
             // config data is small so simple solution is best...
             return JsonConvert.SerializeObject(options);
@@ -88,12 +89,11 @@
         {
             if (options != null)
             {
-                using (var file = File.CreateText(_optionsFilePath))
-                {
-                    var serializer = new JsonSerializer { Formatting = Formatting.Indented };
-                    serializer.Serialize(file, options);
-                    _originalOptionsSignature = GetOptionsSignature(options);
-                }
+                using var file = File.CreateText(_optionsFilePath);
+
+                var serializer = new JsonSerializer { Formatting = Formatting.Indented };
+                serializer.Serialize(file, options);
+                _originalOptionsSignature = GetOptionsSignature(options);
             }
         }
 
@@ -111,10 +111,7 @@
                     result = ReadOptions();
                 }
 
-                if (result == null)
-                {
-                    result = new Options();
-                }
+                result ??= new Options();
 
                 // store the original settings so that we can determine if they have changed
                 // when we come to save them
@@ -136,16 +133,15 @@
                 return WriteDefaultOptions();
             }
 
-            using (var file = File.OpenText(_optionsFilePath))
-            {
-                var serializer = new JsonSerializer();
-                var result = (Options)serializer.Deserialize(file, typeof(Options));
-                result.Sanitize();
+            using var file = File.OpenText(_optionsFilePath);
 
-                SetCulture(result.Culture);
+            var serializer = new JsonSerializer();
+            var result = (Options)serializer.Deserialize(file, typeof(Options));
+            result?.Sanitize();
 
-                return result;
-            }
+            SetCulture(result?.Culture);
+
+            return result;
         }
 
         private Options WriteDefaultOptions()
@@ -157,7 +153,7 @@
             return result;
         }
 
-        private void SetCulture(string cultureString)
+        private static void SetCulture(string cultureString)
         {
             var culture = cultureString;
 

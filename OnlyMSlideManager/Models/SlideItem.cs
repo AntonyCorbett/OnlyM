@@ -1,10 +1,9 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using System;
+using System.Windows.Media;
 
 namespace OnlyMSlideManager.Models
 {
-    using System;
-    using System.Windows.Media;
-
     public sealed class SlideItem : ObservableObject
     {
         private bool _showCardBorder;
@@ -31,10 +30,8 @@ namespace OnlyMSlideManager.Models
             get => _fadeInForward;
             set
             {
-                if (_fadeInForward != value)
+                if (SetProperty(ref _fadeInForward, value))
                 {
-                    _fadeInForward = value;
-                    OnPropertyChanged();
                     OnSlideItemModifiedEvent();
                 }
             }
@@ -45,10 +42,8 @@ namespace OnlyMSlideManager.Models
             get => _fadeInReverse;
             set
             {
-                if (_fadeInReverse != value)
+                if (SetProperty(ref _fadeInReverse, value))
                 {
-                    _fadeInReverse = value;
-                    OnPropertyChanged();
                     OnSlideItemModifiedEvent();
                 }
             }
@@ -59,10 +54,8 @@ namespace OnlyMSlideManager.Models
             get => _fadeOutForward;
             set
             {
-                if (_fadeOutForward != value)
+                if (SetProperty(ref _fadeOutForward, value))
                 {
-                    _fadeOutForward = value;
-                    OnPropertyChanged();
                     OnSlideItemModifiedEvent();
                 }
             }
@@ -73,10 +66,8 @@ namespace OnlyMSlideManager.Models
             get => _fadeOutReverse;
             set
             {
-                if (_fadeOutReverse != value)
+                if (SetProperty(ref _fadeOutReverse, value))
                 {
-                    _fadeOutReverse = value;
-                    OnPropertyChanged();
                     OnSlideItemModifiedEvent();
                 }
             }
@@ -87,10 +78,8 @@ namespace OnlyMSlideManager.Models
             get => _dwellTimeSeconds;
             set
             {
-                if (_dwellTimeSeconds != value)
+                if (SetProperty(ref _dwellTimeSeconds, value))
                 {
-                    _dwellTimeSeconds = value;
-                    OnPropertyChanged();
                     OnSlideItemModifiedEvent();
                 }
             }
@@ -101,9 +90,8 @@ namespace OnlyMSlideManager.Models
             get => _showCardBorder;
             set
             {
-                if (_showCardBorder != value)
+                if (SetProperty(ref _showCardBorder, value))
                 {
-                    _showCardBorder = value;
                     OnPropertyChanged();
                 }
             }

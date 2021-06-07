@@ -1,8 +1,8 @@
-﻿namespace OnlyMSlideManager.Helpers
-{
-    using System;
-    using System.IO;
+﻿using System;
+using System.IO;
 
+namespace OnlyMSlideManager.Helpers
+{
     internal static class FileUtils
     {
         private static readonly string AppNamePathSegment = "OnlyMSlideManager";
@@ -26,24 +26,17 @@
         }
 
         public static string GetAppMyDocsFolder()
-        {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), AppNamePathSegment);
-        }
-
+            => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), AppNamePathSegment);
+        
         public static string GetPrivateSlideshowFolder()
         {
-            string folder = Path.Combine(GetAppMyDocsFolder(), @"Slideshows");
+            var folder = Path.Combine(GetAppMyDocsFolder(), "Slideshows");
             CreateDirectory(folder);
             return folder;
         }
 
-        public static string GetLogFolder()
-        {
-            return Path.Combine(
-                GetAppMyDocsFolder(),
-                "Logs");
-        }
-
+        public static string GetLogFolder() => Path.Combine(GetAppMyDocsFolder(), "Logs");
+        
         public static string GetUserOptionsFilePath(int optionsVersion)
         {
             return Path.Combine(
@@ -53,9 +46,6 @@
                 OptionsFileName);
         }
 
-        public static string GetUsersTempFolder()
-        {
-            return Path.GetTempPath();
-        }
+        public static string GetUsersTempFolder() => Path.GetTempPath();
     }
 }

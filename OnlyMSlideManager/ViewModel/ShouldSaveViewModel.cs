@@ -1,9 +1,8 @@
-﻿using Microsoft.Toolkit.Mvvm.Input;
+﻿using MaterialDesignThemes.Wpf;
+using Microsoft.Toolkit.Mvvm.Input;
 
 namespace OnlyMSlideManager.ViewModel
 {
-    using MaterialDesignThemes.Wpf;
-
     internal class ShouldSaveViewModel
     {
         public ShouldSaveViewModel()

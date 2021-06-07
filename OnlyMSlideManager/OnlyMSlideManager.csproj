@@ -81,4 +81,8 @@
     <Exec Command="copy &quot;$(ProjectDir)Properties\Resources.no-NO.resx&quot; &quot;$(ProjectDir)Properties\Resources.no.resx&quot;&#xD;&#xA;copy &quot;$(ProjectDir)Properties\Resources.pap-PAP.resx&quot; &quot;$(ProjectDir)Properties\Resources.pap.resx&quot;" />
   </Target>
 
+  <ItemGroup>
+    <None Remove="D:\ProjectsPersonal\OnlyM\.editorconfig" />
+  </ItemGroup>
+
 </Project>

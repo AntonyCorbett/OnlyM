@@ -1,40 +1,39 @@
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Shapes;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using OnlyM.CoreSys;
+using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.CoreSys.Services.UI;
+using OnlyM.Slides;
+using OnlyM.Slides.Models;
+using OnlyMSlideManager.Helpers;
+using OnlyMSlideManager.Models;
+using OnlyMSlideManager.PubSubMessages;
+using OnlyMSlideManager.Services;
+using OnlyMSlideManager.Services.DragAndDrop;
+using OnlyMSlideManager.Services.Options;
+using Serilog;
 
 namespace OnlyMSlideManager.ViewModel
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Input;
-    using System.Windows.Shapes;
-    using MaterialDesignThemes.Wpf;
-    using Microsoft.WindowsAPICodePack.Dialogs;
-    using OnlyM.CoreSys;
-    using OnlyM.CoreSys.Services.Snackbar;
-    using OnlyM.CoreSys.Services.UI;
-    using OnlyM.Slides;
-    using OnlyM.Slides.Models;
-    using OnlyMSlideManager.Helpers;
-    using OnlyMSlideManager.Models;
-    using OnlyMSlideManager.PubSubMessages;
-    using OnlyMSlideManager.Services;
-    using OnlyMSlideManager.Services.DragAndDrop;
-    using OnlyMSlideManager.Services.Options;
-    using Serilog;
-
     public class MainViewModel : ObservableObject
     {
-        private const string AppName = @"O N L Y M  Slide Manager";
+        private const string AppName = "O N L Y M  Slide Manager";
         private const int MaxImageWidth = 1920;
         private const int MaxImageHeight = 1080;
         private const int ThumbnailWidth = 192;
@@ -62,7 +61,7 @@ namespace OnlyMSlideManager.ViewModel
         private string _statusText;
 
         public MainViewModel(
-            IDialogService dialogService, 
+            IDialogService dialogService,
             IDragAndDropServiceCustom dragAndDropServiceCustom,
             ISnackbarService snackbarService,
             IUserInterfaceService userInterfaceService,
@@ -78,7 +77,7 @@ namespace OnlyMSlideManager.ViewModel
             AddDesignTimeItems();
 
             // init options so that UI locale is set
-            var dummy = _optionsService.Culture;
+            var _ = _optionsService.Culture;
 
             InitCommands();
             WeakReferenceMessenger.Default.Register<ReorderMessage>(this, OnReorderMessage);
@@ -93,58 +92,29 @@ namespace OnlyMSlideManager.ViewModel
 
             StatusText = GetStandardStatusText();
         }
-        
+
         public string StatusText
         {
             get => _statusText;
-            set
-            {
-                if (value != _statusText)
-                {
-                    _statusText = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _statusText, value);
         }
 
         public bool IsProgressVisible
         {
             get => _isProgressVisible;
-            set
-            {
-                if (_isProgressVisible != value)
-                {
-                    _isProgressVisible = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isProgressVisible, value);
         }
 
         public double ProgressPercentageValue
         {
             get => _progressPercentageValue;
-            set
-            {
-                // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (_progressPercentageValue != value)
-                {
-                    _progressPercentageValue = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _progressPercentageValue, value);
         }
 
         public SlideFileBuilder CurrentSlideFileBuilder
         {
             get => _currentSlideFileBuilder;
-            set
-            {
-                if (_currentSlideFileBuilder != value)
-                {
-                    _currentSlideFileBuilder = value;
-                    OnPropertyChanged();
-                }
-            }
+            set => SetProperty(ref _currentSlideFileBuilder, value);
         }
 
         public bool? AutoPlay
@@ -261,7 +231,7 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        public ObservableCollectionEx<SlideItem> SlideItems { get; } = new ObservableCollectionEx<SlideItem>();
+        public ObservableCollectionEx<SlideItem> SlideItems { get; } = new();
 
         public RelayCommand<string> DeleteSlideCommand { get; set; }
 
@@ -293,28 +263,18 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        public string MainWindowCaption
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(_currentSlideshowPath))
-                {
-                    return $"{System.IO.Path.GetFileNameWithoutExtension(_currentSlideshowPath)} - {AppName}";
-                }
-
-                return AppName;
-            }
-        }
-
+        public string MainWindowCaption =>
+                !string.IsNullOrEmpty(_currentSlideshowPath) 
+                    ? $"{System.IO.Path.GetFileNameWithoutExtension(_currentSlideshowPath)} - {AppName}" 
+                    : AppName;
+        
         public bool Busy
         {
             get => _busy;
             set
             {
-                if (_busy != value)
+                if (SetProperty(ref _busy, value))
                 {
-                    _busy = value;
-                    OnPropertyChanged();
                     OnPropertyChanged(nameof(IsNotBusy));
                 }
             }
@@ -354,11 +314,8 @@ namespace OnlyMSlideManager.ViewModel
             CancelClosingCommand = new RelayCommand(ExecuteCancelClosing);
         }
 
-        private bool CanDeleteSlide(string slideName)
-        {
-            return !Busy;
-        }
-
+        private bool CanDeleteSlide(string slideName) => !Busy;
+        
         private void DeleteSlide(string slideName)
         {
             var slide = GetSlideByName(slideName);
@@ -380,16 +337,10 @@ namespace OnlyMSlideManager.ViewModel
             return SlideItems.SingleOrDefault(x => slideName.Equals(x.Name, StringComparison.OrdinalIgnoreCase));
         }
 
-        private bool CanExecuteOpenFile()
-        {
-            return !Busy;
-        }
-
-        private bool CanExecuteNewFile()
-        {
-            return !Busy;
-        }
-
+        private bool CanExecuteOpenFile() => !Busy;
+        
+        private bool CanExecuteNewFile() => !Busy;
+        
         private bool CanExecuteSaveAsFile()
         {
             if (string.IsNullOrEmpty(_currentSlideshowPath))
@@ -417,7 +368,7 @@ namespace OnlyMSlideManager.ViewModel
                 d.OverwritePrompt = true;
                 d.AlwaysAppendDefaultExtension = true;
                 d.IsExpandedMode = true;
-                d.DefaultDirectory = _defaultFileSaveFolder ?? Helpers.FileUtils.GetPrivateSlideshowFolder();
+                d.DefaultDirectory = _defaultFileSaveFolder ?? FileUtils.GetPrivateSlideshowFolder();
                 d.DefaultExtension = SlideFile.FileExtension;
                 d.Filters.Add(new CommonFileDialogFilter(Properties.Resources.SLIDESHOW_FILE, $"*{SlideFile.FileExtension}"));
                 d.Title = Properties.Resources.SAVE_SLIDESHOW_TITLE;
@@ -428,7 +379,7 @@ namespace OnlyMSlideManager.ViewModel
                     _defaultFileSaveFolder = System.IO.Path.GetDirectoryName(d.FileName);
 
                     await SaveFileInternal(d.FileName, true);
-                    
+
                     await InitNewSlideshow(d.FileName);
                 }
             }
@@ -452,11 +403,11 @@ namespace OnlyMSlideManager.ViewModel
             {
                 if (string.IsNullOrEmpty(CurrentSlideshowPath))
                 {
-                    await SaveFileAs();
+                    await SaveFileAs().ConfigureAwait(false);
                 }
                 else
                 {
-                    await SaveFileInternal(CurrentSlideshowPath, true);
+                    await SaveFileInternal(CurrentSlideshowPath, true).ConfigureAwait(false);
                     SaveSignature();
                 }
             }
@@ -503,7 +454,7 @@ namespace OnlyMSlideManager.ViewModel
             if (IsDirty)
             {
                 var result = await _dialogService.ShouldSaveDirtyDataAsync().ConfigureAwait(true);
-                if (result == true)
+                if (result != null && result == true)
                 {
                     await SaveFileInternal(CurrentSlideshowPath, false);
                 }
@@ -515,7 +466,7 @@ namespace OnlyMSlideManager.ViewModel
 
             using (var d = new CommonOpenFileDialog())
             {
-                d.DefaultDirectory = _defaultFileOpenFolder ?? Helpers.FileUtils.GetPrivateSlideshowFolder();
+                d.DefaultDirectory = _defaultFileOpenFolder ?? FileUtils.GetPrivateSlideshowFolder();
                 d.DefaultExtension = SlideFile.FileExtension;
                 d.Filters.Add(new CommonFileDialogFilter(Properties.Resources.SLIDESHOW_FILE, $"*{SlideFile.FileExtension}"));
                 d.Title = Properties.Resources.OPEN_SLIDESHOW_TITLE;
@@ -538,18 +489,18 @@ namespace OnlyMSlideManager.ViewModel
 
                 if (_currentSlideFileBuilder != null)
                 {
-                    int batchSize = 10;
+                    const int batchSize = 10;
                     var batchHelper =
                         new SlideBuilderBatchHelper(_currentSlideFileBuilder.GetSlides().ToList(), batchSize);
 
-                    int batchCount = batchHelper.GetBatchCount();
-                    int batchesComplete = 0;
+                    var batchCount = batchHelper.GetBatchCount();
+                    var batchesComplete = 0;
 
                     var batch = batchHelper.GetBatch();
                     while (batch != null)
                     {
                         var thumbnails = await GenerateThumbnailsForBatch(batch, thumbnailCache);
-                        int slideIndex = 1;
+                        var slideIndex = 1;
 
                         foreach (var slide in batch)
                         {
@@ -559,7 +510,7 @@ namespace OnlyMSlideManager.ViewModel
                                 SlideItems.Add(slideItem);
                             }
                         }
-                        
+
                         ++batchesComplete;
 
                         onProgressPercentageChanged?.Invoke((batchesComplete * 100F) / batchCount);
@@ -593,7 +544,7 @@ namespace OnlyMSlideManager.ViewModel
             return result;
         }
 
-        private async Task<ConcurrentDictionary<Slide, byte[]>> GenerateThumbnailsForBatch(
+        private static async Task<ConcurrentDictionary<Slide, byte[]>> GenerateThumbnailsForBatch(
             IReadOnlyList<Slide> batch, Dictionary<string, byte[]> thumbnailCache)
         {
             var result = new ConcurrentDictionary<Slide, byte[]>();
@@ -629,7 +580,7 @@ namespace OnlyMSlideManager.ViewModel
                 FadeOutForward = slide.FadeOutForward,
                 FadeOutReverse = slide.FadeOutReverse,
                 DwellTimeSeconds = slide.DwellTimeMilliseconds == 0
-                    ? (int?)null
+                    ? null
                     : slide.DwellTimeMilliseconds / 1000,
                 DropZoneId = Guid.NewGuid().ToString(),
                 SlideIndex = slideIndex,
@@ -642,29 +593,33 @@ namespace OnlyMSlideManager.ViewModel
 
         private void HandleSlideItemModifiedEvent(object sender, EventArgs e)
         {
-            if (sender is SlideItem item)
+            if (sender is not SlideItem item)
             {
-                var slide = _currentSlideFileBuilder.GetSlide(item.Name);
-                if (slide != null)
-                {
-                    slide.FadeInForward = item.FadeInForward;
-                    slide.FadeInReverse = item.FadeInReverse;
-                    slide.FadeOutForward = item.FadeOutForward;
-                    slide.FadeOutReverse = item.FadeOutReverse;
-
-                    if (item.DwellTimeSeconds == null)
-                    {
-                        slide.DwellTimeMilliseconds = 0;
-                    }
-                    else
-                    {
-                        slide.DwellTimeMilliseconds = item.DwellTimeSeconds.Value * 1000;
-                    }
-
-                    OnPropertyChanged(nameof(IsDirty));
-                    CommandManager.InvalidateRequerySuggested();
-                }
+                return;
             }
+
+            var slide = _currentSlideFileBuilder.GetSlide(item.Name);
+            if (slide == null)
+            {
+                return;
+            }
+
+            slide.FadeInForward = item.FadeInForward;
+            slide.FadeInReverse = item.FadeInReverse;
+            slide.FadeOutForward = item.FadeOutForward;
+            slide.FadeOutReverse = item.FadeOutReverse;
+
+            if (item.DwellTimeSeconds == null)
+            {
+                slide.DwellTimeMilliseconds = 0;
+            }
+            else
+            {
+                slide.DwellTimeMilliseconds = item.DwellTimeSeconds.Value * 1000;
+            }
+
+            OnPropertyChanged(nameof(IsDirty));
+            CommandManager.InvalidateRequerySuggested();
         }
 
         private void AddEndMarker()
@@ -679,7 +634,7 @@ namespace OnlyMSlideManager.ViewModel
         {
             if (IsDirty)
             {
-                bool? result = await _dialogService.ShouldSaveDirtyDataAsync().ConfigureAwait(true);
+                var result = await _dialogService.ShouldSaveDirtyDataAsync().ConfigureAwait(true);
                 switch (result)
                 {
                     case true:
@@ -694,7 +649,7 @@ namespace OnlyMSlideManager.ViewModel
             await InitNewSlideshow(null);
         }
 
-        private async Task LoadShow(string path, SlideFileBuilder builder)
+        private static async Task LoadShow(string path, SlideFileBuilder builder)
         {
             await Task.Run(() =>
             {
@@ -773,7 +728,7 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private void HandleBuildProgressEvent(object sender, OnlyM.Slides.Models.BuildProgressEventArgs e)
+        private void HandleBuildProgressEvent(object sender, BuildProgressEventArgs e)
         {
             ProgressPercentageValue = e.PercentageComplete;
         }
@@ -809,7 +764,7 @@ namespace OnlyMSlideManager.ViewModel
         {
             var newOrder = new List<SlideItem>();
 
-            int slideIndex = 1;
+            var slideIndex = 1;
 
             foreach (var slide in SlideItems)
             {
@@ -846,10 +801,12 @@ namespace OnlyMSlideManager.ViewModel
 
         private void ExecuteClosed()
         {
+            // hook if needed
         }
 
         private void ExecuteClosing()
         {
+            // hook if needed
         }
 
         private bool CanExecuteClosing()
@@ -865,7 +822,7 @@ namespace OnlyMSlideManager.ViewModel
             }
 
             var rv = await _dialogService.ShouldSaveDirtyDataAsync().ConfigureAwait(true);
-            if (rv == true)
+            if (rv != null && rv == true)
             {
                 await SaveFile();
             }
@@ -900,7 +857,7 @@ namespace OnlyMSlideManager.ViewModel
                     {
                         IsProgressVisible = fileList.Count > 4;
                         var fileCount = AddImages(fileList, targetDropZoneId);
-                        await GenerateSlideItems((value) => { ProgressPercentageValue = value; });
+                        await GenerateSlideItems(value => ProgressPercentageValue = value);
 
                         switch (fileCount)
                         {
@@ -934,29 +891,24 @@ namespace OnlyMSlideManager.ViewModel
         private int AddImages(List<string> files, string messageTargetId)
         {
             var count = 0;
-            if (CurrentSlideFileBuilder != null)
+            if (CurrentSlideFileBuilder == null)
             {
-                var dropTargetSlide = SlideItems.SingleOrDefault(x => x.DropZoneId == messageTargetId);
-                var dropTargetSlideIndex = SlideItems.IndexOf(dropTargetSlide);
-
-                foreach (var file in files)
-                {
-                    CurrentSlideFileBuilder.InsertSlide(
-                        dropTargetSlideIndex++,
-                        file,
-                        true,
-                        true,
-                        true,
-                        true);
-
-                    ++count;
-                }
+                return count;
             }
-            
+
+            var dropTargetSlide = SlideItems.SingleOrDefault(x => x.DropZoneId == messageTargetId);
+            var dropTargetSlideIndex = SlideItems.IndexOf(dropTargetSlide);
+
+            foreach (var file in files)
+            {
+                CurrentSlideFileBuilder.InsertSlide(dropTargetSlideIndex++, file, true, true, true, true);
+                ++count;
+            }
+
             return count;
         }
 
-        private LanguageItem[] GetSupportedLanguages()
+        private static LanguageItem[] GetSupportedLanguages()
         {
             var result = new List<LanguageItem>();
 
@@ -983,15 +935,13 @@ namespace OnlyMSlideManager.ViewModel
             }
 
             // the native language
+            var cNative = new CultureInfo(System.IO.Path.GetFileNameWithoutExtension("en-GB"));
+            result.Add(new LanguageItem
             {
-                var c = new CultureInfo(System.IO.Path.GetFileNameWithoutExtension("en-GB"));
-                result.Add(new LanguageItem
-                {
-                    LanguageId = c.Name,
-                    LanguageName = c.EnglishName,
-                });
-            }
-
+                LanguageId = cNative.Name,
+                LanguageName = cNative.EnglishName,
+            });
+            
             result.Sort((x, y) => string.Compare(x.LanguageName, y.LanguageName, StringComparison.Ordinal));
 
             return result.ToArray();
@@ -1013,7 +963,7 @@ namespace OnlyMSlideManager.ViewModel
 #endif
         }
 
-        private class StatusTextWriter : IDisposable
+        private sealed class StatusTextWriter : IDisposable
         {
             private readonly MainViewModel _vm;
 

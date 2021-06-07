@@ -1,7 +1,7 @@
-﻿namespace OnlyMSlideManager.Services.Options
-{
-    using Serilog.Events;
+﻿using Serilog.Events;
 
+namespace OnlyMSlideManager.Services.Options
+{
     public sealed class Options
     {
         public Options()
@@ -20,6 +20,7 @@
 
         public void Sanitize()
         {
+            // add any model cleanup here
         }
     }
 }

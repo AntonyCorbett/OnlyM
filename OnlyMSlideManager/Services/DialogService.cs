@@ -1,10 +1,10 @@
-﻿namespace OnlyMSlideManager.Services
-{
-    using System.Threading.Tasks;
-    using MaterialDesignThemes.Wpf;
-    using OnlyMSlideManager.Dialogs;
-    using OnlyMSlideManager.ViewModel;
+﻿using System.Threading.Tasks;
+using MaterialDesignThemes.Wpf;
+using OnlyMSlideManager.Dialogs;
+using OnlyMSlideManager.ViewModel;
 
+namespace OnlyMSlideManager.Services
+{
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class DialogService : IDialogService
     {
@@ -20,7 +20,7 @@
             // dirty data.
             await DialogHost.Show(
                     dialog,
-                    (object sender, DialogClosingEventArgs args) => { _isDialogVisible = false; })
+                    (object sender, DialogClosingEventArgs args) => _isDialogVisible = false)
                 .ConfigureAwait(false);
 
             return dc.Result;

@@ -1,9 +1,9 @@
-﻿namespace OnlyMSlideManager.Helpers
-{
-    using System;
-    using System.Collections.Generic;
-    using OnlyM.Slides.Models;
+﻿using System;
+using System.Collections.Generic;
+using OnlyM.Slides.Models;
 
+namespace OnlyMSlideManager.Helpers
+{
     internal class SlideBuilderBatchHelper
     {
         private readonly IReadOnlyList<Slide> _slides;
