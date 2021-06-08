@@ -357,7 +357,8 @@ namespace OnlyM.Windows
             var vm = (MediaViewModel)DataContext;
             vm.IsWebPage = !mediaItem.IsPdf;
 
-            var showMirrorWindow = mediaItem.UseMirror && mediaItem.AllowUseMirror;
+            // mirror will only work if the media window is full-screen (rather than windowed)
+            var showMirrorWindow = mediaItem.UseMirror && mediaItem.AllowUseMirror && !IsWindowed;
 
             int.TryParse(mediaItem.ChosenPdfPage, out var pdfStartingPage);
 

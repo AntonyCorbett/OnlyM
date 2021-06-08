@@ -160,7 +160,7 @@ namespace OnlyM.Services
 
             if (onlyMMonitor?.MonitorId == null || mediaMonitor?.MonitorId == null)
             {
-                Log.Logger.Debug("Cannot get monitor");
+                Log.Logger.Error("Cannot get monitor - unable to display mirror");
                 return;
             }
 
