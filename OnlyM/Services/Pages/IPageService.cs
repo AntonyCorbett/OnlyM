@@ -48,7 +48,7 @@ namespace OnlyM.Services.Pages
 
         void GotoSettingsPage();
 
-        FrameworkElement GetPage(string pageName);
+        FrameworkElement? GetPage(string? pageName);
         
         Task StartMedia(MediaItem mediaItemToStart, IReadOnlyCollection<MediaItem>? currentMediaItems, bool startFromPaused);
 

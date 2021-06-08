@@ -6,6 +6,6 @@ namespace OnlyM.Services.StartOffsetStorage
     {
         IReadOnlyCollection<int> ReadOffsets(string mediaFileName, int mediaDurationSeconds);
 
-        void Store(string mediaFileName, int mediaDurationSeconds, IReadOnlyCollection<int> recentTimes);
+        void Store(string mediaFileName, int mediaDurationSeconds, IReadOnlyCollection<int>? recentTimes);
     }
 }

@@ -51,7 +51,7 @@ namespace OnlyM.Services.DragAndDrop
             }
         }
 
-        private void HandleDragOver(object sender, DragEventArgs e)
+        private void HandleDragOver(object? sender, DragEventArgs e)
         {
             SetEffects(e);
             e.Handled = true;
@@ -69,7 +69,7 @@ namespace OnlyM.Services.DragAndDrop
             }
         }
 
-        private void HandleDrop(object sender, DragEventArgs e)
+        private void HandleDrop(object? sender, DragEventArgs e)
         {
             if (e.Data != null)
             {
@@ -77,7 +77,7 @@ namespace OnlyM.Services.DragAndDrop
             }
         }
 
-        private void HandleDragEnter(object sender, DragEventArgs e)
+        private void HandleDragEnter(object? sender, DragEventArgs e)
         {
             // do we allow drop of drag object?
             _canDrop = CanDropOrPasteFiles(e.Data) || CanDropOrPasteUris(e.Data);

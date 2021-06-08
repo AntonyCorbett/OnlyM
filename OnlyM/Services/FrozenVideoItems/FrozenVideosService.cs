@@ -5,19 +5,22 @@ namespace OnlyM.Services.FrozenVideoItems
 {
     internal class FrozenVideosService : IFrozenVideosService
     {
-        private readonly HashSet<string> _frozenItems = new HashSet<string>();
+        private readonly HashSet<string> _frozenItems = new();
 
         public void Init(IEnumerable<MediaItem> items)
         {
             foreach (var item in items)
             {
-                if (item.PauseOnLastFrame)
+                if (item.FilePath != null)
                 {
-                    _frozenItems.Add(item.FilePath);
-                }
-                else if (_frozenItems.Contains(item.FilePath))
-                {
-                    item.PauseOnLastFrame = true;
+                    if (item.PauseOnLastFrame)
+                    {
+                        _frozenItems.Add(item.FilePath);
+                    }
+                    else if (_frozenItems.Contains(item.FilePath))
+                    {
+                        item.PauseOnLastFrame = true;
+                    }
                 }
             }
         }

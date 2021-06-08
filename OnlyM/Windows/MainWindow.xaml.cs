@@ -23,7 +23,10 @@ namespace OnlyM.Windows
             InitializeComponent();
 
             var pageService = Ioc.Default.GetService<IPageService>();
-            pageService.ScrollViewer = MainScrollViewer;
+            if (pageService != null)
+            {
+                pageService.ScrollViewer = MainScrollViewer;
+            }
         }
 
         protected override void OnSourceInitialized(System.EventArgs e)
@@ -31,14 +34,19 @@ namespace OnlyM.Windows
             AdjustMainWindowPositionAndSize();
         }
 
-        private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void WindowClosing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             var activeMediaService = Ioc.Default.GetService<IActiveMediaItemsService>();
+            if (activeMediaService == null)
+            {
+                return;
+            }
+
             if (activeMediaService.Any())
             {
                 // prevent app closing when media is active.
                 var snackbarService = Ioc.Default.GetService<ISnackbarService>();
-                snackbarService.EnqueueWithOk(Properties.Resources.MEDIA_ACTIVE, Properties.Resources.OK);
+                snackbarService?.EnqueueWithOk(Properties.Resources.MEDIA_ACTIVE, Properties.Resources.OK);
                 e.Cancel = true;
             }
             else
@@ -51,7 +59,7 @@ namespace OnlyM.Windows
         private void AdjustMainWindowPositionAndSize()
         {
             var optionsService = Ioc.Default.GetService<IOptionsService>();
-            if (!string.IsNullOrEmpty(optionsService.AppWindowPlacement))
+            if (!string.IsNullOrEmpty(optionsService?.AppWindowPlacement))
             {
                 ResizeMode = WindowState == WindowState.Maximized
                     ? ResizeMode.NoResize
@@ -64,15 +72,21 @@ namespace OnlyM.Windows
         private void SaveWindowPos()
         {
             var optionsService = Ioc.Default.GetService<IOptionsService>();
-            optionsService.AppWindowPlacement = this.GetPlacement();
-            optionsService.Save();
+            if (optionsService != null)
+            {
+                optionsService.AppWindowPlacement = this.GetPlacement();
+                optionsService.Save();
+            }
         }
 
-        private void OnPaste(object sender, ExecutedRoutedEventArgs e)
+        private void OnPaste(object? sender, ExecutedRoutedEventArgs e)
         {
             var dragAndDropService = Ioc.Default.GetService<IDragAndDropService>();
-            dragAndDropService.Paste();
-            e.Handled = true;
+            if (dragAndDropService != null)
+            {
+                dragAndDropService.Paste();
+                e.Handled = true;
+            }
         }
     }
 }

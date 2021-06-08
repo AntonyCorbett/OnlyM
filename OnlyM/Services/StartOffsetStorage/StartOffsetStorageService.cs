@@ -16,7 +16,7 @@ namespace OnlyM.Services.StartOffsetStorage
 
         public IReadOnlyCollection<int> ReadOffsets(string mediaFileName, int mediaDurationSeconds)
         {
-            MediaStartOffsetData data = null;
+            MediaStartOffsetData? data = null;
 
             try
             {
@@ -55,7 +55,7 @@ namespace OnlyM.Services.StartOffsetStorage
             return result;
         }
 
-        public void Store(string mediaFileName, int mediaDurationSeconds, IReadOnlyCollection<int> recentTimes)
+        public void Store(string mediaFileName, int mediaDurationSeconds, IReadOnlyCollection<int>? recentTimes)
         {
             try
             {

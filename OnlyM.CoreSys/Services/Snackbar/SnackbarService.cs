@@ -14,7 +14,7 @@ namespace OnlyM.CoreSys.Services.Snackbar
             object content,
             object actionContent,
             Action<object?> actionHandler,
-            object actionArgument,
+            object? actionArgument,
             bool promote,
             bool neverConsiderToBeDuplicate)
         {

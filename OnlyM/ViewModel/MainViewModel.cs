@@ -39,8 +39,8 @@ namespace OnlyM.ViewModel
 
         private bool _isBusy;
         private bool _isMediaListLoading;
-        private string _currentPageName;
-        private FrameworkElement _currentPage;
+        private string? _currentPageName;
+        private FrameworkElement? _currentPage;
         private bool _newVersionAvailable;
         private bool _isMediaListEmpty = true;
 
@@ -101,17 +101,17 @@ namespace OnlyM.ViewModel
         }
 
         // commands...
-        public RelayCommand GotoSettingsCommand { get; set; }
+        public RelayCommand GotoSettingsCommand { get; set; } = null!;
 
-        public RelayCommand GotoOperatorCommand { get; set; }
+        public RelayCommand GotoOperatorCommand { get; set; } = null!;
 
-        public RelayCommand LaunchMediaFolderCommand { get; set; }
+        public RelayCommand LaunchMediaFolderCommand { get; set; } = null!;
 
-        public RelayCommand LaunchHelpPageCommand { get; set; }
+        public RelayCommand LaunchHelpPageCommand { get; set; } = null!;
 
-        public RelayCommand LaunchReleasePageCommand { get; set; }
+        public RelayCommand LaunchReleasePageCommand { get; set; } = null!;
 
-        public RelayCommand UnhideCommand { get; set; }
+        public RelayCommand UnhideCommand { get; set; } = null!;
 
         public ISnackbarMessageQueue TheSnackbarMessageQueue => _snackbarService.TheSnackbarMessageQueue;
 
@@ -119,9 +119,9 @@ namespace OnlyM.ViewModel
 
         public bool AlwaysOnTop => _optionsService.AlwaysOnTop || _pageService.IsMediaWindowVisible;
 
-        public bool IsSettingsPageActive => _currentPageName.Equals(_pageService.SettingsPageName);
+        public bool IsSettingsPageActive => _currentPageName != null && _currentPageName.Equals(_pageService.SettingsPageName);
 
-        public bool IsOperatorPageActive => _currentPageName.Equals(_pageService.OperatorPageName);
+        public bool IsOperatorPageActive => _currentPageName != null && _currentPageName.Equals(_pageService.OperatorPageName);
 
         public bool IsSettingsEnabled => !_commandLineService.NoSettings;
 
@@ -173,7 +173,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        public FrameworkElement CurrentPage
+        public FrameworkElement? CurrentPage
         {
             get => _currentPage;
             set
@@ -203,18 +203,18 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void OnMediaListUpdating(object sender, MediaListUpdatingMessage message)
+        private void OnMediaListUpdating(object? sender, MediaListUpdatingMessage message)
         {
             IsMediaListLoading = true;
         }
 
-        private void OnMediaListUpdated(object sender, MediaListUpdatedMessage message)
+        private void OnMediaListUpdated(object? sender, MediaListUpdatedMessage message)
         {
             IsMediaListLoading = false;
             IsMediaListEmpty = message.Count == 0;
         }
 
-        private void HandleMediaWindowVisibilityChangedEvent(object sender, WindowVisibilityChangedEventArgs e)
+        private void HandleMediaWindowVisibilityChangedEvent(object? sender, WindowVisibilityChangedEventArgs e)
         {
             if (e.Visible)
             {
@@ -224,12 +224,12 @@ namespace OnlyM.ViewModel
             OnPropertyChanged(nameof(AlwaysOnTop));
         }
 
-        private void HandleAlwaysOnTopChangedEvent(object sender, EventArgs e)
+        private void HandleAlwaysOnTopChangedEvent(object? sender, EventArgs e)
         {
             OnPropertyChanged(nameof(AlwaysOnTop));
         }
 
-        private void HandlePageNavigationEvent(object sender, NavigationEventArgs e)
+        private void HandlePageNavigationEvent(object? sender, NavigationEventArgs e)
         {
             _currentPageName = e.PageName;
             CurrentPage = _pageService.GetPage(e.PageName);
@@ -237,7 +237,7 @@ namespace OnlyM.ViewModel
             OnPropertyChanged(nameof(IsUnhideButtonVisible));
         }
 
-        private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
+        private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e)
         {
             OnPropertyChanged(nameof(AlwaysOnTop));
         }
@@ -395,12 +395,12 @@ namespace OnlyM.ViewModel
             return renderingTier == 0;
         }
 
-        private void HandleCopyingFilesProgressEvent(object sender, FilesCopyProgressEventArgs e)
+        private void HandleCopyingFilesProgressEvent(object? sender, FilesCopyProgressEventArgs e)
         {
             IsBusy = e.Status == FileCopyStatus.StartingCopy;
         }
 
-        private void HandleHiddenItemsChangedEvent(object sender, EventArgs e)
+        private void HandleHiddenItemsChangedEvent(object? sender, EventArgs e)
         {
             OnPropertyChanged(nameof(IsUnhideButtonVisible));
         }

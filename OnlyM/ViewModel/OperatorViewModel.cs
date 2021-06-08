@@ -171,7 +171,7 @@ namespace OnlyM.ViewModel
 
         private void HandleNavigationEvent(object? sender, NavigationEventArgs e)
         {
-            if (!e.PageName.Equals(_pageService.OperatorPageName))
+            if (e.PageName == null || !e.PageName.Equals(_pageService.OperatorPageName))
             {
                 return;
             }
@@ -306,7 +306,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void OnShutDown(object sender, ShutDownMessage message)
+        private void OnShutDown(object? sender, ShutDownMessage message)
         {
             // cancel the thumbnail consumer thread.
             _metaDataCancellationTokenSource.Cancel();
@@ -330,6 +330,10 @@ namespace OnlyM.ViewModel
         private void HandleItemCompletedEvent(object? sender, ItemMetaDataPopulatedEventArgs e)
         {
             var item = e.MediaItem;
+            if (item == null)
+            {
+                return;
+            }
             
             if (_optionsService.AutoRotateImages)
             {
@@ -1146,7 +1150,7 @@ namespace OnlyM.ViewModel
             });
         }
 
-        private void OnSubtitleFileActivity(object sender, SubtitleFileMessage message)
+        private void OnSubtitleFileActivity(object? sender, SubtitleFileMessage message)
         {
             if (message.Starting)
             {

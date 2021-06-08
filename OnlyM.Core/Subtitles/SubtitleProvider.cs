@@ -13,7 +13,7 @@ namespace OnlyM.Core.Subtitles
         private SubtitleStatus _currentStatus;
         private bool _stopped;
 
-        public SubtitleProvider(string srtFilePath, TimeSpan videoPlayHead)
+        public SubtitleProvider(string? srtFilePath, TimeSpan videoPlayHead)
         {
             if (!string.IsNullOrEmpty(srtFilePath))
             {

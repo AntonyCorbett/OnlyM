@@ -129,8 +129,13 @@ namespace OnlyM.Services.Pages
             OnNavigationEvent(new NavigationEventArgs { PageName = SettingsPageName });
         }
 
-        public FrameworkElement GetPage(string pageName)
+        public FrameworkElement? GetPage(string? pageName)
         {
+            if (pageName == null)
+            {
+                return null;
+            }
+
             if (pageName.Equals(OperatorPageName))
             {
                 return _operatorPage.Value;
@@ -255,8 +260,13 @@ namespace OnlyM.Services.Pages
             SetScrollerPosition(e.PageName);
         }
 
-        private void SetScrollerPosition(string pageName)
+        private void SetScrollerPosition(string? pageName)
         {
+            if (pageName == null)
+            {
+                return;
+            }
+
             if (pageName.Equals(OperatorPageName))
             {
                 ScrollViewer?.ScrollToVerticalOffset(_operatorPageScrollerPosition);
@@ -267,7 +277,7 @@ namespace OnlyM.Services.Pages
             }
         }
 
-        private void OnShutDown(object sender, ShutDownMessage message)
+        private void OnShutDown(object? sender, ShutDownMessage message)
         {
             ApplicationIsClosing = true;
             CloseMediaWindow();
@@ -343,7 +353,7 @@ namespace OnlyM.Services.Pages
             WebStatusEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaWindowVisibility(object sender, DependencyPropertyChangedEventArgs e)
+        private void HandleMediaWindowVisibility(object? sender, DependencyPropertyChangedEventArgs e)
         {
             CheckMediaWindow();
             MediaWindowVisibilityChanged?.Invoke(this, new WindowVisibilityChangedEventArgs { Visible = _mediaWindow!.Visibility == Visibility.Visible });
@@ -532,7 +542,7 @@ namespace OnlyM.Services.Pages
             _mediaWindow?.UpdateRenderingMethod();
         }
 
-        private void OnMirrorWindowMessage(object sender, MirrorWindowMessage msg)
+        private void OnMirrorWindowMessage(object? sender, MirrorWindowMessage msg)
         {
             if (_activeMediaItemsService.Exists(msg.MediaItemId))
             {

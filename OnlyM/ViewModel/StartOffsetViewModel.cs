@@ -19,14 +19,14 @@ namespace OnlyM.ViewModel
         private static readonly SolidColorBrush GreenBrush = new(Colors.DarkGreen);
 
         private readonly IStartOffsetStorageService _startOffsetStorageService;
-        private List<int> _recentTimes;
+        private List<int>? _recentTimes;
 
         private int _chosenHours;
         private int _chosenMinutes;
         private int _chosenSeconds;
 
         private TimeSpan _maxStartTime;
-        private string _mediaFileName;
+        private string? _mediaFileName;
         private int _mediaDurationSeconds;
 
         public StartOffsetViewModel(IStartOffsetStorageService startOffsetStorageService)
@@ -195,12 +195,16 @@ namespace OnlyM.ViewModel
 
         private void StoreRecentTimes(int newlyEnteredTimeSeconds)
         {
-            if (newlyEnteredTimeSeconds == 0)
+            if (newlyEnteredTimeSeconds == 0 || _mediaFileName == null)
             {
                 return;
             }
 
-            var recentTimes = new List<int>(_recentTimes);
+            var recentTimes = new List<int>();
+            if (_recentTimes != null)
+            {
+                recentTimes.AddRange(_recentTimes);
+            }
 
             if (!recentTimes.Contains(newlyEnteredTimeSeconds))
             {
@@ -220,6 +224,11 @@ namespace OnlyM.ViewModel
 
         private void ClearRecentsList()
         {
+            if (_mediaFileName == null)
+            {
+                return;
+            }
+
             _startOffsetStorageService.Store(_mediaFileName, _mediaDurationSeconds, null);
             _recentTimes = _startOffsetStorageService.ReadOffsets(_mediaFileName, _mediaDurationSeconds).ToList();
 
@@ -229,12 +238,12 @@ namespace OnlyM.ViewModel
 
         private void RemoveRecentTime(int? timeSeconds)
         {
-            if (timeSeconds == null)
+            if (timeSeconds == null || _mediaFileName == null)
             {
                 return;
             }
 
-            _recentTimes.Remove(timeSeconds.Value);
+            _recentTimes?.Remove(timeSeconds.Value);
 
             _startOffsetStorageService.Store(_mediaFileName, _mediaDurationSeconds, _recentTimes);
 

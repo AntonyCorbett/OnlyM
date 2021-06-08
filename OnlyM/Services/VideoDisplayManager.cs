@@ -28,8 +28,8 @@ namespace OnlyM.Services
         private TimeSpan _lastPosition = TimeSpan.Zero;
         private bool _manuallySettingPlaybackPosition;
         private bool _firedNearEndEvent;
-        private SubtitleProvider _subTitleProvider;
-        private string _mediaItemFilePath;
+        private SubtitleProvider? _subTitleProvider;
+        private string? _mediaItemFilePath;
 
         public VideoDisplayManager(IMediaElement mediaElement, TextBlock subtitleBlock, IOptionsService optionsService)
         {
@@ -41,13 +41,13 @@ namespace OnlyM.Services
             SubscribeEvents();
         }
 
-        public event EventHandler<MediaEventArgs> MediaChangeEvent;
+        public event EventHandler<MediaEventArgs>? MediaChangeEvent;
 
-        public event EventHandler<OnlyMPositionChangedEventArgs> MediaPositionChangedEvent;
+        public event EventHandler<OnlyMPositionChangedEventArgs>? MediaPositionChangedEvent;
 
-        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
+        public event EventHandler<MediaNearEndEventArgs>? MediaNearEndEvent;
 
-        public event EventHandler<SubtitleEventArgs> SubtitleEvent;
+        public event EventHandler<SubtitleEventArgs>? SubtitleEvent;
         
         public bool ShowSubtitles { get; set; }
 
@@ -146,7 +146,7 @@ namespace OnlyM.Services
             MediaChangeEvent?.Invoke(this, e);
         }
 
-        private async void HandleMediaOpened(object sender, OnlyMMediaOpenedEventArgs e)
+        private async void HandleMediaOpened(object? sender, OnlyMMediaOpenedEventArgs e)
         {
             Log.Logger.Information("Opened");
 
@@ -158,7 +158,7 @@ namespace OnlyM.Services
             await CreateSubtitleProvider(_mediaItemFilePath, _startPosition);
         }
 
-        private void HandleMediaClosed(object sender, OnlyMMediaClosedEventArgs e)
+        private void HandleMediaClosed(object? sender, OnlyMMediaClosedEventArgs e)
         {
             Log.Logger.Debug("Media closed");
 
@@ -167,7 +167,7 @@ namespace OnlyM.Services
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
         }
 
-        private async void HandleMediaEnded(object sender, OnlyMMediaEndedEventArgs e)
+        private async void HandleMediaEnded(object? sender, OnlyMMediaEndedEventArgs e)
         {
             Log.Logger.Debug("Media ended");
 
@@ -178,13 +178,13 @@ namespace OnlyM.Services
             }
         }
 
-        private void HandleMediaFailed(object sender, OnlyMMediaFailedEventArgs e)
+        private void HandleMediaFailed(object? sender, OnlyMMediaFailedEventArgs e)
         {
             Log.Logger.Debug("Media failed");
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
         }
 
-        private void HandlePositionChanged(object sender, OnlyMPositionChangedEventArgs e)
+        private void HandlePositionChanged(object? sender, OnlyMPositionChangedEventArgs e)
         {
             if (!_manuallySettingPlaybackPosition && (e.Position - _lastPosition).TotalMilliseconds > 60)
             {
@@ -202,12 +202,12 @@ namespace OnlyM.Services
             }
         }
 
-        private void HandleRenderingSubtitles(object sender, OnlyMRenderSubtitlesEventArgs e)
+        private void HandleRenderingSubtitles(object? sender, OnlyMRenderSubtitlesEventArgs e)
         {
             e.Cancel = !ShowSubtitles;
         }
 
-        private void HandleMediaElementMessageLogged(object sender, OnlyMLogMessageEventArgs e)
+        private void HandleMediaElementMessageLogged(object? sender, OnlyMLogMessageEventArgs e)
         {
             switch (e.Level)
             {
@@ -243,7 +243,7 @@ namespace OnlyM.Services
             };
         }
 
-        private void HandleSubtitleEvent(object sender, SubtitleEventArgs e)
+        private void HandleSubtitleEvent(object? sender, SubtitleEventArgs e)
         {
             // only used in MediaFoundation as the other engines have their own
             // internal subtitle processing...
@@ -253,7 +253,7 @@ namespace OnlyM.Services
             }
         }
 
-        private Task<string> CreateSubtitleFile(string mediaItemFilePath)
+        private Task<string?> CreateSubtitleFile(string mediaItemFilePath)
         {
             return Task.Run(() =>
             {
@@ -267,7 +267,7 @@ namespace OnlyM.Services
             });
         }
 
-        private async Task CreateSubtitleProvider(string mediaItemFilePath, TimeSpan videoHeadPosition)
+        private async Task CreateSubtitleProvider(string? mediaItemFilePath, TimeSpan videoHeadPosition)
         {
             if (_subTitleProvider != null)
             {
@@ -276,6 +276,7 @@ namespace OnlyM.Services
             }
 
             if (_mediaElement is MediaElementMediaFoundation &&
+                mediaItemFilePath != null &&
                 _optionsService.ShowVideoSubtitles)
             {
                 // accommodate any latency introduced by creation of srt file
@@ -289,7 +290,7 @@ namespace OnlyM.Services
             }
         }
 
-        private void HandleSubtitleFileEvent(object sender, SubtitleFileEventArgs e)
+        private void HandleSubtitleFileEvent(object? sender, SubtitleFileEventArgs e)
         {
             WeakReferenceMessenger.Default.Send(new SubtitleFileMessage { MediaItemId = e.MediaItemId, Starting = e.Starting });
         }

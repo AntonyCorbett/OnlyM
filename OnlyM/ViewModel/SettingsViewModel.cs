@@ -872,7 +872,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void OnShutDown(object sender, ShutDownMessage obj)
+        private void OnShutDown(object? sender, ShutDownMessage obj)
         {
             _optionsService.RecentlyUsedMediaFolders = _recentlyUsedMediaFolders.GetFolders().ToList();
             _optionsService.Save();
@@ -997,7 +997,7 @@ namespace OnlyM.ViewModel
 
         private void HandleNavigationEvent(object? sender, NavigationEventArgs e)
         {
-            if (e.PageName.Equals(_pageService.SettingsPageName))
+            if (e.PageName != null && e.PageName.Equals(_pageService.SettingsPageName))
             {
                 // when Settings page is shown.
                 IsMediaActive = _activeMediaItemsService.Any();

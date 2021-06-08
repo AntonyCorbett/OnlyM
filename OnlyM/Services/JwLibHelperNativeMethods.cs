@@ -14,7 +14,7 @@ namespace OnlyM.Services
             IntPtr hwndParent,
             IntPtr hwndChildAfter,
             string lpszClass,
-            string lpszWindow);
+            string? lpszWindow);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);

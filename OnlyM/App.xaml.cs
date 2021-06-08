@@ -38,7 +38,7 @@ namespace OnlyM
     {
         private readonly string _appString = "OnlyMMeetingMedia";
         private readonly bool _successCefSharp;
-        private Mutex _appMutex;
+        private Mutex? _appMutex;
 
         public App()
         {
@@ -178,7 +178,7 @@ namespace OnlyM
             return Cef.Initialize(settings);
         }
 
-        private void CurrentDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        private void CurrentDispatcherUnhandledException(object? sender, DispatcherUnhandledExceptionEventArgs e)
         {
             // unhandled exceptions thrown from UI thread
             e.Handled = true;

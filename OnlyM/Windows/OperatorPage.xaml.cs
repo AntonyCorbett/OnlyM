@@ -22,17 +22,17 @@ namespace OnlyM.Windows
             dragAndDropService?.Init(this);
         }
 
-        private void MirrorCheckBoxChecked(object sender, RoutedEventArgs e)
+        private void MirrorCheckBoxChecked(object? sender, RoutedEventArgs e)
         {
             HandleMirrorCheckBoxChanged(sender, true);
         }
 
-        private void MirrorCheckBoxUnchecked(object sender, RoutedEventArgs e)
+        private void MirrorCheckBoxUnchecked(object? sender, RoutedEventArgs e)
         {
             HandleMirrorCheckBoxChanged(sender, false);
         }
 
-        private static void HandleMirrorCheckBoxChanged(object sender, bool isChecked)
+        private static void HandleMirrorCheckBoxChanged(object? sender, bool isChecked)
         {
             if (sender is CheckBox cb)
             {
@@ -41,7 +41,7 @@ namespace OnlyM.Windows
             }
         }
 
-        private void OnlyMOperatorPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void OnlyMOperatorPage_SizeChanged(object? sender, SizeChangedEventArgs e)
         {
             OperatorViewModel vm = (OperatorViewModel)DataContext;
 

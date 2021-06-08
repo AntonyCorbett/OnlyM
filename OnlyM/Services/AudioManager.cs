@@ -13,8 +13,8 @@ namespace OnlyM.Services
         private readonly Timer _timer = new Timer(200);
 
         private Guid _mediaItemId;
-        private WaveOutEvent _outputDevice;
-        private AudioFileReader _audioFileReader;
+        private WaveOutEvent? _outputDevice;
+        private AudioFileReader? _audioFileReader;
         private bool _manuallySettingPlaybackPosition;
         
         public AudioManager()
@@ -22,9 +22,9 @@ namespace OnlyM.Services
             _timer.Elapsed += HandleTimerFire;    
         }
 
-        public event EventHandler<MediaEventArgs> MediaChangeEvent;
+        public event EventHandler<MediaEventArgs>? MediaChangeEvent;
 
-        public event EventHandler<OnlyMPositionChangedEventArgs> MediaPositionChangedEvent;
+        public event EventHandler<OnlyMPositionChangedEventArgs>? MediaPositionChangedEvent;
 
         public bool IsPaused => _outputDevice != null && _outputDevice.PlaybackState == PlaybackState.Paused;
 
@@ -68,14 +68,14 @@ namespace OnlyM.Services
 
         public void Dispose()
         {
-            _timer?.Dispose();
+            _timer.Dispose();
             _outputDevice?.Dispose();
             _audioFileReader?.Dispose();
         }
 
         public TimeSpan GetPlaybackPosition()
         {
-            return _audioFileReader.GetPosition();
+            return _audioFileReader?.GetPosition() ?? TimeSpan.Zero;
         }
 
         public void PauseAudio(Guid mediaItemId)
@@ -113,14 +113,14 @@ namespace OnlyM.Services
             _manuallySettingPlaybackPosition = false;
         }
 
-        private void OnPlaybackStopped(object sender, StoppedEventArgs e)
+        private void OnPlaybackStopped(object? sender, StoppedEventArgs e)
         {
             _timer.Stop();
 
-            _outputDevice.Dispose();
+            _outputDevice?.Dispose();
             _outputDevice = null;
 
-            _audioFileReader.Dispose();
+            _audioFileReader?.Dispose();
             _audioFileReader = null;
 
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
@@ -141,7 +141,7 @@ namespace OnlyM.Services
             };
         }
 
-        private void HandleTimerFire(object sender, ElapsedEventArgs e)
+        private void HandleTimerFire(object? sender, ElapsedEventArgs e)
         {
             if (!_manuallySettingPlaybackPosition)
             {

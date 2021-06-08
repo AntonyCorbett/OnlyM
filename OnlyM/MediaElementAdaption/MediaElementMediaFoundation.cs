@@ -44,16 +44,16 @@ namespace OnlyM.MediaElementAdaption
             _timer.Tick += TimerFire;
         }
 
-        public event EventHandler<OnlyMMediaOpenedEventArgs> MediaOpened;
+        public event EventHandler<OnlyMMediaOpenedEventArgs>? MediaOpened;
 
-        public event EventHandler<OnlyMMediaClosedEventArgs> MediaClosed;
+        public event EventHandler<OnlyMMediaClosedEventArgs>? MediaClosed;
 
-        public event EventHandler<OnlyMMediaEndedEventArgs> MediaEnded;
+        public event EventHandler<OnlyMMediaEndedEventArgs>? MediaEnded;
 
-        public event EventHandler<OnlyMMediaFailedEventArgs> MediaFailed;
+        public event EventHandler<OnlyMMediaFailedEventArgs>? MediaFailed;
 
         // not supported in MediaFoundation
-        public event EventHandler<OnlyMRenderSubtitlesEventArgs> RenderingSubtitles
+        public event EventHandler<OnlyMRenderSubtitlesEventArgs>? RenderingSubtitles
         {
 #pragma warning disable S108 // Nested blocks of code should not be left empty
             add { }
@@ -61,10 +61,10 @@ namespace OnlyM.MediaElementAdaption
 #pragma warning restore S108 // Nested blocks of code should not be left empty
         }
 
-        public event EventHandler<OnlyMPositionChangedEventArgs> PositionChanged;
+        public event EventHandler<OnlyMPositionChangedEventArgs>? PositionChanged;
 
         // not supported in MediaFoundation
-        public event EventHandler<OnlyMLogMessageEventArgs> MessageLogged
+        public event EventHandler<OnlyMLogMessageEventArgs>? MessageLogged
         {
 #pragma warning disable S108 // Nested blocks of code should not be left empty
             add { }
@@ -178,9 +178,8 @@ namespace OnlyM.MediaElementAdaption
 
             IsPaused = false;
 
-#pragma warning disable S4220 // Events should have proper arguments
-            MediaClosed?.Invoke(this, null);
-#pragma warning restore S4220 // Events should have proper arguments
+            MediaClosed?.Invoke(this, new OnlyMMediaClosedEventArgs());
+
             return Task.CompletedTask;
         }
 
@@ -200,22 +199,22 @@ namespace OnlyM.MediaElementAdaption
             _timer.Tick -= TimerFire;
         }
 
-        private void HandleMediaOpened(object sender, RoutedEventArgs e)
+        private void HandleMediaOpened(object? sender, RoutedEventArgs? e)
         {
             MediaOpened?.Invoke(sender, new OnlyMMediaOpenedEventArgs());
         }
 
-        private void HandleMediaEnded(object sender, RoutedEventArgs e)
+        private void HandleMediaEnded(object? sender, RoutedEventArgs? e)
         {
             MediaEnded?.Invoke(sender, new OnlyMMediaEndedEventArgs());
         }
 
-        private void HandleMediaFailed(object sender, ExceptionRoutedEventArgs e)
+        private void HandleMediaFailed(object? sender, ExceptionRoutedEventArgs? e)
         {
-            MediaFailed?.Invoke(sender, new OnlyMMediaFailedEventArgs { Error = e.ErrorException });
+            MediaFailed?.Invoke(sender, new OnlyMMediaFailedEventArgs { Error = e?.ErrorException });
         }
 
-        private void TimerFire(object sender, EventArgs e)
+        private void TimerFire(object? sender, EventArgs e)
         {
             PositionChanged?.Invoke(this, new OnlyMPositionChangedEventArgs(MediaItemId, Position));
         }
@@ -235,17 +234,17 @@ namespace OnlyM.MediaElementAdaption
             return result;
         }
 
-        private void HandleMediaFailed2(object sender, ExceptionEventArgs e)
+        private void HandleMediaFailed2(object? sender, ExceptionEventArgs e)
         {
             HandleMediaFailed(sender, null);
         }
 
-        private void HandleMediaEnded2(object sender, EventArgs e)
+        private void HandleMediaEnded2(object? sender, EventArgs e)
         {
             HandleMediaEnded(sender, null);
         }
 
-        private void HandleMediaOpened2(object sender, EventArgs e)
+        private void HandleMediaOpened2(object? sender, EventArgs e)
         {
             HandleMediaOpened(sender, null);
         }

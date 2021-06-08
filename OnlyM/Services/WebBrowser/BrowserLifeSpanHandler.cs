@@ -16,7 +16,7 @@ namespace OnlyM.Services.WebBrowser
             IWindowInfo windowInfo,
             IBrowserSettings browserSettings, 
             ref bool noJavascriptAccess, 
-            out IWebBrowser newBrowser)
+            out IWebBrowser? newBrowser)
         {
             frame.LoadUrl(targetUrl);
             newBrowser = null;

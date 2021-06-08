@@ -443,7 +443,7 @@ namespace OnlyM.Windows
                 startFromPaused);
         }
 
-        private void WindowClosing(object sender, CancelEventArgs e)
+        private void WindowClosing(object? sender, CancelEventArgs e)
         {
             // prevent window from being closed independently of application.
             var pageService = Ioc.Default.GetService<IPageService>();
@@ -500,7 +500,7 @@ namespace OnlyM.Windows
             _audioManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
         }
 
-        private void HandleWebDisplayManagerStatusEvent(object sender, WebBrowserProgressEventArgs e)
+        private void HandleWebDisplayManagerStatusEvent(object? sender, WebBrowserProgressEventArgs e)
         {
             WebStatusEvent?.Invoke(this, e);
         }
@@ -596,7 +596,7 @@ namespace OnlyM.Windows
             _snackbarService.Enqueue(
                 Properties.Resources.CONFIRM_STOP_MEDIA,
                 Properties.Resources.YES,
-                async (obj) => { await StopMediaAsync(mediaItem, ignoreConfirmation: true); },
+                async _ => await StopMediaAsync(mediaItem, ignoreConfirmation: true),
                 null,
                 promote: true,
                 neverConsiderToBeDuplicate: true);
@@ -604,8 +604,11 @@ namespace OnlyM.Windows
 
         private void HandleVideoScreenPositionChangedEvent(object? sender, EventArgs e)
         {
-            ScreenPositionHelper.SetScreenPosition(_videoElement.FrameworkElement, _optionsService.VideoScreenPosition);
-            ScreenPositionHelper.SetSubtitleBlockScreenPosition(SubtitleBlock, _optionsService.VideoScreenPosition);
+            if (_videoElement?.FrameworkElement != null)
+            {
+                ScreenPositionHelper.SetScreenPosition(_videoElement.FrameworkElement, _optionsService.VideoScreenPosition);
+                ScreenPositionHelper.SetSubtitleBlockScreenPosition(SubtitleBlock, _optionsService.VideoScreenPosition);
+            }
         }
 
         private void HandleWebScreenPositionChangedEvent(object? sender, EventArgs e)
@@ -650,19 +653,19 @@ namespace OnlyM.Windows
             SubscribeVideoEvents();
         }
 
-        private void WindowSizeChanged(object sender, SizeChangedEventArgs e)
+        private void WindowSizeChanged(object? sender, SizeChangedEventArgs e)
         {
             var vm = (MediaViewModel)DataContext;
             vm.WindowSize = new Size(ActualWidth, ActualHeight);
         }
 
-        private void BrowserGrid_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void BrowserGrid_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)
         {
             var pos = e.GetPosition(this);
             _webNavHeaderAdmin.MouseMove(pos);
         }
 
-        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Window_MouseDown(object? sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             // allow drag when no title bar is shown
             if (IsWindowed && e.ChangedButton == MouseButton.Left && WindowStyle == WindowStyle.None)

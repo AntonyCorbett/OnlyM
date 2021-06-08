@@ -6,6 +6,6 @@ namespace OnlyM.Models
     {
         public MagnifierShape Shape { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 }

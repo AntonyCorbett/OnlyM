@@ -77,7 +77,7 @@ namespace OnlyM.Services.WebNavHeaderManager
             WebNavHeaderStatus endStatus,
             double from, 
             double to,
-            Action onCompleted = null)
+            Action? onCompleted = null)
         {
             _webHeaderStatus = startStatus;
 
