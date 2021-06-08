@@ -8,7 +8,7 @@ namespace OnlyM.Core.Subtitles
 
         public TimeSpan End { get; set; }
 
-        public static bool TryParse(string line, out SubtitleTiming value)
+        public static bool TryParse(string line, out SubtitleTiming? value)
         {
             value = null;
 

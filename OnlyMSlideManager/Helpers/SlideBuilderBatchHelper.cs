@@ -17,7 +17,7 @@ namespace OnlyMSlideManager.Helpers
             _batchSize = batchSize;
         }
 
-        public IReadOnlyList<Slide> GetBatch()
+        public IReadOnlyList<Slide>? GetBatch()
         {
             if (_currentIndex >= _slides.Count)
             {

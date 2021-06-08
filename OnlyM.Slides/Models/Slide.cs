@@ -6,12 +6,12 @@ namespace OnlyM.Slides.Models
 {
     public class Slide
     {
-        public string ArchiveEntryName { get; set; }
+        public string? ArchiveEntryName { get; set; }
 
-        public string OriginalFilePath { get; set; }
+        public string? OriginalFilePath { get; set; }
 
         [JsonIgnore]
-        public BitmapImage Image { get; set; }
+        public BitmapImage? Image { get; set; }
 
         public bool FadeInForward { get; set; }
 

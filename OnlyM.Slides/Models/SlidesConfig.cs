@@ -60,14 +60,17 @@ namespace OnlyM.Slides.Models
             return sb.ToString();
         }
 
-        public void SyncSlideOrder(IEnumerable<string> slideNames)
+        public void SyncSlideOrder(IEnumerable<string?> slideNames)
         {
             var originalList = new List<Slide>(Slides);
             Slides.Clear();
 
             foreach (var slide in slideNames)
             {
-                var originalSlide = originalList.SingleOrDefault(x => x.ArchiveEntryName.Equals(slide, StringComparison.OrdinalIgnoreCase));
+                var originalSlide = originalList.SingleOrDefault(
+                    x => x.ArchiveEntryName != null && 
+                         x.ArchiveEntryName.Equals(slide, StringComparison.OrdinalIgnoreCase));
+
                 if (originalSlide != null)
                 {
                     Slides.Add(originalSlide);
@@ -75,7 +78,7 @@ namespace OnlyM.Slides.Models
             }
         }
 
-        public void RemoveSlide(string slideName)
+        public void RemoveSlide(string? slideName)
         {
             var slide = GetSlideByName(slideName);
             if (slide != null)
@@ -84,9 +87,9 @@ namespace OnlyM.Slides.Models
             }
         }
 
-        private Slide GetSlideByName(string slideName)
+        private Slide? GetSlideByName(string? slideName)
         {
-            return Slides.SingleOrDefault(x => x.ArchiveEntryName.Equals(slideName));
+            return Slides.SingleOrDefault(x => x.ArchiveEntryName != null && x.ArchiveEntryName.Equals(slideName));
         }
     }
 }

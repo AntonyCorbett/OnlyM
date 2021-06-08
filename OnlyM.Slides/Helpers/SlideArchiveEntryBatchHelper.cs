@@ -27,7 +27,7 @@ namespace OnlyM.Slides.Helpers
             _batchSize = batchSize;
         }
 
-        public IReadOnlyList<SlideArchiveEntry> GetBatch()
+        public IReadOnlyList<SlideArchiveEntry>? GetBatch()
         {
             var slideBatch = GetSlideBatch();
             if (slideBatch == null)
@@ -42,7 +42,10 @@ namespace OnlyM.Slides.Helpers
             Parallel.ForEach(slideBatch, slide =>
             {
                 var image = GetImage(slide);
-                map.TryAdd(slide, image);
+                if (image != null)
+                {
+                    map.TryAdd(slide, image);
+                }
             });
             
             foreach (var slide in slideBatch)
@@ -57,11 +60,16 @@ namespace OnlyM.Slides.Helpers
             return result;
         }
 
-        private BitmapSource GetImage(Slide slide)
+        private BitmapSource? GetImage(Slide slide)
         {
             if (slide.Image != null)
             {
                 return slide.Image;
+            }
+
+            if (string.IsNullOrEmpty(slide.OriginalFilePath))
+            {
+                return null;
             }
 
             if (!File.Exists(slide.OriginalFilePath))
@@ -73,7 +81,7 @@ namespace OnlyM.Slides.Helpers
                     slide.OriginalFilePath, _maxSlideWidth, _maxSlideHeight, shouldPad: false);
         }
 
-        private List<Slide> GetSlideBatch()
+        private List<Slide>? GetSlideBatch()
         {
             if (_currentIndex >= _slides.Count)
             {

@@ -57,13 +57,13 @@ namespace OnlyM.Core.Services.Options
         
         bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 
-        string AppWindowPlacement { get; set; }
+        string? AppWindowPlacement { get; set; }
 
-        string MediaWindowPlacement { get; set; }
+        string? MediaWindowPlacement { get; set; }
 
         List<string> RecentlyUsedMediaFolders { get; set; }
 
-        string Culture { get; set; }
+        string? Culture { get; set; }
 
         bool CacheImages { get; set; }
 
@@ -103,7 +103,7 @@ namespace OnlyM.Core.Services.Options
 
         RenderingMethod RenderingMethod { get; set; }
 
-        string MediaMonitorId { get; set; }
+        string? MediaMonitorId { get; set; }
 
         bool MediaWindowed { get; set; }
 

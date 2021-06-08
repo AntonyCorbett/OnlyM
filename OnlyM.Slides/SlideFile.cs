@@ -41,11 +41,15 @@ namespace OnlyM.Slides
             }
 
             var slide = _config.Slides[index];
+            if (slide.ArchiveEntryName == null && includeBitmapImage)
+            {
+                throw new NotSupportedException("Missing archive entry name");
+            }
 
             using (var zip = ZipFile.OpenRead(FilePath))
             {
                 var image = includeBitmapImage
-                    ? ReadBackgroundImage(zip, slide.ArchiveEntryName)
+                    ? ReadBackgroundImage(zip, slide.ArchiveEntryName!)
                     : null;
 
                 return new Slide
@@ -70,8 +74,13 @@ namespace OnlyM.Slides
             {
                 foreach (var slide in _config.Slides)
                 {
+                    if (slide.ArchiveEntryName == null && includeBitmapImage)
+                    {
+                        throw new NotSupportedException("Missing archive entry name");
+                    }
+
                     var image = includeBitmapImage
-                        ? ReadBackgroundImage(zip, slide.ArchiveEntryName)
+                        ? ReadBackgroundImage(zip, slide.ArchiveEntryName!)
                         : null;
 
                     result.Add(new Slide
@@ -99,8 +108,11 @@ namespace OnlyM.Slides
             {
                 foreach (var slide in _config.Slides)
                 {
-                    var entry = zip.GetEntry(slide.ArchiveEntryName);
-                    entry?.ExtractToFile(Path.Combine(folder, slide.ArchiveEntryName), overwrite: true);
+                    if (slide.ArchiveEntryName != null)
+                    {
+                        var entry = zip.GetEntry(slide.ArchiveEntryName);
+                        entry?.ExtractToFile(Path.Combine(folder, slide.ArchiveEntryName), overwrite: true);
+                    }
                 }
             }
         }

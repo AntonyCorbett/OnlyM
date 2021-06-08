@@ -26,32 +26,52 @@ namespace OnlyM.Core.Services.Media
         private readonly IDatabaseService _databaseService;
         private readonly IOptionsService _optionsService;
 
-        private readonly Lazy<byte[]> _standardAudioThumbnail = new(() =>
+        private readonly Lazy<byte[]?> _standardAudioThumbnail = new(() =>
         {
             var bmp = Properties.Resources.Audio;
+            if (bmp == null)
+            {
+                return null;
+            }
+
             var converter = new ImageConverter();
-            return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+            return (byte[]?)converter.ConvertTo(bmp, typeof(byte[]));
         });
 
-        private readonly Lazy<byte[]> _standardPdfThumbnail = new(() =>
+        private readonly Lazy<byte[]?> _standardPdfThumbnail = new(() =>
         {
             var bmp = Properties.Resources.PDF;
+            if (bmp == null)
+            {
+                return null;
+            }
+
             var converter = new ImageConverter();
-            return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+            return (byte[]?)converter.ConvertTo(bmp, typeof(byte[]));
         });
 
-        private readonly Lazy<byte[]> _standardWebThumbnail = new(() =>
+        private readonly Lazy<byte[]?> _standardWebThumbnail = new(() =>
         {
             var bmp = Properties.Resources.Web;
+            if (bmp == null)
+            {
+                return null;
+            }
+
             var converter = new ImageConverter();
-            return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+            return (byte[]?)converter.ConvertTo(bmp, typeof(byte[]));
         });
 
-        private readonly Lazy<byte[]> _standardUnknownThumbnail = new(() =>
+        private readonly Lazy<byte[]?> _standardUnknownThumbnail = new(() =>
         {
             var bmp = Properties.Resources.Unknown;
+            if (bmp == null)
+            {
+                return null;
+            }
+
             var converter = new ImageConverter();
-            return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+            return (byte[]?)converter.ConvertTo(bmp, typeof(byte[]));
         });
 
         public ThumbnailService(IDatabaseService databaseService, IOptionsService optionsService)
@@ -60,9 +80,9 @@ namespace OnlyM.Core.Services.Media
             _optionsService = optionsService;
         }
 
-        public event EventHandler ThumbnailsPurgedEvent;
+        public event EventHandler? ThumbnailsPurgedEvent;
 
-        public byte[] GetThumbnail(
+        public byte[]? GetThumbnail(
             string originalPath, 
             string ffmpegFolder,
             MediaClassification mediaClassification, 
@@ -103,7 +123,7 @@ namespace OnlyM.Core.Services.Media
             OnThumbnailsPurgedEvent();
         }
 
-        private byte[] GenerateThumbnail(
+        private byte[]? GenerateThumbnail(
             string originalPath,
             string ffmpegFolder,
             MediaClassification mediaClassification)
@@ -146,7 +166,7 @@ namespace OnlyM.Core.Services.Media
             }
         }
 
-        private byte[] GetWebThumbnail(string originalPath)
+        private byte[]? GetWebThumbnail(string originalPath)
         {
             if (string.IsNullOrEmpty(originalPath))
             {
@@ -169,7 +189,7 @@ namespace OnlyM.Core.Services.Media
             return _standardWebThumbnail.Value;
         }
 
-        private byte[] GetPdfThumbnail(string originalPath)
+        private byte[]? GetPdfThumbnail(string originalPath)
         {
             try
             {
@@ -194,11 +214,16 @@ namespace OnlyM.Core.Services.Media
             }
         }
 
-        private static byte[] CreateFramedSmallIcon(byte[] bytes)
+        private static byte[]? CreateFramedSmallIcon(byte[] bytes)
         {
             const int pixelSize = 100;
 
             var image = GraphicsUtils.ByteArrayToImage(bytes);
+            if (image == null)
+            {
+                return null;
+            }
+
             if (Math.Max(image.Height, image.Width) < pixelSize)
             {
                 var visual = new DrawingVisual();
@@ -231,7 +256,7 @@ namespace OnlyM.Core.Services.Media
             return bytes;
         }
 
-        private byte[] GetSlideshowThumbnail(string originalPath)
+        private byte[]? GetSlideshowThumbnail(string originalPath)
         {
             var file = new SlideFile(originalPath);
             if (file.SlideCount == 0)
@@ -240,6 +265,11 @@ namespace OnlyM.Core.Services.Media
             }
 
             var slide = file.GetSlide(0);
+            if (slide.Image == null)
+            {
+                return _standardUnknownThumbnail.Value;
+            }
+
             return GraphicsUtils.CreateThumbnailOfImage(slide.Image, MaxPixelDimension);
         }
 

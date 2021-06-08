@@ -2,9 +2,9 @@
 {
     public interface IOptionsService
     {
-        string AppWindowPlacement { get; set; }
+        string? AppWindowPlacement { get; set; }
 
-        string Culture { get; set; }
+        string? Culture { get; set; }
 
         void Save();
     }

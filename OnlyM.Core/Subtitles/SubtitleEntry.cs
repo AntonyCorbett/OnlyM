@@ -4,8 +4,8 @@
     {
         public int Number { get; set; }
 
-        public SubtitleTiming Timing { get; set; }
+        public SubtitleTiming? Timing { get; set; }
 
-        public string Text { get; set; }
+        public string? Text { get; set; }
     }
 }

@@ -48,7 +48,7 @@ namespace OnlyM.Core.Services.Monitors
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern bool EnumDisplayDevices(
-            string lpDevice,
+            string? lpDevice,
             uint iDevNum,
             ref DISPLAY_DEVICE lpDisplayDevice,
             uint dwFlags);

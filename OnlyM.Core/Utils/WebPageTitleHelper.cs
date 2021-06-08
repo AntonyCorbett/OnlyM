@@ -5,7 +5,7 @@ namespace OnlyM.Core.Utils
 {
     public static class WebPageTitleHelper
     {
-        public static string Get(Uri webPageAddress)
+        public static string? Get(Uri webPageAddress)
         {
             using (var wc = WebUtils.CreateWebClient())
             {

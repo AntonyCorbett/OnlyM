@@ -65,7 +65,7 @@ namespace OnlyM.Core.Services.Options
 
         public bool ShowFreezeCommand { get; set; }
 
-        public string MediaMonitorId { get; set; }
+        public string? MediaMonitorId { get; set; }
 
         public bool MediaWindowed { get; set; }
 
@@ -100,15 +100,15 @@ namespace OnlyM.Core.Services.Options
 
         public bool WindowedAlwaysOnTop { get; set; }
 
-        public string AppWindowPlacement { get; set; }
+        public string? AppWindowPlacement { get; set; }
 
-        public string MediaWindowPlacement { get; set; }
+        public string? MediaWindowPlacement { get; set; }
 
         public bool JwLibraryCompatibilityMode { get; set; }
 
         public bool ConfirmVideoStop { get; set; }
 
-        public string Culture { get; set; }
+        public string? Culture { get; set; }
 
         public LogEventLevel LogEventLevel { get; set; }
 

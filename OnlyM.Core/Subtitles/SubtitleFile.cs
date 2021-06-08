@@ -13,14 +13,14 @@ namespace OnlyM.Core.Subtitles
     {
         private const string AssStartToken = "{\\";
         
-        private readonly List<SubtitleEntry> _subtitles = new();
+        private readonly List<SubtitleEntry>? _subtitles;
         private int _index = -1;
 
         public SubtitleFile(string srtPath)
         {
-            if (!Read(srtPath))
+            if (Read(srtPath))
             {
-                _subtitles = null;
+                _subtitles = new();
             }
         }
 
@@ -31,8 +31,13 @@ namespace OnlyM.Core.Subtitles
             _index = -1;
         }
 
-        public SubtitleEntry GetNext()
+        public SubtitleEntry? GetNext()
         {
+            if (_subtitles == null)
+            {
+                return null;
+            }
+
             if (Count > 0 && _index < Count - 2)
             {
                 return _subtitles[++_index];
@@ -93,7 +98,7 @@ namespace OnlyM.Core.Subtitles
                     Text = StripHtml(text),
                 };
 
-                _subtitles.Add(entry);
+                _subtitles?.Add(entry);
             }
 
             return true;

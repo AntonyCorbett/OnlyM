@@ -326,7 +326,7 @@ namespace OnlyM.Core.Services.Monitors
             }
         }
 
-        public static string DeviceFriendlyName(this Screen screen)
+        public static string? DeviceFriendlyName(this Screen screen)
         {
             try
             {

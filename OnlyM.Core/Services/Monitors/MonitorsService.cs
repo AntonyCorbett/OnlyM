@@ -51,21 +51,25 @@ namespace OnlyM.Core.Services.Monitors
             return result;
         }
 
-        public SystemMonitor GetSystemMonitor(string monitorId)
+        public SystemMonitor? GetSystemMonitor(string monitorId)
         {
-            return GetSystemMonitors().SingleOrDefault(x => x.MonitorId.Equals(monitorId));
+            return GetSystemMonitors().SingleOrDefault(
+                x => x.MonitorId != null && 
+                     x.MonitorId.Equals(monitorId));
         }
 
-        public SystemMonitor GetMonitorForWindowHandle(IntPtr windowHandle)
+        public SystemMonitor? GetMonitorForWindowHandle(IntPtr windowHandle)
         {
             var screen = Screen.FromHandle(windowHandle);
-            return GetSystemMonitors().SingleOrDefault(x => x.Monitor.DeviceName.Equals(screen.DeviceName));
+            return GetSystemMonitors().SingleOrDefault(
+                x => x.Monitor?.DeviceName != null && 
+                     x.Monitor.DeviceName.Equals(screen.DeviceName));
         }
 
-        private static DisplayDeviceData GetDeviceMatchingScreen(DisplayDeviceData[] devices, Screen screen)
+        private static DisplayDeviceData? GetDeviceMatchingScreen(DisplayDeviceData[] devices, Screen screen)
         {
             var deviceName = screen.DeviceName + "\\";
-            return devices.SingleOrDefault(x => x.Name.StartsWith(deviceName));
+            return devices.SingleOrDefault(x => x.Name != null && x.Name.StartsWith(deviceName));
         }
 
         private static string SanitizeScreenDeviceName(string name)
@@ -73,7 +77,7 @@ namespace OnlyM.Core.Services.Monitors
             return name.Replace(@"\\.\", string.Empty);
         }
 
-        private static List<(Screen, DisplayDeviceData)> GetDisplayScreens(DisplayDeviceData[] devices)
+        private static List<(Screen, DisplayDeviceData)>? GetDisplayScreens(DisplayDeviceData[] devices)
         {
             var result = new List<(Screen, DisplayDeviceData)>();
 

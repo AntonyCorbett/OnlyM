@@ -26,9 +26,9 @@ namespace OnlyM.Core.Services.Options
         private readonly int _optionsVersion = 1;
         private readonly Lazy<Options> _options;
 
-        private string _optionsFilePath;
-        private string _originalOptionsSignature;
-        private string _commandLineMediaFolder;
+        private string? _optionsFilePath;
+        private string? _originalOptionsSignature;
+        private string? _commandLineMediaFolder;
 
         public OptionsService(
             ILogLevelSwitchService logLevelSwitchService,
@@ -40,53 +40,53 @@ namespace OnlyM.Core.Services.Options
             _commandLineService = commandLineService;
         }
 
-        public event EventHandler MediaFolderChangedEvent;
+        public event EventHandler? MediaFolderChangedEvent;
 
-        public event EventHandler AutoRotateChangedEvent;
+        public event EventHandler? AutoRotateChangedEvent;
 
-        public event EventHandler ImageFadeTypeChangedEvent;
+        public event EventHandler? ImageFadeTypeChangedEvent;
 
-        public event EventHandler ImageFadeSpeedChangedEvent;
+        public event EventHandler? ImageFadeSpeedChangedEvent;
 
-        public event EventHandler AlwaysOnTopChangedEvent;
+        public event EventHandler? AlwaysOnTopChangedEvent;
 
-        public event EventHandler WindowedMediaAlwaysOnTopChangedEvent;
+        public event EventHandler? WindowedMediaAlwaysOnTopChangedEvent;
 
-        public event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
+        public event EventHandler<MonitorChangedEventArgs>? MediaMonitorChangedEvent;
 
-        public event EventHandler RenderingMethodChangedEvent;
+        public event EventHandler? RenderingMethodChangedEvent;
 
-        public event EventHandler PermanentBackdropChangedEvent;
+        public event EventHandler? PermanentBackdropChangedEvent;
 
-        public event EventHandler AllowVideoPauseChangedEvent;
+        public event EventHandler? AllowVideoPauseChangedEvent;
 
-        public event EventHandler AllowVideoPositionSeekingChangedEvent;
+        public event EventHandler? AllowVideoPositionSeekingChangedEvent;
 
-        public event EventHandler ShowSubtitlesChangedEvent;
+        public event EventHandler? ShowSubtitlesChangedEvent;
 
-        public event EventHandler UseInternalMediaTitlesChangedEvent;
+        public event EventHandler? UseInternalMediaTitlesChangedEvent;
 
-        public event EventHandler IncludeBlankScreenItemChangedEvent;
+        public event EventHandler? IncludeBlankScreenItemChangedEvent;
 
-        public event EventHandler AllowMirrorChangedEvent;
+        public event EventHandler? AllowMirrorChangedEvent;
 
-        public event EventHandler VideoScreenPositionChangedEvent;
+        public event EventHandler? VideoScreenPositionChangedEvent;
 
-        public event EventHandler ImageScreenPositionChangedEvent;
+        public event EventHandler? ImageScreenPositionChangedEvent;
 
-        public event EventHandler WebScreenPositionChangedEvent;
+        public event EventHandler? WebScreenPositionChangedEvent;
 
-        public event EventHandler ShowMediaItemCommandPanelChangedEvent;
+        public event EventHandler? ShowMediaItemCommandPanelChangedEvent;
 
-        public event EventHandler OperatingDateChangedEvent;
+        public event EventHandler? OperatingDateChangedEvent;
 
-        public event EventHandler MaxItemCountChangedEvent;
+        public event EventHandler? MaxItemCountChangedEvent;
 
-        public event EventHandler ShowFreezeCommandChangedEvent;
+        public event EventHandler? ShowFreezeCommandChangedEvent;
 
-        public event EventHandler MagnifierChangedEvent;
+        public event EventHandler? MagnifierChangedEvent;
 
-        public event EventHandler BrowserChangedEvent;
+        public event EventHandler? BrowserChangedEvent;
         
         public bool ShouldPurgeBrowserCacheOnStartup
         {
@@ -94,7 +94,7 @@ namespace OnlyM.Core.Services.Options
             set => _options.Value.ShouldPurgeBrowserCacheOnStartup = value;
         }
 
-        public string AppWindowPlacement
+        public string? AppWindowPlacement
         {
             get => _options.Value.AppWindowPlacement;
             set
@@ -106,7 +106,7 @@ namespace OnlyM.Core.Services.Options
             }
         }
 
-        public string MediaWindowPlacement
+        public string? MediaWindowPlacement
         {
             get => _options.Value.MediaWindowPlacement;
             set
@@ -124,7 +124,7 @@ namespace OnlyM.Core.Services.Options
             set => _options.Value.RecentlyUsedMediaFolders = value;
         }
 
-        public string Culture
+        public string? Culture
         {
             get => _options.Value.Culture;
             set
@@ -428,7 +428,7 @@ namespace OnlyM.Core.Services.Options
             }
         }
 
-        public string MediaMonitorId
+        public string? MediaMonitorId
         {
             get => _options.Value.MediaMonitorId;
             set
@@ -618,7 +618,7 @@ namespace OnlyM.Core.Services.Options
 
         public bool IsMediaMonitorSpecified => !string.IsNullOrEmpty(_options.Value.MediaMonitorId);
 
-        public void SetCommandLineMediaFolder(string folder)
+        public void SetCommandLineMediaFolder(string? folder)
         {
             _commandLineMediaFolder = folder;
         }
@@ -682,7 +682,7 @@ namespace OnlyM.Core.Services.Options
 
         private Options OptionsFactory()
         {
-            Options result = null;
+            Options? result = null;
 
             try
             {
@@ -695,10 +695,7 @@ namespace OnlyM.Core.Services.Options
                     result = ReadOptions();
                 }
 
-                if (result == null)
-                {
-                    result = new Options();
-                }
+                result ??= new Options();
 
                 // store the original settings so that we can determine if they have changed
                 // when we come to save them
@@ -719,7 +716,7 @@ namespace OnlyM.Core.Services.Options
 
         private Options ReadOptions()
         {
-            if (!File.Exists(_optionsFilePath))
+            if (_optionsFilePath == null || !File.Exists(_optionsFilePath))
             {
                 return WriteDefaultOptions();
             }
@@ -727,16 +724,16 @@ namespace OnlyM.Core.Services.Options
             using (var file = File.OpenText(_optionsFilePath))
             {
                 var serializer = new JsonSerializer();
-                var result = (Options)serializer.Deserialize(file, typeof(Options));
+                var result = (Options?)serializer.Deserialize(file, typeof(Options));
                 result?.Sanitize();
 
                 SetCulture(result?.Culture);
 
-                return result;
+                return result ?? WriteDefaultOptions();
             }
         }
 
-        private static void SetCulture(string cultureString)
+        private static void SetCulture(string? cultureString)
         {
             var culture = cultureString;
 
@@ -766,6 +763,11 @@ namespace OnlyM.Core.Services.Options
 
             // first time launched so set the monitor to the first one we find
             var monitorService = Ioc.Default.GetService<IMonitorsService>();
+            if (monitorService == null)
+            {
+                throw new NotSupportedException("Could not get monitor service!");
+            }
+
             result.MediaMonitorId = monitorService.GetSystemMonitors().First().MonitorId;
 
             WriteOptions(result);
@@ -773,9 +775,9 @@ namespace OnlyM.Core.Services.Options
             return result;
         }
 
-        private void WriteOptions(Options options)
+        private void WriteOptions(Options? options)
         {
-            if (options != null)
+            if (options != null && _optionsFilePath != null)
             {
                 using (var file = File.CreateText(_optionsFilePath))
                 {
@@ -786,7 +788,7 @@ namespace OnlyM.Core.Services.Options
             }
         }
 
-        private static MonitorChangeDescription GetChange(string originalMonitor, string newMonitor)
+        private static MonitorChangeDescription GetChange(string? originalMonitor, string? newMonitor)
         {
             if (string.IsNullOrEmpty(originalMonitor))
             {
@@ -801,7 +803,7 @@ namespace OnlyM.Core.Services.Options
             return MonitorChangeDescription.MonitorToMonitor;
         }
 
-        private static MonitorChangeDescription GetChange(bool newWindowedSetting, string monitorId)
+        private static MonitorChangeDescription GetChange(bool newWindowedSetting, string? monitorId)
         {
             if (newWindowedSetting)
             {

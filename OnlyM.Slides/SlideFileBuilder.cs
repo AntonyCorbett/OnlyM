@@ -23,7 +23,7 @@ namespace OnlyM.Slides
             _maxSlideHeight = maxSlideHeight;
         }
 
-        public event EventHandler<BuildProgressEventArgs> BuildProgressEvent;
+        public event EventHandler<BuildProgressEventArgs>? BuildProgressEvent;
 
         public bool AutoPlay
         {
@@ -55,9 +55,9 @@ namespace OnlyM.Slides
         
         public IReadOnlyCollection<Slide> GetSlides() => _config.Slides;
         
-        public void RemoveSlide(string slideName) => _config.RemoveSlide(slideName);
+        public void RemoveSlide(string? slideName) => _config.RemoveSlide(slideName);
         
-        public void SyncSlideOrder(IEnumerable<string> slideNames) => _config.SyncSlideOrder(slideNames);
+        public void SyncSlideOrder(IEnumerable<string?> slideNames) => _config.SyncSlideOrder(slideNames);
         
         public void Load(string slideshowPath)
         {
@@ -122,9 +122,11 @@ namespace OnlyM.Slides
             _config.Slides.Add(slide);
         }
 
-        public Slide GetSlide(string itemName)
+        public Slide? GetSlide(string? itemName)
         {
-            return _config.Slides.SingleOrDefault(x => x.ArchiveEntryName.Equals(itemName, StringComparison.OrdinalIgnoreCase));
+            return _config.Slides.SingleOrDefault(
+                x => x.ArchiveEntryName != null && 
+                     x.ArchiveEntryName.Equals(itemName, StringComparison.OrdinalIgnoreCase));
         }
 
         public void Build(string path, bool overwrite)
@@ -199,8 +201,11 @@ namespace OnlyM.Slides
             {
                 foreach (var slide in slides)
                 {
-                    AddBitmapImageToArchive(zip, slide.ArchiveEntryName, slide.Image);
-                    BuildProgress(CalcPercentComplete(++numEntriesBuilt, numEntriesToBuild));
+                    if (slide.ArchiveEntryName != null && slide.Image != null)
+                    {
+                        AddBitmapImageToArchive(zip, slide.ArchiveEntryName, slide.Image);
+                        BuildProgress(CalcPercentComplete(++numEntriesBuilt, numEntriesToBuild));
+                    }
                 }
             }
         }
@@ -259,7 +264,7 @@ namespace OnlyM.Slides
             return result;
         }
 
-        private string GenerateUniqueArchiveEntryName(string bitmapPath)
+        private string? GenerateUniqueArchiveEntryName(string bitmapPath)
         {
             const int maxAttempts = 100;
 
@@ -285,10 +290,12 @@ namespace OnlyM.Slides
 
         private IEnumerable<string> GetSlideNamesStartingWith(string s)
         {
-            return _config.Slides.Where(x => x.ArchiveEntryName.StartsWith(s, StringComparison.OrdinalIgnoreCase)).Select(x => x.ArchiveEntryName);
+            return _config.Slides.Where(x => x.ArchiveEntryName != null && 
+                                             x.ArchiveEntryName.StartsWith(s, StringComparison.OrdinalIgnoreCase))
+                .Select(x => x.ArchiveEntryName!);
         }
 
-        private void BuildProgress(double percentageComplete, string entryName = null)
+        private void BuildProgress(double percentageComplete, string? entryName = null)
         {
             BuildProgressEvent?.Invoke(this, new BuildProgressEventArgs
             {

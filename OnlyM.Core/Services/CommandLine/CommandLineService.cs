@@ -14,7 +14,7 @@ namespace OnlyM.Core.Services.CommandLine
             p.Setup<bool>("nogpu")
                 .Callback(s => NoGpu = s).SetDefault(false);
 
-            p.Setup<string>("id")
+            p.Setup<string?>("id")
                 .Callback(s => OptionsIdentifier = s).SetDefault(null);
 
             p.Setup<bool>("nosettings")
@@ -23,7 +23,7 @@ namespace OnlyM.Core.Services.CommandLine
             p.Setup<bool>("nofolder")
                 .Callback(s => NoFolder = s).SetDefault(false);
 
-            p.Setup<string>("source")
+            p.Setup<string?>("source")
                 .Callback(s => SourceFolder = GetFullSourcePath(s)).SetDefault(null);
 
             p.Setup<bool>("novidfix")
@@ -34,17 +34,17 @@ namespace OnlyM.Core.Services.CommandLine
 
         public bool NoGpu { get; set; }
 
-        public string OptionsIdentifier { get; set; }
+        public string? OptionsIdentifier { get; set; }
 
         public bool NoSettings { get; set; }
 
         public bool NoFolder { get; set; }
 
-        public string SourceFolder { get; set; }
+        public string? SourceFolder { get; set; }
 
         public bool DisableVideoRenderingFix { get; set; }
 
-        private static string GetFullSourcePath(string sourcePath)
+        private static string? GetFullSourcePath(string? sourcePath)
         {
             try
             {

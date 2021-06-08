@@ -98,7 +98,7 @@ namespace OnlyM.Core.Utils
         /// <param name="commandLineIdentifier">Optional command-line id</param>
         /// <param name="optionsVersion">The options schema version</param>
         /// <returns>User Options file path.</returns>
-        public static string GetUserOptionsFilePath(string commandLineIdentifier, int optionsVersion)
+        public static string GetUserOptionsFilePath(string? commandLineIdentifier, int optionsVersion)
         {
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

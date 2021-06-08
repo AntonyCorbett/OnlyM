@@ -8,15 +8,15 @@ namespace OnlyM.Core.Utils
 {
     internal static class FaviconHelper
     {
-        public static byte[] GetIconImage(string websiteUrl)
+        public static byte[]? GetIconImage(string? websiteUrl)
         {
             return GetIconImage(websiteUrl, GetFaviconUrlFromHtml(websiteUrl)) ?? 
                    GetIconImage(websiteUrl, GetFaviconUrlFromRoot(websiteUrl));
         }
 
-        private static byte[] GetIconImage(string websiteUrl, string iconUrl)
+        private static byte[]? GetIconImage(string? websiteUrl, string? iconUrl)
         {
-            if (iconUrl == null)
+            if (websiteUrl == null || iconUrl == null)
             {
                 return null;
             }
@@ -28,10 +28,16 @@ namespace OnlyM.Core.Utils
                     var uri = new Uri(iconUrl, UriKind.RelativeOrAbsolute);
                     if (!uri.IsAbsoluteUri)
                     {
-                        iconUrl = uri.ToAbsolute(GetRootUrl(websiteUrl));
+                        var rootUrl = GetRootUrl(websiteUrl);
+                        if (rootUrl == null)
+                        {
+                            return null;
+                        }
+
+                        iconUrl = uri.ToAbsolute(rootUrl);
                     }
 
-                    return wc.DownloadData(iconUrl);
+                    return iconUrl == null ? null : wc.DownloadData(iconUrl);
                 }
             }
             catch (Exception)
@@ -40,8 +46,13 @@ namespace OnlyM.Core.Utils
             }
         }
 
-        private static string GetRootUrl(string websiteUrl)
+        private static string? GetRootUrl(string? websiteUrl)
         {
+            if (websiteUrl == null)
+            {
+                return null;
+            }
+
             var uri = new Uri(websiteUrl);
             if (uri.HostNameType == UriHostNameType.Dns)
             {
@@ -51,8 +62,13 @@ namespace OnlyM.Core.Utils
             return null;
         }
 
-        private static string GetFaviconUrlFromRoot(string websiteUrl)
+        private static string? GetFaviconUrlFromRoot(string? websiteUrl)
         {
+            if (websiteUrl == null)
+            {
+                return null;
+            }
+
             var uri = new Uri(websiteUrl);
             if (uri.HostNameType == UriHostNameType.Dns)
             {
@@ -66,8 +82,13 @@ namespace OnlyM.Core.Utils
             return null;
         }
 
-        private static string GetFaviconUrlFromHtml(string websiteUrl)
+        private static string? GetFaviconUrlFromHtml(string? websiteUrl)
         {
+            if (websiteUrl == null)
+            {
+                return null;
+            }
+
             using (var wc = WebUtils.CreateWebClient())
             {
                 var pageHtml = wc.DownloadString(websiteUrl);

@@ -4,7 +4,7 @@ namespace OnlyM.Core.Extensions
 {
     public static class StringExtensions
     {
-        public static string GetNumericPrefix(this string value)
+        public static string? GetNumericPrefix(this string? value)
         {
             if (string.IsNullOrEmpty(value))
             {

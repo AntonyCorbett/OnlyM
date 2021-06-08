@@ -7,7 +7,7 @@ namespace OnlyM.Core.Services.Media
     {
         event EventHandler ThumbnailsPurgedEvent;
 
-        byte[] GetThumbnail(
+        byte[]? GetThumbnail(
             string originalPath, 
             string ffmpegFolder,
             MediaClassification mediaClassification, 

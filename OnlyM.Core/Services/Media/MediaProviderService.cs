@@ -56,7 +56,10 @@ namespace OnlyM.Core.Services.Media
 
             foreach (var item in _supportedMediaTypes)
             {
-                _supportedFileExtensions.Add(item.FileExtension);
+                if (item.FileExtension != null)
+                {
+                    _supportedFileExtensions.Add(item.FileExtension);
+                }
             }
         }
 
@@ -100,7 +103,7 @@ namespace OnlyM.Core.Services.Media
             return _supportedFileExtensions.Contains(extension);
         }
 
-        public SupportedMediaType GetSupportedMediaType(string fileName)
+        public SupportedMediaType? GetSupportedMediaType(string? fileName)
         {
             if (string.IsNullOrEmpty(fileName))
             {
@@ -110,6 +113,7 @@ namespace OnlyM.Core.Services.Media
             var extension = Path.GetExtension(fileName);
 
             var result = _supportedMediaTypes.SingleOrDefault(x =>
+                x.FileExtension != null && 
                 x.FileExtension.Equals(extension, StringComparison.OrdinalIgnoreCase));
 
             if (result != null && 
@@ -136,7 +140,7 @@ namespace OnlyM.Core.Services.Media
             return Path.GetExtension(fileName).Equals(".pdf", StringComparison.OrdinalIgnoreCase);
         }
 
-        private IReadOnlyCollection<MediaFile> GetMediaFilesInFolder(string folder)
+        private IReadOnlyCollection<MediaFile> GetMediaFilesInFolder(string? folder)
         {
             if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
             {

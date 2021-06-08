@@ -5,11 +5,11 @@ namespace OnlyM.Core.Subtitles
 {
     public class SubtitleProvider
     {
-        private readonly SubtitleFile _file;
-        private readonly DispatcherTimer _timer;
+        private readonly SubtitleFile? _file;
+        private readonly DispatcherTimer? _timer;
         private readonly DateTime _videoStartTime;
 
-        private SubtitleEntry _currentSubtitle;
+        private SubtitleEntry? _currentSubtitle;
         private SubtitleStatus _currentStatus;
         private bool _stopped;
 
@@ -33,7 +33,7 @@ namespace OnlyM.Core.Subtitles
             }
         }
 
-        public event EventHandler<SubtitleEventArgs> SubtitleEvent;
+        public event EventHandler<SubtitleEventArgs>? SubtitleEvent;
 
         public int Count => _file?.Count ?? 0;
 
@@ -48,7 +48,8 @@ namespace OnlyM.Core.Subtitles
             var videoPlaybackTime = DateTime.UtcNow - _videoStartTime;
 
             _currentSubtitle = _file?.GetNext();
-            while (_currentSubtitle != null && _currentSubtitle.Timing.End < videoPlaybackTime)
+            while (_currentSubtitle?.Timing != null && 
+                   _currentSubtitle.Timing.End < videoPlaybackTime)
             {
                 _currentSubtitle = _file?.GetNext();
             }
@@ -69,11 +70,15 @@ namespace OnlyM.Core.Subtitles
 
             if (_currentStatus == SubtitleStatus.Showing)
             {
-                intervalToFire = _currentSubtitle.Timing.End - videoPlaybackTime;
+                intervalToFire = _currentSubtitle?.Timing == null
+                    ? TimeSpan.Zero 
+                    : _currentSubtitle.Timing.End - videoPlaybackTime;
             }
             else
             {
-                intervalToFire = _currentSubtitle.Timing.Start - videoPlaybackTime;
+                intervalToFire = _currentSubtitle?.Timing == null
+                    ? TimeSpan.Zero
+                    : _currentSubtitle.Timing.Start - videoPlaybackTime;
             }
 
             if (intervalToFire < TimeSpan.Zero)
@@ -88,7 +93,7 @@ namespace OnlyM.Core.Subtitles
             }
         }
 
-        private void HandleTimerTick(object sender, EventArgs e)
+        private void HandleTimerTick(object? sender, EventArgs e)
         {
             if (_timer != null && sender == _timer)
             {
@@ -96,7 +101,7 @@ namespace OnlyM.Core.Subtitles
 
                 if (_currentStatus == SubtitleStatus.NotShowing)
                 {
-                    OnSubtitleEvent(SubtitleStatus.Showing, _currentSubtitle.Text);
+                    OnSubtitleEvent(SubtitleStatus.Showing, _currentSubtitle?.Text);
                     ConfigureTimer(DateTime.UtcNow - _videoStartTime);
                 }
                 else
@@ -107,7 +112,7 @@ namespace OnlyM.Core.Subtitles
             }
         }
 
-        private void OnSubtitleEvent(SubtitleStatus status, string subtitleText)
+        private void OnSubtitleEvent(SubtitleStatus status, string? subtitleText)
         {
             if (!_stopped || status == SubtitleStatus.NotShowing)
             {

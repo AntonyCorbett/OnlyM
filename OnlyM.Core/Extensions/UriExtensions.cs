@@ -9,13 +9,13 @@ namespace OnlyM.Core.Extensions
             return uri.IsAbsoluteUri ? uri.PathAndQuery : uri.OriginalString;
         }
 
-        public static string ToAbsolute(this Uri uri, string baseUrl)
+        public static string? ToAbsolute(this Uri uri, string baseUrl)
         {
             var baseUri = new Uri(baseUrl);
             return uri.ToAbsolute(baseUri);
         }
 
-        public static string ToAbsolute(this Uri uri, Uri baseUri)
+        public static string? ToAbsolute(this Uri uri, Uri baseUri)
         {
             var relative = uri.ToRelative();
 

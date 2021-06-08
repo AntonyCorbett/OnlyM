@@ -10,7 +10,7 @@ namespace OnlyM.Core.Services.Media
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MediaMetaDataService : IMediaMetaDataService
     {
-        public MediaMetaData GetMetaData(
+        public MediaMetaData? GetMetaData(
             string mediaItemFilePath, 
             SupportedMediaType mediaType,
             string ffmpegFolder)
@@ -49,7 +49,7 @@ namespace OnlyM.Core.Services.Media
             return null;
         }
 
-        private static string StripNewLines(string s)
+        private static string? StripNewLines(string? s)
         {
             if (string.IsNullOrEmpty(s))
             {
@@ -68,7 +68,7 @@ namespace OnlyM.Core.Services.Media
             {
                 var info = Unosquare.FFME.Library.RetrieveMediaInfo(FFmpegUtils.FixUnicodeString(mediaItemFilePath));
 
-                string title = null;
+                string? title = null;
                 info.Metadata?.TryGetValue("title", out title);
 
                 if (string.IsNullOrEmpty(title))

@@ -17,7 +17,7 @@ namespace OnlyMSlideManager
     public partial class App : Application
     {
         private readonly string _appString = "OnlyMSlideManagerTool";
-        private Mutex _appMutex;
+        private Mutex? _appMutex;
         
         protected override void OnExit(ExitEventArgs e)
         {

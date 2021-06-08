@@ -19,7 +19,7 @@ namespace OnlyM.CoreSys.Services.UI
             });
         }
 
-        public static event EventHandler StatusChangedEvent;
+        public static event EventHandler? StatusChangedEvent;
 
         public static bool IsBusy() => BusyCount > 0;
         

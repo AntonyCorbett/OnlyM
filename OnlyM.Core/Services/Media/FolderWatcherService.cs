@@ -14,9 +14,9 @@ namespace OnlyM.Core.Services.Media
         private readonly IOptionsService _optionsService;
         private readonly IMediaProviderService _mediaProviderService;
         private readonly ManualResetEventSlim _signalFolderChange = new(false);
-        private FileSystemWatcher _watcher;
+        private FileSystemWatcher? _watcher;
         private int _changeVersion;
-        private MediaFolders _foldersToWatch;
+        private MediaFolders? _foldersToWatch;
 
         public FolderWatcherService(IOptionsService optionsService, IMediaProviderService mediaProviderService)
         {
@@ -31,7 +31,7 @@ namespace OnlyM.Core.Services.Media
             InitWatcher();
         }
 
-        public event EventHandler ChangesFoundEvent;
+        public event EventHandler? ChangesFoundEvent;
 
         public bool IsEnabled
         {
@@ -52,7 +52,7 @@ namespace OnlyM.Core.Services.Media
         
         public void Dispose()
         {
-            _signalFolderChange?.Dispose();
+            _signalFolderChange.Dispose();
             _watcher?.Dispose();
         }
 
@@ -90,7 +90,7 @@ namespace OnlyM.Core.Services.Media
                 _watcher.Renamed += HandleContentRenamed;
             }
             
-            if (Directory.Exists(mediaFolders.MediaFolder))
+            if (mediaFolders.MediaFolder != null && Directory.Exists(mediaFolders.MediaFolder))
             {
                 _watcher.Path = mediaFolders.MediaFolder;
                 _watcher.EnableRaisingEvents = true;
@@ -121,6 +121,11 @@ namespace OnlyM.Core.Services.Media
 
         private bool IsWatchingFilesFolder(string path)
         {
+            if (_foldersToWatch == null)
+            {
+                return false;
+            }
+
             var directory = Path.GetDirectoryName(path);
 
             if (directory == null)
@@ -157,13 +162,13 @@ namespace OnlyM.Core.Services.Media
             _signalFolderChange.Set();
         }
 
-        private void HandleMediaFolderChangedEvent(object sender, EventArgs e)
+        private void HandleMediaFolderChangedEvent(object? sender, EventArgs e)
         {
             // Main Media Folder has changed.
             InitWatcher();
         }
 
-        private void HandleOperatingDateChangedEvent(object sender, EventArgs e)
+        private void HandleOperatingDateChangedEvent(object? sender, EventArgs e)
         {
             // Operating date has changed (so we may need to watch
             // a different Calendar folder).

@@ -16,15 +16,15 @@ namespace OnlyMSlideManager.Services.Options
         private readonly int _optionsVersion = 1;
         private readonly Lazy<Options> _options;
 
-        private string _optionsFilePath;
-        private string _originalOptionsSignature;
+        private string? _optionsFilePath;
+        private string? _originalOptionsSignature;
         
         public OptionsService()
         {
             _options = new Lazy<Options>(OptionsFactory);
         }
 
-        public string Culture
+        public string? Culture
         {
             get => _options.Value.Culture;
             set
@@ -36,7 +36,7 @@ namespace OnlyMSlideManager.Services.Options
             }
         }
 
-        public string AppWindowPlacement
+        public string? AppWindowPlacement
         {
             get => _options.Value.AppWindowPlacement;
             set
@@ -85,9 +85,9 @@ namespace OnlyMSlideManager.Services.Options
             return JsonConvert.SerializeObject(options);
         }
 
-        private void WriteOptions(Options options)
+        private void WriteOptions(Options? options)
         {
-            if (options != null)
+            if (options != null && _optionsFilePath != null)
             {
                 using var file = File.CreateText(_optionsFilePath);
 
@@ -99,7 +99,7 @@ namespace OnlyMSlideManager.Services.Options
 
         private Options OptionsFactory()
         {
-            Options result = null;
+            Options? result = null;
 
             try
             {
@@ -126,9 +126,9 @@ namespace OnlyMSlideManager.Services.Options
             return result;
         }
 
-        private Options ReadOptions()
+        private Options? ReadOptions()
         {
-            if (!File.Exists(_optionsFilePath))
+            if (_optionsFilePath == null || !File.Exists(_optionsFilePath))
             {
                 return WriteDefaultOptions();
             }
@@ -136,7 +136,7 @@ namespace OnlyMSlideManager.Services.Options
             using var file = File.OpenText(_optionsFilePath);
 
             var serializer = new JsonSerializer();
-            var result = (Options)serializer.Deserialize(file, typeof(Options));
+            var result = (Options?)serializer.Deserialize(file, typeof(Options));
             result?.Sanitize();
 
             SetCulture(result?.Culture);
@@ -153,7 +153,7 @@ namespace OnlyMSlideManager.Services.Options
             return result;
         }
 
-        private static void SetCulture(string cultureString)
+        private static void SetCulture(string? cultureString)
         {
             var culture = cultureString;
 

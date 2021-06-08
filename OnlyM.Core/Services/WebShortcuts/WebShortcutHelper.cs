@@ -10,14 +10,14 @@ namespace OnlyM.Core.Services.WebShortcuts
 
         private readonly string _path;
         private bool _initialised;
-        private string _webAddress;
+        private string? _webAddress;
 
         public WebShortcutHelper(string path)
         {
             _path = path;
         }
         
-        public string Uri
+        public string? Uri
         {
             get
             {

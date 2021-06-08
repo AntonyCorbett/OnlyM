@@ -36,14 +36,17 @@ namespace OnlyMSlideManager.Windows
         private void SaveWindowPos()
         {
             var optionsService = Ioc.Default.GetService<IOptionsService>();
-            optionsService.AppWindowPlacement = this.GetPlacement();
-            optionsService.Save();
+            if (optionsService != null)
+            {
+                optionsService.AppWindowPlacement = this.GetPlacement();
+                optionsService.Save();
+            }
         }
 
         private void AdjustMainWindowPositionAndSize()
         {
             var optionsService = Ioc.Default.GetService<IOptionsService>();
-            if (!string.IsNullOrEmpty(optionsService.AppWindowPlacement))
+            if (!string.IsNullOrEmpty(optionsService?.AppWindowPlacement))
             {
                 ResizeMode = WindowState == WindowState.Maximized
                     ? ResizeMode.NoResize

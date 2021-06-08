@@ -40,7 +40,7 @@ namespace OnlyM.CoreSys
             return false;
         }
 
-        public static BitmapSource GetImageAutoRotatedAndResized(
+        public static BitmapSource? GetImageAutoRotatedAndResized(
             string itemFilePath, int width, int height, bool shouldPad)
         {
             var bytes = GetRawImageAutoRotatedAndResized(itemFilePath, width, height, shouldPad);
@@ -52,7 +52,7 @@ namespace OnlyM.CoreSys
             return ByteArrayToImage(bytes);
         }
 
-        public static byte[] GetRawImageAutoRotatedAndResized(
+        public static byte[]? GetRawImageAutoRotatedAndResized(
             string itemFilePath, int width, int height, bool shouldPad)
         {
             try
@@ -103,7 +103,7 @@ namespace OnlyM.CoreSys
             return new TransformedBitmap(image, new ScaleTransform(factor, factor));
         }
 
-        public static byte[] CreateThumbnailOfImage(string path, int maxPixelDimension, ImageFormat imageFormat)
+        public static byte[]? CreateThumbnailOfImage(string path, int maxPixelDimension, ImageFormat imageFormat)
         {
             if (!System.IO.File.Exists(path))
             {
@@ -136,11 +136,11 @@ namespace OnlyM.CoreSys
             return result;
         }
 
-        public static byte[] ImageSourceToJpegBytes(ImageSource imageSource) => ImageSourceToBytes(new JpegBitmapEncoder(), imageSource);
+        public static byte[]? ImageSourceToJpegBytes(ImageSource? imageSource) => ImageSourceToBytes(new JpegBitmapEncoder(), imageSource);
         
-        public static byte[] ImageSourceToBytes(BitmapEncoder encoder, ImageSource imageSource)
+        public static byte[]? ImageSourceToBytes(BitmapEncoder encoder, ImageSource? imageSource)
         {
-            byte[] bytes = null;
+            byte[]? bytes = null;
 
             if (imageSource is BitmapSource bitmapSource)
             {
@@ -199,7 +199,7 @@ namespace OnlyM.CoreSys
             return image;
         }
 
-        public static BitmapImage ByteArrayToImage(byte[] imageData)
+        public static BitmapImage? ByteArrayToImage(byte[]? imageData)
         {
             if (imageData == null)
             {
@@ -246,7 +246,7 @@ namespace OnlyM.CoreSys
         /// <param name="tempFolder">Temp folder for thumbnail images.</param>
         /// <param name="useEmbeddedWhereAvailable">Use an embedded thumbnail if available.</param>
         /// <returns>The temporary thumbnail image file.</returns>
-        public static string CreateThumbnailForVideo(
+        public static string? CreateThumbnailForVideo(
             string originalPath, 
             string ffmpegFolder,
             string tempFolder,
@@ -310,7 +310,7 @@ namespace OnlyM.CoreSys
         }
 
         // ReSharper disable once InconsistentNaming
-        private static string CreateFFMpegThumbnailForVideo(
+        private static string? CreateFFMpegThumbnailForVideo(
             string originalPath, string ffmpegFolder, string tempFolder)
         {
             var tempThumbnailPath = GetTempVideoThumbnailFileName(originalPath, tempFolder);
@@ -334,7 +334,7 @@ namespace OnlyM.CoreSys
                 : null;
         }
 
-        private static string CreateEmbeddedThumbnailForVideo(
+        private static string? CreateEmbeddedThumbnailForVideo(
             string originalPath, string ffmpegFolder, string tempFolder)
         {
             var tempThumbnailPath = GetTempVideoThumbnailFileName(originalPath, tempFolder);
@@ -394,7 +394,7 @@ namespace OnlyM.CoreSys
             }
         }
 
-        private static string GetTempVideoThumbnailFileName(string originalFilePath, string tempThumbnailFolder)
+        private static string? GetTempVideoThumbnailFileName(string originalFilePath, string tempThumbnailFolder)
         {
             var origFileName = Path.GetFileName(originalFilePath);
             if (string.IsNullOrEmpty(origFileName))

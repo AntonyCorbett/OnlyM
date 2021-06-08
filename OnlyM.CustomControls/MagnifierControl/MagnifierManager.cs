@@ -28,13 +28,21 @@ namespace OnlyM.CustomControls.MagnifierControl
             typeof(UIElement), 
             new FrameworkPropertyMetadata(null, OnMagnifierChanged));
 
-        private MagnifierAdorner _adorner;
-        private UIElement _element;
+        private MagnifierAdorner? _adorner;
+        private UIElement? _element;
         
         public static void SetMagnifier(UIElement element, Magnifier value) => element.SetValue(CurrentProperty, value);
         
-        public static Magnifier GetMagnifier(UIElement element) => (Magnifier)element.GetValue(CurrentProperty);
-        
+        public static Magnifier? GetMagnifier(UIElement? element)
+        {
+            if (element == null)
+            {
+                return null;
+            }
+
+            return (Magnifier)element.GetValue(CurrentProperty);
+        }
+
         private static void OnMagnifierChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var target = d as UIElement;
@@ -45,7 +53,10 @@ namespace OnlyM.CustomControls.MagnifierControl
             }
 
             var manager = new MagnifierManager();
-            manager.AttachToMagnifier(target, e.NewValue as Magnifier);
+            if (e.NewValue is Magnifier m)
+            {
+                manager.AttachToMagnifier(target, m);
+            }
         }
 
         private void Element_MouseLeave(object sender, MouseEventArgs e)
@@ -81,7 +92,7 @@ namespace OnlyM.CustomControls.MagnifierControl
                     magnifier.SetCurrentValue(Magnifier.ZoomFactorProperty, newValue);
                 }
 
-                _adorner.UpdateViewBox();
+                _adorner?.UpdateViewBox();
             }
         }
 
@@ -100,24 +111,29 @@ namespace OnlyM.CustomControls.MagnifierControl
         private void ShowAdorner()
         {
             VerifyAdornerLayer();
-            _adorner.Visibility = Visibility.Visible;
+            if (_adorner != null)
+            {
+                _adorner.Visibility = Visibility.Visible;
+            }
         }
 
         private void VerifyAdornerLayer()
         {
-            if (_adorner.Parent != null)
+            if (_adorner?.Parent != null)
             {
                 return;
             }
 
-            var layer = AdornerLayer.GetAdornerLayer(_element);
-
-            layer?.Add(_adorner);
+            if (_element != null && _adorner != null)
+            {
+                var layer = AdornerLayer.GetAdornerLayer(_element);
+                layer?.Add(_adorner);
+            }
         }
 
         private void HideAdorner()
         {
-            if (_adorner.Visibility == Visibility.Visible)
+            if (_adorner?.Visibility == Visibility.Visible)
             {
                 _adorner.Visibility = Visibility.Collapsed;
             }

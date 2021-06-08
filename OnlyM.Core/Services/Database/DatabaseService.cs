@@ -52,7 +52,7 @@ namespace OnlyM.Core.Services.Database
             }
         }
 
-        public byte[] GetThumbnailFromCache(string originalPath, long originalLastChanged)
+        public byte[]? GetThumbnailFromCache(string originalPath, long originalLastChanged)
         {
             using (var c = CreateConnection())
             using (var cmd = c.CreateCommand())
@@ -127,7 +127,7 @@ namespace OnlyM.Core.Services.Database
             }
         }
 
-        public MediaStartOffsetData GetMediaStartOffsetData(string fileName)
+        public MediaStartOffsetData? GetMediaStartOffsetData(string fileName)
         {
             using (var c = CreateConnection())
             using (var cmd = c.CreateCommand())
@@ -158,7 +158,7 @@ namespace OnlyM.Core.Services.Database
             return null;
         }
 
-        public BrowserData GetBrowserData(string url)
+        public BrowserData? GetBrowserData(string url)
         {
             using (var c = CreateConnection())
             using (var cmd = c.CreateCommand())

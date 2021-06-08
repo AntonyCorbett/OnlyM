@@ -6,11 +6,11 @@ namespace OnlyM.Core.Services.Database
     {
         public int Id { get; set; }
 
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
 
         public int LengthSeconds { get; set; }
 
-        public List<int> StartOffsets { get; set; }
+        public List<int>? StartOffsets { get; set; }
 
 #pragma warning disable CA1822 // Mark members as static
 #pragma warning disable U2U1002 // Mark members as static

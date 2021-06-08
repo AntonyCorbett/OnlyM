@@ -29,8 +29,13 @@ namespace OnlyMSlideManager.Behaviours
                 typeof(ICommand),
                 typeof(WindowClosingBehaviour));
 
-        public static ICommand GetClosed(DependencyObject obj)
+        public static ICommand? GetClosed(DependencyObject? obj)
         {
+            if (obj == null)
+            {
+                return null;
+            }
+
             return (ICommand)obj.GetValue(ClosedProperty);
         }
 
@@ -39,8 +44,13 @@ namespace OnlyMSlideManager.Behaviours
             obj.SetValue(ClosedProperty, value);
         }
 
-        public static ICommand GetClosing(DependencyObject obj)
+        public static ICommand? GetClosing(DependencyObject? obj)
         {
+            if (obj == null)
+            {
+                return null;
+            }
+
             return (ICommand)obj.GetValue(ClosingProperty);
         }
 
@@ -49,8 +59,13 @@ namespace OnlyMSlideManager.Behaviours
             obj.SetValue(ClosingProperty, value);
         }
 
-        public static ICommand GetCancelClosing(DependencyObject obj)
+        public static ICommand? GetCancelClosing(DependencyObject? obj)
         {
+            if (obj == null)
+            {
+                return null;
+            }
+
             return (ICommand)obj.GetValue(CancelClosingProperty);
         }
 
@@ -91,7 +106,7 @@ namespace OnlyMSlideManager.Behaviours
             }
         }
 
-        private static void OnWindowClosed(object sender, EventArgs e)
+        private static void OnWindowClosed(object? sender, EventArgs e)
         {
             var closed = GetClosed(sender as Window);
             closed?.Execute(null);

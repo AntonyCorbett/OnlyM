@@ -13,7 +13,7 @@ namespace OnlyM.CoreSys.Services.Snackbar
         public void Enqueue(
             object content,
             object actionContent,
-            Action<object> actionHandler,
+            Action<object?> actionHandler,
             object actionArgument,
             bool promote,
             bool neverConsiderToBeDuplicate)

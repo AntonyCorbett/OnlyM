@@ -12,9 +12,9 @@ namespace OnlyMSlideManager.Services.Options
             Sanitize();
         }
 
-        public string AppWindowPlacement { get; set; }
+        public string? AppWindowPlacement { get; set; }
 
-        public string Culture { get; set; }
+        public string? Culture { get; set; }
 
         public LogEventLevel LogEventLevel { get; set; }
 

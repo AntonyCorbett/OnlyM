@@ -46,11 +46,11 @@ namespace OnlyMSlideManager.ViewModel
         private readonly IOptionsService _optionsService;
         private readonly LanguageItem[] _languages;
 
-        private string _defaultFileOpenFolder;
-        private string _defaultFileSaveFolder;
-        private string _lastSavedSlideshowSignature;
-        private string _currentSlideshowPath;
-        private SlideFileBuilder _currentSlideFileBuilder;
+        private string? _defaultFileOpenFolder;
+        private string? _defaultFileSaveFolder;
+        private string? _lastSavedSlideshowSignature;
+        private string? _currentSlideshowPath;
+        private SlideFileBuilder? _currentSlideFileBuilder;
         private bool? _autoPlay;
         private bool? _autoClose;
         private bool? _loop;
@@ -58,7 +58,7 @@ namespace OnlyMSlideManager.ViewModel
         private bool _busy;
         private bool _isProgressVisible;
         private double _progressPercentageValue;
-        private string _statusText;
+        private string? _statusText;
 
         public MainViewModel(
             IDialogService dialogService,
@@ -97,7 +97,7 @@ namespace OnlyMSlideManager.ViewModel
             StatusText = GetStandardStatusText();
         }
 
-        public string StatusText
+        public string? StatusText
         {
             get => _statusText;
             set => SetProperty(ref _statusText, value);
@@ -115,7 +115,7 @@ namespace OnlyMSlideManager.ViewModel
             set => SetProperty(ref _progressPercentageValue, value);
         }
 
-        public SlideFileBuilder CurrentSlideFileBuilder
+        public SlideFileBuilder? CurrentSlideFileBuilder
         {
             get => _currentSlideFileBuilder;
             set => SetProperty(ref _currentSlideFileBuilder, value);
@@ -197,7 +197,7 @@ namespace OnlyMSlideManager.ViewModel
                         }
                         else
                         {
-                            _currentSlideFileBuilder.DwellTimeMilliseconds = _dwellTimeSeconds.Value * 1000;
+                            _currentSlideFileBuilder.DwellTimeMilliseconds = _dwellTimeSeconds!.Value * 1000;
                         }
                     }
 
@@ -220,7 +220,7 @@ namespace OnlyMSlideManager.ViewModel
 
         public bool CanAutoClose => AutoPlay == true && Loop == false;
 
-        public string LanguageId
+        public string? LanguageId
         {
             get => _optionsService.Culture;
             set
@@ -237,23 +237,23 @@ namespace OnlyMSlideManager.ViewModel
 
         public ObservableCollectionEx<SlideItem> SlideItems { get; } = new();
 
-        public RelayCommand<string> DeleteSlideCommand { get; set; }
+        public RelayCommand<string> DeleteSlideCommand { get; private set; } = null!;
 
-        public RelayCommand NewFileCommand { get; set; }
+        public RelayCommand NewFileCommand { get; private set; } = null!;
 
-        public RelayCommand OpenFileCommand { get; set; }
+        public RelayCommand OpenFileCommand { get; private set; } = null!;
 
-        public RelayCommand SaveFileCommand { get; set; }
+        public RelayCommand SaveFileCommand { get; private set; } = null!;
 
-        public RelayCommand SaveFileAsCommand { get; set; }
+        public RelayCommand SaveFileAsCommand { get; private set; } = null!;
 
-        public RelayCommand ClosedCommand { get; set; }
+        public RelayCommand ClosedCommand { get; private set; } = null!;
 
-        public RelayCommand ClosingCommand { get; set; }
+        public RelayCommand ClosingCommand { get; private set; } = null!;
 
-        public RelayCommand CancelClosingCommand { get; set; }
+        public RelayCommand CancelClosingCommand { get; private set; } = null!;
 
-        public string CurrentSlideshowPath
+        public string? CurrentSlideshowPath
         {
             get => _currentSlideshowPath;
             set
@@ -318,15 +318,17 @@ namespace OnlyMSlideManager.ViewModel
             CancelClosingCommand = new RelayCommand(ExecuteCancelClosing);
         }
 
-        private bool CanDeleteSlide(string slideName) => !Busy;
+        private bool CanDeleteSlide(string? slideName) => !Busy;
         
-        private void DeleteSlide(string slideName)
+        private void DeleteSlide(string? slideName)
         {
             var slide = GetSlideByName(slideName);
             if (slide != null)
             {
                 SlideItems.Remove(slide);
-                CurrentSlideFileBuilder.RemoveSlide(slide.Name);
+
+                CheckCurrentSlideFileBuilder();
+                CurrentSlideFileBuilder!.RemoveSlide(slide.Name);
 
                 OnPropertyChanged(nameof(HasSlides));
                 OnPropertyChanged(nameof(HasNoSlides));
@@ -336,8 +338,13 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private SlideItem GetSlideByName(string slideName)
+        private SlideItem? GetSlideByName(string? slideName)
         {
+            if (slideName == null)
+            {
+                return null;
+            }
+
             return SlideItems.SingleOrDefault(x => slideName.Equals(x.Name, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -436,8 +443,13 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private Task SaveFileInternal(string path, bool showNotificationWhenComplete)
+        private Task SaveFileInternal(string? path, bool showNotificationWhenComplete)
         {
+            if (path == null)
+            {
+                return Task.CompletedTask;
+            }
+
             return Task.Run(() =>
             {
                 using (_userInterfaceService.BeginBusy())
@@ -446,7 +458,8 @@ namespace OnlyMSlideManager.ViewModel
                     IsProgressVisible = true;
                     try
                     {
-                        CurrentSlideFileBuilder.Build(path, true);
+                        CheckCurrentSlideFileBuilder();
+                        CurrentSlideFileBuilder!.Build(path, true);
 
                         if (showNotificationWhenComplete)
                         {
@@ -514,7 +527,7 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private async Task GenerateSlideItems(Action<double> onProgressPercentageChanged = null)
+        private async Task GenerateSlideItems(Action<double>? onProgressPercentageChanged = null)
         {
             using (new ObservableCollectionSuppression<SlideItem>(SlideItems))
             {
@@ -568,9 +581,9 @@ namespace OnlyMSlideManager.ViewModel
                 foreach (var slide in SlideItems)
                 {
                     var bmp = GraphicsUtils.ImageSourceToJpegBytes(slide.ThumbnailImage);
-                    if (bmp != null)
+                    if (bmp != null && slide.OriginalFilePath != null)
                     {
-                        result.Add(slide.OriginalFilePath, bmp);
+                        result.TryAdd(slide.OriginalFilePath, bmp);
                     }
                 }
             }
@@ -587,15 +600,21 @@ namespace OnlyMSlideManager.ViewModel
             {
                 Parallel.ForEach(batch, slide =>
                 {
-                    if (!thumbnailCache.TryGetValue(slide.OriginalFilePath, out var thumbnailBytes))
+                    if (slide.OriginalFilePath != null)
                     {
-                        // Note that we pad the thumbnails (so they are all identical sizes). If we don't,
-                        // a WPF Presentation rendering issue causes an OutOfMemoryException.
-                        thumbnailBytes = GraphicsUtils.GetRawImageAutoRotatedAndResized(
-                            slide.OriginalFilePath, ThumbnailWidth, ThumbnailHeight, shouldPad: true);
-                    }
+                        if (!thumbnailCache.TryGetValue(slide.OriginalFilePath, out var thumbnailBytes))
+                        {
+                            // Note that we pad the thumbnails (so they are all identical sizes). If we don't,
+                            // a WPF Presentation rendering issue causes an OutOfMemoryException.
+                            thumbnailBytes = GraphicsUtils.GetRawImageAutoRotatedAndResized(
+                                slide.OriginalFilePath, ThumbnailWidth, ThumbnailHeight, shouldPad: true);
+                        }
 
-                    result.TryAdd(slide, thumbnailBytes);
+                        if (thumbnailBytes != null)
+                        {
+                            result.TryAdd(slide, thumbnailBytes);
+                        }
+                    }
                 });
             });
 
@@ -625,14 +644,14 @@ namespace OnlyMSlideManager.ViewModel
             return newSlide;
         }
 
-        private void HandleSlideItemModifiedEvent(object sender, EventArgs e)
+        private void HandleSlideItemModifiedEvent(object? sender, EventArgs e)
         {
             if (sender is not SlideItem item)
             {
                 return;
             }
 
-            var slide = _currentSlideFileBuilder.GetSlide(item.Name);
+            var slide = _currentSlideFileBuilder?.GetSlide(item.Name);
             if (slide == null)
             {
                 return;
@@ -714,7 +733,7 @@ namespace OnlyMSlideManager.ViewModel
             });
         }
 
-        private async Task InitNewSlideshow(string optionalPathToExistingSlideshow)
+        private async Task InitNewSlideshow(string? optionalPathToExistingSlideshow)
         {
             using (_userInterfaceService.BeginBusy())
             using (new StatusTextWriter(this, Properties.Resources.LOADING))
@@ -723,7 +742,7 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private async Task InitNewSlideshowInternal(string optionalPathToExistingSlideshow)
+        private async Task InitNewSlideshowInternal(string? optionalPathToExistingSlideshow)
         {
             using (new ObservableCollectionSuppression<SlideItem>(SlideItems))
             {
@@ -778,7 +797,7 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private void HandleBuildProgressEvent(object sender, BuildProgressEventArgs e)
+        private void HandleBuildProgressEvent(object? sender, BuildProgressEventArgs e)
         {
             ProgressPercentageValue = e.PercentageComplete;
         }
@@ -797,7 +816,7 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private string CreateSlideshowSignature()
+        private string? CreateSlideshowSignature()
         {
             return _currentSlideFileBuilder?.CreateSignature();
         }
@@ -812,23 +831,26 @@ namespace OnlyMSlideManager.ViewModel
 
         private void OnReorderMessage(object sender, ReorderMessage message)
         {
+            if (message.SourceItem == null)
+            {
+                return;
+            }
+
             var newOrder = new List<SlideItem>();
 
             var slideIndex = 1;
-
+            
             foreach (var slide in SlideItems)
             {
                 if (slide.DropZoneId == message.TargetId)
                 {
                     message.SourceItem.SlideIndex = slideIndex++;
-
                     newOrder.Add(message.SourceItem);
                 }
 
                 if (slide != message.SourceItem)
                 {
                     slide.SlideIndex = slideIndex++;
-
                     newOrder.Add(slide);
                 }
             }
@@ -843,10 +865,19 @@ namespace OnlyMSlideManager.ViewModel
                 }
             }
 
-            CurrentSlideFileBuilder.SyncSlideOrder(newOrder.Select(x => x.Name));
+            CheckCurrentSlideFileBuilder();
+            CurrentSlideFileBuilder!.SyncSlideOrder(newOrder.Select(x => x.Name));
 
             OnPropertyChanged(nameof(IsDirty));
             CommandManager.InvalidateRequerySuggested();
+        }
+
+        private void CheckCurrentSlideFileBuilder()
+        {
+            if (CurrentSlideFileBuilder == null)
+            {
+                throw new NotSupportedException("CurrentSlideFileBuilder not initialised");
+            }
         }
 
         private void ExecuteClosed()
@@ -900,7 +931,7 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private void HandleBusyStatusChangedEvent(object sender, EventArgs e)
+        private void HandleBusyStatusChangedEvent(object? sender, EventArgs e)
         {
             Busy = _userInterfaceService.IsBusy();
             CommandManager.InvalidateRequerySuggested();
@@ -908,10 +939,15 @@ namespace OnlyMSlideManager.ViewModel
 
         private async void OnDropImageFilesMessage(object sender, DropImagesMessage message)
         {
+            if (message.FileList == null)
+            {
+                return;
+            }
+
             await DropImages(message.FileList, message.TargetId);
         }
 
-        private async Task DropImages(List<string> fileList, string targetDropZoneId)
+        private async Task DropImages(List<string> fileList, string? targetDropZoneId)
         {
             if (!Busy)
             {
@@ -953,7 +989,7 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        private int AddImages(List<string> files, string messageTargetId)
+        private int AddImages(List<string> files, string? messageTargetId)
         {
             var count = 0;
             if (CurrentSlideFileBuilder == null)
@@ -962,6 +998,11 @@ namespace OnlyMSlideManager.ViewModel
             }
 
             var dropTargetSlide = SlideItems.SingleOrDefault(x => x.DropZoneId == messageTargetId);
+            if (dropTargetSlide == null)
+            {
+                return count;
+            }
+
             var dropTargetSlideIndex = SlideItems.IndexOf(dropTargetSlide);
 
             foreach (var file in files)

@@ -13,15 +13,15 @@ namespace OnlyMSlideManager.Models
         private bool _fadeOutReverse;
         private int? _dwellTimeSeconds;
 
-        public event EventHandler SlideItemModifiedEvent;
+        public event EventHandler? SlideItemModifiedEvent;
         
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public bool IsEndMarker { get; set; }
 
-        public string OriginalFilePath { get; set; }
+        public string? OriginalFilePath { get; set; }
 
-        public ImageSource ThumbnailImage { get; set; }
+        public ImageSource? ThumbnailImage { get; set; }
 
         public int SlideIndex { get; set; }
 
@@ -97,7 +97,7 @@ namespace OnlyMSlideManager.Models
             }
         }
 
-        public string DropZoneId { get; set; }
+        public string? DropZoneId { get; set; }
 
         private void OnSlideItemModifiedEvent()
         {

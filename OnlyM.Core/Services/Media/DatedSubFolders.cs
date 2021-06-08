@@ -6,7 +6,7 @@ namespace OnlyM.Core.Services.Media
 {
     internal static class DatedSubFolders
     {
-        public static string GetDatedSubFolder(string rootFolder, DateTime theDate)
+        public static string? GetDatedSubFolder(string rootFolder, DateTime theDate)
         {
             if (Directory.Exists(rootFolder))
             {

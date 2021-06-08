@@ -23,7 +23,7 @@ namespace OnlyMSlideManager.Services.DragAndDrop
         };
 
         private readonly IUserInterfaceService _userInterfaceService;
-        private Control _dragSourceCard;
+        private Control? _dragSourceCard;
         private Point _startDragPoint;
         private bool _isDragging;
 
@@ -32,7 +32,7 @@ namespace OnlyMSlideManager.Services.DragAndDrop
             _userInterfaceService = userInterfaceService;
         }
 
-        public void DragSourcePreviewMouseDown(Control card, Point position)
+        public void DragSourcePreviewMouseDown(Control? card, Point position)
         {
             if (card != null)
             {
@@ -139,7 +139,7 @@ namespace OnlyMSlideManager.Services.DragAndDrop
             }
 
             // Note that you can have more than one file...
-            var files = (string[])data.GetData(DataFormats.FileDrop);
+            var files = (string[]?)data.GetData(DataFormats.FileDrop);
 
             if (files != null && files.Length > 0)
             {
@@ -169,7 +169,7 @@ namespace OnlyMSlideManager.Services.DragAndDrop
             }
         }
 
-        private string GetSupportedFile(string file)
+        private string? GetSupportedFile(string file)
         {
             var ext = System.IO.Path.GetExtension(file);
             if (string.IsNullOrEmpty(ext) || !IsFileExtensionSupported(ext))
