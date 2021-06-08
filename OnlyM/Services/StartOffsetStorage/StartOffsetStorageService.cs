@@ -1,11 +1,10 @@
-﻿namespace OnlyM.Services.StartOffsetStorage
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using OnlyM.Core.Services.Database;
-    using Serilog;
+﻿using System;
+using System.Collections.Generic;
+using OnlyM.Core.Services.Database;
+using Serilog;
 
+namespace OnlyM.Services.StartOffsetStorage
+{
     internal class StartOffsetStorageService : IStartOffsetStorageService
     {
         private readonly IDatabaseService _databaseService;
@@ -17,8 +16,6 @@
 
         public IReadOnlyCollection<int> ReadOffsets(string mediaFileName, int mediaDurationSeconds)
         {
-            var result = new List<int>();
-
             MediaStartOffsetData data = null;
 
             try
@@ -32,14 +29,16 @@
 
             if (data?.StartOffsets == null)
             {
-                return result;
+                return Array.Empty<int>();
             }
 
             if (data.LengthSeconds != mediaDurationSeconds)
             {
                 // file may have changed...
-                return result;
+                return Array.Empty<int>();
             }
+
+            var result = new List<int>(data.StartOffsets.Count);
 
             foreach (var offset in data.StartOffsets)
             {

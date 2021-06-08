@@ -78,7 +78,9 @@ namespace OnlyMSlideManager.ViewModel
 
 #pragma warning disable S1481 // Unused local variables should be removed
             // init options so that UI locale is set (forces lazy init)
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             var _ = _optionsService.Culture;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
 #pragma warning restore S1481 // Unused local variables should be removed
 
             InitCommands();
@@ -1005,7 +1007,7 @@ namespace OnlyMSlideManager.ViewModel
                 LanguageName = cNative.EnglishName,
             });
             
-            result.Sort((x, y) => string.Compare(x.LanguageName, y.LanguageName, StringComparison.Ordinal));
+            result.Sort((x, y) => string.CompareOrdinal(x.LanguageName, y.LanguageName));
 
             return result.ToArray();
         }

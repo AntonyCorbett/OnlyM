@@ -1,33 +1,32 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using OnlyM.AutoUpdates;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.CommandLine;
+using OnlyM.Core.Services.Options;
+using OnlyM.Core.Utils;
+using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.Models;
+using OnlyM.PubSubMessages;
+using OnlyM.Services.DragAndDrop;
+using OnlyM.Services.HiddenMediaItems;
+using OnlyM.Services.MediaChanging;
+using OnlyM.Services.Pages;
+using Serilog;
+using Serilog.Events;
 
 namespace OnlyM.ViewModel
 {
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Interop;
-    using System.Windows.Media;
-    using MaterialDesignThemes.Wpf;
-    using OnlyM.AutoUpdates;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.CommandLine;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.Core.Utils;
-    using OnlyM.CoreSys.Services.Snackbar;
-    using OnlyM.Models;
-    using OnlyM.PubSubMessages;
-    using OnlyM.Services.DragAndDrop;
-    using OnlyM.Services.HiddenMediaItems;
-    using OnlyM.Services.MediaChanging;
-    using OnlyM.Services.Pages;
-    using Serilog;
-    using Serilog.Events;
-    
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class MainViewModel : ObservableObject
     {

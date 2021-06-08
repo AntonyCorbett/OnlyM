@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Models
-{
-    using OnlyM.Core.Models;
+﻿using OnlyM.Core.Models;
 
+namespace OnlyM.Models
+{
     internal class RenderingMethodItem
     {
         public string Name { get; set; }

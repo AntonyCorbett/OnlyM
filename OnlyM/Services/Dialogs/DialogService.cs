@@ -1,11 +1,11 @@
-﻿namespace OnlyM.Services.Dialogs
-{
-    using System;
-    using System.Threading.Tasks;
-    using MaterialDesignThemes.Wpf;
-    using OnlyM.Dialogs;
-    using OnlyM.ViewModel;
+﻿using System;
+using System.Threading.Tasks;
+using MaterialDesignThemes.Wpf;
+using OnlyM.Dialogs;
+using OnlyM.ViewModel;
 
+namespace OnlyM.Services.Dialogs
+{
     internal class DialogService : IDialogService
     {
         private bool _isDialogVisible;
@@ -18,11 +18,10 @@
             var dc = (StartOffsetViewModel)dialog.DataContext;
 
             dc.Init(mediaFileNameWithExtension, maxStartTimeSeconds);
-            
+
             await DialogHost.Show(
-                    dialog,
-                    (object sender, DialogClosingEventArgs args) => { _isDialogVisible = false; })
-                .ConfigureAwait(false);
+                dialog,
+                (object sender, DialogClosingEventArgs args) => _isDialogVisible = false);
 
             return dc.Result;
         }

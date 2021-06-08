@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Services.WebBrowser
-{
-    using CefSharp;
+﻿using CefSharp;
 
+namespace OnlyM.Services.WebBrowser
+{
     public class PdfSchemeHandlerFactory : ISchemeHandlerFactory
     {
         public const string SchemeName = "pdf";

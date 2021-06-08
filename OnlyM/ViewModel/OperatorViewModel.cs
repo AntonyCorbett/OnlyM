@@ -1,37 +1,36 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.Media;
+using OnlyM.Core.Services.Options;
+using OnlyM.Core.Utils;
+using OnlyM.CoreSys;
+using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.MediaElementAdaption;
+using OnlyM.Models;
+using OnlyM.PubSubMessages;
+using OnlyM.Services.Dialogs;
+using OnlyM.Services.FrozenVideoItems;
+using OnlyM.Services.HiddenMediaItems;
+using OnlyM.Services.MediaChanging;
+using OnlyM.Services.MetaDataQueue;
+using OnlyM.Services.Pages;
+using OnlyM.Services.PdfOptions;
+using OnlyM.Services.WebBrowser;
+using Serilog;
 
 namespace OnlyM.ViewModel
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Media;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.Core.Utils;
-    using OnlyM.CoreSys;
-    using OnlyM.CoreSys.Services.Snackbar;
-    using OnlyM.MediaElementAdaption;
-    using OnlyM.Models;
-    using OnlyM.PubSubMessages;
-    using OnlyM.Services.Dialogs;
-    using OnlyM.Services.FrozenVideoItems;
-    using OnlyM.Services.HiddenMediaItems;
-    using OnlyM.Services.MediaChanging;
-    using OnlyM.Services.MetaDataQueue;
-    using OnlyM.Services.Pages;
-    using OnlyM.Services.PdfOptions;
-    using OnlyM.Services.WebBrowser;
-    using Serilog;
-
     // ReSharper disable once ClassNeverInstantiated.Global
     internal sealed class OperatorViewModel : ObservableObject, IDisposable
     {
@@ -48,8 +47,8 @@ namespace OnlyM.ViewModel
         private readonly ISnackbarService _snackbarService;
         private readonly IDialogService _dialogService;
         
-        private readonly MetaDataQueueProducer _metaDataProducer = new MetaDataQueueProducer();
-        private readonly CancellationTokenSource _metaDataCancellationTokenSource = new CancellationTokenSource();
+        private readonly MetaDataQueueProducer _metaDataProducer = new();
+        private readonly CancellationTokenSource _metaDataCancellationTokenSource = new();
         
         private MetaDataQueueConsumer _metaDataConsumer;
         private string _blankScreenImagePath;
@@ -1087,7 +1086,7 @@ namespace OnlyM.ViewModel
                 sorted.Insert(0, blank);
             }
 
-            for (int n = 0; n < sorted.Count; ++n)
+            for (var n = 0; n < sorted.Count; ++n)
             {
                 MediaItems.Move(MediaItems.IndexOf(sorted[n]), n);
             }

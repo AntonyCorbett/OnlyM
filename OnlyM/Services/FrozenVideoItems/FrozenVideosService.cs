@@ -1,8 +1,8 @@
-﻿namespace OnlyM.Services.FrozenVideoItems
-{
-    using System.Collections.Generic;
-    using OnlyM.Models;
+﻿using System.Collections.Generic;
+using OnlyM.Models;
 
+namespace OnlyM.Services.FrozenVideoItems
+{
     internal class FrozenVideosService : IFrozenVideosService
     {
         private readonly HashSet<string> _frozenItems = new HashSet<string>();

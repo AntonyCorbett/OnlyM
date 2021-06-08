@@ -13,7 +13,7 @@ namespace OnlyM.Core.Services.Media
     {
         private readonly IOptionsService _optionsService;
         private readonly IMediaProviderService _mediaProviderService;
-        private readonly ManualResetEventSlim _signalFolderChange = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim _signalFolderChange = new(false);
         private FileSystemWatcher _watcher;
         private int _changeVersion;
         private MediaFolders _foldersToWatch;
@@ -49,8 +49,7 @@ namespace OnlyM.Core.Services.Media
                 }
             }
         }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_signalFolderChange", Justification = "False Positive")]
+        
         public void Dispose()
         {
             _signalFolderChange?.Dispose();

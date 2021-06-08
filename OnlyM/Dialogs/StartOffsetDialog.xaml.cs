@@ -1,9 +1,7 @@
-﻿namespace OnlyM.Dialogs
-{
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Media;
+﻿using System.Windows.Controls;
 
+namespace OnlyM.Dialogs
+{
     /// <summary>
     /// Interaction logic for StartOffsetDialog.xaml
     /// </summary>

@@ -138,14 +138,15 @@ namespace OnlyM.Core.Services.Media
 
         private IReadOnlyCollection<MediaFile> GetMediaFilesInFolder(string folder)
         {
-            var result = new List<MediaFile>();
-
             if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
             {
-                return result;
+                return Array.Empty<MediaFile>();
             }
-
+            
             var files = Directory.GetFiles(folder);
+
+            var result = new List<MediaFile>(files.Length);
+
             foreach (var file in files)
             {
                 var mediaType = GetSupportedMediaType(file);

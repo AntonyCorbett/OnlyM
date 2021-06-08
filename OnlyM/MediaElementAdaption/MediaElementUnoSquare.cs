@@ -1,14 +1,13 @@
-﻿using Unosquare.FFME.Common;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
+using OnlyM.Core.Models;
+using OnlyM.Core.Utils;
+using Serilog.Events;
+using Unosquare.FFME.Common;
 
 namespace OnlyM.MediaElementAdaption
 {
-    using System;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Utils;
-    using Serilog.Events;
-    
     internal sealed class MediaElementUnoSquare : IMediaElement
     {
         private readonly Unosquare.FFME.MediaElement _mediaElement;

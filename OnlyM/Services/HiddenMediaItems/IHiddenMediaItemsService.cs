@@ -1,9 +1,9 @@
-﻿namespace OnlyM.Services.HiddenMediaItems
-{
-    using System;
-    using System.Collections.Generic;
-    using OnlyM.Models;
+﻿using System;
+using System.Collections.Generic;
+using OnlyM.Models;
 
+namespace OnlyM.Services.HiddenMediaItems
+{
     internal interface IHiddenMediaItemsService
     {
         event EventHandler HiddenItemsChangedEvent;

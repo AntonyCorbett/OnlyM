@@ -1,13 +1,13 @@
-﻿namespace OnlyM.Services.ImagesCache
-{
-    using System;
-    using System.Collections.Concurrent;
-    using System.IO;
-    using System.Linq;
-    using System.Windows.Media.Imaging;
-    using OnlyM.CoreSys;
-    using Serilog;
+﻿using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Linq;
+using System.Windows.Media.Imaging;
+using OnlyM.CoreSys;
+using Serilog;
 
+namespace OnlyM.Services.ImagesCache
+{
     internal class ImageCache
     {
         private const int MaxItemCount = 18;
@@ -16,7 +16,7 @@
         private const int MaxImageHeight = 1080;
 
         private readonly ConcurrentDictionary<string, ImageAndLastUsed> _cache = 
-            new ConcurrentDictionary<string, ImageAndLastUsed>(StringComparer.OrdinalIgnoreCase);
+            new(StringComparer.OrdinalIgnoreCase);
 
         public BitmapSource GetImage(string fullPath)
         {

@@ -1,30 +1,29 @@
-﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.Database;
+using OnlyM.Core.Services.Monitors;
+using OnlyM.Core.Services.Options;
+using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.CoreSys.WindowsPositioning;
+using OnlyM.MediaElementAdaption;
+using OnlyM.Models;
+using OnlyM.Services;
+using OnlyM.Services.Pages;
+using OnlyM.Services.WebBrowser;
+using OnlyM.Services.WebNavHeaderManager;
+using OnlyM.ViewModel;
+using Serilog;
 
 namespace OnlyM.Windows
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Input;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Database;
-    using OnlyM.Core.Services.Monitors;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.CoreSys.Services.Snackbar;
-    using OnlyM.CoreSys.WindowsPositioning;
-    using OnlyM.MediaElementAdaption;
-    using OnlyM.Models;
-    using OnlyM.Services;
-    using OnlyM.Services.Pages;
-    using OnlyM.Services.WebBrowser;
-    using OnlyM.Services.WebNavHeaderManager;
-    using OnlyM.ViewModel;
-    using Serilog;
-    
     /// <summary>
     /// Interaction logic for MediaWindow.xaml
     /// </summary>

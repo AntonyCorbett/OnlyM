@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.CommandLine;

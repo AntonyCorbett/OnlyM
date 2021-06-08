@@ -23,9 +23,7 @@ namespace OnlyM.Core.Services.Monitors
     public static class ScreenQuery
     {
 #pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
-#pragma warning disable SX1309 // Field names must begin with underscore
 #pragma warning disable SA1202 // Elements must be ordered by access
-#pragma warning disable SA1201 // Elements must appear in the correct order
 #pragma warning disable SA1313 // Parameter names must begin with lower-case letter
 #pragma warning disable IDE0044 // Add readonly modifier
         private const int ErrorSuccess = 0;
@@ -355,9 +353,7 @@ namespace OnlyM.Core.Services.Monitors
 #pragma warning restore IDE0044 // Add readonly modifier
 
 #pragma warning restore SA1313 // Parameter names must begin with lower-case letter
-#pragma warning restore SA1201 // Elements must appear in the correct order
 #pragma warning restore SA1202 // Elements must be ordered by access
-#pragma warning restore SX1309 // Field names must begin with underscore
 #pragma warning restore SA1307 // Accessible fields must begin with upper-case letter
     }
 }

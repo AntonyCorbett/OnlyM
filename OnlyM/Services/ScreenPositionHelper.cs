@@ -1,12 +1,12 @@
-﻿namespace OnlyM.Services
-{
-    using System;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Media;
-    using OnlyM.Core.Models;
-    using OnlyM.Models;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using OnlyM.Core.Models;
+using OnlyM.Models;
 
+namespace OnlyM.Services
+{
     internal static class ScreenPositionHelper
     {
         public static void SetScreenPosition(FrameworkElement element, ScreenPosition position)
@@ -20,10 +20,10 @@
                 }
                 else
                 {
-                    double leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
-                    double topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
-                    double rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
-                    double bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
+                    var leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
+                    var topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
+                    var rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
+                    var bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
 
                     element.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin);
                 }
@@ -42,10 +42,10 @@
                 }
                 else
                 {
-                    double leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
-                    double topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
-                    double rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
-                    double bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
+                    var leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
+                    var topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
+                    var rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
+                    var bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
 
                     var displayHeight = parent.ActualHeight - topMargin - bottomMargin;
 

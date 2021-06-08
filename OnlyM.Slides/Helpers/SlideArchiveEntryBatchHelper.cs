@@ -80,7 +80,7 @@ namespace OnlyM.Slides.Helpers
                 return null;
             }
 
-            var result = new List<Slide>();
+            var result = new List<Slide>(_batchSize);
 
             var count = 0;
             while (_currentIndex < _slides.Count && count < _batchSize)

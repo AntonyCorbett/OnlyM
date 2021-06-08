@@ -1,26 +1,26 @@
-﻿namespace OnlyM.Services
-{
-    using System;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.IO;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Interop;
-    using System.Windows.Media.Animation;
-    using CefSharp;
-    using CefSharp.Wpf;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Database;
-    using OnlyM.Core.Services.Monitors;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.Core.Services.WebShortcuts;
-    using OnlyM.CoreSys.Services.Snackbar;
-    using OnlyM.Models;
-    using OnlyM.Services.WebBrowser;
-    using Serilog;
+﻿using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media.Animation;
+using CefSharp;
+using CefSharp.Wpf;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.Database;
+using OnlyM.Core.Services.Monitors;
+using OnlyM.Core.Services.Options;
+using OnlyM.Core.Services.WebShortcuts;
+using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.Models;
+using OnlyM.Services.WebBrowser;
+using Serilog;
 
+namespace OnlyM.Services
+{
     internal sealed class WebDisplayManager
     {
         private readonly ChromiumWebBrowser _browser;

@@ -1,8 +1,8 @@
-﻿namespace OnlyM.Services.ImagesCache
-{
-    using System;
-    using System.Windows.Media.Imaging;
+﻿using System;
+using System.Windows.Media.Imaging;
 
+namespace OnlyM.Services.ImagesCache
+{
     internal class ImageAndLastUsed
     {
         public BitmapSource BitmapImage { get; set; }

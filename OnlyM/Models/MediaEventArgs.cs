@@ -1,8 +1,8 @@
-﻿namespace OnlyM.Models
-{
-    using System;
-    using OnlyM.Core.Models;
+﻿using System;
+using OnlyM.Core.Models;
 
+namespace OnlyM.Models
+{
     public class MediaEventArgs : EventArgs
     {
         public Guid MediaItemId { get; set; }

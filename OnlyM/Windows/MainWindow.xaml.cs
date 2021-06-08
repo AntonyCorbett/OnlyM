@@ -1,18 +1,17 @@
-﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+﻿using System.Windows;
+using System.Windows.Input;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using OnlyM.Core.Services.Options;
+using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.CoreSys.WindowsPositioning;
+using OnlyM.PubSubMessages;
+using OnlyM.Services.DragAndDrop;
+using OnlyM.Services.MediaChanging;
+using OnlyM.Services.Pages;
 
 namespace OnlyM.Windows
 {
-    using System.Windows;
-    using System.Windows.Input;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.CoreSys.Services.Snackbar;
-    using OnlyM.CoreSys.WindowsPositioning;
-    using OnlyM.PubSubMessages;
-    using OnlyM.Services.DragAndDrop;
-    using OnlyM.Services.MediaChanging;
-    using OnlyM.Services.Pages;
-    
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

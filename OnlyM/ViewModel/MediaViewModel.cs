@@ -1,15 +1,14 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using System;
+using System.Windows;
+using CefSharp.Wpf;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.Options;
+using OnlyM.CustomControls.MagnifierControl;
 
 namespace OnlyM.ViewModel
 {
-    using System;
-    using System.Windows;
-    using CefSharp.Wpf;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.CustomControls.MagnifierControl;
-
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class MediaViewModel : ObservableObject
     {

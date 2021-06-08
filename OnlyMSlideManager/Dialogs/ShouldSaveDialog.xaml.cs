@@ -1,7 +1,7 @@
-﻿namespace OnlyMSlideManager.Dialogs
-{
-    using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
+namespace OnlyMSlideManager.Dialogs
+{
     /// <summary>
     /// Interaction logic for ShouldSaveDialog.xaml
     /// </summary>

@@ -1,5 +1,4 @@
-﻿using PhotoSauce.MagicScaler;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -8,6 +7,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using PhotoSauce.MagicScaler;
 using Serilog;
 using TagLib.Image;
 

@@ -1,15 +1,15 @@
-﻿namespace OnlyM.Services.HiddenMediaItems
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using OnlyM.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using OnlyM.Models;
 
+namespace OnlyM.Services.HiddenMediaItems
+{
     internal class HiddenMediaItemsService : IHiddenMediaItemsService
     {
-        private readonly HashSet<string> _allHiddenItems = new HashSet<string>();
+        private readonly HashSet<string> _allHiddenItems = new();
 
-        private readonly HashSet<string> _hiddenItemsInCurrentMediaFolder = new HashSet<string>();
+        private readonly HashSet<string> _hiddenItemsInCurrentMediaFolder = new();
 
         public event EventHandler HiddenItemsChangedEvent;
 

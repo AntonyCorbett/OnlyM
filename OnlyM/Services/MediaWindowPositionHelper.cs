@@ -1,18 +1,18 @@
-﻿namespace OnlyM.Services
-{
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Forms;
-    using System.Windows.Media;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.CommandLine;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.Windows;
-    using Serilog;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Media;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.CommandLine;
+using OnlyM.Core.Services.Options;
+using OnlyM.Windows;
+using Serilog;
 
+namespace OnlyM.Services
+{
     /// <summary>
     /// Responsible for positioning the media window and working around the WPF MediaFoundation
     /// issue that affects rendering of H265 video.

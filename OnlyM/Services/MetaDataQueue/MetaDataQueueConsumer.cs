@@ -1,20 +1,19 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.Media;
+using OnlyM.Core.Services.Options;
+using OnlyM.CoreSys;
+using OnlyM.Models;
+using OnlyM.Slides;
+using Serilog;
 
 namespace OnlyM.Services.MetaDataQueue
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.IO;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Media;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.CoreSys;
-    using OnlyM.Models;
-    using OnlyM.Slides;
-    using Serilog;
-
     internal sealed class MetaDataQueueConsumer : IDisposable
     {
         private readonly IThumbnailService _thumbnailService;
@@ -51,8 +50,7 @@ namespace OnlyM.Services.MetaDataQueue
         {
             RunConsumer();
         }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_problemFiles", Justification = "False Positive")]
+        
         public void Dispose()
         {
             _collection?.Dispose();

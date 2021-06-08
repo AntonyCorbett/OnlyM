@@ -1,20 +1,20 @@
-﻿namespace OnlyM.Services.DragAndDrop
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using OnlyM.Core.Services.Media;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.Core.Services.WebShortcuts;
-    using OnlyM.Core.Utils;
-    using OnlyM.CoreSys.Services.Snackbar;
-    using OnlyM.Models;
-    using OnlyM.Slides;
-    using Serilog;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using OnlyM.Core.Services.Media;
+using OnlyM.Core.Services.Options;
+using OnlyM.Core.Services.WebShortcuts;
+using OnlyM.Core.Utils;
+using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.Models;
+using OnlyM.Slides;
+using Serilog;
 
+namespace OnlyM.Services.DragAndDrop
+{
     // ReSharper disable once ClassNeverInstantiated.Global
     internal sealed class DragAndDropService : IDragAndDropService
     {
@@ -460,7 +460,7 @@
             if (data.GetDataPresent(DataFormats.FileDrop))
             {
                 // Note that you can have more than one file...
-                string[] files = (string[])data.GetData(DataFormats.FileDrop);
+                var files = (string[])data.GetData(DataFormats.FileDrop);
 
                 if (files == null || files.Length == 0)
                 {

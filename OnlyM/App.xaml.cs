@@ -1,9 +1,20 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
+using CefSharp;
+using CefSharp.Wpf;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using OnlyM.AutoUpdates;
 using OnlyM.Core.Services.CommandLine;
 using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Media;
 using OnlyM.Core.Services.Monitors;
+using OnlyM.Core.Services.Options;
+using OnlyM.Core.Utils;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.Services.Dialogs;
 using OnlyM.Services.DragAndDrop;
@@ -13,27 +24,12 @@ using OnlyM.Services.MediaChanging;
 using OnlyM.Services.Pages;
 using OnlyM.Services.PdfOptions;
 using OnlyM.Services.StartOffsetStorage;
+using OnlyM.Services.WebBrowser;
 using OnlyM.ViewModel;
+using Serilog;
 
 namespace OnlyM
 {
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Threading;
-    using System.Windows;
-    using System.Windows.Threading;
-    using CefSharp;
-    using CefSharp.Wpf;
-    using OnlyM.AutoUpdates;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.Core.Utils;
-    using OnlyM.Models;
-    using OnlyM.Services.WebBrowser;
-    using Serilog;
-    using Unosquare.FFME;
-
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>

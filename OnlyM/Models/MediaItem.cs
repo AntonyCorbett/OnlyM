@@ -1,25 +1,24 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Media;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using OnlyM.Core.Extensions;
+using OnlyM.Core.Models;
 
 namespace OnlyM.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Windows.Media;
-    using OnlyM.Core.Extensions;
-    using OnlyM.Core.Models;
-
     public sealed class MediaItem : ObservableObject
     {
-        private static readonly SolidColorBrush ImageIconBrush = new SolidColorBrush(Colors.DarkGreen);
-        private static readonly SolidColorBrush AudioIconBrush = new SolidColorBrush(Colors.CornflowerBlue);
-        private static readonly SolidColorBrush VideoIconBrush = new SolidColorBrush(Colors.Chocolate);
-        private static readonly SolidColorBrush SlideshowIconBrush = new SolidColorBrush(Colors.BlueViolet);
-        private static readonly SolidColorBrush WebIconBrush = new SolidColorBrush(Colors.Firebrick);
-        private static readonly SolidColorBrush UnknownIconBrush = new SolidColorBrush(Colors.Crimson);
-        private static readonly SolidColorBrush GreenBrush = new SolidColorBrush(Colors.DarkGreen);
-        private static readonly SolidColorBrush BlackBrush = new SolidColorBrush(Colors.Black);
-        private static readonly SolidColorBrush GrayBrush = new SolidColorBrush(Colors.DarkGray);
+        private static readonly SolidColorBrush ImageIconBrush = new(Colors.DarkGreen);
+        private static readonly SolidColorBrush AudioIconBrush = new(Colors.CornflowerBlue);
+        private static readonly SolidColorBrush VideoIconBrush = new(Colors.Chocolate);
+        private static readonly SolidColorBrush SlideshowIconBrush = new(Colors.BlueViolet);
+        private static readonly SolidColorBrush WebIconBrush = new(Colors.Firebrick);
+        private static readonly SolidColorBrush UnknownIconBrush = new(Colors.Crimson);
+        private static readonly SolidColorBrush GreenBrush = new(Colors.DarkGreen);
+        private static readonly SolidColorBrush BlackBrush = new(Colors.Black);
+        private static readonly SolidColorBrush GrayBrush = new(Colors.DarkGray);
 
         private bool _isMediaChanging;
         private bool _commandPanelVisible;
@@ -140,19 +139,14 @@ namespace OnlyM.Models
 
         public bool ShouldDisplayPdfPageTextBox => IsPdf;
 
-        public IEnumerable<PdfViewStyleAndDescription> PdfViewStyles
-        {
-            get
+        public IEnumerable<PdfViewStyleAndDescription> PdfViewStyles =>
+            new[]
             {
-                return new[]
-                {
-                    new PdfViewStyleAndDescription { Style = PdfViewStyle.Default, Description = Properties.Resources.PDF_VIEW_STYLE_DEFAULT },
-                    new PdfViewStyleAndDescription { Style = PdfViewStyle.VerticalFit, Description = Properties.Resources.PDF_VIEW_STYLE_VERT },
-                    new PdfViewStyleAndDescription { Style = PdfViewStyle.HorizontalFit, Description = Properties.Resources.PDF_VIEW_STYLE_HORZ },
-                };
-            }
-        }
-
+                new PdfViewStyleAndDescription { Style = PdfViewStyle.Default, Description = Properties.Resources.PDF_VIEW_STYLE_DEFAULT },
+                new PdfViewStyleAndDescription { Style = PdfViewStyle.VerticalFit, Description = Properties.Resources.PDF_VIEW_STYLE_VERT },
+                new PdfViewStyleAndDescription { Style = PdfViewStyle.HorizontalFit, Description = Properties.Resources.PDF_VIEW_STYLE_HORZ },
+            };
+        
         public string ChosenPdfPage
         {
             get => _chosenPdfPage;
@@ -356,10 +350,7 @@ namespace OnlyM.Models
         
         public bool IsPlayButtonEnabled
         {
-            get
-            {
-                return _isPlayButtonEnabled;
-            }
+            get => _isPlayButtonEnabled;
             set
             {
                 if (_isPlayButtonEnabled != value)

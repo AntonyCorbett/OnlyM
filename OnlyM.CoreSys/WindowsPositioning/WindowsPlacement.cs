@@ -1,4 +1,15 @@
-﻿namespace OnlyM.CoreSys.WindowsPositioning
+﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows;
+using System.Windows.Interop;
+using System.Xml;
+using System.Xml.Serialization;
+using Serilog;
+
+namespace OnlyM.CoreSys.WindowsPositioning
 {
     // ReSharper disable CommentTypo
     // ReSharper disable IdentifierTypo
@@ -12,33 +23,23 @@
 
 #pragma warning disable S101 // Types should be named in PascalCase
 #pragma warning disable U2U1004 // Public value types should implement equality
+#pragma warning disable SA1307 // Accessible fields should begin with upper-case letter
 
     // adapted from david Rickard's Tech Blog
-    using System;
-    using System.IO;
-    using System.Reflection;
-    using System.Runtime.InteropServices;
-    using System.Text;
-    using System.Windows;
-    using System.Windows.Interop;
-    using System.Xml;
-    using System.Xml.Serialization;
-    using Serilog;
-
     public static class WindowsPlacement
     {
         private const int SwShowNormal = 1;
         private const int SwShowMinimized = 2;
 
         private static readonly Encoding Encoding = new UTF8Encoding();
-        private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(WINDOWPLACEMENT));
+        private static readonly XmlSerializer Serializer = new(typeof(WINDOWPLACEMENT));
 
         public static void SetPlacement(this Window window, string placementJson)
         {
-            var windowHandle = new WindowInteropHelper(window).Handle;
-
             if (!string.IsNullOrEmpty(placementJson))
             {
+                var windowHandle = new WindowInteropHelper(window).Handle;
+
                 var xmlBytes = Encoding.GetBytes(placementJson);
                 try
                 {
@@ -147,6 +148,7 @@
         public RECT normalPosition;
     }
 
+#pragma warning restore SA1307 // Accessible fields should begin with upper-case letter
 #pragma warning restore U2U1004 // Public value types should implement equality
 #pragma warning restore S101 // Types should be named in PascalCase
 }

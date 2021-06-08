@@ -1,11 +1,11 @@
-﻿namespace OnlyM.Services.WebBrowser
-{
-    using System;
-    using System.IO;
-    using System.Net;
-    using System.Threading.Tasks;
-    using CefSharp;
+﻿using System;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
+using CefSharp;
 
+namespace OnlyM.Services.WebBrowser
+{
     internal class PdfSchemeHandler : ResourceHandler
     {
         public override CefReturnValue ProcessRequestAsync(IRequest request, ICallback callback)

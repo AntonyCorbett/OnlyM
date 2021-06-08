@@ -1,18 +1,18 @@
-﻿namespace OnlyM.Services
-{
-    using System;
-    using NAudio.Wave;
+﻿using System;
+using NAudio.Wave;
 
+namespace OnlyM.Services
+{
     public static class WaveStreamExtensions
     {
         // Set position of WaveStream to nearest block to supplied position
         public static void SetPosition(this WaveStream waveStream, long position)
         {
             // distance from block boundary (may be 0)
-            long adj = position % waveStream.WaveFormat.BlockAlign;
+            var adj = position % waveStream.WaveFormat.BlockAlign;
 
             // adjust position to boundary and clamp to valid range
-            long newPos = Math.Max(0, Math.Min(waveStream.Length, position - adj));
+            var newPos = Math.Max(0, Math.Min(waveStream.Length, position - adj));
 
             // set playback position
             waveStream.Position = newPos;

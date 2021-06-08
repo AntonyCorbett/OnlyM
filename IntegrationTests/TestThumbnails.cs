@@ -1,16 +1,16 @@
-﻿namespace IntegrationTests
-{
-    using System;
-    using System.Drawing.Imaging;
-    using System.IO;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.CommandLine;
-    using OnlyM.Core.Services.Database;
-    using OnlyM.Core.Services.Media;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.Core.Utils;
+﻿using System;
+using System.Drawing.Imaging;
+using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.CommandLine;
+using OnlyM.Core.Services.Database;
+using OnlyM.Core.Services.Media;
+using OnlyM.Core.Services.Options;
+using OnlyM.Core.Utils;
 
+namespace IntegrationTests
+{
     [TestClass]
     public class TestThumbnails
     {

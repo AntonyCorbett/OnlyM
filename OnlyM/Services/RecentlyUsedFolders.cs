@@ -1,13 +1,13 @@
-﻿namespace OnlyM.Services
-{
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
+namespace OnlyM.Services
+{
     internal class RecentlyUsedFolders
     {
         private const int MaxCount = 10;
 
-        private readonly ObservableCollection<string> _recentlyUsedFolders = new ObservableCollection<string>();
+        private readonly ObservableCollection<string> _recentlyUsedFolders = new();
 
         public void Add(IEnumerable<string> recentlyUsedFolders)
         {
@@ -19,7 +19,7 @@
         
         public void Add(string folder)
         {
-            bool exists = IsInList(folder);
+            var exists = IsInList(folder);
 
             if (exists)
             {

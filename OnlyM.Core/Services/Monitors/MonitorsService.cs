@@ -21,7 +21,7 @@ namespace OnlyM.Core.Services.Monitors
         {
             Log.Logger.Debug("Getting system monitors");
             
-            List<SystemMonitor> result = new List<SystemMonitor>();
+            var result = new List<SystemMonitor>();
 
             var devices = DisplayDevices.ReadDisplayDevices().ToArray();
 

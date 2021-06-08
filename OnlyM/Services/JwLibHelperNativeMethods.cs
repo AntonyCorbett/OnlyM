@@ -1,9 +1,9 @@
-﻿namespace OnlyM.Services
-{
-    using System;
-    using System.Runtime.InteropServices;
-    using System.Text;
+﻿using System;
+using System.Runtime.InteropServices;
+using System.Text;
 
+namespace OnlyM.Services
+{
     internal static class JwLibHelperNativeMethods
     {
         [DllImport("user32.dll", SetLastError = false)]

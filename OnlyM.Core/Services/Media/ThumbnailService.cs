@@ -1,11 +1,11 @@
-﻿using Microsoft.WindowsAPICodePack.Shell;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.WindowsAPICodePack.Shell;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Options;
@@ -26,14 +26,14 @@ namespace OnlyM.Core.Services.Media
         private readonly IDatabaseService _databaseService;
         private readonly IOptionsService _optionsService;
 
-        private readonly Lazy<byte[]> _standardAudioThumbnail = new Lazy<byte[]>(() =>
+        private readonly Lazy<byte[]> _standardAudioThumbnail = new(() =>
         {
             var bmp = Properties.Resources.Audio;
             var converter = new ImageConverter();
             return (byte[])converter.ConvertTo(bmp, typeof(byte[]));
         });
 
-        private readonly Lazy<byte[]> _standardPdfThumbnail = new Lazy<byte[]>(() =>
+        private readonly Lazy<byte[]> _standardPdfThumbnail = new(() =>
         {
             var bmp = Properties.Resources.PDF;
             var converter = new ImageConverter();
@@ -163,8 +163,7 @@ namespace OnlyM.Core.Services.Media
             var bytes = FaviconHelper.GetIconImage(helper.Uri);
             if (bytes != null)
             {
-                bytes = CreateFramedSmallIcon(bytes);
-                return bytes;
+                return CreateFramedSmallIcon(bytes);
             }
 
             return _standardWebThumbnail.Value;

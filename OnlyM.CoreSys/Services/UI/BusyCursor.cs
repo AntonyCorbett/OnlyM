@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using System;
+﻿using System;
 using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 
 namespace OnlyM.CoreSys.Services.UI

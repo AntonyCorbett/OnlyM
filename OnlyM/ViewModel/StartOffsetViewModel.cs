@@ -1,24 +1,22 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using OnlyM.Core.Extensions;
+using OnlyM.Models;
+using OnlyM.Services.StartOffsetStorage;
 
 namespace OnlyM.ViewModel
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Windows.Media;
-    using MaterialDesignThemes.Wpf;
-    using OnlyM.Core.Extensions;
-    using OnlyM.Models;
-    using OnlyM.Services.StartOffsetStorage;
-
     internal class StartOffsetViewModel : ObservableObject
     {
         private const int MaxRecentItemsCount = 10;
 
-        private static readonly SolidColorBrush RedBrush = new SolidColorBrush(Colors.DarkRed);
-        private static readonly SolidColorBrush GreenBrush = new SolidColorBrush(Colors.DarkGreen);
+        private static readonly SolidColorBrush RedBrush = new(Colors.DarkRed);
+        private static readonly SolidColorBrush GreenBrush = new(Colors.DarkGreen);
 
         private readonly IStartOffsetStorageService _startOffsetStorageService;
         private List<int> _recentTimes;

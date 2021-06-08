@@ -1,10 +1,10 @@
-﻿namespace OnlyM.MediaElementAdaption
-{
-    using System;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using OnlyM.Core.Models;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
+using OnlyM.Core.Models;
 
+namespace OnlyM.MediaElementAdaption
+{
     internal interface IMediaElement
     {
         event EventHandler<OnlyMMediaOpenedEventArgs> MediaOpened;

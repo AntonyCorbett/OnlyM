@@ -1,13 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
 
 namespace OnlyM.Services.WebNavHeaderManager
 {
-    using System;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Media.Animation;
-    
     internal class WebNavHeaderAdmin
     {
         private const int WebHeaderHeight = 76;

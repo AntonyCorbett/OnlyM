@@ -29,14 +29,7 @@ namespace OnlyM.Services.PdfOptions
 
         public void Add(string path, Models.PdfOptions options)
         {
-            if (_items.ContainsKey(path))
-            {
-                _items[path] = options;
-            }
-            else
-            {
-                _items.Add(path, options);
-            }
+            _items[path] = options;
         }
 
         private static int GetPageNumber(string pageNumberString)

@@ -1,11 +1,11 @@
-﻿namespace OnlyM.Controls
-{
-    using System;
-    using System.Globalization;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Media;
+﻿using System;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
+namespace OnlyM.Controls
+{
     // "TextBlock" control to display a file path or url truncated to space available
     // with ellipsis in the middle of the path.
     public sealed class PathTextBlock : UserControl
@@ -16,7 +16,7 @@
             typeof(PathTextBlock), 
             new UIPropertyMetadata(string.Empty, OnPathChanged));
 
-        private readonly TextBlock _textBlock = new TextBlock();
+        private readonly TextBlock _textBlock = new();
         
         public PathTextBlock()
         {

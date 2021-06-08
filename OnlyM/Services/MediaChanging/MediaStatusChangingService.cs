@@ -1,13 +1,12 @@
-﻿namespace OnlyM.Services.MediaChanging
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 
+namespace OnlyM.Services.MediaChanging
+{
     internal class MediaStatusChangingService : IMediaStatusChangingService
     {
-        private readonly HashSet<Guid> _changingMediaItems = new HashSet<Guid>();
-        private readonly object _locker = new object();
+        private readonly HashSet<Guid> _changingMediaItems = new();
+        private readonly object _locker = new();
 
         public void AddChangingItem(Guid mediaItemId)
         {

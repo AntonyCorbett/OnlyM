@@ -1,11 +1,11 @@
-﻿namespace OnlyM.Services.MetaDataQueue
-{
-    using System;
-    using System.Collections.Concurrent;
-    using System.Linq;
-    using OnlyM.Models;
-    using Serilog;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Linq;
+using OnlyM.Models;
+using Serilog;
 
+namespace OnlyM.Services.MetaDataQueue
+{
     internal sealed class MetaDataQueueProducer : IDisposable
     {
         public BlockingCollection<MediaItem> Queue { get; } = new BlockingCollection<MediaItem>();
@@ -21,7 +21,6 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "<Queue>k__BackingField", Justification = "False Positive")]
         public void Dispose()
         {
             Queue?.Dispose();

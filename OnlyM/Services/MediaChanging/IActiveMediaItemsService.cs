@@ -1,9 +1,9 @@
-﻿namespace OnlyM.Services.MediaChanging
-{
-    using System;
-    using System.Collections.Generic;
-    using OnlyM.Core.Models;
+﻿using System;
+using System.Collections.Generic;
+using OnlyM.Core.Models;
 
+namespace OnlyM.Services.MediaChanging
+{
     public interface IActiveMediaItemsService
     {
         void Add(Guid mediaItemId, MediaClassification classification);

@@ -13,11 +13,11 @@ pick up the Plus Edition at http://xceed.com/wpf_toolkit
 Stay informed: follow @datagrid on Twitter or Like http://facebook.com/datagrids
 ***********************************************************************************/
 
+using System;
+using System.Windows.Data;
+
 namespace OnlyM.CustomControls.Converters
 {
-    using System;
-    using System.Windows.Data;
-
     public class RadiusConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

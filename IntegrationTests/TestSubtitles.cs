@@ -1,9 +1,9 @@
-﻿namespace IntegrationTests
-{
-    using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using OnlyM.Core.Subtitles;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OnlyM.Core.Subtitles;
 
+namespace IntegrationTests
+{
     [TestClass]
     public class TestSubtitles
     {

@@ -1,13 +1,13 @@
-﻿namespace OnlyM.Services
-{
-    using System;
-    using System.Timers;
-    using NAudio.Wave;
-    using OnlyM.Core.Models;
-    using OnlyM.MediaElementAdaption;
-    using OnlyM.Models;
-    using Serilog;
+﻿using System;
+using System.Timers;
+using NAudio.Wave;
+using OnlyM.Core.Models;
+using OnlyM.MediaElementAdaption;
+using OnlyM.Models;
+using Serilog;
 
+namespace OnlyM.Services
+{
     internal sealed class AudioManager : IDisposable
     {
         private readonly Timer _timer = new Timer(200);

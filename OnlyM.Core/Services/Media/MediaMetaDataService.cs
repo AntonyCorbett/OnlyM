@@ -1,13 +1,12 @@
-﻿using Unosquare.FFME.Common;
-using System;
+﻿using System;
 using System.IO;
 using OnlyM.Core.Models;
 using OnlyM.Core.Utils;
 using Serilog;
+using Unosquare.FFME.Common;
 
 namespace OnlyM.Core.Services.Media
 {
-   
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MediaMetaDataService : IMediaMetaDataService
     {

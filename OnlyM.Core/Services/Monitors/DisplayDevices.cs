@@ -24,10 +24,10 @@ namespace OnlyM.Core.Services.Monitors
             {
                 Log.Logger.Verbose($"Seeking device {id}");
                 
-                EnumDisplayNativeMethods.DISPLAY_DEVICE device1 = default(EnumDisplayNativeMethods.DISPLAY_DEVICE);
+                var device1 = default(EnumDisplayNativeMethods.DISPLAY_DEVICE);
                 device1.cb = Marshal.SizeOf(device1);
 
-                bool rv = EnumDisplayNativeMethods.EnumDisplayDevices(null, id, ref device1, 0);
+                var rv = EnumDisplayNativeMethods.EnumDisplayDevices(null, id, ref device1, 0);
                 Log.Logger.Verbose($"EnumDisplayDevices retval = {rv}");
 
                 if (!rv)
@@ -41,7 +41,7 @@ namespace OnlyM.Core.Services.Monitors
                 {
                     Log.Logger.Verbose("Device attached to desktop");
                     
-                    EnumDisplayNativeMethods.DISPLAY_DEVICE device2 = default(EnumDisplayNativeMethods.DISPLAY_DEVICE);
+                    var device2 = default(EnumDisplayNativeMethods.DISPLAY_DEVICE);
                     device2.cb = Marshal.SizeOf(device2);
 
                     rv = EnumDisplayNativeMethods.EnumDisplayDevices(device1.DeviceName, 0, ref device2, 0);

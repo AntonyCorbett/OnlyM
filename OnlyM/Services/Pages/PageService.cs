@@ -1,34 +1,33 @@
-﻿using Microsoft.Toolkit.Mvvm.Messaging;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using Microsoft.Toolkit.Mvvm.Messaging;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.CommandLine;
+using OnlyM.Core.Services.Database;
+using OnlyM.Core.Services.Monitors;
+using OnlyM.Core.Services.Options;
+using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.CoreSys.WindowsPositioning;
+using OnlyM.MediaElementAdaption;
+using OnlyM.Models;
+using OnlyM.PubSubMessages;
+using OnlyM.Services.MediaChanging;
+using OnlyM.Services.WebBrowser;
+using OnlyM.Windows;
+using Serilog;
 
 namespace OnlyM.Services.Pages
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Forms;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.CommandLine;
-    using OnlyM.Core.Services.Database;
-    using OnlyM.Core.Services.Monitors;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.CoreSys.Services.Snackbar;
-    using OnlyM.CoreSys.WindowsPositioning;
-    using OnlyM.MediaElementAdaption;
-    using OnlyM.Models;
-    using OnlyM.PubSubMessages;
-    using OnlyM.Services.MediaChanging;
-    using OnlyM.Services.WebBrowser;
-    using OnlyM.Windows;
-    using Serilog;
-    
     // ReSharper disable once ClassNeverInstantiated.Global
     internal sealed class PageService : IPageService
     {
-        private readonly Lazy<OperatorPage> _operatorPage = new Lazy<OperatorPage>(() => new OperatorPage());
-        private readonly Lazy<SettingsPage> _settingsPage = new Lazy<SettingsPage>(() => new SettingsPage());
+        private readonly Lazy<OperatorPage> _operatorPage = new(() => new OperatorPage());
+        private readonly Lazy<SettingsPage> _settingsPage = new(() => new SettingsPage());
         
         private readonly IMonitorsService _monitorsService;
         private readonly IOptionsService _optionsService;
@@ -121,7 +120,9 @@ namespace OnlyM.Services.Pages
         public void GotoSettingsPage()
         {
 #pragma warning disable S1481 // Unused local variables should be removed
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             var _ = _settingsPage.Value;   // ensure created otherwise doesn't receive navigation event
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
 #pragma warning restore S1481 // Unused local variables should be removed
 
             _operatorPageScrollerPosition = ScrollViewer.VerticalOffset;
@@ -168,7 +169,7 @@ namespace OnlyM.Services.Pages
         {
             try
             {
-                bool requiresVisibleWindow = mediaItemToStart.MediaType.Classification != MediaClassification.Audio;
+                var requiresVisibleWindow = mediaItemToStart.MediaType.Classification != MediaClassification.Audio;
                 OpenMediaWindow(requiresVisibleWindow, mediaItemToStart.IsVideo);
 
                 await _mediaWindow.StartMedia(

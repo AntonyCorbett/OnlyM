@@ -1,33 +1,33 @@
-﻿namespace OnlyM.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Media;
-    using System.Windows.Media.Animation;
-    using System.Windows.Threading;
-    using OnlyM.Core.Extensions;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.Core.Utils;
-    using OnlyM.CoreSys;
-    using OnlyM.Models;
-    using OnlyM.Services.ImagesCache;
-    using OnlyM.Slides;
-    using OnlyM.Slides.Models;
-    using Serilog;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Threading;
+using OnlyM.Core.Extensions;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.Options;
+using OnlyM.Core.Utils;
+using OnlyM.CoreSys;
+using OnlyM.Models;
+using OnlyM.Services.ImagesCache;
+using OnlyM.Slides;
+using OnlyM.Slides.Models;
+using Serilog;
 
+namespace OnlyM.Services
+{
     internal sealed class ImageDisplayManager
     {
-        private static readonly ImageCache ImageCache = new ImageCache();
+        private static readonly ImageCache ImageCache = new();
         private readonly IOptionsService _optionsService;
 
         private readonly string _slideshowStagingFolder;
-        private readonly DispatcherTimer _slideshowTimer = new DispatcherTimer();
+        private readonly DispatcherTimer _slideshowTimer = new();
 
         private readonly Image _image1;
         private readonly Image _image2;
@@ -270,7 +270,7 @@
 
         private static SlideTransitionEventArgs CreateSlideTransitionEventArgs(Guid id, SlideTransition change, int oldIndex, int newIndex)
         {
-            return new SlideTransitionEventArgs
+            return new()
             {
                 MediaItemId = id,
                 Transition = change,
@@ -352,7 +352,7 @@
                     To = 0.0,
                 };
 
-                fadeOut.Completed += (sender, args) =>
+                fadeOut.Completed += (_, _) =>
                 {
                     completed?.Invoke();
                     imageCtrl.Source = null;
@@ -389,7 +389,7 @@
 
                 // This delay allows us to accommodate large images without the apparent loss of fade-in animation
                 // the first time an image is loaded. There must be a better way!
-                Task.Delay(10).ContinueWith(t =>
+                Task.Delay(10).ContinueWith(_ =>
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -403,12 +403,12 @@
 
                         if (completed != null)
                         {
-                            fadeIn.Completed += (sender, args) => { completed(); };
+                            fadeIn.Completed += (_, _) => completed();
                         }
 
                         imageCtrl.BeginAnimation(UIElement.OpacityProperty, fadeIn);
                     });
-                }).ConfigureAwait(false);
+                });
             }
         }
 

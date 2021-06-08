@@ -1,7 +1,7 @@
-﻿namespace OnlyM.MediaElementAdaption
-{
-    using System;
+﻿using System;
 
+namespace OnlyM.MediaElementAdaption
+{
     public class OnlyMPositionChangedEventArgs : EventArgs
     {
         public OnlyMPositionChangedEventArgs(Guid mediaItemId, TimeSpan position)

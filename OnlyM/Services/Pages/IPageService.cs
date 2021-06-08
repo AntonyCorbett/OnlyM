@@ -1,15 +1,15 @@
-﻿namespace OnlyM.Services.Pages
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Controls;
-    using OnlyM.Core.Models;
-    using OnlyM.MediaElementAdaption;
-    using OnlyM.Models;
-    using OnlyM.Services.WebBrowser;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using OnlyM.Core.Models;
+using OnlyM.MediaElementAdaption;
+using OnlyM.Models;
+using OnlyM.Services.WebBrowser;
 
+namespace OnlyM.Services.Pages
+{
     internal interface IPageService
     {
         event EventHandler<NavigationEventArgs> NavigationEvent;

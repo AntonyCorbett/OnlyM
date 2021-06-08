@@ -1,9 +1,8 @@
-﻿using OnlyM.Core.Models;
+﻿using System.Windows.Forms;
+using OnlyM.Core.Models;
 
 namespace OnlyM.Models
 {
-    using System.Windows.Forms;
-
     internal class MonitorItem
     {
         public MonitorItem()

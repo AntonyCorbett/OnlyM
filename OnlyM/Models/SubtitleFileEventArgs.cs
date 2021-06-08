@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Models
-{
-    using System;
+﻿using System;
 
+namespace OnlyM.Models
+{
     internal class SubtitleFileEventArgs
     {
         public Guid MediaItemId { get; set; }

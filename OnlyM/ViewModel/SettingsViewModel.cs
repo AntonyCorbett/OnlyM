@@ -1,30 +1,29 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using OnlyM.AutoUpdates;
+using OnlyM.Core.Extensions;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.Media;
+using OnlyM.Core.Services.Monitors;
+using OnlyM.Core.Services.Options;
+using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.Models;
+using OnlyM.PubSubMessages;
+using OnlyM.Services;
+using OnlyM.Services.MediaChanging;
+using OnlyM.Services.Pages;
+using Serilog.Events;
 
 namespace OnlyM.ViewModel
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using Microsoft.WindowsAPICodePack.Dialogs;
-    using OnlyM.AutoUpdates;
-    using OnlyM.Core.Extensions;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Media;
-    using OnlyM.Core.Services.Monitors;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.CoreSys.Services.Snackbar;
-    using OnlyM.Models;
-    using OnlyM.PubSubMessages;
-    using OnlyM.Services;
-    using OnlyM.Services.MediaChanging;
-    using OnlyM.Services.Pages;
-    using Serilog.Events;
-    
     // ReSharper disable once UnusedMember.Global
     internal class SettingsViewModel : ObservableObject
     {
@@ -881,9 +880,10 @@ namespace OnlyM.ViewModel
 
         private static MagnifierShapeItem[] GetMagnifierShapes()
         {
-            var result = new List<MagnifierShapeItem>();
+            var values = Enum.GetValues(typeof(MagnifierShape));
+            var result = new List<MagnifierShapeItem>(values.Length);
 
-            foreach (MagnifierShape v in Enum.GetValues(typeof(MagnifierShape)))
+            foreach (MagnifierShape v in values)
             {
                 result.Add(new MagnifierShapeItem
                 {
@@ -964,8 +964,8 @@ namespace OnlyM.ViewModel
             // don't localize these strings!
             return new[]
             {
-                new RenderingMethodItem { Method = RenderingMethod.MediaFoundation, Name = @"Media Foundation" },
-                new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = @"Ffmpeg" },
+                new RenderingMethodItem { Method = RenderingMethod.MediaFoundation, Name = "Media Foundation" },
+                new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = "Ffmpeg" },
             };
         }
 
@@ -974,7 +974,7 @@ namespace OnlyM.ViewModel
             var result = new List<MonitorItem>
             {
                 // empty (i.e. no timer monitor)
-                new MonitorItem
+                new()
                 {
                     MonitorName = Properties.Resources.MONITOR_NONE,
                     FriendlyName = Properties.Resources.MONITOR_NONE,
@@ -989,7 +989,7 @@ namespace OnlyM.ViewModel
 
         private void InitRecentlyUsedFolders()
         {
-            for (int n = _optionsService.RecentlyUsedMediaFolders.Count - 1; n >= 0; --n)
+            for (var n = _optionsService.RecentlyUsedMediaFolders.Count - 1; n >= 0; --n)
             {
                 _recentlyUsedMediaFolders.Add(_optionsService.RecentlyUsedMediaFolders[n]);
             }
@@ -1092,7 +1092,7 @@ namespace OnlyM.ViewModel
                 LanguageName = cNative.EnglishName,
             });
 
-            result.Sort((x, y) => string.Compare(x.LanguageName, y.LanguageName, StringComparison.Ordinal));
+            result.Sort((x, y) => string.CompareOrdinal(x.LanguageName, y.LanguageName));
 
             return result.ToArray();
         }

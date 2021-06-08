@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Windows
-{
-    using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
+namespace OnlyM.Windows
+{
     /// <summary>
     /// Interaction logic for SettingsPage.xaml
     /// </summary>

@@ -1,18 +1,17 @@
-﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+﻿using System.ComponentModel;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Shapes;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
+using OnlyM.CoreSys.WindowsPositioning;
+using OnlyMSlideManager.PubSubMessages;
+using OnlyMSlideManager.Services.Options;
+using OnlyMSlideManager.ViewModel;
 
 namespace OnlyMSlideManager.Windows
 {
-    using System.ComponentModel;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Input;
-    using System.Windows.Shapes;
-    using OnlyM.CoreSys.WindowsPositioning;
-    using OnlyMSlideManager.PubSubMessages;
-    using OnlyMSlideManager.Services.Options;
-    using OnlyMSlideManager.ViewModel;
-
     public partial class MainWindow : Window
     {
         public MainWindow()

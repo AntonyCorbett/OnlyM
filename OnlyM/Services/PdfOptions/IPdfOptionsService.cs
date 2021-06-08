@@ -1,12 +1,12 @@
-﻿namespace OnlyM.Services.PdfOptions
-{
-    using System.Collections.Generic;
-    using OnlyM.Models;
+﻿using System.Collections.Generic;
+using OnlyM.Models;
 
+namespace OnlyM.Services.PdfOptions
+{
     internal interface IPdfOptionsService
     {
         void Init(IEnumerable<MediaItem> items);
 
-        void Add(string path, PdfOptions options);
+        void Add(string path, Models.PdfOptions options);
     }
 }

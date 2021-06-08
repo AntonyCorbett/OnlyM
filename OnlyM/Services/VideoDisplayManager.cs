@@ -1,20 +1,19 @@
-﻿using Microsoft.Toolkit.Mvvm.Messaging;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using Microsoft.Toolkit.Mvvm.Messaging;
+using OnlyM.Core.Models;
+using OnlyM.Core.Services.Options;
+using OnlyM.Core.Subtitles;
+using OnlyM.MediaElementAdaption;
+using OnlyM.Models;
+using OnlyM.PubSubMessages;
+using Serilog;
+using Serilog.Events;
 
 namespace OnlyM.Services
 {
-    using System;
-    using System.Diagnostics;
-    using System.Threading.Tasks;
-    using System.Windows.Controls;
-    using OnlyM.Core.Models;
-    using OnlyM.Core.Services.Options;
-    using OnlyM.Core.Subtitles;
-    using OnlyM.MediaElementAdaption;
-    using OnlyM.Models;
-    using OnlyM.PubSubMessages;
-    using Serilog;
-    using Serilog.Events;
-
     internal sealed class VideoDisplayManager : IDisposable
     {
         private const int FreezeMillisecsFromEnd = 250;
@@ -85,7 +84,7 @@ namespace OnlyM.Services
                 await _mediaElement.Play(new Uri(mediaItemFilePath), MediaClassification.Video);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
 
-                await CreateSubtitleProvider(mediaItemFilePath, startOffset);
+                await CreateSubtitleProvider(mediaItemFilePath, startOffset); 
             }
             else
             {
@@ -93,7 +92,7 @@ namespace OnlyM.Services
 
                 await CreateSubtitleFile(mediaItemFilePath);
 
-                await _mediaElement.Play(new Uri(mediaItemFilePath), MediaClassification.Video).ConfigureAwait(true);
+                await _mediaElement.Play(new Uri(mediaItemFilePath), MediaClassification.Video);
                 OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
             }
         }
@@ -282,7 +281,7 @@ namespace OnlyM.Services
                 // accommodate any latency introduced by creation of srt file
                 var sw = Stopwatch.StartNew();
                 var srtFile = await CreateSubtitleFile(mediaItemFilePath);
-                
+
                 videoHeadPosition += sw.Elapsed;
 
                 _subTitleProvider = new SubtitleProvider(srtFile, videoHeadPosition);

@@ -36,7 +36,7 @@ namespace OnlyM.Core.Utils
         /// <returns>Temp folder</returns>
         public static string GetUsersTempStagingFolder()
         {
-            return Path.Combine(Path.GetTempPath(), AppNamePathSegment, @"Slideshows");
+            return Path.Combine(Path.GetTempPath(), AppNamePathSegment, "Slideshows");
         }
 
         /// <summary>
@@ -116,7 +116,8 @@ namespace OnlyM.Core.Utils
         {
             // NB - user-specific folder
             // e.g. C:\Users\Antony\AppData\Roaming\OnlyM
-            string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppNamePathSegment);
+            
+            var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppNamePathSegment);
             Directory.CreateDirectory(folder);
             return folder;
         }

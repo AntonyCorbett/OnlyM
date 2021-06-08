@@ -1,8 +1,8 @@
-﻿namespace OnlyM.Models
-{
-    using System;
-    using OnlyM.Core.Extensions;
+﻿using System;
+using OnlyM.Core.Extensions;
 
+namespace OnlyM.Models
+{
     internal class RecentTimesItem
     {
         public int Seconds { get; set; }

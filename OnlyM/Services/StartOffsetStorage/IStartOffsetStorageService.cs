@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Services.StartOffsetStorage
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace OnlyM.Services.StartOffsetStorage
+{
     internal interface IStartOffsetStorageService
     {
         IReadOnlyCollection<int> ReadOffsets(string mediaFileName, int mediaDurationSeconds);

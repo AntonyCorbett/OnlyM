@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Models
-{
-    using Serilog.Events;
+﻿using Serilog.Events;
 
+namespace OnlyM.Models
+{
     internal class LoggingLevel
     {
         public string Name { get; set; }

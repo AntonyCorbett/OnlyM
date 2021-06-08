@@ -1,11 +1,11 @@
-﻿namespace OnlyM.Services
-{
-    using System;
-    using System.IO;
-    using OnlyM.CoreSys;
-    using OnlyM.Models;
-    using Serilog;
+﻿using System;
+using System.IO;
+using OnlyM.CoreSys;
+using OnlyM.Models;
+using Serilog;
 
+namespace OnlyM.Services
+{
     internal static class SubtitleFileGenerator
     {
         public static event EventHandler<SubtitleFileEventArgs> SubtitleFileEvent;

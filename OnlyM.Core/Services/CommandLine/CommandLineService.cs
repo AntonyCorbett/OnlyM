@@ -12,22 +12,22 @@ namespace OnlyM.Core.Services.CommandLine
             var p = new FluentCommandLineParser();
 
             p.Setup<bool>("nogpu")
-                .Callback(s => { NoGpu = s; }).SetDefault(false);
+                .Callback(s => NoGpu = s).SetDefault(false);
 
             p.Setup<string>("id")
-                .Callback(s => { OptionsIdentifier = s; }).SetDefault(null);
+                .Callback(s => OptionsIdentifier = s).SetDefault(null);
 
             p.Setup<bool>("nosettings")
-                .Callback(s => { NoSettings = s; }).SetDefault(false);
+                .Callback(s => NoSettings = s).SetDefault(false);
 
             p.Setup<bool>("nofolder")
-                .Callback(s => { NoFolder = s; }).SetDefault(false);
+                .Callback(s => NoFolder = s).SetDefault(false);
 
             p.Setup<string>("source")
-                .Callback(s => { SourceFolder = GetFullSourcePath(s); }).SetDefault(null);
+                .Callback(s => SourceFolder = GetFullSourcePath(s)).SetDefault(null);
 
             p.Setup<bool>("novidfix")
-                .Callback(s => { DisableVideoRenderingFix = s; }).SetDefault(false);
+                .Callback(s => DisableVideoRenderingFix = s).SetDefault(false);
 
             p.Parse(Environment.GetCommandLineArgs());
         }

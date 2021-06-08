@@ -1,8 +1,8 @@
-﻿namespace OnlyM.Services.FrozenVideoItems
-{
-    using System.Collections.Generic;
-    using OnlyM.Models;
+﻿using System.Collections.Generic;
+using OnlyM.Models;
 
+namespace OnlyM.Services.FrozenVideoItems
+{
     internal interface IFrozenVideosService
     {
         void Init(IEnumerable<MediaItem> items);

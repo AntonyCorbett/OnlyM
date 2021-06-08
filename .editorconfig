@@ -1,6 +1,7 @@
 ﻿root = true
 
 # To learn more about .editorconfig see https://aka.ms/editorconfigdocs
+# StyleCop support: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/.editorconfig
 
 ###############################
 # Core EditorConfig Options   #
@@ -24,6 +25,7 @@ charset = utf-8-bom
 # Organize usings
 #----------------
 dotnet_sort_system_directives_first = true
+csharp_using_directive_placement = outside_namespace:warning
 
 # this. preferences
 #------------------
@@ -234,3 +236,57 @@ dotnet_diagnostic.S3358.severity = silent
 
 # S2699: Test method should contain assertion
 dotnet_diagnostic.S2699.severity = none
+
+# RCS1090: Add call to 'ConfigureAwait' (or vice versa).
+dotnet_diagnostic.RCS1090.severity = silent
+
+# SA1633: File should have header
+dotnet_diagnostic.SA1633.severity = silent
+
+# SA1309: Field names should not begin with underscore
+dotnet_diagnostic.SA1309.severity = none
+
+# SA1200: Using directives should be placed correctly
+dotnet_diagnostic.SA1200.severity = none
+
+# SA1600: Elements should be documented
+dotnet_diagnostic.SA1600.severity = none
+
+# SA1101: Prefix local calls with this
+dotnet_diagnostic.SA1101.severity = none
+
+# SA1413: Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = none
+
+# SA1629: Documentation text should end with a period
+dotnet_diagnostic.SA1629.severity = none
+
+# SA1204: Static elements should appear before instance elements
+dotnet_diagnostic.SA1204.severity = none
+
+# SA1028: Code should not contain trailing whitespace
+dotnet_diagnostic.SA1028.severity = none
+
+# SA1000: Keywords should be spaced correctly
+dotnet_diagnostic.SA1000.severity = none
+
+# SA0001 XML Docs disabled
+dotnet_diagnostic.SA0001.severity = none
+
+# SA1515: Single-line comment should be preceded by blank line
+dotnet_diagnostic.SA1515.severity = none
+
+# SA1512: Single-line comments should not be followed by blank line
+dotnet_diagnostic.SA1512.severity = none
+
+# SA1602: Enumeration items should be documented
+dotnet_diagnostic.SA1602.severity = none
+
+# SA1306: Field names should begin with lower-case letter
+dotnet_diagnostic.SA1306.severity = none
+
+# SA1201: Elements should appear in the correct order
+dotnet_diagnostic.SA1201.severity = none
+
+# SA1601: Partial elements should be documented
+dotnet_diagnostic.SA1601.severity = none

@@ -1,7 +1,7 @@
-﻿namespace OnlyM.Services.MediaChanging
-{
-    using System;
+﻿using System;
 
+namespace OnlyM.Services.MediaChanging
+{
     internal interface IMediaStatusChangingService
     {
         void AddChangingItem(Guid mediaItemId);
