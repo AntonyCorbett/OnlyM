@@ -13,14 +13,14 @@ namespace OnlyM.Core.Subtitles
     {
         private const string AssStartToken = "{\\";
         
-        private readonly List<SubtitleEntry>? _subtitles;
+        private readonly List<SubtitleEntry>? _subtitles = new();
         private int _index = -1;
 
         public SubtitleFile(string srtPath)
         {
-            if (Read(srtPath))
+            if (!Read(srtPath))
             {
-                _subtitles = new();
+                _subtitles = null;
             }
         }
 

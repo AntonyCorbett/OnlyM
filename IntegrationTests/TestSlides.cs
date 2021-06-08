@@ -36,8 +36,10 @@ namespace IntegrationTests
                 var slide = file.GetSlide(n);
 
                 BitmapEncoder encoder = new PngBitmapEncoder();
+                Assert.IsNotNull(slide.Image);
                 encoder.Frames.Add(BitmapFrame.Create(slide.Image));
 
+                Assert.IsNotNull(slide.ArchiveEntryName);
                 using (var fileStream = new FileStream(slide.ArchiveEntryName, FileMode.Create))
                 {
                     encoder.Save(fileStream);
