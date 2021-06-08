@@ -33,7 +33,7 @@ namespace OnlyM.Services.DragAndDrop
             _snackbarService = snackbarService;
         }
 
-        public event EventHandler<FilesCopyProgressEventArgs> CopyingFilesProgressEvent;
+        public event EventHandler<FilesCopyProgressEventArgs>? CopyingFilesProgressEvent;
 
         public void Init(FrameworkElement targetElement)
         {
@@ -45,7 +45,10 @@ namespace OnlyM.Services.DragAndDrop
         public void Paste()
         {
             var data = Clipboard.GetDataObject();
-            DoCopy(data);
+            if (data != null)
+            {
+                DoCopy(data);
+            }
         }
 
         private void HandleDragOver(object sender, DragEventArgs e)
@@ -68,7 +71,10 @@ namespace OnlyM.Services.DragAndDrop
 
         private void HandleDrop(object sender, DragEventArgs e)
         {
-            DoCopy(e.Data);
+            if (e.Data != null)
+            {
+                DoCopy(e.Data);
+            }
         }
 
         private void HandleDragEnter(object sender, DragEventArgs e)
@@ -86,26 +92,20 @@ namespace OnlyM.Services.DragAndDrop
 
         private void CopyMediaFiles(IDataObject data)
         {
-            if (data != null)
+            Task.Run(() =>
             {
-                Task.Run(() =>
-                {
-                    int count = InternalCopyMediaFiles(data, out var someError);
-                    DisplaySnackbar(count, someError);
-                });
-            }
+                var count = InternalCopyMediaFiles(data, out var someError);
+                DisplaySnackbar(count, someError);
+            });
         }
 
         private void CopyUris(IDataObject data)
         {
-            if (data != null)
+            Task.Run(() =>
             {
-                Task.Run(() =>
-                {
-                    int count = InternalCopyUris(data, out var someError);
-                    DisplaySnackbar(count, someError);
-                });
-            }
+                var count = InternalCopyUris(data, out var someError);
+                DisplaySnackbar(count, someError);
+            });
         }
 
         private void DisplaySnackbar(int count, bool someError)
@@ -242,7 +242,7 @@ namespace OnlyM.Services.DragAndDrop
 
         private int CopyAsIndividualUris(string mediaFolder, string[] uriList)
         {
-            int count = 0;
+            var count = 0;
 
             foreach (var uri in uriList)
             {
@@ -406,7 +406,7 @@ namespace OnlyM.Services.DragAndDrop
         {
             if (data.GetDataPresent(DataFormats.StringFormat))
             {
-                var s = (string)data.GetData(DataFormats.StringFormat);
+                var s = (string?)data.GetData(DataFormats.StringFormat);
                 if (s != null && s.StartsWith("OnlyV|", StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
@@ -416,9 +416,9 @@ namespace OnlyM.Services.DragAndDrop
             return false;
         }
 
-        private static string GetOnlyVTitle(IDataObject data)
+        private static string? GetOnlyVTitle(IDataObject data)
         {
-            var s = (string)data.GetData(DataFormats.StringFormat);
+            var s = (string?)data.GetData(DataFormats.StringFormat);
             return s?.Split('|')[1];
         }
 
@@ -428,7 +428,7 @@ namespace OnlyM.Services.DragAndDrop
 
             if (data.GetDataPresent(DataFormats.StringFormat))
             {
-                var s = (string)data.GetData(DataFormats.StringFormat);
+                var s = (string?)data.GetData(DataFormats.StringFormat);
 
                 if (!string.IsNullOrEmpty(s))
                 {
@@ -460,7 +460,7 @@ namespace OnlyM.Services.DragAndDrop
             if (data.GetDataPresent(DataFormats.FileDrop))
             {
                 // Note that you can have more than one file...
-                var files = (string[])data.GetData(DataFormats.FileDrop);
+                var files = (string[]?)data.GetData(DataFormats.FileDrop);
 
                 if (files == null || files.Length == 0)
                 {
@@ -499,7 +499,7 @@ namespace OnlyM.Services.DragAndDrop
             return result;
         }
 
-        private string GetSupportedFile(string file)
+        private string? GetSupportedFile(string file)
         {
             var ext = Path.GetExtension(file);
             if (string.IsNullOrEmpty(ext) || !_mediaProviderService.IsFileExtensionSupported(ext))

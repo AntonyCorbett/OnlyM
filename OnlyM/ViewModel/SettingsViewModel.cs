@@ -79,12 +79,12 @@ namespace OnlyM.ViewModel
             InitCommands();
             WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
-        
-        public RelayCommand PurgeThumbnailCacheCommand { get; set; }
 
-        public RelayCommand PurgeWebCacheCommand { get; set; }
+        public RelayCommand PurgeThumbnailCacheCommand { get; set; } = null!;
 
-        public RelayCommand OpenMediaFolderCommand { get; set; }
+        public RelayCommand PurgeWebCacheCommand { get; set; } = null!;
+
+        public RelayCommand OpenMediaFolderCommand { get; set; } = null!;
 
         public ObservableCollection<string> RecentMediaFolders => _recentlyUsedMediaFolders.GetFolders();
 
@@ -799,7 +799,7 @@ namespace OnlyM.ViewModel
 
         public IEnumerable<LanguageItem> Languages => _languages;
 
-        public string LanguageId
+        public string? LanguageId
         {
             get => _optionsService.Culture;
             set
@@ -816,7 +816,7 @@ namespace OnlyM.ViewModel
 
         public bool CanChangeMonitor => !MediaWindowed;
 
-        public string MonitorId
+        public string? MonitorId
         {
             get => _optionsService.MediaMonitorId;
             set
@@ -995,7 +995,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleNavigationEvent(object sender, NavigationEventArgs e)
+        private void HandleNavigationEvent(object? sender, NavigationEventArgs e)
         {
             if (e.PageName.Equals(_pageService.SettingsPageName))
             {
@@ -1043,7 +1043,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private string GetMediaFolderBrowsingStart()
+        private string? GetMediaFolderBrowsingStart()
         {
             if (!string.IsNullOrEmpty(MediaFolder) && Directory.Exists(MediaFolder))
             {

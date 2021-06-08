@@ -8,7 +8,7 @@ namespace OnlyM.Core.Services.Monitors
     {
         IEnumerable<SystemMonitor> GetSystemMonitors();
 
-        SystemMonitor? GetSystemMonitor(string monitorId);
+        SystemMonitor? GetSystemMonitor(string? monitorId);
 
         SystemMonitor? GetMonitorForWindowHandle(IntPtr windowHandle);
     }

@@ -50,8 +50,8 @@ namespace OnlyM.ViewModel
         private readonly MetaDataQueueProducer _metaDataProducer = new();
         private readonly CancellationTokenSource _metaDataCancellationTokenSource = new();
         
-        private MetaDataQueueConsumer _metaDataConsumer;
-        private string _blankScreenImagePath;
+        private MetaDataQueueConsumer? _metaDataConsumer;
+        private string? _blankScreenImagePath;
         private bool _pendingLoadMediaItems;
         private int _thumbnailColWidth = 180;
 
@@ -99,8 +99,8 @@ namespace OnlyM.ViewModel
             _optionsService.ShowFreezeCommandChangedEvent += HandleShowFreezeCommandChangedEvent;
             _optionsService.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
             _optionsService.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
-            _optionsService.PermanentBackdropChangedEvent += async (sender, e) => await HandlePermanentBackdropChangedEvent();
-            _optionsService.IncludeBlankScreenItemChangedEvent += async (sender, e) => await HandleIncludeBlankScreenItemChangedEvent();
+            _optionsService.PermanentBackdropChangedEvent += async (_, _) => await HandlePermanentBackdropChangedEvent();
+            _optionsService.IncludeBlankScreenItemChangedEvent += async (_, _) => await HandleIncludeBlankScreenItemChangedEvent();
 
             folderWatcherService.ChangesFoundEvent += HandleFileChangesFoundEvent;
 
@@ -109,7 +109,7 @@ namespace OnlyM.ViewModel
             _pageService.SlideTransitionEvent += HandleSlideTransitionEvent;
             _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
             _pageService.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
-            _pageService.MediaNearEndEvent += async (sender, e) => await HandleMediaNearEndEvent(e);
+            _pageService.MediaNearEndEvent += async (_, e) => await HandleMediaNearEndEvent(e);
             _pageService.NavigationEvent += HandleNavigationEvent;
             _pageService.WebStatusEvent += HandleWebStatusEvent;
 
@@ -122,27 +122,27 @@ namespace OnlyM.ViewModel
             WeakReferenceMessenger.Default.Register<SubtitleFileMessage>(this, OnSubtitleFileActivity);
         }
 
-        public ObservableCollectionEx<MediaItem> MediaItems { get; } = new ObservableCollectionEx<MediaItem>();
-        
-        public RelayCommand<Guid?> MediaControlCommand1 { get; set; }
+        public ObservableCollectionEx<MediaItem> MediaItems { get; } = new();
 
-        public RelayCommand<Guid?> MediaControlPauseCommand { get; set; }
+        public RelayCommand<Guid?> MediaControlCommand1 { get; set; } = null!;
 
-        public RelayCommand<Guid?> HideMediaItemCommand { get; set; }
+        public RelayCommand<Guid?> MediaControlPauseCommand { get; set; } = null!;
 
-        public RelayCommand<Guid?> DeleteMediaItemCommand { get; set; }
+        public RelayCommand<Guid?> HideMediaItemCommand { get; set; } = null!;
 
-        public RelayCommand<Guid?> OpenCommandPanelCommand { get; set; }
+        public RelayCommand<Guid?> DeleteMediaItemCommand { get; set; } = null!;
 
-        public RelayCommand<Guid?> CloseCommandPanelCommand { get; set; }
+        public RelayCommand<Guid?> OpenCommandPanelCommand { get; set; } = null!;
 
-        public RelayCommand<Guid?> FreezeVideoCommand { get; set; }
+        public RelayCommand<Guid?> CloseCommandPanelCommand { get; set; } = null!;
 
-        public RelayCommand<Guid?> PreviousSlideCommand { get; set; }
+        public RelayCommand<Guid?> FreezeVideoCommand { get; set; } = null!;
 
-        public RelayCommand<Guid?> NextSlideCommand { get; set; }
+        public RelayCommand<Guid?> PreviousSlideCommand { get; set; } = null!;
 
-        public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; set; }
+        public RelayCommand<Guid?> NextSlideCommand { get; set; } = null!;
+
+        public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; set; } = null!;
 
         public int ThumbnailColWidth
         {
@@ -159,17 +159,17 @@ namespace OnlyM.ViewModel
 
         public void Dispose()
         {
-            _metaDataProducer?.Dispose();
-            _metaDataCancellationTokenSource?.Dispose();
+            _metaDataProducer.Dispose();
+            _metaDataCancellationTokenSource.Dispose();
             _metaDataConsumer?.Dispose();
         }
 
-        private void HandleMaxItemCountChangedEvent(object sender, EventArgs e)
+        private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e)
         {
             _pendingLoadMediaItems = true;
         }
 
-        private void HandleNavigationEvent(object sender, NavigationEventArgs e)
+        private void HandleNavigationEvent(object? sender, NavigationEventArgs e)
         {
             if (!e.PageName.Equals(_pageService.OperatorPageName))
             {
@@ -185,12 +185,12 @@ namespace OnlyM.ViewModel
             LoadMediaItems();
         }
 
-        private void HandleOperatingDateChangedEvent(object sender, EventArgs e)
+        private void HandleOperatingDateChangedEvent(object? sender, EventArgs e)
         {
             _pendingLoadMediaItems = true;
         }
 
-        private void HandleUnhideAllEvent(object sender, EventArgs e)
+        private void HandleUnhideAllEvent(object? sender, EventArgs e)
         {
             foreach (var item in MediaItems)
             {
@@ -198,7 +198,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleShowMediaItemCommandPanelChangedEvent(object sender, EventArgs e)
+        private void HandleShowMediaItemCommandPanelChangedEvent(object? sender, EventArgs e)
         {
             var visible = _optionsService.ShowMediaItemCommandPanel;
 
@@ -208,7 +208,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleShowFreezeCommandChangedEvent(object sender, EventArgs e)
+        private void HandleShowFreezeCommandChangedEvent(object? sender, EventArgs e)
         {
             var allow = _optionsService.ShowFreezeCommand;
 
@@ -248,19 +248,19 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private MediaItem GetActiveBlankScreenItem()
+        private MediaItem? GetActiveBlankScreenItem()
         {
             var items = GetCurrentMediaItems();
             return items?.SingleOrDefault(x => x.IsBlankScreen && x.IsMediaActive);
         }
 
-        private MediaItem GetActiveWebItem()
+        private MediaItem? GetActiveWebItem()
         {
             var items = GetCurrentMediaItems();
             return items?.SingleOrDefault(x => x.IsWeb && x.IsMediaActive);
         }
 
-        private void HandleUseInternalMediaTitlesChangedEvent(object sender, EventArgs e)
+        private void HandleUseInternalMediaTitlesChangedEvent(object? sender, EventArgs e)
         {
             foreach (var item in MediaItems)
             {
@@ -272,7 +272,7 @@ namespace OnlyM.ViewModel
             _pendingLoadMediaItems = true;
         }
 
-        private void HandleAllowVideoPositionSeekingChangedEvent(object sender, EventArgs e)
+        private void HandleAllowVideoPositionSeekingChangedEvent(object? sender, EventArgs e)
         {
             foreach (var item in MediaItems)
             {
@@ -280,7 +280,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleAllowVideoPauseChangedEvent(object sender, EventArgs e)
+        private void HandleAllowVideoPauseChangedEvent(object? sender, EventArgs e)
         {
             foreach (var item in MediaItems)
             {
@@ -297,7 +297,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleMediaPositionChangedEvent(object sender, OnlyMPositionChangedEventArgs e)
+        private void HandleMediaPositionChangedEvent(object? sender, OnlyMPositionChangedEventArgs e)
         {
             var item = GetMediaItem(e.MediaItemId);
             if (item != null && !item.IsPaused)
@@ -327,7 +327,7 @@ namespace OnlyM.ViewModel
             _metaDataConsumer.Execute();
         }
 
-        private void HandleItemCompletedEvent(object sender, ItemMetaDataPopulatedEventArgs e)
+        private void HandleItemCompletedEvent(object? sender, ItemMetaDataPopulatedEventArgs e)
         {
             var item = e.MediaItem;
             
@@ -337,12 +337,12 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleFileChangesFoundEvent(object sender, EventArgs e)
+        private void HandleFileChangesFoundEvent(object? sender, EventArgs e)
         {
             Application.Current.Dispatcher.Invoke(LoadMediaItems);
         }
 
-        private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
+        private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e)
         {
             ChangePlayButtonEnabledStatus();
         }
@@ -357,7 +357,7 @@ namespace OnlyM.ViewModel
 
             foreach (var item in MediaItems)
             {
-                switch (item.MediaType.Classification)
+                switch (item.MediaType?.Classification)
                 {
                     case MediaClassification.Image:
                         // cannot show an image if video or rolling slideshow or web page is playing.
@@ -407,11 +407,15 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleSlideTransitionEvent(object sender, SlideTransitionEventArgs e)
+        private void HandleSlideTransitionEvent(object? sender, SlideTransitionEventArgs e)
         {
             Log.Debug($"HandleSlideTransitionEvent (id = {e.MediaItemId}, change = {e.Transition})");
 
             var mediaItem = GetMediaItem(e.MediaItemId);
+            if (mediaItem == null)
+            {
+                return;
+            }
 
             switch (e.Transition)
             {
@@ -426,7 +430,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
+        private void HandleMediaChangeEvent(object? sender, MediaEventArgs e)
         {
             Log.Debug($"HandleMediaChangeEvent (id = {e.MediaItemId}, change = {e.Change})");
 
@@ -521,7 +525,7 @@ namespace OnlyM.ViewModel
             }
 
             var mediaItem = GetMediaItem(mediaItemId.Value);
-            if (mediaItem != null && (!mediaItem.IsMediaActive || mediaItem.IsPaused))
+            if (mediaItem?.FilePath != null && (!mediaItem.IsMediaActive || mediaItem.IsPaused))
             {
                 var maxStartTimeSeconds = (int)((double)mediaItem.DurationDeciseconds / 10);
 
@@ -548,10 +552,10 @@ namespace OnlyM.ViewModel
             }
 
             var mediaItem = GetMediaItem(mediaItemId.Value);
-            if (mediaItem != null)
+            if (mediaItem?.FilePath != null)
             {
                 Debug.Assert(
-                    mediaItem.MediaType.Classification == MediaClassification.Video, 
+                    mediaItem.MediaType?.Classification == MediaClassification.Video, 
                     "mediaItem.MediaType.Classification == MediaClassification.Video");
 
                 if (mediaItem.PauseOnLastFrame)
@@ -582,6 +586,11 @@ namespace OnlyM.ViewModel
 
         private void SavePdfOptions(MediaItem mediaItem)
         {
+            if (mediaItem.FilePath == null)
+            {
+                return;
+            }
+
             _pdfOptionsService.Add(
                 mediaItem.FilePath, 
                 new PdfOptions
@@ -615,7 +624,7 @@ namespace OnlyM.ViewModel
             if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
                 var mediaItem = GetMediaItem(mediaItemId.Value);
-                if (!mediaItem.IsMediaChanging)
+                if (mediaItem != null && !mediaItem.IsMediaChanging)
                 {
                     mediaItem.CurrentSlideshowIndex = _pageService.GotoPreviousSlide();
                 }
@@ -632,7 +641,7 @@ namespace OnlyM.ViewModel
             if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
                 var mediaItem = GetMediaItem(mediaItemId.Value);
-                if (!mediaItem.IsMediaChanging)
+                if(mediaItem != null && !mediaItem.IsMediaChanging)
                 {
                     mediaItem.CurrentSlideshowIndex = _pageService.GotoNextSlide();
                 }
@@ -647,11 +656,11 @@ namespace OnlyM.ViewModel
             }
 
             var mediaItem = GetMediaItem(mediaItemId.Value);
-            if (mediaItem != null)
+            if (mediaItem?.FilePath != null)
             {
                 mediaItem.IsCommandPanelOpen = false;
 
-                Task.Delay(400).ContinueWith(t =>
+                Task.Delay(400).ContinueWith(_ =>
                 {
                     mediaItem.IsVisible = false;
                     _hiddenMediaItemsService.Add(mediaItem.FilePath);
@@ -667,7 +676,7 @@ namespace OnlyM.ViewModel
             }
 
             var mediaItem = GetMediaItem(mediaItemId.Value);
-            if (mediaItem != null)
+            if (mediaItem?.FilePath != null)
             {
                 if (FileUtils.SafeDeleteFile(mediaItem.FilePath))
                 {
@@ -683,24 +692,15 @@ namespace OnlyM.ViewModel
         private bool IsVideoOrAudio(MediaItem mediaItem)
         {
             return 
-                mediaItem?.MediaType.Classification == MediaClassification.Audio ||
-                mediaItem?.MediaType.Classification == MediaClassification.Video;
+                mediaItem.MediaType?.Classification == MediaClassification.Audio ||
+                mediaItem.MediaType?.Classification == MediaClassification.Video;
         }
 
-        private bool IsVideo(MediaItem mediaItem)
-        {
-            return mediaItem?.MediaType.Classification == MediaClassification.Video;
-        }
+        private bool IsVideo(MediaItem mediaItem) => mediaItem.IsVideo;
 
-        private bool IsRollingSlideshow(MediaItem mediaItem)
-        {
-            return mediaItem?.IsRollingSlideshow ?? false;
-        }
+        private bool IsRollingSlideshow(MediaItem mediaItem) => mediaItem.IsRollingSlideshow;
 
-        private bool IsWeb(MediaItem mediaItem)
-        {
-            return mediaItem?.IsWeb ?? false;
-        }
+        private bool IsWeb(MediaItem mediaItem) => mediaItem.IsWeb;
 
         private async Task MediaPauseControl(Guid? mediaItemId)
         {
@@ -723,7 +723,15 @@ namespace OnlyM.ViewModel
                 {
                     if (mediaItem.IsPaused)
                     {
-                        await _pageService.StartMedia(mediaItem, GetCurrentMediaItems(), true);
+                        var items = GetCurrentMediaItems();
+                        if (items != null)
+                        {
+                            await _pageService.StartMedia(mediaItem, items, true);
+                        }
+                        else
+                        {
+                            Log.Warning("Anomaly - no media items!");
+                        }
                     }
                     else
                     {
@@ -771,37 +779,30 @@ namespace OnlyM.ViewModel
 
         private bool CanStartMedia(MediaItem item)
         {
-            switch (item.MediaType.Classification)
+            switch (item.MediaType?.Classification)
             {
                 case MediaClassification.Audio:
-                    return !VideoOrAudioIsActive();
-
-                case MediaClassification.Image:
-                    return !VideoIsActive();
-
                 case MediaClassification.Video:
                     return !VideoOrAudioIsActive();
 
+                case MediaClassification.Image:
                 case MediaClassification.Slideshow:
-                    return !VideoIsActive();
-
                 case MediaClassification.Web:
                     return !VideoIsActive();
 
                 default:
-                case MediaClassification.Unknown:
                     return false;
             }
         }
 
-        private IReadOnlyCollection<MediaItem> GetCurrentMediaItems()
+        private IReadOnlyCollection<MediaItem>? GetCurrentMediaItems()
         {
             if (!_activeMediaItemsService.Any())
             {
                 return null;
             }
 
-            return _activeMediaItemsService.GetMediaItemIds().Select(GetMediaItem).ToList();
+            return _activeMediaItemsService.GetMediaItemIds().Select(GetMediaItem).Where(x => x != null).ToList()!;
         }
         
         private bool VideoOrAudioIsActive()
@@ -848,7 +849,7 @@ namespace OnlyM.ViewModel
             return currentItems.Any(IsWeb);
         }
 
-        private MediaItem GetNextImageItem(MediaItem currentMediaItem)
+        private MediaItem? GetNextImageItem(MediaItem? currentMediaItem)
         {
             if (currentMediaItem == null)
             {
@@ -858,7 +859,7 @@ namespace OnlyM.ViewModel
             var found = false;
             foreach (var item in MediaItems)
             {
-                if (found && item.MediaType.Classification == MediaClassification.Image)
+                if (found && item.MediaType?.Classification == MediaClassification.Image)
                 {
                     return item;
                 }
@@ -872,17 +873,17 @@ namespace OnlyM.ViewModel
             return null;
         }
 
-        private MediaItem GetMediaItem(Guid mediaItemId)
+        private MediaItem? GetMediaItem(Guid mediaItemId)
         {
             return MediaItems.SingleOrDefault(x => x.Id == mediaItemId);
         }
 
-        private void HandleMediaFolderChangedEvent(object sender, EventArgs e)
+        private void HandleMediaFolderChangedEvent(object? sender, EventArgs e)
         {
             _pendingLoadMediaItems = true;
         }
 
-        private void HandleThumbnailsPurgedEvent(object sender, EventArgs e)
+        private void HandleThumbnailsPurgedEvent(object? sender, EventArgs e)
         {
             foreach (var item in MediaItems)
             {
@@ -923,20 +924,26 @@ namespace OnlyM.ViewModel
 
             foreach (var file in files)
             {
-                sourceFilePaths.Add(file.FullPath);
+                if (file.FullPath != null)
+                {
+                    sourceFilePaths.Add(file.FullPath);
+                }
             }
-
+            
             var itemsToRemove = new List<MediaItem>();
 
             foreach (var item in MediaItems)
             {
-                if (!sourceFilePaths.Contains(item.FilePath))
+                if (item.FilePath != null)
                 {
-                    // remove this item.
-                    itemsToRemove.Add(item);
-                }
+                    if (!sourceFilePaths.Contains(item.FilePath))
+                    {
+                        // remove this item.
+                        itemsToRemove.Add(item);
+                    }
 
-                destFilePaths.Add(item.FilePath);
+                    destFilePaths.Add(item.FilePath);
+                }
             }
 
             var currentItems = GetCurrentMediaItems();
@@ -961,12 +968,12 @@ namespace OnlyM.ViewModel
             // add new items.
             foreach (var file in files)
             {
-                if (!destFilePaths.Contains(file.FullPath))
+                if (file.FullPath != null && !destFilePaths.Contains(file.FullPath))
                 {
                     var item = CreateNewMediaItem(file);
 
                     MediaItems.Add(item);
-                    
+
                     _metaDataProducer.Add(item);
                 }
             }
@@ -982,8 +989,13 @@ namespace OnlyM.ViewModel
             InsertBlankMediaItem();
         }
 
-        private void ForciblyStopAllPlayback(IReadOnlyCollection<MediaItem> activeItems)
+        private void ForciblyStopAllPlayback(IReadOnlyCollection<MediaItem>? activeItems)
         {
+            if (activeItems == null)
+            {
+                return;
+            }
+
             _pageService.ForciblyStopAllPlayback(activeItems);
 
             foreach (var item in activeItems)
@@ -1049,7 +1061,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private string GetBlankScreenPath()
+        private string? GetBlankScreenPath()
         {
             if (_blankScreenImagePath == null)
             {
@@ -1102,7 +1114,7 @@ namespace OnlyM.ViewModel
 
         private void AutoRotateImageIfRequired(MediaItem item)
         {
-            if (item.MediaType.Classification != MediaClassification.Image)
+            if (item.MediaType?.Classification != MediaClassification.Image)
             {
                 return;
             }
@@ -1118,7 +1130,7 @@ namespace OnlyM.ViewModel
             _metaDataProducer.Add(item);
         }
 
-        private void HandleAutoRotateChangedEvent(object sender, EventArgs e)
+        private void HandleAutoRotateChangedEvent(object? sender, EventArgs e)
         {
             Task.Run(() =>
             {
@@ -1142,7 +1154,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleWebStatusEvent(object sender, WebBrowserProgressEventArgs e)
+        private void HandleWebStatusEvent(object? sender, WebBrowserProgressEventArgs e)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -1154,7 +1166,7 @@ namespace OnlyM.ViewModel
             });
         }
 
-        private void HandleAllowMirrorChangedEvent(object sender, EventArgs e)
+        private void HandleAllowMirrorChangedEvent(object? sender, EventArgs e)
         {
             var allow = _optionsService.AllowMirror;
 

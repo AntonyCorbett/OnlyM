@@ -73,7 +73,7 @@ namespace OnlyM.Services
             SetScreenMarginValue(screenPosition, marginSide, newMarginValue);
         }
 
-        private static Window GetParentWindow(DependencyObject child)
+        private static Window? GetParentWindow(DependencyObject child)
         {
             var parentObject = VisualTreeHelper.GetParent(child);
 

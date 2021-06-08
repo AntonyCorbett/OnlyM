@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using OnlyM.Models;
 
 namespace OnlyM.Services.HiddenMediaItems
@@ -11,9 +10,9 @@ namespace OnlyM.Services.HiddenMediaItems
 
         private readonly HashSet<string> _hiddenItemsInCurrentMediaFolder = new();
 
-        public event EventHandler HiddenItemsChangedEvent;
+        public event EventHandler? HiddenItemsChangedEvent;
 
-        public event EventHandler UnhideAllEvent;
+        public event EventHandler? UnhideAllEvent;
 
         public void Init(IEnumerable<MediaItem> items)
         {
@@ -21,6 +20,11 @@ namespace OnlyM.Services.HiddenMediaItems
 
             foreach (var item in items)
             {
+                if (item.FilePath == null)
+                {
+                    continue;
+                }
+
                 if (!item.IsVisible)
                 {
                     _hiddenItemsInCurrentMediaFolder.Add(item.FilePath);

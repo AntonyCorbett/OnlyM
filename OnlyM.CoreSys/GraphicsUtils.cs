@@ -18,8 +18,13 @@ namespace OnlyM.CoreSys
         private const int MaxDpi = 1200;
         private static readonly object TagLibLocker = new();
 
-        public static bool AutoRotateIfRequired(string itemFilePath)
+        public static bool AutoRotateIfRequired(string? itemFilePath)
         {
+            if (itemFilePath == null)
+            {
+                return false;
+            }
+
             try
             {
                 if (ImageRequiresRotation(itemFilePath))

@@ -37,7 +37,7 @@ namespace OnlyM.Services.Pages
         private readonly ICommandLineService _commandLineService;
         private readonly (int dpiX, int dpiY) _systemDpi;
         
-        private MediaWindow _mediaWindow;
+        private MediaWindow? _mediaWindow;
         private double _operatorPageScrollerPosition;
         private double _settingsPageScrollerPosition;
         
@@ -67,29 +67,29 @@ namespace OnlyM.Services.Pages
             WeakReferenceMessenger.Default.Register<MirrorWindowMessage>(this, OnMirrorWindowMessage);
         }
 
-        public event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
+        public event EventHandler<MonitorChangedEventArgs>? MediaMonitorChangedEvent;
 
-        public event EventHandler<NavigationEventArgs> NavigationEvent;
+        public event EventHandler<NavigationEventArgs>? NavigationEvent;
 
-        public event EventHandler<MediaEventArgs> MediaChangeEvent;
+        public event EventHandler<MediaEventArgs>? MediaChangeEvent;
 
-        public event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
+        public event EventHandler<SlideTransitionEventArgs>? SlideTransitionEvent;
 
-        public event EventHandler<OnlyMPositionChangedEventArgs> MediaPositionChangedEvent;
+        public event EventHandler<OnlyMPositionChangedEventArgs>? MediaPositionChangedEvent;
 
-        public event EventHandler MediaWindowOpenedEvent;
+        public event EventHandler? MediaWindowOpenedEvent;
 
-        public event EventHandler MediaWindowClosedEvent;
+        public event EventHandler? MediaWindowClosedEvent;
 
-        public event EventHandler<WindowVisibilityChangedEventArgs> MediaWindowVisibilityChanged;
+        public event EventHandler<WindowVisibilityChangedEventArgs>? MediaWindowVisibilityChanged;
 
-        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
+        public event EventHandler<MediaNearEndEventArgs>? MediaNearEndEvent;
 
-        public event EventHandler<WebBrowserProgressEventArgs> WebStatusEvent;
+        public event EventHandler<WebBrowserProgressEventArgs>? WebStatusEvent;
 
         public bool ApplicationIsClosing { get; private set; }
 
-        public ScrollViewer ScrollViewer { get; set; }
+        public ScrollViewer? ScrollViewer { get; set; }
 
         public string OperatorPageName => "OperatorPage";
 
@@ -125,7 +125,7 @@ namespace OnlyM.Services.Pages
 #pragma warning restore SA1312 // Variable names should begin with lower-case letter
 #pragma warning restore S1481 // Unused local variables should be removed
 
-            _operatorPageScrollerPosition = ScrollViewer.VerticalOffset;
+            _operatorPageScrollerPosition = ScrollViewer?.VerticalOffset ?? 0.0;
             OnNavigationEvent(new NavigationEventArgs { PageName = SettingsPageName });
         }
 
@@ -144,7 +144,7 @@ namespace OnlyM.Services.Pages
             throw new ArgumentOutOfRangeException(nameof(pageName));
         }
         
-        public void CacheImageItem(MediaItem mediaItem)
+        public void CacheImageItem(MediaItem? mediaItem)
         {
             if (_mediaWindow != null && mediaItem != null)
             {
@@ -154,25 +154,29 @@ namespace OnlyM.Services.Pages
 
         public int GotoPreviousSlide()
         {
-            return _mediaWindow.GotoPreviousSlide();
+            CheckMediaWindow();
+            return _mediaWindow!.GotoPreviousSlide();
         }
 
         public int GotoNextSlide()
         {
-            return _mediaWindow.GotoNextSlide();
+            CheckMediaWindow();
+            return _mediaWindow!.GotoNextSlide();
         }
 
         public async Task StartMedia(
             MediaItem mediaItemToStart, 
-            IReadOnlyCollection<MediaItem> currentMediaItems, 
+            IReadOnlyCollection<MediaItem>? currentMediaItems, 
             bool startFromPaused)
         {
             try
             {
-                var requiresVisibleWindow = mediaItemToStart.MediaType.Classification != MediaClassification.Audio;
+                var requiresVisibleWindow = mediaItemToStart.MediaType?.Classification != MediaClassification.Audio;
                 OpenMediaWindow(requiresVisibleWindow, mediaItemToStart.IsVideo);
 
-                await _mediaWindow.StartMedia(
+                CheckMediaWindow();
+
+                await _mediaWindow!.StartMedia(
                     mediaItemToStart,
                     currentMediaItems,
                     startFromPaused);
@@ -204,15 +208,19 @@ namespace OnlyM.Services.Pages
 
         public async void ForciblyStopAllPlayback(IReadOnlyCollection<MediaItem> activeItems)
         {
+            CheckMediaWindow();
+
             foreach (var item in activeItems)
             {
-                await _mediaWindow.StopMediaAsync(item, true);
+                await _mediaWindow!.StopMediaAsync(item, true);
             }
         }
 
         private void PositionMediaWindowWindowed()
         {
-            if (_mediaWindow.IsWindowed && _mediaWindow.IsVisible)
+            CheckMediaWindow();
+
+            if (_mediaWindow!.IsWindowed && _mediaWindow.IsVisible)
             {
                 return;
             }
@@ -224,12 +232,19 @@ namespace OnlyM.Services.Pages
             _mediaWindow.Show();
         }
 
-        private void PositionMediaWindowFullScreenMonitor(Screen monitor, bool isVideo)
+        private void PositionMediaWindowFullScreenMonitor(Screen? monitor, bool isVideo)
         {
-            MediaWindowPositionHelper.PositionMediaWindow(
-                _optionsService, _commandLineService, _mediaWindow, monitor, _systemDpi, isVideo);
+            if (monitor == null)
+            {
+                return;
+            }
 
-            _mediaWindow.Topmost = true;
+            CheckMediaWindow();
+
+            MediaWindowPositionHelper.PositionMediaWindow(
+                _optionsService, _commandLineService, _mediaWindow!, monitor, _systemDpi, isVideo);
+
+            _mediaWindow!.Topmost = true;
 
             _mediaWindow.Show();
         }
@@ -279,7 +294,7 @@ namespace OnlyM.Services.Pages
                 else
                 {
                     var targetMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
-                    if (targetMonitor != null)
+                    if (targetMonitor?.Monitor != null)
                     {
                         _mediaWindow.SaveWindowPos();
                         _mediaWindow.IsWindowed = false;
@@ -313,7 +328,9 @@ namespace OnlyM.Services.Pages
 
         private void SubscribeMediaWindowEvents()
         {
-            _mediaWindow.MediaChangeEvent += HandleMediaChangeEvent;
+            CheckMediaWindow();
+
+            _mediaWindow!.MediaChangeEvent += HandleMediaChangeEvent;
             _mediaWindow.SlideTransitionEvent += HandleSlideTransitionEvent;
             _mediaWindow.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _mediaWindow.MediaNearEndEvent += HandleMediaNearEndEvent;
@@ -321,19 +338,22 @@ namespace OnlyM.Services.Pages
             _mediaWindow.WebStatusEvent += HandleWebStatusEvent;
         }
 
-        private void HandleWebStatusEvent(object sender, WebBrowserProgressEventArgs e)
+        private void HandleWebStatusEvent(object? sender, WebBrowserProgressEventArgs e)
         {
             WebStatusEvent?.Invoke(this, e);
         }
 
         private void HandleMediaWindowVisibility(object sender, DependencyPropertyChangedEventArgs e)
         {
-            MediaWindowVisibilityChanged?.Invoke(this, new WindowVisibilityChangedEventArgs { Visible = _mediaWindow.Visibility == Visibility.Visible });
+            CheckMediaWindow();
+            MediaWindowVisibilityChanged?.Invoke(this, new WindowVisibilityChangedEventArgs { Visible = _mediaWindow!.Visibility == Visibility.Visible });
         }
 
         private void UnsubscribeMediaWindowEvents()
         {
-            _mediaWindow.MediaChangeEvent -= HandleMediaChangeEvent;
+            CheckMediaWindow();
+
+            _mediaWindow!.MediaChangeEvent -= HandleMediaChangeEvent;
             _mediaWindow.SlideTransitionEvent -= HandleSlideTransitionEvent;
             _mediaWindow.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
             _mediaWindow.MediaNearEndEvent -= HandleMediaNearEndEvent;
@@ -350,22 +370,22 @@ namespace OnlyM.Services.Pages
             }
         }
 
-        private void HandleMediaPositionChangedEvent(object sender, OnlyMPositionChangedEventArgs e)
+        private void HandleMediaPositionChangedEvent(object? sender, OnlyMPositionChangedEventArgs e)
         {
             MediaPositionChangedEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaNearEndEvent(object sender, MediaNearEndEventArgs e)
+        private void HandleMediaNearEndEvent(object? sender, MediaNearEndEventArgs e)
         {
             MediaNearEndEvent?.Invoke(this, e);
         }
 
-        private void HandleSlideTransitionEvent(object sender, SlideTransitionEventArgs e)
+        private void HandleSlideTransitionEvent(object? sender, SlideTransitionEventArgs e)
         {
             SlideTransitionEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
+        private void HandleMediaChangeEvent(object? sender, MediaEventArgs e)
         {
             switch (e.Change)
             {
@@ -386,8 +406,10 @@ namespace OnlyM.Services.Pages
         {
             if (!_optionsService.PermanentBackdrop && !AnyActiveMediaRequiringVisibleMediaWindow())
             {
-                _mediaWindow.SaveWindowPos();
-                _mediaWindow?.Hide();
+                CheckMediaWindow();
+
+                _mediaWindow!.SaveWindowPos();
+                _mediaWindow.Hide();
                 BringJwlToFront();
             }
         }
@@ -401,7 +423,7 @@ namespace OnlyM.Services.Pages
                 MediaClassification.Web);
         }
 
-        private void HandleMediaMonitorChangedEvent(object sender, MonitorChangedEventArgs e)
+        private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e)
         {
             UpdateMediaMonitor(e.Change);
         }
@@ -435,7 +457,7 @@ namespace OnlyM.Services.Pages
             }
         }
 
-        private void HandlePermanentBackdropChangedEvent(object sender, EventArgs e)
+        private void HandlePermanentBackdropChangedEvent(object? sender, EventArgs e)
         {
             if (_optionsService.PermanentBackdrop)
             {
@@ -456,9 +478,11 @@ namespace OnlyM.Services.Pages
             if (_mediaWindow == null)
             {
                 EnsureMediaWindowCreated();
-                _mediaWindow.Show();
 
-                Task.Delay(10).ContinueWith(t =>
+                CheckMediaWindow();
+                _mediaWindow!.Show();
+
+                Task.Delay(10).ContinueWith(_ =>
                 {
                     System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -495,7 +519,7 @@ namespace OnlyM.Services.Pages
             }
         }
 
-        private void HandleWindowedAlwaysOnTopChangedEvent(object sender, EventArgs e)
+        private void HandleWindowedAlwaysOnTopChangedEvent(object? sender, EventArgs e)
         {
             if (_mediaWindow != null && _mediaWindow.IsWindowed)
             {
@@ -503,7 +527,7 @@ namespace OnlyM.Services.Pages
             }
         }
 
-        private void HandleRenderingMethodChangedEvent(object sender, EventArgs e)
+        private void HandleRenderingMethodChangedEvent(object? sender, EventArgs e)
         {
             _mediaWindow?.UpdateRenderingMethod();
         }
@@ -512,7 +536,8 @@ namespace OnlyM.Services.Pages
         {
             if (_activeMediaItemsService.Exists(msg.MediaItemId))
             {
-                _mediaWindow.ShowMirror(msg.UseMirror);
+                CheckMediaWindow();
+                _mediaWindow!.ShowMirror(msg.UseMirror);
             }
         }
 
@@ -544,7 +569,8 @@ namespace OnlyM.Services.Pages
 
                         Log.Logger.Information("Opening media window in monitor");
 
-                        _mediaWindow.IsWindowed = false;
+                        CheckMediaWindow();
+                        _mediaWindow!.IsWindowed = false;
 
                         PositionMediaWindowFullScreenMonitor(targetMonitor.Monitor, isVideo);
 
@@ -555,6 +581,14 @@ namespace OnlyM.Services.Pages
             catch (Exception ex)
             {
                 Log.Logger.Error(ex, "Could not open media window");
+            }
+        }
+
+        private void CheckMediaWindow()
+        {
+            if (_mediaWindow == null)
+            {
+                throw new NotSupportedException("Media window not initialised!");
             }
         }
     }

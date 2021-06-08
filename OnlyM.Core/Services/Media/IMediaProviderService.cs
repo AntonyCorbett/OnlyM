@@ -12,7 +12,7 @@ namespace OnlyM.Core.Services.Media
 
         IReadOnlyCollection<SupportedMediaType> GetSupportedMediaTypes();
 
-        SupportedMediaType? GetSupportedMediaType(string fileName);
+        SupportedMediaType? GetSupportedMediaType(string? fileName);
 
         MediaFolders GetMediaFolders(DateTime theDate);
     }

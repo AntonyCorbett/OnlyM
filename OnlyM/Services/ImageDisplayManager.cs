@@ -39,7 +39,7 @@ namespace OnlyM.Services
         private MediaClassification _mediaClassification2;
 
         private int _currentSlideshowImageIndex;
-        private List<Slide> _slides;
+        private List<Slide>? _slides;
         private bool _shouldLoopSlideshow;
         private Guid _slideshowGuid;
         private bool _autoPlaySlideshow;
@@ -62,9 +62,9 @@ namespace OnlyM.Services
             _slideshowTimer.Tick += HandleSlideshowTimerTick;
         }
 
-        public event EventHandler<MediaEventArgs> MediaChangeEvent;
+        public event EventHandler<MediaEventArgs>? MediaChangeEvent;
 
-        public event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
+        public event EventHandler<SlideTransitionEventArgs>? SlideTransitionEvent;
 
         private bool Image1Populated => _image1.Source != null;
 
@@ -147,7 +147,8 @@ namespace OnlyM.Services
 
             if (_currentSlideshowImageIndex < 0)
             {
-                _currentSlideshowImageIndex = _shouldLoopSlideshow ? _slides.Count - 1 : 0;
+                CheckSlides();
+                _currentSlideshowImageIndex = _shouldLoopSlideshow ? _slides!.Count - 1 : 0;
             }
             
             var newSlide = GetCurrentSlide();
@@ -165,14 +166,15 @@ namespace OnlyM.Services
             return _currentSlideshowImageIndex;
         }
 
-        public int GotoNextSlide(Action onTransitionFinished = null)
+        public int GotoNextSlide(Action? onTransitionFinished = null)
         {
             var oldSlide = GetCurrentSlide();
             var oldIndex = _currentSlideshowImageIndex;
 
             ++_currentSlideshowImageIndex;
 
-            if (_currentSlideshowImageIndex > _slides.Count - 1)
+            CheckSlides();
+            if (_currentSlideshowImageIndex > _slides!.Count - 1)
             {
                 _currentSlideshowImageIndex = _shouldLoopSlideshow ? 0 : _slides.Count - 1;
             }
@@ -225,7 +227,7 @@ namespace OnlyM.Services
                 });
 
             _currentSlideshowImageIndex = 0;
-            _slides.Clear();
+            _slides?.Clear();
         }
 
         public void CacheImageItem(string mediaFilePath)
@@ -236,7 +238,7 @@ namespace OnlyM.Services
             }
         }
 
-        private void OnMediaChangeEvent(MediaEventArgs e)
+        private void OnMediaChangeEvent(MediaEventArgs? e)
         {
             if (e != null)
             {
@@ -253,7 +255,7 @@ namespace OnlyM.Services
             SlideTransitionEvent?.Invoke(this, e);
         }
 
-        private static MediaEventArgs CreateMediaEventArgs(Guid id, MediaClassification mediaClassification, MediaChange change)
+        private static MediaEventArgs? CreateMediaEventArgs(Guid id, MediaClassification mediaClassification, MediaChange change)
         {
             if (id == Guid.Empty)
             {
@@ -315,7 +317,7 @@ namespace OnlyM.Services
                     fadeTime,
                     () =>
                     {
-                        hideCompleted?.Invoke();
+                        hideCompleted.Invoke();
                         ShowImageInControl(imageFile, controlToUse, fadeType, fadeTime, showCompleted);
                     });
             }
@@ -338,7 +340,7 @@ namespace OnlyM.Services
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    completed?.Invoke();
+                    completed.Invoke();
                     imageCtrl.Source = null;
                     RemoveAnimation(imageCtrl);
                 });
@@ -354,7 +356,7 @@ namespace OnlyM.Services
 
                 fadeOut.Completed += (_, _) =>
                 {
-                    completed?.Invoke();
+                    completed.Invoke();
                     imageCtrl.Source = null;
                 };
 
@@ -379,7 +381,7 @@ namespace OnlyM.Services
                 {
                     RemoveAnimation(imageCtrl);
                     imageCtrl.Source = imageSrc;
-                    completed?.Invoke();
+                    completed.Invoke();
                 });
             }
             else
@@ -401,11 +403,7 @@ namespace OnlyM.Services
                             To = 1.0,
                         };
 
-                        if (completed != null)
-                        {
-                            fadeIn.Completed += (_, _) => completed();
-                        }
-
+                        fadeIn.Completed += (_, _) => completed();
                         imageCtrl.BeginAnimation(UIElement.OpacityProperty, fadeIn);
                     });
                 });
@@ -451,13 +449,13 @@ namespace OnlyM.Services
             }
         }
 
-        private void HandleSlideshowTimerTick(object sender, EventArgs e)
+        private void HandleSlideshowTimerTick(object? sender, EventArgs e)
         {
             _slideshowTransitioning = true;
             _slideshowTimer.Stop();
             
             var currentSlideIndex = _currentSlideshowImageIndex;
-            var newSlideIndex = GotoNextSlide(() => { _slideshowTransitioning = false; });
+            var newSlideIndex = GotoNextSlide(() => _slideshowTransitioning = false);
 
             if (currentSlideIndex == newSlideIndex)
             {
@@ -476,11 +474,16 @@ namespace OnlyM.Services
         private void DisplaySlide(
             Slide slide, 
             Guid mediaItemId, 
-            Slide previousSlide, 
+            Slide? previousSlide, 
             int oldIndex, 
             int newIndex,
-            Action onTransitionFinished = null)
+            Action? onTransitionFinished = null)
         {
+            if (slide.ArchiveEntryName == null)
+            {
+                throw new ArgumentNullException(nameof(slide.ArchiveEntryName));
+            }
+
             var direction = newIndex >= oldIndex ? SlideDirection.Forward : SlideDirection.Reverse;
 
             var fadeType = GetSlideFadeType(slide, previousSlide, direction);
@@ -536,7 +539,7 @@ namespace OnlyM.Services
                 });
         }
 
-        private ImageFadeType GetSlideFadeType(Slide slide, Slide previousSlide, SlideDirection direction)
+        private ImageFadeType GetSlideFadeType(Slide slide, Slide? previousSlide, SlideDirection direction)
         {
             var thisSlideFadeInType = direction == SlideDirection.Forward
                 ? slide.FadeInForward ? ImageFadeType.FadeIn : ImageFadeType.None
@@ -582,7 +585,8 @@ namespace OnlyM.Services
 
         private Slide GetCurrentSlide()
         {
-            return _slides[_currentSlideshowImageIndex];
+            CheckSlides();
+            return _slides![_currentSlideshowImageIndex];
         }
 
         private void PlaceImage(
@@ -598,11 +602,11 @@ namespace OnlyM.Services
         {
             var fadeTime = _optionsService.ImageFadeSpeed.GetFadeSpeedSeconds();
 
-            onStarting?.Invoke(mediaItemId, mediaClassification);
+            onStarting.Invoke(mediaItemId, mediaClassification);
 
             if (!Image1Populated)
             {
-                onStopping?.Invoke(_image2MediaItemId, _mediaClassification2);
+                onStopping.Invoke(_image2MediaItemId, _mediaClassification2);
 
                 ShowImageInternal(
                     isBlankScreenImage,
@@ -614,7 +618,7 @@ namespace OnlyM.Services
                     fadeTime,
                     () =>
                     {
-                        onStopped?.Invoke(_image2MediaItemId, _mediaClassification2);
+                        onStopped.Invoke(_image2MediaItemId, _mediaClassification2);
                         _image2MediaItemId = Guid.Empty;
                         _mediaClassification2 = MediaClassification.Unknown;
                     },
@@ -622,12 +626,12 @@ namespace OnlyM.Services
                     {
                         _image1MediaItemId = mediaItemId;
                         _mediaClassification1 = mediaClassification;
-                        onStarted?.Invoke(_image1MediaItemId, _mediaClassification1);
+                        onStarted.Invoke(_image1MediaItemId, _mediaClassification1);
                     });
             }
             else if (!Image2Populated)
             {
-                onStopping?.Invoke(_image1MediaItemId, _mediaClassification1);
+                onStopping.Invoke(_image1MediaItemId, _mediaClassification1);
 
                 ShowImageInternal(
                     isBlankScreenImage,
@@ -639,7 +643,7 @@ namespace OnlyM.Services
                     fadeTime,
                     () =>
                     {
-                        onStopped?.Invoke(_image1MediaItemId, _mediaClassification1);
+                        onStopped.Invoke(_image1MediaItemId, _mediaClassification1);
                         _image1MediaItemId = Guid.Empty;
                         _mediaClassification1 = MediaClassification.Unknown;
                     },
@@ -647,7 +651,7 @@ namespace OnlyM.Services
                     {
                         _image2MediaItemId = mediaItemId;
                         _mediaClassification2 = mediaClassification;
-                        onStarted?.Invoke(_image2MediaItemId, _mediaClassification2);
+                        onStarted.Invoke(_image2MediaItemId, _mediaClassification2);
                     });
             }
         }
@@ -661,7 +665,7 @@ namespace OnlyM.Services
         {
             var fadeTime = _optionsService.ImageFadeSpeed.GetFadeSpeedSeconds();
 
-            stopping?.Invoke(mediaItemId, mediaClassification);
+            stopping.Invoke(mediaItemId, mediaClassification);
             
             if (_image1MediaItemId == mediaItemId && (int)_image1.GetValue(Panel.ZIndexProperty) == 1)
             {
@@ -671,7 +675,7 @@ namespace OnlyM.Services
                     fadeTime,
                     () =>
                     {
-                        stopped?.Invoke(mediaItemId, mediaClassification);
+                        stopped.Invoke(mediaItemId, mediaClassification);
                         _image1MediaItemId = Guid.Empty;
                         _mediaClassification1 = MediaClassification.Unknown;
                     });
@@ -685,7 +689,7 @@ namespace OnlyM.Services
                     fadeTime,
                     () =>
                     {
-                        stopped?.Invoke(mediaItemId, mediaClassification);
+                        stopped.Invoke(mediaItemId, mediaClassification);
                         _image2MediaItemId = Guid.Empty;
                         _mediaClassification2 = MediaClassification.Unknown;
                     });
@@ -705,6 +709,14 @@ namespace OnlyM.Services
             }
 
             return mediaItemId;
+        }
+
+        private void CheckSlides()
+        {
+            if (_slides == null)
+            {
+                throw new NotSupportedException("Slides not initialised!");
+            }
         }
     }
 }

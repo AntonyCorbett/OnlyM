@@ -39,9 +39,9 @@ namespace OnlyM.Windows
 
         private readonly IOptionsService _optionsService;
         private readonly ISnackbarService _snackbarService;
-        private VideoDisplayManager _videoDisplayManager;
+        private VideoDisplayManager? _videoDisplayManager;
 
-        private IMediaElement _videoElement;
+        private IMediaElement? _videoElement;
         private RenderingMethod _currentRenderingMethod;
         
         public MediaWindow(
@@ -73,22 +73,22 @@ namespace OnlyM.Windows
             SubscribeAudioEvents();
         }
 
-        public event EventHandler<MediaEventArgs> MediaChangeEvent;
+        public event EventHandler<MediaEventArgs>? MediaChangeEvent;
 
-        public event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
+        public event EventHandler<SlideTransitionEventArgs>? SlideTransitionEvent;
 
-        public event EventHandler<OnlyMPositionChangedEventArgs> MediaPositionChangedEvent;
+        public event EventHandler<OnlyMPositionChangedEventArgs>? MediaPositionChangedEvent;
 
-        public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
+        public event EventHandler<MediaNearEndEventArgs>? MediaNearEndEvent;
 
-        public event EventHandler<WebBrowserProgressEventArgs> WebStatusEvent;
+        public event EventHandler<WebBrowserProgressEventArgs>? WebStatusEvent;
 
         public bool IsWindowed { get; set; }
 
         public void Dispose()
         {
             _videoDisplayManager?.Dispose();
-            _audioManager?.Dispose();
+            _audioManager.Dispose();
             VideoElementFfmpeg?.Dispose();
             Browser?.Dispose();
         }
@@ -115,12 +115,12 @@ namespace OnlyM.Windows
 
         public async Task StartMedia(
             MediaItem mediaItemToStart,
-            IReadOnlyCollection<MediaItem> currentMediaItems,
+            IReadOnlyCollection<MediaItem>? currentMediaItems,
             bool startFromPaused)
         {
             Log.Logger.Information($"Starting media {mediaItemToStart.FilePath}");
 
-            switch (mediaItemToStart.MediaType.Classification)
+            switch (mediaItemToStart.MediaType?.Classification)
             {
                 case MediaClassification.Image:
                     ShowImage(mediaItemToStart);
@@ -148,7 +148,10 @@ namespace OnlyM.Windows
 
         public void CacheImageItem(MediaItem mediaItem)
         {
-            _imageDisplayManager.CacheImageItem(mediaItem.FilePath);
+            if (mediaItem.FilePath != null)
+            {
+                _imageDisplayManager.CacheImageItem(mediaItem.FilePath);
+            }
         }
 
         public async Task StopMediaAsync(
@@ -163,7 +166,7 @@ namespace OnlyM.Windows
 
             Log.Logger.Information($"Stopping media {mediaItem.FilePath}");
 
-            switch (mediaItem.MediaType.Classification)
+            switch (mediaItem.MediaType?.Classification)
             {
                 case MediaClassification.Image:
                     HideImage(mediaItem);
@@ -192,8 +195,8 @@ namespace OnlyM.Windows
         public async Task PauseMediaAsync(MediaItem mediaItem)
         {
             Debug.Assert(
-                mediaItem.MediaType.Classification == MediaClassification.Audio ||
-                mediaItem.MediaType.Classification == MediaClassification.Video,
+                mediaItem.MediaType?.Classification == MediaClassification.Audio ||
+                mediaItem.MediaType?.Classification == MediaClassification.Video,
                 "Expecting audio or video media item");
 
             Log.Logger.Information($"Pausing media {mediaItem.FilePath}");
@@ -228,7 +231,7 @@ namespace OnlyM.Windows
             }
         }
 
-        protected override void OnSourceInitialized(System.EventArgs e)
+        protected override void OnSourceInitialized(EventArgs e)
         {
             RestoreWindowPositionAndSize();
             base.OnSourceInitialized(e);
@@ -242,10 +245,11 @@ namespace OnlyM.Windows
 
         private async Task PauseVideoOrAudioAsync(MediaItem mediaItem)
         {
-            switch (mediaItem.MediaType.Classification)
+            switch (mediaItem.MediaType?.Classification)
             {
                 case MediaClassification.Video:
-                    await _videoDisplayManager.PauseVideoAsync(mediaItem.Id);
+                    CheckVideoDisplayManager();
+                    await _videoDisplayManager!.PauseVideoAsync(mediaItem.Id);
                     mediaItem.PlaybackPositionChangedEvent += HandleVideoPlaybackPositionChangedEvent;
                     break;
 
@@ -256,21 +260,40 @@ namespace OnlyM.Windows
             }
         }
 
-        private async void HandleVideoPlaybackPositionChangedEvent(object sender, EventArgs e)
+        private void CheckVideoDisplayManager()
+        {
+            if (_videoDisplayManager == null)
+            {
+                throw new NotSupportedException("Video Display Manager not initialised!");
+            }
+        }
+
+        private async void HandleVideoPlaybackPositionChangedEvent(object? sender, EventArgs e)
         {
             if (_optionsService.AllowVideoScrubbing)
             {
-                var item = (MediaItem)sender;
-                await _videoDisplayManager.SetPlaybackPosition(
+                var item = (MediaItem?)sender;
+                if (item == null)
+                {
+                    return;
+                }
+
+                CheckVideoDisplayManager();
+                await _videoDisplayManager!.SetPlaybackPosition(
                     TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
             }
         }
 
-        private void HandleAudioPlaybackPositionChangedEvent(object sender, EventArgs e)
+        private void HandleAudioPlaybackPositionChangedEvent(object? sender, EventArgs e)
         {
             if (_optionsService.AllowVideoScrubbing)
             {
-                var item = (MediaItem)sender;
+                var item = (MediaItem?)sender;
+                if (item == null)
+                {
+                    return;
+                }
+
                 _audioManager.SetPlaybackPosition(
                     TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
             }
@@ -278,7 +301,8 @@ namespace OnlyM.Windows
 
         private async Task HideVideoAsync(MediaItem mediaItem)
         {
-            await _videoDisplayManager.HideVideoAsync(mediaItem.Id);
+            CheckVideoDisplayManager();
+            await _videoDisplayManager!.HideVideoAsync(mediaItem.Id);
         }
 
         private void StopAudio(MediaItem mediaItem)
@@ -288,13 +312,13 @@ namespace OnlyM.Windows
 
         private void HideImageOrSlideshow(IReadOnlyCollection<MediaItem> mediaItems)
         {
-            var imageItem = mediaItems?.SingleOrDefault(
-                x => x.MediaType.Classification == MediaClassification.Image ||
-                     x.MediaType.Classification == MediaClassification.Slideshow);
+            var imageItem = mediaItems.SingleOrDefault(
+                x => x.MediaType?.Classification == MediaClassification.Image ||
+                     x.MediaType?.Classification == MediaClassification.Slideshow);
 
             if (imageItem != null)
             {
-                switch (imageItem.MediaType.Classification)
+                switch (imageItem.MediaType?.Classification)
                 {
                     case MediaClassification.Image:
                         _imageDisplayManager.HideSingleImage(imageItem.Id);
@@ -307,7 +331,7 @@ namespace OnlyM.Windows
             }
         }
 
-        private void HideImage(MediaItem mediaItem)
+        private void HideImage(MediaItem? mediaItem)
         {
             if (mediaItem != null)
             {
@@ -317,11 +341,19 @@ namespace OnlyM.Windows
         
         private void ShowImage(MediaItem mediaItem)
         {
-            _imageDisplayManager.ShowSingleImage(mediaItem.FilePath, mediaItem.Id, mediaItem.IsBlankScreen);
+            if (mediaItem.FilePath != null)
+            {
+                _imageDisplayManager.ShowSingleImage(mediaItem.FilePath, mediaItem.Id, mediaItem.IsBlankScreen);
+            }
         }
 
-        private void ShowWebPage(MediaItem mediaItem, IReadOnlyCollection<MediaItem> currentMediaItems)
+        private void ShowWebPage(MediaItem mediaItem, IReadOnlyCollection<MediaItem>? currentMediaItems)
         {
+            if (mediaItem.FilePath == null)
+            {
+                return;
+            }
+
             var vm = (MediaViewModel)DataContext;
             vm.IsWebPage = !mediaItem.IsPdf;
 
@@ -340,7 +372,10 @@ namespace OnlyM.Windows
             // show the header for a few seconds
             _webNavHeaderAdmin.PreviewWebNavHeader();
 
-            HideImageOrSlideshow(currentMediaItems);
+            if (currentMediaItems != null)
+            {
+                HideImageOrSlideshow(currentMediaItems);
+            }
         }
 
         private void StopWeb()
@@ -350,6 +385,11 @@ namespace OnlyM.Windows
 
         private void StartSlideshow(MediaItem mediaItem)
         {
+            if (mediaItem.FilePath == null)
+            {
+                return;
+            }
+
             mediaItem.CurrentSlideshowIndex = 0;
             _imageDisplayManager.StartSlideshow(mediaItem.FilePath, mediaItem.Id);
         }
@@ -361,12 +401,18 @@ namespace OnlyM.Windows
 
         private async Task ShowVideoAsync(
             MediaItem mediaItemToStart,
-            IReadOnlyCollection<MediaItem> currentMediaItems,
+            IReadOnlyCollection<MediaItem>? currentMediaItems,
             bool startFromPaused)
         {
+            if (mediaItemToStart.FilePath == null)
+            {
+                return;
+            }
+
             var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 100);
 
-            _videoDisplayManager.ShowSubtitles = _optionsService.ShowVideoSubtitles;
+            CheckVideoDisplayManager();
+            _videoDisplayManager!.ShowSubtitles = _optionsService.ShowVideoSubtitles;
 
             await _videoDisplayManager.ShowVideoAsync(
                 mediaItemToStart.FilePath,
@@ -375,11 +421,19 @@ namespace OnlyM.Windows
                 startPosition,
                 startFromPaused);
 
-            HideImageOrSlideshow(currentMediaItems);
+            if (currentMediaItems != null)
+            {
+                HideImageOrSlideshow(currentMediaItems);
+            }
         }
 
         private void PlayAudio(MediaItem mediaItemToStart, bool startFromPaused)
         {
+            if (mediaItemToStart.FilePath == null)
+            {
+                return;
+            }
+
             var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 100);
 
             _audioManager.PlayAudio(
@@ -393,7 +447,7 @@ namespace OnlyM.Windows
         {
             // prevent window from being closed independently of application.
             var pageService = Ioc.Default.GetService<IPageService>();
-            e.Cancel = !pageService.ApplicationIsClosing && !pageService.AllowMediaWindowToClose;
+            e.Cancel = pageService != null && !pageService.ApplicationIsClosing && !pageService.AllowMediaWindowToClose;
 
             if (!e.Cancel)
             {
@@ -421,7 +475,8 @@ namespace OnlyM.Windows
 
         private void SubscribeVideoEvents()
         {
-            _videoDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
+            CheckVideoDisplayManager();
+            _videoDisplayManager!.MediaChangeEvent += HandleMediaChangeEvent;
             _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent += HandleMediaNearEndEvent;
             _videoDisplayManager.SubtitleEvent += HandleMediaFoundationSubtitleEvent;
@@ -450,7 +505,7 @@ namespace OnlyM.Windows
             WebStatusEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaFoundationSubtitleEvent(object sender, Core.Subtitles.SubtitleEventArgs e)
+        private void HandleMediaFoundationSubtitleEvent(object? sender, Core.Subtitles.SubtitleEventArgs e)
         {
             var vm = (MediaViewModel)DataContext;
 
@@ -475,7 +530,8 @@ namespace OnlyM.Windows
 
         private void UnsubscribeVideoEvents()
         {
-            _videoDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
+            CheckVideoDisplayManager();
+            _videoDisplayManager!.MediaChangeEvent -= HandleMediaChangeEvent;
             _videoDisplayManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
             _videoDisplayManager.MediaNearEndEvent -= HandleMediaNearEndEvent;
             _videoDisplayManager.SubtitleEvent -= HandleMediaFoundationSubtitleEvent;
@@ -487,39 +543,41 @@ namespace OnlyM.Windows
             _webDisplayManager.StatusEvent -= HandleWebDisplayManagerStatusEvent;
         }
 
-        private void HandleMediaChangeEvent(object sender, MediaEventArgs e)
+        private void HandleMediaChangeEvent(object? sender, MediaEventArgs e)
         {
             MediaChangeEvent?.Invoke(this, e);
         }
 
-        private void HandleSlideTransitionEvent(object sender, SlideTransitionEventArgs e)
+        private void HandleSlideTransitionEvent(object? sender, SlideTransitionEventArgs e)
         {
             SlideTransitionEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaPositionChangedEvent(object sender, OnlyMPositionChangedEventArgs e)
+        private void HandleMediaPositionChangedEvent(object? sender, OnlyMPositionChangedEventArgs e)
         {
             MediaPositionChangedEvent?.Invoke(this, e);
         }
 
-        private void HandleMediaNearEndEvent(object sender, MediaNearEndEventArgs e)
+        private void HandleMediaNearEndEvent(object? sender, MediaNearEndEventArgs e)
         {
             MediaNearEndEvent?.Invoke(this, e);
         }
 
-        private void HandleShowSubtitlesChangedEvent(object sender, EventArgs e)
+        private void HandleShowSubtitlesChangedEvent(object? sender, EventArgs e)
         {
-            _videoDisplayManager.ShowSubtitles = _optionsService.ShowVideoSubtitles;
+            CheckVideoDisplayManager();
+            _videoDisplayManager!.ShowSubtitles = _optionsService.ShowVideoSubtitles;
         }
 
         private bool ShouldConfirmMediaStop(MediaItem mediaItem)
         {
-            switch (mediaItem.MediaType.Classification)
+            switch (mediaItem.MediaType?.Classification)
             {
                 case MediaClassification.Video:
+                    CheckVideoDisplayManager();
                     return
                         _optionsService.ConfirmVideoStop &&
-                        !_videoDisplayManager.IsPaused &&
+                        !_videoDisplayManager!.IsPaused &&
                         _videoDisplayManager.GetPlaybackPosition().TotalSeconds > MediaConfirmStopWindowSeconds;
 
                 case MediaClassification.Audio:
@@ -544,18 +602,18 @@ namespace OnlyM.Windows
                 neverConsiderToBeDuplicate: true);
         }
 
-        private void HandleVideoScreenPositionChangedEvent(object sender, EventArgs e)
+        private void HandleVideoScreenPositionChangedEvent(object? sender, EventArgs e)
         {
             ScreenPositionHelper.SetScreenPosition(_videoElement.FrameworkElement, _optionsService.VideoScreenPosition);
             ScreenPositionHelper.SetSubtitleBlockScreenPosition(SubtitleBlock, _optionsService.VideoScreenPosition);
         }
 
-        private void HandleWebScreenPositionChangedEvent(object sender, EventArgs e)
+        private void HandleWebScreenPositionChangedEvent(object? sender, EventArgs e)
         {
             ScreenPositionHelper.SetScreenPosition(BrowserGrid, _optionsService.WebScreenPosition);
         }
 
-        private void HandleImageScreenPositionChangedEvent(object sender, EventArgs e)
+        private void HandleImageScreenPositionChangedEvent(object? sender, EventArgs e)
         {
             ScreenPositionHelper.SetScreenPosition(Image1Element, _optionsService.ImageScreenPosition);
             ScreenPositionHelper.SetScreenPosition(Image2Element, _optionsService.ImageScreenPosition);

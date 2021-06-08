@@ -141,7 +141,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        public RecentTimesItem ChosenRecentTime
+        public RecentTimesItem? ChosenRecentTime
         {
             get => null;
             set

@@ -51,7 +51,7 @@ namespace OnlyM.Core.Services.Monitors
             return result;
         }
 
-        public SystemMonitor? GetSystemMonitor(string monitorId)
+        public SystemMonitor? GetSystemMonitor(string? monitorId)
         {
             return GetSystemMonitors().SingleOrDefault(
                 x => x.MonitorId != null && 

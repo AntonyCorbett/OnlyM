@@ -18,7 +18,7 @@ namespace OnlyM.Services.ImagesCache
         private readonly ConcurrentDictionary<string, ImageAndLastUsed> _cache = 
             new(StringComparer.OrdinalIgnoreCase);
 
-        public BitmapSource GetImage(string fullPath)
+        public BitmapSource? GetImage(string fullPath)
         {
             if (!_cache.TryGetValue(fullPath, out var result))
             {
@@ -30,19 +30,16 @@ namespace OnlyM.Services.ImagesCache
                 try
                 {
                     var image = GraphicsUtils.Downsize(fullPath, MaxImageWidth, MaxImageHeight);
-                    if (image != null)
-                    {
-                        result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow };
+                    result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow };
 
-                        _cache.AddOrUpdate(
-                            fullPath,
-                            result,
-                            (s, value) =>
-                            {
-                                value.LastUsedUtc = DateTime.UtcNow;
-                                return value;
-                            });
-                    }
+                    _cache.AddOrUpdate(
+                        fullPath,
+                        result,
+                        (_, value) =>
+                        {
+                            value.LastUsedUtc = DateTime.UtcNow;
+                            return value;
+                        });
 
                     if (_cache.Count > MaxItemCount)
                     {

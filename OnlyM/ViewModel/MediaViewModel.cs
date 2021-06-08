@@ -13,8 +13,8 @@ namespace OnlyM.ViewModel
     internal class MediaViewModel : ObservableObject
     {
         private readonly IOptionsService _optionsService;
-        private string _subtitleText;
-        private IWpfWebBrowser _webBrowser;
+        private string? _subtitleText;
+        private IWpfWebBrowser? _webBrowser;
         private bool _isMagnifierVisible;
         private Size _windowSize;
         private bool _isWebPage;
@@ -37,15 +37,15 @@ namespace OnlyM.ViewModel
 
         public bool EngineIsFfmpeg => _optionsService.RenderingMethod == RenderingMethod.Ffmpeg;
 
-        public RelayCommand ToggleMagnifier { get; set; }
+        public RelayCommand ToggleMagnifier { get; set; } = null!;
 
-        public RelayCommand ToggleMagnifierFrame { get; set; }
+        public RelayCommand ToggleMagnifierFrame { get; set; } = null!;
 
-        public RelayCommand MagnifierSmaller { get; set; }
+        public RelayCommand MagnifierSmaller { get; set; } = null!;
 
-        public RelayCommand MagnifierLarger { get; set; }
+        public RelayCommand MagnifierLarger { get; set; } = null!;
 
-        public IWpfWebBrowser WebBrowser
+        public IWpfWebBrowser? WebBrowser
         {
             get => _webBrowser;
             set => SetProperty(ref _webBrowser, value);
@@ -119,7 +119,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        public string SubTitleText
+        public string? SubTitleText
         {
             get => _subtitleText;
             set
@@ -165,7 +165,6 @@ namespace OnlyM.ViewModel
                 switch (_optionsService.MagnifierShape)
                 {
                     default:
-                    case MagnifierShape.Circle:
                         return FrameType.Circle;
 
                     case MagnifierShape.Square:
@@ -191,7 +190,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleRenderingMethodChangedEvent(object sender, System.EventArgs e)
+        private void HandleRenderingMethodChangedEvent(object? sender, System.EventArgs e)
         {
             OnPropertyChanged(nameof(EngineIsFfmpeg));
             OnPropertyChanged(nameof(EngineIsMediaFoundation));
@@ -315,7 +314,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private void HandleMagnifierChangedEvent(object sender, EventArgs e)
+        private void HandleMagnifierChangedEvent(object? sender, EventArgs e)
         {
             OnPropertyChanged(nameof(IsMagnifierVisible));
             OnPropertyChanged(nameof(IsMagnifierFrameSquare));
@@ -325,7 +324,7 @@ namespace OnlyM.ViewModel
             OnPropertyChanged(nameof(MagnifierFrameThickness));
         }
 
-        private void HandleBrowserChangedEvent(object sender, EventArgs e)
+        private void HandleBrowserChangedEvent(object? sender, EventArgs e)
         {
             OnPropertyChanged(nameof(BrowserZoomLevelIncrement));
         }

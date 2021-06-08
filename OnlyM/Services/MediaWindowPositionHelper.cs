@@ -87,13 +87,13 @@ namespace OnlyM.Services
             mediaWindow.WindowStyle = WindowStyle.None;
         }
 
-        private static Grid GetMainGrid(Window mediaWindow)
+        private static Grid? GetMainGrid(Window mediaWindow)
         {
             return FindVisualChildren<Grid>(mediaWindow).FirstOrDefault();
         }
 
         private static void PositionWindowUsingHack(
-            Window mediaWindow, Grid mainGrid, Screen monitor, int left, int top, int width, int height)
+            Window mediaWindow, Grid? mainGrid, Screen monitor, int left, int top, int width, int height)
         {
             Log.Logger.Verbose("Positioning media window according to WPF Media Foundation hack");
 
@@ -199,7 +199,7 @@ namespace OnlyM.Services
             return monitor1.Bounds.Top <= monitor2.Bounds.Bottom;
         }
 
-        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) 
+        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject? depObj) 
             where T : DependencyObject
         {
             if (depObj != null)

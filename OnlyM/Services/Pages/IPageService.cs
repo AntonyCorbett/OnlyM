@@ -42,7 +42,7 @@ namespace OnlyM.Services.Pages
 
         bool IsMediaWindowVisible { get; }
 
-        ScrollViewer ScrollViewer { get; set; }
+        ScrollViewer? ScrollViewer { get; set; }
 
         void GotoOperatorPage();
 
@@ -50,13 +50,13 @@ namespace OnlyM.Services.Pages
 
         FrameworkElement GetPage(string pageName);
         
-        Task StartMedia(MediaItem mediaItemToStart, IReadOnlyCollection<MediaItem> currentMediaItems, bool startFromPaused);
+        Task StartMedia(MediaItem mediaItemToStart, IReadOnlyCollection<MediaItem>? currentMediaItems, bool startFromPaused);
 
         Task StopMediaAsync(MediaItem mediaItem);
 
         Task PauseMediaAsync(MediaItem mediaItem);
 
-        void CacheImageItem(MediaItem mediaItem);
+        void CacheImageItem(MediaItem? mediaItem);
 
         int GotoPreviousSlide();
 

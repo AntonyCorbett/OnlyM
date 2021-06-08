@@ -17,12 +17,12 @@ namespace OnlyM.Models
             MonitorName = sm.MonitorName;
         }
 
-        public Screen Monitor { get; set; }
+        public Screen? Monitor { get; set; }
 
-        public string MonitorName { get; set; }
+        public string? MonitorName { get; set; }
 
-        public string MonitorId { get; set; }
+        public string? MonitorId { get; set; }
 
-        public string FriendlyName { get; set; }
+        public string? FriendlyName { get; set; }
     }
 }

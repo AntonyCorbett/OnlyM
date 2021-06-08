@@ -42,9 +42,9 @@ namespace OnlyM.Services.MetaDataQueue
             _cancellationToken = cancellationToken;
         }
 
-        public event EventHandler<ItemMetaDataPopulatedEventArgs> ItemCompletedEvent;
+        public event EventHandler<ItemMetaDataPopulatedEventArgs>? ItemCompletedEvent;
 
-        public event EventHandler AllItemsCompletedEvent;
+        public event EventHandler? AllItemsCompletedEvent;
 
         public void Execute()
         {
@@ -53,7 +53,7 @@ namespace OnlyM.Services.MetaDataQueue
         
         public void Dispose()
         {
-            _collection?.Dispose();
+            _collection.Dispose();
         }
 
         private void RunConsumer()
@@ -114,7 +114,7 @@ namespace OnlyM.Services.MetaDataQueue
         {
             Task.Delay(2000, _cancellationToken)
                 .ContinueWith(
-                    t =>
+                    _ =>
                     {
                         Log.Logger.Debug($"Replaced in queue {mediaItem.FilePath}");
                         _collection.Add(mediaItem, _cancellationToken);
@@ -131,7 +131,7 @@ namespace OnlyM.Services.MetaDataQueue
 
         private static void PopulateSlideData(MediaItem mediaItem)
         {
-            if (!IsSlideDataPopulated(mediaItem))
+            if (!IsSlideDataPopulated(mediaItem) && mediaItem.FilePath != null)
             {
                 var sf = new SlideFile(mediaItem.FilePath);
                 mediaItem.SlideshowCount = sf.SlideCount;
@@ -160,7 +160,9 @@ namespace OnlyM.Services.MetaDataQueue
         
         private void PopulateDurationAndTitle(MediaItem mediaItem)
         {
-            if (!IsDurationAndTitlePopulated(mediaItem))
+            if (mediaItem.FilePath != null && 
+                mediaItem.MediaType != null && 
+                !IsDurationAndTitlePopulated(mediaItem))
             {
                 var metaData = _metaDataService.GetMetaData(
                     mediaItem.FilePath, mediaItem.MediaType, _ffmpegFolder);
@@ -182,10 +184,9 @@ namespace OnlyM.Services.MetaDataQueue
 
         private void PopulateThumbnail(MediaItem mediaItem)
         {
-            if (!IsThumbnailPopulated(mediaItem))
+            if (mediaItem.FilePath != null && mediaItem.MediaType != null && !IsThumbnailPopulated(mediaItem))
             {
-                // ReSharper disable once StyleCop.SA1117
-                byte[] thumb = _thumbnailService.GetThumbnail(
+                var thumb = _thumbnailService.GetThumbnail(
                     mediaItem.FilePath,
                     Unosquare.FFME.Library.FFmpegDirectory,
                     mediaItem.MediaType.Classification,
@@ -205,7 +206,7 @@ namespace OnlyM.Services.MetaDataQueue
             }
         }
 
-        private string GetMediaTitle(string filePath, MediaMetaData metaData)
+        private string GetMediaTitle(string filePath, MediaMetaData? metaData)
         {
             if (_optionsService.UseInternalMediaTitles && metaData != null && !string.IsNullOrEmpty(metaData.Title))
             {

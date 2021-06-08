@@ -293,3 +293,9 @@ dotnet_diagnostic.SA1601.severity = none
 
 # SA1011: Closing square brackets should be spaced correctly
 dotnet_diagnostic.SA1011.severity = none
+
+# S3928: Parameter names used into ArgumentException constructors should match an existing one 
+dotnet_diagnostic.S3928.severity = silent
+
+# SA1009: Closing parenthesis should be spaced correctly
+dotnet_diagnostic.SA1009.severity = silent

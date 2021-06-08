@@ -32,8 +32,8 @@ namespace OnlyM.Services
         private Guid _mediaItemId;
         private bool _showing;
         private bool _useMirror;
-        private string _currentMediaItemUrl;
-        private Process _mirrorProcess;
+        private string? _currentMediaItemUrl;
+        private Process? _mirrorProcess;
 
         public WebDisplayManager(
             ChromiumWebBrowser browser,
@@ -53,9 +53,9 @@ namespace OnlyM.Services
             InitBrowser();
         }
 
-        public event EventHandler<MediaEventArgs> MediaChangeEvent;
+        public event EventHandler<MediaEventArgs>? MediaChangeEvent;
 
-        public event EventHandler<WebBrowserProgressEventArgs> StatusEvent;
+        public event EventHandler<WebBrowserProgressEventArgs>? StatusEvent;
 
         public void ShowWeb(
             string mediaItemFilePath,
@@ -79,7 +79,7 @@ namespace OnlyM.Services
 
             OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Starting));
 
-            string webAddress;
+            string? webAddress;
             if (Path.GetExtension(mediaItemFilePath).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
             {
                 // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
@@ -129,7 +129,7 @@ namespace OnlyM.Services
                 return;
             }
 
-            var folder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            var folder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location);
             if (folder == null)
             {
                 Log.Logger.Error("Could not get assembly folder");
@@ -158,7 +158,7 @@ namespace OnlyM.Services
             var onlyMMonitor = _monitorsService.GetMonitorForWindowHandle(handle);
             var mediaMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
 
-            if (onlyMMonitor == null || mediaMonitor == null)
+            if (onlyMMonitor?.MonitorId == null || mediaMonitor?.MonitorId == null)
             {
                 Log.Logger.Debug("Cannot get monitor");
                 return;
@@ -170,8 +170,8 @@ namespace OnlyM.Services
                 return;
             }
 
-            Log.Logger.Debug($"Main monitor = {onlyMMonitor.Monitor.DeviceName}");
-            Log.Logger.Debug($"Media monitor = {mediaMonitor.Monitor.DeviceName}");
+            Log.Logger.Debug($"Main monitor = {onlyMMonitor.Monitor?.DeviceName}");
+            Log.Logger.Debug($"Media monitor = {mediaMonitor.Monitor?.DeviceName}");
 
             StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = Properties.Resources.LAUNCHING_MIRROR });
 
@@ -181,7 +181,7 @@ namespace OnlyM.Services
                 var hotKey = _optionsService.MirrorHotKey;
 
                 var commandLineArgs =
-                    $"{onlyMMonitor.Monitor.DeviceName} {mediaMonitor.Monitor.DeviceName} {zoomStr} {hotKey}";
+                    $"{onlyMMonitor.Monitor?.DeviceName} {mediaMonitor.Monitor?.DeviceName} {zoomStr} {hotKey}";
 
                 Log.Logger.Debug($"Starting mirror exe with args = {commandLineArgs}");
 
@@ -208,7 +208,7 @@ namespace OnlyM.Services
             }
             finally
             {
-                Task.Delay(1000).ContinueWith(t =>
+                Task.Delay(1000).ContinueWith(_ =>
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -273,6 +273,11 @@ namespace OnlyM.Services
 
         private void UpdateBrowserDataInDatabase()
         {
+            if (_currentMediaItemUrl == null)
+            {
+                return;
+            }
+
             try
             {
                 _databaseService.AddBrowserData(_currentMediaItemUrl, _browser.ZoomLevel);
@@ -298,7 +303,7 @@ namespace OnlyM.Services
             MediaChangeEvent?.Invoke(this, e);
         }
 
-        private void HandleBrowserLoadingStateChanged(object sender, CefSharp.LoadingStateChangedEventArgs e)
+        private void HandleBrowserLoadingStateChanged(object? sender, LoadingStateChangedEventArgs e)
         {
             if (e.IsLoading)
             {
@@ -316,7 +321,7 @@ namespace OnlyM.Services
             {
                 Log.Debug(e.IsLoading ? $"Loading web page = {_browser.Address}" : "Loaded web page");
 
-                if (!e.IsLoading && !_showing)
+                if (!e.IsLoading && !_showing && _currentMediaItemUrl != null)
                 {
                     // page is loaded so fade in...
                     _showing = true;
@@ -353,11 +358,7 @@ namespace OnlyM.Services
                 To = fadeIn ? 1.0 : 0.0,
             };
 
-            if (completed != null)
-            {
-                animation.Completed += (sender, args) => { completed(); };
-            }
-
+            animation.Completed += (_, _) => completed();
             _browserGrid.BeginAnimation(UIElement.OpacityProperty, animation);
         }
 
@@ -377,7 +378,7 @@ namespace OnlyM.Services
             _browser.LifeSpanHandler = new BrowserLifeSpanHandler();
         }
 
-        private void HandleBrowserStatusMessage(object sender, StatusMessageEventArgs e)
+        private void HandleBrowserStatusMessage(object? sender, StatusMessageEventArgs e)
         {
             if (!e.Browser.IsLoading)
             {
@@ -385,13 +386,13 @@ namespace OnlyM.Services
             }
         }
 
-        private void HandleBrowserFrameLoadStart(object sender, FrameLoadStartEventArgs e)
+        private void HandleBrowserFrameLoadStart(object? sender, FrameLoadStartEventArgs e)
         {
             var s = string.Format(Properties.Resources.LOADING_FRAME, e.Frame.Identifier);
             StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = s });
         }
 
-        private void HandleBrowserLoadError(object sender, LoadErrorEventArgs e)
+        private void HandleBrowserLoadError(object? sender, LoadErrorEventArgs e)
         {
             // Don't display an error for downloaded files where the user aborted the download.
             if (e.ErrorCode == CefErrorCode.Aborted)
@@ -405,8 +406,13 @@ namespace OnlyM.Services
             _browser.LoadHtml(body, e.FailedUrl);
         }
 
-        private void HandleMirrorProcessExited(object sender, EventArgs e)
+        private void HandleMirrorProcessExited(object? sender, EventArgs e)
         {
+            if (_mirrorProcess == null)
+            {
+                return;
+            }
+
             if (_mirrorProcess.ExitCode == 0)
             {
                 Log.Logger.Debug("Mirror process closed normally");

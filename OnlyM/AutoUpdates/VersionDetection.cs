@@ -13,9 +13,9 @@ namespace OnlyM.AutoUpdates
     {
         public static string LatestReleaseUrl => "https://github.com/AntonyCorbett/OnlyM/releases/latest";
 
-        public static string GetLatestReleaseVersionString()
+        public static string? GetLatestReleaseVersionString()
         {
-            string version = null;
+            string? version = null;
 
             try
             {
@@ -45,16 +45,16 @@ namespace OnlyM.AutoUpdates
             return version;
         }
 
-        public static Version GetLatestReleaseVersion()
+        public static Version? GetLatestReleaseVersion()
         {
-            string versionString = GetLatestReleaseVersionString();
+            var versionString = GetLatestReleaseVersionString();
 
             if (string.IsNullOrEmpty(versionString))
             {
                 return null;
             }
 
-            string[] tokens = versionString.Split('.');
+            var tokens = versionString.Split('.');
             if (tokens.Length != 4)
             {
                 return null;
@@ -74,10 +74,15 @@ namespace OnlyM.AutoUpdates
         public static string GetCurrentVersionString()
         {
             var ver = GetCurrentVersion();
+            if (ver == null)
+            {
+                return "Unknown";
+            }
+
             return $"{ver.Major}.{ver.Minor}.{ver.Build}.{ver.Revision}";
         }
 
-        public static Version GetCurrentVersion()
+        public static Version? GetCurrentVersion()
         {
             return Assembly.GetExecutingAssembly().GetName().Version;
         }

@@ -27,9 +27,9 @@ namespace OnlyM.Models
         private bool _allowFreezeCommand;
         private bool _useMirror;
         private bool _isVisible;
-        private string _title;
+        private string? _title;
         private bool _isPaused;
-        private ImageSource _thumbnailImageSource;
+        private ImageSource? _thumbnailImageSource;
         private bool _isMediaActive;
         private bool _isPlayButtonEnabled;
         private bool _allowPositionSeeking;
@@ -41,18 +41,18 @@ namespace OnlyM.Models
         private int _slideshowCount;
         private bool _isRollingSlideshow;
         private bool _allowUseMirror;
-        private string _miscText;
-        private string _fileNameAsSubTitle;
+        private string? _miscText;
+        private string? _fileNameAsSubTitle;
         private PdfViewStyle _pdfViewStyle = PdfViewStyle.Default;
         private string _chosenPdfPage = "1";
 
-        public event EventHandler PlaybackPositionChangedEvent;
+        public event EventHandler? PlaybackPositionChangedEvent;
 
         public Guid Id { get; set; }
 
-        public bool IsVideo => MediaType.Classification == MediaClassification.Video;
+        public bool IsVideo => MediaType?.Classification == MediaClassification.Video;
 
-        public bool IsWeb => MediaType.Classification == MediaClassification.Web;
+        public bool IsWeb => MediaType?.Classification == MediaClassification.Web;
 
         public bool IsWebAndAllowMirror => IsWeb && AllowUseMirror;
         
@@ -203,7 +203,7 @@ namespace OnlyM.Models
 
         public bool CommandPanelEnabled => !IsBlankScreen && !IsMediaActive;
 
-        public string Title
+        public string? Title
         {
             get => _title;
             set
@@ -243,9 +243,9 @@ namespace OnlyM.Models
             }
         }
 
-        public string FilePath { get; set; }
+        public string? FilePath { get; set; }
 
-        public string FileNameAsSubTitle
+        public string? FileNameAsSubTitle
         {
             get => _fileNameAsSubTitle;
             set
@@ -283,9 +283,9 @@ namespace OnlyM.Models
                 ? "Play"
                 : "Pause";
         
-        public SupportedMediaType MediaType { get; set; }
+        public SupportedMediaType? MediaType { get; set; }
 
-        public ImageSource ThumbnailImageSource
+        public ImageSource? ThumbnailImageSource
         {
             get => _thumbnailImageSource;
             set
@@ -408,18 +408,18 @@ namespace OnlyM.Models
         }
         
         public bool IsPreviousSlideButtonEnabled => 
-            MediaType.Classification == MediaClassification.Slideshow && 
+            MediaType?.Classification == MediaClassification.Slideshow && 
             IsMediaActive &&
             (SlideshowLoop || CurrentSlideshowIndex > 0);
 
         public bool IsNextSlideButtonEnabled => 
-            MediaType.Classification == MediaClassification.Slideshow && 
+            MediaType?.Classification == MediaClassification.Slideshow && 
             IsMediaActive &&
             (SlideshowLoop || CurrentSlideshowIndex < SlideshowCount - 1);
 
         public bool HasDuration =>
-            MediaType.Classification == MediaClassification.Audio ||
-            MediaType.Classification == MediaClassification.Video;
+            MediaType?.Classification == MediaClassification.Audio ||
+            MediaType?.Classification == MediaClassification.Video;
 
         public bool IsStartOffsetButtonVisible => HasDuration && AllowPositionSeeking;
 
@@ -458,9 +458,9 @@ namespace OnlyM.Models
 
         public bool IsPauseButtonVisible => HasDuration && IsMediaActive && AllowPause;
 
-        public bool IsSlideshow => MediaType.Classification == MediaClassification.Slideshow;
+        public bool IsSlideshow => MediaType?.Classification == MediaClassification.Slideshow;
 
-        public string MiscText
+        public string? MiscText
         {
             get => _miscText;
             set
@@ -478,7 +478,7 @@ namespace OnlyM.Models
             AllowPositionSeeking && 
             (!IsMediaActive || IsPaused);
 
-        public string SlideshowProgressString
+        public string? SlideshowProgressString
         {
             get
             {
@@ -575,7 +575,7 @@ namespace OnlyM.Models
         {
             get
             {
-                switch (MediaType.Classification)
+                switch (MediaType?.Classification)
                 {
                     case MediaClassification.Image:
                         return ImageIconBrush;
@@ -602,7 +602,7 @@ namespace OnlyM.Models
         {
             get
             {
-                switch (MediaType.Classification)
+                switch (MediaType?.Classification)
                 {
                     case MediaClassification.Image:
                         return "ImageFilterHdr";
@@ -617,7 +617,7 @@ namespace OnlyM.Models
                         return "CameraBurst";
 
                     case MediaClassification.Web:
-                        if (MediaType.FileExtension.Equals(".pdf", StringComparison.OrdinalIgnoreCase))
+                        if (MediaType.FileExtension != null && MediaType.FileExtension.Equals(".pdf", StringComparison.OrdinalIgnoreCase))
                         {
                             return "FilePdf";
                         }
@@ -636,7 +636,7 @@ namespace OnlyM.Models
         {
             get
             {
-                switch (MediaType.Classification)
+                switch (MediaType?.Classification)
                 {
                     case MediaClassification.Image:
                     case MediaClassification.Video:

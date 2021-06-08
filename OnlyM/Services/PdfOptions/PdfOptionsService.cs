@@ -11,7 +11,7 @@ namespace OnlyM.Services.PdfOptions
         {
             foreach (var item in items)
             {
-                if (item.IsPdf)
+                if (item.IsPdf && item.FilePath != null)
                 {
                     if (_items.TryGetValue(item.FilePath, out var opts))
                     {

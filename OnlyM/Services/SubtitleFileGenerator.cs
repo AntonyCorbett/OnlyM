@@ -8,9 +8,9 @@ namespace OnlyM.Services
 {
     internal static class SubtitleFileGenerator
     {
-        public static event EventHandler<SubtitleFileEventArgs> SubtitleFileEvent;
+        public static event EventHandler<SubtitleFileEventArgs>? SubtitleFileEvent;
 
-        public static string Generate(string mediaItemFilePath, Guid mediaItemId)
+        public static string? Generate(string mediaItemFilePath, Guid mediaItemId)
         {
             try
             {
@@ -25,10 +25,6 @@ namespace OnlyM.Services
                 }
 
                 var srtFileName = Path.GetFileNameWithoutExtension(mediaItemFilePath);
-                if (srtFileName == null)
-                {
-                    return null;
-                }
 
                 var videoFileInfo = new FileInfo(mediaItemFilePath);
                 if (!videoFileInfo.Exists)
