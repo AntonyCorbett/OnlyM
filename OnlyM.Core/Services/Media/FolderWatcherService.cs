@@ -87,6 +87,7 @@ namespace OnlyM.Core.Services.Media
 
                 _watcher.Created += HandleContentModified;
                 _watcher.Deleted += HandleContentModified;
+                _watcher.Changed += HandleContentModified;
                 _watcher.Renamed += HandleContentRenamed;
             }
             
@@ -143,6 +144,7 @@ namespace OnlyM.Core.Services.Media
             switch (e.ChangeType)
             {
                 case WatcherChangeTypes.Created:
+                case WatcherChangeTypes.Changed:
                 case WatcherChangeTypes.Deleted:
                     if (!_mediaProviderService.IsFileExtensionSupported(Path.GetExtension(e.FullPath)))
                     {

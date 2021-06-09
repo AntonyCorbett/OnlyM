@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -945,12 +946,24 @@ namespace OnlyM.ViewModel
                         // remove this item.
                         itemsToRemove.Add(item);
                     }
-
-                    destFilePaths.Add(item.FilePath);
+                    else
+                    {
+                        // perhaps the item has been changed or swapped for another media file of the same name!
+                        var file = files.SingleOrDefault(x => x.FullPath == item.FilePath);
+                        if (file != null && file.LastChanged != item.LastChanged)
+                        {
+                            // remove this item.
+                            itemsToRemove.Add(item);
+                        }
+                        else
+                        {
+                            destFilePaths.Add(item.FilePath);
+                        }
+                    }
                 }
             }
 
-            var currentItems = GetCurrentMediaItems();
+            var currentItems = GetCurrentMediaItems(); // currently playing
             var deletedCurrentItems = currentItems?.Intersect(itemsToRemove).ToArray();
             var count = deletedCurrentItems?.Length ?? 0;
             if (count > 0)
