@@ -37,7 +37,7 @@ namespace OnlyM.Services.ImagesCache
             {
                 try
                 {
-                    var image = GraphicsUtils.Downsize(fullPath, MaxImageWidth, MaxImageHeight);
+                    var image = GraphicsUtils.Downsize(fullPath, MaxImageWidth, MaxImageHeight, ignoreInternalCache: true);
                     result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow };
 
                     _cache.AddOrUpdate(

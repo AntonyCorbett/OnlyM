@@ -84,9 +84,9 @@ namespace OnlyM.CoreSys
             return null;
         }
 
-        public static BitmapSource Downsize(string imageFilePath, int maxImageWidth, int maxImageHeight)
+        public static BitmapSource Downsize(string imageFilePath, int maxImageWidth, int maxImageHeight, bool ignoreInternalCache)
         {
-            var image = GetBitmapImageWithCacheOnLoad(imageFilePath);
+            var image = GetBitmapImage(imageFilePath, ignoreInternalCache);
             return Downsize(image, maxImageWidth, maxImageHeight);
         }
 
@@ -221,18 +221,18 @@ namespace OnlyM.CoreSys
             return img;
         }
 
-        public static BitmapImage GetBitmapImageWithCacheOnLoad(string imageFile)
+        public static BitmapImage GetBitmapImage(string imageFile, bool ignoreInternalCache)
         {
             BitmapImage bmp;
 
             try
             {
-                bmp = InternalGetBitmapImageWithCacheOnLoad(imageFile, ignoreColorProfile: false);
+                bmp = InternalGetBitmapImage(imageFile, ignoreColorProfile: false, ignoreInternalCache);
             }
             catch (ArgumentException)
             {
                 // probably colour profile corruption
-                bmp = InternalGetBitmapImageWithCacheOnLoad(imageFile, ignoreColorProfile: true);
+                bmp = InternalGetBitmapImage(imageFile, ignoreColorProfile: true, ignoreInternalCache);
             }
 
             if (IsBadDpi(bmp))
@@ -470,14 +470,24 @@ namespace OnlyM.CoreSys
             return bitmapImage;
         }
 
-        private static BitmapImage InternalGetBitmapImageWithCacheOnLoad(string imageFile, bool ignoreColorProfile)
+        private static BitmapImage InternalGetBitmapImage(string imageFile, bool ignoreColorProfile, bool ignoreInternalCache = false)
         {
             var bmp = new BitmapImage();
 
             // BitmapCacheOption.OnLoad prevents the source image file remaining
             // in use when the bitmap is used as an ImageSource.
             bmp.BeginInit();
-            bmp.CreateOptions = ignoreColorProfile ? BitmapCreateOptions.IgnoreColorProfile : BitmapCreateOptions.None;
+
+            if (ignoreColorProfile)
+            {
+                bmp.CreateOptions |= BitmapCreateOptions.IgnoreColorProfile;
+            }
+
+            if (ignoreInternalCache)
+            {
+                bmp.CreateOptions |= BitmapCreateOptions.IgnoreImageCache;
+            }
+            
             bmp.UriSource = new Uri(imageFile);
             bmp.CacheOption = BitmapCacheOption.OnLoad;
             bmp.EndInit();

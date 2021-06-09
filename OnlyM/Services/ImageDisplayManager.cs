@@ -373,7 +373,7 @@ namespace OnlyM.Services
 
             var imageSrc = _optionsService.CacheImages
                 ? ImageCache.GetImage(imageFile)
-                : GraphicsUtils.GetBitmapImageWithCacheOnLoad(imageFile);
+                : GraphicsUtils.GetBitmapImage(imageFile, ignoreInternalCache: false);
 
             if (!shouldFadeIn)
             {
