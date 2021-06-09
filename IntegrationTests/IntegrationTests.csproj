@@ -65,6 +65,9 @@
     <None Update="SubtitleFiles\sample.srt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestImages\JPGwithBadColorProfile.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

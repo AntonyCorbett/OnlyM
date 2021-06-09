@@ -223,15 +223,17 @@ namespace OnlyM.CoreSys
 
         public static BitmapImage GetBitmapImageWithCacheOnLoad(string imageFile)
         {
-            var bmp = new BitmapImage();
-            
-            // BitmapCacheOption.OnLoad prevents the source image file remaining
-            // in use when the bitmap is used as an ImageSource.
-            bmp.BeginInit();
-            bmp.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-            bmp.UriSource = new Uri(imageFile);
-            bmp.CacheOption = BitmapCacheOption.OnLoad;
-            bmp.EndInit();
+            BitmapImage bmp;
+
+            try
+            {
+                bmp = InternalGetBitmapImageWithCacheOnLoad(imageFile, ignoreColorProfile: false);
+            }
+            catch (ArgumentException)
+            {
+                // probably colour profile corruption
+                bmp = InternalGetBitmapImageWithCacheOnLoad(imageFile, ignoreColorProfile: true);
+            }
 
             if (IsBadDpi(bmp))
             {
@@ -466,6 +468,21 @@ namespace OnlyM.CoreSys
             bitmapImage.EndInit();
 
             return bitmapImage;
+        }
+
+        private static BitmapImage InternalGetBitmapImageWithCacheOnLoad(string imageFile, bool ignoreColorProfile)
+        {
+            var bmp = new BitmapImage();
+
+            // BitmapCacheOption.OnLoad prevents the source image file remaining
+            // in use when the bitmap is used as an ImageSource.
+            bmp.BeginInit();
+            bmp.CreateOptions = ignoreColorProfile ? BitmapCreateOptions.IgnoreColorProfile : BitmapCreateOptions.None;
+            bmp.UriSource = new Uri(imageFile);
+            bmp.CacheOption = BitmapCacheOption.OnLoad;
+            bmp.EndInit();
+
+            return bmp;
         }
     }
 }

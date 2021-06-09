@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
 using System.Windows.Media.Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OnlyM.Slides;
@@ -9,6 +9,20 @@ namespace IntegrationTests
     [TestClass]
     public class TestSlides
     {
+        [TestMethod]
+        public void TestImageWithBadColorProfile()
+        {
+            var slideFilePath = "test" + SlideFile.FileExtension;
+
+            var fb = new SlideFileBuilder(1920, 1080);
+            fb.AddSlide(GetAbsolutePath(@"TestImages\JPGwithBadColorProfile.jpg"), true, true, true, true);
+
+            fb.Build(slideFilePath, true);
+            var file = new SlideFile(slideFilePath);
+            var slide = file.GetSlide(0);
+            Assert.IsNotNull(slide.Image);
+        }
+
         [TestMethod]
         public void TestSlideCreation()
         {

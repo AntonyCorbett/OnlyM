@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using Newtonsoft.Json;
 using OnlyM.Slides.Models;
 
@@ -158,17 +159,35 @@ namespace OnlyM.Slides
             using (var memoryStream = new MemoryStream())
             { 
                 stream.CopyTo(memoryStream);
-                memoryStream.Position = 0;
 
-                var bitmap = new BitmapImage();
+                BitmapImage bmp;
+                try
+                {
+                    bmp = CreateBitmapImage(memoryStream, ignoreColorProfile: false);
+                }
+                catch (ArgumentException)
+                {
+                    // probably colour profile corruption
+                    bmp = CreateBitmapImage(memoryStream, ignoreColorProfile: true);
+                }
 
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.StreamSource = memoryStream;
-                bitmap.EndInit();
-
-                return bitmap;
+                return bmp;
             }
+        }
+
+        private static BitmapImage CreateBitmapImage(MemoryStream stream, bool ignoreColorProfile)
+        {
+            stream.Position = 0;
+
+            var bitmap = new BitmapImage();
+
+            bitmap.BeginInit();
+            bitmap.CreateOptions = ignoreColorProfile ? BitmapCreateOptions.IgnoreColorProfile : BitmapCreateOptions.None;
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.StreamSource = stream;
+            bitmap.EndInit();
+
+            return bitmap;
         }
     }
 }
