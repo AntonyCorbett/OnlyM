@@ -20,20 +20,28 @@ namespace OnlyM.Services.ImagesCache
 
         public BitmapSource? GetImage(string fullPath)
         {
-            if (!_cache.TryGetValue(fullPath, out var result))
+            var info = new FileInfo(fullPath);
+            if (!info.Exists)
             {
-                if (!File.Exists(fullPath))
-                {
-                    return null;
-                }
+                return null;
+            }
 
+            return InternalGetImage(fullPath, info.LastWriteTimeUtc.Ticks);
+        }
+
+        private BitmapSource? InternalGetImage(string fullPath, long lastChangedDate)
+        {
+            var cacheKey = GetCacheKey(fullPath, lastChangedDate);
+
+            if (!_cache.TryGetValue(cacheKey, out var result))
+            {
                 try
                 {
                     var image = GraphicsUtils.Downsize(fullPath, MaxImageWidth, MaxImageHeight);
                     result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow };
 
                     _cache.AddOrUpdate(
-                        fullPath,
+                        cacheKey,
                         result,
                         (_, value) =>
                         {
@@ -60,6 +68,8 @@ namespace OnlyM.Services.ImagesCache
             return result?.BitmapImage;
         }
 
+        private static string GetCacheKey(string fullPath, long lastChangedDate) => $"{fullPath}|{lastChangedDate}";
+        
         private void RemoveOldImages()
         {
             var oldItems = _cache.Select(x => x).OrderBy(pair => pair.Value.LastUsedUtc).Take(PurgeCount);
