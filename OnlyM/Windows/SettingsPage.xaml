@@ -158,6 +158,11 @@
                 <CheckBox IsChecked="{Binding WindowedAlwaysOnTop, Mode=TwoWay}"
                           Content="{x:Static resx:Resources.MEDIA_WINDOWED_ON_TOP}"
                           Style="{StaticResource SettingsCheckBoxStyle}"/>
+                
+                <CheckBox IsChecked="{Binding AutoResizeMediaWindow, Mode=TwoWay}"
+                          Content="{x:Static resx:Resources.AUTO_RESIZE_MEDIA_WINDOW}"
+                          IsEnabled="{Binding MediaWindowed, Mode=OneWay}"
+                          Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding PermanentBackdrop, Mode=TwoWay}"
                           IsEnabled="{Binding JwLibModeNotSet, Mode=OneWay}"

@@ -48,6 +48,10 @@
 
         public Duration NaturalDuration => _mediaElement.NaturalDuration;
 
+        public int NaturalVideoWidth => _mediaElement.NaturalVideoWidth;
+
+        public int NaturalVideoHeight => _mediaElement.NaturalVideoHeight;
+
         public FrameworkElement FrameworkElement => _mediaElement;
 
         public Guid MediaItemId { get; set; }

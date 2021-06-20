@@ -211,6 +211,7 @@
     <Compile Include="Models\MediaEventArgs.cs" />
     <Compile Include="Models\MediaNearEndEventArgs.cs" />
     <Compile Include="Models\MonitorItem.cs" />
+    <Compile Include="Models\NewMediaSizeEventArgs.cs" />
     <Compile Include="Models\PdfOptions.cs" />
     <Compile Include="Models\PdfViewStyle.cs" />
     <Compile Include="Models\PdfViewStyleAndDescription.cs" />

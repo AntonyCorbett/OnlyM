@@ -9,6 +9,7 @@
     using System.Windows.Controls;
     using System.Windows.Media;
     using System.Windows.Media.Animation;
+    using System.Windows.Media.Imaging;
     using System.Windows.Threading;
     using GalaSoft.MvvmLight.Threading;
     using OnlyM.Core.Extensions;
@@ -66,6 +67,8 @@
         public event EventHandler<MediaEventArgs> MediaChangeEvent;
 
         public event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
+
+        public event EventHandler<NewMediaSizeEventArgs> NewMediaSizeEvent;
 
         private bool Image1Populated => _image1.Source != null;
 
@@ -254,6 +257,11 @@
             SlideTransitionEvent?.Invoke(this, e);
         }
 
+        private void OnNewMediaSizeEvent(NewMediaSizeEventArgs e)
+        {
+            NewMediaSizeEvent?.Invoke(this, e);
+        }
+
         private MediaEventArgs CreateMediaEventArgs(Guid id, MediaClassification mediaClassification, MediaChange change)
         {
             if (id == Guid.Empty)
@@ -277,6 +285,15 @@
                 Transition = change,
                 OldSlideIndex = oldIndex,
                 NewSlideIndex = newIndex,
+            };
+        }
+
+        private NewMediaSizeEventArgs CreateNewMediaSizeEventArgs(int width, int height)
+        {
+            return new NewMediaSizeEventArgs
+            {
+                Width = width,
+                Height = height,
             };
         }
 
@@ -373,6 +390,8 @@
             var imageSrc = _optionsService.CacheImages
                 ? ImageCache.GetImage(imageFile)
                 : GraphicsUtils.GetBitmapImageWithCacheOnLoad(imageFile);
+
+            OnNewMediaSizeEvent(CreateNewMediaSizeEventArgs(imageSrc.PixelWidth, imageSrc.PixelHeight));
 
             if (!shouldFadeIn)
             {

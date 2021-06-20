@@ -572,4 +572,8 @@
     <value>Always on top (windowed)</value>
     <comment>Option in Settings =&gt; Display</comment>
   </data>
+  <data name="AUTO_RESIZE_MEDIA_WINDOW" xml:space="preserve">
+    <value>Auto-resize media window</value>
+    <comment>Option in Settings =&gt; Display</comment>
+  </data>
 </root>

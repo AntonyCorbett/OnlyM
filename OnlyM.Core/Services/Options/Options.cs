@@ -100,6 +100,8 @@
         public bool AlwaysOnTop { get; set; }
 
         public bool WindowedAlwaysOnTop { get; set; }
+        
+        public bool AutoResizeMediaWindow { get; set; }
 
         public string AppWindowPlacement { get; set; }
 

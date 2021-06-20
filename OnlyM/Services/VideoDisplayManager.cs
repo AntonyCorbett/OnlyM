@@ -48,6 +48,8 @@
         public event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
         public event EventHandler<SubtitleEventArgs> SubtitleEvent;
+
+        public event EventHandler<NewMediaSizeEventArgs> NewMediaSizeEvent;
         
         public bool ShowSubtitles { get; set; }
 
@@ -146,6 +148,11 @@
             MediaChangeEvent?.Invoke(this, e);
         }
 
+        private void OnNewMediaSizeEvent(NewMediaSizeEventArgs e)
+        {
+            NewMediaSizeEvent?.Invoke(this, e);
+        }
+
         private async void HandleMediaOpened(object sender, System.Windows.RoutedEventArgs e)
         {
             Log.Logger.Information("Opened");
@@ -154,6 +161,7 @@
 
             _mediaElement.Position = _startPosition;
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
+            OnNewMediaSizeEvent(CreateNewMediaSizeEventArgs(_mediaElement.NaturalVideoWidth, _mediaElement.NaturalVideoHeight));
 
             await CreateSubtitleProvider(_mediaItemFilePath, _startPosition);
         }
@@ -234,6 +242,15 @@
                     Log.Logger.Warning(e.Message);
                     break;
             }
+        }
+
+        private NewMediaSizeEventArgs CreateNewMediaSizeEventArgs(int width, int height)
+        {
+            return new NewMediaSizeEventArgs
+            {
+                Width = width,
+                Height = height,
+            };
         }
 
         private MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)

@@ -872,6 +872,19 @@
             }
         }
 
+        public bool AutoResizeMediaWindow
+        {
+            get => _optionsService.AutoResizeMediaWindow;
+            set
+            {
+                if (_optionsService.AutoResizeMediaWindow != value)
+                {
+                    _optionsService.AutoResizeMediaWindow = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private void OnShutDown(ShutDownMessage obj)
         {
             _optionsService.RecentlyUsedMediaFolders = _recentlyUsedMediaFolders.GetFolders().ToList();
