@@ -129,7 +129,7 @@
     <PackageReference Include="CefSharp.Wpf.NETCore" Version="90.6.70" />
     <PackageReference Include="FFME.Windows" Version="4.4.350" />
     <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
-    <PackageReference Include="NAudio" Version="2.0.0" />
+    <PackageReference Include="NAudio" Version="2.0.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.0.2" />
