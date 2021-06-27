@@ -505,7 +505,7 @@
     <comment>Button caption in dialog used to specify media start offset</comment>
   </data>
   <data name="DLG_OK" xml:space="preserve">
-    <value>Ok</value>
+    <value>OK</value>
     <comment>Button caption in dialog used to specify media start offset</comment>
   </data>
   <data name="SET_MEDIA_START" xml:space="preserve">
