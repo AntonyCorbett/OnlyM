@@ -134,7 +134,7 @@
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Kunne ikke lager mappen {0}</value>
+    <value>Kunne ikke lage mappen {0}</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
