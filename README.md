@@ -13,7 +13,7 @@ A Windows Media player using C# and WPF. Designed for media playback at Kingdom 
 
 ### Download
 
-If you just want to install the application, please download the [OnlyMSetup.exe](https://github.com/AntonyCorbett/OnlyM/releases/latest) file (there is also a portable version if you'd prefer to just copy a folder). You may also need to download and install the Microsoft .NET 5.0 Desktop runtime (x86) from [here](https://dotnet.microsoft.com/download/dotnet/5.0/runtime)
+If you just want to install the application, please download the [OnlyMSetup.exe](https://github.com/AntonyCorbett/OnlyM/releases/latest) file (there is also a portable version if you'd prefer to just copy a folder). You may also need to download and install the Microsoft .NET 5.0 Desktop runtime (x86) from [here](https://dotnet.microsoft.com/download/dotnet/5.0/runtime).
 
 ### Documentation
 
