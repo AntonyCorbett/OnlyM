@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
-    <value>Nytt slideshow</value>
+    <value>Nytt lysbilde</value>
     <comment>File command</comment>
   </data>
   <data name="OPEN_SLIDESHOW" xml:space="preserve">
@@ -275,7 +275,7 @@
     <comment>Displayed in the status bar when saving a file</comment>
   </data>
   <data name="SLIDE_COUNT_X" xml:space="preserve">
-    <value>Slide count: {0}</value>
+    <value>Antall bilder: {0}</value>
     <comment>Displayed in the status bar</comment>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
