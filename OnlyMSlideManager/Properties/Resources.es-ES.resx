@@ -283,11 +283,11 @@
     <value>..\Resources\flower.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ERROR_NEW_FILE" xml:space="preserve">
-    <value>Could not create new file!</value>
+    <value>¡No se ha podido crear el nuevo archivo!</value>
     <comment>Message displayed when an error occurred trying to create a new slideshow file</comment>
   </data>
   <data name="ERROR_OPEN_FILE" xml:space="preserve">
-    <value>Could not open file!</value>
+    <value>¡No se ha podido abrir el archivo!</value>
     <comment>Message displayed when an error occurred trying to open a slideshow file</comment>
   </data>
 </root>
