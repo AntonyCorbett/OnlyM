@@ -18,7 +18,8 @@ namespace OnlyM.ViewModel
         private bool _isMagnifierVisible;
         private Size _windowSize;
         private bool _isWebPage;
-        
+        private int _videoRotation;
+
         public MediaViewModel(IOptionsService optionsService)
         {
             _optionsService = optionsService;
@@ -30,8 +31,18 @@ namespace OnlyM.ViewModel
             InitCommands();
         }
 
-        // todo: Media Foundation doesn't auto rotate videos, so we need to read rotation meta data and then rotate here (only for MediaFoundation; ffmpeg is fine)
-        public int VideoRotation { get; set; }
+        public int VideoRotation
+        {
+            get => _videoRotation;
+            set
+            {
+                if (_videoRotation != value)
+                {
+                    _videoRotation = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public bool EngineIsMediaFoundation => _optionsService.RenderingMethod == RenderingMethod.MediaFoundation;
 

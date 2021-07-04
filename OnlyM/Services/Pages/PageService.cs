@@ -180,7 +180,7 @@ namespace OnlyM.Services.Pages
                 OpenMediaWindow(requiresVisibleWindow, mediaItemToStart.IsVideo);
 
                 CheckMediaWindow();
-
+                
                 await _mediaWindow!.StartMedia(
                     mediaItemToStart,
                     currentMediaItems,

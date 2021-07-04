@@ -11,6 +11,7 @@ using OnlyM.Core.Models;
 using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Monitors;
 using OnlyM.Core.Services.Options;
+using OnlyM.CoreSys;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.CoreSys.WindowsPositioning;
 using OnlyM.MediaElementAdaption;
@@ -120,6 +121,9 @@ namespace OnlyM.Windows
         {
             Log.Logger.Information($"Starting media {mediaItemToStart.FilePath}");
 
+            var vm = (MediaViewModel)DataContext;
+            vm.VideoRotation = 0;
+
             switch (mediaItemToStart.MediaType?.Classification)
             {
                 case MediaClassification.Image:
@@ -127,6 +131,7 @@ namespace OnlyM.Windows
                     break;
 
                 case MediaClassification.Video:
+                    AdjustVideoRotation(vm, mediaItemToStart);
                     mediaItemToStart.PlaybackPositionChangedEvent -= HandleVideoPlaybackPositionChangedEvent;
                     await ShowVideoAsync(mediaItemToStart, currentMediaItems, startFromPaused);
                     break;
@@ -673,6 +678,15 @@ namespace OnlyM.Windows
             {
                 DragMove();
             }
+        }
+
+        private void AdjustVideoRotation(MediaViewModel vm, MediaItem mediaItemToStart)
+        {
+            // FFMPEG auto rotates video, but Media Foundation doesn't so we 
+            // set the required rotation here...
+            vm.VideoRotation = _optionsService.RenderingMethod == RenderingMethod.MediaFoundation
+                ? mediaItemToStart.VideoRotation
+                : 0;
         }
     }
 }

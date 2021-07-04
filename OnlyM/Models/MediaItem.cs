@@ -216,6 +216,8 @@ namespace OnlyM.Models
             }
         }
 
+        public int VideoRotation { get; set; }
+
         public string SortKey
         {
             get

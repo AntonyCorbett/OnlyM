@@ -67,7 +67,7 @@ namespace OnlyM.Core.Services.Media
             try
             {
                 var info = Unosquare.FFME.Library.RetrieveMediaInfo(FFmpegUtils.FixUnicodeString(mediaItemFilePath));
-
+                
                 string? title = null;
                 info.Metadata?.TryGetValue("title", out title);
 
@@ -80,6 +80,7 @@ namespace OnlyM.Core.Services.Media
                 {
                     Title = StripNewLines(title),
                     Duration = info.Duration,
+                    VideoRotation = GetVideoRotation(info)
                 };
             }
             catch (MediaContainerException)
@@ -87,6 +88,26 @@ namespace OnlyM.Core.Services.Media
                 // file is in use...
                 throw new VideoFileInUseException();
             }
+        }
+
+        private static int GetVideoRotation(MediaInfo info)
+        {
+            foreach (var stream in info.BestStreams)
+            {
+                if (stream.Value.Metadata == null)
+                {
+                    continue;
+                }
+
+                if (stream.Value.Metadata.TryGetValue("rotate", out var value) && 
+                    value != null && 
+                    double.TryParse(value, out var valAsNum))
+                {
+                    return (int)valAsNum;
+                }
+            }
+
+            return 0;
         }
 
         private static MediaMetaData GetWebPageMetaData(string mediaItemFilePath)

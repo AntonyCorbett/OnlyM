@@ -177,6 +177,7 @@ namespace OnlyM.Services.MetaDataQueue
                         mediaItem.FileNameAsSubTitle = _optionsService.UseInternalMediaTitles
                             ? Path.GetFileName(mediaItem.FilePath)
                             : null;
+                        mediaItem.VideoRotation = metaData?.VideoRotation ?? 0;
                     }
                 });
             }
