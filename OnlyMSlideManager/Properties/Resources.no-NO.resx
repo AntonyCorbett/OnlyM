@@ -112,17 +112,13 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
-  <data name="flower" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\flower.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
-    <value>Nytt slideshow</value>
+    <value>Nytt lysbilde</value>
     <comment>File command</comment>
   </data>
   <data name="OPEN_SLIDESHOW" xml:space="preserve">
@@ -138,7 +134,7 @@
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
-    <value>Kunne ikke lager mappen {0}</value>
+    <value>Kunne ikke lage mappen {0}</value>
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
@@ -267,19 +263,31 @@
     <comment>Slidehow option (automatically close at end of slideshow)</comment>
   </data>
   <data name="IMPORTING" xml:space="preserve">
-    <value>Importing...</value>
+    <value>Importerer...</value>
     <comment>Displayed in the status bar when importing images (via drag and drop)</comment>
   </data>
   <data name="LOADING" xml:space="preserve">
-    <value>Loading...</value>
+    <value>Laster inn...</value>
     <comment>Displayed in the status bar when loading a file</comment>
   </data>
   <data name="SAVING" xml:space="preserve">
-    <value>Saving...</value>
+    <value>Lagrer...</value>
     <comment>Displayed in the status bar when saving a file</comment>
   </data>
   <data name="SLIDE_COUNT_X" xml:space="preserve">
-    <value>Slide count: {0}</value>
+    <value>Antall bilder: {0}</value>
     <comment>Displayed in the status bar</comment>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
+  <data name="flower" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\flower.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ERROR_NEW_FILE" xml:space="preserve">
+    <value>Kunne ikke lage ny fil!</value>
+    <comment>Message displayed when an error occurred trying to create a new slideshow file</comment>
+  </data>
+  <data name="ERROR_OPEN_FILE" xml:space="preserve">
+    <value>Kunne ikke åpne filen!</value>
+    <comment>Message displayed when an error occurred trying to open a slideshow file</comment>
   </data>
 </root>
