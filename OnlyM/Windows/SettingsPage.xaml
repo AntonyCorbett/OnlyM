@@ -169,32 +169,38 @@
                                  Style="{StaticResource SettingsRadioButtonStyle}" >
                         <StackPanel Orientation="Horizontal" IsEnabled="{Binding MediaWindowFixed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
                             <TextBlock Text="{x:Static resx:Resources.MEDIA_WINDOW_FIXED_SIZE}" VerticalAlignment="Center" Margin="0,0,10,0" />
-                            <TextBox Text="{Binding MediaWindowWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="50" TextAlignment="Center" ></TextBox>
+                            <TextBox Text="{Binding MediaWindowWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                     MinWidth="50" TextAlignment="Center" />
+
                             <TextBlock Text="x" VerticalAlignment="Center" Margin="10,0,10,0" />
-                            <TextBox Text="{Binding MediaWindowHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="50" TextAlignment="Center" ></TextBox>
+                            <TextBox Text="{Binding MediaWindowHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                     MinWidth="50" TextAlignment="Center" />
                         </StackPanel>
                     </RadioButton>
                     <StackPanel Orientation="Horizontal" IsEnabled="{Binding MediaWindowFixed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="20,0,0,0">
                         <Button 
                             Style="{StaticResource MaterialDesignRaisedLightButton}" 
                             Command="{Binding Set360PSizeCommand}"
+                            IsEnabled="{Binding Is360PSize, Converter={StaticResource InvertBooleanConverter}}"
                             Content="360p" />
                         <Button 
                             Style="{StaticResource MaterialDesignRaisedLightButton}" 
                             Margin="10,0,0,0"
                             Command="{Binding Set480PSizeCommand}"
+                            IsEnabled="{Binding Is480PSize, Converter={StaticResource InvertBooleanConverter}}"
                             Content="480p" />
                         <Button 
-                            Style="{StaticResource MaterialDesignRaisedDarkButton}" 
+                            Style="{StaticResource MaterialDesignRaisedLightButton}" 
                             Margin="10,0,0,0"
                             Command="{Binding Set720PSizeCommand}"
+                            IsEnabled="{Binding Is720PSize, Converter={StaticResource InvertBooleanConverter}}"
                             FontWeight="Bold"
-                            Content="720p"
-                            ToolTip="{x:Static resx:Resources.MEDIA_WINDOW_RECOMMENDED_SIZE}" />
+                            Content="720p" />
                         <Button 
                             Style="{StaticResource MaterialDesignRaisedLightButton}" 
                             Margin="10,0,0,0"
                             Command="{Binding Set1080PSizeCommand}"
+                            IsEnabled="{Binding Is1080PSize, Converter={StaticResource InvertBooleanConverter}}"
                             Content="1080p" />
                     </StackPanel>
                 </StackPanel>

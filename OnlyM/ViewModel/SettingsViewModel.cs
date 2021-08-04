@@ -887,6 +887,14 @@ namespace OnlyM.ViewModel
             }
         }
 
+        public bool Is360PSize => MediaWindowSize == Size360P;
+
+        public bool Is480PSize => MediaWindowSize == Size480P;
+
+        public bool Is720PSize => MediaWindowSize == Size720P;
+
+        public bool Is1080PSize => MediaWindowSize == Size1080P;
+
         public bool MediaWindowResizable
         {
             get => MediaWindowSize.IsEmpty;
@@ -918,7 +926,7 @@ namespace OnlyM.ViewModel
             get => MediaWindowSize.IsEmpty ? null : (int)MediaWindowSize.Width;
             set => MediaWindowSize = value.HasValue ? new Size(value.Value, MediaWindowSize.Height) : Size.Empty;
         }
-
+        
         public int? MediaWindowHeight
         {
             get => MediaWindowSize.IsEmpty ? null : (int)MediaWindowSize.Height;
@@ -937,6 +945,11 @@ namespace OnlyM.ViewModel
 
                 OnPropertyChanged(nameof(MediaWindowWidth));
                 OnPropertyChanged(nameof(MediaWindowHeight));
+
+                OnPropertyChanged(nameof(Is360PSize));
+                OnPropertyChanged(nameof(Is480PSize));
+                OnPropertyChanged(nameof(Is720PSize));
+                OnPropertyChanged(nameof(Is1080PSize));
             }
         }
 

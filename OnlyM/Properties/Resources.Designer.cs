@@ -548,15 +548,6 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This is the recommended resolution, if you have a good internet connection..
-        /// </summary>
-        public static string MEDIA_WINDOW_RECOMMENDED_SIZE {
-            get {
-                return ResourceManager.GetString("MEDIA_WINDOW_RECOMMENDED_SIZE", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Resizable.
         /// </summary>
         public static string MEDIA_WINDOW_RESIZABLE {
