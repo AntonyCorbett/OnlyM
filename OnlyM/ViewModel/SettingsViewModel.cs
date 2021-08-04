@@ -34,6 +34,9 @@ namespace OnlyM.ViewModel
         private static readonly Size Size720P = new(1280, 720);
         private static readonly Size Size1080P = new(1920, 1080);
 
+        private static readonly Size MinSize = new(192, 108);
+        private static readonly Size MaxSize = new(8192, 6144);
+
         private readonly IPageService _pageService;
         private readonly IMonitorsService _monitorsService;
         private readonly IOptionsService _optionsService;
@@ -924,13 +927,29 @@ namespace OnlyM.ViewModel
         public int? MediaWindowWidth
         {
             get => MediaWindowSize.IsEmpty ? null : (int)MediaWindowSize.Width;
-            set => MediaWindowSize = value.HasValue ? new Size(value.Value, MediaWindowSize.Height) : Size.Empty;
+            set
+            {
+                if ((value ?? 0) < 0)
+                {
+                    return;
+                }
+
+                MediaWindowSize = value.HasValue ? new Size(value.Value, MediaWindowSize.Height) : Size.Empty;
+            }
         }
-        
+
         public int? MediaWindowHeight
         {
             get => MediaWindowSize.IsEmpty ? null : (int)MediaWindowSize.Height;
-            set => MediaWindowSize = value.HasValue ? new Size(MediaWindowSize.Width, value.Value) : Size.Empty;
+            set
+            {
+                if ((value ?? 0) < 0)
+                {
+                    return;
+                }
+
+                MediaWindowSize = value.HasValue ? new Size(MediaWindowSize.Width, value.Value) : Size.Empty;
+            }
         }
 
         public Size MediaWindowSize
@@ -938,7 +957,7 @@ namespace OnlyM.ViewModel
             get => _optionsService.MediaWindowSize;
             set
             {
-                _optionsService.MediaWindowSize = value;
+                _optionsService.MediaWindowSize = NormalizeSize(value);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(MediaWindowResizable));
                 OnPropertyChanged(nameof(MediaWindowFixed));
@@ -951,6 +970,35 @@ namespace OnlyM.ViewModel
                 OnPropertyChanged(nameof(Is720PSize));
                 OnPropertyChanged(nameof(Is1080PSize));
             }
+        }
+
+        private Size NormalizeSize(Size value)
+        {
+            if (value.IsEmpty)
+            {
+                return value;
+            }
+
+            return new Size()
+            {
+                Width = LimitNumber(MinSize.Width, value.Width, MaxSize.Width),
+                Height = LimitNumber(MinSize.Height, value.Height, MaxSize.Height)
+            };
+        }
+
+        private double LimitNumber(double lowerLimitIncl, double value, double upperLimitIncl)
+        {
+            if (value < lowerLimitIncl)
+            {
+                return lowerLimitIncl;
+            }
+
+            if (value > upperLimitIncl)
+            {
+                return upperLimitIncl;
+            }
+
+            return value;
         }
 
         private void OnShutDown(object? sender, ShutDownMessage obj)
