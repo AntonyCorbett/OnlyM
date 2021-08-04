@@ -573,15 +573,15 @@
     <comment>Option in Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_WINDOW_FIXED_SIZE" xml:space="preserve">
-    <value>Fixed size:</value>
+    <value>Tamanho fixo:</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_WINDOW_RESIZABLE" xml:space="preserve">
-    <value>Resizable</value>
+    <value>Redimensionável</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_WINDOW_RECOMMENDED_SIZE" xml:space="preserve">
-    <value>This is the recommended resolution, if you have a good internet connection.</value>
+    <value>Esta é a resolução recomendada, se tiver uma boa conexão com a internet.</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
 </root>
