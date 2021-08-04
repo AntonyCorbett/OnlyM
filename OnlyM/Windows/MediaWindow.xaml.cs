@@ -46,8 +46,8 @@ namespace OnlyM.Windows
         private RenderingMethod _currentRenderingMethod;
         
         public MediaWindow(
-            IOptionsService optionsService, 
-            ISnackbarService snackbarService, 
+            IOptionsService optionsService,
+            ISnackbarService snackbarService,
             IDatabaseService databaseService,
             IMonitorsService monitorsService)
         {

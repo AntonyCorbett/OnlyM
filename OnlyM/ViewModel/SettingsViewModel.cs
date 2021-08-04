@@ -22,11 +22,18 @@ using OnlyM.Services.MediaChanging;
 using OnlyM.Services.Pages;
 using Serilog.Events;
 
+using Size = System.Windows.Size;
+
 namespace OnlyM.ViewModel
 {
     // ReSharper disable once UnusedMember.Global
     internal class SettingsViewModel : ObservableObject
     {
+        private static readonly Size Size360P = new(640, 360);
+        private static readonly Size Size480P = new(854, 480);
+        private static readonly Size Size720P = new(1280, 720);
+        private static readonly Size Size1080P = new(1920, 1080);
+
         private readonly IPageService _pageService;
         private readonly IMonitorsService _monitorsService;
         private readonly IOptionsService _optionsService;
@@ -45,7 +52,7 @@ namespace OnlyM.ViewModel
         private readonly MagnifierSizeItem[] _magnifierSizes;
 
         private bool _isMediaActive;
-        
+
         public SettingsViewModel(
             IPageService pageService, 
             IMonitorsService monitorsService,
@@ -79,6 +86,14 @@ namespace OnlyM.ViewModel
             InitCommands();
             WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         }
+
+        public RelayCommand Set360PSizeCommand { get; set; } = null!;
+
+        public RelayCommand Set480PSizeCommand { get; set; } = null!;
+
+        public RelayCommand Set720PSizeCommand { get; set; } = null!;
+
+        public RelayCommand Set1080PSizeCommand { get; set; } = null!;
 
         public RelayCommand PurgeThumbnailCacheCommand { get; set; } = null!;
 
@@ -872,6 +887,59 @@ namespace OnlyM.ViewModel
             }
         }
 
+        public bool MediaWindowResizable
+        {
+            get => MediaWindowSize.IsEmpty;
+            set
+            {
+                if (value)
+                {
+                    MediaWindowSize = Size.Empty;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool MediaWindowFixed
+        {
+            get => !MediaWindowSize.IsEmpty;
+            set
+            {
+                if (value)
+                {
+                    MediaWindowSize = Size720P;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public int? MediaWindowWidth
+        {
+            get => MediaWindowSize.IsEmpty ? null : (int)MediaWindowSize.Width;
+            set => MediaWindowSize = value.HasValue ? new Size(value.Value, MediaWindowSize.Height) : Size.Empty;
+        }
+
+        public int? MediaWindowHeight
+        {
+            get => MediaWindowSize.IsEmpty ? null : (int)MediaWindowSize.Height;
+            set => MediaWindowSize = value.HasValue ? new Size(MediaWindowSize.Width, value.Value) : Size.Empty;
+        }
+
+        public Size MediaWindowSize
+        {
+            get => _optionsService.MediaWindowSize;
+            set
+            {
+                _optionsService.MediaWindowSize = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(MediaWindowResizable));
+                OnPropertyChanged(nameof(MediaWindowFixed));
+
+                OnPropertyChanged(nameof(MediaWindowWidth));
+                OnPropertyChanged(nameof(MediaWindowHeight));
+            }
+        }
+
         private void OnShutDown(object? sender, ShutDownMessage obj)
         {
             _optionsService.RecentlyUsedMediaFolders = _recentlyUsedMediaFolders.GetFolders().ToList();
@@ -1009,6 +1077,10 @@ namespace OnlyM.ViewModel
             PurgeThumbnailCacheCommand = new RelayCommand(PurgeThumbnailCache);
             PurgeWebCacheCommand = new RelayCommand(PurgeWebCache);
             OpenMediaFolderCommand = new RelayCommand(OpenMediaFolder);
+            Set360PSizeCommand = new RelayCommand(() => SetMediaWindowSize(Size360P));
+            Set480PSizeCommand = new RelayCommand(() => SetMediaWindowSize(Size480P));
+            Set720PSizeCommand = new RelayCommand(() => SetMediaWindowSize(Size720P));
+            Set1080PSizeCommand = new RelayCommand(() => SetMediaWindowSize(Size1080P));
         }
 
         private void PurgeWebCache()
@@ -1056,6 +1128,11 @@ namespace OnlyM.ViewModel
         private void PurgeThumbnailCache()
         {
             _thumbnailService.ClearThumbCache();
+        }
+
+        private void SetMediaWindowSize(Size size)
+        {
+            MediaWindowSize = size;
         }
 
         private static LanguageItem[] GetSupportedLanguages()

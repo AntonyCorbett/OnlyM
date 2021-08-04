@@ -539,6 +539,33 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fixed size:.
+        /// </summary>
+        public static string MEDIA_WINDOW_FIXED_SIZE {
+            get {
+                return ResourceManager.GetString("MEDIA_WINDOW_FIXED_SIZE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is the recommended resolution, if you have a good internet connection..
+        /// </summary>
+        public static string MEDIA_WINDOW_RECOMMENDED_SIZE {
+            get {
+                return ResourceManager.GetString("MEDIA_WINDOW_RECOMMENDED_SIZE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resizable.
+        /// </summary>
+        public static string MEDIA_WINDOW_RESIZABLE {
+            get {
+                return ResourceManager.GetString("MEDIA_WINDOW_RESIZABLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Windowed.
         /// </summary>
         public static string MEDIA_WINDOWED {

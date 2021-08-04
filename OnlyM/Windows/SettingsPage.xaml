@@ -58,6 +58,9 @@
             <Style x:Key="SettingsCheckBoxStyle" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignCheckBox}">
                 <Setter Property="Margin" Value="0,5,0,5"/>
             </Style>
+            <Style x:Key="SettingsRadioButtonStyle" TargetType="{x:Type RadioButton}" BasedOn="{StaticResource MaterialDesignRadioButton}">
+                <Setter Property="Margin" Value="0,5,0,5"/>
+            </Style>
 
             <Style x:Key="SettingsGroupBoxStyle" TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignGroupBox}">
                 <Setter Property="Width" Value="450" />
@@ -155,6 +158,46 @@
                 <CheckBox IsChecked="{Binding MediaWindowed, Mode=TwoWay}"
                           Content="{x:Static resx:Resources.MEDIA_WINDOWED}"
                           Style="{StaticResource SettingsCheckBoxStyle}"/>
+
+                <StackPanel Orientation="Vertical" Margin="25,0,0,0" IsEnabled="{Binding MediaWindowed, Mode=OneWay}">
+                    <RadioButton GroupName="WindowSize" 
+                                 Content="{x:Static resx:Resources.MEDIA_WINDOW_RESIZABLE}" 
+                                 IsChecked="{Binding MediaWindowResizable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource SettingsRadioButtonStyle}" />
+                    <RadioButton GroupName="WindowSize" 
+                                 IsChecked="{Binding MediaWindowFixed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource SettingsRadioButtonStyle}" >
+                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding MediaWindowFixed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBlock Text="{x:Static resx:Resources.MEDIA_WINDOW_FIXED_SIZE}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <TextBox Text="{Binding MediaWindowWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="50" TextAlignment="Center" ></TextBox>
+                            <TextBlock Text="x" VerticalAlignment="Center" Margin="10,0,10,0" />
+                            <TextBox Text="{Binding MediaWindowHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="50" TextAlignment="Center" ></TextBox>
+                        </StackPanel>
+                    </RadioButton>
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding MediaWindowFixed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="20,0,0,0">
+                        <Button 
+                            Style="{StaticResource MaterialDesignRaisedLightButton}" 
+                            Command="{Binding Set360PSizeCommand}"
+                            Content="360p" />
+                        <Button 
+                            Style="{StaticResource MaterialDesignRaisedLightButton}" 
+                            Margin="10,0,0,0"
+                            Command="{Binding Set480PSizeCommand}"
+                            Content="480p" />
+                        <Button 
+                            Style="{StaticResource MaterialDesignRaisedDarkButton}" 
+                            Margin="10,0,0,0"
+                            Command="{Binding Set720PSizeCommand}"
+                            FontWeight="Bold"
+                            Content="720p"
+                            ToolTip="{x:Static resx:Resources.MEDIA_WINDOW_RECOMMENDED_SIZE}" />
+                        <Button 
+                            Style="{StaticResource MaterialDesignRaisedLightButton}" 
+                            Margin="10,0,0,0"
+                            Command="{Binding Set1080PSizeCommand}"
+                            Content="1080p" />
+                    </StackPanel>
+                </StackPanel>
 
                 <CheckBox IsChecked="{Binding WindowedAlwaysOnTop, Mode=TwoWay}"
                           Content="{x:Static resx:Resources.MEDIA_WINDOWED_ON_TOP}"

@@ -54,6 +54,8 @@ namespace OnlyM.Core.Services.Options
 
         public event EventHandler<MonitorChangedEventArgs>? MediaMonitorChangedEvent;
 
+        public event EventHandler? MediaWindowSizeChangedEvent;
+
         public event EventHandler? RenderingMethodChangedEvent;
 
         public event EventHandler? PermanentBackdropChangedEvent;
@@ -453,6 +455,20 @@ namespace OnlyM.Core.Services.Options
                     _options.Value.MediaWindowed = value;
 
                     OnMediaMonitorChangedEvent(GetChange(value, MediaMonitorId));
+                }
+            }
+        }
+
+        public Size MediaWindowSize
+        {
+            get => _options.Value.MediaWindowSize;
+            set
+            {
+                if (_options.Value.MediaWindowSize != value)
+                {
+                    _options.Value.MediaWindowSize = value;
+
+                    MediaWindowSizeChangedEvent?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
