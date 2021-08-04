@@ -221,7 +221,7 @@ namespace OnlyM.Services.Pages
             }
         }
 
-        private void PositionMediaWindowWindowed()
+        private void PositionMediaWindowWindowed(bool resizeOnly = false)
         {
             CheckMediaWindow();
 
@@ -230,7 +230,7 @@ namespace OnlyM.Services.Pages
                 return;
             }
             
-            MediaWindowPositionHelper.PositionMediaWindowWindowed(_mediaWindow);
+            MediaWindowPositionHelper.PositionMediaWindowWindowed(_mediaWindow, _optionsService.MediaWindowSize, !resizeOnly);
             
             _mediaWindow.Topmost = _optionsService.WindowedAlwaysOnTop;
 
@@ -283,7 +283,7 @@ namespace OnlyM.Services.Pages
             CloseMediaWindow();
         }
 
-        private void RelocateMediaWindow()
+        private void RelocateMediaWindow(bool resizeOnly = false)
         {
             if (_mediaWindow != null)
             {
@@ -294,7 +294,7 @@ namespace OnlyM.Services.Pages
                     _mediaWindow.Hide();
                     _mediaWindow.WindowState = WindowState.Normal;
 
-                    PositionMediaWindowWindowed();
+                    PositionMediaWindowWindowed(resizeOnly);
 
                     if (!isOriginallyVisible)
                     {
@@ -450,6 +450,10 @@ namespace OnlyM.Services.Pages
                     case MonitorChangeDescription.NoneToWindow:
                     case MonitorChangeDescription.WindowToMonitor:
                         RelocateMediaWindow();
+                        break;
+
+                    case MonitorChangeDescription.WindowToWindow:
+                        RelocateMediaWindow(true);
                         break;
 
                     case MonitorChangeDescription.WindowToNone:

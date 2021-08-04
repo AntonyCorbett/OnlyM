@@ -20,16 +20,6 @@ namespace OnlyM.ViewModel
         private bool _isWebPage;
         private int _videoRotation;
 
-        private double _height = 500;
-        private double _width = 500;
-
-        private double _minHeight;
-        private double _minWidth;
-        private double _maxHeight;
-        private double _maxWidth;
-
-        private ResizeMode _resizeMode = ResizeMode.CanResize;
-
         public MediaViewModel(IOptionsService optionsService)
         {
             _optionsService = optionsService;
@@ -37,9 +27,6 @@ namespace OnlyM.ViewModel
             _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
             _optionsService.MagnifierChangedEvent += HandleMagnifierChangedEvent;
             _optionsService.BrowserChangedEvent += HandleBrowserChangedEvent;
-            _optionsService.MediaWindowSizeChangedEvent += HandleMediaWindowSizeChangedEvent;
-
-            HandleMediaWindowSizeChangedEvent(_optionsService, EventArgs.Empty);
 
             InitCommands();
         }
@@ -87,48 +74,6 @@ namespace OnlyM.ViewModel
                     OnPropertyChanged(nameof(MagnifierRadius));
                 }
             }
-        }
-
-        public ResizeMode ResizeMode
-        {
-            get => _resizeMode;
-            private set => SetProperty(ref _resizeMode, value);
-        }
-
-        public double Height
-        {
-            get => _height;
-            set => SetProperty(ref _height, value);
-        }
-
-        public double Width
-        {
-            get => _width;
-            set => SetProperty(ref _width, value);
-        }
-
-        public double MinHeight
-        {
-            get => _minHeight;
-            set => SetProperty(ref _minHeight, value);
-        }
-
-        public double MinWidth
-        {
-            get => _minWidth;
-            set => SetProperty(ref _minWidth, value);
-        }
-
-        public double MaxHeight
-        {
-            get => _maxHeight;
-            set => SetProperty(ref _maxHeight, value);
-        }
-
-        public double MaxWidth
-        {
-            get => _maxWidth;
-            set => SetProperty(ref _maxWidth, value);
         }
 
         public double BrowserZoomLevelIncrement
@@ -393,33 +338,6 @@ namespace OnlyM.ViewModel
         private void HandleBrowserChangedEvent(object? sender, EventArgs e)
         {
             OnPropertyChanged(nameof(BrowserZoomLevelIncrement));
-        }
-
-        private void HandleMediaWindowSizeChangedEvent(object? sender, EventArgs e)
-        {
-            if (_optionsService.MediaWindowSize.IsEmpty)
-            {
-                MinWidth = 200;
-                MaxWidth = double.PositiveInfinity;
-
-                MinHeight = 160;
-                MaxHeight = double.PositiveInfinity;
-
-                ResizeMode = ResizeMode.CanResize;
-            }
-            else
-            {
-                // Unfortunately just setting ResizeMode doesn't work as expected, so enforce it using min/max 
-                MinWidth = _optionsService.MediaWindowSize.Width;
-                Width = _optionsService.MediaWindowSize.Width;
-                MaxWidth = _optionsService.MediaWindowSize.Width;
-
-                MinHeight = _optionsService.MediaWindowSize.Height;
-                Height = _optionsService.MediaWindowSize.Height;
-                MaxHeight = _optionsService.MediaWindowSize.Height;
-
-                ResizeMode = ResizeMode.CanMinimize;
-            }
         }
     }
 }

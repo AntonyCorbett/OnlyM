@@ -66,11 +66,15 @@ namespace OnlyM.Services
             }
         }
 
-        public static void PositionMediaWindowWindowed(MediaWindow mediaWindow)
+        public static void PositionMediaWindowWindowed(MediaWindow mediaWindow, Size windowSize, bool restorePosition)
         {
             mediaWindow.IsWindowed = true;
-            PrepareForWindowedDisplay(mediaWindow);
-            mediaWindow.RestoreWindowPositionAndSize();
+            PrepareForWindowedDisplay(mediaWindow, windowSize);
+
+            if (restorePosition)
+            {
+                mediaWindow.RestoreWindowPositionAndSize();
+            }
         }
 
         private static void PrepareForFullScreenMonitorDisplay(Window mediaWindow)
@@ -80,9 +84,19 @@ namespace OnlyM.Services
             mediaWindow.WindowStyle = WindowStyle.None;
         }
 
-        private static void PrepareForWindowedDisplay(Window mediaWindow)
+        private static void PrepareForWindowedDisplay(Window mediaWindow, Size windowSize)
         {
-            mediaWindow.ResizeMode = ResizeMode.CanResize;
+            if (windowSize.IsEmpty)
+            {
+                mediaWindow.ResizeMode = ResizeMode.CanResize;
+            }
+            else
+            {
+                mediaWindow.ResizeMode = ResizeMode.CanMinimize;
+                mediaWindow.Width = windowSize.Width;
+                mediaWindow.Height = windowSize.Height;
+            }
+
             mediaWindow.ShowInTaskbar = true;
             mediaWindow.WindowStyle = WindowStyle.None;
         }
