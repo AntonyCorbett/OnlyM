@@ -12,16 +12,13 @@
         mc:Ignorable="d"
         Title="OnlyM Media Window" 
         AllowsTransparency="False"
-        Height="{Binding Height, Mode=TwoWay}"
-        Width="{Binding Width, Mode=TwoWay}"
-        MaxHeight="{Binding MaxHeight, Mode=OneWay}"
-        MaxWidth="{Binding MaxWidth, Mode=OneWay}"
-        MinHeight="{Binding MinHeight, Mode=OneWay}"
-        MinWidth="{Binding MinWidth, Mode=OneWay}"
+        Height="500"
+        Width="500"
+        MinHeight="108"
+        MinWidth="192"
         Closing="WindowClosing" 
-        SizeChanged="WindowSizeChanged"
-        MouseDown="Window_MouseDown" 
-        ResizeMode="{Binding ResizeMode, Mode=OneWay}" >
+        SizeChanged="WindowSizeChanged" 
+        MouseDown="Window_MouseDown" >
 
     <WindowChrome.WindowChrome>
         <WindowChrome 

@@ -232,7 +232,7 @@ namespace OnlyM.Windows
         {
             if (IsWindowed && !string.IsNullOrEmpty(_optionsService.MediaWindowPlacement))
             {
-                this.SetPlacement(_optionsService.MediaWindowPlacement);
+                this.SetPlacement(_optionsService.MediaWindowPlacement, _optionsService.MediaWindowSize);
             }
         }
 

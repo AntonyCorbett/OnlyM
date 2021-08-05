@@ -9,5 +9,6 @@
         WindowToMonitor,
         WindowToNone,
         MonitorToNone,
+        WindowToWindow,
     }
 }

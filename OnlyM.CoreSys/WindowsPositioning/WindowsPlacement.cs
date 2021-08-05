@@ -36,6 +36,11 @@ namespace OnlyM.CoreSys.WindowsPositioning
 
         public static void SetPlacement(this Window window, string placementJson)
         {
+            SetPlacement(window, placementJson, Size.Empty);
+        }
+
+        public static void SetPlacement(this Window window, string placementJson, Size sizeOverride)
+        {
             if (!string.IsNullOrEmpty(placementJson))
             {
                 var windowHandle = new WindowInteropHelper(window).Handle;
@@ -53,6 +58,12 @@ namespace OnlyM.CoreSys.WindowsPositioning
                         }
 
                         placement = obj.Value;
+                    }
+
+                    if (!sizeOverride.IsEmpty)
+                    {
+                        placement.normalPosition.Right = placement.normalPosition.Left + (int)sizeOverride.Width;
+                        placement.normalPosition.Bottom = placement.normalPosition.Top + (int)sizeOverride.Height;
                     }
 
                     placement.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));

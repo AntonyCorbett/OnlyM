@@ -22,8 +22,6 @@ namespace OnlyM.Core.Services.Options
 
         event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
-        event EventHandler MediaWindowSizeChangedEvent;
-
         event EventHandler RenderingMethodChangedEvent;
 
         event EventHandler PermanentBackdropChangedEvent;

@@ -53,9 +53,7 @@ namespace OnlyM.Core.Services.Options
         public event EventHandler? WindowedMediaAlwaysOnTopChangedEvent;
 
         public event EventHandler<MonitorChangedEventArgs>? MediaMonitorChangedEvent;
-
-        public event EventHandler? MediaWindowSizeChangedEvent;
-
+        
         public event EventHandler? RenderingMethodChangedEvent;
 
         public event EventHandler? PermanentBackdropChangedEvent;
@@ -468,7 +466,7 @@ namespace OnlyM.Core.Services.Options
                 {
                     _options.Value.MediaWindowSize = value;
 
-                    MediaWindowSizeChangedEvent?.Invoke(this, EventArgs.Empty);
+                    OnMediaMonitorChangedEvent(MonitorChangeDescription.WindowToWindow);
                 }
             }
         }
