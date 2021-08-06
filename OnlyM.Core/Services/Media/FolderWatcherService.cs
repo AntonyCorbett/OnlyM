@@ -72,7 +72,15 @@ namespace OnlyM.Core.Services.Media
                     Thread.Sleep(500);
                 }
 
-                OnChangesFoundEvent();
+                try
+                {
+                    OnChangesFoundEvent();
+                }
+                catch (Exception ex)
+                {
+                    Log.Logger.Error(ex, "Folder watcher collation");
+                }
+
                 _signalFolderChange.Reset();
             }
 

@@ -201,6 +201,7 @@ namespace OnlyM.CoreSys
             ms.Seek(0, SeekOrigin.Begin);
             image.StreamSource = ms;
             image.EndInit();
+            
             return image;
         }
 
@@ -466,7 +467,7 @@ namespace OnlyM.CoreSys
             bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapImage.StreamSource = outStream;
             bitmapImage.EndInit();
-
+            
             return bitmapImage;
         }
 
@@ -491,7 +492,7 @@ namespace OnlyM.CoreSys
             bmp.UriSource = new Uri(imageFile);
             bmp.CacheOption = BitmapCacheOption.OnLoad;
             bmp.EndInit();
-
+            
             return bmp;
         }
     }

@@ -972,7 +972,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private Size NormalizeSize(Size value)
+        private static Size NormalizeSize(Size value)
         {
             if (value.IsEmpty)
             {

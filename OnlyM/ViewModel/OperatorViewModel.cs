@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
@@ -1151,15 +1151,22 @@ namespace OnlyM.ViewModel
         {
             Task.Run(() =>
             {
-                if (_optionsService.AutoRotateImages)
+                try
                 {
-                    foreach (var item in MediaItems)
+                    if (_optionsService.AutoRotateImages)
                     {
-                        AutoRotateImageIfRequired(item);
+                        foreach (var item in MediaItems)
+                        {
+                            AutoRotateImageIfRequired(item);
+                        }
                     }
-                }
 
-                _pendingLoadMediaItems = true;
+                    _pendingLoadMediaItems = true;
+                }
+                catch (Exception ex)
+                {
+                    Log.Logger.Error(ex, "Auto rotation of images");
+                }
             });
         }
 

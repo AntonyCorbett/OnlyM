@@ -102,6 +102,10 @@ namespace OnlyM.Services.MetaDataQueue
             {
                 Log.Logger.Debug("Metadata consumer closed");
             }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Running MetaDataQueueConsumer");
+            }
         }
 
         private void ItemCompleted(MediaItem nextItem)
@@ -124,9 +128,12 @@ namespace OnlyM.Services.MetaDataQueue
 
         private void PopulateThumbnailAndMetaData(MediaItem mediaItem)
         {
-            PopulateSlideData(mediaItem);
-            PopulateThumbnail(mediaItem);
-            PopulateDurationAndTitle(mediaItem);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                PopulateSlideData(mediaItem);
+                PopulateThumbnail(mediaItem);
+                PopulateDurationAndTitle(mediaItem);
+            });
         }
 
         private static void PopulateSlideData(MediaItem mediaItem)
@@ -160,26 +167,23 @@ namespace OnlyM.Services.MetaDataQueue
         
         private void PopulateDurationAndTitle(MediaItem mediaItem)
         {
-            if (mediaItem.FilePath != null && 
-                mediaItem.MediaType != null && 
+            if (mediaItem.FilePath != null &&
+                mediaItem.MediaType != null &&
                 !IsDurationAndTitlePopulated(mediaItem))
             {
                 var metaData = _metaDataService.GetMetaData(
                     mediaItem.FilePath, mediaItem.MediaType, _ffmpegFolder);
 
-                Application.Current.Dispatcher.Invoke(() =>
+                if (!IsDurationAndTitlePopulated(mediaItem))
                 {
-                    if (!IsDurationAndTitlePopulated(mediaItem))
-                    {
-                        mediaItem.DurationDeciseconds =
-                            metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
-                        mediaItem.Title = GetMediaTitle(mediaItem.FilePath, metaData);
-                        mediaItem.FileNameAsSubTitle = _optionsService.UseInternalMediaTitles
-                            ? Path.GetFileName(mediaItem.FilePath)
-                            : null;
-                        mediaItem.VideoRotation = metaData?.VideoRotation ?? 0;
-                    }
-                });
+                    mediaItem.DurationDeciseconds =
+                        metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
+                    mediaItem.Title = GetMediaTitle(mediaItem.FilePath, metaData);
+                    mediaItem.FileNameAsSubTitle = _optionsService.UseInternalMediaTitles
+                        ? Path.GetFileName(mediaItem.FilePath)
+                        : null;
+                    mediaItem.VideoRotation = metaData?.VideoRotation ?? 0;
+                }
             }
         }
 
@@ -194,15 +198,9 @@ namespace OnlyM.Services.MetaDataQueue
                     mediaItem.LastChanged,
                     out var _);
 
-                if (thumb != null)
+                if (thumb != null && !IsThumbnailPopulated(mediaItem))
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        if (!IsThumbnailPopulated(mediaItem))
-                        {
-                            mediaItem.ThumbnailImageSource = GraphicsUtils.ByteArrayToImage(thumb);
-                        }
-                    });
+                    mediaItem.ThumbnailImageSource = GraphicsUtils.ByteArrayToImage(thumb);
                 }
             }
         }
