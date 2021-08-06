@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -90,7 +91,7 @@ namespace OnlyM.Core.Services.Media
             out bool foundInCache)
         {
             Log.Logger.Debug($"Getting thumbnail: {originalPath}");
-            
+
             var result = _databaseService.GetThumbnailFromCache(originalPath, originalLastChanged);
             if (result != null)
             {

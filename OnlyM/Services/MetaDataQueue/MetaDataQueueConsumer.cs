@@ -58,10 +58,10 @@ namespace OnlyM.Services.MetaDataQueue
 
         private void RunConsumer()
         {
-            Task.Run(RunConsumerTask, _cancellationToken);
+            Task.Run(RunConsumerTaskAsync, _cancellationToken);
         }
 
-        private void RunConsumerTask()
+        private async Task RunConsumerTaskAsync()
         {
             try
             {
@@ -73,7 +73,7 @@ namespace OnlyM.Services.MetaDataQueue
 
                     if (!IsPopulated(nextItem))
                     {
-                        PopulateThumbnailAndMetaData(nextItem);
+                        await PopulateThumbnailAndMetaDataAsync(nextItem);
 
                         if (!IsPopulated(nextItem))
                         {
@@ -126,24 +126,30 @@ namespace OnlyM.Services.MetaDataQueue
                     _cancellationToken);
         }
 
-        private void PopulateThumbnailAndMetaData(MediaItem mediaItem)
+        private async Task PopulateThumbnailAndMetaDataAsync(MediaItem mediaItem)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            await Application.Current.Dispatcher.Invoke(async () =>
             {
-                PopulateSlideData(mediaItem);
-                PopulateThumbnail(mediaItem);
-                PopulateDurationAndTitle(mediaItem);
+                await PopulateSlideDataAsync(mediaItem);
+                await PopulateThumbnailAsync(mediaItem);
+                await PopulateDurationAndTitleAsync(mediaItem);
             });
         }
 
-        private static void PopulateSlideData(MediaItem mediaItem)
+        private async Task PopulateSlideDataAsync(MediaItem mediaItem)
         {
             if (!IsSlideDataPopulated(mediaItem) && mediaItem.FilePath != null)
             {
-                var sf = new SlideFile(mediaItem.FilePath);
-                mediaItem.SlideshowCount = sf.SlideCount;
-                mediaItem.SlideshowLoop = sf.Loop;
-                mediaItem.IsRollingSlideshow = sf.AutoPlay;
+                SlideFile? sf = null;
+
+                await Task.Run(() => sf = new SlideFile(mediaItem.FilePath), _cancellationToken);
+
+                if (sf != null && !_cancellationToken.IsCancellationRequested)
+                {
+                    mediaItem.SlideshowCount = sf.SlideCount;
+                    mediaItem.SlideshowLoop = sf.Loop;
+                    mediaItem.IsRollingSlideshow = sf.AutoPlay;
+                }
             }
         }
 
@@ -165,19 +171,19 @@ namespace OnlyM.Services.MetaDataQueue
 
         private static bool IsSlideDataPopulated(MediaItem mediaItem) => !mediaItem.IsSlideshow || mediaItem.SlideshowCount > 0;
         
-        private void PopulateDurationAndTitle(MediaItem mediaItem)
+        private async Task PopulateDurationAndTitleAsync(MediaItem mediaItem)
         {
             if (mediaItem.FilePath != null &&
                 mediaItem.MediaType != null &&
                 !IsDurationAndTitlePopulated(mediaItem))
             {
-                var metaData = _metaDataService.GetMetaData(
-                    mediaItem.FilePath, mediaItem.MediaType, _ffmpegFolder);
+                MediaMetaData? metaData = null;
 
-                if (!IsDurationAndTitlePopulated(mediaItem))
+                await Task.Run(() => metaData = _metaDataService.GetMetaData(mediaItem.FilePath, mediaItem.MediaType, _ffmpegFolder), _cancellationToken);
+
+                if (metaData != null && !IsDurationAndTitlePopulated(mediaItem) && !_cancellationToken.IsCancellationRequested)
                 {
-                    mediaItem.DurationDeciseconds =
-                        metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
+                    mediaItem.DurationDeciseconds = metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
                     mediaItem.Title = GetMediaTitle(mediaItem.FilePath, metaData);
                     mediaItem.FileNameAsSubTitle = _optionsService.UseInternalMediaTitles
                         ? Path.GetFileName(mediaItem.FilePath)
@@ -187,18 +193,24 @@ namespace OnlyM.Services.MetaDataQueue
             }
         }
 
-        private void PopulateThumbnail(MediaItem mediaItem)
+        private async Task PopulateThumbnailAsync(MediaItem mediaItem)
         {
             if (mediaItem.FilePath != null && mediaItem.MediaType != null && !IsThumbnailPopulated(mediaItem))
             {
-                var thumb = _thumbnailService.GetThumbnail(
-                    mediaItem.FilePath,
-                    Unosquare.FFME.Library.FFmpegDirectory,
-                    mediaItem.MediaType.Classification,
-                    mediaItem.LastChanged,
-                    out var _);
+                byte[]? thumb = null;
 
-                if (thumb != null && !IsThumbnailPopulated(mediaItem))
+                await Task.Run(
+                    () =>
+                    {
+                        thumb = _thumbnailService.GetThumbnail(
+                            mediaItem.FilePath,
+                            Unosquare.FFME.Library.FFmpegDirectory,
+                            mediaItem.MediaType.Classification,
+                            mediaItem.LastChanged,
+                            out var _);
+                    }, _cancellationToken);
+
+                if (thumb != null && !IsThumbnailPopulated(mediaItem) && !_cancellationToken.IsCancellationRequested)
                 {
                     mediaItem.ThumbnailImageSource = GraphicsUtils.ByteArrayToImage(thumb);
                 }
