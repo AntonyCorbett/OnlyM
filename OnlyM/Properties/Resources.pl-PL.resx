@@ -112,16 +112,16 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="APP_VER" xml:space="preserve">
     <value>Wersja nr {0}</value>
     <comment>See Settings =&gt; Images. Please retain the "{0}" - it's a placeholder for the version number</comment>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
   <data name="blank" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\blank.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -571,5 +571,13 @@
   <data name="MEDIA_WINDOWED_ON_TOP" xml:space="preserve">
     <value>Zawsze na wierzchu (okno)</value>
     <comment>Option in Settings =&gt; Display</comment>
+  </data>
+  <data name="MEDIA_WINDOW_FIXED_SIZE" xml:space="preserve">
+    <value>Stały rozmiar:</value>
+    <comment>See Settings =&gt; Display</comment>
+  </data>
+  <data name="MEDIA_WINDOW_RESIZABLE" xml:space="preserve">
+    <value>Skalowalny</value>
+    <comment>See Settings =&gt; Display</comment>
   </data>
 </root>
