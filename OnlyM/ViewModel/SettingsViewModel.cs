@@ -979,14 +979,14 @@ namespace OnlyM.ViewModel
                 return value;
             }
 
-            return new Size()
+            return new Size
             {
                 Width = LimitNumber(MinSize.Width, value.Width, MaxSize.Width),
                 Height = LimitNumber(MinSize.Height, value.Height, MaxSize.Height)
             };
         }
 
-        private double LimitNumber(double lowerLimitIncl, double value, double upperLimitIncl)
+        private static double LimitNumber(double lowerLimitIncl, double value, double upperLimitIncl)
         {
             if (value < lowerLimitIncl)
             {
