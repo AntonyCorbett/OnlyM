@@ -119,11 +119,9 @@ namespace OnlyM.Services.Pages
 
         public void GotoSettingsPage()
         {
-#pragma warning disable S1481 // Unused local variables should be removed
 #pragma warning disable SA1312 // Variable names should begin with lower-case letter
             var _ = _settingsPage.Value;   // ensure created otherwise doesn't receive navigation event
 #pragma warning restore SA1312 // Variable names should begin with lower-case letter
-#pragma warning restore S1481 // Unused local variables should be removed
 
             _operatorPageScrollerPosition = ScrollViewer?.VerticalOffset ?? 0.0;
             OnNavigationEvent(new NavigationEventArgs { PageName = SettingsPageName });

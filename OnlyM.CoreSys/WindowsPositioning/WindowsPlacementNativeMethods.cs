@@ -13,8 +13,6 @@ namespace OnlyM.CoreSys.WindowsPositioning
     // ReSharper disable MemberCanBePrivate.Global
     // ReSharper disable FieldCanBeMadeReadOnly.Global
 
-#pragma warning disable S101 // Types should be named in PascalCase
-
     internal static class WindowsPlacementNativeMethods
     {
         private const int MAX_PATH = 260;
@@ -175,6 +173,4 @@ namespace OnlyM.CoreSys.WindowsPositioning
             public string szPath;
         }
     }
-
-#pragma warning restore S101 // Types should be named in PascalCase
 }

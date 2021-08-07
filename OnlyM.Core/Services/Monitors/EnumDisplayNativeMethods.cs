@@ -9,17 +9,13 @@ namespace OnlyM.Core.Services.Monitors
     // ReSharper disable MemberCanBePrivate.Global
     // ReSharper disable FieldCanBeMadeReadOnly.Global
 
-#pragma warning disable S101 // Types should be named in PascalCase
-
     /// <summary>
     /// Native methods associated with retrieval of display device data
     /// </summary>
     internal static class EnumDisplayNativeMethods
     {
         [Flags]
-#pragma warning disable S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
         public enum DisplayDeviceStateFlags
-#pragma warning restore S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
         {
             /// <summary>The device is part of the desktop.</summary>
             AttachedToDesktop = 0x1,
@@ -70,6 +66,4 @@ namespace OnlyM.Core.Services.Monitors
             public string DeviceKey;
         }
     }
-
-#pragma warning restore S101 // Types should be named in PascalCase
 }

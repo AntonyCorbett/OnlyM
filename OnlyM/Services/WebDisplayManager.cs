@@ -208,13 +208,8 @@ namespace OnlyM.Services
             }
             finally
             {
-                Task.Delay(1000).ContinueWith(_ =>
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty });
-                    });
-                });
+                Task.Delay(1000).ContinueWith(_ => Application.Current.Dispatcher.Invoke(() 
+                    => StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty })));
             }
         }
 

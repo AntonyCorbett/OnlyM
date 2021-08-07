@@ -55,10 +55,8 @@ namespace OnlyM.MediaElementAdaption
         // not supported in MediaFoundation
         public event EventHandler<OnlyMRenderSubtitlesEventArgs>? RenderingSubtitles
         {
-#pragma warning disable S108 // Nested blocks of code should not be left empty
             add { }
             remove { }
-#pragma warning restore S108 // Nested blocks of code should not be left empty
         }
 
         public event EventHandler<OnlyMPositionChangedEventArgs>? PositionChanged;
@@ -66,10 +64,8 @@ namespace OnlyM.MediaElementAdaption
         // not supported in MediaFoundation
         public event EventHandler<OnlyMLogMessageEventArgs>? MessageLogged
         {
-#pragma warning disable S108 // Nested blocks of code should not be left empty
             add { }
             remove { }
-#pragma warning restore S108 // Nested blocks of code should not be left empty
         }
 
         public bool IsPaused { get; private set; }

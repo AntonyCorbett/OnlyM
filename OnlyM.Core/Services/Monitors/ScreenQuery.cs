@@ -15,7 +15,6 @@ namespace OnlyM.Core.Services.Monitors
     // ReSharper disable InconsistentNaming
     // ReSharper disable IdentifierTypo
 
-#pragma warning disable S101 // Types should be named in PascalCase
 #pragma warning disable U2U1004 // Public value types should implement equality
     
     //// see https://stackoverflow.com/a/28257839/8576725
@@ -28,9 +27,7 @@ namespace OnlyM.Core.Services.Monitors
 #pragma warning disable IDE0044 // Add readonly modifier
         private const int ErrorSuccess = 0;
 
-#pragma warning disable S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
         public enum QUERY_DEVICE_CONFIG_FLAGS : uint
-#pragma warning restore S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
         {
             QDC_ALL_PATHS = 0x00000001,
             QDC_ONLY_ACTIVE_PATHS = 0x00000002,
@@ -349,7 +346,6 @@ namespace OnlyM.Core.Services.Monitors
         }
 
 #pragma warning restore U2U1004 // Public value types should implement equality
-#pragma warning restore S101 // Types should be named in PascalCase
 #pragma warning restore IDE0044 // Add readonly modifier
 
 #pragma warning restore SA1313 // Parameter names must begin with lower-case letter

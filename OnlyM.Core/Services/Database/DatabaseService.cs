@@ -66,11 +66,11 @@ namespace OnlyM.Core.Services.Database
                 {
                     if (r.Read())
                     {
-                        var id = Convert.ToInt32(r["id"]);
                         var lastChanged = Convert.ToInt64(r["changed"]);
 
                         if (lastChanged != originalLastChanged)
                         {
+                            var id = Convert.ToInt32(r["id"]);
                             DeleteThumbRow(c, id);
                         }
                         else

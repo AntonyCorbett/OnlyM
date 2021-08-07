@@ -10,7 +10,7 @@ namespace OnlyM.Services
 {
     internal sealed class AudioManager : IDisposable
     {
-        private readonly Timer _timer = new Timer(200);
+        private readonly Timer _timer = new(200);
 
         private Guid _mediaItemId;
         private WaveOutEvent? _outputDevice;

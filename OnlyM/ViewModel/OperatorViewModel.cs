@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Mvvm.Messaging;
@@ -507,10 +506,8 @@ namespace OnlyM.ViewModel
             EnterStartOffsetEditModeCommand = new RelayCommand<Guid?>(EnterStartOffsetEditMode);
         }
 
-#pragma warning disable S3168 // "async" methods should not return "void"
         // Exceptions handled
         private async void EnterStartOffsetEditMode(Guid? mediaItemId)
-#pragma warning restore S3168 // "async" methods should not return "void"
         {
             try
             {

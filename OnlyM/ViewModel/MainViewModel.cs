@@ -87,15 +87,21 @@ namespace OnlyM.ViewModel
             }
 
             _pageService.GotoOperatorPage();
-
+            
             dragAndDropService.CopyingFilesProgressEvent += HandleCopyingFilesProgressEvent;
 
             InitCommands();
 
-            if (!IsInDesignMode())
+            if (_optionsService.PermanentBackdrop)
             {
                 _pageService.InitMediaWindow();
             }
+
+            // no longer needed.
+            // if (!IsInDesignMode())
+            // {
+            // _pageService.InitMediaWindow();
+            // }
 
             SanityChecks();
         }

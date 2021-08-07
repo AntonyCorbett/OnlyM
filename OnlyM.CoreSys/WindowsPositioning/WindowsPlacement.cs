@@ -21,7 +21,6 @@ namespace OnlyM.CoreSys.WindowsPositioning
     // ReSharper disable StyleCop.SA1310
     // ReSharper disable UnusedMember.Global
 
-#pragma warning disable S101 // Types should be named in PascalCase
 #pragma warning disable U2U1004 // Public value types should implement equality
 #pragma warning disable SA1307 // Accessible fields should begin with upper-case letter
 
@@ -85,10 +84,8 @@ namespace OnlyM.CoreSys.WindowsPositioning
 
         public static (int x, int y) GetDpiSettings()
         {
-#pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             var dpiYProperty = typeof(SystemParameters).GetProperty("Dpi", BindingFlags.NonPublic | BindingFlags.Static);
-#pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
 
             if (dpiXProperty == null || dpiYProperty == null)
             {
@@ -161,5 +158,4 @@ namespace OnlyM.CoreSys.WindowsPositioning
 
 #pragma warning restore SA1307 // Accessible fields should begin with upper-case letter
 #pragma warning restore U2U1004 // Public value types should implement equality
-#pragma warning restore S101 // Types should be named in PascalCase
 }

@@ -76,12 +76,10 @@ namespace OnlyMSlideManager.ViewModel
 
             AddDesignTimeItems();
 
-#pragma warning disable S1481 // Unused local variables should be removed
             // init options so that UI locale is set (forces lazy init)
 #pragma warning disable SA1312 // Variable names should begin with lower-case letter
             var _ = _optionsService.Culture;
 #pragma warning restore SA1312 // Variable names should begin with lower-case letter
-#pragma warning restore S1481 // Unused local variables should be removed
 
             InitCommands();
             WeakReferenceMessenger.Default.Register<ReorderMessage>(this, OnReorderMessage);
@@ -396,19 +394,15 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-#pragma warning disable S3168 // "async" methods should not return "void"
         // exceptions caught in SaveFile()
         private async void DoSaveFile()
-#pragma warning restore S3168 // "async" methods should not return "void"
         {
             Keyboard.ClearFocus();
             await SaveFile();
         }
 
-#pragma warning disable S3168 // "async" methods should not return "void"
         // All exceptions handled
         private async void DoSaveFileAs()
-#pragma warning restore S3168 // "async" methods should not return "void"
         {
             try
             {
@@ -478,10 +472,8 @@ namespace OnlyMSlideManager.ViewModel
             });
         }
 
-#pragma warning disable S3168 // "async" methods should not return "void"
         // All exceptions handled
         private async void OpenFile()
-#pragma warning restore S3168 // "async" methods should not return "void"
         {
             try
             {
@@ -683,10 +675,8 @@ namespace OnlyMSlideManager.ViewModel
             });
         }
 
-#pragma warning disable S3168 // "async" methods should not return "void"
         // all exceptions handled
         private async void NewFile()
-#pragma warning restore S3168 // "async" methods should not return "void"
         {
             try
             {
@@ -789,7 +779,7 @@ namespace OnlyMSlideManager.ViewModel
             IsProgressVisible = CurrentSlideFileBuilder.SlideCount > 4;
             try
             {
-                await GenerateSlideItems(percentageComplete => { ProgressPercentageValue = percentageComplete; });
+                await GenerateSlideItems(percentageComplete => ProgressPercentageValue = percentageComplete);
             }
             finally
             {
@@ -895,10 +885,8 @@ namespace OnlyMSlideManager.ViewModel
             return !_dialogService.IsDialogVisible() && !IsDirty && !Busy;
         }
 
-#pragma warning disable S3168 // "async" methods should not return "void"
         // Exceptions handled
         private async void ExecuteCancelClosing()
-#pragma warning restore S3168 // "async" methods should not return "void"
         {
             try
             {

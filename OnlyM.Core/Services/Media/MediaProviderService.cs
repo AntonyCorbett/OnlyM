@@ -154,10 +154,11 @@ namespace OnlyM.Core.Services.Media
             foreach (var file in files)
             {
                 var mediaType = GetSupportedMediaType(file);
-                var lastChanged = File.GetLastWriteTimeUtc(file);
-
+                
                 if (mediaType != null)
                 {
+                    var lastChanged = File.GetLastWriteTimeUtc(file);
+
                     result.Add(new MediaFile
                     {
                         FullPath = file,

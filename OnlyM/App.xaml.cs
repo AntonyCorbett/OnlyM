@@ -39,7 +39,7 @@ namespace OnlyM
         private readonly string _appString = "OnlyMMeetingMedia";
         private readonly bool _successCefSharp;
         private Mutex? _appMutex;
-
+        
         public App()
         {
             try
