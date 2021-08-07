@@ -1066,7 +1066,7 @@ namespace OnlyM.ViewModel
                     Title = Properties.Resources.BLANK_SCREEN,
                     FilePath = blankScreenPath,
                     FileNameAsSubTitle = null,
-                    LastChanged = DateTime.UtcNow.Ticks,
+                    LastChanged = 0,
                 };
 
                 MediaItems.Insert(0, item);
