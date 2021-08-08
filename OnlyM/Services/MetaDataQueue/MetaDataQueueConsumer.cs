@@ -181,7 +181,7 @@ namespace OnlyM.Services.MetaDataQueue
 
                 await Task.Run(() => metaData = _metaDataService.GetMetaData(mediaItem.FilePath, mediaItem.MediaType, _ffmpegFolder), _cancellationToken);
 
-                if (metaData != null && !IsDurationAndTitlePopulated(mediaItem) && !_cancellationToken.IsCancellationRequested)
+                if (!IsDurationAndTitlePopulated(mediaItem) && !_cancellationToken.IsCancellationRequested)
                 {
                     mediaItem.DurationDeciseconds = metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
                     mediaItem.Title = GetMediaTitle(mediaItem.FilePath, metaData);
