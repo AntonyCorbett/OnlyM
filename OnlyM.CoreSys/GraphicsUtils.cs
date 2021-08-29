@@ -46,9 +46,9 @@ namespace OnlyM.CoreSys
         }
 
         public static BitmapSource? GetImageAutoRotatedAndResized(
-            string itemFilePath, int width, int height, bool shouldPad)
+            string itemFilePath, int width, int height)
         {
-            var bytes = GetRawImageAutoRotatedAndResized(itemFilePath, width, height, shouldPad);
+            var bytes = GetRawImageAutoRotatedAndResized(itemFilePath, width, height);
             if (bytes == null)
             {
                 return null;
@@ -58,19 +58,16 @@ namespace OnlyM.CoreSys
         }
 
         public static byte[]? GetRawImageAutoRotatedAndResized(
-            string itemFilePath, int width, int height, bool shouldPad)
+            string itemFilePath, int width, int height)
         {
             try
             {
                 AutoRotateIfRequired(itemFilePath);
 
                 var settings = new ProcessImageSettings { Width = width, Height = height };
-                if (shouldPad)
-                {
-                    settings.ResizeMode = CropScaleMode.Pad;
-                    settings.MatteColor = System.Drawing.Color.Black;
-                }
-
+                settings.ResizeMode = CropScaleMode.Pad;
+                settings.MatteColor = System.Drawing.Color.Black;
+                
                 using var outStream = new MemoryStream();
                 MagicImageProcessor.ProcessImage(itemFilePath, outStream, settings);
                 outStream.Seek(0L, SeekOrigin.Begin);

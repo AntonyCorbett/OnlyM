@@ -599,7 +599,7 @@ namespace OnlyMSlideManager.ViewModel
                             // Note that we pad the thumbnails (so they are all identical sizes). If we don't,
                             // a WPF Presentation rendering issue causes an OutOfMemoryException.
                             thumbnailBytes = GraphicsUtils.GetRawImageAutoRotatedAndResized(
-                                slide.OriginalFilePath, ThumbnailWidth, ThumbnailHeight, shouldPad: true);
+                                slide.OriginalFilePath, ThumbnailWidth, ThumbnailHeight);
                         }
 
                         if (thumbnailBytes != null)

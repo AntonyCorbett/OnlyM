@@ -78,7 +78,7 @@ namespace OnlyM.Slides.Helpers
             }
 
             return GraphicsUtils.GetImageAutoRotatedAndResized(
-                    slide.OriginalFilePath, _maxSlideWidth, _maxSlideHeight, shouldPad: true);
+                    slide.OriginalFilePath, _maxSlideWidth, _maxSlideHeight);
         }
 
         private List<Slide>? GetSlideBatch()
