@@ -39,8 +39,7 @@ CloseApplications=False
 AppMutex=OnlyMMeetingMedia,OnlyMSlideManagerTool
 
 PrivilegesRequired=admin
-
-
+                        
 [InstallDelete]
 ; remove legacy shortcuts (wrongly named SlideManagerAppExeName instead of SlideManagerAppName)
 Type: files; Name: "{group}\{#SlideManagerAppExeName}.lnk"
