@@ -193,11 +193,11 @@
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Нельзя сменить монитор, когда запущен медиафайл</value>
+    <value>Нельзя удалить монитор, когда запущен медиафайл</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
-    <value>(содержит слайдов: {0})</value>
+    <value>(содержит {0} слайдов)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="SLIDE_X_OF_Y" xml:space="preserve">
