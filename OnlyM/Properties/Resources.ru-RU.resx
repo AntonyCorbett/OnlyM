@@ -161,7 +161,7 @@
     <value>ОК</value>
   </data>
   <data name="VIEW" xml:space="preserve">
-    <value>ПОСМОТРЕТЬ</value>
+    <value>ИНФО</value>
     <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
   </data>
   <data name="YES" xml:space="preserve">
@@ -193,7 +193,7 @@
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Нельзя убрать монитор, когда запущен медиафайл</value>
+    <value>Нельзя сменить монитор, когда запущен медиафайл</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
