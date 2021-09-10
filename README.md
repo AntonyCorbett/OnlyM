@@ -21,7 +21,7 @@ See the [wiki](https://github.com/AntonyCorbett/OnlyM/wiki) for basic instructio
 
 ### Discussions
 
-Use the [Discussions](https://github.com/AntonyCorbett/OnlyM/discussions) area to ask for help, etc.
+Use the [Discussions](https://github.com/AntonyCorbett/OnlyM/discussions) area to ask for help, etc. Please limit discussions to those of a technical nature.
 
 ### License, etc
 
