@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="APP_VER" xml:space="preserve">
-    <value>Версия ПО {0}</value>
+    <value>OnlyM версия {0}</value>
     <comment>See Settings =&gt; Images. Please retain the "{0}" - it's a placeholder for the version number</comment>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
@@ -134,7 +134,7 @@
     <comment>Message displayed when there is an error copying media to the OnlyM media folder</comment>
   </data>
   <data name="FILES_COPIED" xml:space="preserve">
-    <value>файлов скопировано: {0}</value>
+    <value>Скопировано {0} файлов</value>
     <comment>Displayed as a notification message when several files are dropped onto the media list. Please leve the placeholder as it is.</comment>
   </data>
   <data name="FILE_COPIED" xml:space="preserve">
@@ -154,14 +154,14 @@
     <comment>Notification text displayed when there is a new version to download (can be translated the same as NEW_VERSION)</comment>
   </data>
   <data name="NO_SUPPORTED_FILES" xml:space="preserve">
-    <value>Нет поддерживаемых медиафайлов!</value>
+    <value>Неподдерживаемые медиафайлы!</value>
     <comment>Notification displayed if you drag and drop a file (or files) of a type that is not supported.</comment>
   </data>
   <data name="OK" xml:space="preserve">
     <value>ОК</value>
   </data>
   <data name="VIEW" xml:space="preserve">
-    <value>ПОСМОТРЕТЬ</value>
+    <value>ИНФО</value>
     <comment>The Notification bar sometimes displays a button to allow you to view further details. This is teh button caption. Please keep it short.</comment>
   </data>
   <data name="YES" xml:space="preserve">
@@ -193,11 +193,11 @@
     <comment>If the Folder button is disabled then this is the tooltip for the Main page Folder button</comment>
   </data>
   <data name="NO_DESELECT_MONITOR" xml:space="preserve">
-    <value>Нельзя убрать монитор, когда запущен медиафайл</value>
+    <value>Нельзя удалить монитор, когда запущен медиафайл</value>
     <comment>Notification message displayed if you try to change the media monitor to "None" while media is being displayed. Try to keep this text short!</comment>
   </data>
   <data name="CONTAINS_X_SLIDES" xml:space="preserve">
-    <value>(содержит слайдов: {0})</value>
+    <value>(содержит {0} слайдов)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="SLIDE_X_OF_Y" xml:space="preserve">
@@ -217,7 +217,7 @@
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="SECTION_DISPLAY" xml:space="preserve">
-    <value>ОТОБРАЖЕНИЕ</value>
+    <value>ПОКАЗ</value>
     <comment>Section title for Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_FOLDER" xml:space="preserve">
@@ -285,7 +285,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="RENDERING_ENGINE" xml:space="preserve">
-    <value>Механизм рендеринга</value>
+    <value>Движок</value>
     <comment>See Settings =&gt; Videos &amp; Audio</comment>
   </data>
   <data name="SECTION_IMAGES" xml:space="preserve">
@@ -481,7 +481,7 @@
     <comment>Checkbox caption in web and PDF media item</comment>
   </data>
   <data name="JWL_TRADEMARK" xml:space="preserve">
-    <value>"JW Library" является зарегистрированной торговой маркой Watch Tower Bible and Tract Society of Pennsylvania</value>
+    <value>"JW Library" - зарегистрированная торговая марка Watch Tower Bible and Tract Society of Pennsylvania</value>
     <comment>See Settings =&gt; Main</comment>
   </data>
   <data name="CANNOT_DELETE_FILE" xml:space="preserve">
