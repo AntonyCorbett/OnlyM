@@ -299,3 +299,9 @@ dotnet_diagnostic.S3928.severity = silent
 
 # SA1009: Closing parenthesis should be spaced correctly
 dotnet_diagnostic.SA1009.severity = silent
+
+# CC0021: Use nameof
+dotnet_diagnostic.CC0021.severity = silent
+
+# CC0022: Should dispose object
+dotnet_diagnostic.CC0022.severity = silent

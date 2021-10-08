@@ -77,9 +77,7 @@ namespace OnlyMSlideManager.ViewModel
             AddDesignTimeItems();
 
             // init options so that UI locale is set (forces lazy init)
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            var _ = _optionsService.Culture;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
+            _ = _optionsService.Culture;
 
             InitCommands();
             WeakReferenceMessenger.Default.Register<ReorderMessage>(this, OnReorderMessage);
@@ -1021,10 +1019,12 @@ namespace OnlyMSlideManager.ViewModel
                             LanguageName = c.EnglishName,
                         });
                     }
+#pragma warning disable CC0004 // Catch block cannot be empty
                     catch (CultureNotFoundException)
                     {
                         // expected
                     }
+#pragma warning restore CC0004 // Catch block cannot be empty
                 }
             }
 
@@ -1050,7 +1050,7 @@ namespace OnlyMSlideManager.ViewModel
         private static bool IsInDesignMode()
         {
 #if DEBUG
-            DependencyObject dep = new();
+            var dep = new DependencyObject();
             return DesignerProperties.GetIsInDesignMode(dep);
 #else
             return false;

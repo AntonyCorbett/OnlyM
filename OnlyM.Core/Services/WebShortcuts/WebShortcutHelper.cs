@@ -54,11 +54,13 @@ namespace OnlyM.Core.Services.WebShortcuts
                     }
                 }
 #pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
+#pragma warning disable CC0004 // Catch block cannot be empty
                 catch (Exception)
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
                 {
                     // nothing
                 }
+#pragma warning restore CC0004 // Catch block cannot be empty
+#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
                 finally
                 {
                     _initialised = true;

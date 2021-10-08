@@ -43,7 +43,7 @@ namespace OnlyM.Windows
 
         private void OnlyMOperatorPage_SizeChanged(object? sender, SizeChangedEventArgs e)
         {
-            OperatorViewModel vm = (OperatorViewModel)DataContext;
+            var vm = (OperatorViewModel?)DataContext;
 
             if (vm == null)
             {

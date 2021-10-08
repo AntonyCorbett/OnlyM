@@ -1200,7 +1200,7 @@ namespace OnlyM.ViewModel
         private static bool IsInDesignMode()
         {
 #if DEBUG
-            DependencyObject dep = new();
+            var dep = new DependencyObject();
             return DesignerProperties.GetIsInDesignMode(dep);
 #else
             return false;
