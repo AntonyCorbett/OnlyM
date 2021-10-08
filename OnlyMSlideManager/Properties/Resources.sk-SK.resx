@@ -247,7 +247,7 @@
     <comment>Combobox title on toolbar</comment>
   </data>
   <data name="LANGUAGE_RESTART" xml:space="preserve">
-    <value>Pre zmenu jazyka musíte reštartovať aplikáciu.</value>
+    <value>Pre zmenu jazyka musíte reštartovať aplikáciu</value>
     <comment>Prompt displayed when language is selected</comment>
   </data>
   <data name="OPTIONS" xml:space="preserve">
