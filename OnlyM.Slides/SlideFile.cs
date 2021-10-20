@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using Newtonsoft.Json;
 using OnlyM.Slides.Models;
 

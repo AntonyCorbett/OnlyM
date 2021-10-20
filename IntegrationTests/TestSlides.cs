@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
 using System.Windows.Media.Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OnlyM.Slides;

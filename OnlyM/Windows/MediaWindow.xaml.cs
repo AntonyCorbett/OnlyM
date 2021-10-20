@@ -11,7 +11,6 @@ using OnlyM.Core.Models;
 using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Monitors;
 using OnlyM.Core.Services.Options;
-using OnlyM.CoreSys;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.CoreSys.WindowsPositioning;
 using OnlyM.MediaElementAdaption;

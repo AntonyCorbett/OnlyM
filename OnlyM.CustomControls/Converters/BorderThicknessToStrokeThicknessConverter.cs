@@ -6,7 +6,7 @@ namespace OnlyM.CustomControls.Converters
 {
     public class BorderThicknessToStrokeThicknessConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object? value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)
             {
@@ -17,7 +17,7 @@ namespace OnlyM.CustomControls.Converters
             return (thickness.Bottom + thickness.Left + thickness.Right + thickness.Top) / 4;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object? value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)
             {

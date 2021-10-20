@@ -46,12 +46,9 @@ namespace OnlyM.Controls
             @this.InvalidateMeasure();
         }
 
-        private Tuple<string, Size> TrimToFit(string path, Size constraint)
+        private Tuple<string, Size> TrimToFit(string? path, Size constraint)
         {
-            if (path == null)
-            {
-                path = string.Empty;
-            }
+            path ??= string.Empty;
 
             path = path.Trim();
 
