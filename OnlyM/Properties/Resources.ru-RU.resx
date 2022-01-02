@@ -429,7 +429,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_ZOOM_INCREMENT" xml:space="preserve">
-    <value>Увеличение масштаба страницы на:</value>
+    <value>Увеличение масштаба страницы на</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
