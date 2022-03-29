@@ -46,8 +46,7 @@ namespace OnlyM.Services
             PrepareForFullScreenMonitorDisplay(mediaWindow);
 
             var mainGrid = GetMainGrid(mediaWindow);
-            Debug.Assert(mainGrid != null || !isVideo, "mainGrid != null");
-
+            
             if (WpfMediaFoundationHackRequired(optionsService, commandLineService, monitor, isVideo))
             {
                 PositionWindowUsingHack(mediaWindow, mainGrid, monitor, left, top, width, height);
