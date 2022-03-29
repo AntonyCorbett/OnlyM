@@ -126,7 +126,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CefSharp.Wpf.NETCore" Version="90.6.70" />
+    <PackageReference Include="CefSharp.Wpf.NETCore" Version="99.2.120" />
     <PackageReference Include="FFME.Windows" Version="4.4.350" />
     <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
     <PackageReference Include="NAudio" Version="2.0.1" />
@@ -150,6 +150,14 @@
 
   <ItemGroup>
     <EditorConfigFiles Update="D:\ProjectsPersonal\OnlyM\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="99.2.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="99.2.12" />
   </ItemGroup>
 
 </Project>
