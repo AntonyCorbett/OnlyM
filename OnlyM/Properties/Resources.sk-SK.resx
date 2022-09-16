@@ -577,7 +577,7 @@
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_WINDOW_RESIZABLE" xml:space="preserve">
-    <value>Resizable</value>
+    <value>Zmena veľkosti</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
 </root>
