@@ -119,7 +119,7 @@ namespace OnlyM.Core.Services.Media
             if (result != null && 
                 result.Classification == MediaClassification.Web &&
                 IsPdf(fileName) &&
-                fileName.Contains("#"))
+                fileName.Contains('#'))
             {
                 // the CefBrowser doesn't support files with '#' character in path!
                 // work-around this by logging and saying unsupported...

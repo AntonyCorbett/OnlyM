@@ -118,14 +118,18 @@ namespace OnlyM.CoreSys.WindowsPositioning
         [Flags]
         public enum SHGSI : uint
         {
+#pragma warning disable CA1712 // Do not prefix enum values with type name
             SHGSI_ICONLOCATION = 0,
             SHGSI_ICON = 0x000000100,
             SHGSI_SYSICONINDEX = 0x000004000,
             SHGSI_LINKOVERLAY = 0x000008000,
             SHGSI_SELECTED = 0x000010000,
+#pragma warning disable CA1069 // Enums values should not be duplicated
             SHGSI_LARGEICON = 0x000000000,
+#pragma warning restore CA1069 // Enums values should not be duplicated
             SHGSI_SMALLICON = 0x000000001,
             SHGSI_SHELLICONSIZE = 0x000000004,
+#pragma warning restore CA1712 // Do not prefix enum values with type name
         }
 
         [DllImport("user32.dll")]
@@ -163,7 +167,9 @@ namespace OnlyM.CoreSys.WindowsPositioning
         private static extern bool DestroyIcon(IntPtr hIcon);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+#pragma warning disable S101 // Types should be named in PascalCase
         public struct SHSTOCKICONINFO
+#pragma warning restore S101 // Types should be named in PascalCase
         {
             public uint cbSize;
             public IntPtr hIcon;

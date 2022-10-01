@@ -364,7 +364,10 @@ namespace OnlyM.Windows
             // mirror will only work if the media window is full-screen (rather than windowed)
             var showMirrorWindow = mediaItem.UseMirror && mediaItem.AllowUseMirror && !IsWindowed;
 
-            int.TryParse(mediaItem.ChosenPdfPage, out var pdfStartingPage);
+            if (!int.TryParse(mediaItem.ChosenPdfPage, out var pdfStartingPage))
+            {
+                pdfStartingPage = 0;
+            }
 
             _webDisplayManager.ShowWeb(
                 mediaItem.FilePath, 

@@ -49,8 +49,9 @@ namespace OnlyM.CoreSys.WindowsPositioning
                 {
                     WINDOWPLACEMENT placement;
                     using (var memoryStream = new MemoryStream(xmlBytes))
+                    using (var reader = XmlReader.Create(memoryStream))
                     {
-                        var obj = (WINDOWPLACEMENT?)Serializer.Deserialize(memoryStream);
+                        var obj = (WINDOWPLACEMENT?)Serializer.Deserialize(reader);
                         if (obj == null)
                         {
                             return;
