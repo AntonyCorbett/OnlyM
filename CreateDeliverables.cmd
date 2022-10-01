@@ -57,8 +57,14 @@ md Installer\Output
 powershell Compress-Archive -Path OnlyM\bin\Release\net5.0-windows\publish\* -DestinationPath Installer\Output\OnlyMPortable.zip 
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
+goto SUCCESS
+
 :ERROR
 ECHO.
 ECHO ******************
 ECHO An ERROR occurred!
 ECHO ******************
+
+:SUCCESS
+
+PAUSE
