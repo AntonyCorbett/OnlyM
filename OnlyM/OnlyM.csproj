@@ -1,163 +1,164 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWPF>true</UseWPF>
-    <ApplicationIcon>icon3.ico</ApplicationIcon>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net5.0-windows</TargetFramework>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <UseWPF>true</UseWPF>
+        <ApplicationIcon>icon3.ico</ApplicationIcon>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <Nullable>enable</Nullable>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <PlatformTarget>x86</PlatformTarget>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <PlatformTarget>x86</PlatformTarget>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="icon3.ico" />
-    <None Remove="Images\freeze2.png" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="icon3.ico" />
+        <None Remove="Images\freeze2.png" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="..\FFmpeg\LICENSE.txt" Link="FFmpeg\LICENSE.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="..\FFmpeg\LICENSE.txt" Link="FFmpeg\LICENSE.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="icon3.ico" />
-    <Resource Include="Images\freeze2.png" />
-  </ItemGroup>
+    <ItemGroup>
+        <Resource Include="icon3.ico" />
+        <Resource Include="Images\freeze2.png" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Windows\MainWindow.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Windows\MediaWindow.xaml.cs">
-      <DependentUpon>MediaWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Windows\OperatorPage.xaml.cs">
-      <DependentUpon>OperatorPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Windows\SettingsPage.xaml.cs">
-      <DependentUpon>SettingsPage.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Properties\AssemblyInfo.cs">
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Properties\Resources.Designer.cs">
+            <DependentUpon>Resources.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+        <Compile Update="Windows\MainWindow.xaml.cs">
+            <SubType>Code</SubType>
+            <DependentUpon>MainWindow.xaml</DependentUpon>
+        </Compile>
+        <Compile Update="Windows\MediaWindow.xaml.cs">
+            <DependentUpon>MediaWindow.xaml</DependentUpon>
+        </Compile>
+        <Compile Update="Windows\OperatorPage.xaml.cs">
+            <DependentUpon>OperatorPage.xaml</DependentUpon>
+        </Compile>
+        <Compile Update="Windows\SettingsPage.xaml.cs">
+            <DependentUpon>SettingsPage.xaml</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="Properties\Resources.resx">
+            <SubType>Designer</SubType>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+            <Generator>PublicResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Windows\MainWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Windows\MediaWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Windows\OperatorPage.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Windows\SettingsPage.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
+    <ItemGroup>
+        <Page Update="Windows\MainWindow.xaml">
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Windows\MediaWindow.xaml">
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Windows\OperatorPage.xaml">
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Windows\SettingsPage.xaml">
+            <SubType>Designer</SubType>
+        </Page>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="FFmpeg\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="FFmpeg\" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\FFmpeg\avcodec-58.dll" Link="FFmpeg\avcodec-58.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\FFmpeg\avdevice-58.dll" Link="FFmpeg\avdevice-58.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\FFmpeg\avfilter-7.dll" Link="FFmpeg\avfilter-7.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\FFmpeg\avformat-58.dll" Link="FFmpeg\avformat-58.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\FFmpeg\avutil-56.dll" Link="FFmpeg\avutil-56.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\FFmpeg\ffmpeg.exe" Link="FFmpeg\ffmpeg.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\FFmpeg\ffplay.exe" Link="FFmpeg\ffplay.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\FFmpeg\ffprobe.exe" Link="FFmpeg\ffprobe.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\FFmpeg\postproc-55.dll" Link="FFmpeg\postproc-55.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\FFmpeg\swresample-3.dll" Link="FFmpeg\swresample-3.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\FFmpeg\swscale-5.dll" Link="FFmpeg\swscale-5.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="..\FFmpeg\avcodec-58.dll" Link="FFmpeg\avcodec-58.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\FFmpeg\avdevice-58.dll" Link="FFmpeg\avdevice-58.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\FFmpeg\avfilter-7.dll" Link="FFmpeg\avfilter-7.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\FFmpeg\avformat-58.dll" Link="FFmpeg\avformat-58.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\FFmpeg\avutil-56.dll" Link="FFmpeg\avutil-56.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\FFmpeg\ffmpeg.exe" Link="FFmpeg\ffmpeg.exe">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\FFmpeg\ffplay.exe" Link="FFmpeg\ffplay.exe">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\FFmpeg\ffprobe.exe" Link="FFmpeg\ffprobe.exe">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\FFmpeg\postproc-55.dll" Link="FFmpeg\postproc-55.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\FFmpeg\swresample-3.dll" Link="FFmpeg\swresample-3.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\FFmpeg\swscale-5.dll" Link="FFmpeg\swscale-5.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CefSharp.Wpf.NETCore" Version="99.2.120" />
-    <PackageReference Include="FFME.Windows" Version="4.4.350" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
-    <PackageReference Include="NAudio" Version="2.0.1" />
-    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.0.2" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CefSharp.Wpf.NETCore" Version="99.2.120" />
+        <PackageReference Include="FFME.Windows" Version="4.4.350" />
+        <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
+        <PackageReference Include="NAudio" Version="2.0.1" />
+        <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+        <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.0.2" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\OnlyM.Core\OnlyM.Core.csproj" />
-    <ProjectReference Include="..\OnlyM.CustomControls\OnlyM.CustomControls.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\OnlyM.Core\OnlyM.Core.csproj" />
+        <ProjectReference Include="..\OnlyM.CustomControls\OnlyM.CustomControls.csproj" />
+    </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="copy &quot;$(ProjectDir)Properties\Resources.no-NO.resx&quot; &quot;$(ProjectDir)Properties\Resources.no.resx&quot;&#xD;&#xA;copy &quot;$(ProjectDir)Properties\Resources.pap-PAP.resx&quot; &quot;$(ProjectDir)Properties\Resources.pap.resx&quot;" />
-  </Target>
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+        <Exec Command="copy &quot;$(ProjectDir)Properties\Resources.no-NO.resx&quot; &quot;$(ProjectDir)Properties\Resources.no.resx&quot;&#xD;&#xA;copy &quot;$(ProjectDir)Properties\Resources.pap-PAP.resx&quot; &quot;$(ProjectDir)Properties\Resources.pap.resx&quot;" />
+    </Target>
 
-  <ItemGroup>
-    <EditorConfigFiles Update="D:\ProjectsPersonal\OnlyM\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
+    <ItemGroup>
+        <EditorConfigFiles Update="D:\ProjectsPersonal\OnlyM\.editorconfig" Link=".editorconfig" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="99.2.12" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Update="chromiumembeddedframework.runtime.win-x64" Version="99.2.12" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="99.2.12" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Update="chromiumembeddedframework.runtime.win-x86" Version="99.2.12" />
+    </ItemGroup>
 
 </Project>
