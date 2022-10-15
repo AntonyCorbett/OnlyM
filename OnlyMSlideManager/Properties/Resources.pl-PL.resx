@@ -204,7 +204,7 @@
     <value>Nie można zapisać pliku!</value>
   </data>
   <data name="SAVED_FILE" xml:space="preserve">
-    <value>Zapisany plik</value>
+    <value>Plik zapisany</value>
   </data>
   <data name="AUTO_PLAY_SETTINGS" xml:space="preserve">
     <value>Ustawienia autoodtwarzania</value>
