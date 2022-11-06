@@ -1,28 +1,31 @@
-﻿<!--***********************************************************************************
-    Adapted by Antony Corbett from the Xceed WPF Extended Toolkit. 
+﻿<!--
+    ***********************************************************************************
+    Adapted by Antony Corbett from the Xceed WPF Extended Toolkit.
     Original copyright is shown below.
-    **********************************************************************************-->
-    
-<!--***********************************************************************************
-   Extended WPF Toolkit
-   Copyright (C) 2007-2013 Xceed Software Inc.
-   This program is provided to you under the terms of the Microsoft Public
-   License (Ms-PL) as published at http://wpftoolkit.codeplex.com/license 
-   For more features, controls, and fast professional support,
-   pick up the Plus Edition at http://xceed.com/wpf_toolkit
-   Stay informed: follow @datagrid on Twitter or Like http://facebook.com/datagrids
-  **********************************************************************************-->
+    **********************************************************************************
+-->
+
+<!--
+    ***********************************************************************************
+    Extended WPF Toolkit
+    Copyright (C) 2007-2013 Xceed Software Inc.
+    This program is provided to you under the terms of the Microsoft Public
+    License (Ms-PL) as published at http://wpftoolkit.codeplex.com/license
+    For more features, controls, and fast professional support,
+    pick up the Plus Edition at http://xceed.com/wpf_toolkit
+    Stay informed: follow @datagrid on Twitter or Like http://facebook.com/datagrids
+    **********************************************************************************
+-->
 
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:OnlyM.CustomControls"
     xmlns:converters="clr-namespace:OnlyM.CustomControls.Converters"
     xmlns:magnifierControl="clr-namespace:OnlyM.CustomControls.MagnifierControl">
 
-    <!-- =============================================================================== -->
-    <!-- Magnifier                                                                       -->
-    <!-- =============================================================================== -->
+    <!--  ===============================================================================  -->
+    <!--  Magnifier  -->
+    <!--  ===============================================================================  -->
 
     <converters:RadiusConverter x:Key="RadiusConverter" />
     <converters:BorderThicknessToStrokeThicknessConverter x:Key="BorderThicknessToStrokeThicknessConverter" />
@@ -30,25 +33,25 @@
     <ControlTemplate x:Key="CircleTemplate" TargetType="{x:Type magnifierControl:Magnifier}">
         <Grid>
             <Ellipse Fill="{TemplateBinding Background}" />
-            <Ellipse Stroke="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" 
-                  StrokeThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BorderThicknessToStrokeThicknessConverter}}">
+            <Ellipse Stroke="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" StrokeThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BorderThicknessToStrokeThicknessConverter}}">
                 <Ellipse.Fill>
-                    <VisualBrush x:Name="PART_VisualBrush"
-                            ViewboxUnits="Absolute"
-                            Visual="{Binding Path=Target, RelativeSource={RelativeSource TemplatedParent}}" />
+                    <VisualBrush
+                        x:Name="PART_VisualBrush"
+                        ViewboxUnits="Absolute"
+                        Visual="{Binding Path=Target, RelativeSource={RelativeSource TemplatedParent}}" />
                 </Ellipse.Fill>
             </Ellipse>
         </Grid>
     </ControlTemplate>
 
     <ControlTemplate x:Key="RectangleTemplate" TargetType="{x:Type magnifierControl:Magnifier}">
-        <Grid Background="{TemplateBinding Background}" >
-            <Rectangle Stroke="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
-                    StrokeThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BorderThicknessToStrokeThicknessConverter}}">
+        <Grid Background="{TemplateBinding Background}">
+            <Rectangle Stroke="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" StrokeThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BorderThicknessToStrokeThicknessConverter}}">
                 <Rectangle.Fill>
-                    <VisualBrush x:Name="PART_VisualBrush"
-                            ViewboxUnits="Absolute"
-                            Visual="{Binding Path=Target, RelativeSource={RelativeSource TemplatedParent}}" />
+                    <VisualBrush
+                        x:Name="PART_VisualBrush"
+                        ViewboxUnits="Absolute"
+                        Visual="{Binding Path=Target, RelativeSource={RelativeSource TemplatedParent}}" />
                 </Rectangle.Fill>
             </Rectangle>
         </Grid>

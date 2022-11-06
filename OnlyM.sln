@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31313.79
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlyM", "OnlyM\OnlyM.csproj", "{7873ABB8-C3F2-455A-9B2B-64FCD65B378A}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -13,6 +13,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{4BF3D9AD-4DD8-4676-81A2-E099BC2D10AD}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Net6PortNotes.txt = Net6PortNotes.txt
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject
