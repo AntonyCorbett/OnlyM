@@ -47,7 +47,7 @@ namespace OnlyM.Services
 
                 var sb = new StringBuilder(256);
                 JwLibHelperNativeMethods.GetWindowText(mainWindow, sb, 256);
-                if (sb.ToString().StartsWith(JwLibCaptionPrefix))
+                if (sb.ToString().StartsWith(JwLibCaptionPrefix, StringComparison.Ordinal))
                 {
                     JwLibHelperNativeMethods.SetForegroundWindow(mainWindow);
                     found = true;

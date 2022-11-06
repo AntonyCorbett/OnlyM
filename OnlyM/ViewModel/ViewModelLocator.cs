@@ -8,6 +8,7 @@ namespace OnlyM.ViewModel
     /// </summary>
     internal class ViewModelLocator
     {
+#pragma warning disable CA1822 // Mark members as static
         public MainViewModel? Main => Ioc.Default.GetService<MainViewModel>();
 
         public MediaViewModel? Media => Ioc.Default.GetService<MediaViewModel>();
@@ -17,5 +18,6 @@ namespace OnlyM.ViewModel
         public SettingsViewModel? Settings => Ioc.Default.GetService<SettingsViewModel>();
 
         public StartOffsetViewModel? StartOffsetDialog => Ioc.Default.GetService<StartOffsetViewModel>();
+#pragma warning restore CA1822 // Mark members as static
     }
 }

@@ -479,10 +479,7 @@ namespace OnlyM.Services
             int newIndex,
             Action? onTransitionFinished = null)
         {
-            if (slide.ArchiveEntryName == null)
-            {
-                throw new ArgumentNullException(nameof(slide.ArchiveEntryName));
-            }
+            ArgumentNullException.ThrowIfNull(slide.ArchiveEntryName);
 
             var direction = newIndex >= oldIndex ? SlideDirection.Forward : SlideDirection.Reverse;
 

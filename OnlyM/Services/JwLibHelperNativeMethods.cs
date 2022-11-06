@@ -28,10 +28,16 @@ namespace OnlyM.Services
         [DllImport("User32.dll")]
         public static extern bool ShowWindow(IntPtr handle, int nCmdShow);
 
+        // not concerned about performance of these calls so ignore CA2101
+#pragma warning disable CA2101 // Specify marshaling for P/Invoke string arguments
         [DllImport("User32.dll")]
         public static extern void GetClassName(IntPtr handle, StringBuilder s, int nMaxCount);
+#pragma warning restore CA2101 // Specify marshaling for P/Invoke string arguments
 
+        // not concerned about performance of these calls so ignore CA2101
+#pragma warning disable CA2101 // Specify marshaling for P/Invoke string arguments
         [DllImport("User32.dll")]
         public static extern void GetWindowText(IntPtr handle, StringBuilder s, int nMaxCount);
+#pragma warning restore CA2101 // Specify marshaling for P/Invoke string arguments
     }
 }

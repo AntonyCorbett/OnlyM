@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using Serilog;
@@ -25,7 +26,7 @@ namespace OnlyM.Core.Utils
                 if (!Directory.Exists(folderPath))
                 {
                     // "Could not create folder {0}"
-                    throw new Exception(string.Format(Properties.Resources.CREATE_FOLDER_ERROR, folderPath));
+                    throw new Exception(string.Format(CultureInfo.CurrentCulture, Properties.Resources.CREATE_FOLDER_ERROR, folderPath));
                 }
             }
         }
@@ -104,7 +105,7 @@ namespace OnlyM.Core.Utils
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 AppNamePathSegment,
                 commandLineIdentifier ?? string.Empty,
-                optionsVersion.ToString(),
+                optionsVersion.ToString(CultureInfo.InvariantCulture),
                 OptionsFileName);
         }
 

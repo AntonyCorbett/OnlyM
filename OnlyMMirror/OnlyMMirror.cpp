@@ -158,7 +158,9 @@ BOOL InitFromCommandLine()
 
 	if (__argc >= 3)
 	{
+#pragma warning(suppress: 6031)
 		lstrcpyn(MainMonitor, __argv[1], MAX_MONITOR_NAME_LEN);
+#pragma warning(suppress: 6031)
 		lstrcpyn(TargetMonitor, __argv[2], MAX_MONITOR_NAME_LEN);
 		rv = TRUE;
 	}

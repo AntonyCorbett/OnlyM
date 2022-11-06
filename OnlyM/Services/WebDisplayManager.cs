@@ -91,7 +91,7 @@ namespace OnlyM.Services
                 // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
 
                 var viewString = GetPdfViewString(pdfViewStyle);
-                var cacheBusterString = DateTime.Now.Ticks.ToString();
+                var cacheBusterString = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
 
                 webAddress = $"pdf://{mediaItemFilePath}?t={cacheBusterString}#view={viewString}&page={pdfStartingPage}";
             }
@@ -389,7 +389,7 @@ namespace OnlyM.Services
 
         private void HandleBrowserFrameLoadStart(object? sender, FrameLoadStartEventArgs e)
         {
-            var s = string.Format(Properties.Resources.LOADING_FRAME, e.Frame.Identifier);
+            var s = string.Format(CultureInfo.CurrentCulture, Properties.Resources.LOADING_FRAME, e.Frame.Identifier);
             StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = s });
         }
 
@@ -401,7 +401,7 @@ namespace OnlyM.Services
                 return;
             }
 
-            var errorMsg = string.Format(Properties.Resources.WEB_LOAD_FAIL, e.FailedUrl, e.ErrorText, e.ErrorCode);
+            var errorMsg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.WEB_LOAD_FAIL, e.FailedUrl, e.ErrorText, e.ErrorCode);
             var body = $"<html><body><h2>{errorMsg}</h2></body></html>";
 
             _browser.LoadHtml(body, e.FailedUrl);

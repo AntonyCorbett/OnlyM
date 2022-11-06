@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -139,7 +140,7 @@ namespace OnlyM.Models
 
         public bool ShouldDisplayPdfPageTextBox => IsPdf;
 
-        public IEnumerable<PdfViewStyleAndDescription> PdfViewStyles =>
+        public static IEnumerable<PdfViewStyleAndDescription> PdfViewStyles =>
             new[]
             {
                 new PdfViewStyleAndDescription { Style = PdfViewStyle.Default, Description = Properties.Resources.PDF_VIEW_STYLE_DEFAULT },
@@ -499,16 +500,14 @@ namespace OnlyM.Models
                     }
 
                     return string.Format(
-                        IsRollingSlideshow
-                            ? Properties.Resources.CONTAINS_X_ROLLING_SLIDES
-                            : Properties.Resources.CONTAINS_X_SLIDES,
+                        CultureInfo.CurrentCulture,
+                        IsRollingSlideshow ? Properties.Resources.CONTAINS_X_ROLLING_SLIDES : Properties.Resources.CONTAINS_X_SLIDES,
                         SlideshowCount);
                 }
 
                 return string.Format(
-                    IsRollingSlideshow
-                        ? Properties.Resources.ROLLING_SLIDE_X_OF_Y
-                        : Properties.Resources.SLIDE_X_OF_Y, 
+                    CultureInfo.CurrentCulture,
+                    IsRollingSlideshow ? Properties.Resources.ROLLING_SLIDE_X_OF_Y : Properties.Resources.SLIDE_X_OF_Y, 
                     CurrentSlideshowIndex + 1, 
                     SlideshowCount);
             }

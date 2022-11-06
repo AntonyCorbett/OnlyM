@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using OnlyM.Core.Models;
@@ -69,7 +70,7 @@ namespace OnlyM.Core.Services.Monitors
         private static DisplayDeviceData? GetDeviceMatchingScreen(DisplayDeviceData[] devices, Screen screen)
         {
             var deviceName = screen.DeviceName + "\\";
-            return devices.SingleOrDefault(x => x.Name != null && x.Name.StartsWith(deviceName));
+            return devices.SingleOrDefault(x => x.Name != null && x.Name.StartsWith(deviceName, StringComparison.Ordinal));
         }
 
         private static string SanitizeScreenDeviceName(string name)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -444,7 +445,7 @@ namespace OnlyM.ViewModel
                 return;
             }
 
-            Log.Debug(mediaItem.Title);
+            Log.Debug(mediaItem.Title ?? "untitled");
 
             switch (e.Change)
             {
@@ -485,8 +486,10 @@ namespace OnlyM.ViewModel
 
         private void InitCommands()
         {
+            // ReSharper disable once AsyncVoidLambda
             MediaControlCommand1 = new RelayCommand<Guid?>(async (mediaItemId) => await MediaControl1(mediaItemId));
 
+            // ReSharper disable once AsyncVoidLambda
             MediaControlPauseCommand = new RelayCommand<Guid?>(async (mediaItemId) => await MediaPauseControl(mediaItemId));
 
             HideMediaItemCommand = new RelayCommand<Guid?>(HideMediaItem);
@@ -597,7 +600,7 @@ namespace OnlyM.ViewModel
                 mediaItem.FilePath, 
                 new PdfOptions
                 {
-                    PageNumber = Convert.ToInt32(mediaItem.ChosenPdfPage),
+                    PageNumber = Convert.ToInt32(mediaItem.ChosenPdfPage, CultureInfo.InvariantCulture),
                     Style = mediaItem.ChosenPdfViewStyle,
                 });
         }
@@ -711,10 +714,22 @@ namespace OnlyM.ViewModel
                 return;
             }
 
+            try
+            {
+                await MediaPauseControlInternal(mediaItemId.Value);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Pause control");
+            }
+        }
+
+        private async Task MediaPauseControlInternal(Guid mediaItemId)
+        {
             // only allow pause media when nothing is changing.
             if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
-                var mediaItem = GetMediaItem(mediaItemId.Value);
+                var mediaItem = GetMediaItem(mediaItemId);
                 if (mediaItem == null || !IsVideoOrAudio(mediaItem))
                 {
                     Log.Error($"Media Item not found (id = {mediaItemId})");
@@ -750,12 +765,24 @@ namespace OnlyM.ViewModel
                 return;
             }
 
+            try
+            {
+                await MediaControl1Internal(mediaItemId.Value);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Media control1");
+            }
+        }
+
+        private async Task MediaControl1Internal(Guid mediaItemId)
+        {
             // only allow start/stop media when nothing is changing.
             if (!_mediaStatusChangingService.IsMediaStatusChanging())
             {
                 Log.Debug($"MediaControl1 (id = {mediaItemId})");
 
-                var mediaItem = GetMediaItem(mediaItemId.Value);
+                var mediaItem = GetMediaItem(mediaItemId);
                 if (mediaItem == null)
                 {
                     Log.Error($"Media Item not found (id = {mediaItemId})");

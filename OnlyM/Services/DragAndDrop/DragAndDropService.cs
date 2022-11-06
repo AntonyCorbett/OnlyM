@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -124,7 +125,7 @@ namespace OnlyM.Services.DragAndDrop
             }
             else
             {
-                _snackbarService.EnqueueWithOk(string.Format(Properties.Resources.FILES_COPIED, count), Properties.Resources.OK);
+                _snackbarService.EnqueueWithOk(string.Format(CultureInfo.CurrentCulture, Properties.Resources.FILES_COPIED, count), Properties.Resources.OK);
             }
         }
 

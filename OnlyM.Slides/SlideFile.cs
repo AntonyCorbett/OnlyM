@@ -37,7 +37,7 @@ namespace OnlyM.Slides
         {
             if (index < 0 || index > SlideCount - 1)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
 
             var slide = _config.Slides[index];

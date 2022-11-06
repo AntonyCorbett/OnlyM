@@ -106,7 +106,7 @@ namespace OnlyM.ViewModel
 
         public ObservableCollection<string> RecentMediaFolders => _recentlyUsedMediaFolders.GetFolders();
 
-        public string AppVersionStr => string.Format(Properties.Resources.APP_VER, VersionDetection.GetCurrentVersion());
+        public static string AppVersionStr => string.Format(CultureInfo.CurrentCulture, Properties.Resources.APP_VER, VersionDetection.GetCurrentVersion());
 
         public IEnumerable<ImageFadeSpeed> FadeSpeedTypes => _fadingSpeeds;
 
@@ -122,11 +122,11 @@ namespace OnlyM.ViewModel
         
         public string MaxItemCount
         {
-            get => _optionsService.MaxItemCount.ToString();
+            get => _optionsService.MaxItemCount.ToString(CultureInfo.InvariantCulture);
             set
             {
                 if (!string.IsNullOrEmpty(value) && 
-                    !_optionsService.MaxItemCount.ToString().Equals(value, StringComparison.Ordinal) && 
+                    !_optionsService.MaxItemCount.ToString(CultureInfo.InvariantCulture).Equals(value, StringComparison.Ordinal) && 
                     int.TryParse(value, out var count))
                 {
                     _optionsService.MaxItemCount = count;

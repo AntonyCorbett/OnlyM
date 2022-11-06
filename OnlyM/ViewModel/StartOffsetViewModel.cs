@@ -46,11 +46,11 @@ namespace OnlyM.ViewModel
 
         public RelayCommand<int?> RemoveRecentTimeCommand { get; set; }
 
-        public IEnumerable<int> Hours => Enumerable.Range(0, 12);
+        public static IEnumerable<int> Hours => Enumerable.Range(0, 12);
 
-        public IEnumerable<int> Minutes => Enumerable.Range(0, 60);
+        public static IEnumerable<int> Minutes => Enumerable.Range(0, 60);
 
-        public IEnumerable<int> Seconds => Enumerable.Range(0, 60);
+        public static IEnumerable<int> Seconds => Enumerable.Range(0, 60);
 
         public bool IsTimeValid
         {

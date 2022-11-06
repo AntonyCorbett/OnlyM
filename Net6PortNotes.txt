@@ -7,3 +7,4 @@
 5. Disposed of browser and mirrorProcess in WebPageDisplayManager
 6. Disposed of mediaWindow in PageService
 
+Check mirror window operation

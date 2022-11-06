@@ -110,7 +110,7 @@ namespace OnlyMSlideManager.Behaviours
             closed?.Execute(null);
         }
 
-        private static void OnWindowClosing(object sender, CancelEventArgs e)
+        private static void OnWindowClosing(object? sender, CancelEventArgs e)
         {
             var closing = GetClosing(sender as Window);
             if (closing != null)

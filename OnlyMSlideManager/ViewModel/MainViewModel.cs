@@ -957,7 +957,7 @@ namespace OnlyMSlideManager.ViewModel
                                 break;
 
                             default:
-                                var msg = string.Format(Properties.Resources.X_SLIDES_CREATED, fileCount);
+                                var msg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.X_SLIDES_CREATED, fileCount);
                                 _snackbarService.EnqueueWithOk(msg, Properties.Resources.OK);
                                 break;
                         }
@@ -1044,7 +1044,7 @@ namespace OnlyMSlideManager.ViewModel
         private string GetStandardStatusText()
         {
             // note that there is always a dummy slide (hence "-1")
-            return string.Format(Properties.Resources.SLIDE_COUNT_X, SlideItems.Count - 1);
+            return string.Format(CultureInfo.CurrentCulture, Properties.Resources.SLIDE_COUNT_X, SlideItems.Count - 1);
         }
 
         private static bool IsInDesignMode()
