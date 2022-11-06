@@ -130,9 +130,13 @@ namespace OnlyM.ViewModel
 
         public bool AlwaysOnTop => _optionsService.AlwaysOnTop || _pageService.IsMediaWindowVisible;
 
-        public bool IsSettingsPageActive => _currentPageName != null && _currentPageName.Equals(_pageService.SettingsPageName);
+        public bool IsSettingsPageActive => 
+            _currentPageName != null && 
+            _currentPageName.Equals(_pageService.SettingsPageName, StringComparison.Ordinal);
 
-        public bool IsOperatorPageActive => _currentPageName != null && _currentPageName.Equals(_pageService.OperatorPageName);
+        public bool IsOperatorPageActive => 
+            _currentPageName != null && 
+            _currentPageName.Equals(_pageService.OperatorPageName, StringComparison.Ordinal);
 
         public bool IsSettingsEnabled => !_commandLineService.NoSettings;
 

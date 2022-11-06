@@ -89,7 +89,9 @@ namespace OnlyM.Slides.Models
 
         private Slide? GetSlideByName(string? slideName)
         {
-            return Slides.SingleOrDefault(x => x.ArchiveEntryName != null && x.ArchiveEntryName.Equals(slideName));
+            return Slides.SingleOrDefault(
+                x => x.ArchiveEntryName != null && 
+                     x.ArchiveEntryName.Equals(slideName, StringComparison.Ordinal));
         }
     }
 }

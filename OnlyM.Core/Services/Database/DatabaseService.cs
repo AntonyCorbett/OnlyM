@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using OnlyM.Core.Utils;
@@ -41,7 +42,7 @@ namespace OnlyM.Core.Services.Database
 
                 sb.AppendLine("insert into thumb (path, image, changed)");
                 sb.AppendLine("select");
-                sb.AppendLine($"@P, @T, {originalLastChanged}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"@P, @T, {originalLastChanged}");
                 sb.AppendLine("where not exists(select 1 from thumb where path=@P)");
 
                 cmd.CommandText = sb.ToString();
@@ -66,11 +67,11 @@ namespace OnlyM.Core.Services.Database
                 {
                     if (r.Read())
                     {
-                        var lastChanged = Convert.ToInt64(r["changed"]);
+                        var lastChanged = Convert.ToInt64(r["changed"], CultureInfo.InvariantCulture);
 
                         if (lastChanged != originalLastChanged)
                         {
-                            var id = Convert.ToInt32(r["id"]);
+                            var id = Convert.ToInt32(r["id"], CultureInfo.InvariantCulture);
                             DeleteThumbRow(c, id);
                         }
                         else
@@ -143,10 +144,10 @@ namespace OnlyM.Core.Services.Database
                     {
                         var result = new MediaStartOffsetData
                         {
-                            Id = Convert.ToInt32(r["id"]),
+                            Id = Convert.ToInt32(r["id"], CultureInfo.InvariantCulture),
                             FileName = (string)r["fileName"],
                             StartOffsets = ParseStartOffsets((string)r["startOffsets"]),
-                            LengthSeconds = Convert.ToInt32(r["lengthSeconds"]),
+                            LengthSeconds = Convert.ToInt32(r["lengthSeconds"], CultureInfo.InvariantCulture),
                         };
 
                         result.Sanitize();
@@ -174,9 +175,9 @@ namespace OnlyM.Core.Services.Database
                     {
                         var result = new BrowserData
                         {
-                            Id = Convert.ToInt32(r["id"]),
+                            Id = Convert.ToInt32(r["id"], CultureInfo.InvariantCulture),
                             Url = (string)r["url"],
-                            ZoomLevel = Convert.ToDouble(r["zoom"]),
+                            ZoomLevel = Convert.ToDouble(r["zoom"], CultureInfo.InvariantCulture),
                         };
 
                         result.Sanitize();
@@ -240,7 +241,7 @@ namespace OnlyM.Core.Services.Database
                 using (var cmd = c.CreateCommand())
                 {
                     cmd.CommandText = "select * from pragma_user_version()";
-                    return Convert.ToInt32(cmd.ExecuteScalar());
+                    return Convert.ToInt32(cmd.ExecuteScalar(), CultureInfo.InvariantCulture);
                 }
             }
             catch (Exception ex)

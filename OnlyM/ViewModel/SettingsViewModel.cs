@@ -126,7 +126,7 @@ namespace OnlyM.ViewModel
             set
             {
                 if (!string.IsNullOrEmpty(value) && 
-                    !_optionsService.MaxItemCount.ToString().Equals(value) && 
+                    !_optionsService.MaxItemCount.ToString().Equals(value, StringComparison.Ordinal) && 
                     int.TryParse(value, out var count))
                 {
                     _optionsService.MaxItemCount = count;
@@ -1126,7 +1126,7 @@ namespace OnlyM.ViewModel
 
         private void HandleNavigationEvent(object? sender, NavigationEventArgs e)
         {
-            if (e.PageName != null && e.PageName.Equals(_pageService.SettingsPageName))
+            if (e.PageName != null && e.PageName.Equals(_pageService.SettingsPageName, StringComparison.Ordinal))
             {
                 // when Settings page is shown.
                 IsMediaActive = _activeMediaItemsService.Any();

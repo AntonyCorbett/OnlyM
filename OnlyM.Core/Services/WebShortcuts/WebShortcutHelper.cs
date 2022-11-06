@@ -43,7 +43,7 @@ namespace OnlyM.Core.Services.WebShortcuts
                 try
                 {
                     var lines = File.ReadLines(_path);
-                    var line = lines.SingleOrDefault(x => x.ToUpper().Trim().StartsWith(UrlToken));
+                    var line = lines.SingleOrDefault(x => x.Trim().StartsWith(UrlToken, StringComparison.OrdinalIgnoreCase));
                     if (line != null)
                     {
                         var pos = line.IndexOf("=", StringComparison.OrdinalIgnoreCase);
@@ -54,12 +54,10 @@ namespace OnlyM.Core.Services.WebShortcuts
                     }
                 }
 #pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable CC0004 // Catch block cannot be empty
                 catch (Exception)
                 {
                     // nothing
                 }
-#pragma warning restore CC0004 // Catch block cannot be empty
 #pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
                 finally
                 {

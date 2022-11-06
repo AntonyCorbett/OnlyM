@@ -171,7 +171,7 @@ namespace OnlyM.ViewModel
 
         private void HandleNavigationEvent(object? sender, NavigationEventArgs e)
         {
-            if (e.PageName == null || !e.PageName.Equals(_pageService.OperatorPageName))
+            if (e.PageName == null || !e.PageName.Equals(_pageService.OperatorPageName, StringComparison.Ordinal))
             {
                 return;
             }

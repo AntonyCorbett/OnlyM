@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace OnlyM.Core.Extensions
 {
@@ -6,7 +7,7 @@ namespace OnlyM.Core.Extensions
     {
         public static string AsMediaDurationString(this TimeSpan timeSpan)
         {
-            return timeSpan.ToString(@"hh\:mm\:ss");
+            return timeSpan.ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture);
         }
     }
 }

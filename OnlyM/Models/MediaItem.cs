@@ -208,7 +208,7 @@ namespace OnlyM.Models
             get => _title;
             set
             {
-                if (_title == null || !_title.Equals(value))
+                if (_title == null || !_title.Equals(value, StringComparison.Ordinal))
                 {
                     _title = value;
                     OnPropertyChanged();
@@ -536,7 +536,7 @@ namespace OnlyM.Models
             get => _playbackTimeString;
             set
             {
-                if (!_playbackTimeString.Equals(value))
+                if (!_playbackTimeString.Equals(value, StringComparison.Ordinal))
                 {
                     _playbackTimeString = value;
                     OnPropertyChanged();

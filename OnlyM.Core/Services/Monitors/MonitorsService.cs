@@ -55,7 +55,7 @@ namespace OnlyM.Core.Services.Monitors
         {
             return GetSystemMonitors().SingleOrDefault(
                 x => x.MonitorId != null && 
-                     x.MonitorId.Equals(monitorId));
+                     x.MonitorId.Equals(monitorId, StringComparison.Ordinal));
         }
 
         public SystemMonitor? GetMonitorForWindowHandle(IntPtr windowHandle)
@@ -63,7 +63,7 @@ namespace OnlyM.Core.Services.Monitors
             var screen = Screen.FromHandle(windowHandle);
             return GetSystemMonitors().SingleOrDefault(
                 x => x.Monitor?.DeviceName != null && 
-                     x.Monitor.DeviceName.Equals(screen.DeviceName));
+                     x.Monitor.DeviceName.Equals(screen.DeviceName, StringComparison.Ordinal));
         }
 
         private static DisplayDeviceData? GetDeviceMatchingScreen(DisplayDeviceData[] devices, Screen screen)

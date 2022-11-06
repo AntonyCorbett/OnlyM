@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using OnlyM.Models;
 
 namespace OnlyM.Services.PdfOptions
@@ -15,7 +16,7 @@ namespace OnlyM.Services.PdfOptions
                 {
                     if (_items.TryGetValue(item.FilePath, out var opts))
                     {
-                        item.ChosenPdfPage = opts.PageNumber.ToString();
+                        item.ChosenPdfPage = opts.PageNumber.ToString(CultureInfo.InvariantCulture);
                         item.ChosenPdfViewStyle = opts.Style;
                     }
                     else

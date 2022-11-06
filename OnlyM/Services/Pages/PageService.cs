@@ -24,7 +24,7 @@ using Serilog;
 namespace OnlyM.Services.Pages
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal sealed class PageService : IPageService
+    internal sealed class PageService : IDisposable, IPageService
     {
         private readonly Lazy<OperatorPage> _operatorPage = new(() => new OperatorPage());
         private readonly Lazy<SettingsPage> _settingsPage = new(() => new SettingsPage());
@@ -65,6 +65,11 @@ namespace OnlyM.Services.Pages
             
             WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
             WeakReferenceMessenger.Default.Register<MirrorWindowMessage>(this, OnMirrorWindowMessage);
+        }
+
+        public void Dispose()
+        {
+            _mediaWindow?.Dispose();
         }
 
         public event EventHandler<MonitorChangedEventArgs>? MediaMonitorChangedEvent;
@@ -131,12 +136,12 @@ namespace OnlyM.Services.Pages
                 return null;
             }
 
-            if (pageName.Equals(OperatorPageName))
+            if (pageName.Equals(OperatorPageName, StringComparison.Ordinal))
             {
                 return _operatorPage.Value;
             }
 
-            if (pageName.Equals(SettingsPageName))
+            if (pageName.Equals(SettingsPageName, StringComparison.Ordinal))
             {
                 return _settingsPage.Value;
             }
@@ -262,11 +267,11 @@ namespace OnlyM.Services.Pages
                 return;
             }
 
-            if (pageName.Equals(OperatorPageName))
+            if (pageName.Equals(OperatorPageName, StringComparison.Ordinal))
             {
                 ScrollViewer?.ScrollToVerticalOffset(_operatorPageScrollerPosition);
             }
-            else if (pageName.Equals(SettingsPageName))
+            else if (pageName.Equals(SettingsPageName, StringComparison.Ordinal))
             {
                 ScrollViewer?.ScrollToVerticalOffset(_settingsPageScrollerPosition);
             }

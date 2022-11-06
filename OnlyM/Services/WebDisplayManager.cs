@@ -21,7 +21,7 @@ using Serilog;
 
 namespace OnlyM.Services
 {
-    internal sealed class WebDisplayManager
+    internal sealed class WebDisplayManager : IDisposable
     {
         private readonly ChromiumWebBrowser _browser;
         private readonly FrameworkElement _browserGrid;
@@ -51,6 +51,12 @@ namespace OnlyM.Services
             _snackbarService = snackbarService;
 
             InitBrowser();
+        }
+
+        public void Dispose()
+        {
+            _browser.Dispose();
+            _mirrorProcess?.Dispose();
         }
 
         public event EventHandler<MediaEventArgs>? MediaChangeEvent;
@@ -164,7 +170,7 @@ namespace OnlyM.Services
                 return;
             }
 
-            if (mediaMonitor.MonitorId.Equals(onlyMMonitor.MonitorId))
+            if (mediaMonitor.MonitorId.Equals(onlyMMonitor.MonitorId, StringComparison.Ordinal))
             {
                 Log.Logger.Error("Cannot display mirror since OnlyM and Media window share a monitor");
                 return;

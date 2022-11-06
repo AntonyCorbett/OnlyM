@@ -182,7 +182,7 @@ namespace OnlyMSlideManager.Services.DragAndDrop
 
         private bool IsFileExtensionSupported(string ext)
         {
-            return _supportedImageExtensions.Contains(ext.ToLower());
+            return _supportedImageExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
         }
 
         private static void SetEffects(DragEventArgs e, bool canDrop)

@@ -143,8 +143,8 @@ namespace OnlyM.Core.Services.Media
             }
 
             return 
-                directory.Equals(_foldersToWatch.MediaFolder) || 
-                (_foldersToWatch.DatedSubFolder != null && directory.Equals(_foldersToWatch.DatedSubFolder));
+                directory.Equals(_foldersToWatch.MediaFolder, StringComparison.Ordinal) || 
+                (_foldersToWatch.DatedSubFolder != null && directory.Equals(_foldersToWatch.DatedSubFolder, StringComparison.Ordinal));
         }
 
         private void HandleContentModified(object sender, FileSystemEventArgs e)
