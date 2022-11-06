@@ -13,6 +13,7 @@ using MaterialDesignThemes.Wpf;
 using OnlyM.AutoUpdates;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.CommandLine;
+using OnlyM.Core.Services.Monitors;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Utils;
 using OnlyM.CoreSys.Services.Snackbar;
@@ -36,6 +37,7 @@ namespace OnlyM.ViewModel
         private readonly IMediaStatusChangingService _mediaStatusChangingService;
         private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
         private readonly ICommandLineService _commandLineService;
+        private readonly IMonitorsService _monitorsService;
 
         private bool _isBusy;
         private bool _isMediaListLoading;
@@ -51,10 +53,12 @@ namespace OnlyM.ViewModel
             IMediaStatusChangingService mediaStatusChangingService,
             IHiddenMediaItemsService hiddenMediaItemsService,
             ICommandLineService commandLineService,
+            IMonitorsService monitorsService,
             IDragAndDropService dragAndDropService)
         {
             _commandLineService = commandLineService;
-            
+            _monitorsService = monitorsService;
+
             if (commandLineService.NoGpu || ForceSoftwareRendering())
             {
                 // disable hardware (GPU) rendering so that it's all done by the CPU...
@@ -97,11 +101,12 @@ namespace OnlyM.ViewModel
                 _pageService.InitMediaWindow();
             }
 
-            // no longer needed.
-            // if (!IsInDesignMode())
-            // {
-            // _pageService.InitMediaWindow();
-            // }
+            if (!string.IsNullOrWhiteSpace(_optionsService.MediaMonitorId) &&
+                _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId) == null)
+            {
+                // a monitor id is specified but it doesn't exist
+                _optionsService.MediaMonitorId = null;
+            }
 
             SanityChecks();
         }

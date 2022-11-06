@@ -27,7 +27,7 @@ namespace OnlyM.Windows
     /// <summary>
     /// Interaction logic for MediaWindow.xaml
     /// </summary>
-    public sealed partial class MediaWindow : Window, IDisposable
+    public sealed partial class MediaWindow : IDisposable
     {
         private const int MediaConfirmStopWindowSeconds = 3;
 
@@ -604,6 +604,7 @@ namespace OnlyM.Windows
             _snackbarService.Enqueue(
                 Properties.Resources.CONFIRM_STOP_MEDIA,
                 Properties.Resources.YES,
+                // ReSharper disable once AsyncVoidLambda
                 async _ => await StopMediaAsync(mediaItem, ignoreConfirmation: true),
                 null,
                 promote: true,
@@ -645,7 +646,7 @@ namespace OnlyM.Windows
                     break;
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
 
             _currentRenderingMethod = _optionsService.RenderingMethod;
@@ -667,13 +668,13 @@ namespace OnlyM.Windows
             vm.WindowSize = new Size(ActualWidth, ActualHeight);
         }
 
-        private void BrowserGrid_MouseMove(object? sender, System.Windows.Input.MouseEventArgs e)
+        private void BrowserGrid_MouseMove(object? sender, MouseEventArgs e)
         {
             var pos = e.GetPosition(this);
             _webNavHeaderAdmin.MouseMove(pos);
         }
 
-        private void Window_MouseDown(object? sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Window_MouseDown(object? sender, MouseButtonEventArgs e)
         {
             // allow drag when no title bar is shown
             if (IsWindowed && e.ChangedButton == MouseButton.Left && WindowStyle == WindowStyle.None)
