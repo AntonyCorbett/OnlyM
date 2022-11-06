@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.CommandLine;
 using OnlyM.Core.Services.Database;

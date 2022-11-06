@@ -1,5 +1,5 @@
-﻿using MaterialDesignThemes.Wpf;
-using Microsoft.Toolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
+using MaterialDesignThemes.Wpf;
 
 namespace OnlyMSlideManager.ViewModel
 {

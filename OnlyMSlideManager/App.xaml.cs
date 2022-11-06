@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Windows;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.CoreSys.Services.UI;
 using OnlyMSlideManager.Helpers;

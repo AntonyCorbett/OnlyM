@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Media;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace OnlyMSlideManager.Models
 {

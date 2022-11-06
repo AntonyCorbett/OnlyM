@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using OnlyM.CoreSys.Services.UI;
 using OnlyMSlideManager.Models;
 using OnlyMSlideManager.PubSubMessages;

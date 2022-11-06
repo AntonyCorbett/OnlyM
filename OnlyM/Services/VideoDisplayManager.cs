@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using Microsoft.Toolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Subtitles;

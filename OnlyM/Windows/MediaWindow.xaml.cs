@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Monitors;
