@@ -10,6 +10,7 @@ rd OnlyM\bin /q /s
 rd OnlyMSlideManager\bin /q /s
 rd OnlyMMirror\OnlyM /q /s
 rd Installer\Output /q /s
+rd Installer\Staging /q /s
 
 ECHO.
 ECHO Publishing OnlyM
@@ -28,23 +29,23 @@ IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
 ECHO Copying OnlyMMirror items into delivery
-copy OnlyMMirror\OnlyM\bin\x86\Release\OnlyMMirror.exe OnlyM\bin\Release\net5.0-windows\publish
+copy OnlyMMirror\OnlyM\bin\x86\Release\OnlyMMirror.exe OnlyM\bin\Release\net6.0-windows\publish
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
 ECHO Copying OnlyMSlideManager items into delivery
-xcopy OnlyMSlideManager\bin\Release\net5.0-windows\publish\*.* OnlyM\bin\Release\net5.0-windows\publish /q /s /y /d
+xcopy OnlyMSlideManager\bin\Release\net6.0-windows\publish\*.* OnlyM\bin\Release\net6.0-windows\publish /q /s /y /d
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
 ECHO Copying VCRTL items into delivery
-xcopy VCRTL\*.* OnlyM\bin\Release\net5.0-windows\publish /q
+xcopy VCRTL\*.* OnlyM\bin\Release\net6.0-windows\publish /q
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
 ECHO Removing unwanted language files
-rd OnlyM\bin\Release\net5.0-windows\publish\no-NO /q /s
-rd OnlyM\bin\Release\net5.0-windows\publish\pap-PAP /q /s
+rd OnlyM\bin\Release\net6.0-windows\publish\no-NO /q /s
+rd OnlyM\bin\Release\net6.0-windows\publish\pap-PAP /q /s
 
 ECHO.
 ECHO Creating installer
@@ -54,7 +55,7 @@ IF %ERRORLEVEL% NEQ 0 goto ERROR
 ECHO.
 ECHO Creating portable zip
 md Installer\Output
-powershell Compress-Archive -Path OnlyM\bin\Release\net5.0-windows\publish\* -DestinationPath Installer\Output\OnlyMPortable.zip 
+powershell Compress-Archive -Path OnlyM\bin\Release\net6.0-windows\publish\* -DestinationPath Installer\Output\OnlyMPortable.zip 
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 goto SUCCESS

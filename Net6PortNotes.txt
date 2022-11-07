@@ -6,5 +6,6 @@
 4. MaterialDesign ClipToBounds="True" must now be specifed (now defaults to "False")
 5. Disposed of browser and mirrorProcess in WebPageDisplayManager
 6. Disposed of mediaWindow in PageService
+7. SingleFile publishing is broken
 
 Check mirror window operation

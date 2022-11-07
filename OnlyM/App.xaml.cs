@@ -57,8 +57,8 @@ namespace OnlyM
                 Current.Shutdown();
             }
         }
-
-        public static string FMpegFolderName { get; } = $"{AppDomain.CurrentDomain.BaseDirectory}\\FFmpeg";
+        
+        public static string FMpegFolderName { get; } = $"{AppContext.BaseDirectory}\\FFmpeg";
 
         protected override void OnExit(ExitEventArgs e)
         {

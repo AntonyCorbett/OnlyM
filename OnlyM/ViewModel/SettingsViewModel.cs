@@ -1200,7 +1200,7 @@ namespace OnlyM.ViewModel
         {
             var result = new List<LanguageItem>();
 
-            var subFolders = Directory.GetDirectories(AppDomain.CurrentDomain.BaseDirectory);
+            var subFolders = Directory.GetDirectories(AppContext.BaseDirectory);
 
             foreach (var folder in subFolders)
             {
