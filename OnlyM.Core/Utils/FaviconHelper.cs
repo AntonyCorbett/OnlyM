@@ -125,7 +125,10 @@ namespace OnlyM.Core.Utils
         {
             try
             {
+                // todo: update to HttpClient, ensuring we use sync rather than async to avoid multiple code changes
+#pragma warning disable SYSLIB0014 // Type or member is obsolete
                 var webRequest = WebRequest.Create(url);
+#pragma warning restore SYSLIB0014 // Type or member is obsolete
                 webRequest.Method = "HEAD";
                 var webResponse = (HttpWebResponse)webRequest.GetResponse();
                 return webResponse.StatusCode == HttpStatusCode.OK;

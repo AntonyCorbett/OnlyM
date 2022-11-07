@@ -31,13 +31,17 @@ namespace OnlyM.Services
         // not concerned about performance of these calls so ignore CA2101
 #pragma warning disable CA2101 // Specify marshaling for P/Invoke string arguments
         [DllImport("User32.dll")]
+#pragma warning disable CA1838 // Avoid 'StringBuilder' parameters for P/Invokes
         public static extern void GetClassName(IntPtr handle, StringBuilder s, int nMaxCount);
+#pragma warning restore CA1838 // Avoid 'StringBuilder' parameters for P/Invokes
 #pragma warning restore CA2101 // Specify marshaling for P/Invoke string arguments
 
         // not concerned about performance of these calls so ignore CA2101
 #pragma warning disable CA2101 // Specify marshaling for P/Invoke string arguments
         [DllImport("User32.dll")]
+#pragma warning disable CA1838 // Avoid 'StringBuilder' parameters for P/Invokes
         public static extern void GetWindowText(IntPtr handle, StringBuilder s, int nMaxCount);
+#pragma warning restore CA1838 // Avoid 'StringBuilder' parameters for P/Invokes
 #pragma warning restore CA2101 // Specify marshaling for P/Invoke string arguments
     }
 }
