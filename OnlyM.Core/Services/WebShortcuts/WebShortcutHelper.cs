@@ -49,7 +49,7 @@ namespace OnlyM.Core.Services.WebShortcuts
                         var pos = line.IndexOf("=", StringComparison.OrdinalIgnoreCase);
                         if (pos > 0)
                         {
-                            _webAddress = line.Substring(pos + 1).Trim();
+                            _webAddress = line[(pos + 1)..].Trim();
                         }
                     }
                 }

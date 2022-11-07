@@ -26,7 +26,7 @@ namespace OnlyM.Services
 
         public event EventHandler<OnlyMPositionChangedEventArgs>? MediaPositionChangedEvent;
 
-        public bool IsPaused => _outputDevice != null && _outputDevice.PlaybackState == PlaybackState.Paused;
+        public bool IsPaused => _outputDevice?.PlaybackState == PlaybackState.Paused;
 
         public void PlayAudio(
             string mediaItemFilePath,

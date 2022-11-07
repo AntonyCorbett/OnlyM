@@ -21,7 +21,6 @@ namespace OnlyM.CoreSys.WindowsPositioning
     // ReSharper disable StyleCop.SA1310
     // ReSharper disable UnusedMember.Global
 
-#pragma warning disable U2U1004 // Public value types should implement equality
 #pragma warning disable SA1307 // Accessible fields should begin with upper-case letter
 
     // adapted from david Rickard's Tech Blog
@@ -158,5 +157,4 @@ namespace OnlyM.CoreSys.WindowsPositioning
     }
 
 #pragma warning restore SA1307 // Accessible fields should begin with upper-case letter
-#pragma warning restore U2U1004 // Public value types should implement equality
 }

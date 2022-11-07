@@ -25,12 +25,9 @@ namespace OnlyM.Core.Services.Monitors
 #pragma warning disable IDE0044 // Add readonly modifier
 #pragma warning disable CA1707 // Identifiers should not contain underscores
 #pragma warning disable CA1712 // Do not prefix enum values with type name
-#pragma warning disable S101 // Types should be named in PascalCase
         private const int ErrorSuccess = 0;
 
-#pragma warning disable S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
         public enum QUERY_DEVICE_CONFIG_FLAGS : uint
-#pragma warning restore S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
         {
             QDC_ALL_PATHS = 0x00000001,
             QDC_ONLY_ACTIVE_PATHS = 0x00000002,
@@ -350,7 +347,6 @@ namespace OnlyM.Core.Services.Monitors
             return null;
         }
 
-#pragma warning restore S101 // Types should be named in PascalCase
 #pragma warning restore CA1712 // Do not prefix enum values with type name
 #pragma warning restore CA1707 // Identifiers should not contain underscores
 #pragma warning restore IDE0044 // Add readonly modifier

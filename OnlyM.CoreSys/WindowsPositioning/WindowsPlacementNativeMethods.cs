@@ -167,9 +167,7 @@ namespace OnlyM.CoreSys.WindowsPositioning
         private static extern bool DestroyIcon(IntPtr hIcon);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-#pragma warning disable S101 // Types should be named in PascalCase
         public struct SHSTOCKICONINFO
-#pragma warning restore S101 // Types should be named in PascalCase
         {
             public uint cbSize;
             public IntPtr hIcon;

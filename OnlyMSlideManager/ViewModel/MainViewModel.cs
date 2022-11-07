@@ -1019,12 +1019,10 @@ namespace OnlyMSlideManager.ViewModel
                             LanguageName = c.EnglishName,
                         });
                     }
-#pragma warning disable CC0004 // Catch block cannot be empty
                     catch (CultureNotFoundException)
                     {
                         // expected
                     }
-#pragma warning restore CC0004 // Catch block cannot be empty
                 }
             }
 

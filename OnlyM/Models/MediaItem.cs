@@ -241,7 +241,7 @@ namespace OnlyM.Models
                     return name;
                 }
                 
-                var remainder = name.Substring(prefix.Length).Trim();
+                var remainder = name[prefix.Length..].Trim();
                 return $"{prefixNum:D6} {remainder}";
             }
         }
