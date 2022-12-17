@@ -2,7 +2,7 @@
 
 namespace OnlyM.MediaElementAdaption
 {
-    internal class OnlyMLogMessageEventArgs
+    internal sealed class OnlyMLogMessageEventArgs
     {
         public OnlyMLogMessageEventArgs(LogEventLevel level, string message)
         {

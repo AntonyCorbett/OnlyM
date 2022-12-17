@@ -4,7 +4,7 @@ using OnlyM.Slides.Models;
 
 namespace OnlyMSlideManager.Helpers
 {
-    internal class SlideBuilderBatchHelper
+    internal sealed class SlideBuilderBatchHelper
     {
         private readonly IReadOnlyList<Slide> _slides;
         private readonly int _batchSize;

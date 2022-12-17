@@ -6,7 +6,7 @@ using OnlyM.ViewModel;
 
 namespace OnlyM.Services.Dialogs
 {
-    internal class DialogService : IDialogService
+    internal sealed class DialogService : IDialogService
     {
         private bool _isDialogVisible;
 

@@ -2,7 +2,7 @@
 
 namespace OnlyMSlideManager.ViewModel
 {
-    internal class ViewModelLocator
+    internal sealed class ViewModelLocator
     {
 #pragma warning disable CA1822 // Mark members as static
         public MainViewModel? Main => Ioc.Default.GetService<MainViewModel>();

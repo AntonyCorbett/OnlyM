@@ -11,7 +11,7 @@ using OnlyM.Services.StartOffsetStorage;
 
 namespace OnlyM.ViewModel
 {
-    internal class StartOffsetViewModel : ObservableObject
+    internal sealed class StartOffsetViewModel : ObservableObject
     {
         private const int MaxRecentItemsCount = 10;
 

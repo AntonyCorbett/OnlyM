@@ -27,7 +27,7 @@ using Size = System.Windows.Size;
 namespace OnlyM.ViewModel
 {
     // ReSharper disable once UnusedMember.Global
-    internal class SettingsViewModel : ObservableObject
+    internal sealed class SettingsViewModel : ObservableObject
     {
         private static readonly Size Size360P = new(640, 360);
         private static readonly Size Size480P = new(854, 480);

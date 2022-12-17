@@ -3,7 +3,7 @@ using MaterialDesignThemes.Wpf;
 
 namespace OnlyMSlideManager.ViewModel
 {
-    internal class ShouldSaveViewModel
+    internal sealed class ShouldSaveViewModel
     {
         public ShouldSaveViewModel()
         {

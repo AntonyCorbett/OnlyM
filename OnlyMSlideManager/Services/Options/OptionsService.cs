@@ -11,7 +11,7 @@ using Serilog.Events;
 
 namespace OnlyMSlideManager.Services.Options
 {
-    internal class OptionsService : IOptionsService
+    internal sealed class OptionsService : IOptionsService
     {
         private readonly int _optionsVersion = 1;
         private readonly Lazy<Options> _options;

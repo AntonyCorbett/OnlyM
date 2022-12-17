@@ -2,7 +2,7 @@
 
 namespace OnlyM.PubSubMessages
 {
-    internal class MirrorWindowMessage
+    internal sealed class MirrorWindowMessage
     {
         public Guid MediaItemId { get; set; }
 

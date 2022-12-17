@@ -3,7 +3,7 @@ using OnlyM.Core.Models;
 
 namespace OnlyM.Models
 {
-    internal class MonitorItem
+    internal sealed class MonitorItem
     {
         public MonitorItem()
         {

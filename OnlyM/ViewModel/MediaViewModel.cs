@@ -10,7 +10,7 @@ using OnlyM.CustomControls.MagnifierControl;
 namespace OnlyM.ViewModel
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class MediaViewModel : ObservableObject
+    internal sealed class MediaViewModel : ObservableObject
     {
         private readonly IOptionsService _optionsService;
         private string? _subtitleText;

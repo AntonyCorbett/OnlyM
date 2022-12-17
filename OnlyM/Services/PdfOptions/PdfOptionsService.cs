@@ -4,7 +4,7 @@ using OnlyM.Models;
 
 namespace OnlyM.Services.PdfOptions
 {
-    internal class PdfOptionsService : IPdfOptionsService
+    internal sealed class PdfOptionsService : IPdfOptionsService
     {
         private readonly Dictionary<string, Models.PdfOptions> _items = new();
 

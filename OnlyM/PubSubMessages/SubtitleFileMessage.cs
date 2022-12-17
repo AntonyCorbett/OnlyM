@@ -2,7 +2,7 @@
 
 namespace OnlyM.PubSubMessages
 {
-    internal class SubtitleFileMessage
+    internal sealed class SubtitleFileMessage
     {
         public Guid MediaItemId { get; set; }
 

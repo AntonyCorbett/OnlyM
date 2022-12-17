@@ -695,17 +695,17 @@ namespace OnlyM.Services
 
         private Guid GetSlideshowMediaId()
         {
-            var mediaItemId = Guid.Empty;
             if (Image1Populated && _mediaClassification1 == MediaClassification.Slideshow)
             {
-                mediaItemId = _image1MediaItemId;
-            }
-            else if (Image2Populated && _mediaClassification2 == MediaClassification.Slideshow)
-            {
-                mediaItemId = _image2MediaItemId;
+                return _image1MediaItemId;
             }
 
-            return mediaItemId;
+            if (Image2Populated && _mediaClassification2 == MediaClassification.Slideshow)
+            {
+                return _image2MediaItemId;
+            }
+
+            return Guid.Empty;
         }
 
         private void CheckSlides()

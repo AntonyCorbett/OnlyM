@@ -3,7 +3,7 @@ using OnlyM.Core.Extensions;
 
 namespace OnlyM.Models
 {
-    internal class RecentTimesItem
+    internal sealed class RecentTimesItem
     {
         public int Seconds { get; set; }
 

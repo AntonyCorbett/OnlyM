@@ -5,7 +5,7 @@ using Serilog;
 
 namespace OnlyM.Services.StartOffsetStorage
 {
-    internal class StartOffsetStorageService : IStartOffsetStorageService
+    internal sealed class StartOffsetStorageService : IStartOffsetStorageService
     {
         private readonly IDatabaseService _databaseService;
 

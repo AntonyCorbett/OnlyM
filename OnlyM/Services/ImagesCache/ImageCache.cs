@@ -8,7 +8,7 @@ using Serilog;
 
 namespace OnlyM.Services.ImagesCache
 {
-    internal class ImageCache
+    internal sealed class ImageCache
     {
         private const int MaxItemCount = 18;
         private const int PurgeCount = 6;

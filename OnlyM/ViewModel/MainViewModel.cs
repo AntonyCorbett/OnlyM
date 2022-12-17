@@ -29,7 +29,7 @@ using Serilog.Events;
 namespace OnlyM.ViewModel
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class MainViewModel : ObservableObject
+    internal sealed class MainViewModel : ObservableObject
     {
         private readonly IPageService _pageService;
         private readonly IOptionsService _optionsService;

@@ -9,7 +9,7 @@ using OnlyM.Slides.Models;
 
 namespace OnlyM.Slides.Helpers
 {
-    internal class SlideArchiveEntryBatchHelper
+    internal sealed class SlideArchiveEntryBatchHelper
     {
         private readonly IReadOnlyList<Slide> _slides;
         private readonly int _maxSlideWidth;

@@ -6,7 +6,7 @@ using System.Windows.Media.Animation;
 
 namespace OnlyM.Services.WebNavHeaderManager
 {
-    internal class WebNavHeaderAdmin
+    internal sealed class WebNavHeaderAdmin
     {
         private const int WebHeaderHeight = 76;
         private const int WebHeaderActionPixels = 15;

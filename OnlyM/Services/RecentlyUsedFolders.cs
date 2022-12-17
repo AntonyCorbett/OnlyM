@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace OnlyM.Services
 {
-    internal class RecentlyUsedFolders
+    internal sealed class RecentlyUsedFolders
     {
         private const int MaxCount = 10;
 

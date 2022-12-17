@@ -1,6 +1,6 @@
 ﻿namespace OnlyMSlideManager.PubSubMessages
 {
-    internal class CloseAppMessage
+    internal sealed class CloseAppMessage
     {
     }
 }

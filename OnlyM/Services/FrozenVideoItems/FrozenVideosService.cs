@@ -3,7 +3,7 @@ using OnlyM.Models;
 
 namespace OnlyM.Services.FrozenVideoItems
 {
-    internal class FrozenVideosService : IFrozenVideosService
+    internal sealed class FrozenVideosService : IFrozenVideosService
     {
         private readonly HashSet<string> _frozenItems = new();
 

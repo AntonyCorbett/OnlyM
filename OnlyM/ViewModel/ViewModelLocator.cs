@@ -6,7 +6,7 @@ namespace OnlyM.ViewModel
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.
     /// </summary>
-    internal class ViewModelLocator
+    internal sealed class ViewModelLocator
     {
 #pragma warning disable CA1822 // Mark members as static
         public MainViewModel? Main => Ioc.Default.GetService<MainViewModel>();

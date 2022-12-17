@@ -2,7 +2,7 @@
 
 namespace OnlyMSlideManager.PubSubMessages
 {
-    internal class ReorderMessage
+    internal sealed class ReorderMessage
     {
         public SlideItem? SourceItem { get; set; }
 

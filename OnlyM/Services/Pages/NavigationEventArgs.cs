@@ -2,7 +2,7 @@
 
 namespace OnlyM.Services.Pages
 {
-    internal class NavigationEventArgs : EventArgs
+    internal sealed class NavigationEventArgs : EventArgs
     {
         public string? PageName { get; set; }
     }

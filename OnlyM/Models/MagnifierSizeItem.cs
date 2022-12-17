@@ -2,7 +2,7 @@
 
 namespace OnlyM.Models
 {
-    internal class MagnifierSizeItem
+    internal sealed class MagnifierSizeItem
     {
         public MagnifierSize Size { get; set; }
 

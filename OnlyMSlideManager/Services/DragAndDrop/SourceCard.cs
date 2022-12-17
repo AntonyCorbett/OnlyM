@@ -1,6 +1,6 @@
 ﻿namespace OnlyMSlideManager.Services.DragAndDrop
 {
-    internal class SourceCard
+    internal sealed class SourceCard
     {
         public string? Name { get; set; }
     }

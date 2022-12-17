@@ -1,6 +1,6 @@
 ﻿namespace OnlyM.PubSubMessages
 {
-    internal class ShutDownMessage
+    internal sealed class ShutDownMessage
     {
     }
 }

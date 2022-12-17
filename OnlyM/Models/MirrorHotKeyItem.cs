@@ -1,6 +1,6 @@
 ﻿namespace OnlyM.Models
 {
-    internal class MirrorHotKeyItem
+    internal sealed class MirrorHotKeyItem
     {
         public char Character { get; set; }
 

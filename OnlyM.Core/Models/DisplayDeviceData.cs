@@ -1,6 +1,6 @@
 ﻿namespace OnlyM.Core.Models
 {
-    internal class DisplayDeviceData
+    internal sealed class DisplayDeviceData
     {
         public string? Name { get; set; }
 

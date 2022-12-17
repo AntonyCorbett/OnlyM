@@ -2,7 +2,7 @@
 
 namespace OnlyM.Models
 {
-    internal class LoggingLevel
+    internal sealed class LoggingLevel
     {
         public string? Name { get; set; }
 

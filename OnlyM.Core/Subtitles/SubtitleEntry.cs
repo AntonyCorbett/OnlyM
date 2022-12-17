@@ -1,6 +1,6 @@
 ﻿namespace OnlyM.Core.Subtitles
 {
-    internal class SubtitleEntry
+    internal sealed class SubtitleEntry
     {
         public int Number { get; set; }
 

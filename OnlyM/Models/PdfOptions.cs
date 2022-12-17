@@ -1,6 +1,6 @@
 ﻿namespace OnlyM.Models
 {
-    internal class PdfOptions
+    internal sealed class PdfOptions
     {
         public int PageNumber { get; set; }
 

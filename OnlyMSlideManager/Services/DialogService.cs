@@ -6,7 +6,7 @@ using OnlyMSlideManager.ViewModel;
 namespace OnlyMSlideManager.Services
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class DialogService : IDialogService
+    internal sealed class DialogService : IDialogService
     {
         private bool _isDialogVisible;
 

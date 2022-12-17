@@ -3,7 +3,7 @@ using System.Windows.Media.Imaging;
 
 namespace OnlyM.Services.ImagesCache
 {
-    internal class ImageAndLastUsed
+    internal sealed class ImageAndLastUsed
     {
         public BitmapSource? BitmapImage { get; set; }
 

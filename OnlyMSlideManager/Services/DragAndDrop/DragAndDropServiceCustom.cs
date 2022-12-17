@@ -12,7 +12,7 @@ using OnlyMSlideManager.PubSubMessages;
 
 namespace OnlyMSlideManager.Services.DragAndDrop
 {
-    internal class DragAndDropServiceCustom : IDragAndDropServiceCustom
+    internal sealed class DragAndDropServiceCustom : IDragAndDropServiceCustom
     {
         private readonly string[] _supportedImageExtensions =
         {

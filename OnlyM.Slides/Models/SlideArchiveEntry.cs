@@ -2,7 +2,7 @@
 
 namespace OnlyM.Slides.Models
 {
-    internal class SlideArchiveEntry
+    internal sealed class SlideArchiveEntry
     {
         public string? ArchiveEntryName { get; set; }
 

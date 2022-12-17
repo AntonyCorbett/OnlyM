@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OnlyM.Services.MediaChanging
 {
-    internal class MediaStatusChangingService : IMediaStatusChangingService
+    internal sealed class MediaStatusChangingService : IMediaStatusChangingService
     {
         private readonly HashSet<Guid> _changingMediaItems = new();
         private readonly object _locker = new();

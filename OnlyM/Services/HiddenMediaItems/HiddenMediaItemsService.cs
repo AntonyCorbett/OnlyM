@@ -4,7 +4,7 @@ using OnlyM.Models;
 
 namespace OnlyM.Services.HiddenMediaItems
 {
-    internal class HiddenMediaItemsService : IHiddenMediaItemsService
+    internal sealed class HiddenMediaItemsService : IHiddenMediaItemsService
     {
         private readonly HashSet<string> _allHiddenItems = new();
 
@@ -70,7 +70,7 @@ namespace OnlyM.Services.HiddenMediaItems
             OnHiddenItemsChangedEvent();
         }
 
-        protected virtual void OnHiddenItemsChangedEvent()
+        private void OnHiddenItemsChangedEvent()
         {
             HiddenItemsChangedEvent?.Invoke(this, EventArgs.Empty);
         }

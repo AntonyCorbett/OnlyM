@@ -2,7 +2,7 @@
 
 namespace OnlyMSlideManager.PubSubMessages
 {
-    internal class DropImagesMessage
+    internal sealed class DropImagesMessage
     {
         public List<string>? FileList { get; set; }
 

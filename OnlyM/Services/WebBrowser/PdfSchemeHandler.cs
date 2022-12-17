@@ -6,7 +6,7 @@ using CefSharp;
 
 namespace OnlyM.Services.WebBrowser
 {
-    internal class PdfSchemeHandler : ResourceHandler
+    internal sealed class PdfSchemeHandler : ResourceHandler
     {
         public override CefReturnValue ProcessRequestAsync(IRequest request, ICallback callback)
         {

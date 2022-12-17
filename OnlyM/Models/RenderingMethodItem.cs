@@ -2,7 +2,7 @@
 
 namespace OnlyM.Models
 {
-    internal class RenderingMethodItem
+    internal sealed class RenderingMethodItem
     {
         public string? Name { get; set; }
 

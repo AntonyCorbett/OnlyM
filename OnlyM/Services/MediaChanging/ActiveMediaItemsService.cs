@@ -5,7 +5,7 @@ using OnlyM.Core.Models;
 
 namespace OnlyM.Services.MediaChanging
 {
-    internal class ActiveMediaItemsService : IActiveMediaItemsService
+    internal sealed class ActiveMediaItemsService : IActiveMediaItemsService
     {
         private readonly Dictionary<Guid, MediaClassification> _currentMedia = new();
 

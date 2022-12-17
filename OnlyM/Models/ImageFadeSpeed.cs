@@ -2,7 +2,7 @@
 
 namespace OnlyM.Models
 {
-    internal class ImageFadeSpeed
+    internal sealed class ImageFadeSpeed
     {
         public string? Name { get; set; }
 

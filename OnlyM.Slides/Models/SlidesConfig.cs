@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OnlyM.Slides.Models
 {
-    internal class SlidesConfig
+    internal sealed class SlidesConfig
     {
         public List<Slide> Slides { get; } = new();
 
