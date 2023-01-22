@@ -129,10 +129,15 @@ namespace OnlyM
         {
             var logsDirectory = FileUtils.GetLogFolder();
 
+#pragma warning disable CA1305 // Specify IFormatProvider
             Log.Logger = new LoggerConfiguration()
                .MinimumLevel.ControlledBy(LogLevelSwitchService.LevelSwitch)
-               .WriteTo.File(Path.Combine(logsDirectory, "log-.txt"), retainedFileCountLimit: 28, rollingInterval: RollingInterval.Day)
+               .WriteTo.File(
+                   Path.Combine(logsDirectory, "log-.txt"), 
+                   retainedFileCountLimit: 28, 
+                   rollingInterval: RollingInterval.Day)
                .CreateLogger();
+#pragma warning restore CA1305 // Specify IFormatProvider
 
             Log.Logger.Information("==== Launched ====");
             Log.Logger.Information($"Version {VersionDetection.GetCurrentVersion()}");

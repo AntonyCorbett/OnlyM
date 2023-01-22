@@ -108,7 +108,7 @@ namespace OnlyM.Controls
             var beginLength = targetLength / 2;
             var endLength = targetLength - beginLength;
 
-            return $"{s.Substring(0, beginLength)}...{s.Substring(s.Length - endLength, endLength)}";
+            return $"{s[..beginLength]}...{s.Substring(s.Length - endLength, endLength)}";
         }
 
         /// <summary>

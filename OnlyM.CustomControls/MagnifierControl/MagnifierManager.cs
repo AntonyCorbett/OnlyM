@@ -45,9 +45,7 @@ namespace OnlyM.CustomControls.MagnifierControl
 
         private static void OnMagnifierChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var target = d as UIElement;
-
-            if (target == null)
+            if (d is not UIElement target)
             {
                 throw new ArgumentException("Magnifier can only be attached to a UIElement.");
             }

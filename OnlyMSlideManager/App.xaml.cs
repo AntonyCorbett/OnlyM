@@ -65,17 +65,20 @@ namespace OnlyMSlideManager
         {
             var logsDirectory = FileUtils.GetLogFolder();
 
+#pragma warning disable CA1305 // Specify IFormatProvider
+            var config = new LoggerConfiguration()
 #if DEBUG
-            Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .WriteTo.File(Path.Combine(logsDirectory, "log-.txt"), retainedFileCountLimit: 28, rollingInterval: RollingInterval.Day)
-                .CreateLogger();
 #else
-            Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
-                .WriteTo.File(Path.Combine(logsDirectory, "log-.txt"), retainedFileCountLimit: 28, rollingInterval: RollingInterval.Day)
-                .CreateLogger();
 #endif
+                .WriteTo.File(
+                    Path.Combine(logsDirectory, "log-.txt"), 
+                    retainedFileCountLimit: 28,
+                    rollingInterval: RollingInterval.Day);
+#pragma warning restore CA1305 // Specify IFormatProvider
+
+            Log.Logger = config.CreateLogger();
 
             Log.Logger.Information("==== Launched ====");
         }

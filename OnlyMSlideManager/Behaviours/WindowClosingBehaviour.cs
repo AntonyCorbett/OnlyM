@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace OnlyMSlideManager.Behaviours
 {
-    public class WindowClosingBehaviour
+    public static class WindowClosingBehaviour
     {
         public static readonly DependencyProperty ClosedProperty
             = DependencyProperty.RegisterAttached(
