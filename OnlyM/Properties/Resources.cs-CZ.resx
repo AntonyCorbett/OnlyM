@@ -241,7 +241,7 @@
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>
   </data>
   <data name="ALLOW_SCRUB" xml:space="preserve">
-    <value>Povolit přetáčení videa videa během pauzy</value>
+    <value>Povolit přetáčení videa během pauzy</value>
     <comment>See Settings =&gt; Videos and Audio. Enable "scrubbing" - moving back and forward in the media to locate a section.</comment>
   </data>
   <data name="ALLOW_SEEK" xml:space="preserve">
@@ -573,11 +573,11 @@
     <comment>Option in Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_WINDOW_FIXED_SIZE" xml:space="preserve">
-    <value>Fixed size:</value>
+    <value>Fixní velikost:</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="MEDIA_WINDOW_RESIZABLE" xml:space="preserve">
-    <value>Resizable</value>
+    <value>Měnitelná velikost</value>
     <comment>See Settings =&gt; Display</comment>
   </data>
 </root>
