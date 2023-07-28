@@ -32,6 +32,7 @@ namespace OnlyM.Core.Services.Media
             new() { Name = "ICO Image", Classification = MediaClassification.Image, FileExtension = ".ico" },
             new() { Name = "TIFF Image", Classification = MediaClassification.Image, FileExtension = ".tiff" },
             new() { Name = "JFIFF Image", Classification = MediaClassification.Image, FileExtension = ".jfif" },
+            new() { Name = "WEBP Image", Classification = MediaClassification.Image, FileExtension = ".webp" },
 
             new() { Name = "MP3 Audio", Classification = MediaClassification.Audio, FileExtension = ".mp3" },
             new() { Name = "M4A Audio", Classification = MediaClassification.Audio, FileExtension = ".m4a" },
