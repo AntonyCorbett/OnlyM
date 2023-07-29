@@ -3,9 +3,10 @@
 1. Updated all assemblies (inc MaterialDesign from 4.1.0 to 4.6.1)
 2. Material Design changes to card drop shadow (e.g. materialDesign:ShadowAssist.ShadowDepth="Depth2" => materialDesign:ElevationAssist.Elevation="Dp2")
 3. Fix case where an unknown monitor Id is stored in options (this allows the Play button to be active).
-4. MaterialDesign ClipToBounds="True" must now be specifed (now defaults to "False")
+4. MaterialDesign ClipToBounds="True" must now be specified (now defaults to "False")
 5. Disposed of browser and mirrorProcess in WebPageDisplayManager
 6. Disposed of mediaWindow in PageService
 7. SingleFile publishing is broken
 
 Check mirror window operation
+
