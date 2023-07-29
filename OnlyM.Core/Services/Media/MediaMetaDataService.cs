@@ -119,8 +119,13 @@ namespace OnlyM.Core.Services.Media
             };
         }
 
-        private static MediaMetaData GetNonVideoMetaData(string mediaItemFilePath)
+        private static MediaMetaData? GetNonVideoMetaData(string mediaItemFilePath)
         {
+            if (IsWebPFormat(mediaItemFilePath))
+            {
+                return null;
+            }
+
             using (var tf = TagLib.File.Create(mediaItemFilePath))
             {
                 tf.Mode = TagLib.File.AccessMode.Read;
@@ -131,6 +136,12 @@ namespace OnlyM.Core.Services.Media
                     Duration = tf.Properties?.Duration ?? TimeSpan.Zero,
                 };
             }
+        }
+
+        private static bool IsWebPFormat(string mediaItemFilePath)
+        {
+            return !string.IsNullOrWhiteSpace(mediaItemFilePath) &&
+                   mediaItemFilePath.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

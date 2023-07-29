@@ -20,6 +20,7 @@ namespace OnlyMSlideManager.Services.DragAndDrop
             ".png",
             ".jpg",
             ".jpeg",
+            ".webp"
         };
 
         private readonly IUserInterfaceService _userInterfaceService;

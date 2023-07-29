@@ -22,6 +22,7 @@ namespace OnlyM.Core.Services.Media
             new() { Name = "AVI Video", Classification = MediaClassification.Video, FileExtension = ".avi" },
             new() { Name = "FLV Video", Classification = MediaClassification.Video, FileExtension = ".flv" },
             new() { Name = "MOV Video", Classification = MediaClassification.Video, FileExtension = ".mov" },
+            new() { Name = "WEBM Video", Classification = MediaClassification.Video, FileExtension = ".webm" },
 
             new() { Name = "JPG Image", Classification = MediaClassification.Image, FileExtension = ".jpg" },
             new() { Name = "JPEG Image", Classification = MediaClassification.Image, FileExtension = ".jpeg" },
@@ -32,6 +33,7 @@ namespace OnlyM.Core.Services.Media
             new() { Name = "ICO Image", Classification = MediaClassification.Image, FileExtension = ".ico" },
             new() { Name = "TIFF Image", Classification = MediaClassification.Image, FileExtension = ".tiff" },
             new() { Name = "JFIFF Image", Classification = MediaClassification.Image, FileExtension = ".jfif" },
+            new() { Name = "WEBP Image", Classification = MediaClassification.Image, FileExtension = ".webp" },
 
             new() { Name = "MP3 Audio", Classification = MediaClassification.Audio, FileExtension = ".mp3" },
             new() { Name = "M4A Audio", Classification = MediaClassification.Audio, FileExtension = ".m4a" },
