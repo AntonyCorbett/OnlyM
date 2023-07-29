@@ -10,9 +10,9 @@ using System.Windows.Media.Imaging;
 using PhotoSauce.MagicScaler;
 using Serilog;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Bmp;
 using SixLabors.ImageSharp.Processing;
 using TagLib.Image;
+using Color = SixLabors.ImageSharp.Color;
 using Image = SixLabors.ImageSharp.Image;
 using SizeF = System.Drawing.SizeF;
 
@@ -69,11 +69,30 @@ namespace OnlyM.CoreSys
             {
                 AutoRotateIfRequired(itemFilePath);
 
+                if (IsWebPFormat(itemFilePath))
+                {
+                    using (var image = Image.Load(itemFilePath))
+                    {
+                        image.Mutate(c => c.Resize(new ResizeOptions()
+                        {
+                            PadColor = Color.Black,
+                            Size = new SixLabors.ImageSharp.Size(width, height),
+                            Mode = ResizeMode.Pad
+                        }));
+
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            image.SaveAsBmp(memoryStream);
+                            return memoryStream.ToArray();
+                        }
+                    }
+                }
+
                 var settings = new ProcessImageSettings
                 {
-                    Width = width, 
-                    Height = height, 
-                    ResizeMode = CropScaleMode.Pad, 
+                    Width = width,
+                    Height = height,
+                    ResizeMode = CropScaleMode.Pad,
                     MatteColor = System.Drawing.Color.Black
                 };
 
@@ -221,7 +240,7 @@ namespace OnlyM.CoreSys
                 bmp = InternalGetBitmapImage(imageFile, ignoreColorProfile: true, ignoreInternalCache);
             }
 
-            if (IsBadDpi(bmp))
+            if (IsBadDpi(bmp) && !IsWebPFormat(imageFile))
             {
                 // NB - if the DpiX and DpiY metadata is bad then the bitmap can't be displayed
                 // correctly, so fix it here...
@@ -400,6 +419,12 @@ namespace OnlyM.CoreSys
         
         private static bool ImageRequiresRotation(string imageFilePath)
         {
+            if (IsWebPFormat(imageFilePath))
+            {
+                // can't retrieve this metadata
+                return false;
+            }
+
             try
             {
                 // The TagLib call below is not thread-safe
