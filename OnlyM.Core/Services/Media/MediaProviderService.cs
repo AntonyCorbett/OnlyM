@@ -22,6 +22,7 @@ namespace OnlyM.Core.Services.Media
             new() { Name = "AVI Video", Classification = MediaClassification.Video, FileExtension = ".avi" },
             new() { Name = "FLV Video", Classification = MediaClassification.Video, FileExtension = ".flv" },
             new() { Name = "MOV Video", Classification = MediaClassification.Video, FileExtension = ".mov" },
+            new() { Name = "WEBM Video", Classification = MediaClassification.Video, FileExtension = ".webm" },
 
             new() { Name = "JPG Image", Classification = MediaClassification.Image, FileExtension = ".jpg" },
             new() { Name = "JPEG Image", Classification = MediaClassification.Image, FileExtension = ".jpeg" },
