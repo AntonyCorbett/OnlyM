@@ -9,7 +9,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using PhotoSauce.MagicScaler;
 using Serilog;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Bmp;
+using SixLabors.ImageSharp.Processing;
 using TagLib.Image;
+using Image = SixLabors.ImageSharp.Image;
+using SizeF = System.Drawing.SizeF;
 
 namespace OnlyM.CoreSys
 {
@@ -109,37 +114,16 @@ namespace OnlyM.CoreSys
             return new TransformedBitmap(image, new ScaleTransform(factor, factor));
         }
 
-        public static byte[]? CreateThumbnailOfImage(string path, int maxPixelDimension, ImageFormat imageFormat)
+        public static byte[]? CreateThumbnailOfImage(string path, int maxPixelDimension)
         {
             if (!System.IO.File.Exists(path))
             {
                 return null;
             }
 
-            byte[] result;
-
-            using (var srcBmp = new Bitmap(path))
-            {
-                var newSize = srcBmp.Width > srcBmp.Height
-                    ? new SizeF(maxPixelDimension, maxPixelDimension * (float)srcBmp.Height / srcBmp.Width)
-                    : new SizeF(maxPixelDimension * (float)srcBmp.Width / srcBmp.Height, maxPixelDimension);
-
-                using (var target = new Bitmap((int)newSize.Width, (int)newSize.Height))
-                using (var graphics = Graphics.FromImage(target))
-                {
-                    graphics.CompositingQuality = CompositingQuality.HighSpeed;
-                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graphics.CompositingMode = CompositingMode.SourceCopy;
-                    graphics.DrawImage(srcBmp, 0, 0, newSize.Width, newSize.Height);
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        target.Save(memoryStream, imageFormat);
-                        result = memoryStream.ToArray();
-                    }
-                }
-            }
-
-            return result;
+            return IsWebPFormat(path) 
+                ? CreateThumbnailOfWebPImage(path, maxPixelDimension) 
+                : CreateThumbnailOfNativeImage(path, maxPixelDimension);
         }
 
         public static byte[]? ImageSourceToJpegBytes(ImageSource? imageSource) => ImageSourceToBytes(new JpegBitmapEncoder(), imageSource);
@@ -495,6 +479,61 @@ namespace OnlyM.CoreSys
             bmp.EndInit();
             
             return bmp;
+        }
+
+        private static bool IsWebPFormat(string path)
+        {
+            return !string.IsNullOrWhiteSpace(path) && path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static byte[]? CreateThumbnailOfWebPImage(string path, int maxPixelDimension)
+        {
+            byte[] result;
+
+            using (var image = Image.Load(path))
+            {
+                var newSize = image.Width > image.Height
+                    ? new SizeF(maxPixelDimension, maxPixelDimension * (float)image.Height / image.Width)
+                    : new SizeF(maxPixelDimension * (float)image.Width / image.Height, maxPixelDimension);
+
+                image.Mutate(c => c.Resize((int)newSize.Width, (int)newSize.Height));
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    image.SaveAsBmp(memoryStream);
+                    result = memoryStream.ToArray();
+                }
+            }
+
+            return result;
+        }
+
+        private static byte[]? CreateThumbnailOfNativeImage(string path, int maxPixelDimension)
+        {
+            byte[] result;
+
+            using (var srcBmp = new Bitmap(path))
+            {
+                var newSize = srcBmp.Width > srcBmp.Height
+                    ? new SizeF(maxPixelDimension, maxPixelDimension * (float)srcBmp.Height / srcBmp.Width)
+                    : new SizeF(maxPixelDimension * (float)srcBmp.Width / srcBmp.Height, maxPixelDimension);
+
+                using (var target = new Bitmap((int)newSize.Width, (int)newSize.Height))
+                using (var graphics = Graphics.FromImage(target))
+                {
+                    graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    graphics.CompositingMode = CompositingMode.SourceCopy;
+                    graphics.DrawImage(srcBmp, 0, 0, newSize.Width, newSize.Height);
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        target.Save(memoryStream, ImageFormat.Jpeg);
+                        result = memoryStream.ToArray();
+                    }
+                }
+            }
+            
+            return result;
         }
     }
 }

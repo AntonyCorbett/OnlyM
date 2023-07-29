@@ -137,7 +137,7 @@ namespace OnlyM.Core.Services.Media
             switch (mediaClassification)
             {
                 case MediaClassification.Image:
-                    return GraphicsUtils.CreateThumbnailOfImage(originalPath, MaxPixelDimension, ImageFormat.Jpeg);
+                    return GraphicsUtils.CreateThumbnailOfImage(originalPath, MaxPixelDimension);
 
                 case MediaClassification.Video:
                     var tempFile = GraphicsUtils.CreateThumbnailForVideo(
