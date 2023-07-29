@@ -108,9 +108,14 @@ namespace OnlyM.Services
         private static void PositionWindowUsingHack(
             Window mediaWindow, Grid? mainGrid, Screen monitor, int left, int top, int width, int height)
         {
-            Log.Logger.Verbose("Positioning media window according to WPF Media Foundation hack");
-
             var primaryMonitor = Screen.PrimaryScreen;
+
+            if (primaryMonitor == null)
+            {
+                return;
+            }
+
+            Log.Logger.Verbose("Positioning media window according to WPF Media Foundation hack");
             
             if (MonitorToRightOf(monitor, primaryMonitor))
             {
@@ -183,6 +188,11 @@ namespace OnlyM.Services
             bool isVideo)
         {
             var primaryMonitor = Screen.PrimaryScreen;
+
+            if (primaryMonitor == null)
+            {
+                return false;
+            }
 
             return
                 optionsService.RenderingMethod == RenderingMethod.MediaFoundation &&

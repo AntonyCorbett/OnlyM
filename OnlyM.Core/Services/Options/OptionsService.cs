@@ -776,11 +776,7 @@ namespace OnlyM.Core.Services.Options
             var result = new Options();
 
             // first time launched so set the monitor to the first one we find
-            var monitorService = Ioc.Default.GetService<IMonitorsService>();
-            if (monitorService == null)
-            {
-                throw new NotSupportedException("Could not get monitor service!");
-            }
+            var monitorService = Ioc.Default.GetService<IMonitorsService>() ?? throw new NotSupportedException("Could not get monitor service!");
 
             result.MediaMonitorId = monitorService.GetSystemMonitors().First().MonitorId;
 

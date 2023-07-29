@@ -121,11 +121,7 @@ namespace OnlyM.Slides
         {
             using (var zip = ZipFile.OpenRead(FilePath))
             {
-                var configEntry = zip.GetEntry(ConfigEntryName);
-                if (configEntry == null)
-                {
-                    throw new Exception($"Could not find {ConfigEntryName} entry");
-                }
+                var configEntry = zip.GetEntry(ConfigEntryName) ?? throw new Exception($"Could not find {ConfigEntryName} entry");
 
                 using (var stream = configEntry.Open())
                 {
@@ -134,13 +130,8 @@ namespace OnlyM.Slides
                     using (var sr = new StreamReader(stream))
                     using (var jsonTextReader = new JsonTextReader(sr))
                     {
-                        var config = serializer.Deserialize<SlidesConfig>(jsonTextReader);
-                        if (config == null)
-                        {
-                            throw new Exception($"Could not read {ConfigEntryName} entry");
-                        }
-
-                        return config;
+                        return serializer.Deserialize<SlidesConfig>(jsonTextReader) 
+                               ?? throw new Exception($"Could not read {ConfigEntryName} entry");
                     }
                 }
             }
@@ -148,11 +139,7 @@ namespace OnlyM.Slides
         
         private static BitmapImage ReadBackgroundImage(ZipArchive zip, string entryName)
         {
-            var entry = zip.GetEntry(entryName);
-            if (entry == null)
-            {
-                throw new Exception($"Could not read {entryName} entry");
-            }
+            var entry = zip.GetEntry(entryName) ?? throw new Exception($"Could not read {entryName} entry");
 
             using (var stream = entry.Open())
             using (var memoryStream = new MemoryStream())
