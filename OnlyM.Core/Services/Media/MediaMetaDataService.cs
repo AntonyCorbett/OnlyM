@@ -121,7 +121,7 @@ namespace OnlyM.Core.Services.Media
 
         private static MediaMetaData? GetNonVideoMetaData(string mediaItemFilePath)
         {
-            if (IsWebPFormat(mediaItemFilePath))
+            if (IsWebPFormat(mediaItemFilePath) || IsSvgFormat(mediaItemFilePath))
             {
                 return null;
             }
@@ -142,6 +142,12 @@ namespace OnlyM.Core.Services.Media
         {
             return !string.IsNullOrWhiteSpace(mediaItemFilePath) &&
                    mediaItemFilePath.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsSvgFormat(string mediaItemFilePath)
+        {
+            return !string.IsNullOrWhiteSpace(mediaItemFilePath) &&
+                   mediaItemFilePath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

@@ -7,10 +7,12 @@ using System.IO;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using PhotoSauce.MagicScaler;
 using Serilog;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using Svg;
 using TagLib.Image;
 using Color = SixLabors.ImageSharp.Color;
 using Image = SixLabors.ImageSharp.Image;
@@ -68,6 +70,21 @@ namespace OnlyM.CoreSys
             try
             {
                 AutoRotateIfRequired(itemFilePath);
+
+                if (IsSvgFormat(itemFilePath))
+                {
+                    var svgDoc = SvgDocument.Open(itemFilePath);
+
+                    var sizedBitmap = new Bitmap(width, height);
+
+                    svgDoc.Draw(sizedBitmap);
+
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        sizedBitmap.Save(memoryStream, ImageFormat.Jpeg);
+                        return memoryStream.ToArray();
+                    }
+                }
 
                 if (IsWebPFormat(itemFilePath))
                 {
@@ -140,9 +157,17 @@ namespace OnlyM.CoreSys
                 return null;
             }
 
-            return IsWebPFormat(path) 
-                ? CreateThumbnailOfWebPImage(path, maxPixelDimension) 
-                : CreateThumbnailOfNativeImage(path, maxPixelDimension);
+            if (IsWebPFormat(path))
+            {
+                return CreateThumbnailOfWebPImage(path, maxPixelDimension);
+            }
+
+            if (IsSvgFormat(path))
+            {
+                return CreateThumbnailOfSvgImage(path, maxPixelDimension);
+            }
+                
+            return CreateThumbnailOfNativeImage(path, maxPixelDimension);
         }
 
         public static byte[]? ImageSourceToJpegBytes(ImageSource? imageSource) => ImageSourceToBytes(new JpegBitmapEncoder(), imageSource);
@@ -240,7 +265,7 @@ namespace OnlyM.CoreSys
                 bmp = InternalGetBitmapImage(imageFile, ignoreColorProfile: true, ignoreInternalCache);
             }
 
-            if (IsBadDpi(bmp) && !IsWebPFormat(imageFile))
+            if (IsBadDpi(bmp) && !IsWebPFormat(imageFile) && !IsSvgFormat(imageFile))
             {
                 // NB - if the DpiX and DpiY metadata is bad then the bitmap can't be displayed
                 // correctly, so fix it here...
@@ -419,7 +444,7 @@ namespace OnlyM.CoreSys
         
         private static bool ImageRequiresRotation(string imageFilePath)
         {
-            if (IsWebPFormat(imageFilePath))
+            if (IsWebPFormat(imageFilePath) || IsSvgFormat(imageFilePath))
             {
                 // can't retrieve this metadata
                 return false;
@@ -481,12 +506,26 @@ namespace OnlyM.CoreSys
             return bitmapImage;
         }
 
-        private static BitmapImage InternalGetBitmapImage(string imageFile, bool ignoreColorProfile, bool ignoreInternalCache = false)
+        private static BitmapImage InternalGetBitmapImage(
+            string imageFile, bool ignoreColorProfile, bool ignoreInternalCache = false)
         {
+            if (IsSvgFormat(imageFile))
+            {
+                var svgDoc = SvgDocument.Open(imageFile);
+                
+                var sizedBitmap = new Bitmap(1280, 720);
+
+                svgDoc.Draw(sizedBitmap);
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    sizedBitmap.Save(memoryStream, ImageFormat.Jpeg);
+                    return ByteArrayToImage(memoryStream.ToArray())!;
+                }
+            }
+
             var bmp = new BitmapImage();
 
-            // BitmapCacheOption.OnLoad prevents the source image file remaining
-            // in use when the bitmap is used as an ImageSource.
             bmp.BeginInit();
 
             if (ignoreColorProfile)
@@ -498,17 +537,26 @@ namespace OnlyM.CoreSys
             {
                 bmp.CreateOptions |= BitmapCreateOptions.IgnoreImageCache;
             }
-            
-            bmp.UriSource = new Uri(imageFile);
+
+            // BitmapCacheOption.OnLoad prevents the source image file remaining
+            // in use when the bitmap is used as an ImageSource.
+
             bmp.CacheOption = BitmapCacheOption.OnLoad;
+
+            bmp.UriSource = new Uri(imageFile);
             bmp.EndInit();
-            
+
             return bmp;
         }
 
         private static bool IsWebPFormat(string path)
         {
             return !string.IsNullOrWhiteSpace(path) && path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsSvgFormat(string path)
+        {
+            return !string.IsNullOrWhiteSpace(path) && path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase);
         }
 
         private static byte[]? CreateThumbnailOfWebPImage(string path, int maxPixelDimension)
@@ -528,6 +576,29 @@ namespace OnlyM.CoreSys
                     image.SaveAsBmp(memoryStream);
                     result = memoryStream.ToArray();
                 }
+            }
+
+            return result;
+        }
+
+        private static byte[]? CreateThumbnailOfSvgImage(string path, int maxPixelDimension)
+        {
+            byte[] result;
+
+            var svgDoc = SvgDocument.Open(path);
+
+            var newSize = svgDoc.Width > svgDoc.Height
+                ? new SizeF(maxPixelDimension, maxPixelDimension * svgDoc.Height / svgDoc.Width)
+                : new SizeF(maxPixelDimension * svgDoc.Width / svgDoc.Height, maxPixelDimension);
+
+            var sizedBitmap = new Bitmap((int)newSize.Width, (int)newSize.Height);
+
+            svgDoc.Draw(sizedBitmap);
+
+            using (var memoryStream = new MemoryStream())
+            {
+                sizedBitmap.Save(memoryStream, ImageFormat.Jpeg);
+                result = memoryStream.ToArray();
             }
 
             return result;

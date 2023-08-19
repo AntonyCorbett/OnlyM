@@ -364,7 +364,8 @@ namespace OnlyM.Services
             }
         }
 
-        private void ShowImageInControl(string imageFile, Image imageCtrl, ImageFadeType fadeType, double fadeTime, Action completed)
+        private void ShowImageInControl(
+            string imageFile, Image imageCtrl, ImageFadeType fadeType, double fadeTime, Action completed)
         {
             var shouldFadeIn =
                 fadeType == ImageFadeType.FadeIn ||
