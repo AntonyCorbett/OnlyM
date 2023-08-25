@@ -521,11 +521,12 @@ namespace OnlyMSlideManager.ViewModel
         {
             using (new ObservableCollectionSuppression<SlideItem>(SlideItems))
             {
-                var thumbnailCache = GetThumbnailCache();
                 SlideItems.Clear();
 
                 if (_currentSlideFileBuilder != null)
                 {
+                    var thumbnailCache = GetThumbnailCache();
+
                     const int batchSize = 10;
                     var batchHelper =
                         new SlideBuilderBatchHelper(_currentSlideFileBuilder.GetSlides().ToList(), batchSize);

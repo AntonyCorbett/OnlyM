@@ -50,9 +50,9 @@ namespace OnlyM.CustomControls.MagnifierControl
                 throw new ArgumentException("Magnifier can only be attached to a UIElement.");
             }
 
-            var manager = new MagnifierManager();
             if (e.NewValue is Magnifier m)
             {
+                var manager = new MagnifierManager();
                 manager.AttachToMagnifier(target, m);
             }
         }

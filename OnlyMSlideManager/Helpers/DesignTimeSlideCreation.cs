@@ -30,7 +30,7 @@ namespace OnlyMSlideManager.Helpers
             return result;
         }
 
-        private static ImageSource CreateThumbnailImage(Bitmap image, int thumbnailWidth, int thumbnailHeight)
+        private static ImageSource? CreateThumbnailImage(Bitmap image, int thumbnailWidth, int thumbnailHeight)
         {
             var bmp = GraphicsUtils.BitmapToBitmapImage(image);
             return GraphicsUtils.Downsize(bmp, thumbnailWidth, thumbnailHeight);

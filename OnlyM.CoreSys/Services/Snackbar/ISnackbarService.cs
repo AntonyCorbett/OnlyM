@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Ignore Spelling: Snackbar
+
+using System;
 using MaterialDesignThemes.Wpf;
 
 namespace OnlyM.CoreSys.Services.Snackbar

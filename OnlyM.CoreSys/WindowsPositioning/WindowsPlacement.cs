@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Ignore Spelling: Json
+
+using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;

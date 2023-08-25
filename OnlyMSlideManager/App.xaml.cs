@@ -14,9 +14,7 @@ using Serilog;
 
 namespace OnlyMSlideManager
 {
-#pragma warning disable CA1001 // Types that own disposable fields should be disposable
     public partial class App : Application
-#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
         private readonly string _appString = "OnlyMSlideManagerTool";
         private Mutex? _appMutex;

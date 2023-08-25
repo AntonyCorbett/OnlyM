@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Ignore Spelling: Utils Bmp ffmpeg Srt
+
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -73,7 +75,7 @@ namespace OnlyM.CoreSys
                 if (IsSvgFormat(itemFilePath))
                 {
                     using var ms = InternalGetSvgImageStream(itemFilePath, width, height);
-                    return ms.ToArray();
+                    return ms?.ToArray();
                 }
 
                 if (IsWebPFormat(itemFilePath))
@@ -116,17 +118,22 @@ namespace OnlyM.CoreSys
             return null;
         }
 
-        public static BitmapSource Downsize(string imageFilePath, int maxImageWidth, int maxImageHeight, bool ignoreInternalCache)
+        public static BitmapSource? Downsize(string imageFilePath, int maxImageWidth, int maxImageHeight, bool ignoreInternalCache)
         {
             var image = GetBitmapImage(imageFilePath, ignoreInternalCache);
             return Downsize(image, maxImageWidth, maxImageHeight);
         }
 
-        public static BitmapSource Downsize(
-            BitmapSource image, 
+        public static BitmapSource? Downsize(
+            BitmapSource? image, 
             int maxImageWidth, 
             int maxImageHeight)
         {
+            if (image == null)
+            {
+                return null;
+            }
+
             var factorWidth = (double)maxImageWidth / image.PixelWidth;
             var factorHeight = (double)maxImageHeight / image.PixelHeight;
 
@@ -241,9 +248,9 @@ namespace OnlyM.CoreSys
             return img;
         }
 
-        public static BitmapImage GetBitmapImage(string imageFile, bool ignoreInternalCache)
+        public static BitmapImage? GetBitmapImage(string imageFile, bool ignoreInternalCache)
         {
-            BitmapImage bmp;
+            BitmapImage? bmp;
 
             try
             {
@@ -255,7 +262,7 @@ namespace OnlyM.CoreSys
                 bmp = InternalGetBitmapImage(imageFile, ignoreColorProfile: true, ignoreInternalCache);
             }
 
-            if (IsBadDpi(bmp) && !IsWebPFormat(imageFile) && !IsSvgFormat(imageFile))
+            if (bmp != null && IsBadDpi(bmp) && !IsWebPFormat(imageFile) && !IsSvgFormat(imageFile))
             {
                 // NB - if the DpiX and DpiY metadata is bad then the bitmap can't be displayed
                 // correctly, so fix it here...
@@ -496,7 +503,7 @@ namespace OnlyM.CoreSys
             return bitmapImage;
         }
 
-        private static BitmapImage InternalGetBitmapImage(
+        private static BitmapImage? InternalGetBitmapImage(
             string imageFile, bool ignoreColorProfile, bool ignoreInternalCache = false)
         {
             if (IsSvgFormat(imageFile))
@@ -534,11 +541,6 @@ namespace OnlyM.CoreSys
             return bmp;
         }
 
-        private static float GetSvgResizeFactor(SvgUnit svgDocWidth, int targetWidth)
-        {
-            return targetWidth / svgDocWidth;
-        }
-
         private static bool IsWebPFormat(string path)
         {
             return !string.IsNullOrWhiteSpace(path) && path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
@@ -549,7 +551,7 @@ namespace OnlyM.CoreSys
             return !string.IsNullOrWhiteSpace(path) && path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase);
         }
 
-        private static byte[]? CreateThumbnailOfWebPImage(string path, int maxPixelDimension)
+        private static byte[] CreateThumbnailOfWebPImage(string path, int maxPixelDimension)
         {
             byte[] result;
 
@@ -574,10 +576,10 @@ namespace OnlyM.CoreSys
         private static byte[]? CreateThumbnailOfSvgImage(string path, int maxPixelDimension)
         {
             using var ms = InternalGetSvgImageStream(path, maxPixelDimension, maxPixelDimension);
-            return ms.ToArray();
+            return ms?.ToArray();
         }
 
-        private static byte[]? CreateThumbnailOfNativeImage(string path, int maxPixelDimension)
+        private static byte[] CreateThumbnailOfNativeImage(string path, int maxPixelDimension)
         {
             byte[] result;
 
@@ -605,10 +607,10 @@ namespace OnlyM.CoreSys
             return result;
         }
 
-        private static BitmapImage InternalGetSvgImage(string imageFile, int maxWidth, int maxHeight)
+        private static BitmapImage? InternalGetSvgImage(string imageFile, int maxWidth, int maxHeight)
         {
             using var ms = InternalGetSvgImageStream(imageFile, maxWidth, maxHeight);
-            return ByteArrayToImage(ms.ToArray())!;
+            return ByteArrayToImage(ms?.ToArray());
         }
 
         private static Bitmap ScaleImage(Bitmap image, int maxWidth, int maxHeight)
@@ -632,25 +634,33 @@ namespace OnlyM.CoreSys
             return newImage;
         }
 
-        private static MemoryStream InternalGetSvgImageStream(string imageFile, int maxWidth, int maxHeight)
+        private static MemoryStream? InternalGetSvgImageStream(string imageFile, int maxWidth, int maxHeight)
         {
-            var svgDoc = SvgDocument.Open(imageFile);
+            try
+            {
+                var svgDoc = SvgDocument.Open(imageFile);
 
-            const int reasonablePixelWidth = 1200;
+                const int reasonablePixelHeight = 720;
 
-            svgDoc.ShapeRendering = SvgShapeRendering.Auto;
-            using var svgAsBmp = ScaleImage(svgDoc.Draw(reasonablePixelWidth, 0), maxWidth, maxHeight);
+                svgDoc.ShapeRendering = SvgShapeRendering.Auto;
+                using var svgAsBmp = ScaleImage(svgDoc.Draw(0, reasonablePixelHeight), maxWidth, maxHeight);
 
-            using var sizedBmp = new Bitmap(maxWidth, maxHeight);
+                using var sizedBmp = new Bitmap(maxWidth, maxHeight);
 
-            using var g = Graphics.FromImage(sizedBmp);
-            g.FillRectangle(new SolidBrush(System.Drawing.Color.White), 0, 0, maxWidth, maxHeight);
-            g.DrawImage(svgAsBmp, new System.Drawing.Point(0, 0));
+                using var g = Graphics.FromImage(sizedBmp);
+                g.FillRectangle(new SolidBrush(System.Drawing.Color.White), 0, 0, maxWidth, maxHeight);
+                g.DrawImage(svgAsBmp, new System.Drawing.Point(0, 0));
 
-            var memoryStream = new MemoryStream();
-            sizedBmp.Save(memoryStream, ImageFormat.Jpeg);
+                var memoryStream = new MemoryStream();
+                sizedBmp.Save(memoryStream, ImageFormat.Jpeg);
 
-            return memoryStream;
+                return memoryStream;
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, $"Could not load SVG image {imageFile}");
+                return null;
+            }
         }
     }
 }
