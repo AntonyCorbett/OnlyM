@@ -7,7 +7,6 @@ using System.IO;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
 using PhotoSauce.MagicScaler;
 using Serilog;
 using SixLabors.ImageSharp;
@@ -73,17 +72,8 @@ namespace OnlyM.CoreSys
 
                 if (IsSvgFormat(itemFilePath))
                 {
-                    var svgDoc = SvgDocument.Open(itemFilePath);
-
-                    var sizedBitmap = new Bitmap(width, height);
-
-                    svgDoc.Draw(sizedBitmap);
-
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        sizedBitmap.Save(memoryStream, ImageFormat.Jpeg);
-                        return memoryStream.ToArray();
-                    }
+                    using var ms = InternalGetSvgImageStream(itemFilePath, width, height);
+                    return ms.ToArray();
                 }
 
                 if (IsWebPFormat(itemFilePath))
@@ -511,17 +501,12 @@ namespace OnlyM.CoreSys
         {
             if (IsSvgFormat(imageFile))
             {
-                var svgDoc = SvgDocument.Open(imageFile);
-                
-                var sizedBitmap = new Bitmap(1280, 720);
+                // choose a reasonable default size.
 
-                svgDoc.Draw(sizedBitmap);
+                const int width = 1280;
+                const int height = 720;
 
-                using (var memoryStream = new MemoryStream())
-                {
-                    sizedBitmap.Save(memoryStream, ImageFormat.Jpeg);
-                    return ByteArrayToImage(memoryStream.ToArray())!;
-                }
+                return InternalGetSvgImage(imageFile, width, height);
             }
 
             var bmp = new BitmapImage();
@@ -547,6 +532,11 @@ namespace OnlyM.CoreSys
             bmp.EndInit();
 
             return bmp;
+        }
+
+        private static float GetSvgResizeFactor(SvgUnit svgDocWidth, int targetWidth)
+        {
+            return targetWidth / svgDocWidth;
         }
 
         private static bool IsWebPFormat(string path)
@@ -583,25 +573,8 @@ namespace OnlyM.CoreSys
 
         private static byte[]? CreateThumbnailOfSvgImage(string path, int maxPixelDimension)
         {
-            byte[] result;
-
-            var svgDoc = SvgDocument.Open(path);
-
-            var newSize = svgDoc.Width > svgDoc.Height
-                ? new SizeF(maxPixelDimension, maxPixelDimension * svgDoc.Height / svgDoc.Width)
-                : new SizeF(maxPixelDimension * svgDoc.Width / svgDoc.Height, maxPixelDimension);
-
-            var sizedBitmap = new Bitmap((int)newSize.Width, (int)newSize.Height);
-
-            svgDoc.Draw(sizedBitmap);
-
-            using (var memoryStream = new MemoryStream())
-            {
-                sizedBitmap.Save(memoryStream, ImageFormat.Jpeg);
-                result = memoryStream.ToArray();
-            }
-
-            return result;
+            using var ms = InternalGetSvgImageStream(path, maxPixelDimension, maxPixelDimension);
+            return ms.ToArray();
         }
 
         private static byte[]? CreateThumbnailOfNativeImage(string path, int maxPixelDimension)
@@ -630,6 +603,54 @@ namespace OnlyM.CoreSys
             }
             
             return result;
+        }
+
+        private static BitmapImage InternalGetSvgImage(string imageFile, int maxWidth, int maxHeight)
+        {
+            using var ms = InternalGetSvgImageStream(imageFile, maxWidth, maxHeight);
+            return ByteArrayToImage(ms.ToArray())!;
+        }
+
+        private static Bitmap ScaleImage(Bitmap image, int maxWidth, int maxHeight)
+        {
+            var ratioX = (double)maxWidth / image.Width;
+            var ratioY = (double)maxHeight / image.Height;
+            var ratio = Math.Min(ratioX, ratioY);
+
+            var newWidth = (int)(image.Width * ratio);
+            var newHeight = (int)(image.Height * ratio);
+
+            var newImage = new Bitmap(maxWidth, maxHeight);
+            using (var graphics = Graphics.FromImage(newImage))
+            {
+                var y = (maxHeight / 2) - (newHeight / 2);
+                var x = (maxWidth / 2) - (newWidth / 2);
+                
+                graphics.DrawImage(image, x, y, newWidth, newHeight);
+            }
+
+            return newImage;
+        }
+
+        private static MemoryStream InternalGetSvgImageStream(string imageFile, int maxWidth, int maxHeight)
+        {
+            var svgDoc = SvgDocument.Open(imageFile);
+
+            const int reasonablePixelWidth = 1200;
+
+            svgDoc.ShapeRendering = SvgShapeRendering.Auto;
+            using var svgAsBmp = ScaleImage(svgDoc.Draw(reasonablePixelWidth, 0), maxWidth, maxHeight);
+
+            using var sizedBmp = new Bitmap(maxWidth, maxHeight);
+
+            using var g = Graphics.FromImage(sizedBmp);
+            g.FillRectangle(new SolidBrush(System.Drawing.Color.White), 0, 0, maxWidth, maxHeight);
+            g.DrawImage(svgAsBmp, new System.Drawing.Point(0, 0));
+
+            var memoryStream = new MemoryStream();
+            sizedBmp.Save(memoryStream, ImageFormat.Jpeg);
+
+            return memoryStream;
         }
     }
 }
