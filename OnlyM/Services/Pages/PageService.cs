@@ -13,6 +13,7 @@ using OnlyM.Core.Services.Monitors;
 using OnlyM.Core.Services.Options;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.CoreSys.WindowsPositioning;
+using OnlyM.EventTracking;
 using OnlyM.MediaElementAdaption;
 using OnlyM.Models;
 using OnlyM.PubSubMessages;
@@ -180,7 +181,9 @@ namespace OnlyM.Services.Pages
                 OpenMediaWindow(requiresVisibleWindow, mediaItemToStart.IsVideo);
 
                 CheckMediaWindow();
-                
+
+                EventTracker.TrackStartMedia(mediaItemToStart.MediaType);
+
                 await _mediaWindow!.StartMedia(
                     mediaItemToStart,
                     currentMediaItems,

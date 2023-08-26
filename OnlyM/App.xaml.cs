@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if !DEBUG
+#define USE_APP_CENTER
+#endif
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -27,6 +31,8 @@ using OnlyM.Services.StartOffsetStorage;
 using OnlyM.Services.WebBrowser;
 using OnlyM.ViewModel;
 using Serilog;
+using Microsoft.AppCenter;
+using OnlyM.EventTracking;
 
 namespace OnlyM
 {
@@ -68,6 +74,8 @@ namespace OnlyM
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            ConfigureAppCenter();
+
             if (AnotherInstanceRunning())
             {
                 Shutdown();
@@ -186,6 +194,9 @@ namespace OnlyM
         private void CurrentDispatcherUnhandledException(object? sender, DispatcherUnhandledExceptionEventArgs e)
         {
             // unhandled exceptions thrown from UI thread
+
+            EventTracker.Error(e.Exception, "Unhandled exception");
+
             e.Handled = true;
             Log.Logger.Fatal(e.Exception, "Unhandled exception");
             Current.Shutdown();
@@ -198,6 +209,12 @@ namespace OnlyM
                 eventLog.Source = "Application";
                 eventLog.WriteEntry(msg, EventLogEntryType.Error);
             }
+        }
+
+        [Conditional("USE_APP_CENTER")]
+        private static void ConfigureAppCenter()
+        {
+            AppCenterInit.Execute();
         }
     }
 }
