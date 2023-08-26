@@ -20,7 +20,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="FFME.Windows" Version="4.4.350" />
     <PackageReference Include="FluentCommandLineParser-netstandard" Version="1.4.3.13" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.50" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.52" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
