@@ -48,6 +48,34 @@ rd OnlyM\bin\Release\net7.0-windows\publish\no-NO /q /s
 rd OnlyM\bin\Release\net7.0-windows\publish\pap-PAP /q /s
 
 ECHO.
+ECHO Copying Satellite assemblies for language files
+ECHO Czech
+xcopy OnlyM\bin\Release\net7.0-windows\publish\cs\*.*  OnlyM\bin\Release\net7.0-windows\publish\cs-CZ /q
+rd OnlyM\bin\Release\net7.0-windows\publish\cs /q /s
+ECHO German
+xcopy OnlyM\bin\Release\net7.0-windows\publish\de\*.*  OnlyM\bin\Release\net7.0-windows\publish\de-DE /q
+rd OnlyM\bin\Release\net7.0-windows\publish\de /q /s
+ECHO French
+xcopy OnlyM\bin\Release\net7.0-windows\publish\fr\*.*  OnlyM\bin\Release\net7.0-windows\publish\fr-FR /q
+rd OnlyM\bin\Release\net7.0-windows\publish\fr /q /s
+ECHO Italian
+xcopy OnlyM\bin\Release\net7.0-windows\publish\it\*.*  OnlyM\bin\Release\net7.0-windows\publish\it-IT /q
+rd OnlyM\bin\Release\net7.0-windows\publish\it /q /s
+ECHO Polish
+xcopy OnlyM\bin\Release\net7.0-windows\publish\pl\*.*  OnlyM\bin\Release\net7.0-windows\publish\pl-PL /q
+rd OnlyM\bin\Release\net7.0-windows\publish\pl /q /s
+ECHO Russian
+xcopy OnlyM\bin\Release\net7.0-windows\publish\ru\*.*  OnlyM\bin\Release\net7.0-windows\publish\ru-RU /q
+rd OnlyM\bin\Release\net7.0-windows\publish\ru /q /s
+ECHO Spanish
+xcopy OnlyM\bin\Release\net7.0-windows\publish\es\*.*  OnlyM\bin\Release\net7.0-windows\publish\es-ES /q
+xcopy OnlyM\bin\Release\net7.0-windows\publish\es\*.*  OnlyM\bin\Release\net7.0-windows\publish\es-MX /q
+rd OnlyM\bin\Release\net7.0-windows\publish\es /q /s
+ECHO Turkish
+xcopy OnlyM\bin\Release\net7.0-windows\publish\tr\*.*  OnlyM\bin\Release\net7.0-windows\publish\tr-TR /q
+rd OnlyM\bin\Release\net7.0-windows\publish\tr /q /s
+
+ECHO.
 ECHO Creating installer
 "D:\Program Files (x86)\Inno Setup 6\iscc" Installer\onlymsetup.iss
 IF %ERRORLEVEL% NEQ 0 goto ERROR
