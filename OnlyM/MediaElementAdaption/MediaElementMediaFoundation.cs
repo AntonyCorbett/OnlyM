@@ -32,14 +32,14 @@ namespace OnlyM.MediaElementAdaption
             _audioPlayer = new Lazy<MediaPlayer>(MediaPlayerFactory);
 
             _mediaElement = mediaElement;
-            _mediaElement.Volume = 1.0;
+            _mediaElement.Volume = 1.0; // max = 1.0
 
             _mediaElement.ScrubbingEnabled = optionsService.AllowVideoScrubbing;
 
             _mediaElement.MediaOpened += HandleMediaOpened;
             _mediaElement.MediaEnded += HandleMediaEnded;
             _mediaElement.MediaFailed += HandleMediaFailed;
-
+            
             _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(60) };
             _timer.Tick += TimerFire;
         }

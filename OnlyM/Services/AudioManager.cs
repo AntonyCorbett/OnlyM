@@ -52,6 +52,7 @@ namespace OnlyM.Services
             if (_audioFileReader == null)
             {
                 _audioFileReader = new AudioFileReader(mediaItemFilePath);
+                _audioFileReader.Volume = 1.0f; // can be increased!
                 _outputDevice.Init(_audioFileReader);
             }
 

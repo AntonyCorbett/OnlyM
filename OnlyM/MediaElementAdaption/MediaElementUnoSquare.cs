@@ -15,7 +15,7 @@ namespace OnlyM.MediaElementAdaption
         public MediaElementUnoSquare(Unosquare.FFME.MediaElement mediaElement)
         {
             _mediaElement = mediaElement;
-            _mediaElement.Volume = 1.0;
+            _mediaElement.Volume = 1.0; // max = 1.0
             
             _mediaElement.MediaOpened += HandleMediaOpened;
             _mediaElement.MediaClosed += HandleMediaClosed;
