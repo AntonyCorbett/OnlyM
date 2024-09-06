@@ -21,17 +21,17 @@ namespace OnlyM.Windows
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        protected override void OnSourceInitialized(System.EventArgs e)
+        {
+            AdjustMainWindowPositionAndSize();
 
             var pageService = Ioc.Default.GetService<IPageService>();
             if (pageService != null)
             {
                 pageService.ScrollViewer = MainScrollViewer;
             }
-        }
-
-        protected override void OnSourceInitialized(System.EventArgs e)
-        {
-            AdjustMainWindowPositionAndSize();
         }
 
         private void WindowClosing(object? sender, System.ComponentModel.CancelEventArgs e)
