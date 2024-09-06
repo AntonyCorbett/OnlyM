@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Serilog;
 
+#pragma warning disable U2U1004
+
 namespace OnlyM.Core.Services.Monitors
 {
     // ReSharper disable FieldCanBeMadeReadOnly.Local

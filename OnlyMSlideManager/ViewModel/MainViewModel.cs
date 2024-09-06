@@ -231,7 +231,7 @@ namespace OnlyMSlideManager.ViewModel
             }
         }
 
-        public ObservableCollectionEx<SlideItem> SlideItems { get; } = new();
+        public ObservableCollectionEx<SlideItem> SlideItems { get; } = [];
 
         public RelayCommand<string> DeleteSlideCommand { get; private set; } = null!;
 
@@ -958,7 +958,9 @@ namespace OnlyMSlideManager.ViewModel
                                 break;
 
                             default:
+#pragma warning disable CA1863
                                 var msg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.X_SLIDES_CREATED, fileCount);
+#pragma warning restore CA1863
                                 _snackbarService.EnqueueWithOk(msg, Properties.Resources.OK);
                                 break;
                         }
@@ -1043,7 +1045,9 @@ namespace OnlyMSlideManager.ViewModel
         private string GetStandardStatusText()
         {
             // note that there is always a dummy slide (hence "-1")
+#pragma warning disable CA1863
             return string.Format(CultureInfo.CurrentCulture, Properties.Resources.SLIDE_COUNT_X, SlideItems.Count - 1);
+#pragma warning restore CA1863
         }
 
         private static bool IsInDesignMode()

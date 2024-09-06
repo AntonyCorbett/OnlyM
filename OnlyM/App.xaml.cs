@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using CefSharp;
 using CefSharp.Wpf;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.AppCenter;
 using Microsoft.Extensions.DependencyInjection;
 using OnlyM.AutoUpdates;
 using OnlyM.Core.Services.CommandLine;
@@ -20,6 +21,7 @@ using OnlyM.Core.Services.Monitors;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Utils;
 using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.EventTracking;
 using OnlyM.Services.Dialogs;
 using OnlyM.Services.DragAndDrop;
 using OnlyM.Services.FrozenVideoItems;
@@ -31,8 +33,6 @@ using OnlyM.Services.StartOffsetStorage;
 using OnlyM.Services.WebBrowser;
 using OnlyM.ViewModel;
 using Serilog;
-using Microsoft.AppCenter;
-using OnlyM.EventTracking;
 
 namespace OnlyM
 {

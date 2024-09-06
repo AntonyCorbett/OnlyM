@@ -7,7 +7,7 @@ namespace OnlyM.Services
     {
         private const int MaxCount = 10;
 
-        private readonly ObservableCollection<string> _recentlyUsedFolders = new();
+        private readonly ObservableCollection<string> _recentlyUsedFolders = [];
 
         public void Add(IEnumerable<string> recentlyUsedFolders)
         {

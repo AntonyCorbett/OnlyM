@@ -15,14 +15,14 @@ namespace OnlyMSlideManager.Services.DragAndDrop
     internal sealed class DragAndDropServiceCustom : IDragAndDropServiceCustom
     {
         private readonly string[] _supportedImageExtensions =
-        {
+        [
             ".bmp",
             ".png",
             ".jpg",
             ".jpeg",
             ".webp",
             ".svg"
-        };
+        ];
 
         private readonly IUserInterfaceService _userInterfaceService;
         private Control? _dragSourceCard;

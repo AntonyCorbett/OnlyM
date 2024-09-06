@@ -6,9 +6,9 @@ namespace OnlyM.Services.HiddenMediaItems
 {
     internal sealed class HiddenMediaItemsService : IHiddenMediaItemsService
     {
-        private readonly HashSet<string> _allHiddenItems = new();
+        private readonly HashSet<string> _allHiddenItems = [];
 
-        private readonly HashSet<string> _hiddenItemsInCurrentMediaFolder = new();
+        private readonly HashSet<string> _hiddenItemsInCurrentMediaFolder = [];
 
         public event EventHandler? HiddenItemsChangedEvent;
 

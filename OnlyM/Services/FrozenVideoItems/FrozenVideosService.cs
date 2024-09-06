@@ -5,7 +5,7 @@ namespace OnlyM.Services.FrozenVideoItems
 {
     internal sealed class FrozenVideosService : IFrozenVideosService
     {
-        private readonly HashSet<string> _frozenItems = new();
+        private readonly HashSet<string> _frozenItems = [];
 
         public void Init(IEnumerable<MediaItem> items)
         {

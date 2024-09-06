@@ -125,7 +125,9 @@ namespace OnlyM.Services.DragAndDrop
             }
             else
             {
+#pragma warning disable CA1863
                 _snackbarService.EnqueueWithOk(string.Format(CultureInfo.CurrentCulture, Properties.Resources.FILES_COPIED, count), Properties.Resources.OK);
+#pragma warning restore CA1863
             }
         }
 
@@ -145,7 +147,7 @@ namespace OnlyM.Services.DragAndDrop
                     return 0;
                 }
 
-                bool shouldCreateSlideshow = DataIsFromOnlyV(data) && files.Length > 1;
+                var shouldCreateSlideshow = DataIsFromOnlyV(data) && files.Length > 1;
 
                 count = shouldCreateSlideshow 
                     ? CopyAsSlideshow(mediaFolder, data, files) 
@@ -399,9 +401,9 @@ namespace OnlyM.Services.DragAndDrop
             return !string.IsNullOrEmpty(ext) && _mediaProviderService.IsFileExtensionSupported(ext);
         }
 
-        private bool CanDropOrPasteFiles(IDataObject data) => GetSupportedFiles(data).Any();
+        private bool CanDropOrPasteFiles(IDataObject data) => GetSupportedFiles(data).Count > 0;
         
-        private static bool CanDropOrPasteUris(IDataObject data) => GetSupportedUrls(data).Any();
+        private static bool CanDropOrPasteUris(IDataObject data) => GetSupportedUrls(data).Count > 0;
         
         private static bool DataIsFromOnlyV(IDataObject data)
         {
@@ -423,7 +425,7 @@ namespace OnlyM.Services.DragAndDrop
             return s?.Split('|')[1];
         }
 
-        private static IEnumerable<string> GetSupportedUrls(IDataObject data)
+        private static List<string> GetSupportedUrls(IDataObject data)
         {
             var result = new List<string>();
 
@@ -454,7 +456,7 @@ namespace OnlyM.Services.DragAndDrop
                 (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
-        private IEnumerable<string> GetSupportedFiles(IDataObject data)
+        private List<string> GetSupportedFiles(IDataObject data)
         {
             var result = new List<string>();
 

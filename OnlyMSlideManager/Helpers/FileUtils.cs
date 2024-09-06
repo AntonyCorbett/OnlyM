@@ -21,7 +21,9 @@ namespace OnlyMSlideManager.Helpers
                 if (!Directory.Exists(folderPath))
                 {
                     // "Could not create folder {0}"
+#pragma warning disable CA1863
                     throw new Exception(string.Format(CultureInfo.CurrentCulture, Properties.Resources.CREATE_FOLDER_ERROR, folderPath));
+#pragma warning restore CA1863
                 }
             }
         }

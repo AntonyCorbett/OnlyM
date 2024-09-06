@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using OnlyM.CoreSys;
 using OnlyMSlideManager.Models;
 using OnlyMSlideManager.Properties;
@@ -30,7 +31,7 @@ namespace OnlyMSlideManager.Helpers
             return result;
         }
 
-        private static ImageSource? CreateThumbnailImage(Bitmap image, int thumbnailWidth, int thumbnailHeight)
+        private static BitmapSource? CreateThumbnailImage(Bitmap image, int thumbnailWidth, int thumbnailHeight)
         {
             var bmp = GraphicsUtils.BitmapToBitmapImage(image);
             return GraphicsUtils.Downsize(bmp, thumbnailWidth, thumbnailHeight);

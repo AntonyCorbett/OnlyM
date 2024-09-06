@@ -389,7 +389,9 @@ namespace OnlyM.Services
 
         private void HandleBrowserFrameLoadStart(object? sender, FrameLoadStartEventArgs e)
         {
+#pragma warning disable CA1863
             var s = string.Format(CultureInfo.CurrentCulture, Properties.Resources.LOADING_FRAME, e.Frame.Identifier);
+#pragma warning restore CA1863
             StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = s });
         }
 
@@ -401,7 +403,9 @@ namespace OnlyM.Services
                 return;
             }
 
+#pragma warning disable CA1863
             var errorMsg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.WEB_LOAD_FAIL, e.FailedUrl, e.ErrorText, e.ErrorCode);
+#pragma warning restore CA1863
             var body = $"<html><body><h2>{errorMsg}</h2></body></html>";
 
             _browser.LoadHtml(body, e.FailedUrl);

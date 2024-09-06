@@ -141,12 +141,11 @@ namespace OnlyM.Models
         public bool ShouldDisplayPdfPageTextBox => IsPdf;
 
         public static IEnumerable<PdfViewStyleAndDescription> PdfViewStyles =>
-            new[]
-            {
-                new PdfViewStyleAndDescription { Style = PdfViewStyle.Default, Description = Properties.Resources.PDF_VIEW_STYLE_DEFAULT },
-                new PdfViewStyleAndDescription { Style = PdfViewStyle.VerticalFit, Description = Properties.Resources.PDF_VIEW_STYLE_VERT },
-                new PdfViewStyleAndDescription { Style = PdfViewStyle.HorizontalFit, Description = Properties.Resources.PDF_VIEW_STYLE_HORZ },
-            };
+        [
+            new PdfViewStyleAndDescription { Style = PdfViewStyle.Default, Description = Properties.Resources.PDF_VIEW_STYLE_DEFAULT },
+            new PdfViewStyleAndDescription { Style = PdfViewStyle.VerticalFit, Description = Properties.Resources.PDF_VIEW_STYLE_VERT },
+            new PdfViewStyleAndDescription { Style = PdfViewStyle.HorizontalFit, Description = Properties.Resources.PDF_VIEW_STYLE_HORZ }
+        ];
         
         public string ChosenPdfPage
         {

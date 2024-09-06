@@ -106,7 +106,9 @@ namespace OnlyM.ViewModel
 
         public ObservableCollection<string> RecentMediaFolders => _recentlyUsedMediaFolders.GetFolders();
 
+#pragma warning disable CA1863
         public static string AppVersionStr => string.Format(CultureInfo.CurrentCulture, Properties.Resources.APP_VER, VersionDetection.GetCurrentVersion());
+#pragma warning restore CA1863
 
         public IEnumerable<ImageFadeSpeed> FadeSpeedTypes => _fadingSpeeds;
 
@@ -1091,11 +1093,11 @@ namespace OnlyM.ViewModel
         private static RenderingMethodItem[] GetRenderingMethods()
         {
             // don't localize these strings!
-            return new[]
-            {
+            return
+            [
                 new RenderingMethodItem { Method = RenderingMethod.MediaFoundation, Name = "Media Foundation" },
-                new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = "Ffmpeg" },
-            };
+                new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = "Ffmpeg" }
+            ];
         }
 
         private MonitorItem[] GetSystemMonitors()

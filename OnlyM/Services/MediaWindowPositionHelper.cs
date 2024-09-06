@@ -235,7 +235,7 @@ namespace OnlyM.Services
                         yield return children;
                     }
 
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    foreach (var childOfChild in FindVisualChildren<T>(child))
                     {
                         yield return childOfChild;
                     }

@@ -139,7 +139,7 @@ namespace OnlyM.Core.Services.Options
 
         public bool CacheImages { get; set; }
 
-        public List<string> RecentlyUsedMediaFolders { get; set; } = new List<string>();
+        public List<string> RecentlyUsedMediaFolders { get; set; } = [];
 
         public bool AllowMirror { get; set; }
 
@@ -175,7 +175,7 @@ namespace OnlyM.Core.Services.Options
                     : FileUtils.GetOnlyMDefaultMediaFolder());
             }
 
-            for (int n = RecentlyUsedMediaFolders.Count - 1; n >= 0; --n)
+            for (var n = RecentlyUsedMediaFolders.Count - 1; n >= 0; --n)
             {
                 var folder = RecentlyUsedMediaFolders[n];
                 if (!Directory.Exists(folder))

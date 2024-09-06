@@ -19,12 +19,5 @@ namespace OnlyM.Core.Services.Media
             : base(message, innerException)
         {
         }
-
-        protected VideoFileInUseException(
-            System.Runtime.Serialization.SerializationInfo serializationInfo, 
-            System.Runtime.Serialization.StreamingContext streamingContext)
-            : base(serializationInfo, streamingContext)
-        {
-        }
     }
 }

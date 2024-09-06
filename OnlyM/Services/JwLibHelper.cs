@@ -34,7 +34,7 @@ namespace OnlyM.Services
                 return false;
             }
 
-            bool found = false;
+            var found = false;
             var prevWindow = IntPtr.Zero;
 
             while (!found)

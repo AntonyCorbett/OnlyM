@@ -25,7 +25,7 @@ namespace OnlyM.Core.Services.Media
             return null;
         }
 
-        private static IEnumerable<string> GetPossibleSubFolderNames(DateTime theDate)
+        private static HashSet<string> GetPossibleSubFolderNames(DateTime theDate)
         {
             var result = new HashSet<string>
             {

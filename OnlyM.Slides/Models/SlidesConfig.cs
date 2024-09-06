@@ -7,7 +7,7 @@ namespace OnlyM.Slides.Models
 {
     internal sealed class SlidesConfig
     {
-        public List<Slide> Slides { get; } = new();
+        public List<Slide> Slides { get; } = [];
 
         public bool AutoPlay { get; set; }
 

@@ -123,7 +123,7 @@ namespace OnlyM.ViewModel
             WeakReferenceMessenger.Default.Register<SubtitleFileMessage>(this, OnSubtitleFileActivity);
         }
 
-        public ObservableCollectionEx<MediaItem> MediaItems { get; } = new();
+        public ObservableCollectionEx<MediaItem> MediaItems { get; } = [];
 
         public RelayCommand<Guid?> MediaControlCommand1 { get; set; } = null!;
 
@@ -824,7 +824,7 @@ namespace OnlyM.ViewModel
             }
         }
 
-        private IReadOnlyCollection<MediaItem>? GetCurrentMediaItems()
+        private List<MediaItem>? GetCurrentMediaItems()
         {
             if (!_activeMediaItemsService.Any())
             {

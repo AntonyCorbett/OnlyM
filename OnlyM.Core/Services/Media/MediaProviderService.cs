@@ -13,7 +13,7 @@ namespace OnlyM.Core.Services.Media
     public class MediaProviderService : IMediaProviderService
     {
         private readonly SupportedMediaType[] _supportedMediaTypes =
-        {
+        [
             new() { Name = "MP4 Video", Classification = MediaClassification.Video, FileExtension = ".mp4" },
             new() { Name = "M4V Video", Classification = MediaClassification.Video, FileExtension = ".m4v" },
             new() { Name = "MKV Video", Classification = MediaClassification.Video, FileExtension = ".mkv" },
@@ -47,8 +47,8 @@ namespace OnlyM.Core.Services.Media
             new() { Name = "OnlyM Slideshow", Classification = MediaClassification.Slideshow, FileExtension = SlideFile.FileExtension },
 
             new() { Name = "Web Page", Classification = MediaClassification.Web, FileExtension = ".url" },
-            new() { Name = "PDF file", Classification = MediaClassification.Web, FileExtension = ".pdf" },
-        };
+            new() { Name = "PDF file", Classification = MediaClassification.Web, FileExtension = ".pdf" }
+        ];
 
         private readonly HashSet<string> _supportedFileExtensions = new(StringComparer.OrdinalIgnoreCase);
         private readonly IOptionsService _optionsService;

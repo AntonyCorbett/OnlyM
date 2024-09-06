@@ -11,6 +11,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using Serilog;
 
+#pragma warning disable U2U1004
+
 namespace OnlyM.CoreSys.WindowsPositioning
 {
     // ReSharper disable CommentTypo

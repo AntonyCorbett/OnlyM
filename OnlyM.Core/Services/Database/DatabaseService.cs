@@ -351,7 +351,7 @@ namespace OnlyM.Core.Services.Database
 
             if (!string.IsNullOrEmpty(s))
             {
-                var tokens = s.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                var tokens = s.Split([","], StringSplitOptions.RemoveEmptyEntries);
                 foreach (var token in tokens)
                 {
                     if (int.TryParse(token, out var seconds))

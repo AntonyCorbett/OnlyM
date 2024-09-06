@@ -24,7 +24,7 @@ namespace OnlyM.Services.WebBrowser
                         return;
                     }
 
-                    byte[] bytes = File.ReadAllBytes(file);
+                    var bytes = File.ReadAllBytes(file);
 
                     var stream = new MemoryStream(bytes) { Position = 0 };
                     ResponseLength = stream.Length;

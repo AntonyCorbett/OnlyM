@@ -5,7 +5,7 @@ namespace OnlyM.Services.MediaChanging
 {
     internal sealed class MediaStatusChangingService : IMediaStatusChangingService
     {
-        private readonly HashSet<Guid> _changingMediaItems = new();
+        private readonly HashSet<Guid> _changingMediaItems = [];
         private readonly object _locker = new();
 
         public void AddChangingItem(Guid mediaItemId)

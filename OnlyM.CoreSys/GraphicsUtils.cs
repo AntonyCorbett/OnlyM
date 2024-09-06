@@ -473,26 +473,6 @@ namespace OnlyM.CoreSys
             return false;
         }
 
-        //private static BitmapImage? FixBadDpi(string imageFile)
-        //{
-        //    using var image = Image.Load(imageFile);
-        //    image.Metadata.HorizontalResolution = 96;
-        //    image.Metadata.VerticalResolution = 96;
-
-        //    using var outStream = new MemoryStream();
-        //    image.Save(outStream, new JpegEncoder());
-
-        //    outStream.Seek(0L, SeekOrigin.Begin);
-            
-        //    var bitmapImage = new BitmapImage();
-        //    bitmapImage.BeginInit();
-        //    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-        //    bitmapImage.StreamSource = outStream;
-        //    bitmapImage.EndInit();
-
-        //    return bitmapImage;
-        //}
-
         private static BitmapImage? InternalGetBitmapImage(
             string imageFile, bool ignoreColorProfile, bool ignoreInternalCache = false)
         {
