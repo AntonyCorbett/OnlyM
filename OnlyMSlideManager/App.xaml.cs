@@ -14,7 +14,9 @@ using Serilog;
 
 namespace OnlyMSlideManager
 {
+#pragma warning disable CA1001
     public partial class App : Application
+#pragma warning restore CA1001
     {
         private readonly string _appString = "OnlyMSlideManagerTool";
         private Mutex? _appMutex;
