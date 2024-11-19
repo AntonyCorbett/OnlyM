@@ -15,10 +15,8 @@ internal static class AppCenterInit
     {
         if (OperatingSystem.IsWindows())
         {
-#pragma warning disable CA1416
             AppCenter.Start(TheToken, typeof(Analytics), typeof(Crashes));
             AppCenter.SetCountryCode(RegionInfo.CurrentRegion.TwoLetterISORegionName);
-#pragma warning restore CA1416
         }
     }
 }

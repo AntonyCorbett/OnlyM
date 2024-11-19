@@ -53,12 +53,10 @@ namespace OnlyM.Core.Services.WebShortcuts
                         }
                     }
                 }
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
                 catch (Exception)
                 {
                     // nothing
                 }
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
                 finally
                 {
                     _initialised = true;

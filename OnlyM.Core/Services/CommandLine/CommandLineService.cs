@@ -53,12 +53,10 @@ namespace OnlyM.Core.Services.CommandLine
                     return Path.GetFullPath(sourcePath);
                 }
             }
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
             catch (Exception)
             {
                 // ignored
             }
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
 
             return null;
         }
