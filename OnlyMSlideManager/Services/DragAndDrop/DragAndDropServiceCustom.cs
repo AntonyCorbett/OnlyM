@@ -10,188 +10,183 @@ using OnlyM.CoreSys.Services.UI;
 using OnlyMSlideManager.Models;
 using OnlyMSlideManager.PubSubMessages;
 
-namespace OnlyMSlideManager.Services.DragAndDrop
+namespace OnlyMSlideManager.Services.DragAndDrop;
+
+internal sealed class DragAndDropServiceCustom : IDragAndDropServiceCustom
 {
-    internal sealed class DragAndDropServiceCustom : IDragAndDropServiceCustom
+    private readonly string[] _supportedImageExtensions =
+    [
+        ".bmp",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".webp",
+        ".svg"
+    ];
+
+    private readonly IUserInterfaceService _userInterfaceService;
+    private Control? _dragSourceCard;
+    private Point _startDragPoint;
+    private bool _isDragging;
+
+    public DragAndDropServiceCustom(IUserInterfaceService userInterfaceService)
     {
-        private readonly string[] _supportedImageExtensions =
-        [
-            ".bmp",
-            ".png",
-            ".jpg",
-            ".jpeg",
-            ".webp",
-            ".svg"
-        ];
+        _userInterfaceService = userInterfaceService;
+    }
 
-        private readonly IUserInterfaceService _userInterfaceService;
-        private Control? _dragSourceCard;
-        private Point _startDragPoint;
-        private bool _isDragging;
-
-        public DragAndDropServiceCustom(IUserInterfaceService userInterfaceService)
+    public void DragSourcePreviewMouseDown(Control? card, Point position)
+    {
+        if (card != null)
         {
-            _userInterfaceService = userInterfaceService;
+            _dragSourceCard = card;
+            _startDragPoint = position;
+        }
+    }
+
+    public void DragSourcePreviewMouseMove(Point position)
+    {
+        if (_userInterfaceService.IsBusy())
+        {
+            return;
         }
 
-        public void DragSourcePreviewMouseDown(Control? card, Point position)
+        if (!_isDragging && (Math.Abs(position.X - _startDragPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                             Math.Abs(position.Y - _startDragPoint.Y) > SystemParameters.MinimumVerticalDragDistance))
         {
-            if (card != null)
-            {
-                _dragSourceCard = card;
-                _startDragPoint = position;
-            }
+            StartDrag();
+        }
+    }
+
+    public void DragEnter(Rectangle rect, DragEventArgs e)
+    {
+        SetEffects(e, CanDropOrPaste(e.Data));
+        e.Handled = true;
+    }
+
+    public void Drop(Rectangle rect, DragEventArgs e)
+    {
+        if (_userInterfaceService.IsBusy())
+        {
+            return;
         }
 
-        public void DragSourcePreviewMouseMove(Point position)
+        // targetCardViewModel represents the card to the right of the drop zone.
+        if (rect.DataContext is SlideItem targetCardViewModel)
         {
-            if (_userInterfaceService.IsBusy())
+            if (_dragSourceCard?.DataContext is SlideItem sourceCardViewModel)
             {
-                return;
-            }
-
-            if (!_isDragging && (Math.Abs(position.X - _startDragPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                                 Math.Abs(position.Y - _startDragPoint.Y) > SystemParameters.MinimumVerticalDragDistance))
-            {
-                StartDrag();
-            }
-        }
-
-        public void DragEnter(Rectangle rect, DragEventArgs e)
-        {
-            SetEffects(e, CanDropOrPaste(e.Data));
-            e.Handled = true;
-        }
-
-        public void Drop(Rectangle rect, DragEventArgs e)
-        {
-            if (_userInterfaceService.IsBusy())
-            {
-                return;
-            }
-
-            // targetCardViewModel represents the card to the right of the drop zone.
-            if (rect.DataContext is SlideItem targetCardViewModel)
-            {
-                if (_dragSourceCard?.DataContext is SlideItem sourceCardViewModel)
+                WeakReferenceMessenger.Default.Send(new ReorderMessage
                 {
-                    WeakReferenceMessenger.Default.Send(new ReorderMessage
-                    {
-                        SourceItem = sourceCardViewModel,
-                        TargetId = targetCardViewModel.DropZoneId,
-                    });
-                }
-                else
+                    SourceItem = sourceCardViewModel,
+                    TargetId = targetCardViewModel.DropZoneId,
+                });
+            }
+            else
+            {
+                // The drag object is from another application...
+                if (e.Data != null)
                 {
-                    // The drag object is from another application...
-                    if (e.Data != null)
-                    {
-                        HandleDropExternalImage(e.Data, targetCardViewModel);
-                    }
+                    HandleDropExternalImage(e.Data, targetCardViewModel);
                 }
             }
         }
+    }
 
-        private void HandleDropExternalImage(IDataObject data, SlideItem targetCardViewModel)
+    private void HandleDropExternalImage(IDataObject data, SlideItem targetCardViewModel)
+    {
+        var files = GetSupportedFiles(data).ToList();
+        files.Sort();
+
+        WeakReferenceMessenger.Default.Send(new DropImagesMessage
         {
-            var files = GetSupportedFiles(data).ToList();
-            files.Sort();
+            FileList = files,
+            TargetId = targetCardViewModel.DropZoneId,
+        });
+    }
 
-            WeakReferenceMessenger.Default.Send(new DropImagesMessage
-            {
-                FileList = files,
-                TargetId = targetCardViewModel.DropZoneId,
-            });
+    private void StartDrag()
+    {
+        if (_dragSourceCard?.DataContext is not SlideItem cardViewModel)
+        {
+            return;
         }
 
-        private void StartDrag()
+        _isDragging = true;
+        cardViewModel.ShowCardBorder = true;
+
+        var objectToDrag = new SourceCard
         {
-            if (_dragSourceCard?.DataContext is not SlideItem cardViewModel)
-            {
-                return;
-            }
+            Name = cardViewModel.Name,
+        };
 
-            _isDragging = true;
-            cardViewModel.ShowCardBorder = true;
+        var data = new DataObject(DataFormats.Serializable, objectToDrag);
 
-            var objectToDrag = new SourceCard
-            {
-                Name = cardViewModel.Name,
-            };
+        DragDrop.DoDragDrop(_dragSourceCard, data, DragDropEffects.Move);
 
-            var data = new DataObject(DataFormats.Serializable, objectToDrag);
+        cardViewModel.ShowCardBorder = false;
+        _dragSourceCard = null;
+        _isDragging = false;
+    }
 
-            DragDrop.DoDragDrop(_dragSourceCard, data, DragDropEffects.Move);
+    private bool CanDropOrPaste(IDataObject data) =>
+        GetSupportedFiles(data).Any();
 
-            cardViewModel.ShowCardBorder = false;
-            _dragSourceCard = null;
-            _isDragging = false;
+    private IEnumerable<string> GetSupportedFiles(IDataObject data)
+    {
+        if (!data.GetDataPresent(DataFormats.FileDrop))
+        {
+            yield break;
         }
 
-        private bool CanDropOrPaste(IDataObject data)
+        // Note that you can have more than one file...
+        var files = (string[]?)data.GetData(DataFormats.FileDrop);
+
+        if (files != null && files.Length > 0)
         {
-            return GetSupportedFiles(data).Any();
-        }
-
-        private IEnumerable<string> GetSupportedFiles(IDataObject data)
-        {
-            if (!data.GetDataPresent(DataFormats.FileDrop))
+            foreach (var file in files)
             {
-                yield break;
-            }
-
-            // Note that you can have more than one file...
-            var files = (string[]?)data.GetData(DataFormats.FileDrop);
-
-            if (files != null && files.Length > 0)
-            {
-                foreach (var file in files)
+                if (Directory.Exists(file))
                 {
-                    if (Directory.Exists(file))
+                    // a folder rather than a file.
+                    foreach (var fileInFolder in Directory.EnumerateFiles(file))
                     {
-                        // a folder rather than a file.
-                        foreach (var fileInFolder in Directory.EnumerateFiles(file))
-                        {
-                            var fileToAdd = GetSupportedFile(fileInFolder);
-                            if (fileToAdd != null)
-                            {
-                                yield return fileToAdd;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var fileToAdd = GetSupportedFile(file);
+                        var fileToAdd = GetSupportedFile(fileInFolder);
                         if (fileToAdd != null)
                         {
                             yield return fileToAdd;
                         }
                     }
                 }
+                else
+                {
+                    var fileToAdd = GetSupportedFile(file);
+                    if (fileToAdd != null)
+                    {
+                        yield return fileToAdd;
+                    }
+                }
             }
         }
+    }
 
-        private string? GetSupportedFile(string file)
+    private string? GetSupportedFile(string file)
+    {
+        var ext = System.IO.Path.GetExtension(file);
+        if (string.IsNullOrEmpty(ext) || !IsFileExtensionSupported(ext))
         {
-            var ext = System.IO.Path.GetExtension(file);
-            if (string.IsNullOrEmpty(ext) || !IsFileExtensionSupported(ext))
-            {
-                return null;
-            }
-
-            return file;
+            return null;
         }
 
-        private bool IsFileExtensionSupported(string ext)
-        {
-            return _supportedImageExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
-        }
+        return file;
+    }
 
-        private static void SetEffects(DragEventArgs e, bool canDrop)
-        {
-            e.Effects = canDrop
-                ? DragDropEffects.Copy
-                : DragDropEffects.None;
-        }
+    private bool IsFileExtensionSupported(string ext) =>
+        _supportedImageExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
+
+    private static void SetEffects(DragEventArgs e, bool canDrop)
+    {
+        e.Effects = canDrop
+            ? DragDropEffects.Copy
+            : DragDropEffects.None;
     }
 }

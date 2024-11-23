@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace OnlyM.Windows
+namespace OnlyM.Windows;
+
+/// <summary>
+/// Interaction logic for SettingsPage.xaml
+/// </summary>
+public partial class SettingsPage : UserControl
 {
-    /// <summary>
-    /// Interaction logic for SettingsPage.xaml
-    /// </summary>
-    public partial class SettingsPage : UserControl
+    public SettingsPage()
     {
-        public SettingsPage()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

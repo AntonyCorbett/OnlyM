@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace OnlyM.Models
+namespace OnlyM.Models;
+
+internal sealed class FilesCopyProgressEventArgs : EventArgs
 {
-    internal sealed class FilesCopyProgressEventArgs : EventArgs
-    {
-        public FileCopyStatus Status { get; set; }
-    }
+    public FileCopyStatus Status { get; set; }
 }

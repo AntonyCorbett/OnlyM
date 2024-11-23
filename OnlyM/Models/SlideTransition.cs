@@ -1,8 +1,7 @@
-﻿namespace OnlyM.Models
+﻿namespace OnlyM.Models;
+
+public enum SlideTransition
 {
-    public enum SlideTransition
-    {
-        Started,
-        Finished,
-    }
+    Started,
+    Finished,
 }

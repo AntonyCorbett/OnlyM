@@ -16,18 +16,13 @@ Stay informed: follow @datagrid on Twitter or Like http://facebook.com/datagrids
 using System;
 using System.Windows.Data;
 
-namespace OnlyM.CustomControls.Converters
-{
-    public class RadiusConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return (double?)value * 2;
-        }
+namespace OnlyM.CustomControls.Converters;
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
+public class RadiusConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) =>
+        (double?)value * 2;
+
+    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) =>
+        throw new NotImplementedException();
 }

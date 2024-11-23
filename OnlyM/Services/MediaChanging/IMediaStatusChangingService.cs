@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace OnlyM.Services.MediaChanging
+namespace OnlyM.Services.MediaChanging;
+
+internal interface IMediaStatusChangingService
 {
-    internal interface IMediaStatusChangingService
-    {
-        void AddChangingItem(Guid mediaItemId);
+    void AddChangingItem(Guid mediaItemId);
 
-        void RemoveChangingItem(Guid mediaItemId);
+    void RemoveChangingItem(Guid mediaItemId);
 
-        bool IsMediaStatusChanging();
-    }
+    bool IsMediaStatusChanging();
 }

@@ -12,5 +12,5 @@ using System.Windows;
 [assembly: ComVisible(false)]
 
 [assembly: ThemeInfo(
-    ResourceDictionaryLocation.None, 
+    ResourceDictionaryLocation.None,
     ResourceDictionaryLocation.SourceAssembly)]

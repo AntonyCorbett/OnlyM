@@ -1,17 +1,16 @@
 ﻿using System;
 
-namespace OnlyM.MediaElementAdaption
+namespace OnlyM.MediaElementAdaption;
+
+public class OnlyMPositionChangedEventArgs : EventArgs
 {
-    public class OnlyMPositionChangedEventArgs : EventArgs
+    public OnlyMPositionChangedEventArgs(Guid mediaItemId, TimeSpan position)
     {
-        public OnlyMPositionChangedEventArgs(Guid mediaItemId, TimeSpan position)
-        {
-            MediaItemId = mediaItemId;
-            Position = position;
-        }
-
-        public Guid MediaItemId { get; set; }
-
-        public TimeSpan Position { get; }
+        MediaItemId = mediaItemId;
+        Position = position;
     }
+
+    public Guid MediaItemId { get; set; }
+
+    public TimeSpan Position { get; }
 }

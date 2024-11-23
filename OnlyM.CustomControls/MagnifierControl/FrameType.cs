@@ -13,11 +13,10 @@ Original copyright is shown below.
    Stay informed: follow @datagrid on Twitter or Like http://facebook.com/datagrids
   ***********************************************************************************/
 
-namespace OnlyM.CustomControls.MagnifierControl
+namespace OnlyM.CustomControls.MagnifierControl;
+
+public enum FrameType
 {
-    public enum FrameType
-    {
-        Circle,
-        Rectangle,
-    }
+    Circle,
+    Rectangle,
 }

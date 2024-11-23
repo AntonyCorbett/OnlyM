@@ -1,8 +1,7 @@
-﻿namespace OnlyM.Core.Subtitles
+﻿namespace OnlyM.Core.Subtitles;
+
+public enum SubtitleStatus
 {
-    public enum SubtitleStatus
-    {
-        NotShowing,
-        Showing,
-    }
+    NotShowing,
+    Showing,
 }

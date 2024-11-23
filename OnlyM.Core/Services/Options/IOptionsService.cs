@@ -4,150 +4,149 @@ using System.Windows;
 using OnlyM.Core.Models;
 using Serilog.Events;
 
-namespace OnlyM.Core.Services.Options
+namespace OnlyM.Core.Services.Options;
+
+public interface IOptionsService
 {
-    public interface IOptionsService
-    {
-        event EventHandler MediaFolderChangedEvent;
+    event EventHandler MediaFolderChangedEvent;
 
-        event EventHandler AutoRotateChangedEvent;
+    event EventHandler AutoRotateChangedEvent;
 
-        event EventHandler ImageFadeTypeChangedEvent;
+    event EventHandler ImageFadeTypeChangedEvent;
 
-        event EventHandler ImageFadeSpeedChangedEvent;
+    event EventHandler ImageFadeSpeedChangedEvent;
 
-        event EventHandler AlwaysOnTopChangedEvent;
+    event EventHandler AlwaysOnTopChangedEvent;
 
-        event EventHandler WindowedMediaAlwaysOnTopChangedEvent;
+    event EventHandler WindowedMediaAlwaysOnTopChangedEvent;
 
-        event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
+    event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
-        event EventHandler RenderingMethodChangedEvent;
+    event EventHandler RenderingMethodChangedEvent;
 
-        event EventHandler PermanentBackdropChangedEvent;
+    event EventHandler PermanentBackdropChangedEvent;
 
-        event EventHandler AllowVideoPauseChangedEvent;
+    event EventHandler AllowVideoPauseChangedEvent;
 
-        event EventHandler AllowVideoPositionSeekingChangedEvent;
+    event EventHandler AllowVideoPositionSeekingChangedEvent;
 
-        event EventHandler ShowSubtitlesChangedEvent;
+    event EventHandler ShowSubtitlesChangedEvent;
 
-        event EventHandler UseInternalMediaTitlesChangedEvent;
+    event EventHandler UseInternalMediaTitlesChangedEvent;
 
-        event EventHandler IncludeBlankScreenItemChangedEvent;
+    event EventHandler IncludeBlankScreenItemChangedEvent;
 
-        event EventHandler AllowMirrorChangedEvent;
-        
-        event EventHandler VideoScreenPositionChangedEvent;
+    event EventHandler AllowMirrorChangedEvent;
 
-        event EventHandler ImageScreenPositionChangedEvent;
+    event EventHandler VideoScreenPositionChangedEvent;
 
-        event EventHandler WebScreenPositionChangedEvent;
+    event EventHandler ImageScreenPositionChangedEvent;
 
-        event EventHandler ShowMediaItemCommandPanelChangedEvent;
+    event EventHandler WebScreenPositionChangedEvent;
 
-        event EventHandler OperatingDateChangedEvent;
+    event EventHandler ShowMediaItemCommandPanelChangedEvent;
 
-        event EventHandler MaxItemCountChangedEvent;
+    event EventHandler OperatingDateChangedEvent;
 
-        event EventHandler ShowFreezeCommandChangedEvent;
+    event EventHandler MaxItemCountChangedEvent;
 
-        event EventHandler MagnifierChangedEvent;
+    event EventHandler ShowFreezeCommandChangedEvent;
 
-        event EventHandler BrowserChangedEvent;
-        
-        bool ShouldPurgeBrowserCacheOnStartup { get; set; }
+    event EventHandler MagnifierChangedEvent;
 
-        string? AppWindowPlacement { get; set; }
+    event EventHandler BrowserChangedEvent;
 
-        string? MediaWindowPlacement { get; set; }
+    bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 
-        List<string> RecentlyUsedMediaFolders { get; set; }
+    string? AppWindowPlacement { get; set; }
 
-        string? Culture { get; set; }
+    string? MediaWindowPlacement { get; set; }
 
-        bool CacheImages { get; set; }
+    List<string> RecentlyUsedMediaFolders { get; set; }
 
-        bool EmbeddedThumbnails { get; set; }
+    string? Culture { get; set; }
 
-        bool ConfirmVideoStop { get; set; }
+    bool CacheImages { get; set; }
 
-        bool AllowVideoScrubbing { get; set; }
+    bool EmbeddedThumbnails { get; set; }
 
-        bool JwLibraryCompatibilityMode { get; set; }
+    bool ConfirmVideoStop { get; set; }
 
-        bool ShowFreezeCommand { get; set; }
+    bool AllowVideoScrubbing { get; set; }
 
-        int MaxItemCount { get; set; }
+    bool JwLibraryCompatibilityMode { get; set; }
 
-        DateTime OperatingDate { get; set; }
+    bool ShowFreezeCommand { get; set; }
 
-        bool ShowMediaItemCommandPanel { get; set; }
+    int MaxItemCount { get; set; }
 
-        ScreenPosition VideoScreenPosition { get; set; }
+    DateTime OperatingDate { get; set; }
 
-        ScreenPosition ImageScreenPosition { get; set; }
+    bool ShowMediaItemCommandPanel { get; set; }
 
-        ScreenPosition WebScreenPosition { get; set; }
+    ScreenPosition VideoScreenPosition { get; set; }
 
-        bool IncludeBlankScreenItem { get; set; }
+    ScreenPosition ImageScreenPosition { get; set; }
 
-        bool UseInternalMediaTitles { get; set; }
+    ScreenPosition WebScreenPosition { get; set; }
 
-        bool ShowVideoSubtitles { get; set; }
+    bool IncludeBlankScreenItem { get; set; }
 
-        bool AllowVideoPositionSeeking { get; set; }
+    bool UseInternalMediaTitles { get; set; }
 
-        bool AllowVideoPause { get; set; }
-        
-        bool PermanentBackdrop { get; set; }
+    bool ShowVideoSubtitles { get; set; }
 
-        RenderingMethod RenderingMethod { get; set; }
+    bool AllowVideoPositionSeeking { get; set; }
 
-        string? MediaMonitorId { get; set; }
+    bool AllowVideoPause { get; set; }
 
-        bool MediaWindowed { get; set; }
+    bool PermanentBackdrop { get; set; }
 
-        Size MediaWindowSize { get; set; }
+    RenderingMethod RenderingMethod { get; set; }
 
-        bool WindowedAlwaysOnTop { get; set; }
+    string? MediaMonitorId { get; set; }
 
-        double BrowserZoomLevelIncrement { get; set; }
-        
-        LogEventLevel LogEventLevel { get; set; }
+    bool MediaWindowed { get; set; }
 
-        bool AlwaysOnTop { get; set; }
+    Size MediaWindowSize { get; set; }
 
-        double MagnifierFrameThickness { get; set; }
+    bool WindowedAlwaysOnTop { get; set; }
 
-        MagnifierShape MagnifierShape { get; set; }
+    double BrowserZoomLevelIncrement { get; set; }
 
-        MagnifierSize MagnifierSize { get; set; }
+    LogEventLevel LogEventLevel { get; set; }
 
-        double MagnifierZoomLevel { get; set; }
+    bool AlwaysOnTop { get; set; }
 
-        FadeSpeed ImageFadeSpeed { get; set; }
+    double MagnifierFrameThickness { get; set; }
 
-        ImageFadeType ImageFadeType { get; set; }
+    MagnifierShape MagnifierShape { get; set; }
 
-        bool AutoRotateImages { get; set; }
+    MagnifierSize MagnifierSize { get; set; }
 
-        string MediaFolder { get; set; }
+    double MagnifierZoomLevel { get; set; }
 
-        bool IsMediaMonitorSpecified { get; }
+    FadeSpeed ImageFadeSpeed { get; set; }
 
-        bool AllowMirror { get; set; }
+    ImageFadeType ImageFadeType { get; set; }
 
-        bool UseMirrorByDefault { get; set; }
+    bool AutoRotateImages { get; set; }
 
-        double MirrorZoom { get; set; }
+    string MediaFolder { get; set; }
 
-        char MirrorHotKey { get; set; }
+    bool IsMediaMonitorSpecified { get; }
 
-        void SetCommandLineMediaFolder(string folder);
+    bool AllowMirror { get; set; }
 
-        bool IsCommandLineMediaFolderSpecified();
+    bool UseMirrorByDefault { get; set; }
 
-        void Save();
-    }
+    double MirrorZoom { get; set; }
+
+    char MirrorHotKey { get; set; }
+
+    void SetCommandLineMediaFolder(string folder);
+
+    bool IsCommandLineMediaFolderSpecified();
+
+    void Save();
 }

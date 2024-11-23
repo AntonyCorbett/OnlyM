@@ -2,140 +2,139 @@
 using OnlyM.Core.Properties;
 using Serilog.Events;
 
-namespace OnlyM.Core.Extensions
+namespace OnlyM.Core.Extensions;
+
+public static class EnumExtensions
 {
-    public static class EnumExtensions
+    public static string GetDescriptiveName(this MagnifierShape shape)
     {
-        public static string GetDescriptiveName(this MagnifierShape shape)
+        switch (shape)
         {
-            switch (shape)
-            {
-                case MagnifierShape.Square:
-                    return Resources.MAGNIFIER_SHAPE_SQUARE;
+            case MagnifierShape.Square:
+                return Resources.MAGNIFIER_SHAPE_SQUARE;
 
-                default:
-                case MagnifierShape.Circle:
-                    return Resources.MAGNIFIER_SHAPE_CIRCLE;
-            }
+            default:
+            case MagnifierShape.Circle:
+                return Resources.MAGNIFIER_SHAPE_CIRCLE;
         }
+    }
 
-        public static string GetDescriptiveName(this MagnifierSize size)
+    public static string GetDescriptiveName(this MagnifierSize size)
+    {
+        switch (size)
         {
-            switch (size)
-            {
-                case MagnifierSize.XXSmall:
-                    return Resources.MAGNIFIER_SIZE_XXSMALL;
+            case MagnifierSize.XXSmall:
+                return Resources.MAGNIFIER_SIZE_XXSMALL;
 
-                case MagnifierSize.XSmall:
-                    return Resources.MAGNIFIER_SIZE_XSMALL;
+            case MagnifierSize.XSmall:
+                return Resources.MAGNIFIER_SIZE_XSMALL;
 
-                case MagnifierSize.Small:
-                    return Resources.MAGNIFIER_SIZE_SMALL;
-                    
-                case MagnifierSize.Medium:
-                    return Resources.MAGNIFIER_SIZE_MEDIUM;
+            case MagnifierSize.Small:
+                return Resources.MAGNIFIER_SIZE_SMALL;
 
-                case MagnifierSize.Large:
-                    return Resources.MAGNIFIER_SIZE_LARGE;
+            case MagnifierSize.Medium:
+                return Resources.MAGNIFIER_SIZE_MEDIUM;
 
-                case MagnifierSize.XLarge:
-                    return Resources.MAGNIFIER_SIZE_XLARGE;
+            case MagnifierSize.Large:
+                return Resources.MAGNIFIER_SIZE_LARGE;
 
-                case MagnifierSize.XXLarge:
-                    return Resources.MAGNIFIER_SIZE_XXLARGE;
+            case MagnifierSize.XLarge:
+                return Resources.MAGNIFIER_SIZE_XLARGE;
 
-                default:
-                    return Resources.MAGNIFIER_SIZE_MEDIUM;
-            }
+            case MagnifierSize.XXLarge:
+                return Resources.MAGNIFIER_SIZE_XXLARGE;
+
+            default:
+                return Resources.MAGNIFIER_SIZE_MEDIUM;
         }
+    }
 
-        public static double GetFadeSpeedSeconds(this FadeSpeed speed)
+    public static double GetFadeSpeedSeconds(this FadeSpeed speed)
+    {
+        switch (speed)
         {
-            switch (speed)
-            {
-                case FadeSpeed.Slow:
-                    return 2.0;
+            case FadeSpeed.Slow:
+                return 2.0;
 
-                case FadeSpeed.Fast:
-                    return 0.75;
+            case FadeSpeed.Fast:
+                return 0.75;
 
-                case FadeSpeed.SuperFast:
-                    return 0.2;
+            case FadeSpeed.SuperFast:
+                return 0.2;
 
-                default:
-                // ReSharper disable once RedundantCaseLabel
-                case FadeSpeed.Normal:
-                    return 1.0;
-            }
+            default:
+            // ReSharper disable once RedundantCaseLabel
+            case FadeSpeed.Normal:
+                return 1.0;
         }
+    }
 
-        public static string GetDescriptiveName(this FadeSpeed speed)
+    public static string GetDescriptiveName(this FadeSpeed speed)
+    {
+        switch (speed)
         {
-            switch (speed)
-            {
-                case FadeSpeed.Slow:
-                    return Resources.FADE_SPEED_SLOW;
-                    
-                case FadeSpeed.Fast:
-                    return Resources.FADE_SPEED_FAST;
+            case FadeSpeed.Slow:
+                return Resources.FADE_SPEED_SLOW;
 
-                case FadeSpeed.SuperFast:
-                    return Resources.FADE_SPEED_SUPER_FAST;
+            case FadeSpeed.Fast:
+                return Resources.FADE_SPEED_FAST;
 
-                default:
-                // ReSharper disable once RedundantCaseLabel
-                case FadeSpeed.Normal:
-                    return Resources.FADE_SPEED_NORMAL;
-            }
+            case FadeSpeed.SuperFast:
+                return Resources.FADE_SPEED_SUPER_FAST;
+
+            default:
+            // ReSharper disable once RedundantCaseLabel
+            case FadeSpeed.Normal:
+                return Resources.FADE_SPEED_NORMAL;
         }
+    }
 
-        public static string GetDescriptiveName(this LogEventLevel level)
+    public static string GetDescriptiveName(this LogEventLevel level)
+    {
+        switch (level)
         {
-            switch (level)
-            {
-                case LogEventLevel.Debug:
-                    return Resources.LOG_LEVEL_DEBUG;
-                    
-                case LogEventLevel.Error:
-                    return Resources.LOG_LEVEL_ERROR;
-                    
-                case LogEventLevel.Fatal:
-                    return Resources.LOG_LEVEL_FATAL;
-                    
-                case LogEventLevel.Verbose:
-                    return Resources.LOG_LEVEL_VERBOSE;
-                    
-                case LogEventLevel.Warning:
-                    return Resources.LOG_LEVEL_WARNING;
+            case LogEventLevel.Debug:
+                return Resources.LOG_LEVEL_DEBUG;
 
-                default:
-                // ReSharper disable once RedundantCaseLabel
-                case LogEventLevel.Information:
-                    return Resources.LOG_LEVEL_INFORMATION;
-            }
+            case LogEventLevel.Error:
+                return Resources.LOG_LEVEL_ERROR;
+
+            case LogEventLevel.Fatal:
+                return Resources.LOG_LEVEL_FATAL;
+
+            case LogEventLevel.Verbose:
+                return Resources.LOG_LEVEL_VERBOSE;
+
+            case LogEventLevel.Warning:
+                return Resources.LOG_LEVEL_WARNING;
+
+            default:
+            // ReSharper disable once RedundantCaseLabel
+            case LogEventLevel.Information:
+                return Resources.LOG_LEVEL_INFORMATION;
         }
+    }
 
-        public static string GetDescriptiveName(this ImageFadeType fadeType)
+    public static string GetDescriptiveName(this ImageFadeType fadeType)
+    {
+        switch (fadeType)
         {
-            switch (fadeType)
-            {
-                case ImageFadeType.None:
-                    return Resources.FADE_NONE;
+            case ImageFadeType.None:
+                return Resources.FADE_NONE;
 
-                case ImageFadeType.FadeIn:
-                    return Resources.FADE_IN;
+            case ImageFadeType.FadeIn:
+                return Resources.FADE_IN;
 
-                case ImageFadeType.FadeOut:
-                    return Resources.FADE_OUT;
+            case ImageFadeType.FadeOut:
+                return Resources.FADE_OUT;
 
-                case ImageFadeType.FadeInOut:
-                    return Resources.FADE_IN_OUT;
+            case ImageFadeType.FadeInOut:
+                return Resources.FADE_IN_OUT;
 
-                default:
-                // ReSharper disable once RedundantCaseLabel
-                case ImageFadeType.CrossFade:
-                    return Resources.FADE_CROSS;
-            }
+            default:
+            // ReSharper disable once RedundantCaseLabel
+            case ImageFadeType.CrossFade:
+                return Resources.FADE_CROSS;
         }
     }
 }

@@ -3,60 +3,59 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace OnlyM.Services
+namespace OnlyM.Services;
+
+internal static class JwLibHelper
 {
-    internal static class JwLibHelper
+    private const string JwLibProcessName = "JWLibrary";
+    private const string JwLibSignLanguageProcessName = "JWLibrary.Forms.UWP";
+    private const string MainWindowClassName = "ApplicationFrameWindow";
+    private const string JwLibCaptionPrefix = "JW Library";
+
+    public static void BringToFront()
     {
-        private const string JwLibProcessName = "JWLibrary";
-        private const string JwLibSignLanguageProcessName = "JWLibrary.Forms.UWP";
-        private const string MainWindowClassName = "ApplicationFrameWindow";
-        private const string JwLibCaptionPrefix = "JW Library";
-
-        public static void BringToFront()
+        if (!BringToFront(JwLibProcessName))
         {
-            if (!BringToFront(JwLibProcessName))
-            {
-                BringToFront(JwLibSignLanguageProcessName);
-            }
+            BringToFront(JwLibSignLanguageProcessName);
+        }
+    }
+
+    private static bool BringToFront(string processName)
+    {
+        var p = Process.GetProcessesByName(processName).FirstOrDefault();
+        if (p == null)
+        {
+            return false;
         }
 
-        private static bool BringToFront(string processName)
+        var desktopWindow = JwLibHelperNativeMethods.GetDesktopWindow();
+        if (desktopWindow == IntPtr.Zero)
         {
-            var p = Process.GetProcessesByName(processName).FirstOrDefault();
-            if (p == null)
-            {
-                return false;
-            }
-
-            var desktopWindow = JwLibHelperNativeMethods.GetDesktopWindow();
-            if (desktopWindow == IntPtr.Zero)
-            {
-                return false;
-            }
-
-            var found = false;
-            var prevWindow = IntPtr.Zero;
-
-            while (!found)
-            {
-                var mainWindow = JwLibHelperNativeMethods.FindWindowEx(desktopWindow, prevWindow, MainWindowClassName, null);
-                if (mainWindow == IntPtr.Zero)
-                {
-                    break;
-                }
-
-                var sb = new StringBuilder(256);
-                JwLibHelperNativeMethods.GetWindowText(mainWindow, sb, 256);
-                if (sb.ToString().StartsWith(JwLibCaptionPrefix, StringComparison.Ordinal))
-                {
-                    JwLibHelperNativeMethods.SetForegroundWindow(mainWindow);
-                    found = true;
-                }
-
-                prevWindow = mainWindow;
-            }
-
-            return found;
+            return false;
         }
+
+        var found = false;
+        var prevWindow = IntPtr.Zero;
+
+        while (!found)
+        {
+            var mainWindow = JwLibHelperNativeMethods.FindWindowEx(desktopWindow, prevWindow, MainWindowClassName, null);
+            if (mainWindow == IntPtr.Zero)
+            {
+                break;
+            }
+
+            var sb = new StringBuilder(256);
+            JwLibHelperNativeMethods.GetWindowText(mainWindow, sb, 256);
+            if (sb.ToString().StartsWith(JwLibCaptionPrefix, StringComparison.Ordinal))
+            {
+                JwLibHelperNativeMethods.SetForegroundWindow(mainWindow);
+                found = true;
+            }
+
+            prevWindow = mainWindow;
+        }
+
+        return found;
     }
 }

@@ -2,14 +2,13 @@
 using System.Windows;
 using OnlyM.Models;
 
-namespace OnlyM.Services.DragAndDrop
+namespace OnlyM.Services.DragAndDrop;
+
+internal interface IDragAndDropService
 {
-    internal interface IDragAndDropService
-    {
-        event EventHandler<FilesCopyProgressEventArgs> CopyingFilesProgressEvent;
+    event EventHandler<FilesCopyProgressEventArgs> CopyingFilesProgressEvent;
 
-        void Init(FrameworkElement targetElement);
+    void Init(FrameworkElement targetElement);
 
-        void Paste();
-    }
+    void Paste();
 }

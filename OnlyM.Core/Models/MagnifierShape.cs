@@ -1,8 +1,7 @@
-﻿namespace OnlyM.Core.Models
+﻿namespace OnlyM.Core.Models;
+
+public enum MagnifierShape
 {
-    public enum MagnifierShape
-    {
-        Circle,
-        Square,
-    }
+    Circle,
+    Square,
 }

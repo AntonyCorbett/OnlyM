@@ -1,7 +1,6 @@
-﻿namespace OnlyM.Models
+﻿namespace OnlyM.Models;
+
+internal sealed class WindowVisibilityChangedEventArgs
 {
-    internal sealed class WindowVisibilityChangedEventArgs
-    {
-        public bool Visible { get; set; }
-    }
+    public bool Visible { get; set; }
 }

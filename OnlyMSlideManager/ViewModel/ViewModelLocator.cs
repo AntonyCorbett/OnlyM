@@ -1,13 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 
-namespace OnlyMSlideManager.ViewModel
-{
-    internal sealed class ViewModelLocator
-    {
-#pragma warning disable CA1822 // Mark members as static
-        public MainViewModel? Main => Ioc.Default.GetService<MainViewModel>();
+namespace OnlyMSlideManager.ViewModel;
 
-        public ShouldSaveViewModel? ShouldSaveDialog => Ioc.Default.GetService<ShouldSaveViewModel>();
+internal sealed class ViewModelLocator
+{
+#pragma warning disable CA1822 // Mark members as static
+    public MainViewModel? Main => Ioc.Default.GetService<MainViewModel>();
+
+    public ShouldSaveViewModel? ShouldSaveDialog => Ioc.Default.GetService<ShouldSaveViewModel>();
 #pragma warning restore CA1822 // Mark members as static
-    }
 }

@@ -1,11 +1,10 @@
 ﻿using Serilog.Events;
 
-namespace OnlyM.Models
-{
-    internal sealed class LoggingLevel
-    {
-        public string? Name { get; set; }
+namespace OnlyM.Models;
 
-        public LogEventLevel Level { get; set; }
-    }
+internal sealed class LoggingLevel
+{
+    public string? Name { get; set; }
+
+    public LogEventLevel Level { get; set; }
 }

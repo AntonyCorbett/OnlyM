@@ -2,16 +2,15 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OnlyM.Core.Subtitles;
 
-namespace IntegrationTests
+namespace IntegrationTests;
+
+[TestClass]
+public class TestSubtitles
 {
-    [TestClass]
-    public class TestSubtitles
+    [TestMethod]
+    public void TestSrtProcess()
     {
-        [TestMethod]
-        public void TestSrtProcess()
-        {
-            var subtitleProvider = new SubtitleProvider(@"SubtitleFiles\sample.srt", TimeSpan.Zero);
-            Assert.IsTrue(subtitleProvider.Count == 5);
-        }
+        var subtitleProvider = new SubtitleProvider(@"SubtitleFiles\sample.srt", TimeSpan.Zero);
+        Assert.IsTrue(subtitleProvider.Count == 5);
     }
 }

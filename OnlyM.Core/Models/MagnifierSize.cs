@@ -1,14 +1,13 @@
-﻿namespace OnlyM.Core.Models
+﻿namespace OnlyM.Core.Models;
+
+// ReSharper disable InconsistentNaming
+public enum MagnifierSize
 {
-    // ReSharper disable InconsistentNaming
-    public enum MagnifierSize
-    {
-        XXSmall,
-        XSmall,
-        Small,
-        Medium,
-        Large,
-        XLarge,
-        XXLarge,
-    }
+    XXSmall,
+    XSmall,
+    Small,
+    Medium,
+    Large,
+    XLarge,
+    XXLarge,
 }

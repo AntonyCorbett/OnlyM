@@ -5,157 +5,156 @@ using System.Windows.Media;
 using OnlyM.Core.Models;
 using OnlyM.Models;
 
-namespace OnlyM.Services
+namespace OnlyM.Services;
+
+internal static class ScreenPositionHelper
 {
-    internal static class ScreenPositionHelper
+    public static void SetScreenPosition(FrameworkElement element, ScreenPosition position)
     {
-        public static void SetScreenPosition(FrameworkElement element, ScreenPosition position)
+        var parent = GetParentWindow(element);
+        if (parent != null)
         {
-            var parent = GetParentWindow(element);
-            if (parent != null)
+            if (position.IsFullScreen())
             {
-                if (position.IsFullScreen())
-                {
-                    element.Margin = new Thickness(0, 0, 0, 0);
-                }
-                else
-                {
-                    var leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
-                    var topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
-                    var rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
-                    var bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
+                element.Margin = new Thickness(0, 0, 0, 0);
+            }
+            else
+            {
+                var leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
+                var topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
+                var rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
+                var bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
 
-                    element.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin);
-                }
+                element.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin);
             }
         }
+    }
 
-        public static void SetSubtitleBlockScreenPosition(TextBlock element, ScreenPosition position)
+    public static void SetSubtitleBlockScreenPosition(TextBlock element, ScreenPosition position)
+    {
+        var parent = GetParentWindow(element);
+        if (parent != null)
         {
-            var parent = GetParentWindow(element);
-            if (parent != null)
+            if (position.IsFullScreen())
             {
-                if (position.IsFullScreen())
-                {
-                    element.Margin = new Thickness(0, 0, 0, parent.ActualHeight / 10);
-                    element.FontSize = parent.ActualHeight / 22;
-                }
-                else
-                {
-                    var leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
-                    var topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
-                    var rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
-                    var bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
+                element.Margin = new Thickness(0, 0, 0, parent.ActualHeight / 10);
+                element.FontSize = parent.ActualHeight / 22;
+            }
+            else
+            {
+                var leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
+                var topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
+                var rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
+                var bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
 
-                    var displayHeight = parent.ActualHeight - topMargin - bottomMargin;
+                var displayHeight = parent.ActualHeight - topMargin - bottomMargin;
 
-                    element.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin + (displayHeight / 10));
-                    element.FontSize = displayHeight / 22;
-                }
+                element.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin + (displayHeight / 10));
+                element.FontSize = displayHeight / 22;
             }
         }
+    }
 
-        public static void ModifyScreenPosition(
-            ScreenPosition screenPosition,
-            ScreenMarginSide marginSide,
-            int newMarginValue,
-            out bool opposingMarginChanged)
+    public static void ModifyScreenPosition(
+        ScreenPosition screenPosition,
+        ScreenMarginSide marginSide,
+        int newMarginValue,
+        out bool opposingMarginChanged)
+    {
+        var opposingMarginSide = GetOpposingMarginSide(marginSide);
+        var opposingMarginValue = GetScreenMarginValue(screenPosition, opposingMarginSide);
+
+        opposingMarginChanged = newMarginValue + opposingMarginValue > 90;
+        if (opposingMarginChanged)
         {
-            var opposingMarginSide = GetOpposingMarginSide(marginSide);
-            var opposingMarginValue = GetScreenMarginValue(screenPosition, opposingMarginSide);
-
-            opposingMarginChanged = newMarginValue + opposingMarginValue > 90;
-            if (opposingMarginChanged)
-            {
-                SetScreenMarginValue(screenPosition, opposingMarginSide, 90 - newMarginValue);
-            }
-
-            SetScreenMarginValue(screenPosition, marginSide, newMarginValue);
+            SetScreenMarginValue(screenPosition, opposingMarginSide, 90 - newMarginValue);
         }
 
-        private static Window? GetParentWindow(DependencyObject child)
+        SetScreenMarginValue(screenPosition, marginSide, newMarginValue);
+    }
+
+    private static Window? GetParentWindow(DependencyObject child)
+    {
+        var parentObject = VisualTreeHelper.GetParent(child);
+
+        if (parentObject == null)
         {
-            var parentObject = VisualTreeHelper.GetParent(child);
-
-            if (parentObject == null)
-            {
-                return null;
-            }
-
-            if (parentObject is Window parent)
-            {
-                return parent;
-            }
-
-            return GetParentWindow(parentObject);
+            return null;
         }
 
-        private static ScreenMarginSide GetOpposingMarginSide(ScreenMarginSide marginSide)
+        if (parentObject is Window parent)
         {
-            switch (marginSide)
-            {
-                case ScreenMarginSide.Left:
-                    return ScreenMarginSide.Right;
-
-                case ScreenMarginSide.Right:
-                    return ScreenMarginSide.Left;
-
-                case ScreenMarginSide.Top:
-                    return ScreenMarginSide.Bottom;
-
-                case ScreenMarginSide.Bottom:
-                    return ScreenMarginSide.Top;
-            }
-
-            throw new NotSupportedException();
+            return parent;
         }
 
-        private static int GetScreenMarginValue(ScreenPosition screenPosition, ScreenMarginSide marginSide)
+        return GetParentWindow(parentObject);
+    }
+
+    private static ScreenMarginSide GetOpposingMarginSide(ScreenMarginSide marginSide)
+    {
+        switch (marginSide)
         {
-            switch (marginSide)
-            {
-                case ScreenMarginSide.Left:
-                    return screenPosition.LeftMarginPercentage;
+            case ScreenMarginSide.Left:
+                return ScreenMarginSide.Right;
 
-                case ScreenMarginSide.Right:
-                    return screenPosition.RightMarginPercentage;
+            case ScreenMarginSide.Right:
+                return ScreenMarginSide.Left;
 
-                case ScreenMarginSide.Top:
-                    return screenPosition.TopMarginPercentage;
+            case ScreenMarginSide.Top:
+                return ScreenMarginSide.Bottom;
 
-                case ScreenMarginSide.Bottom:
-                    return screenPosition.BottomMarginPercentage;
-            }
-
-            throw new NotSupportedException();
+            case ScreenMarginSide.Bottom:
+                return ScreenMarginSide.Top;
         }
 
-        private static void SetScreenMarginValue(
-            ScreenPosition screenPosition,
-            ScreenMarginSide marginSide,
-            int newMarginValue)
+        throw new NotSupportedException();
+    }
+
+    private static int GetScreenMarginValue(ScreenPosition screenPosition, ScreenMarginSide marginSide)
+    {
+        switch (marginSide)
         {
-            switch (marginSide)
-            {
-                case ScreenMarginSide.Left:
-                    screenPosition.LeftMarginPercentage = newMarginValue;
-                    break;
+            case ScreenMarginSide.Left:
+                return screenPosition.LeftMarginPercentage;
 
-                case ScreenMarginSide.Right:
-                    screenPosition.RightMarginPercentage = newMarginValue;
-                    break;
+            case ScreenMarginSide.Right:
+                return screenPosition.RightMarginPercentage;
 
-                case ScreenMarginSide.Top:
-                    screenPosition.TopMarginPercentage = newMarginValue;
-                    break;
+            case ScreenMarginSide.Top:
+                return screenPosition.TopMarginPercentage;
 
-                case ScreenMarginSide.Bottom:
-                    screenPosition.BottomMarginPercentage = newMarginValue;
-                    break;
+            case ScreenMarginSide.Bottom:
+                return screenPosition.BottomMarginPercentage;
+        }
 
-                default:
-                    throw new NotSupportedException();
-            }
+        throw new NotSupportedException();
+    }
+
+    private static void SetScreenMarginValue(
+        ScreenPosition screenPosition,
+        ScreenMarginSide marginSide,
+        int newMarginValue)
+    {
+        switch (marginSide)
+        {
+            case ScreenMarginSide.Left:
+                screenPosition.LeftMarginPercentage = newMarginValue;
+                break;
+
+            case ScreenMarginSide.Right:
+                screenPosition.RightMarginPercentage = newMarginValue;
+                break;
+
+            case ScreenMarginSide.Top:
+                screenPosition.TopMarginPercentage = newMarginValue;
+                break;
+
+            case ScreenMarginSide.Bottom:
+                screenPosition.BottomMarginPercentage = newMarginValue;
+                break;
+
+            default:
+                throw new NotSupportedException();
         }
     }
 }

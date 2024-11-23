@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace OnlyM.Dialogs
+namespace OnlyM.Dialogs;
+
+/// <summary>
+/// Interaction logic for StartOffsetDialog.xaml
+/// </summary>
+public partial class StartOffsetDialog : UserControl
 {
-    /// <summary>
-    /// Interaction logic for StartOffsetDialog.xaml
-    /// </summary>
-    public partial class StartOffsetDialog : UserControl
+    public StartOffsetDialog()
     {
-        public StartOffsetDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

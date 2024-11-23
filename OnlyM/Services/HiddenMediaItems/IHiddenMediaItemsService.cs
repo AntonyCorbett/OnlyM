@@ -2,22 +2,21 @@
 using System.Collections.Generic;
 using OnlyM.Models;
 
-namespace OnlyM.Services.HiddenMediaItems
+namespace OnlyM.Services.HiddenMediaItems;
+
+internal interface IHiddenMediaItemsService
 {
-    internal interface IHiddenMediaItemsService
-    {
-        event EventHandler HiddenItemsChangedEvent;
+    event EventHandler HiddenItemsChangedEvent;
 
-        event EventHandler UnhideAllEvent;
+    event EventHandler UnhideAllEvent;
 
-        void Init(IEnumerable<MediaItem> items);
+    void Init(IEnumerable<MediaItem> items);
 
-        void Add(string path);
+    void Add(string path);
 
-        void Remove(string path);
+    void Remove(string path);
 
-        bool SomeHiddenMediaItems();
+    bool SomeHiddenMediaItems();
 
-        void UnhideAllMediaItems();
-    }
+    void UnhideAllMediaItems();
 }

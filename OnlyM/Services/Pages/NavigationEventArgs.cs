@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace OnlyM.Services.Pages
+namespace OnlyM.Services.Pages;
+
+internal sealed class NavigationEventArgs : EventArgs
 {
-    internal sealed class NavigationEventArgs : EventArgs
-    {
-        public string? PageName { get; set; }
-    }
+    public string? PageName { get; set; }
 }

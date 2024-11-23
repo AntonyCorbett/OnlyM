@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace OnlyM.Core.Services.Media
-{
-    public interface IFolderWatcherService
-    {
-        event EventHandler ChangesFoundEvent;
+namespace OnlyM.Core.Services.Media;
 
-        bool IsEnabled { get; set; }
-    }
+public interface IFolderWatcherService
+{
+    event EventHandler ChangesFoundEvent;
+
+    bool IsEnabled { get; set; }
 }

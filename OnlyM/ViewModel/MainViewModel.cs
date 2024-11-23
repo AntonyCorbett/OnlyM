@@ -26,408 +26,405 @@ using OnlyM.Services.Pages;
 using Serilog;
 using Serilog.Events;
 
-namespace OnlyM.ViewModel
+namespace OnlyM.ViewModel;
+
+// ReSharper disable once ClassNeverInstantiated.Global
+internal sealed class MainViewModel : ObservableObject
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
-    internal sealed class MainViewModel : ObservableObject
+    private readonly IPageService _pageService;
+    private readonly IOptionsService _optionsService;
+    private readonly ISnackbarService _snackbarService;
+    private readonly IMediaStatusChangingService _mediaStatusChangingService;
+    private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
+    private readonly ICommandLineService _commandLineService;
+    private readonly IMonitorsService _monitorsService;
+
+    private bool _isBusy;
+    private bool _isMediaListLoading;
+    private string? _currentPageName;
+    private FrameworkElement? _currentPage;
+    private bool _newVersionAvailable;
+    private bool _isMediaListEmpty = true;
+
+    public MainViewModel(
+        IPageService pageService,
+        IOptionsService optionsService,
+        ISnackbarService snackbarService,
+        IMediaStatusChangingService mediaStatusChangingService,
+        IHiddenMediaItemsService hiddenMediaItemsService,
+        ICommandLineService commandLineService,
+        IMonitorsService monitorsService,
+        IDragAndDropService dragAndDropService)
     {
-        private readonly IPageService _pageService;
-        private readonly IOptionsService _optionsService;
-        private readonly ISnackbarService _snackbarService;
-        private readonly IMediaStatusChangingService _mediaStatusChangingService;
-        private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
-        private readonly ICommandLineService _commandLineService;
-        private readonly IMonitorsService _monitorsService;
+        _commandLineService = commandLineService;
+        _monitorsService = monitorsService;
 
-        private bool _isBusy;
-        private bool _isMediaListLoading;
-        private string? _currentPageName;
-        private FrameworkElement? _currentPage;
-        private bool _newVersionAvailable;
-        private bool _isMediaListEmpty = true;
-
-        public MainViewModel(
-            IPageService pageService,
-            IOptionsService optionsService,
-            ISnackbarService snackbarService,
-            IMediaStatusChangingService mediaStatusChangingService,
-            IHiddenMediaItemsService hiddenMediaItemsService,
-            ICommandLineService commandLineService,
-            IMonitorsService monitorsService,
-            IDragAndDropService dragAndDropService)
+        if (commandLineService.NoGpu || ForceSoftwareRendering())
         {
-            _commandLineService = commandLineService;
-            _monitorsService = monitorsService;
-
-            if (commandLineService.NoGpu || ForceSoftwareRendering())
-            {
-                // disable hardware (GPU) rendering so that it's all done by the CPU...
-                RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
-            }
-
-            WeakReferenceMessenger.Default.Register<MediaListUpdatingMessage>(this, OnMediaListUpdating);
-            WeakReferenceMessenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
-
-            _mediaStatusChangingService = mediaStatusChangingService;
-            _hiddenMediaItemsService = hiddenMediaItemsService;
-
-            _hiddenMediaItemsService.HiddenItemsChangedEvent += HandleHiddenItemsChangedEvent;
-
-            _pageService = pageService;
-            _pageService.NavigationEvent += HandlePageNavigationEvent;
-            _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
-            _pageService.MediaWindowVisibilityChanged += HandleMediaWindowVisibilityChangedEvent;
-            
-            _snackbarService = snackbarService;
-            
-            _optionsService = optionsService;
-            _optionsService.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
-
-            if (_optionsService.ShouldPurgeBrowserCacheOnStartup)
-            {
-                _optionsService.ShouldPurgeBrowserCacheOnStartup = false;
-                _optionsService.Save();
-                FileUtils.DeleteBrowserCacheFolder();
-            }
-
-            _pageService.GotoOperatorPage();
-            
-            dragAndDropService.CopyingFilesProgressEvent += HandleCopyingFilesProgressEvent;
-
-            InitCommands();
-
-            if (_optionsService.PermanentBackdrop)
-            {
-                _pageService.InitMediaWindow();
-            }
-
-            if (!string.IsNullOrWhiteSpace(_optionsService.MediaMonitorId) &&
-                _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId) == null)
-            {
-                // a monitor id is specified but it doesn't exist
-                _optionsService.MediaMonitorId = null;
-            }
-
-            SanityChecks();
+            // disable hardware (GPU) rendering so that it's all done by the CPU...
+            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
         }
 
-        // commands...
-        public RelayCommand GotoSettingsCommand { get; set; } = null!;
+        WeakReferenceMessenger.Default.Register<MediaListUpdatingMessage>(this, OnMediaListUpdating);
+        WeakReferenceMessenger.Default.Register<MediaListUpdatedMessage>(this, OnMediaListUpdated);
 
-        public RelayCommand GotoOperatorCommand { get; set; } = null!;
+        _mediaStatusChangingService = mediaStatusChangingService;
+        _hiddenMediaItemsService = hiddenMediaItemsService;
 
-        public RelayCommand LaunchMediaFolderCommand { get; set; } = null!;
+        _hiddenMediaItemsService.HiddenItemsChangedEvent += HandleHiddenItemsChangedEvent;
 
-        public RelayCommand LaunchHelpPageCommand { get; set; } = null!;
+        _pageService = pageService;
+        _pageService.NavigationEvent += HandlePageNavigationEvent;
+        _pageService.MediaMonitorChangedEvent += HandleMediaMonitorChangedEvent;
+        _pageService.MediaWindowVisibilityChanged += HandleMediaWindowVisibilityChangedEvent;
 
-        public RelayCommand LaunchReleasePageCommand { get; set; } = null!;
+        _snackbarService = snackbarService;
 
-        public RelayCommand UnhideCommand { get; set; } = null!;
+        _optionsService = optionsService;
+        _optionsService.AlwaysOnTopChangedEvent += HandleAlwaysOnTopChangedEvent;
 
-        public ISnackbarMessageQueue TheSnackbarMessageQueue => _snackbarService.TheSnackbarMessageQueue;
-
-        public bool ShowNewVersionButton => _newVersionAvailable && IsOperatorPageActive;
-
-        public bool AlwaysOnTop => _optionsService.AlwaysOnTop || _pageService.IsMediaWindowVisible;
-
-        public bool IsSettingsPageActive => 
-            _currentPageName != null && 
-            _currentPageName.Equals(_pageService.SettingsPageName, StringComparison.Ordinal);
-
-        public bool IsOperatorPageActive => 
-            _currentPageName != null && 
-            _currentPageName.Equals(_pageService.OperatorPageName, StringComparison.Ordinal);
-
-        public bool IsSettingsEnabled => !_commandLineService.NoSettings;
-
-        public bool IsFolderEnabled => !_commandLineService.NoFolder;
-
-        public string SettingsHint =>
-            _commandLineService.NoSettings
-                ? Properties.Resources.SETTINGS_DISABLED
-                : Properties.Resources.SETTINGS;
-
-        public string FolderHint =>
-            _commandLineService.NoFolder
-                ? Properties.Resources.FOLDER_DISABLED
-                : Properties.Resources.FOLDER;
-
-        public bool IsMediaListEmpty
+        if (_optionsService.ShouldPurgeBrowserCacheOnStartup)
         {
-            get => _isMediaListEmpty;
-            set
+            _optionsService.ShouldPurgeBrowserCacheOnStartup = false;
+            _optionsService.Save();
+            FileUtils.DeleteBrowserCacheFolder();
+        }
+
+        _pageService.GotoOperatorPage();
+
+        dragAndDropService.CopyingFilesProgressEvent += HandleCopyingFilesProgressEvent;
+
+        InitCommands();
+
+        if (_optionsService.PermanentBackdrop)
+        {
+            _pageService.InitMediaWindow();
+        }
+
+        if (!string.IsNullOrWhiteSpace(_optionsService.MediaMonitorId) &&
+            _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId) == null)
+        {
+            // a monitor id is specified but it doesn't exist
+            _optionsService.MediaMonitorId = null;
+        }
+
+        SanityChecks();
+    }
+
+    // commands...
+    public RelayCommand GotoSettingsCommand { get; set; } = null!;
+
+    public RelayCommand GotoOperatorCommand { get; set; } = null!;
+
+    public RelayCommand LaunchMediaFolderCommand { get; set; } = null!;
+
+    public RelayCommand LaunchHelpPageCommand { get; set; } = null!;
+
+    public RelayCommand LaunchReleasePageCommand { get; set; } = null!;
+
+    public RelayCommand UnhideCommand { get; set; } = null!;
+
+    public ISnackbarMessageQueue TheSnackbarMessageQueue => _snackbarService.TheSnackbarMessageQueue;
+
+    public bool ShowNewVersionButton => _newVersionAvailable && IsOperatorPageActive;
+
+    public bool AlwaysOnTop => _optionsService.AlwaysOnTop || _pageService.IsMediaWindowVisible;
+
+    public bool IsSettingsPageActive =>
+        _currentPageName != null &&
+        _currentPageName.Equals(_pageService.SettingsPageName, StringComparison.Ordinal);
+
+    public bool IsOperatorPageActive =>
+        _currentPageName != null &&
+        _currentPageName.Equals(_pageService.OperatorPageName, StringComparison.Ordinal);
+
+    public bool IsSettingsEnabled => !_commandLineService.NoSettings;
+
+    public bool IsFolderEnabled => !_commandLineService.NoFolder;
+
+    public string SettingsHint =>
+        _commandLineService.NoSettings
+            ? Properties.Resources.SETTINGS_DISABLED
+            : Properties.Resources.SETTINGS;
+
+    public string FolderHint =>
+        _commandLineService.NoFolder
+            ? Properties.Resources.FOLDER_DISABLED
+            : Properties.Resources.FOLDER;
+
+    public bool IsMediaListEmpty
+    {
+        get => _isMediaListEmpty;
+        set
+        {
+            if (_isMediaListEmpty != value)
             {
-                if (_isMediaListEmpty != value)
-                {
-                    _isMediaListEmpty = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(ShowDragAndDropHint));
-                }
+                _isMediaListEmpty = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ShowDragAndDropHint));
             }
         }
+    }
 
-        public bool IsUnhideButtonVisible =>
-            IsInDesignMode() || (IsOperatorPageActive && !ShowProgressBar && _hiddenMediaItemsService.SomeHiddenMediaItems());
+    public bool IsUnhideButtonVisible =>
+        IsInDesignMode() || (IsOperatorPageActive && !ShowProgressBar && _hiddenMediaItemsService.SomeHiddenMediaItems());
 
-        public bool ShowProgressBar => IsBusy;
+    public bool ShowProgressBar => IsBusy;
 
-        public bool ShowDragAndDropHint => IsMediaListEmpty && IsOperatorPageActive;
+    public bool ShowDragAndDropHint => IsMediaListEmpty && IsOperatorPageActive;
 
-        public bool IsBusy
+    public bool IsBusy
+    {
+        get => _isBusy;
+        set
         {
-            get => _isBusy;
-            set
+            if (_isBusy != value)
             {
-                if (_isBusy != value)
-                {
-                    _isBusy = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(IsUnhideButtonVisible));
-                    OnPropertyChanged(nameof(ShowProgressBar));
-                }
+                _isBusy = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsUnhideButtonVisible));
+                OnPropertyChanged(nameof(ShowProgressBar));
             }
         }
+    }
 
-        public FrameworkElement? CurrentPage
+    public FrameworkElement? CurrentPage
+    {
+        get => _currentPage;
+        set
         {
-            get => _currentPage;
-            set
+            if (_currentPage == null || !_currentPage.Equals(value))
             {
-                if (_currentPage == null || !_currentPage.Equals(value))
-                {
-                    _currentPage = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(IsSettingsPageActive));
-                    OnPropertyChanged(nameof(IsOperatorPageActive));
-                    OnPropertyChanged(nameof(ShowNewVersionButton));
-                    OnPropertyChanged(nameof(ShowDragAndDropHint));
-                }
+                _currentPage = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsSettingsPageActive));
+                OnPropertyChanged(nameof(IsOperatorPageActive));
+                OnPropertyChanged(nameof(ShowNewVersionButton));
+                OnPropertyChanged(nameof(ShowDragAndDropHint));
             }
         }
+    }
 
-        public bool IsMediaListLoading
+    public bool IsMediaListLoading
+    {
+        get => _isMediaListLoading;
+        set
         {
-            get => _isMediaListLoading;
-            set
+            if (_isMediaListLoading != value)
             {
-                if (_isMediaListLoading != value)
-                {
-                    _isMediaListLoading = value;
-                    OnPropertyChanged();
-                }
+                _isMediaListLoading = value;
+                OnPropertyChanged();
             }
         }
+    }
 
-        private void OnMediaListUpdating(object? sender, MediaListUpdatingMessage message)
+    private void OnMediaListUpdating(object? sender, MediaListUpdatingMessage message)
+    {
+        IsMediaListLoading = true;
+    }
+
+    private void OnMediaListUpdated(object? sender, MediaListUpdatedMessage message)
+    {
+        IsMediaListLoading = false;
+        IsMediaListEmpty = message.Count == 0;
+    }
+
+    private void HandleMediaWindowVisibilityChangedEvent(object? sender, WindowVisibilityChangedEventArgs e)
+    {
+        if (e.Visible)
         {
-            IsMediaListLoading = true;
+            Application.Current.MainWindow?.Activate();
         }
 
-        private void OnMediaListUpdated(object? sender, MediaListUpdatedMessage message)
+        OnPropertyChanged(nameof(AlwaysOnTop));
+    }
+
+    private void HandleAlwaysOnTopChangedEvent(object? sender, EventArgs e)
+    {
+        OnPropertyChanged(nameof(AlwaysOnTop));
+    }
+
+    private void HandlePageNavigationEvent(object? sender, NavigationEventArgs e)
+    {
+        _currentPageName = e.PageName;
+        CurrentPage = _pageService.GetPage(e.PageName);
+
+        OnPropertyChanged(nameof(IsUnhideButtonVisible));
+    }
+
+    private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(AlwaysOnTop));
+    }
+
+    private void SanityChecks() =>
+        // checks are performed in order of importance and subsequent
+        // checks only made if previous ones pass.
+        Task.Delay(2000).ContinueWith(_ => CheckControlledFolderAccess() &&
+                                           CheckVersionData() && CheckLogLevel());
+
+    private bool CheckControlledFolderAccess()
+    {
+        // Windows 10 Controlled folder access may be enabled preventing
+        // OnlyM from writing to its database.
+        var databaseFolder = FileUtils.GetOnlyMDatabaseFolder();
+
+        var tempFileName = Guid.NewGuid().ToString("N");
+        var fullPath = Path.Combine(databaseFolder, tempFileName);
+
+        try
         {
-            IsMediaListLoading = false;
-            IsMediaListEmpty = message.Count == 0;
+            File.Create(fullPath).Close();
+            File.Delete(fullPath);
+
+            return true;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            Log.Logger.Warning("OnlyM cannot write to its database folder. Perhaps controlled folder access is enabled");
+            _snackbarService.EnqueueWithOk(Properties.Resources.ALLOW_DB_ACCESS, Properties.Resources.OK);
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Checking controlled folder access");
         }
 
-        private void HandleMediaWindowVisibilityChangedEvent(object? sender, WindowVisibilityChangedEventArgs e)
-        {
-            if (e.Visible)
-            {
-                Application.Current.MainWindow?.Activate();
-            }
+        return false;
+    }
 
-            OnPropertyChanged(nameof(AlwaysOnTop));
+    private bool CheckLogLevel()
+    {
+        switch (_optionsService.LogEventLevel)
+        {
+            case LogEventLevel.Debug:
+            case LogEventLevel.Verbose:
+                _snackbarService.EnqueueWithOk(Properties.Resources.LOGGING_LEVEL_HIGH, Properties.Resources.OK);
+                return false;
         }
 
-        private void HandleAlwaysOnTopChangedEvent(object? sender, EventArgs e)
+        return true;
+    }
+
+    private bool CheckVersionData()
+    {
+        var latestVersion = VersionDetection.GetLatestReleaseVersion();
+        if (latestVersion != null && latestVersion > VersionDetection.GetCurrentVersion())
         {
-            OnPropertyChanged(nameof(AlwaysOnTop));
-        }
+            // there is a new version....
+            _newVersionAvailable = true;
+            OnPropertyChanged(nameof(ShowNewVersionButton));
 
-        private void HandlePageNavigationEvent(object? sender, NavigationEventArgs e)
-        {
-            _currentPageName = e.PageName;
-            CurrentPage = _pageService.GetPage(e.PageName);
-
-            OnPropertyChanged(nameof(IsUnhideButtonVisible));
-        }
-
-        private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e)
-        {
-            OnPropertyChanged(nameof(AlwaysOnTop));
-        }
-        
-        private void SanityChecks()
-        {
-            // checks are performed in order of importance and subsequent
-            // checks only made if previous ones pass.
-            Task.Delay(2000).ContinueWith(_ => CheckControlledFolderAccess() &&
-                                               CheckVersionData() && CheckLogLevel());
-        }
-
-        private bool CheckControlledFolderAccess()
-        {
-            // Windows 10 Controlled folder access may be enabled preventing
-            // OnlyM from writing to its database.
-            var databaseFolder = FileUtils.GetOnlyMDatabaseFolder();
-
-            var tempFileName = Guid.NewGuid().ToString("N");
-            var fullPath = Path.Combine(databaseFolder, tempFileName);
-
-            try
-            {
-                File.Create(fullPath).Close();
-                File.Delete(fullPath);
-
-                return true;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                Log.Logger.Warning("OnlyM cannot write to its database folder. Perhaps controlled folder access is enabled");
-                _snackbarService.EnqueueWithOk(Properties.Resources.ALLOW_DB_ACCESS, Properties.Resources.OK);
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Checking controlled folder access");
-            }
+            _snackbarService.Enqueue(
+                Properties.Resources.NEW_UPDATE_AVAILABLE,
+                Properties.Resources.VIEW,
+                LaunchReleasePage);
 
             return false;
         }
-        
-        private bool CheckLogLevel()
+
+        return true;
+    }
+
+    private void InitCommands()
+    {
+        GotoSettingsCommand = new RelayCommand(NavigateSettings);
+        GotoOperatorCommand = new RelayCommand(NavigateOperator);
+        LaunchMediaFolderCommand = new RelayCommand(LaunchMediaFolder);
+        LaunchHelpPageCommand = new RelayCommand(LaunchHelpPage);
+        LaunchReleasePageCommand = new RelayCommand(LaunchReleasePage);
+        UnhideCommand = new RelayCommand(UnhideAll);
+    }
+
+    private void UnhideAll()
+    {
+        _hiddenMediaItemsService.UnhideAllMediaItems();
+    }
+
+    private void LaunchReleasePage()
+    {
+        var psi = new ProcessStartInfo
         {
-            switch (_optionsService.LogEventLevel)
-            {
-                case LogEventLevel.Debug:
-                case LogEventLevel.Verbose:
-                    _snackbarService.EnqueueWithOk(Properties.Resources.LOGGING_LEVEL_HIGH, Properties.Resources.OK);
-                    return false;
-            }
+            FileName = VersionDetection.LatestReleaseUrl,
+            UseShellExecute = true
+        };
 
-            return true;
-        }
+        Process.Start(psi);
+    }
 
-        private bool CheckVersionData()
+    private void LaunchHelpPage()
+    {
+        var psi = new ProcessStartInfo
         {
-            var latestVersion = VersionDetection.GetLatestReleaseVersion();
-            if (latestVersion != null && latestVersion > VersionDetection.GetCurrentVersion())
-            {
-                // there is a new version....
-                _newVersionAvailable = true;
-                OnPropertyChanged(nameof(ShowNewVersionButton));
+            FileName = "https://github.com/AntonyCorbett/OnlyM/wiki",
+            UseShellExecute = true
+        };
 
-                _snackbarService.Enqueue(
-                    Properties.Resources.NEW_UPDATE_AVAILABLE, 
-                    Properties.Resources.VIEW, 
-                    LaunchReleasePage);
+        Process.Start(psi);
+    }
 
-                return false;
-            }
-
-            return true;
-        }
-
-        private void InitCommands()
-        {
-            GotoSettingsCommand = new RelayCommand(NavigateSettings);
-            GotoOperatorCommand = new RelayCommand(NavigateOperator);
-            LaunchMediaFolderCommand = new RelayCommand(LaunchMediaFolder);
-            LaunchHelpPageCommand = new RelayCommand(LaunchHelpPage);
-            LaunchReleasePageCommand = new RelayCommand(LaunchReleasePage);
-            UnhideCommand = new RelayCommand(UnhideAll);
-        }
-
-        private void UnhideAll()
-        {
-            _hiddenMediaItemsService.UnhideAllMediaItems();
-        }
-
-        private void LaunchReleasePage()
+    private void LaunchMediaFolder()
+    {
+        if (Directory.Exists(_optionsService.MediaFolder))
         {
             var psi = new ProcessStartInfo
             {
-                FileName = VersionDetection.LatestReleaseUrl,
+                FileName = _optionsService.MediaFolder,
                 UseShellExecute = true
             };
 
             Process.Start(psi);
         }
+    }
 
-        private void LaunchHelpPage()
+    private void NavigateOperator()
+    {
+        _optionsService.Save();
+        _pageService.GotoOperatorPage();
+    }
+
+    private void NavigateSettings()
+    {
+        // prevent navigation to the settings page when media is in flux...
+        if (!_mediaStatusChangingService.IsMediaStatusChanging())
         {
-            var psi = new ProcessStartInfo
-            {
-                FileName = "https://github.com/AntonyCorbett/OnlyM/wiki",
-                UseShellExecute = true
-            };
-
-            Process.Start(psi);
+            _pageService.GotoSettingsPage();
         }
+    }
 
-        private void LaunchMediaFolder()
-        {
-            if (Directory.Exists(_optionsService.MediaFolder))
-            {
-                var psi = new ProcessStartInfo
-                {
-                    FileName = _optionsService.MediaFolder,
-                    UseShellExecute = true
-                };
+    private static bool ForceSoftwareRendering()
+    {
+        // https://blogs.msdn.microsoft.com/jgoldb/2010/06/22/software-rendering-usage-in-wpf/
+        // renderingTier values:
+        // 0 => No graphics hardware acceleration available for the application on the device
+        //      and DirectX version level is less than version 7.0
+        // 1 => Partial graphics hardware acceleration available on the video card. This 
+        //      corresponds to a DirectX version that is greater than or equal to 7.0 and 
+        //      less than 9.0.
+        // 2 => A rendering tier value of 2 means that most of the graphics features of WPF 
+        //      should use hardware acceleration provided the necessary system resources have 
+        //      not been exhausted. This corresponds to a DirectX version that is greater 
+        //      than or equal to 9.0.
+        var renderingTier = RenderCapability.Tier >> 16;
+        return renderingTier == 0;
+    }
 
-                Process.Start(psi);
-            }
-        }
+    private void HandleCopyingFilesProgressEvent(object? sender, FilesCopyProgressEventArgs e)
+    {
+        IsBusy = e.Status == FileCopyStatus.StartingCopy;
+    }
 
-        private void NavigateOperator()
-        {
-            _optionsService.Save();
-            _pageService.GotoOperatorPage();
-        }
+    private void HandleHiddenItemsChangedEvent(object? sender, EventArgs e)
+    {
+        OnPropertyChanged(nameof(IsUnhideButtonVisible));
+    }
 
-        private void NavigateSettings()
-        {
-            // prevent navigation to the settings page when media is in flux...
-            if (!_mediaStatusChangingService.IsMediaStatusChanging())
-            {
-                _pageService.GotoSettingsPage();
-            }
-        }
-
-        private static bool ForceSoftwareRendering()
-        {
-            // https://blogs.msdn.microsoft.com/jgoldb/2010/06/22/software-rendering-usage-in-wpf/
-            // renderingTier values:
-            // 0 => No graphics hardware acceleration available for the application on the device
-            //      and DirectX version level is less than version 7.0
-            // 1 => Partial graphics hardware acceleration available on the video card. This 
-            //      corresponds to a DirectX version that is greater than or equal to 7.0 and 
-            //      less than 9.0.
-            // 2 => A rendering tier value of 2 means that most of the graphics features of WPF 
-            //      should use hardware acceleration provided the necessary system resources have 
-            //      not been exhausted. This corresponds to a DirectX version that is greater 
-            //      than or equal to 9.0.
-            var renderingTier = RenderCapability.Tier >> 16;
-            return renderingTier == 0;
-        }
-
-        private void HandleCopyingFilesProgressEvent(object? sender, FilesCopyProgressEventArgs e)
-        {
-            IsBusy = e.Status == FileCopyStatus.StartingCopy;
-        }
-
-        private void HandleHiddenItemsChangedEvent(object? sender, EventArgs e)
-        {
-            OnPropertyChanged(nameof(IsUnhideButtonVisible));
-        }
-
-        private static bool IsInDesignMode()
-        {
+    private static bool IsInDesignMode()
+    {
 #if DEBUG
-            DependencyObject dep = new();
-            return DesignerProperties.GetIsInDesignMode(dep);
+        DependencyObject dep = new();
+        return DesignerProperties.GetIsInDesignMode(dep);
 #else
             return false;
 #endif
-        }
     }
 }

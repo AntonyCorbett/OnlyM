@@ -1,15 +1,14 @@
-﻿namespace OnlyM.Models
-{
-    internal enum FileCopyStatus
-    {
-        /// <summary>
-        /// Starting to copy.
-        /// </summary>
-        StartingCopy,
+﻿namespace OnlyM.Models;
 
-        /// <summary>
-        /// Finished copying.
-        /// </summary>
-        FinishedCopy,
-    }
+internal enum FileCopyStatus
+{
+    /// <summary>
+    /// Starting to copy.
+    /// </summary>
+    StartingCopy,
+
+    /// <summary>
+    /// Finished copying.
+    /// </summary>
+    FinishedCopy,
 }

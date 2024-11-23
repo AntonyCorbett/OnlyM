@@ -18,92 +18,89 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace OnlyM.CustomControls.MagnifierControl
+namespace OnlyM.CustomControls.MagnifierControl;
+
+public class MagnifierAdorner : Adorner
 {
-    public class MagnifierAdorner : Adorner
+    private readonly Magnifier _magnifier;
+    private Point _currentMousePosition;
+    private double _currentZoomFactor;
+
+    public MagnifierAdorner(UIElement element, Magnifier magnifier)
+        : base(element)
     {
-        private readonly Magnifier _magnifier;
-        private Point _currentMousePosition;
-        private double _currentZoomFactor;
+        _magnifier = magnifier;
+        _currentZoomFactor = _magnifier.ZoomFactor;
+        UpdateViewBox();
+        AddVisualChild(_magnifier);
 
-        public MagnifierAdorner(UIElement element, Magnifier magnifier)
-          : base(element)
+        Loaded += (_, _) => InputManager.Current.PostProcessInput += OnProcessInput;
+        Unloaded += (_, _) => InputManager.Current.PostProcessInput -= OnProcessInput;
+    }
+
+    protected override int VisualChildrenCount => 1;
+
+    internal void UpdateViewBox()
+    {
+        var viewBoxLocation = CalculateViewBoxLocation();
+        _magnifier.ViewBox = new Rect(viewBoxLocation, _magnifier.ViewBox.Size);
+    }
+
+    protected override Visual GetVisualChild(int index) =>
+        _magnifier;
+
+    protected override Size MeasureOverride(Size constraint)
+    {
+        _magnifier.Measure(constraint);
+        return base.MeasureOverride(constraint);
+    }
+
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        var x = _currentMousePosition.X - (_magnifier.Width / 2);
+        var y = _currentMousePosition.Y - (_magnifier.Height / 2);
+        _magnifier.Arrange(new Rect(x, y, _magnifier.Width, _magnifier.Height));
+        return base.ArrangeOverride(finalSize);
+    }
+
+    private void OnProcessInput(object sender, ProcessInputEventArgs e)
+    {
+        var pt = Mouse.GetPosition(this);
+
+        // ReSharper disable once CompareOfFloatsByEqualityOperator
+        if (_currentMousePosition == pt && _magnifier.ZoomFactor == _currentZoomFactor)
         {
-            _magnifier = magnifier;
-            _currentZoomFactor = _magnifier.ZoomFactor;
-            UpdateViewBox();
-            AddVisualChild(_magnifier);
-
-            Loaded += (_, _) => InputManager.Current.PostProcessInput += OnProcessInput;
-            Unloaded += (_, _) => InputManager.Current.PostProcessInput -= OnProcessInput;
+            return;
         }
 
-        protected override int VisualChildrenCount => 1;
-
-        internal void UpdateViewBox()
+        if (_magnifier.IsFrozen)
         {
-            var viewBoxLocation = CalculateViewBoxLocation();
-            _magnifier.ViewBox = new Rect(viewBoxLocation, _magnifier.ViewBox.Size);
+            return;
         }
 
-        protected override Visual GetVisualChild(int index)
-        {
-            return _magnifier;
-        }
+        _currentMousePosition = pt;
+        _currentZoomFactor = _magnifier.ZoomFactor;
+        UpdateViewBox();
+        InvalidateArrange();
+    }
 
-        protected override Size MeasureOverride(Size constraint)
-        {
-            _magnifier.Measure(constraint);
-            return base.MeasureOverride(constraint);
-        }
+    private Point CalculateViewBoxLocation()
+    {
+        var adorner = Mouse.GetPosition(this);
+        var element = Mouse.GetPosition(AdornedElement);
 
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            var x = _currentMousePosition.X - (_magnifier.Width / 2);
-            var y = _currentMousePosition.Y - (_magnifier.Height / 2);
-            _magnifier.Arrange(new Rect(x, y, _magnifier.Width, _magnifier.Height));
-            return base.ArrangeOverride(finalSize);
-        }
+        var offsetX = element.X - adorner.X;
+        var offsetY = element.Y - adorner.Y;
 
-        private void OnProcessInput(object sender, ProcessInputEventArgs e)
-        {
-            var pt = Mouse.GetPosition(this);
+        // An element will use the offset from its parent (StackPanel, Grid, etc.) to be rendered.
+        // When this element is put in a VisualBrush, the element will draw with that offset applied. 
+        // To fix this: we add that parent offset to Magnifier location.
+        var parentOffsetVector = VisualTreeHelper.GetOffset(_magnifier.Target);
+        var parentOffset = new Point(parentOffsetVector.X, parentOffsetVector.Y);
 
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (_currentMousePosition == pt && _magnifier.ZoomFactor == _currentZoomFactor)
-            {
-                return;
-            }
+        var left = _currentMousePosition.X - ((_magnifier.ViewBox.Width / 2) + offsetX) + parentOffset.X;
+        var top = _currentMousePosition.Y - ((_magnifier.ViewBox.Height / 2) + offsetY) + parentOffset.Y;
 
-            if (_magnifier.IsFrozen)
-            {
-                return;
-            }
-
-            _currentMousePosition = pt;
-            _currentZoomFactor = _magnifier.ZoomFactor;
-            UpdateViewBox();
-            InvalidateArrange();
-        }
-
-        private Point CalculateViewBoxLocation()
-        {
-            var adorner = Mouse.GetPosition(this);
-            var element = Mouse.GetPosition(AdornedElement);
-
-            var offsetX = element.X - adorner.X;
-            var offsetY = element.Y - adorner.Y;
-
-            // An element will use the offset from its parent (StackPanel, Grid, etc.) to be rendered.
-            // When this element is put in a VisualBrush, the element will draw with that offset applied. 
-            // To fix this: we add that parent offset to Magnifier location.
-            var parentOffsetVector = VisualTreeHelper.GetOffset(_magnifier.Target);
-            var parentOffset = new Point(parentOffsetVector.X, parentOffsetVector.Y);
-
-            var left = _currentMousePosition.X - ((_magnifier.ViewBox.Width / 2) + offsetX) + parentOffset.X;
-            var top = _currentMousePosition.Y - ((_magnifier.ViewBox.Height / 2) + offsetY) + parentOffset.Y;
-
-            return new Point(left, top);
-        }
+        return new Point(left, top);
     }
 }

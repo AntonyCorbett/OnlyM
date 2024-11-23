@@ -1,11 +1,10 @@
-﻿namespace OnlyM.Core.Subtitles
+﻿namespace OnlyM.Core.Subtitles;
+
+internal sealed class SubtitleEntry
 {
-    internal sealed class SubtitleEntry
-    {
-        public int Number { get; set; }
+    public int Number { get; set; }
 
-        public SubtitleTiming? Timing { get; set; }
+    public SubtitleTiming? Timing { get; set; }
 
-        public string? Text { get; set; }
-    }
+    public string? Text { get; set; }
 }

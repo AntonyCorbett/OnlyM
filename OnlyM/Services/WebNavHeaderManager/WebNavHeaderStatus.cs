@@ -1,11 +1,10 @@
-﻿namespace OnlyM.Services.WebNavHeaderManager
+﻿namespace OnlyM.Services.WebNavHeaderManager;
+
+internal enum WebNavHeaderStatus
 {
-    internal enum WebNavHeaderStatus
-    {
-        NotVisible,
-        Showing,
-        Visible,
-        Hiding,
-        InPreview,
-    }
+    NotVisible,
+    Showing,
+    Visible,
+    Hiding,
+    InPreview,
 }

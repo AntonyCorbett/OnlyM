@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace OnlyM.Models
+namespace OnlyM.Models;
+
+public class MediaNearEndEventArgs : EventArgs
 {
-    public class MediaNearEndEventArgs : EventArgs
-    {
-        public Guid MediaItemId { get; set; }
-    }
+    public Guid MediaItemId { get; set; }
 }

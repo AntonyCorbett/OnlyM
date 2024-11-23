@@ -1,25 +1,24 @@
-﻿namespace OnlyM.Models
+﻿namespace OnlyM.Models;
+
+internal enum ScreenMarginSide
 {
-    internal enum ScreenMarginSide
-    {
-        /// <summary>
-        /// Left side.
-        /// </summary>
-        Left,
+    /// <summary>
+    /// Left side.
+    /// </summary>
+    Left,
 
-        /// <summary>
-        /// Top side.
-        /// </summary>
-        Top,
+    /// <summary>
+    /// Top side.
+    /// </summary>
+    Top,
 
-        /// <summary>
-        /// Right side.
-        /// </summary>
-        Right,
+    /// <summary>
+    /// Right side.
+    /// </summary>
+    Right,
 
-        /// <summary>
-        /// Bottom side.
-        /// </summary>
-        Bottom,
-    }
+    /// <summary>
+    /// Bottom side.
+    /// </summary>
+    Bottom,
 }

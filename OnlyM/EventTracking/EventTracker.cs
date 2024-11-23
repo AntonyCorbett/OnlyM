@@ -8,10 +8,8 @@ namespace OnlyM.EventTracking;
 
 internal static class EventTracker
 {
-    public static void Track(EventName eventName, Dictionary<string, string>? properties = null)
-    {
+    public static void Track(EventName eventName, Dictionary<string, string>? properties = null) =>
         Analytics.TrackEvent(eventName.ToString(), properties);
-    }
 
     public static void TrackStartMedia(SupportedMediaType? mediaType)
     {

@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace OnlyM.CoreSys.Services.UI
+namespace OnlyM.CoreSys.Services.UI;
+
+public interface IUserInterfaceService
 {
-    public interface IUserInterfaceService
-    {
-        event EventHandler BusyStatusChangedEvent;
+    event EventHandler BusyStatusChangedEvent;
 
-        BusyCursor BeginBusy();
+    BusyCursor BeginBusy();
 
-        bool IsBusy();
-    }
+    bool IsBusy();
 }

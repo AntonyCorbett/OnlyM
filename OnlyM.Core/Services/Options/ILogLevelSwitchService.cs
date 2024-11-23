@@ -1,9 +1,8 @@
 ﻿using Serilog.Events;
 
-namespace OnlyM.Core.Services.Options
+namespace OnlyM.Core.Services.Options;
+
+public interface ILogLevelSwitchService
 {
-    public interface ILogLevelSwitchService
-    {
-        void SetMinimumLevel(LogEventLevel level);
-    }
+    void SetMinimumLevel(LogEventLevel level);
 }

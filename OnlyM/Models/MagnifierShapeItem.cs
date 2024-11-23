@@ -1,11 +1,10 @@
 ﻿using OnlyM.Core.Models;
 
-namespace OnlyM.Models
-{
-    internal sealed class MagnifierShapeItem
-    {
-        public MagnifierShape Shape { get; set; }
+namespace OnlyM.Models;
 
-        public string? Name { get; set; }
-    }
+internal sealed class MagnifierShapeItem
+{
+    public MagnifierShape Shape { get; set; }
+
+    public string? Name { get; set; }
 }

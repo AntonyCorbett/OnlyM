@@ -1,40 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using OnlyM.CoreSys;
 using OnlyMSlideManager.Models;
 using OnlyMSlideManager.Properties;
 
-namespace OnlyMSlideManager.Helpers
+namespace OnlyMSlideManager.Helpers;
+
+internal static class DesignTimeSlideCreation
 {
-    internal static class DesignTimeSlideCreation
+    public static IReadOnlyCollection<SlideItem> GenerateSlides(
+        int count, int thumbnailWidth, int thumbnailHeight)
     {
-        public static IReadOnlyCollection<SlideItem> GenerateSlides(
-            int count, int thumbnailWidth, int thumbnailHeight)
+        var result = new List<SlideItem>(count + 1);
+
+        var image = Resources.flower;
+
+        for (var n = 0; n < count; ++n)
         {
-            var result = new List<SlideItem>(count + 1);
-
-            var image = Resources.flower;
-
-            for (var n = 0; n < count; ++n)
+            result.Add(new SlideItem
             {
-                result.Add(new SlideItem
-                {
-                    Name = $"Slide {n + 1}",
-                    ThumbnailImage = CreateThumbnailImage(image, thumbnailWidth, thumbnailHeight),
-                });
-            }
-
-            result.Add(new SlideItem { IsEndMarker = true });
-
-            return result;
+                Name = $"Slide {n + 1}",
+                ThumbnailImage = CreateThumbnailImage(image, thumbnailWidth, thumbnailHeight),
+            });
         }
 
-        private static BitmapSource? CreateThumbnailImage(Bitmap image, int thumbnailWidth, int thumbnailHeight)
-        {
-            var bmp = GraphicsUtils.BitmapToBitmapImage(image);
-            return GraphicsUtils.Downsize(bmp, thumbnailWidth, thumbnailHeight);
-        }
+        result.Add(new SlideItem { IsEndMarker = true });
+
+        return result;
+    }
+
+    private static BitmapSource? CreateThumbnailImage(Bitmap image, int thumbnailWidth, int thumbnailHeight)
+    {
+        var bmp = GraphicsUtils.BitmapToBitmapImage(image);
+        return GraphicsUtils.Downsize(bmp, thumbnailWidth, thumbnailHeight);
     }
 }

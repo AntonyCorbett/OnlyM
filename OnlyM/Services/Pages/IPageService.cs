@@ -8,62 +8,61 @@ using OnlyM.MediaElementAdaption;
 using OnlyM.Models;
 using OnlyM.Services.WebBrowser;
 
-namespace OnlyM.Services.Pages
+namespace OnlyM.Services.Pages;
+
+internal interface IPageService
 {
-    internal interface IPageService
-    {
-        event EventHandler<NavigationEventArgs> NavigationEvent;
+    event EventHandler<NavigationEventArgs> NavigationEvent;
 
-        event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
+    event EventHandler<MonitorChangedEventArgs> MediaMonitorChangedEvent;
 
-        event EventHandler<MediaEventArgs> MediaChangeEvent;
+    event EventHandler<MediaEventArgs> MediaChangeEvent;
 
-        event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
+    event EventHandler<SlideTransitionEventArgs> SlideTransitionEvent;
 
-        event EventHandler<OnlyMPositionChangedEventArgs> MediaPositionChangedEvent;
+    event EventHandler<OnlyMPositionChangedEventArgs> MediaPositionChangedEvent;
 
-        event EventHandler MediaWindowOpenedEvent;
+    event EventHandler MediaWindowOpenedEvent;
 
-        event EventHandler MediaWindowClosedEvent;
+    event EventHandler MediaWindowClosedEvent;
 
-        event EventHandler<WindowVisibilityChangedEventArgs> MediaWindowVisibilityChanged;
-        
-        event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
+    event EventHandler<WindowVisibilityChangedEventArgs> MediaWindowVisibilityChanged;
 
-        event EventHandler<WebBrowserProgressEventArgs> WebStatusEvent;
+    event EventHandler<MediaNearEndEventArgs> MediaNearEndEvent;
 
-        bool AllowMediaWindowToClose { get; }
+    event EventHandler<WebBrowserProgressEventArgs> WebStatusEvent;
 
-        string OperatorPageName { get; }
+    bool AllowMediaWindowToClose { get; }
 
-        string SettingsPageName { get; }
+    string OperatorPageName { get; }
 
-        bool ApplicationIsClosing { get; }
+    string SettingsPageName { get; }
 
-        bool IsMediaWindowVisible { get; }
+    bool ApplicationIsClosing { get; }
 
-        ScrollViewer? ScrollViewer { get; set; }
+    bool IsMediaWindowVisible { get; }
 
-        void GotoOperatorPage();
+    ScrollViewer? ScrollViewer { get; set; }
 
-        void GotoSettingsPage();
+    void GotoOperatorPage();
 
-        FrameworkElement? GetPage(string? pageName);
-        
-        Task StartMedia(MediaItem mediaItemToStart, IReadOnlyCollection<MediaItem>? currentMediaItems, bool startFromPaused);
+    void GotoSettingsPage();
 
-        Task StopMediaAsync(MediaItem mediaItem);
+    FrameworkElement? GetPage(string? pageName);
 
-        Task PauseMediaAsync(MediaItem mediaItem);
+    Task StartMedia(MediaItem mediaItemToStart, IReadOnlyCollection<MediaItem>? currentMediaItems, bool startFromPaused);
 
-        void CacheImageItem(MediaItem? mediaItem);
+    Task StopMediaAsync(MediaItem mediaItem);
 
-        int GotoPreviousSlide();
+    Task PauseMediaAsync(MediaItem mediaItem);
 
-        int GotoNextSlide();
+    void CacheImageItem(MediaItem? mediaItem);
 
-        void InitMediaWindow();
+    int GotoPreviousSlide();
 
-        void ForciblyStopAllPlayback(IReadOnlyCollection<MediaItem> activeItems);
-    }
+    int GotoNextSlide();
+
+    void InitMediaWindow();
+
+    void ForciblyStopAllPlayback(IReadOnlyCollection<MediaItem> activeItems);
 }

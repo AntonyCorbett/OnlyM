@@ -1,11 +1,10 @@
-﻿namespace OnlyMSlideManager.Services.Options
+﻿namespace OnlyMSlideManager.Services.Options;
+
+public interface IOptionsService
 {
-    public interface IOptionsService
-    {
-        string? AppWindowPlacement { get; set; }
+    string? AppWindowPlacement { get; set; }
 
-        string? Culture { get; set; }
+    string? Culture { get; set; }
 
-        void Save();
-    }
+    void Save();
 }

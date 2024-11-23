@@ -3,40 +3,39 @@ using System.Threading.Tasks;
 using System.Windows;
 using OnlyM.Core.Models;
 
-namespace OnlyM.MediaElementAdaption
+namespace OnlyM.MediaElementAdaption;
+
+internal interface IMediaElement
 {
-    internal interface IMediaElement
-    {
-        event EventHandler<OnlyMMediaOpenedEventArgs> MediaOpened;
+    event EventHandler<OnlyMMediaOpenedEventArgs> MediaOpened;
 
-        event EventHandler<OnlyMMediaClosedEventArgs> MediaClosed;
+    event EventHandler<OnlyMMediaClosedEventArgs> MediaClosed;
 
-        event EventHandler<OnlyMMediaEndedEventArgs> MediaEnded;
+    event EventHandler<OnlyMMediaEndedEventArgs> MediaEnded;
 
-        event EventHandler<OnlyMMediaFailedEventArgs> MediaFailed;
+    event EventHandler<OnlyMMediaFailedEventArgs> MediaFailed;
 
-        event EventHandler<OnlyMRenderSubtitlesEventArgs> RenderingSubtitles;
+    event EventHandler<OnlyMRenderSubtitlesEventArgs> RenderingSubtitles;
 
-        event EventHandler<OnlyMPositionChangedEventArgs> PositionChanged;
+    event EventHandler<OnlyMPositionChangedEventArgs> PositionChanged;
 
-        event EventHandler<OnlyMLogMessageEventArgs> MessageLogged;
+    event EventHandler<OnlyMLogMessageEventArgs> MessageLogged;
 
-        TimeSpan Position { get; set; }
+    TimeSpan Position { get; set; }
 
-        Duration NaturalDuration { get; }
+    Duration NaturalDuration { get; }
 
-        bool IsPaused { get; }
+    bool IsPaused { get; }
 
-        Guid MediaItemId { get; set; }
+    Guid MediaItemId { get; set; }
 
-        FrameworkElement FrameworkElement { get; }
+    FrameworkElement FrameworkElement { get; }
 
-        Task Play(Uri mediaPath, MediaClassification mediaClassification);
+    Task Play(Uri mediaPath, MediaClassification mediaClassification);
 
-        Task Pause();
+    Task Pause();
 
-        Task Close();
-        
-        void UnsubscribeEvents();
-    }
+    Task Close();
+
+    void UnsubscribeEvents();
 }

@@ -9,172 +9,169 @@ using OnlyMSlideManager.Helpers;
 using Serilog;
 using Serilog.Events;
 
-namespace OnlyMSlideManager.Services.Options
+namespace OnlyMSlideManager.Services.Options;
+
+internal sealed class OptionsService : IOptionsService
 {
-    internal sealed class OptionsService : IOptionsService
+    private readonly int _optionsVersion = 1;
+    private readonly Lazy<Options> _options;
+
+    private string? _optionsFilePath;
+    private string? _originalOptionsSignature;
+
+    public OptionsService()
     {
-        private readonly int _optionsVersion = 1;
-        private readonly Lazy<Options> _options;
+        _options = new Lazy<Options>(OptionsFactory);
+    }
 
-        private string? _optionsFilePath;
-        private string? _originalOptionsSignature;
-        
-        public OptionsService()
+    public string? Culture
+    {
+        get => _options.Value.Culture;
+        set
         {
-            _options = new Lazy<Options>(OptionsFactory);
-        }
-
-        public string? Culture
-        {
-            get => _options.Value.Culture;
-            set
+            if (_options.Value.Culture != value)
             {
-                if (_options.Value.Culture != value)
-                {
-                    _options.Value.Culture = value;
-                }
+                _options.Value.Culture = value;
             }
         }
+    }
 
-        public string? AppWindowPlacement
+    public string? AppWindowPlacement
+    {
+        get => _options.Value.AppWindowPlacement;
+        set
         {
-            get => _options.Value.AppWindowPlacement;
-            set
+            if (_options.Value.AppWindowPlacement != value)
             {
-                if (_options.Value.AppWindowPlacement != value)
-                {
-                    _options.Value.AppWindowPlacement = value;
-                }
+                _options.Value.AppWindowPlacement = value;
             }
         }
+    }
 
-        public LogEventLevel LogEventLevel
+    public LogEventLevel LogEventLevel
+    {
+        get => _options.Value.LogEventLevel;
+        set
         {
-            get => _options.Value.LogEventLevel;
-            set
+            if (_options.Value.LogEventLevel != value)
             {
-                if (_options.Value.LogEventLevel != value)
-                {
-                    _options.Value.LogEventLevel = value;
-                }
+                _options.Value.LogEventLevel = value;
             }
         }
+    }
 
-        public void Save()
+    public void Save()
+    {
+        try
         {
-            try
-            {
-                var newSignature = GetOptionsSignature(_options.Value);
+            var newSignature = GetOptionsSignature(_options.Value);
 
-                if (_originalOptionsSignature != newSignature)
-                {
-                    // changed...
-                    WriteOptions(_options.Value);
-                    Log.Logger.Debug("Settings changed and saved");
-                }
-            }
-            catch (Exception ex)
+            if (_originalOptionsSignature != newSignature)
             {
-                Log.Logger.Error(ex, "Could not save settings");
+                // changed...
+                WriteOptions(_options.Value);
+                Log.Logger.Debug("Settings changed and saved");
             }
         }
-
-        private static string GetOptionsSignature(Options options)
+        catch (Exception ex)
         {
-            // config data is small so simple solution is best...
-            return JsonConvert.SerializeObject(options);
+            Log.Logger.Error(ex, "Could not save settings");
+        }
+    }
+
+    private static string GetOptionsSignature(Options options) =>
+        // config data is small so simple solution is best...
+        JsonConvert.SerializeObject(options);
+
+    private void WriteOptions(Options? options)
+    {
+        if (options != null && _optionsFilePath != null)
+        {
+            using var file = File.CreateText(_optionsFilePath);
+
+            var serializer = new JsonSerializer { Formatting = Formatting.Indented };
+            serializer.Serialize(file, options);
+            _originalOptionsSignature = GetOptionsSignature(options);
+        }
+    }
+
+    private Options OptionsFactory()
+    {
+        Options? result = null;
+
+        try
+        {
+            _optionsFilePath = FileUtils.GetUserOptionsFilePath(_optionsVersion);
+            var path = Path.GetDirectoryName(_optionsFilePath);
+            if (path != null)
+            {
+                FileUtils.CreateDirectory(path);
+                result = ReadOptions();
+            }
+
+            result ??= new Options();
+
+            // store the original settings so that we can determine if they have changed
+            // when we come to save them
+            _originalOptionsSignature = GetOptionsSignature(result);
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not read options file");
+            result = new Options();
         }
 
-        private void WriteOptions(Options? options)
-        {
-            if (options != null && _optionsFilePath != null)
-            {
-                using var file = File.CreateText(_optionsFilePath);
+        return result;
+    }
 
-                var serializer = new JsonSerializer { Formatting = Formatting.Indented };
-                serializer.Serialize(file, options);
-                _originalOptionsSignature = GetOptionsSignature(options);
-            }
+    private Options? ReadOptions()
+    {
+        if (_optionsFilePath == null || !File.Exists(_optionsFilePath))
+        {
+            return WriteDefaultOptions();
         }
 
-        private Options OptionsFactory()
+        using var file = File.OpenText(_optionsFilePath);
+
+        var serializer = new JsonSerializer();
+        var result = (Options?)serializer.Deserialize(file, typeof(Options));
+        result?.Sanitize();
+
+        SetCulture(result?.Culture);
+
+        return result;
+    }
+
+    private Options WriteDefaultOptions()
+    {
+        var result = new Options();
+
+        WriteOptions(result);
+
+        return result;
+    }
+
+    private static void SetCulture(string? cultureString)
+    {
+        var culture = cultureString;
+
+        if (string.IsNullOrEmpty(culture))
         {
-            Options? result = null;
-
-            try
-            {
-                _optionsFilePath = FileUtils.GetUserOptionsFilePath(_optionsVersion);
-                var path = Path.GetDirectoryName(_optionsFilePath);
-                if (path != null)
-                {
-                    FileUtils.CreateDirectory(path);
-                    result = ReadOptions();
-                }
-
-                result ??= new Options();
-
-                // store the original settings so that we can determine if they have changed
-                // when we come to save them
-                _originalOptionsSignature = GetOptionsSignature(result);
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not read options file");
-                result = new Options();
-            }
-            
-            return result;
+            culture = CultureInfo.CurrentCulture.Name;
         }
 
-        private Options? ReadOptions()
+        try
         {
-            if (_optionsFilePath == null || !File.Exists(_optionsFilePath))
-            {
-                return WriteDefaultOptions();
-            }
-
-            using var file = File.OpenText(_optionsFilePath);
-
-            var serializer = new JsonSerializer();
-            var result = (Options?)serializer.Deserialize(file, typeof(Options));
-            result?.Sanitize();
-
-            SetCulture(result?.Culture);
-
-            return result;
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(
+                    XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
         }
-
-        private Options WriteDefaultOptions()
+        catch (Exception ex)
         {
-            var result = new Options();
-            
-            WriteOptions(result);
-
-            return result;
-        }
-
-        private static void SetCulture(string? cultureString)
-        {
-            var culture = cultureString;
-
-            if (string.IsNullOrEmpty(culture))
-            {
-                culture = CultureInfo.CurrentCulture.Name;
-            }
-
-            try
-            {
-                Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
-                FrameworkElement.LanguageProperty.OverrideMetadata(
-                    typeof(FrameworkElement),
-                    new FrameworkPropertyMetadata(
-                        XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not set culture");
-            }
+            Log.Logger.Error(ex, "Could not set culture");
         }
     }
 }

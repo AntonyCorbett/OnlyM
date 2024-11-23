@@ -1,6 +1,5 @@
-﻿namespace OnlyM.PubSubMessages
+﻿namespace OnlyM.PubSubMessages;
+
+internal sealed class MediaListUpdatingMessage
 {
-    internal sealed class MediaListUpdatingMessage
-    {
-    }
 }

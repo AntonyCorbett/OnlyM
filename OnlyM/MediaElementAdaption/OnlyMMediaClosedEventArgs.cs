@@ -1,8 +1,7 @@
 ﻿using System;
 
-namespace OnlyM.MediaElementAdaption
+namespace OnlyM.MediaElementAdaption;
+
+public class OnlyMMediaClosedEventArgs : EventArgs
 {
-    public class OnlyMMediaClosedEventArgs : EventArgs
-    {
-    }
 }

@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using OnlyM.Core.Models;
 
-namespace OnlyM.Core.Services.Media
+namespace OnlyM.Core.Services.Media;
+
+public interface IMediaProviderService
 {
-    public interface IMediaProviderService
-    {
-        IReadOnlyCollection<MediaFile> GetMediaFiles();
+    IReadOnlyCollection<MediaFile> GetMediaFiles();
 
-        bool IsFileExtensionSupported(string extension);
+    bool IsFileExtensionSupported(string extension);
 
-        IReadOnlyCollection<SupportedMediaType> GetSupportedMediaTypes();
+    IReadOnlyCollection<SupportedMediaType> GetSupportedMediaTypes();
 
-        SupportedMediaType? GetSupportedMediaType(string? fileName);
+    SupportedMediaType? GetSupportedMediaType(string? fileName);
 
-        MediaFolders GetMediaFolders(DateTime theDate);
-    }
+    MediaFolders GetMediaFolders(DateTime theDate);
 }

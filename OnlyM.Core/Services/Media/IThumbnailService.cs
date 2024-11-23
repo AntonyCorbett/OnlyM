@@ -1,19 +1,18 @@
 ﻿using System;
 using OnlyM.Core.Models;
 
-namespace OnlyM.Core.Services.Media
+namespace OnlyM.Core.Services.Media;
+
+public interface IThumbnailService
 {
-    public interface IThumbnailService
-    {
-        event EventHandler ThumbnailsPurgedEvent;
+    event EventHandler ThumbnailsPurgedEvent;
 
-        byte[]? GetThumbnail(
-            string originalPath, 
-            string ffmpegFolder,
-            MediaClassification mediaClassification, 
-            long originalLastChanged, 
-            out bool foundInCache);
+    byte[]? GetThumbnail(
+        string originalPath,
+        string ffmpegFolder,
+        MediaClassification mediaClassification,
+        long originalLastChanged,
+        out bool foundInCache);
 
-        void ClearThumbCache();
-    }
+    void ClearThumbCache();
 }

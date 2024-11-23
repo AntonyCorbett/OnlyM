@@ -1,8 +1,7 @@
-﻿namespace OnlyM.Slides.Models
+﻿namespace OnlyM.Slides.Models;
+
+public enum SlideDirection
 {
-    public enum SlideDirection
-    {
-        Forward,
-        Reverse,
-    }
+    Forward,
+    Reverse,
 }

@@ -1,9 +1,8 @@
-﻿namespace OnlyM.Models
+﻿namespace OnlyM.Models;
+
+public enum PdfViewStyle
 {
-    public enum PdfViewStyle
-    {
-        Default,
-        VerticalFit,
-        HorizontalFit,
-    }
+    Default,
+    VerticalFit,
+    HorizontalFit,
 }

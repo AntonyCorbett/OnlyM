@@ -1,17 +1,16 @@
 ﻿using System.Linq;
 
-namespace OnlyM.Core.Extensions
-{
-    public static class StringExtensions
-    {
-        public static string? GetNumericPrefix(this string? value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
+namespace OnlyM.Core.Extensions;
 
-            return new string(value.TakeWhile(char.IsDigit).ToArray());
+public static class StringExtensions
+{
+    public static string? GetNumericPrefix(this string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return null;
         }
+
+        return new string(value.TakeWhile(char.IsDigit).ToArray());
     }
 }

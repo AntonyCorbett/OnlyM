@@ -8,50 +8,49 @@ using OnlyM.Core.Services.Media;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Utils;
 
-namespace IntegrationTests
+namespace IntegrationTests;
+
+[TestClass]
+public class TestThumbnails
 {
-    [TestClass]
-    public class TestThumbnails
+    [TestMethod]
+    public void TestMethod1()
     {
-        [TestMethod]
-        public void TestMethod1()
-        {
-            ILogLevelSwitchService logSwitchService = new LogLevelSwitchService();
-            ICommandLineService commandLineService = new CommandLineService();
-            IDatabaseService db = new DatabaseService();
-            IOptionsService optionsService = new OptionsService(logSwitchService, commandLineService);
-            IThumbnailService service = new ThumbnailService(db, optionsService);
-            service.ClearThumbCache();
+        ILogLevelSwitchService logSwitchService = new LogLevelSwitchService();
+        ICommandLineService commandLineService = new CommandLineService();
+        IDatabaseService db = new DatabaseService();
+        IOptionsService optionsService = new OptionsService(logSwitchService, commandLineService);
+        IThumbnailService service = new ThumbnailService(db, optionsService);
+        service.ClearThumbCache();
 
-            var folder = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyMIntegrationTests");
-            FileUtils.CreateDirectory(folder);
+        var folder = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyMIntegrationTests");
+        FileUtils.CreateDirectory(folder);
 
-            var filePath = Path.Combine(folder, "TestImage01.jpg");
+        var filePath = Path.Combine(folder, "TestImage01.jpg");
 
-            var bmp = Properties.Resources.Test01;
-            bmp.Save(filePath, ImageFormat.Jpeg);
+        var bmp = Properties.Resources.Test01;
+        bmp.Save(filePath, ImageFormat.Jpeg);
 
-            var lastWrite = File.GetLastWriteTimeUtc(filePath);
+        var lastWrite = File.GetLastWriteTimeUtc(filePath);
 
-            var dummyFfmpegFolder = string.Empty; // not needed when getting image thumbs
+        var dummyFfmpegFolder = string.Empty; // not needed when getting image thumbs
 
-            var thumb1 = service.GetThumbnail(filePath, dummyFfmpegFolder, MediaClassification.Image, lastWrite.Ticks, out var foundInCache);
+        var thumb1 = service.GetThumbnail(filePath, dummyFfmpegFolder, MediaClassification.Image, lastWrite.Ticks, out var foundInCache);
 
-            Assert.IsNotNull(thumb1);
-            Assert.IsFalse(foundInCache);
+        Assert.IsNotNull(thumb1);
+        Assert.IsFalse(foundInCache);
 
-            // try again to check we get cached version
-            var thumb2 = service.GetThumbnail(filePath, dummyFfmpegFolder, MediaClassification.Image, lastWrite.Ticks, out foundInCache);
+        // try again to check we get cached version
+        var thumb2 = service.GetThumbnail(filePath, dummyFfmpegFolder, MediaClassification.Image, lastWrite.Ticks, out foundInCache);
 
-            Assert.IsNotNull(thumb2);
-            Assert.IsTrue(foundInCache);
+        Assert.IsNotNull(thumb2);
+        Assert.IsTrue(foundInCache);
 
-            // now send wrong lastchanged value
-            var thumb3 = service.GetThumbnail(filePath, dummyFfmpegFolder, MediaClassification.Image, 123456, out foundInCache);
-            Assert.IsNotNull(thumb3);
-            Assert.IsFalse(foundInCache);
+        // now send wrong lastchanged value
+        var thumb3 = service.GetThumbnail(filePath, dummyFfmpegFolder, MediaClassification.Image, 123456, out foundInCache);
+        Assert.IsNotNull(thumb3);
+        Assert.IsFalse(foundInCache);
 
-            service.ClearThumbCache();
-        }
+        service.ClearThumbCache();
     }
 }

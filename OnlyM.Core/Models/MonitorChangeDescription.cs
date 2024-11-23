@@ -1,14 +1,13 @@
-﻿namespace OnlyM.Core.Models
+﻿namespace OnlyM.Core.Models;
+
+public enum MonitorChangeDescription
 {
-    public enum MonitorChangeDescription
-    {
-        NoneToMonitor,
-        NoneToWindow,
-        MonitorToMonitor,
-        MonitorToWindow,
-        WindowToMonitor,
-        WindowToNone,
-        MonitorToNone,
-        WindowToWindow,
-    }
+    NoneToMonitor,
+    NoneToWindow,
+    MonitorToMonitor,
+    MonitorToWindow,
+    WindowToMonitor,
+    WindowToNone,
+    MonitorToNone,
+    WindowToWindow,
 }

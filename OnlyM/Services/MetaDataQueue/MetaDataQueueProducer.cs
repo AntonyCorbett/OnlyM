@@ -4,26 +4,22 @@ using System.Linq;
 using OnlyM.Models;
 using Serilog;
 
-namespace OnlyM.Services.MetaDataQueue
+namespace OnlyM.Services.MetaDataQueue;
+
+internal sealed class MetaDataQueueProducer : IDisposable
 {
-    internal sealed class MetaDataQueueProducer : IDisposable
+    public BlockingCollection<MediaItem> Queue { get; } = new();
+
+    public void Add(MediaItem mediaItem)
     {
-        public BlockingCollection<MediaItem> Queue { get; } = new();
-
-        public void Add(MediaItem mediaItem)
+        // limit any duplication...
+        if (!Queue.Contains(mediaItem))
         {
-            // limit any duplication...
-            if (!Queue.Contains(mediaItem))
-            {
-                Queue.TryAdd(mediaItem);
+            Queue.TryAdd(mediaItem);
 
-                Log.Logger.Verbose("Metadata queue size = {QueueSize}", Queue.Count);
-            }
-        }
-
-        public void Dispose()
-        {
-            Queue?.Dispose();
+            Log.Logger.Verbose("Metadata queue size = {QueueSize}", Queue.Count);
         }
     }
+
+    public void Dispose() => Queue?.Dispose();
 }

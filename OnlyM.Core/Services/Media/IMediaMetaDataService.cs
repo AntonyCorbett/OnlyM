@@ -1,12 +1,11 @@
 ﻿using OnlyM.Core.Models;
 
-namespace OnlyM.Core.Services.Media
+namespace OnlyM.Core.Services.Media;
+
+public interface IMediaMetaDataService
 {
-    public interface IMediaMetaDataService
-    {
-        MediaMetaData? GetMetaData(
-            string mediaItemFilePath, 
-            SupportedMediaType mediaType,
-            string ffmpegFolder);
-    }
+    MediaMetaData? GetMetaData(
+        string mediaItemFilePath,
+        SupportedMediaType mediaType,
+        string ffmpegFolder);
 }

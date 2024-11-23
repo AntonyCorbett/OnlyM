@@ -19,433 +19,429 @@ using OnlyM.Models;
 using OnlyM.Services.WebBrowser;
 using Serilog;
 
-namespace OnlyM.Services
+namespace OnlyM.Services;
+
+internal sealed class WebDisplayManager : IDisposable
 {
-    internal sealed class WebDisplayManager : IDisposable
+    private readonly ChromiumWebBrowser _browser;
+    private readonly FrameworkElement _browserGrid;
+    private readonly IDatabaseService _databaseService;
+    private readonly IOptionsService _optionsService;
+    private readonly IMonitorsService _monitorsService;
+    private readonly ISnackbarService _snackbarService;
+    private Guid _mediaItemId;
+    private bool _showing;
+    private bool _useMirror;
+    private string? _currentMediaItemUrl;
+    private Process? _mirrorProcess;
+
+    public WebDisplayManager(
+        ChromiumWebBrowser browser,
+        FrameworkElement browserGrid,
+        IDatabaseService databaseService,
+        IOptionsService optionsService,
+        IMonitorsService monitorsService,
+        ISnackbarService snackbarService)
     {
-        private readonly ChromiumWebBrowser _browser;
-        private readonly FrameworkElement _browserGrid;
-        private readonly IDatabaseService _databaseService;
-        private readonly IOptionsService _optionsService;
-        private readonly IMonitorsService _monitorsService;
-        private readonly ISnackbarService _snackbarService;
-        private Guid _mediaItemId;
-        private bool _showing;
-        private bool _useMirror;
-        private string? _currentMediaItemUrl;
-        private Process? _mirrorProcess;
+        _browser = browser;
+        _browserGrid = browserGrid;
+        _databaseService = databaseService;
+        _optionsService = optionsService;
+        _monitorsService = monitorsService;
+        _snackbarService = snackbarService;
 
-        public WebDisplayManager(
-            ChromiumWebBrowser browser,
-            FrameworkElement browserGrid,
-            IDatabaseService databaseService,
-            IOptionsService optionsService,
-            IMonitorsService monitorsService,
-            ISnackbarService snackbarService)
+        InitBrowser();
+    }
+
+    public void Dispose()
+    {
+        _browser.Dispose();
+        _mirrorProcess?.Dispose();
+    }
+
+    public event EventHandler<MediaEventArgs>? MediaChangeEvent;
+
+    public event EventHandler<WebBrowserProgressEventArgs>? StatusEvent;
+
+    public void ShowWeb(
+        string mediaItemFilePath,
+        Guid mediaItemId,
+        int pdfStartingPage,
+        PdfViewStyle pdfViewStyle,
+        bool showMirror,
+        ScreenPosition screenPosition)
+    {
+        _useMirror = showMirror;
+
+        if (string.IsNullOrEmpty(mediaItemFilePath))
         {
-            _browser = browser;
-            _browserGrid = browserGrid;
-            _databaseService = databaseService;
-            _optionsService = optionsService;
-            _monitorsService = monitorsService;
-            _snackbarService = snackbarService;
-
-            InitBrowser();
+            return;
         }
 
-        public void Dispose()
+        _showing = false;
+        _mediaItemId = mediaItemId;
+
+        ScreenPositionHelper.SetScreenPosition(_browserGrid, screenPosition);
+
+        OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Starting));
+
+        string? webAddress;
+        if (Path.GetExtension(mediaItemFilePath).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
         {
-            _browser.Dispose();
-            _mirrorProcess?.Dispose();
+            // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
+
+            var viewString = GetPdfViewString(pdfViewStyle);
+            var cacheBusterString = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
+
+            webAddress = $"pdf://{mediaItemFilePath}?t={cacheBusterString}#view={viewString}&page={pdfStartingPage}";
+        }
+        else
+        {
+            var urlHelper = new WebShortcutHelper(mediaItemFilePath);
+            webAddress = urlHelper.Uri;
         }
 
-        public event EventHandler<MediaEventArgs>? MediaChangeEvent;
+        _currentMediaItemUrl = webAddress;
 
-        public event EventHandler<WebBrowserProgressEventArgs>? StatusEvent;
+        RemoveAnimation();
 
-        public void ShowWeb(
-            string mediaItemFilePath,
-            Guid mediaItemId,
-            int pdfStartingPage,
-            PdfViewStyle pdfViewStyle,
-            bool showMirror,
-            ScreenPosition screenPosition)
+        _browserGrid.Visibility = Visibility.Visible;
+
+        _browser.Load(webAddress);
+    }
+
+    public void HideWeb()
+    {
+        OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopping));
+
+        UpdateBrowserDataInDatabase();
+
+        RemoveAnimation();
+
+        FadeBrowser(false, () =>
         {
-            _useMirror = showMirror;
+            OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
+            _browserGrid.Visibility = Visibility.Hidden;
+        });
+    }
 
-            if (string.IsNullOrEmpty(mediaItemFilePath))
-            {
-                return;
-            }
+    public void ShowMirror()
+    {
+        Log.Logger.Debug("Attempting to open mirror");
 
-            _showing = false;
-            _mediaItemId = mediaItemId;
-
-            ScreenPositionHelper.SetScreenPosition(_browserGrid, screenPosition);
-
-            OnMediaChangeEvent(CreateMediaEventArgs(mediaItemId, MediaChange.Starting));
-
-            string? webAddress;
-            if (Path.GetExtension(mediaItemFilePath).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
-            {
-                // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
-
-                var viewString = GetPdfViewString(pdfViewStyle);
-                var cacheBusterString = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
-
-                webAddress = $"pdf://{mediaItemFilePath}?t={cacheBusterString}#view={viewString}&page={pdfStartingPage}";
-            }
-            else
-            {
-                var urlHelper = new WebShortcutHelper(mediaItemFilePath);
-                webAddress = urlHelper.Uri;
-            }
-
-            _currentMediaItemUrl = webAddress;
-
-            RemoveAnimation();
-            
-            _browserGrid.Visibility = Visibility.Visible;
-
-            _browser.Load(webAddress);
+        if (Mutex.TryOpenExisting("OnlyMMirrorMutex", out var _))
+        {
+            Log.Logger.Debug("OnlyMMirrorMutex mutex exists");
+            return;
         }
 
-        public void HideWeb()
+        var folder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location);
+        if (folder == null)
         {
-            OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopping));
+            Log.Logger.Error("Could not get assembly folder");
+            return;
+        }
 
-            UpdateBrowserDataInDatabase();
+        const string mirrorExeFileName = "OnlyMMirror.exe";
 
-            RemoveAnimation();
+        var mirrorExePath = Path.Combine(folder, mirrorExeFileName);
+        if (!File.Exists(mirrorExePath))
+        {
+            Log.Logger.Error($"Could not find {mirrorExeFileName}");
+            return;
+        }
 
-            FadeBrowser(false, () =>
+        Log.Logger.Debug($"Mirror path = {mirrorExePath}");
+
+        var mainWindow = Application.Current.MainWindow;
+        if (mainWindow == null)
+        {
+            Log.Logger.Error("Could not get main window");
+            return;
+        }
+
+        var handle = new WindowInteropHelper(mainWindow).Handle;
+        var onlyMMonitor = _monitorsService.GetMonitorForWindowHandle(handle);
+        var mediaMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
+
+        if (onlyMMonitor?.MonitorId == null || mediaMonitor?.MonitorId == null)
+        {
+            Log.Logger.Error("Cannot get monitor - unable to display mirror");
+            return;
+        }
+
+        if (mediaMonitor.MonitorId.Equals(onlyMMonitor.MonitorId, StringComparison.Ordinal))
+        {
+            Log.Logger.Error("Cannot display mirror since OnlyM and Media window share a monitor");
+            return;
+        }
+
+        Log.Logger.Debug($"Main monitor = {onlyMMonitor.Monitor?.DeviceName}");
+        Log.Logger.Debug($"Media monitor = {mediaMonitor.Monitor?.DeviceName}");
+
+        StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = Properties.Resources.LAUNCHING_MIRROR });
+
+        try
+        {
+            var zoomStr = _optionsService.MirrorZoom.ToString(CultureInfo.InvariantCulture);
+            var hotKey = _optionsService.MirrorHotKey;
+
+            var commandLineArgs =
+                $"{onlyMMonitor.Monitor?.DeviceName} {mediaMonitor.Monitor?.DeviceName} {zoomStr} {hotKey}";
+
+            Log.Logger.Debug($"Starting mirror exe with args = {commandLineArgs}");
+
+            _mirrorProcess = new Process
             {
-                OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
-                _browserGrid.Visibility = Visibility.Hidden;
+                StartInfo =
+                {
+                    FileName = mirrorExePath,
+                    Arguments = commandLineArgs,
+                },
+                EnableRaisingEvents = true,
+            };
+
+            _mirrorProcess.Exited += HandleMirrorProcessExited;
+
+            if (!_mirrorProcess.Start())
+            {
+                Log.Logger.Error("Could not launch mirror");
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not launch mirror");
+        }
+        finally
+        {
+            Task.Delay(1000).ContinueWith(_ => Application.Current.Dispatcher.Invoke(()
+                => StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty })));
+        }
+    }
+
+    public void CloseMirror()
+    {
+        if (!Mutex.TryOpenExisting("OnlyMMirrorMutex", out var _))
+        {
+            return;
+        }
+
+        if (_mirrorProcess == null)
+        {
+            return;
+        }
+
+        try
+        {
+            if (_mirrorProcess.CloseMainWindow())
+            {
+                _mirrorProcess = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not close mirror");
+        }
+    }
+
+    private async Task InitBrowserFromDatabase(string url)
+    {
+        SetZoomLevel(0.0);
+
+        try
+        {
+            var browserData = _databaseService.GetBrowserData(url);
+            if (browserData != null)
+            {
+                SetZoomLevel(browserData.ZoomLevel);
+
+                // this hack to allow the web renderer time to change zoom level before fading in!
+                await Task.Delay(500);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not get browser data from database");
+        }
+    }
+
+    private void SetZoomLevel(double zoomLevel)
+    {
+        // don't understand why this apparent duplication is necessary!
+        _browser.SetZoomLevel(zoomLevel);
+        _browser.ZoomLevel = zoomLevel;
+    }
+
+    private void UpdateBrowserDataInDatabase()
+    {
+        if (_currentMediaItemUrl == null)
+        {
+            return;
+        }
+
+        try
+        {
+            _databaseService.AddBrowserData(_currentMediaItemUrl, _browser.ZoomLevel);
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not update browser data in database");
+        }
+    }
+
+    private static MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
+    {
+        return new()
+        {
+            MediaItemId = id,
+            Classification = MediaClassification.Web,
+            Change = change,
+        };
+    }
+
+    private void OnMediaChangeEvent(MediaEventArgs e) => MediaChangeEvent?.Invoke(this, e);
+
+    private void HandleBrowserLoadingStateChanged(object? sender, LoadingStateChangedEventArgs e)
+    {
+        if (e.IsLoading)
+        {
+            StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs
+            {
+                Description = Properties.Resources.WEB_LOADING,
             });
         }
-
-        public void ShowMirror()
+        else
         {
-            Log.Logger.Debug("Attempting to open mirror");
+            StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty });
+        }
 
-            if (Mutex.TryOpenExisting("OnlyMMirrorMutex", out var _))
+        Application.Current.Dispatcher.Invoke(async () =>
+        {
+            Log.Debug(e.IsLoading ? $"Loading web page = {_browser.Address}" : "Loaded web page");
+
+            if (!e.IsLoading && !_showing && _currentMediaItemUrl != null)
             {
-                Log.Logger.Debug("OnlyMMirrorMutex mutex exists");
-                return;
-            }
+                // page is loaded so fade in...
+                _showing = true;
+                await InitBrowserFromDatabase(_currentMediaItemUrl);
 
-            var folder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location);
-            if (folder == null)
-            {
-                Log.Logger.Error("Could not get assembly folder");
-                return;
-            }
-
-            const string mirrorExeFileName = "OnlyMMirror.exe";
-
-            var mirrorExePath = Path.Combine(folder, mirrorExeFileName);
-            if (!File.Exists(mirrorExePath))
-            {
-                Log.Logger.Error($"Could not find {mirrorExeFileName}");
-                return;
-            }
-
-            Log.Logger.Debug($"Mirror path = {mirrorExePath}");
-
-            var mainWindow = Application.Current.MainWindow;
-            if (mainWindow == null)
-            {
-                Log.Logger.Error("Could not get main window");
-                return;
-            }
-
-            var handle = new WindowInteropHelper(mainWindow).Handle;
-            var onlyMMonitor = _monitorsService.GetMonitorForWindowHandle(handle);
-            var mediaMonitor = _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId);
-
-            if (onlyMMonitor?.MonitorId == null || mediaMonitor?.MonitorId == null)
-            {
-                Log.Logger.Error("Cannot get monitor - unable to display mirror");
-                return;
-            }
-
-            if (mediaMonitor.MonitorId.Equals(onlyMMonitor.MonitorId, StringComparison.Ordinal))
-            {
-                Log.Logger.Error("Cannot display mirror since OnlyM and Media window share a monitor");
-                return;
-            }
-
-            Log.Logger.Debug($"Main monitor = {onlyMMonitor.Monitor?.DeviceName}");
-            Log.Logger.Debug($"Media monitor = {mediaMonitor.Monitor?.DeviceName}");
-
-            StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = Properties.Resources.LAUNCHING_MIRROR });
-
-            try
-            {
-                var zoomStr = _optionsService.MirrorZoom.ToString(CultureInfo.InvariantCulture);
-                var hotKey = _optionsService.MirrorHotKey;
-
-                var commandLineArgs =
-                    $"{onlyMMonitor.Monitor?.DeviceName} {mediaMonitor.Monitor?.DeviceName} {zoomStr} {hotKey}";
-
-                Log.Logger.Debug($"Starting mirror exe with args = {commandLineArgs}");
-
-                _mirrorProcess = new Process
+                FadeBrowser(true, () =>
                 {
-                    StartInfo =
+                    OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
+                    _browserGrid.Focus();
+
+                    if (_useMirror)
                     {
-                        FileName = mirrorExePath,
-                        Arguments = commandLineArgs,
-                    },
-                    EnableRaisingEvents = true,
-                };
-
-                _mirrorProcess.Exited += HandleMirrorProcessExited;
-
-                if (!_mirrorProcess.Start())
-                {
-                    Log.Logger.Error("Could not launch mirror");
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not launch mirror");
-            }
-            finally
-            {
-                Task.Delay(1000).ContinueWith(_ => Application.Current.Dispatcher.Invoke(() 
-                    => StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty })));
-            }
-        }
-
-        public void CloseMirror()
-        {
-            if (!Mutex.TryOpenExisting("OnlyMMirrorMutex", out var _))
-            {
-                return;
-            }
-
-            if (_mirrorProcess == null)
-            {
-                return;
-            }
-
-            try
-            {
-                if (_mirrorProcess.CloseMainWindow())
-                {
-                    _mirrorProcess = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not close mirror");
-            }
-        }
-
-        private async Task InitBrowserFromDatabase(string url)
-        {
-            SetZoomLevel(0.0);
-
-            try
-            {
-                var browserData = _databaseService.GetBrowserData(url);
-                if (browserData != null)
-                {
-                    SetZoomLevel(browserData.ZoomLevel);
-
-                    // this hack to allow the web renderer time to change zoom level before fading in!
-                    await Task.Delay(500);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not get browser data from database");
-            }
-        }
-
-        private void SetZoomLevel(double zoomLevel)
-        {
-            // don't understand why this apparent duplication is necessary!
-            _browser.SetZoomLevel(zoomLevel);
-            _browser.ZoomLevel = zoomLevel;
-        }
-
-        private void UpdateBrowserDataInDatabase()
-        {
-            if (_currentMediaItemUrl == null)
-            {
-                return;
-            }
-
-            try
-            {
-                _databaseService.AddBrowserData(_currentMediaItemUrl, _browser.ZoomLevel);
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not update browser data in database");
-            }
-        }
-
-        private static MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
-        {
-            return new()
-            {
-                MediaItemId = id,
-                Classification = MediaClassification.Web,
-                Change = change,
-            };
-        }
-
-        private void OnMediaChangeEvent(MediaEventArgs e)
-        {
-            MediaChangeEvent?.Invoke(this, e);
-        }
-
-        private void HandleBrowserLoadingStateChanged(object? sender, LoadingStateChangedEventArgs e)
-        {
-            if (e.IsLoading)
-            {
-                StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs
-                {
-                    Description = Properties.Resources.WEB_LOADING,
+                        ShowMirror();
+                    }
                 });
             }
-            else
-            {
-                StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty });
-            }
+        });
+    }
 
-            Application.Current.Dispatcher.Invoke(async () =>
-            {
-                Log.Debug(e.IsLoading ? $"Loading web page = {_browser.Address}" : "Loaded web page");
+    private void FadeBrowser(bool fadeIn, Action completed)
+    {
+        var fadeTimeSecs = 1.0;
 
-                if (!e.IsLoading && !_showing && _currentMediaItemUrl != null)
-                {
-                    // page is loaded so fade in...
-                    _showing = true;
-                    await InitBrowserFromDatabase(_currentMediaItemUrl);
-
-                    FadeBrowser(true, () =>
-                    {
-                        OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
-                        _browserGrid.Focus();
-
-                        if (_useMirror)
-                        {
-                            ShowMirror();
-                        }
-                    });
-                }
-            });
+        if (fadeIn)
+        {
+            // note that the fade in time is longer than fade out - just seems to look better
+            fadeTimeSecs *= 1.2;
         }
 
-        private void FadeBrowser(bool fadeIn, Action completed)
+        var animation = new DoubleAnimation
         {
-            var fadeTimeSecs = 1.0;
-            
-            if (fadeIn)
-            {
-                // note that the fade in time is longer than fade out - just seems to look better
-                fadeTimeSecs *= 1.2;
-            }
+            Duration = TimeSpan.FromSeconds(fadeTimeSecs * 1.2),
+            From = fadeIn ? 0.0 : 1.0,
+            To = fadeIn ? 1.0 : 0.0,
+        };
 
-            var animation = new DoubleAnimation
-            {
-                Duration = TimeSpan.FromSeconds(fadeTimeSecs * 1.2),
-                From = fadeIn ? 0.0 : 1.0,
-                To = fadeIn ? 1.0 : 0.0,
-            };
+        animation.Completed += (_, _) => completed();
+        _browserGrid.BeginAnimation(UIElement.OpacityProperty, animation);
+    }
 
-            animation.Completed += (_, _) => completed();
-            _browserGrid.BeginAnimation(UIElement.OpacityProperty, animation);
+    private void RemoveAnimation()
+    {
+        _browserGrid.BeginAnimation(UIElement.OpacityProperty, null);
+        _browserGrid.Opacity = 0.0;
+    }
+
+    private void InitBrowser()
+    {
+        _browser.LoadingStateChanged += HandleBrowserLoadingStateChanged;
+        _browser.LoadError += HandleBrowserLoadError;
+        _browser.StatusMessage += HandleBrowserStatusMessage;
+        _browser.FrameLoadStart += HandleBrowserFrameLoadStart;
+
+        _browser.LifeSpanHandler = new BrowserLifeSpanHandler();
+    }
+
+    private void HandleBrowserStatusMessage(object? sender, StatusMessageEventArgs e)
+    {
+        if (!e.Browser.IsLoading)
+        {
+            StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = e.Value });
         }
+    }
 
-        private void RemoveAnimation()
-        {
-            _browserGrid.BeginAnimation(UIElement.OpacityProperty, null);
-            _browserGrid.Opacity = 0.0;
-        }
-
-        private void InitBrowser()
-        {
-            _browser.LoadingStateChanged += HandleBrowserLoadingStateChanged;
-            _browser.LoadError += HandleBrowserLoadError;
-            _browser.StatusMessage += HandleBrowserStatusMessage;
-            _browser.FrameLoadStart += HandleBrowserFrameLoadStart;
-
-            _browser.LifeSpanHandler = new BrowserLifeSpanHandler();
-        }
-
-        private void HandleBrowserStatusMessage(object? sender, StatusMessageEventArgs e)
-        {
-            if (!e.Browser.IsLoading)
-            {
-                StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = e.Value });
-            }
-        }
-
-        private void HandleBrowserFrameLoadStart(object? sender, FrameLoadStartEventArgs e)
-        {
+    private void HandleBrowserFrameLoadStart(object? sender, FrameLoadStartEventArgs e)
+    {
 #pragma warning disable CA1863
-            var s = string.Format(CultureInfo.CurrentCulture, Properties.Resources.LOADING_FRAME, e.Frame.Identifier);
+        var s = string.Format(CultureInfo.CurrentCulture, Properties.Resources.LOADING_FRAME, e.Frame.Identifier);
 #pragma warning restore CA1863
-            StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = s });
-        }
+        StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = s });
+    }
 
-        private void HandleBrowserLoadError(object? sender, LoadErrorEventArgs e)
+    private void HandleBrowserLoadError(object? sender, LoadErrorEventArgs e)
+    {
+        // Don't display an error for downloaded files where the user aborted the download.
+        if (e.ErrorCode == CefErrorCode.Aborted)
         {
-            // Don't display an error for downloaded files where the user aborted the download.
-            if (e.ErrorCode == CefErrorCode.Aborted)
-            {
-                return;
-            }
+            return;
+        }
 
 #pragma warning disable CA1863
-            var errorMsg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.WEB_LOAD_FAIL, e.FailedUrl, e.ErrorText, e.ErrorCode);
+        var errorMsg = string.Format(CultureInfo.CurrentCulture, Properties.Resources.WEB_LOAD_FAIL, e.FailedUrl, e.ErrorText, e.ErrorCode);
 #pragma warning restore CA1863
-            var body = $"<html><body><h2>{errorMsg}</h2></body></html>";
+        var body = $"<html><body><h2>{errorMsg}</h2></body></html>";
 
-            _browser.LoadHtml(body, e.FailedUrl);
+        _browser.LoadHtml(body, e.FailedUrl);
+    }
+
+    private void HandleMirrorProcessExited(object? sender, EventArgs e)
+    {
+        if (_mirrorProcess == null)
+        {
+            return;
         }
 
-        private void HandleMirrorProcessExited(object? sender, EventArgs e)
+        if (_mirrorProcess.ExitCode == 0)
         {
-            if (_mirrorProcess == null)
-            {
-                return;
-            }
+            Log.Logger.Debug("Mirror process closed normally");
+        }
+        else
+        {
+            Log.Logger.Error($"Mirror process exited with exit code {_mirrorProcess.ExitCode}");
 
-            if (_mirrorProcess.ExitCode == 0)
+            if (_mirrorProcess.ExitCode == 5)
             {
-                Log.Logger.Debug("Mirror process closed normally");
-            }
-            else
-            {
-                Log.Logger.Error($"Mirror process exited with exit code {_mirrorProcess.ExitCode}");
-
-                if (_mirrorProcess.ExitCode == 5)
-                {
-                    _snackbarService.EnqueueWithOk(Properties.Resources.CHANGE_MIRROR_HOTKEY, Properties.Resources.OK);
-                }
+                _snackbarService.EnqueueWithOk(Properties.Resources.CHANGE_MIRROR_HOTKEY, Properties.Resources.OK);
             }
         }
+    }
 
-        private static string GetPdfViewString(PdfViewStyle pdfViewStyle)
+    private static string GetPdfViewString(PdfViewStyle pdfViewStyle)
+    {
+        switch (pdfViewStyle)
         {
-            switch (pdfViewStyle)
-            {
-                case PdfViewStyle.HorizontalFit:
-                    return "FitH";
-                case PdfViewStyle.VerticalFit:
-                    return "FitV";
+            case PdfViewStyle.HorizontalFit:
+                return "FitH";
+            case PdfViewStyle.VerticalFit:
+                return "FitV";
 
-                default:
-                case PdfViewStyle.Default:
-                    return string.Empty;
-            }
+            default:
+            case PdfViewStyle.Default:
+                return string.Empty;
         }
     }
 }

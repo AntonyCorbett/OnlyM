@@ -1,17 +1,16 @@
-﻿namespace OnlyM.Core.Services.CommandLine
+﻿namespace OnlyM.Core.Services.CommandLine;
+
+public interface ICommandLineService
 {
-    public interface ICommandLineService
-    {
-        bool NoGpu { get; set; }
+    bool NoGpu { get; set; }
 
-        string? OptionsIdentifier { get; set; }
+    string? OptionsIdentifier { get; set; }
 
-        bool NoSettings { get; set; }
+    bool NoSettings { get; set; }
 
-        bool NoFolder { get; set; }
+    bool NoFolder { get; set; }
 
-        string? SourceFolder { get; set; }
+    string? SourceFolder { get; set; }
 
-        bool DisableVideoRenderingFix { get; set; }
-    }
+    bool DisableVideoRenderingFix { get; set; }
 }

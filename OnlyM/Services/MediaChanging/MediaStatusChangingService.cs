@@ -1,35 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlyM.Services.MediaChanging
+namespace OnlyM.Services.MediaChanging;
+
+internal sealed class MediaStatusChangingService : IMediaStatusChangingService
 {
-    internal sealed class MediaStatusChangingService : IMediaStatusChangingService
+    private readonly HashSet<Guid> _changingMediaItems = [];
+    private readonly object _locker = new();
+
+    public void AddChangingItem(Guid mediaItemId)
     {
-        private readonly HashSet<Guid> _changingMediaItems = [];
-        private readonly object _locker = new();
-
-        public void AddChangingItem(Guid mediaItemId)
+        lock (_locker)
         {
-            lock (_locker)
-            {
-                _changingMediaItems.Add(mediaItemId);
-            }
+            _changingMediaItems.Add(mediaItemId);
         }
+    }
 
-        public void RemoveChangingItem(Guid mediaItemId)
+    public void RemoveChangingItem(Guid mediaItemId)
+    {
+        lock (_locker)
         {
-            lock (_locker)
-            {
-                _changingMediaItems.Remove(mediaItemId);
-            }
+            _changingMediaItems.Remove(mediaItemId);
         }
+    }
 
-        public bool IsMediaStatusChanging()
+    public bool IsMediaStatusChanging()
+    {
+        lock (_locker)
         {
-            lock (_locker)
-            {
-                return _changingMediaItems.Count > 0;
-            }
+            return _changingMediaItems.Count > 0;
         }
     }
 }

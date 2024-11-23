@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
 
-namespace OnlyMSlideManager.Services
-{
-    public interface IDialogService
-    {
-        Task<bool?> ShouldSaveDirtyDataAsync();
+namespace OnlyMSlideManager.Services;
 
-        bool IsDialogVisible();
-    }
+public interface IDialogService
+{
+    Task<bool?> ShouldSaveDirtyDataAsync();
+
+    bool IsDialogVisible();
 }

@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace OnlyM.Services.WebBrowser
+namespace OnlyM.Services.WebBrowser;
+
+public class WebBrowserProgressEventArgs : EventArgs
 {
-    public class WebBrowserProgressEventArgs : EventArgs
-    {
-        public string? Description { get; set; }
-    }
+    public string? Description { get; set; }
 }

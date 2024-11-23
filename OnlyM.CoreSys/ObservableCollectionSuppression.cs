@@ -1,20 +1,17 @@
 ﻿using System;
 
-namespace OnlyM.CoreSys
+namespace OnlyM.CoreSys;
+
+public sealed class ObservableCollectionSuppression<T> : IDisposable
 {
-    public sealed class ObservableCollectionSuppression<T> : IDisposable
+    private readonly ObservableCollectionEx<T> _collection;
+
+    public ObservableCollectionSuppression(ObservableCollectionEx<T> collection)
     {
-        private readonly ObservableCollectionEx<T> _collection;
-
-        public ObservableCollectionSuppression(ObservableCollectionEx<T> collection)
-        {
-            _collection = collection;
-            _collection.SuppressNotification = true;
-        }
-
-        public void Dispose()
-        {
-            _collection.SuppressNotification = false;
-        }
+        _collection = collection;
+        _collection.SuppressNotification = true;
     }
+
+    public void Dispose() =>
+        _collection.SuppressNotification = false;
 }

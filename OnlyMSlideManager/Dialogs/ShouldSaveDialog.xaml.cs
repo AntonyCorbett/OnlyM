@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace OnlyMSlideManager.Dialogs
+namespace OnlyMSlideManager.Dialogs;
+
+/// <summary>
+/// Interaction logic for ShouldSaveDialog.xaml
+/// </summary>
+public partial class ShouldSaveDialog : UserControl
 {
-    /// <summary>
-    /// Interaction logic for ShouldSaveDialog.xaml
-    /// </summary>
-    public partial class ShouldSaveDialog : UserControl
+    public ShouldSaveDialog()
     {
-        public ShouldSaveDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

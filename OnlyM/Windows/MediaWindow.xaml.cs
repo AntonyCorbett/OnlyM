@@ -22,674 +22,670 @@ using OnlyM.Services.WebNavHeaderManager;
 using OnlyM.ViewModel;
 using Serilog;
 
-namespace OnlyM.Windows
+namespace OnlyM.Windows;
+
+/// <summary>
+/// Interaction logic for MediaWindow.xaml
+/// </summary>
+public sealed partial class MediaWindow : IDisposable
 {
-    /// <summary>
-    /// Interaction logic for MediaWindow.xaml
-    /// </summary>
-    public sealed partial class MediaWindow : IDisposable
+    private const int MediaConfirmStopWindowSeconds = 3;
+
+    private readonly ImageDisplayManager _imageDisplayManager;
+    private readonly WebDisplayManager _webDisplayManager;
+    private readonly AudioManager _audioManager;
+
+    private readonly WebNavHeaderAdmin _webNavHeaderAdmin;
+
+    private readonly IOptionsService _optionsService;
+    private readonly ISnackbarService _snackbarService;
+    private VideoDisplayManager? _videoDisplayManager;
+
+    private IMediaElement? _videoElement;
+    private RenderingMethod _currentRenderingMethod;
+
+    public MediaWindow(
+        IOptionsService optionsService,
+        ISnackbarService snackbarService,
+        IDatabaseService databaseService,
+        IMonitorsService monitorsService)
     {
-        private const int MediaConfirmStopWindowSeconds = 3;
+        InitializeComponent();
 
-        private readonly ImageDisplayManager _imageDisplayManager;
-        private readonly WebDisplayManager _webDisplayManager;
-        private readonly AudioManager _audioManager;
-        
-        private readonly WebNavHeaderAdmin _webNavHeaderAdmin;
+        _webNavHeaderAdmin = new WebNavHeaderAdmin(WebNavHeader);
 
-        private readonly IOptionsService _optionsService;
-        private readonly ISnackbarService _snackbarService;
-        private VideoDisplayManager? _videoDisplayManager;
+        _optionsService = optionsService;
+        _snackbarService = snackbarService;
 
-        private IMediaElement? _videoElement;
-        private RenderingMethod _currentRenderingMethod;
-        
-        public MediaWindow(
-            IOptionsService optionsService,
-            ISnackbarService snackbarService,
-            IDatabaseService databaseService,
-            IMonitorsService monitorsService)
+        _imageDisplayManager = new ImageDisplayManager(
+            Image1Element, Image2Element, _optionsService);
+
+        _webDisplayManager = new WebDisplayManager(
+            Browser, BrowserGrid, databaseService, _optionsService, monitorsService, _snackbarService);
+
+        _audioManager = new AudioManager();
+
+        InitVideoRenderingMethod();
+
+        SubscribeOptionsEvents();
+        SubscribeImageEvents();
+        SubscribeWebEvents();
+        SubscribeAudioEvents();
+    }
+
+    public event EventHandler<MediaEventArgs>? MediaChangeEvent;
+
+    public event EventHandler<SlideTransitionEventArgs>? SlideTransitionEvent;
+
+    public event EventHandler<OnlyMPositionChangedEventArgs>? MediaPositionChangedEvent;
+
+    public event EventHandler<MediaNearEndEventArgs>? MediaNearEndEvent;
+
+    public event EventHandler<WebBrowserProgressEventArgs>? WebStatusEvent;
+
+    public bool IsWindowed { get; set; }
+
+    public void Dispose()
+    {
+        _videoDisplayManager?.Dispose();
+        _audioManager.Dispose();
+        VideoElementFfmpeg?.Dispose();
+        Browser?.Dispose();
+    }
+
+    public void ShowMirror(bool show)
+    {
+        if (show)
         {
-            InitializeComponent();
+            _webDisplayManager.ShowMirror();
+        }
+        else
+        {
+            _webDisplayManager.CloseMirror();
+        }
+    }
 
-            _webNavHeaderAdmin = new WebNavHeaderAdmin(WebNavHeader);
-
-            _optionsService = optionsService;
-            _snackbarService = snackbarService;
-
-            _imageDisplayManager = new ImageDisplayManager(
-                Image1Element, Image2Element, _optionsService);
-
-            _webDisplayManager = new WebDisplayManager(
-                Browser, BrowserGrid, databaseService, _optionsService, monitorsService, _snackbarService);
-
-            _audioManager = new AudioManager();
-            
+    public void UpdateRenderingMethod()
+    {
+        if (_optionsService.RenderingMethod != _currentRenderingMethod)
+        {
             InitVideoRenderingMethod();
+        }
+    }
 
-            SubscribeOptionsEvents();
-            SubscribeImageEvents();
-            SubscribeWebEvents();
-            SubscribeAudioEvents();
+    public async Task StartMedia(
+        MediaItem mediaItemToStart,
+        IReadOnlyCollection<MediaItem>? currentMediaItems,
+        bool startFromPaused)
+    {
+        Log.Logger.Information($"Starting media {mediaItemToStart.FilePath}");
+
+        var vm = (MediaViewModel)DataContext;
+        vm.VideoRotation = 0;
+
+        switch (mediaItemToStart.MediaType?.Classification)
+        {
+            case MediaClassification.Image:
+                ShowImage(mediaItemToStart);
+                break;
+
+            case MediaClassification.Video:
+                AdjustVideoRotation(vm, mediaItemToStart);
+                mediaItemToStart.PlaybackPositionChangedEvent -= HandleVideoPlaybackPositionChangedEvent;
+                await ShowVideoAsync(mediaItemToStart, currentMediaItems, startFromPaused);
+                break;
+
+            case MediaClassification.Audio:
+                mediaItemToStart.PlaybackPositionChangedEvent -= HandleAudioPlaybackPositionChangedEvent;
+                PlayAudio(mediaItemToStart, startFromPaused);
+                break;
+
+            case MediaClassification.Slideshow:
+                StartSlideshow(mediaItemToStart);
+                break;
+
+            case MediaClassification.Web:
+                ShowWebPage(mediaItemToStart, currentMediaItems);
+                break;
+        }
+    }
+
+    public void CacheImageItem(MediaItem mediaItem)
+    {
+        if (mediaItem.FilePath != null)
+        {
+            _imageDisplayManager.CacheImageItem(mediaItem.FilePath);
+        }
+    }
+
+    public async Task StopMediaAsync(
+        MediaItem mediaItem,
+        bool ignoreConfirmation = false)
+    {
+        if (!ignoreConfirmation && ShouldConfirmMediaStop(mediaItem))
+        {
+            ConfirmMediaStop(mediaItem);
+            return;
         }
 
-        public event EventHandler<MediaEventArgs>? MediaChangeEvent;
+        Log.Logger.Information($"Stopping media {mediaItem.FilePath}");
 
-        public event EventHandler<SlideTransitionEventArgs>? SlideTransitionEvent;
-
-        public event EventHandler<OnlyMPositionChangedEventArgs>? MediaPositionChangedEvent;
-
-        public event EventHandler<MediaNearEndEventArgs>? MediaNearEndEvent;
-
-        public event EventHandler<WebBrowserProgressEventArgs>? WebStatusEvent;
-
-        public bool IsWindowed { get; set; }
-
-        public void Dispose()
+        switch (mediaItem.MediaType?.Classification)
         {
-            _videoDisplayManager?.Dispose();
-            _audioManager.Dispose();
-            VideoElementFfmpeg?.Dispose();
-            Browser?.Dispose();
+            case MediaClassification.Image:
+                HideImage(mediaItem);
+                break;
+
+            case MediaClassification.Audio:
+                mediaItem.PlaybackPositionChangedEvent -= HandleAudioPlaybackPositionChangedEvent;
+                StopAudio(mediaItem);
+                break;
+
+            case MediaClassification.Video:
+                mediaItem.PlaybackPositionChangedEvent -= HandleVideoPlaybackPositionChangedEvent;
+                await HideVideoAsync(mediaItem);
+                break;
+
+            case MediaClassification.Slideshow:
+                StopSlideshow(mediaItem);
+                break;
+
+            case MediaClassification.Web:
+                StopWeb();
+                break;
         }
+    }
 
-        public void ShowMirror(bool show)
+    public async Task PauseMediaAsync(MediaItem mediaItem)
+    {
+        Debug.Assert(
+            mediaItem.MediaType?.Classification == MediaClassification.Audio ||
+            mediaItem.MediaType?.Classification == MediaClassification.Video,
+            "Expecting audio or video media item");
+
+        Log.Logger.Information($"Pausing media {mediaItem.FilePath}");
+
+        await PauseVideoOrAudioAsync(mediaItem);
+    }
+
+    public int GotoPreviousSlide() => _imageDisplayManager.GotoPreviousSlide();
+
+    public int GotoNextSlide()
+    {
+        return _imageDisplayManager.GotoNextSlide();
+    }
+
+    public void SaveWindowPos()
+    {
+        if (IsWindowed)
         {
-            if (show)
-            {
-                _webDisplayManager.ShowMirror();
-            }
-            else
-            {
-                _webDisplayManager.CloseMirror();
-            }
+            _optionsService.MediaWindowPlacement = this.GetPlacement();
+            _optionsService.Save();
         }
+    }
 
-        public void UpdateRenderingMethod()
+    public void RestoreWindowPositionAndSize()
+    {
+        if (IsWindowed && !string.IsNullOrEmpty(_optionsService.MediaWindowPlacement))
         {
-            if (_optionsService.RenderingMethod != _currentRenderingMethod)
-            {
-                InitVideoRenderingMethod();
-            }
+            this.SetPlacement(_optionsService.MediaWindowPlacement, _optionsService.MediaWindowSize);
         }
+    }
 
-        public async Task StartMedia(
-            MediaItem mediaItemToStart,
-            IReadOnlyCollection<MediaItem>? currentMediaItems,
-            bool startFromPaused)
+    protected override void OnSourceInitialized(EventArgs e)
+    {
+        RestoreWindowPositionAndSize();
+        base.OnSourceInitialized(e);
+    }
+
+    protected override void OnClosing(CancelEventArgs e)
+    {
+        SaveWindowPos();
+        base.OnClosing(e);
+    }
+
+    private async Task PauseVideoOrAudioAsync(MediaItem mediaItem)
+    {
+        switch (mediaItem.MediaType?.Classification)
         {
-            Log.Logger.Information($"Starting media {mediaItemToStart.FilePath}");
-
-            var vm = (MediaViewModel)DataContext;
-            vm.VideoRotation = 0;
-
-            switch (mediaItemToStart.MediaType?.Classification)
-            {
-                case MediaClassification.Image:
-                    ShowImage(mediaItemToStart);
-                    break;
-
-                case MediaClassification.Video:
-                    AdjustVideoRotation(vm, mediaItemToStart);
-                    mediaItemToStart.PlaybackPositionChangedEvent -= HandleVideoPlaybackPositionChangedEvent;
-                    await ShowVideoAsync(mediaItemToStart, currentMediaItems, startFromPaused);
-                    break;
-
-                case MediaClassification.Audio:
-                    mediaItemToStart.PlaybackPositionChangedEvent -= HandleAudioPlaybackPositionChangedEvent;
-                    PlayAudio(mediaItemToStart, startFromPaused);
-                    break;
-
-                case MediaClassification.Slideshow:
-                    StartSlideshow(mediaItemToStart);
-                    break;
-
-                case MediaClassification.Web:
-                    ShowWebPage(mediaItemToStart, currentMediaItems);
-                    break;
-            }
-        }
-
-        public void CacheImageItem(MediaItem mediaItem)
-        {
-            if (mediaItem.FilePath != null)
-            {
-                _imageDisplayManager.CacheImageItem(mediaItem.FilePath);
-            }
-        }
-
-        public async Task StopMediaAsync(
-            MediaItem mediaItem,
-            bool ignoreConfirmation = false)
-        {
-            if (!ignoreConfirmation && ShouldConfirmMediaStop(mediaItem))
-            {
-                ConfirmMediaStop(mediaItem);
-                return;
-            }
-
-            Log.Logger.Information($"Stopping media {mediaItem.FilePath}");
-
-            switch (mediaItem.MediaType?.Classification)
-            {
-                case MediaClassification.Image:
-                    HideImage(mediaItem);
-                    break;
-
-                case MediaClassification.Audio:
-                    mediaItem.PlaybackPositionChangedEvent -= HandleAudioPlaybackPositionChangedEvent;
-                    StopAudio(mediaItem);
-                    break;
-
-                case MediaClassification.Video:
-                    mediaItem.PlaybackPositionChangedEvent -= HandleVideoPlaybackPositionChangedEvent;
-                    await HideVideoAsync(mediaItem);
-                    break;
-
-                case MediaClassification.Slideshow:
-                    StopSlideshow(mediaItem);
-                    break;
-
-                case MediaClassification.Web:
-                    StopWeb();
-                    break;
-            }
-        }
-
-        public async Task PauseMediaAsync(MediaItem mediaItem)
-        {
-            Debug.Assert(
-                mediaItem.MediaType?.Classification == MediaClassification.Audio ||
-                mediaItem.MediaType?.Classification == MediaClassification.Video,
-                "Expecting audio or video media item");
-
-            Log.Logger.Information($"Pausing media {mediaItem.FilePath}");
-
-            await PauseVideoOrAudioAsync(mediaItem);
-        }
-
-        public int GotoPreviousSlide()
-        {
-            return _imageDisplayManager.GotoPreviousSlide();
-        }
-
-        public int GotoNextSlide()
-        {
-            return _imageDisplayManager.GotoNextSlide();
-        }
-
-        public void SaveWindowPos()
-        {
-            if (IsWindowed)
-            {
-                _optionsService.MediaWindowPlacement = this.GetPlacement();
-                _optionsService.Save();
-            }
-        }
-
-        public void RestoreWindowPositionAndSize()
-        {
-            if (IsWindowed && !string.IsNullOrEmpty(_optionsService.MediaWindowPlacement))
-            {
-                this.SetPlacement(_optionsService.MediaWindowPlacement, _optionsService.MediaWindowSize);
-            }
-        }
-
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            RestoreWindowPositionAndSize();
-            base.OnSourceInitialized(e);
-        }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            SaveWindowPos();
-            base.OnClosing(e);
-        }
-
-        private async Task PauseVideoOrAudioAsync(MediaItem mediaItem)
-        {
-            switch (mediaItem.MediaType?.Classification)
-            {
-                case MediaClassification.Video:
-                    CheckVideoDisplayManager();
-                    await _videoDisplayManager!.PauseVideoAsync(mediaItem.Id);
-                    mediaItem.PlaybackPositionChangedEvent += HandleVideoPlaybackPositionChangedEvent;
-                    break;
-
-                case MediaClassification.Audio:
-                    _audioManager.PauseAudio(mediaItem.Id);
-                    mediaItem.PlaybackPositionChangedEvent += HandleAudioPlaybackPositionChangedEvent;
-                    break;
-            }
-        }
-
-        private void CheckVideoDisplayManager()
-        {
-            if (_videoDisplayManager == null)
-            {
-                throw new NotSupportedException("Video Display Manager not initialised!");
-            }
-        }
-
-        private async void HandleVideoPlaybackPositionChangedEvent(object? sender, EventArgs e)
-        {
-            if (_optionsService.AllowVideoScrubbing)
-            {
-                var item = (MediaItem?)sender;
-                if (item == null)
-                {
-                    return;
-                }
-
+            case MediaClassification.Video:
                 CheckVideoDisplayManager();
-                await _videoDisplayManager!.SetPlaybackPosition(
-                    TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
-            }
+                await _videoDisplayManager!.PauseVideoAsync(mediaItem.Id);
+                mediaItem.PlaybackPositionChangedEvent += HandleVideoPlaybackPositionChangedEvent;
+                break;
+
+            case MediaClassification.Audio:
+                _audioManager.PauseAudio(mediaItem.Id);
+                mediaItem.PlaybackPositionChangedEvent += HandleAudioPlaybackPositionChangedEvent;
+                break;
         }
+    }
 
-        private void HandleAudioPlaybackPositionChangedEvent(object? sender, EventArgs e)
+    private void CheckVideoDisplayManager()
+    {
+        if (_videoDisplayManager == null)
         {
-            if (_optionsService.AllowVideoScrubbing)
-            {
-                var item = (MediaItem?)sender;
-                if (item == null)
-                {
-                    return;
-                }
-
-                _audioManager.SetPlaybackPosition(
-                    TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
-            }
+            throw new NotSupportedException("Video Display Manager not initialised!");
         }
+    }
 
-        private async Task HideVideoAsync(MediaItem mediaItem)
+    private async void HandleVideoPlaybackPositionChangedEvent(object? sender, EventArgs e)
+    {
+        if (_optionsService.AllowVideoScrubbing)
         {
-            CheckVideoDisplayManager();
-            await _videoDisplayManager!.HideVideoAsync(mediaItem.Id);
-        }
-
-        private void StopAudio(MediaItem mediaItem)
-        {
-            _audioManager.StopAudio(mediaItem.Id);
-        }
-
-        private void HideImageOrSlideshow(IReadOnlyCollection<MediaItem> mediaItems)
-        {
-            var imageItem = mediaItems.SingleOrDefault(
-                x => x.MediaType?.Classification == MediaClassification.Image ||
-                     x.MediaType?.Classification == MediaClassification.Slideshow);
-
-            if (imageItem != null)
-            {
-                switch (imageItem.MediaType?.Classification)
-                {
-                    case MediaClassification.Image:
-                        _imageDisplayManager.HideSingleImage(imageItem.Id);
-                        break;
-
-                    case MediaClassification.Slideshow:
-                        _imageDisplayManager.StopSlideshow(imageItem.Id);
-                        break;
-                }
-            }
-        }
-
-        private void HideImage(MediaItem? mediaItem)
-        {
-            if (mediaItem != null)
-            {
-                _imageDisplayManager.HideSingleImage(mediaItem.Id);
-            }
-        }
-        
-        private void ShowImage(MediaItem mediaItem)
-        {
-            if (mediaItem.FilePath != null)
-            {
-                _imageDisplayManager.ShowSingleImage(mediaItem.FilePath, mediaItem.Id, mediaItem.IsBlankScreen);
-            }
-        }
-
-        private void ShowWebPage(MediaItem mediaItem, IReadOnlyCollection<MediaItem>? currentMediaItems)
-        {
-            if (mediaItem.FilePath == null)
+            var item = (MediaItem?)sender;
+            if (item == null)
             {
                 return;
             }
 
-            var vm = (MediaViewModel)DataContext;
-            vm.IsWebPage = !mediaItem.IsPdf;
-
-            // mirror will only work if the media window is full-screen (rather than windowed)
-            var showMirrorWindow = mediaItem.UseMirror && mediaItem.AllowUseMirror && !IsWindowed;
-
-            if (!int.TryParse(mediaItem.ChosenPdfPage, out var pdfStartingPage))
-            {
-                pdfStartingPage = 0;
-            }
-
-            _webDisplayManager.ShowWeb(
-                mediaItem.FilePath, 
-                mediaItem.Id,
-                pdfStartingPage,
-                mediaItem.ChosenPdfViewStyle,
-                showMirrorWindow,
-                _optionsService.WebScreenPosition);
-
-            // show the header for a few seconds
-            _webNavHeaderAdmin.PreviewWebNavHeader();
-
-            if (currentMediaItems != null)
-            {
-                HideImageOrSlideshow(currentMediaItems);
-            }
+            CheckVideoDisplayManager();
+            await _videoDisplayManager!.SetPlaybackPosition(
+                TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
         }
+    }
 
-        private void StopWeb()
+    private void HandleAudioPlaybackPositionChangedEvent(object? sender, EventArgs e)
+    {
+        if (_optionsService.AllowVideoScrubbing)
         {
-            _webDisplayManager.HideWeb();
-        }
-
-        private void StartSlideshow(MediaItem mediaItem)
-        {
-            if (mediaItem.FilePath == null)
+            var item = (MediaItem?)sender;
+            if (item == null)
             {
                 return;
             }
 
-            mediaItem.CurrentSlideshowIndex = 0;
-            _imageDisplayManager.StartSlideshow(mediaItem.FilePath, mediaItem.Id);
+            _audioManager.SetPlaybackPosition(
+                TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
         }
+    }
 
-        private void StopSlideshow(MediaItem mediaItem)
-        {
-            _imageDisplayManager.StopSlideshow(mediaItem.Id);
-        }
+    private async Task HideVideoAsync(MediaItem mediaItem)
+    {
+        CheckVideoDisplayManager();
+        await _videoDisplayManager!.HideVideoAsync(mediaItem.Id);
+    }
 
-        private async Task ShowVideoAsync(
-            MediaItem mediaItemToStart,
-            IReadOnlyCollection<MediaItem>? currentMediaItems,
-            bool startFromPaused)
+    private void StopAudio(MediaItem mediaItem)
+    {
+        _audioManager.StopAudio(mediaItem.Id);
+    }
+
+    private void HideImageOrSlideshow(IReadOnlyCollection<MediaItem> mediaItems)
+    {
+        var imageItem = mediaItems.SingleOrDefault(
+            x => x.MediaType?.Classification == MediaClassification.Image ||
+                 x.MediaType?.Classification == MediaClassification.Slideshow);
+
+        if (imageItem != null)
         {
-            if (mediaItemToStart.FilePath == null)
+            switch (imageItem.MediaType?.Classification)
             {
-                return;
-            }
-
-            var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 100);
-
-            CheckVideoDisplayManager();
-            _videoDisplayManager!.ShowSubtitles = _optionsService.ShowVideoSubtitles;
-
-            await _videoDisplayManager.ShowVideoAsync(
-                mediaItemToStart.FilePath,
-                _optionsService.VideoScreenPosition,
-                mediaItemToStart.Id,
-                startPosition,
-                startFromPaused);
-
-            if (currentMediaItems != null)
-            {
-                HideImageOrSlideshow(currentMediaItems);
-            }
-        }
-
-        private void PlayAudio(MediaItem mediaItemToStart, bool startFromPaused)
-        {
-            if (mediaItemToStart.FilePath == null)
-            {
-                return;
-            }
-
-            var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 100);
-
-            _audioManager.PlayAudio(
-                mediaItemToStart.FilePath,
-                mediaItemToStart.Id,
-                startPosition,
-                startFromPaused);
-        }
-
-        private void WindowClosing(object? sender, CancelEventArgs e)
-        {
-            // prevent window from being closed independently of application.
-            var pageService = Ioc.Default.GetService<IPageService>();
-            e.Cancel = pageService != null && !pageService.ApplicationIsClosing && !pageService.AllowMediaWindowToClose;
-
-            if (!e.Cancel)
-            {
-                UnsubscribeOptionsEvents();
-                UnsubscribeImageEvents();
-                UnsubscribeVideoEvents();
-                UnsubscribeWebEvents();
-                UnsubscribeAudioEvents();
-            }
-        }
-
-        private void SubscribeOptionsEvents()
-        {
-            _optionsService.ShowSubtitlesChangedEvent += HandleShowSubtitlesChangedEvent;
-            _optionsService.ImageScreenPositionChangedEvent += HandleImageScreenPositionChangedEvent;
-            _optionsService.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
-            _optionsService.WebScreenPositionChangedEvent += HandleWebScreenPositionChangedEvent;
-        }
-
-        private void SubscribeImageEvents()
-        { 
-            _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
-            _imageDisplayManager.SlideTransitionEvent += HandleSlideTransitionEvent;
-        }
-
-        private void SubscribeVideoEvents()
-        {
-            CheckVideoDisplayManager();
-            _videoDisplayManager!.MediaChangeEvent += HandleMediaChangeEvent;
-            _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
-            _videoDisplayManager.MediaNearEndEvent += HandleMediaNearEndEvent;
-            _videoDisplayManager.SubtitleEvent += HandleMediaFoundationSubtitleEvent;
-        }
-
-        private void SubscribeWebEvents()
-        {
-            _webDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
-            _webDisplayManager.StatusEvent += HandleWebDisplayManagerStatusEvent;
-        }
-
-        private void SubscribeAudioEvents()
-        {
-            _audioManager.MediaChangeEvent += HandleMediaChangeEvent;
-            _audioManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
-        }
-
-        private void UnsubscribeAudioEvents()
-        {
-            _audioManager.MediaChangeEvent -= HandleMediaChangeEvent;
-            _audioManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
-        }
-
-        private void HandleWebDisplayManagerStatusEvent(object? sender, WebBrowserProgressEventArgs e)
-        {
-            WebStatusEvent?.Invoke(this, e);
-        }
-
-        private void HandleMediaFoundationSubtitleEvent(object? sender, Core.Subtitles.SubtitleEventArgs e)
-        {
-            var vm = (MediaViewModel)DataContext;
-
-            vm.SubTitleText = e.Text == null 
-                ? null 
-                : string.Join(Environment.NewLine, e.Text);
-        }
-
-        private void UnsubscribeOptionsEvents()
-        {
-            _optionsService.ShowSubtitlesChangedEvent -= HandleShowSubtitlesChangedEvent;
-            _optionsService.ImageScreenPositionChangedEvent -= HandleImageScreenPositionChangedEvent;
-            _optionsService.VideoScreenPositionChangedEvent -= HandleVideoScreenPositionChangedEvent;
-            _optionsService.WebScreenPositionChangedEvent -= HandleWebScreenPositionChangedEvent;
-        }
-
-        private void UnsubscribeImageEvents()
-        {
-            _imageDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
-            _imageDisplayManager.SlideTransitionEvent -= HandleSlideTransitionEvent;
-        }
-
-        private void UnsubscribeVideoEvents()
-        {
-            CheckVideoDisplayManager();
-            _videoDisplayManager!.MediaChangeEvent -= HandleMediaChangeEvent;
-            _videoDisplayManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
-            _videoDisplayManager.MediaNearEndEvent -= HandleMediaNearEndEvent;
-            _videoDisplayManager.SubtitleEvent -= HandleMediaFoundationSubtitleEvent;
-        }
-
-        private void UnsubscribeWebEvents()
-        {
-            _webDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
-            _webDisplayManager.StatusEvent -= HandleWebDisplayManagerStatusEvent;
-        }
-
-        private void HandleMediaChangeEvent(object? sender, MediaEventArgs e)
-        {
-            MediaChangeEvent?.Invoke(this, e);
-        }
-
-        private void HandleSlideTransitionEvent(object? sender, SlideTransitionEventArgs e)
-        {
-            SlideTransitionEvent?.Invoke(this, e);
-        }
-
-        private void HandleMediaPositionChangedEvent(object? sender, OnlyMPositionChangedEventArgs e)
-        {
-            MediaPositionChangedEvent?.Invoke(this, e);
-        }
-
-        private void HandleMediaNearEndEvent(object? sender, MediaNearEndEventArgs e)
-        {
-            MediaNearEndEvent?.Invoke(this, e);
-        }
-
-        private void HandleShowSubtitlesChangedEvent(object? sender, EventArgs e)
-        {
-            CheckVideoDisplayManager();
-            _videoDisplayManager!.ShowSubtitles = _optionsService.ShowVideoSubtitles;
-        }
-
-        private bool ShouldConfirmMediaStop(MediaItem mediaItem)
-        {
-            switch (mediaItem.MediaType?.Classification)
-            {
-                case MediaClassification.Video:
-                    CheckVideoDisplayManager();
-                    return
-                        _optionsService.ConfirmVideoStop &&
-                        !_videoDisplayManager!.IsPaused &&
-                        _videoDisplayManager.GetPlaybackPosition().TotalSeconds > MediaConfirmStopWindowSeconds;
-
-                case MediaClassification.Audio:
-                    return
-                        _optionsService.ConfirmVideoStop &&
-                        !_audioManager.IsPaused &&
-                        _audioManager.GetPlaybackPosition().TotalSeconds > MediaConfirmStopWindowSeconds;
-
-                default:
-                    return false;
-            }
-        }
-
-        private void ConfirmMediaStop(MediaItem mediaItem)
-        {
-            _snackbarService.Enqueue(
-                Properties.Resources.CONFIRM_STOP_MEDIA,
-                Properties.Resources.YES,
-                // ReSharper disable once AsyncVoidLambda
-                async _ => await StopMediaAsync(mediaItem, ignoreConfirmation: true),
-                null,
-                promote: true,
-                neverConsiderToBeDuplicate: true);
-        }
-
-        private void HandleVideoScreenPositionChangedEvent(object? sender, EventArgs e)
-        {
-            if (_videoElement?.FrameworkElement != null)
-            {
-                ScreenPositionHelper.SetScreenPosition(_videoElement.FrameworkElement, _optionsService.VideoScreenPosition);
-                ScreenPositionHelper.SetSubtitleBlockScreenPosition(SubtitleBlock, _optionsService.VideoScreenPosition);
-            }
-        }
-
-        private void HandleWebScreenPositionChangedEvent(object? sender, EventArgs e)
-        {
-            ScreenPositionHelper.SetScreenPosition(BrowserGrid, _optionsService.WebScreenPosition);
-        }
-
-        private void HandleImageScreenPositionChangedEvent(object? sender, EventArgs e)
-        {
-            ScreenPositionHelper.SetScreenPosition(Image1Element, _optionsService.ImageScreenPosition);
-            ScreenPositionHelper.SetScreenPosition(Image2Element, _optionsService.ImageScreenPosition);
-        }
-
-        private void InitVideoRenderingMethod()
-        {
-            _videoElement?.UnsubscribeEvents();
-            
-            switch (_optionsService.RenderingMethod)
-            {
-                case RenderingMethod.Ffmpeg:
-                    _videoElement = new MediaElementUnoSquare(VideoElementFfmpeg);
-                    break;
-                    
-                case RenderingMethod.MediaFoundation:
-                    _videoElement = new MediaElementMediaFoundation(VideoElementMediaFoundation, _optionsService);
+                case MediaClassification.Image:
+                    _imageDisplayManager.HideSingleImage(imageItem.Id);
                     break;
 
-                default:
-                    throw new NotSupportedException();
-            }
-
-            _currentRenderingMethod = _optionsService.RenderingMethod;
-
-            if (_videoDisplayManager != null)
-            {
-                UnsubscribeVideoEvents();
-                _videoDisplayManager.Dispose();
-            }
-
-            _videoDisplayManager = new VideoDisplayManager(_videoElement, SubtitleBlock, _optionsService);
-            
-            SubscribeVideoEvents();
-        }
-
-        private void WindowSizeChanged(object? sender, SizeChangedEventArgs e)
-        {
-            var vm = (MediaViewModel)DataContext;
-            vm.WindowSize = new Size(ActualWidth, ActualHeight);
-        }
-
-        private void BrowserGrid_MouseMove(object? sender, MouseEventArgs e)
-        {
-            var pos = e.GetPosition(this);
-            _webNavHeaderAdmin.MouseMove(pos);
-        }
-
-        private void Window_MouseDown(object? sender, MouseButtonEventArgs e)
-        {
-            // allow drag when no title bar is shown
-            if (IsWindowed && e.ChangedButton == MouseButton.Left && WindowStyle == WindowStyle.None)
-            {
-                DragMove();
+                case MediaClassification.Slideshow:
+                    _imageDisplayManager.StopSlideshow(imageItem.Id);
+                    break;
             }
         }
+    }
 
-        private void AdjustVideoRotation(MediaViewModel vm, MediaItem mediaItemToStart)
+    private void HideImage(MediaItem? mediaItem)
+    {
+        if (mediaItem != null)
         {
-            // FFMPEG auto rotates video, but Media Foundation doesn't so we 
-            // set the required rotation here...
-            vm.VideoRotation = _optionsService.RenderingMethod == RenderingMethod.MediaFoundation
-                ? mediaItemToStart.VideoRotation
-                : 0;
+            _imageDisplayManager.HideSingleImage(mediaItem.Id);
         }
+    }
+
+    private void ShowImage(MediaItem mediaItem)
+    {
+        if (mediaItem.FilePath != null)
+        {
+            _imageDisplayManager.ShowSingleImage(mediaItem.FilePath, mediaItem.Id, mediaItem.IsBlankScreen);
+        }
+    }
+
+    private void ShowWebPage(MediaItem mediaItem, IReadOnlyCollection<MediaItem>? currentMediaItems)
+    {
+        if (mediaItem.FilePath == null)
+        {
+            return;
+        }
+
+        var vm = (MediaViewModel)DataContext;
+        vm.IsWebPage = !mediaItem.IsPdf;
+
+        // mirror will only work if the media window is full-screen (rather than windowed)
+        var showMirrorWindow = mediaItem.UseMirror && mediaItem.AllowUseMirror && !IsWindowed;
+
+        if (!int.TryParse(mediaItem.ChosenPdfPage, out var pdfStartingPage))
+        {
+            pdfStartingPage = 0;
+        }
+
+        _webDisplayManager.ShowWeb(
+            mediaItem.FilePath,
+            mediaItem.Id,
+            pdfStartingPage,
+            mediaItem.ChosenPdfViewStyle,
+            showMirrorWindow,
+            _optionsService.WebScreenPosition);
+
+        // show the header for a few seconds
+        _webNavHeaderAdmin.PreviewWebNavHeader();
+
+        if (currentMediaItems != null)
+        {
+            HideImageOrSlideshow(currentMediaItems);
+        }
+    }
+
+    private void StopWeb()
+    {
+        _webDisplayManager.HideWeb();
+    }
+
+    private void StartSlideshow(MediaItem mediaItem)
+    {
+        if (mediaItem.FilePath == null)
+        {
+            return;
+        }
+
+        mediaItem.CurrentSlideshowIndex = 0;
+        _imageDisplayManager.StartSlideshow(mediaItem.FilePath, mediaItem.Id);
+    }
+
+    private void StopSlideshow(MediaItem mediaItem)
+    {
+        _imageDisplayManager.StopSlideshow(mediaItem.Id);
+    }
+
+    private async Task ShowVideoAsync(
+        MediaItem mediaItemToStart,
+        IReadOnlyCollection<MediaItem>? currentMediaItems,
+        bool startFromPaused)
+    {
+        if (mediaItemToStart.FilePath == null)
+        {
+            return;
+        }
+
+        var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 100);
+
+        CheckVideoDisplayManager();
+        _videoDisplayManager!.ShowSubtitles = _optionsService.ShowVideoSubtitles;
+
+        await _videoDisplayManager.ShowVideoAsync(
+            mediaItemToStart.FilePath,
+            _optionsService.VideoScreenPosition,
+            mediaItemToStart.Id,
+            startPosition,
+            startFromPaused);
+
+        if (currentMediaItems != null)
+        {
+            HideImageOrSlideshow(currentMediaItems);
+        }
+    }
+
+    private void PlayAudio(MediaItem mediaItemToStart, bool startFromPaused)
+    {
+        if (mediaItemToStart.FilePath == null)
+        {
+            return;
+        }
+
+        var startPosition = TimeSpan.FromMilliseconds(mediaItemToStart.PlaybackPositionDeciseconds * 100);
+
+        _audioManager.PlayAudio(
+            mediaItemToStart.FilePath,
+            mediaItemToStart.Id,
+            startPosition,
+            startFromPaused);
+    }
+
+    private void WindowClosing(object? sender, CancelEventArgs e)
+    {
+        // prevent window from being closed independently of application.
+        var pageService = Ioc.Default.GetService<IPageService>();
+        e.Cancel = pageService != null && !pageService.ApplicationIsClosing && !pageService.AllowMediaWindowToClose;
+
+        if (!e.Cancel)
+        {
+            UnsubscribeOptionsEvents();
+            UnsubscribeImageEvents();
+            UnsubscribeVideoEvents();
+            UnsubscribeWebEvents();
+            UnsubscribeAudioEvents();
+        }
+    }
+
+    private void SubscribeOptionsEvents()
+    {
+        _optionsService.ShowSubtitlesChangedEvent += HandleShowSubtitlesChangedEvent;
+        _optionsService.ImageScreenPositionChangedEvent += HandleImageScreenPositionChangedEvent;
+        _optionsService.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
+        _optionsService.WebScreenPositionChangedEvent += HandleWebScreenPositionChangedEvent;
+    }
+
+    private void SubscribeImageEvents()
+    {
+        _imageDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
+        _imageDisplayManager.SlideTransitionEvent += HandleSlideTransitionEvent;
+    }
+
+    private void SubscribeVideoEvents()
+    {
+        CheckVideoDisplayManager();
+        _videoDisplayManager!.MediaChangeEvent += HandleMediaChangeEvent;
+        _videoDisplayManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
+        _videoDisplayManager.MediaNearEndEvent += HandleMediaNearEndEvent;
+        _videoDisplayManager.SubtitleEvent += HandleMediaFoundationSubtitleEvent;
+    }
+
+    private void SubscribeWebEvents()
+    {
+        _webDisplayManager.MediaChangeEvent += HandleMediaChangeEvent;
+        _webDisplayManager.StatusEvent += HandleWebDisplayManagerStatusEvent;
+    }
+
+    private void SubscribeAudioEvents()
+    {
+        _audioManager.MediaChangeEvent += HandleMediaChangeEvent;
+        _audioManager.MediaPositionChangedEvent += HandleMediaPositionChangedEvent;
+    }
+
+    private void UnsubscribeAudioEvents()
+    {
+        _audioManager.MediaChangeEvent -= HandleMediaChangeEvent;
+        _audioManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
+    }
+
+    private void HandleWebDisplayManagerStatusEvent(object? sender, WebBrowserProgressEventArgs e)
+    {
+        WebStatusEvent?.Invoke(this, e);
+    }
+
+    private void HandleMediaFoundationSubtitleEvent(object? sender, Core.Subtitles.SubtitleEventArgs e)
+    {
+        var vm = (MediaViewModel)DataContext;
+
+        vm.SubTitleText = e.Text == null
+            ? null
+            : string.Join(Environment.NewLine, e.Text);
+    }
+
+    private void UnsubscribeOptionsEvents()
+    {
+        _optionsService.ShowSubtitlesChangedEvent -= HandleShowSubtitlesChangedEvent;
+        _optionsService.ImageScreenPositionChangedEvent -= HandleImageScreenPositionChangedEvent;
+        _optionsService.VideoScreenPositionChangedEvent -= HandleVideoScreenPositionChangedEvent;
+        _optionsService.WebScreenPositionChangedEvent -= HandleWebScreenPositionChangedEvent;
+    }
+
+    private void UnsubscribeImageEvents()
+    {
+        _imageDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
+        _imageDisplayManager.SlideTransitionEvent -= HandleSlideTransitionEvent;
+    }
+
+    private void UnsubscribeVideoEvents()
+    {
+        CheckVideoDisplayManager();
+        _videoDisplayManager!.MediaChangeEvent -= HandleMediaChangeEvent;
+        _videoDisplayManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
+        _videoDisplayManager.MediaNearEndEvent -= HandleMediaNearEndEvent;
+        _videoDisplayManager.SubtitleEvent -= HandleMediaFoundationSubtitleEvent;
+    }
+
+    private void UnsubscribeWebEvents()
+    {
+        _webDisplayManager.MediaChangeEvent -= HandleMediaChangeEvent;
+        _webDisplayManager.StatusEvent -= HandleWebDisplayManagerStatusEvent;
+    }
+
+    private void HandleMediaChangeEvent(object? sender, MediaEventArgs e)
+    {
+        MediaChangeEvent?.Invoke(this, e);
+    }
+
+    private void HandleSlideTransitionEvent(object? sender, SlideTransitionEventArgs e)
+    {
+        SlideTransitionEvent?.Invoke(this, e);
+    }
+
+    private void HandleMediaPositionChangedEvent(object? sender, OnlyMPositionChangedEventArgs e)
+    {
+        MediaPositionChangedEvent?.Invoke(this, e);
+    }
+
+    private void HandleMediaNearEndEvent(object? sender, MediaNearEndEventArgs e)
+    {
+        MediaNearEndEvent?.Invoke(this, e);
+    }
+
+    private void HandleShowSubtitlesChangedEvent(object? sender, EventArgs e)
+    {
+        CheckVideoDisplayManager();
+        _videoDisplayManager!.ShowSubtitles = _optionsService.ShowVideoSubtitles;
+    }
+
+    private bool ShouldConfirmMediaStop(MediaItem mediaItem)
+    {
+        switch (mediaItem.MediaType?.Classification)
+        {
+            case MediaClassification.Video:
+                CheckVideoDisplayManager();
+                return
+                    _optionsService.ConfirmVideoStop &&
+                    !_videoDisplayManager!.IsPaused &&
+                    _videoDisplayManager.GetPlaybackPosition().TotalSeconds > MediaConfirmStopWindowSeconds;
+
+            case MediaClassification.Audio:
+                return
+                    _optionsService.ConfirmVideoStop &&
+                    !_audioManager.IsPaused &&
+                    _audioManager.GetPlaybackPosition().TotalSeconds > MediaConfirmStopWindowSeconds;
+
+            default:
+                return false;
+        }
+    }
+
+    private void ConfirmMediaStop(MediaItem mediaItem)
+    {
+        _snackbarService.Enqueue(
+            Properties.Resources.CONFIRM_STOP_MEDIA,
+            Properties.Resources.YES,
+            // ReSharper disable once AsyncVoidLambda
+            async _ => await StopMediaAsync(mediaItem, ignoreConfirmation: true),
+            null,
+            promote: true,
+            neverConsiderToBeDuplicate: true);
+    }
+
+    private void HandleVideoScreenPositionChangedEvent(object? sender, EventArgs e)
+    {
+        if (_videoElement?.FrameworkElement != null)
+        {
+            ScreenPositionHelper.SetScreenPosition(_videoElement.FrameworkElement, _optionsService.VideoScreenPosition);
+            ScreenPositionHelper.SetSubtitleBlockScreenPosition(SubtitleBlock, _optionsService.VideoScreenPosition);
+        }
+    }
+
+    private void HandleWebScreenPositionChangedEvent(object? sender, EventArgs e)
+    {
+        ScreenPositionHelper.SetScreenPosition(BrowserGrid, _optionsService.WebScreenPosition);
+    }
+
+    private void HandleImageScreenPositionChangedEvent(object? sender, EventArgs e)
+    {
+        ScreenPositionHelper.SetScreenPosition(Image1Element, _optionsService.ImageScreenPosition);
+        ScreenPositionHelper.SetScreenPosition(Image2Element, _optionsService.ImageScreenPosition);
+    }
+
+    private void InitVideoRenderingMethod()
+    {
+        _videoElement?.UnsubscribeEvents();
+
+        switch (_optionsService.RenderingMethod)
+        {
+            case RenderingMethod.Ffmpeg:
+                _videoElement = new MediaElementUnoSquare(VideoElementFfmpeg);
+                break;
+
+            case RenderingMethod.MediaFoundation:
+                _videoElement = new MediaElementMediaFoundation(VideoElementMediaFoundation, _optionsService);
+                break;
+
+            default:
+                throw new NotSupportedException();
+        }
+
+        _currentRenderingMethod = _optionsService.RenderingMethod;
+
+        if (_videoDisplayManager != null)
+        {
+            UnsubscribeVideoEvents();
+            _videoDisplayManager.Dispose();
+        }
+
+        _videoDisplayManager = new VideoDisplayManager(_videoElement, SubtitleBlock, _optionsService);
+
+        SubscribeVideoEvents();
+    }
+
+    private void WindowSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        var vm = (MediaViewModel)DataContext;
+        vm.WindowSize = new Size(ActualWidth, ActualHeight);
+    }
+
+    private void BrowserGrid_MouseMove(object? sender, MouseEventArgs e)
+    {
+        var pos = e.GetPosition(this);
+        _webNavHeaderAdmin.MouseMove(pos);
+    }
+
+    private void Window_MouseDown(object? sender, MouseButtonEventArgs e)
+    {
+        // allow drag when no title bar is shown
+        if (IsWindowed && e.ChangedButton == MouseButton.Left && WindowStyle == WindowStyle.None)
+        {
+            DragMove();
+        }
+    }
+
+    private void AdjustVideoRotation(MediaViewModel vm, MediaItem mediaItemToStart)
+    {
+        // FFMPEG auto rotates video, but Media Foundation doesn't so we 
+        // set the required rotation here...
+        vm.VideoRotation = _optionsService.RenderingMethod == RenderingMethod.MediaFoundation
+            ? mediaItemToStart.VideoRotation
+            : 0;
     }
 }

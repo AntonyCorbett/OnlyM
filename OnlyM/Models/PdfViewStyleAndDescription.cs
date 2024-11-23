@@ -1,14 +1,10 @@
-﻿namespace OnlyM.Models
+﻿namespace OnlyM.Models;
+
+public class PdfViewStyleAndDescription
 {
-    public class PdfViewStyleAndDescription
-    {
-        public PdfViewStyle Style { get; set; }
+    public PdfViewStyle Style { get; set; }
 
-        public string? Description { get; set; }
+    public string? Description { get; set; }
 
-        public override string ToString()
-        {
-            return Description ?? string.Empty;
-        }
-    }
+    public override string ToString() => Description ?? string.Empty;
 }

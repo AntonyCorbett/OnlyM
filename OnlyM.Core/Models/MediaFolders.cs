@@ -1,9 +1,8 @@
-﻿namespace OnlyM.Core.Models
-{
-    public class MediaFolders
-    {
-        public string? MediaFolder { get; set; }
+﻿namespace OnlyM.Core.Models;
 
-        public string? DatedSubFolder { get; set; }
-    }
+public class MediaFolders
+{
+    public string? MediaFolder { get; set; }
+
+    public string? DatedSubFolder { get; set; }
 }

@@ -1,10 +1,9 @@
 ﻿using System;
 using OnlyM.Models;
 
-namespace OnlyM.Services.MetaDataQueue
+namespace OnlyM.Services.MetaDataQueue;
+
+internal sealed class ItemMetaDataPopulatedEventArgs : EventArgs
 {
-    internal sealed class ItemMetaDataPopulatedEventArgs : EventArgs
-    {
-        public MediaItem? MediaItem { get; set; }
-    }
+    public MediaItem? MediaItem { get; set; }
 }

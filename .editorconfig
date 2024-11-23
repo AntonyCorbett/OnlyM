@@ -90,6 +90,7 @@ dotnet_style_operator_placement_when_wrapping = beginning_of_line
 tab_width = 4
 end_of_line = crlf
 dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
+dotnet_style_allow_statement_immediately_after_block_experimental = true:silent
 
 ###############################
 # C# Coding Conventions       #
@@ -108,7 +109,7 @@ csharp_style_var_elsewhere = true:suggestion
 # Expression-bodied members
 #--------------------------
 #prefer block bodies for methods
-csharp_style_expression_bodied_methods = false:silent
+csharp_style_expression_bodied_methods = true:silent
 #prefer block bodies for constructors
 csharp_style_expression_bodied_constructors = false:suggestion
 #prefer expression-bodied members for properties
@@ -310,7 +311,7 @@ dotnet_diagnostic.CC0021.severity = silent
 # CC0022: Should dispose object
 dotnet_diagnostic.CC0022.severity = silent
 csharp_using_directive_placement = outside_namespace:warning
-csharp_style_namespace_declarations = block_scoped:silent
+csharp_style_namespace_declarations = file_scoped:silent
 csharp_style_prefer_method_group_conversion = true:silent
 csharp_style_prefer_top_level_statements = true:silent
 csharp_style_expression_bodied_lambdas = true:silent
@@ -320,3 +321,4 @@ csharp_style_expression_bodied_local_functions = false:silent
 dotnet_diagnostic.CA2201.severity = none
 csharp_style_prefer_primary_constructors = true:suggestion
 dotnet_diagnostic.SA1010.severity = suggestion
+csharp_prefer_system_threading_lock = true:suggestion

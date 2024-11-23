@@ -3,32 +3,28 @@ using MaterialDesignThemes.Wpf;
 using OnlyMSlideManager.Dialogs;
 using OnlyMSlideManager.ViewModel;
 
-namespace OnlyMSlideManager.Services
+namespace OnlyMSlideManager.Services;
+
+// ReSharper disable once ClassNeverInstantiated.Global
+internal sealed class DialogService : IDialogService
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
-    internal sealed class DialogService : IDialogService
+    private bool _isDialogVisible;
+
+    public async Task<bool?> ShouldSaveDirtyDataAsync()
     {
-        private bool _isDialogVisible;
+        _isDialogVisible = true;
 
-        public async Task<bool?> ShouldSaveDirtyDataAsync()
-        {
-            _isDialogVisible = true;
+        var dialog = new ShouldSaveDialog();
+        var dc = (ShouldSaveViewModel)dialog.DataContext;
 
-            var dialog = new ShouldSaveDialog();
-            var dc = (ShouldSaveViewModel)dialog.DataContext;
+        // dirty data.
+        await DialogHost.Show(
+                dialog,
+                (object sender, DialogClosingEventArgs args) => _isDialogVisible = false)
+            .ConfigureAwait(false);
 
-            // dirty data.
-            await DialogHost.Show(
-                    dialog,
-                    (object sender, DialogClosingEventArgs args) => _isDialogVisible = false)
-                .ConfigureAwait(false);
-
-            return dc.Result;
-        }
-
-        public bool IsDialogVisible()
-        {
-            return _isDialogVisible;
-        }
+        return dc.Result;
     }
+
+    public bool IsDialogVisible() => _isDialogVisible;
 }

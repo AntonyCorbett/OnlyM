@@ -3,72 +3,71 @@ using System.Collections.Generic;
 using OnlyM.Core.Services.Database;
 using Serilog;
 
-namespace OnlyM.Services.StartOffsetStorage
+namespace OnlyM.Services.StartOffsetStorage;
+
+internal sealed class StartOffsetStorageService : IStartOffsetStorageService
 {
-    internal sealed class StartOffsetStorageService : IStartOffsetStorageService
+    private readonly IDatabaseService _databaseService;
+
+    public StartOffsetStorageService(IDatabaseService databaseService)
     {
-        private readonly IDatabaseService _databaseService;
+        _databaseService = databaseService;
+    }
 
-        public StartOffsetStorageService(IDatabaseService databaseService)
+    public IReadOnlyCollection<int> ReadOffsets(string mediaFileName, int mediaDurationSeconds)
+    {
+        MediaStartOffsetData? data = null;
+
+        try
         {
-            _databaseService = databaseService;
+            data = _databaseService.GetMediaStartOffsetData(mediaFileName);
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not get start offset data from database");
         }
 
-        public IReadOnlyCollection<int> ReadOffsets(string mediaFileName, int mediaDurationSeconds)
+        if (data?.StartOffsets == null)
         {
-            MediaStartOffsetData? data = null;
-
-            try
-            {
-                data = _databaseService.GetMediaStartOffsetData(mediaFileName);
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not get start offset data from database");
-            }
-
-            if (data?.StartOffsets == null)
-            {
-                return Array.Empty<int>();
-            }
-
-            if (data.LengthSeconds != mediaDurationSeconds)
-            {
-                // file may have changed...
-                return Array.Empty<int>();
-            }
-
-            var result = new List<int>(data.StartOffsets.Count);
-
-            foreach (var offset in data.StartOffsets)
-            {
-                if (offset > 0 && 
-                    offset < mediaDurationSeconds &&
-                    !result.Contains(offset))
-                {
-                    result.Add(offset);
-                }
-            }
-
-            result.Sort();
-
-            return result;
+            return Array.Empty<int>();
         }
 
-        public void Store(string mediaFileName, int mediaDurationSeconds, IReadOnlyCollection<int>? recentTimes)
+        if (data.LengthSeconds != mediaDurationSeconds)
         {
-            try
-            {
-                var timesAsString = recentTimes == null || recentTimes.Count == 0
-                    ? string.Empty
-                    : string.Join(",", recentTimes);
+            // file may have changed...
+            return Array.Empty<int>();
+        }
 
-                _databaseService.AddMediaStartOffsetData(mediaFileName, timesAsString, mediaDurationSeconds);
-            }
-            catch (Exception ex)
+        var result = new List<int>(data.StartOffsets.Count);
+
+        foreach (var offset in data.StartOffsets)
+        {
+            if (offset > 0 &&
+                offset < mediaDurationSeconds &&
+                !result.Contains(offset))
             {
-                Log.Logger.Error(ex, "Could not get store offset data in database");
+                result.Add(offset);
             }
+        }
+
+        result.Sort();
+
+        return result;
+    }
+
+    public void Store(string mediaFileName, int mediaDurationSeconds, IReadOnlyCollection<int>? recentTimes)
+    {
+        try
+        {
+            var timesAsString = recentTimes == null || recentTimes.Count == 0
+                ? string.Empty
+                : string.Join(",", recentTimes);
+
+            _databaseService.AddMediaStartOffsetData(mediaFileName, timesAsString, mediaDurationSeconds);
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not get store offset data in database");
         }
     }
 }

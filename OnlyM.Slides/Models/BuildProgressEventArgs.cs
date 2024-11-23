@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace OnlyM.Slides.Models
-{
-    public class BuildProgressEventArgs : EventArgs
-    {
-        public string? EntryName { get; set; }
+namespace OnlyM.Slides.Models;
 
-        public double PercentageComplete { get; set; }
-    }
+public class BuildProgressEventArgs : EventArgs
+{
+    public string? EntryName { get; set; }
+
+    public double PercentageComplete { get; set; }
 }
