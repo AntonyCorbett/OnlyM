@@ -289,15 +289,13 @@ internal sealed class WebDisplayManager : IDisposable
         }
     }
 
-    private static MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change)
-    {
-        return new()
+    private static MediaEventArgs CreateMediaEventArgs(Guid id, MediaChange change) =>
+        new()
         {
             MediaItemId = id,
             Classification = MediaClassification.Web,
             Change = change,
         };
-    }
 
     private void OnMediaChangeEvent(MediaEventArgs e) => MediaChangeEvent?.Invoke(this, e);
 

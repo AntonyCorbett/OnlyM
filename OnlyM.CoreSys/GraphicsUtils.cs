@@ -74,21 +74,19 @@ public static class GraphicsUtils
 
             if (IsWebPFormat(itemFilePath))
             {
-                using (var image = Image.Load(itemFilePath))
-                {
-                    image.Mutate(c => c.Resize(new ResizeOptions()
-                    {
-                        PadColor = Color.Black,
-                        Size = new SixLabors.ImageSharp.Size(width, height),
-                        Mode = ResizeMode.Pad
-                    }));
+                using var image = Image.Load(itemFilePath);
 
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        image.SaveAsBmp(memoryStream);
-                        return memoryStream.ToArray();
-                    }
-                }
+                image.Mutate(c => c.Resize(new ResizeOptions()
+                {
+                    PadColor = Color.Black,
+                    Size = new SixLabors.ImageSharp.Size(width, height),
+                    Mode = ResizeMode.Pad
+                }));
+
+                using var memoryStream = new MemoryStream();
+
+                image.SaveAsBmp(memoryStream);
+                return memoryStream.ToArray();
             }
 
             var settings = new ProcessImageSettings
@@ -171,11 +169,9 @@ public static class GraphicsUtils
         {
             encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
 
-            using (var stream = new MemoryStream())
-            {
-                encoder.Save(stream);
-                bytes = stream.ToArray();
-            }
+            using var stream = new MemoryStream();
+            encoder.Save(stream);
+            bytes = stream.ToArray();
         }
 
         return bytes;
@@ -188,14 +184,12 @@ public static class GraphicsUtils
 
         if (factorHeight >= 1 && factorWidth >= 1)
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                BitmapEncoder encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(srcBmp));
+            using var memoryStream = new MemoryStream();
+            BitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(srcBmp));
 
-                encoder.Save(memoryStream);
-                return memoryStream.ToArray();
-            }
+            encoder.Save(memoryStream);
+            return memoryStream.ToArray();
         }
 
         var factor = Math.Min(factorWidth, factorHeight);
@@ -441,18 +435,16 @@ public static class GraphicsUtils
                 {
                     tf.Mode = TagLib.File.AccessMode.Read;
 
-                    using (var imageFile = tf as TagLib.Image.File)
+                    using var imageFile = tf as TagLib.Image.File;
+                    if (imageFile != null)
                     {
-                        if (imageFile != null)
-                        {
-                            // see here for Exif discussion:
-                            // http://sylvana.net/jpegcrop/exif_orientation.html
-                            // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
-                            var orientation = imageFile.ImageTag.Orientation;
+                        // see here for Exif discussion:
+                        // http://sylvana.net/jpegcrop/exif_orientation.html
+                        // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
+                        var orientation = imageFile.ImageTag.Orientation;
 
-                            return orientation != ImageOrientation.None &&
-                                   orientation != ImageOrientation.TopLeft;
-                        }
+                        return orientation != ImageOrientation.None &&
+                               orientation != ImageOrientation.TopLeft;
                     }
                 }
             }
@@ -554,11 +546,10 @@ public static class GraphicsUtils
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.CompositingMode = CompositingMode.SourceCopy;
                 graphics.DrawImage(srcBmp, 0, 0, newSize.Width, newSize.Height);
-                using (var memoryStream = new MemoryStream())
-                {
-                    target.Save(memoryStream, ImageFormat.Jpeg);
-                    result = memoryStream.ToArray();
-                }
+
+                using var memoryStream = new MemoryStream();
+                target.Save(memoryStream, ImageFormat.Jpeg);
+                result = memoryStream.ToArray();
             }
         }
 

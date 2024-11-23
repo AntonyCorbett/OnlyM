@@ -285,18 +285,14 @@ public class MainViewModel : ObservableObject
     public void DragSourcePreviewMouseDown(Control card, Point position) =>
         _dragAndDropServiceCustom.DragSourcePreviewMouseDown(card, position);
 
-    public void DragSourcePreviewMouseMove(Point position)
-    {
+    public void DragSourcePreviewMouseMove(Point position) =>
         _dragAndDropServiceCustom.DragSourcePreviewMouseMove(position);
-    }
 
     public void Drop(Rectangle rect, DragEventArgs e) =>
         _dragAndDropServiceCustom.Drop(rect, e);
 
-    public void DragEnter(Rectangle rect, DragEventArgs e)
-    {
+    public void DragEnter(Rectangle rect, DragEventArgs e) =>
         _dragAndDropServiceCustom.DragEnter(rect, e);
-    }
 
     private void InitCommands()
     {
@@ -662,13 +658,11 @@ public class MainViewModel : ObservableObject
         CommandManager.InvalidateRequerySuggested();
     }
 
-    private void AddEndMarker()
-    {
+    private void AddEndMarker() =>
         SlideItems.Add(new SlideItem
         {
             IsEndMarker = true,
         });
-    }
 
     // all exceptions handled
     private async void NewFile()
@@ -703,8 +697,7 @@ public class MainViewModel : ObservableObject
         await InitNewSlideshow(null);
     }
 
-    private static async Task LoadShow(string path, SlideFileBuilder builder)
-    {
+    private static async Task LoadShow(string path, SlideFileBuilder builder) =>
         await Task.Run(() =>
         {
             try
@@ -716,7 +709,6 @@ public class MainViewModel : ObservableObject
                 Log.Logger.Error(ex, "Could not load");
             }
         });
-    }
 
     private async Task InitNewSlideshow(string? optionalPathToExistingSlideshow)
     {
@@ -782,10 +774,8 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private void HandleBuildProgressEvent(object? sender, BuildProgressEventArgs e)
-    {
+    private void HandleBuildProgressEvent(object? sender, BuildProgressEventArgs e) =>
         ProgressPercentageValue = e.PercentageComplete;
-    }
 
     [Conditional("DEBUG")]
     private void AddDesignTimeItems()
@@ -801,10 +791,8 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private string? CreateSlideshowSignature()
-    {
-        return _currentSlideFileBuilder?.CreateSignature();
-    }
+    private string? CreateSlideshowSignature() =>
+        _currentSlideFileBuilder?.CreateSignature();
 
     private void SaveSignature()
     {
@@ -875,10 +863,7 @@ public class MainViewModel : ObservableObject
         // hook if needed
     }
 
-    private bool CanExecuteClosing()
-    {
-        return !_dialogService.IsDialogVisible() && !IsDirty && !Busy;
-    }
+    private bool CanExecuteClosing() => !_dialogService.IsDialogVisible() && !IsDirty && !Busy;
 
     // Exceptions handled
     private async void ExecuteCancelClosing()
@@ -1038,13 +1023,9 @@ public class MainViewModel : ObservableObject
         return result.ToArray();
     }
 
-    private string GetStandardStatusText()
-    {
+    private string GetStandardStatusText() =>
         // note that there is always a dummy slide (hence "-1")
-#pragma warning disable CA1863
-        return string.Format(CultureInfo.CurrentCulture, Properties.Resources.SLIDE_COUNT_X, SlideItems.Count - 1);
-#pragma warning restore CA1863
-    }
+        string.Format(CultureInfo.CurrentCulture, Properties.Resources.SLIDE_COUNT_X, SlideItems.Count - 1);
 
     private static bool IsInDesignMode()
     {
@@ -1066,9 +1047,7 @@ public class MainViewModel : ObservableObject
             _vm.StatusText = text;
         }
 
-        public void Dispose()
-        {
+        public void Dispose() =>
             _vm.StatusText = _vm.GetStandardStatusText();
-        }
     }
 }

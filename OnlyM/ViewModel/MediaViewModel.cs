@@ -289,10 +289,8 @@ internal sealed class MediaViewModel : ObservableObject
         }
     }
 
-    private void DoToggleMagnifier()
-    {
+    private void DoToggleMagnifier() =>
         IsMagnifierVisible = !IsMagnifierVisible;
-    }
 
     private double CalculateMagnifierRadius()
     {

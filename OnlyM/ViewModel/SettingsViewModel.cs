@@ -1090,15 +1090,12 @@ internal sealed class SettingsViewModel : ObservableObject
         return result.ToArray();
     }
 
-    private static RenderingMethodItem[] GetRenderingMethods()
-    {
+    private static RenderingMethodItem[] GetRenderingMethods() =>
         // don't localize these strings!
-        return
         [
-            new RenderingMethodItem { Method = RenderingMethod.MediaFoundation, Name = "Media Foundation" },
-            new RenderingMethodItem { Method = RenderingMethod.Ffmpeg, Name = "Ffmpeg" }
+        new() { Method = RenderingMethod.MediaFoundation, Name = "Media Foundation" },
+        new() { Method = RenderingMethod.Ffmpeg, Name = "Ffmpeg" }
         ];
-    }
 
     private MonitorItem[] GetSystemMonitors()
     {
@@ -1188,10 +1185,7 @@ internal sealed class SettingsViewModel : ObservableObject
         return null;
     }
 
-    private void PurgeThumbnailCache()
-    {
-        _thumbnailService.ClearThumbCache();
-    }
+    private void PurgeThumbnailCache() => _thumbnailService.ClearThumbCache();
 
     private void SetMediaWindowSize(Size size) => MediaWindowSize = size;
 

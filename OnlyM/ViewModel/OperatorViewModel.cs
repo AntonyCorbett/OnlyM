@@ -165,10 +165,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _metaDataConsumer?.Dispose();
     }
 
-    private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e)
-    {
+    private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e) =>
         _pendingLoadMediaItems = true;
-    }
 
     private void HandleNavigationEvent(object? sender, NavigationEventArgs e)
     {
@@ -186,10 +184,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         LoadMediaItems();
     }
 
-    private void HandleOperatingDateChangedEvent(object? sender, EventArgs e)
-    {
+    private void HandleOperatingDateChangedEvent(object? sender, EventArgs e) =>
         _pendingLoadMediaItems = true;
-    }
 
     private void HandleUnhideAllEvent(object? sender, EventArgs e)
     {
@@ -340,15 +336,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
-    private void HandleFileChangesFoundEvent(object? sender, EventArgs e)
-    {
+    private void HandleFileChangesFoundEvent(object? sender, EventArgs e) =>
         Application.Current.Dispatcher.Invoke(LoadMediaItems);
-    }
 
-    private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e)
-    {
+    private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e) =>
         ChangePlayButtonEnabledStatus();
-    }
 
     private void ChangePlayButtonEnabledStatus()
     {
@@ -692,12 +684,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
-    private bool IsVideoOrAudio(MediaItem mediaItem)
-    {
-        return
-            mediaItem.MediaType?.Classification == MediaClassification.Audio ||
-            mediaItem.MediaType?.Classification == MediaClassification.Video;
-    }
+    private bool IsVideoOrAudio(MediaItem mediaItem) =>
+        mediaItem.MediaType?.Classification == MediaClassification.Audio ||
+        mediaItem.MediaType?.Classification == MediaClassification.Video;
 
     private bool IsVideo(MediaItem mediaItem) => mediaItem.IsVideo;
 
@@ -900,15 +889,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         return null;
     }
 
-    private MediaItem? GetMediaItem(Guid mediaItemId)
-    {
-        return MediaItems.SingleOrDefault(x => x.Id == mediaItemId);
-    }
+    private MediaItem? GetMediaItem(Guid mediaItemId) =>
+        MediaItems.SingleOrDefault(x => x.Id == mediaItemId);
 
-    private void HandleMediaFolderChangedEvent(object? sender, EventArgs e)
-    {
+    private void HandleMediaFolderChangedEvent(object? sender, EventArgs e) =>
         _pendingLoadMediaItems = true;
-    }
 
     private void HandleThumbnailsPurgedEvent(object? sender, EventArgs e)
     {
@@ -1169,8 +1154,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _metaDataProducer.Add(item);
     }
 
-    private void HandleAutoRotateChangedEvent(object? sender, EventArgs e)
-    {
+    private void HandleAutoRotateChangedEvent(object? sender, EventArgs e) =>
         Task.Run(() =>
         {
             try
@@ -1190,7 +1174,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 Log.Logger.Error(ex, "Auto rotation of images");
             }
         });
-    }
 
     private void OnSubtitleFileActivity(object? sender, SubtitleFileMessage message)
     {
@@ -1200,8 +1183,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
-    private void HandleWebStatusEvent(object? sender, WebBrowserProgressEventArgs e)
-    {
+    private void HandleWebStatusEvent(object? sender, WebBrowserProgressEventArgs e) =>
         Application.Current.Dispatcher.Invoke(() =>
         {
             var item = GetActiveWebItem();
@@ -1210,7 +1192,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 item.MiscText = e.Description;
             }
         });
-    }
 
     private void HandleAllowMirrorChangedEvent(object? sender, EventArgs e)
     {

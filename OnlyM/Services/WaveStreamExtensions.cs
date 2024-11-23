@@ -19,24 +19,18 @@ public static class WaveStreamExtensions
     }
 
     // Set playback position of WaveStream by seconds
-    public static void SetPosition(this WaveStream waveStream, double seconds)
-    {
+    public static void SetPosition(this WaveStream waveStream, double seconds) =>
         waveStream.SetPosition((long)(seconds * waveStream.WaveFormat.AverageBytesPerSecond));
-    }
 
     // Set playback position of WaveStream by time (as a TimeSpan)
-    public static void SetPosition(this WaveStream waveStream, TimeSpan time)
-    {
+    public static void SetPosition(this WaveStream waveStream, TimeSpan time) =>
         waveStream.SetPosition(time.TotalSeconds);
-    }
 
     // Set playback position of WaveStream relative to current position
     public static void Seek(this WaveStream waveStream, double offset) =>
         waveStream.SetPosition(waveStream.Position + (long)(offset * waveStream.WaveFormat.AverageBytesPerSecond));
 
     // Set playback position of WaveStream by seconds
-    public static TimeSpan GetPosition(this WaveStream waveStream)
-    {
-        return TimeSpan.FromSeconds((double)waveStream.Position / waveStream.WaveFormat.AverageBytesPerSecond);
-    }
+    public static TimeSpan GetPosition(this WaveStream waveStream) =>
+        TimeSpan.FromSeconds((double)waveStream.Position / waveStream.WaveFormat.AverageBytesPerSecond);
 }

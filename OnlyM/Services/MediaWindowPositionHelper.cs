@@ -199,25 +199,17 @@ internal static class MediaWindowPositionHelper
             !primaryMonitor.Equals(monitor);
     }
 
-    private static bool MonitorToRightOf(Screen monitor1, Screen monitor2)
-    {
-        return monitor1.Bounds.Left >= monitor2.Bounds.Right;
-    }
+    private static bool MonitorToRightOf(Screen monitor1, Screen monitor2) =>
+        monitor1.Bounds.Left >= monitor2.Bounds.Right;
 
-    private static bool MonitorToLeftOf(Screen monitor1, Screen monitor2)
-    {
-        return monitor1.Bounds.Right <= monitor2.Bounds.Left;
-    }
+    private static bool MonitorToLeftOf(Screen monitor1, Screen monitor2) =>
+        monitor1.Bounds.Right <= monitor2.Bounds.Left;
 
-    private static bool MonitorIsAbove(Screen monitor1, Screen monitor2)
-    {
-        return monitor1.Bounds.Bottom <= monitor2.Bounds.Top;
-    }
+    private static bool MonitorIsAbove(Screen monitor1, Screen monitor2) =>
+        monitor1.Bounds.Bottom <= monitor2.Bounds.Top;
 
-    private static bool MonitorIsBelow(Screen monitor1, Screen monitor2)
-    {
-        return monitor1.Bounds.Top <= monitor2.Bounds.Bottom;
-    }
+    private static bool MonitorIsBelow(Screen monitor1, Screen monitor2) =>
+        monitor1.Bounds.Top <= monitor2.Bounds.Bottom;
 
     private static IEnumerable<T> FindVisualChildren<T>(DependencyObject? depObj)
         where T : DependencyObject

@@ -210,10 +210,7 @@ public sealed partial class MediaWindow : IDisposable
 
     public int GotoPreviousSlide() => _imageDisplayManager.GotoPreviousSlide();
 
-    public int GotoNextSlide()
-    {
-        return _imageDisplayManager.GotoNextSlide();
-    }
+    public int GotoNextSlide() => _imageDisplayManager.GotoNextSlide();
 
     public void SaveWindowPos()
     {
@@ -306,10 +303,7 @@ public sealed partial class MediaWindow : IDisposable
         await _videoDisplayManager!.HideVideoAsync(mediaItem.Id);
     }
 
-    private void StopAudio(MediaItem mediaItem)
-    {
-        _audioManager.StopAudio(mediaItem.Id);
-    }
+    private void StopAudio(MediaItem mediaItem) => _audioManager.StopAudio(mediaItem.Id);
 
     private void HideImageOrSlideshow(IReadOnlyCollection<MediaItem> mediaItems)
     {
@@ -383,10 +377,7 @@ public sealed partial class MediaWindow : IDisposable
         }
     }
 
-    private void StopWeb()
-    {
-        _webDisplayManager.HideWeb();
-    }
+    private void StopWeb() => _webDisplayManager.HideWeb();
 
     private void StartSlideshow(MediaItem mediaItem)
     {
@@ -399,10 +390,7 @@ public sealed partial class MediaWindow : IDisposable
         _imageDisplayManager.StartSlideshow(mediaItem.FilePath, mediaItem.Id);
     }
 
-    private void StopSlideshow(MediaItem mediaItem)
-    {
-        _imageDisplayManager.StopSlideshow(mediaItem.Id);
-    }
+    private void StopSlideshow(MediaItem mediaItem) => _imageDisplayManager.StopSlideshow(mediaItem.Id);
 
     private async Task ShowVideoAsync(
         MediaItem mediaItemToStart,
@@ -505,10 +493,8 @@ public sealed partial class MediaWindow : IDisposable
         _audioManager.MediaPositionChangedEvent -= HandleMediaPositionChangedEvent;
     }
 
-    private void HandleWebDisplayManagerStatusEvent(object? sender, WebBrowserProgressEventArgs e)
-    {
+    private void HandleWebDisplayManagerStatusEvent(object? sender, WebBrowserProgressEventArgs e) =>
         WebStatusEvent?.Invoke(this, e);
-    }
 
     private void HandleMediaFoundationSubtitleEvent(object? sender, Core.Subtitles.SubtitleEventArgs e)
     {
@@ -548,25 +534,16 @@ public sealed partial class MediaWindow : IDisposable
         _webDisplayManager.StatusEvent -= HandleWebDisplayManagerStatusEvent;
     }
 
-    private void HandleMediaChangeEvent(object? sender, MediaEventArgs e)
-    {
-        MediaChangeEvent?.Invoke(this, e);
-    }
+    private void HandleMediaChangeEvent(object? sender, MediaEventArgs e) => MediaChangeEvent?.Invoke(this, e);
 
-    private void HandleSlideTransitionEvent(object? sender, SlideTransitionEventArgs e)
-    {
+    private void HandleSlideTransitionEvent(object? sender, SlideTransitionEventArgs e) =>
         SlideTransitionEvent?.Invoke(this, e);
-    }
 
-    private void HandleMediaPositionChangedEvent(object? sender, OnlyMPositionChangedEventArgs e)
-    {
+    private void HandleMediaPositionChangedEvent(object? sender, OnlyMPositionChangedEventArgs e) =>
         MediaPositionChangedEvent?.Invoke(this, e);
-    }
 
-    private void HandleMediaNearEndEvent(object? sender, MediaNearEndEventArgs e)
-    {
+    private void HandleMediaNearEndEvent(object? sender, MediaNearEndEventArgs e) =>
         MediaNearEndEvent?.Invoke(this, e);
-    }
 
     private void HandleShowSubtitlesChangedEvent(object? sender, EventArgs e)
     {
@@ -596,8 +573,7 @@ public sealed partial class MediaWindow : IDisposable
         }
     }
 
-    private void ConfirmMediaStop(MediaItem mediaItem)
-    {
+    private void ConfirmMediaStop(MediaItem mediaItem) =>
         _snackbarService.Enqueue(
             Properties.Resources.CONFIRM_STOP_MEDIA,
             Properties.Resources.YES,
@@ -606,7 +582,6 @@ public sealed partial class MediaWindow : IDisposable
             null,
             promote: true,
             neverConsiderToBeDuplicate: true);
-    }
 
     private void HandleVideoScreenPositionChangedEvent(object? sender, EventArgs e)
     {
@@ -617,10 +592,8 @@ public sealed partial class MediaWindow : IDisposable
         }
     }
 
-    private void HandleWebScreenPositionChangedEvent(object? sender, EventArgs e)
-    {
+    private void HandleWebScreenPositionChangedEvent(object? sender, EventArgs e) =>
         ScreenPositionHelper.SetScreenPosition(BrowserGrid, _optionsService.WebScreenPosition);
-    }
 
     private void HandleImageScreenPositionChangedEvent(object? sender, EventArgs e)
     {
@@ -680,12 +653,10 @@ public sealed partial class MediaWindow : IDisposable
         }
     }
 
-    private void AdjustVideoRotation(MediaViewModel vm, MediaItem mediaItemToStart)
-    {
+    private void AdjustVideoRotation(MediaViewModel vm, MediaItem mediaItemToStart) =>
         // FFMPEG auto rotates video, but Media Foundation doesn't so we 
         // set the required rotation here...
         vm.VideoRotation = _optionsService.RenderingMethod == RenderingMethod.MediaFoundation
             ? mediaItemToStart.VideoRotation
             : 0;
-    }
 }

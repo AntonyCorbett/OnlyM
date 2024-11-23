@@ -218,10 +218,8 @@ internal sealed class MainViewModel : ObservableObject
         }
     }
 
-    private void OnMediaListUpdating(object? sender, MediaListUpdatingMessage message)
-    {
+    private void OnMediaListUpdating(object? sender, MediaListUpdatingMessage message) =>
         IsMediaListLoading = true;
-    }
 
     private void OnMediaListUpdated(object? sender, MediaListUpdatedMessage message)
     {
@@ -239,10 +237,8 @@ internal sealed class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(AlwaysOnTop));
     }
 
-    private void HandleAlwaysOnTopChangedEvent(object? sender, EventArgs e)
-    {
+    private void HandleAlwaysOnTopChangedEvent(object? sender, EventArgs e) =>
         OnPropertyChanged(nameof(AlwaysOnTop));
-    }
 
     private void HandlePageNavigationEvent(object? sender, NavigationEventArgs e)
     {
@@ -252,10 +248,8 @@ internal sealed class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(IsUnhideButtonVisible));
     }
 
-    private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e)
-    {
+    private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e) =>
         OnPropertyChanged(nameof(AlwaysOnTop));
-    }
 
     private void SanityChecks() =>
         // checks are performed in order of importance and subsequent
@@ -335,10 +329,8 @@ internal sealed class MainViewModel : ObservableObject
         UnhideCommand = new RelayCommand(UnhideAll);
     }
 
-    private void UnhideAll()
-    {
+    private void UnhideAll() => 
         _hiddenMediaItemsService.UnhideAllMediaItems();
-    }
 
     private void LaunchReleasePage()
     {
@@ -408,15 +400,11 @@ internal sealed class MainViewModel : ObservableObject
         return renderingTier == 0;
     }
 
-    private void HandleCopyingFilesProgressEvent(object? sender, FilesCopyProgressEventArgs e)
-    {
+    private void HandleCopyingFilesProgressEvent(object? sender, FilesCopyProgressEventArgs e) =>
         IsBusy = e.Status == FileCopyStatus.StartingCopy;
-    }
 
-    private void HandleHiddenItemsChangedEvent(object? sender, EventArgs e)
-    {
+    private void HandleHiddenItemsChangedEvent(object? sender, EventArgs e) => 
         OnPropertyChanged(nameof(IsUnhideButtonVisible));
-    }
 
     private static bool IsInDesignMode()
     {

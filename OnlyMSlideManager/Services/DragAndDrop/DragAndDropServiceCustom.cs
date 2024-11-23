@@ -183,10 +183,8 @@ internal sealed class DragAndDropServiceCustom : IDragAndDropServiceCustom
     private bool IsFileExtensionSupported(string ext) =>
         _supportedImageExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase);
 
-    private static void SetEffects(DragEventArgs e, bool canDrop)
-    {
+    private static void SetEffects(DragEventArgs e, bool canDrop) =>
         e.Effects = canDrop
             ? DragDropEffects.Copy
             : DragDropEffects.None;
-    }
 }

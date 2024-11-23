@@ -68,10 +68,7 @@ internal sealed class PageService : IDisposable, IPageService
         WeakReferenceMessenger.Default.Register<MirrorWindowMessage>(this, OnMirrorWindowMessage);
     }
 
-    public void Dispose()
-    {
-        _mediaWindow?.Dispose();
-    }
+    public void Dispose() => _mediaWindow?.Dispose();
 
     public event EventHandler<MonitorChangedEventArgs>? MediaMonitorChangedEvent;
 
@@ -381,20 +378,14 @@ internal sealed class PageService : IDisposable, IPageService
         }
     }
 
-    private void HandleMediaPositionChangedEvent(object? sender, OnlyMPositionChangedEventArgs e)
-    {
+    private void HandleMediaPositionChangedEvent(object? sender, OnlyMPositionChangedEventArgs e) =>
         MediaPositionChangedEvent?.Invoke(this, e);
-    }
 
-    private void HandleMediaNearEndEvent(object? sender, MediaNearEndEventArgs e)
-    {
+    private void HandleMediaNearEndEvent(object? sender, MediaNearEndEventArgs e) =>
         MediaNearEndEvent?.Invoke(this, e);
-    }
 
-    private void HandleSlideTransitionEvent(object? sender, SlideTransitionEventArgs e)
-    {
+    private void HandleSlideTransitionEvent(object? sender, SlideTransitionEventArgs e) =>
         SlideTransitionEvent?.Invoke(this, e);
-    }
 
     private void HandleMediaChangeEvent(object? sender, MediaEventArgs e)
     {
@@ -425,19 +416,15 @@ internal sealed class PageService : IDisposable, IPageService
         }
     }
 
-    private bool AnyActiveMediaRequiringVisibleMediaWindow()
-    {
-        return _activeMediaItemsService.Any(
+    private bool AnyActiveMediaRequiringVisibleMediaWindow() =>
+        _activeMediaItemsService.Any(
             MediaClassification.Image,
             MediaClassification.Video,
             MediaClassification.Slideshow,
             MediaClassification.Web);
-    }
 
-    private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e)
-    {
+    private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e) =>
         UpdateMediaMonitor(e.Change);
-    }
 
     private void UpdateMediaMonitor(MonitorChangeDescription change)
     {
@@ -542,10 +529,8 @@ internal sealed class PageService : IDisposable, IPageService
         }
     }
 
-    private void HandleRenderingMethodChangedEvent(object? sender, EventArgs e)
-    {
+    private void HandleRenderingMethodChangedEvent(object? sender, EventArgs e) =>
         _mediaWindow?.UpdateRenderingMethod();
-    }
 
     private void OnMirrorWindowMessage(object? sender, MirrorWindowMessage msg)
     {

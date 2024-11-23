@@ -96,6 +96,9 @@ dotnet_style_allow_statement_immediately_after_block_experimental = true:silent
 # C# Coding Conventions       #
 ###############################
 
+# IDE0047: Remove unnecessary parentheses
+dotnet_diagnostic.IDE0047.severity = silent
+
 [*.cs]
 # var preferences
 #----------------
@@ -322,3 +325,6 @@ dotnet_diagnostic.CA2201.severity = none
 csharp_style_prefer_primary_constructors = true:suggestion
 dotnet_diagnostic.SA1010.severity = suggestion
 csharp_prefer_system_threading_lock = true:suggestion
+
+# IDE0055: Fix formatting
+dotnet_diagnostic.IDE0055.severity = suggestion

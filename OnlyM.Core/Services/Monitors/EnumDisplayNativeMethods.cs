@@ -7,6 +7,7 @@ namespace OnlyM.Core.Services.Monitors;
 // ReSharper disable InconsistentNaming
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Global
+
 /// <summary>
 /// Native methods associated with retrieval of display device data
 /// </summary>

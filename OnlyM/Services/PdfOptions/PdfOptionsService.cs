@@ -28,10 +28,7 @@ internal sealed class PdfOptionsService : IPdfOptionsService
         }
     }
 
-    public void Add(string path, Models.PdfOptions options)
-    {
-        _items[path] = options;
-    }
+    public void Add(string path, Models.PdfOptions options) => _items[path] = options;
 
     private static int GetPageNumber(string pageNumberString) =>
         !int.TryParse(pageNumberString, out var pageNumber) ? 1 : pageNumber;

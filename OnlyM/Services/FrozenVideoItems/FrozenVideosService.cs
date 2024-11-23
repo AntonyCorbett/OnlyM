@@ -27,8 +27,5 @@ internal sealed class FrozenVideosService : IFrozenVideosService
 
     public void Add(string path) => _frozenItems.Add(path);
 
-    public void Remove(string path)
-    {
-        _frozenItems.Remove(path);
-    }
+    public void Remove(string path) => _frozenItems.Remove(path);
 }
