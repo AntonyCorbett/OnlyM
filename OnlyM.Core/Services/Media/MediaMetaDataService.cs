@@ -126,16 +126,14 @@ public class MediaMetaDataService : IMediaMetaDataService
             return null;
         }
 
-        using (var tf = TagLib.File.Create(mediaItemFilePath))
-        {
-            tf.Mode = TagLib.File.AccessMode.Read;
+        using var tf = TagLib.File.Create(mediaItemFilePath);
+        tf.Mode = TagLib.File.AccessMode.Read;
 
-            return new MediaMetaData
-            {
-                Title = StripNewLines(tf.Tag?.Title),
-                Duration = tf.Properties?.Duration ?? TimeSpan.Zero,
-            };
-        }
+        return new MediaMetaData
+        {
+            Title = StripNewLines(tf.Tag?.Title),
+            Duration = tf.Properties?.Duration ?? TimeSpan.Zero,
+        };
     }
 
     private static bool IsWebPFormat(string mediaItemFilePath) =>

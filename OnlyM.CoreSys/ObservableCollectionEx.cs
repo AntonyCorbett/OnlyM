@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 
 namespace OnlyM.CoreSys;
+
 #pragma warning disable CA1711 // Identifiers should not have incorrect suffix
 public class ObservableCollectionEx<T> : ObservableCollection<T>
 #pragma warning restore CA1711 // Identifiers should not have incorrect suffix

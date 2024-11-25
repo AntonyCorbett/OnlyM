@@ -28,12 +28,10 @@ public class WebShortcutHelper
 
     public static void Generate(string localFile, Uri remoteUri)
     {
-        using (var writer = new StreamWriter(localFile))
-        {
-            writer.WriteLine("[InternetShortcut]");
-            writer.WriteLine($"URL={remoteUri}");
-            writer.Flush();
-        }
+        using var writer = new StreamWriter(localFile);
+        writer.WriteLine("[InternetShortcut]");
+        writer.WriteLine($"URL={remoteUri}");
+        writer.Flush();
     }
 
     private void Init()

@@ -201,11 +201,9 @@ public sealed class ThumbnailService : IThumbnailService
             var encoder = new JpegBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(o.Thumbnail.BitmapSource));
 
-            using (var stream = new MemoryStream())
-            {
-                encoder.Save(stream);
-                return stream.ToArray();
-            }
+            using var stream = new MemoryStream();
+            encoder.Save(stream);
+            return stream.ToArray();
         }
         catch (Exception)
         {
@@ -245,11 +243,9 @@ public sealed class ThumbnailService : IThumbnailService
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
 
-            using (var stream = new MemoryStream())
-            {
-                encoder.Save(stream);
-                bytes = stream.ToArray();
-            }
+            using var stream = new MemoryStream();
+            encoder.Save(stream);
+            bytes = stream.ToArray();
         }
 
         return bytes;

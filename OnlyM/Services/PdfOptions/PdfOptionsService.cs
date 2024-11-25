@@ -6,7 +6,7 @@ namespace OnlyM.Services.PdfOptions;
 
 internal sealed class PdfOptionsService : IPdfOptionsService
 {
-    private readonly Dictionary<string, Models.PdfOptions> _items = new();
+    private readonly Dictionary<string, Models.PdfOptions> _items = [];
 
     public void Init(IEnumerable<MediaItem> items)
     {

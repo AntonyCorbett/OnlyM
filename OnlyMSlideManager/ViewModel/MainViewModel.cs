@@ -362,25 +362,23 @@ public class MainViewModel : ObservableObject
 
     private async Task SaveFileAs()
     {
-        using (var d = new CommonSaveFileDialog())
+        using var d = new CommonSaveFileDialog();
+        d.OverwritePrompt = true;
+        d.AlwaysAppendDefaultExtension = true;
+        d.IsExpandedMode = true;
+        d.DefaultDirectory = _defaultFileSaveFolder ?? FileUtils.GetPrivateSlideshowFolder();
+        d.DefaultExtension = SlideFile.FileExtension;
+        d.Filters.Add(new CommonFileDialogFilter(Properties.Resources.SLIDESHOW_FILE, $"*{SlideFile.FileExtension}"));
+        d.Title = Properties.Resources.SAVE_SLIDESHOW_TITLE;
+
+        var rv = d.ShowDialog();
+        if (rv == CommonFileDialogResult.Ok)
         {
-            d.OverwritePrompt = true;
-            d.AlwaysAppendDefaultExtension = true;
-            d.IsExpandedMode = true;
-            d.DefaultDirectory = _defaultFileSaveFolder ?? FileUtils.GetPrivateSlideshowFolder();
-            d.DefaultExtension = SlideFile.FileExtension;
-            d.Filters.Add(new CommonFileDialogFilter(Properties.Resources.SLIDESHOW_FILE, $"*{SlideFile.FileExtension}"));
-            d.Title = Properties.Resources.SAVE_SLIDESHOW_TITLE;
+            _defaultFileSaveFolder = System.IO.Path.GetDirectoryName(d.FileName);
 
-            var rv = d.ShowDialog();
-            if (rv == CommonFileDialogResult.Ok)
-            {
-                _defaultFileSaveFolder = System.IO.Path.GetDirectoryName(d.FileName);
+            await SaveFileInternal(d.FileName, true);
 
-                await SaveFileInternal(d.FileName, true);
-
-                await InitNewSlideshow(d.FileName);
-            }
+            await InitNewSlideshow(d.FileName);
         }
     }
 
@@ -493,19 +491,17 @@ public class MainViewModel : ObservableObject
             }
         }
 
-        using (var d = new CommonOpenFileDialog())
-        {
-            d.DefaultDirectory = _defaultFileOpenFolder ?? FileUtils.GetPrivateSlideshowFolder();
-            d.DefaultExtension = SlideFile.FileExtension;
-            d.Filters.Add(new CommonFileDialogFilter(Properties.Resources.SLIDESHOW_FILE, $"*{SlideFile.FileExtension}"));
-            d.Title = Properties.Resources.OPEN_SLIDESHOW_TITLE;
+        using var d = new CommonOpenFileDialog();
+        d.DefaultDirectory = _defaultFileOpenFolder ?? FileUtils.GetPrivateSlideshowFolder();
+        d.DefaultExtension = SlideFile.FileExtension;
+        d.Filters.Add(new CommonFileDialogFilter(Properties.Resources.SLIDESHOW_FILE, $"*{SlideFile.FileExtension}"));
+        d.Title = Properties.Resources.OPEN_SLIDESHOW_TITLE;
 
-            var rv = d.ShowDialog();
-            if (rv == CommonFileDialogResult.Ok)
-            {
-                _defaultFileOpenFolder = System.IO.Path.GetDirectoryName(d.FileName);
-                await InitNewSlideshow(d.FileName);
-            }
+        var rv = d.ShowDialog();
+        if (rv == CommonFileDialogResult.Ok)
+        {
+            _defaultFileOpenFolder = System.IO.Path.GetDirectoryName(d.FileName);
+            await InitNewSlideshow(d.FileName);
         }
     }
 
@@ -1025,7 +1021,9 @@ public class MainViewModel : ObservableObject
 
     private string GetStandardStatusText() =>
         // note that there is always a dummy slide (hence "-1")
+#pragma warning disable CA1863
         string.Format(CultureInfo.CurrentCulture, Properties.Resources.SLIDE_COUNT_X, SlideItems.Count - 1);
+#pragma warning restore CA1863
 
     private static bool IsInDesignMode()
     {

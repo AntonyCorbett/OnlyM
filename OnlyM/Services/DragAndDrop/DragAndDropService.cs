@@ -428,13 +428,11 @@ internal sealed class DragAndDropService : IDragAndDropService
 
             if (!string.IsNullOrEmpty(s))
             {
-                using (var reader = new StringReader(s))
+                using var reader = new StringReader(s);
+                var line = reader.ReadLine();
+                if (!string.IsNullOrEmpty(line) && IsAcceptableUri(line))
                 {
-                    var line = reader.ReadLine();
-                    if (!string.IsNullOrEmpty(line) && IsAcceptableUri(line))
-                    {
-                        result.Add(line.Trim());
-                    }
+                    result.Add(line.Trim());
                 }
             }
         }

@@ -8,7 +8,7 @@ namespace OnlyM.Services.MetaDataQueue;
 
 internal sealed class MetaDataQueueProducer : IDisposable
 {
-    public BlockingCollection<MediaItem> Queue { get; } = new();
+    public BlockingCollection<MediaItem> Queue { get; } = [];
 
     public void Add(MediaItem mediaItem)
     {

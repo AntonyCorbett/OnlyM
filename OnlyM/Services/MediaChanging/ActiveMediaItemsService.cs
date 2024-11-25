@@ -7,7 +7,7 @@ namespace OnlyM.Services.MediaChanging;
 
 internal sealed class ActiveMediaItemsService : IActiveMediaItemsService
 {
-    private readonly Dictionary<Guid, MediaClassification> _currentMedia = new();
+    private readonly Dictionary<Guid, MediaClassification> _currentMedia = [];
 
     public void Add(Guid mediaItemId, MediaClassification classification) => _currentMedia[mediaItemId] = classification;
 

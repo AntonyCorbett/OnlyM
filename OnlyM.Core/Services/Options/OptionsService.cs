@@ -778,12 +778,10 @@ public sealed class OptionsService : IOptionsService
     {
         if (options != null && _optionsFilePath != null)
         {
-            using (var file = File.CreateText(_optionsFilePath))
-            {
-                var serializer = new JsonSerializer { Formatting = Formatting.Indented };
-                serializer.Serialize(file, options);
-                _originalOptionsSignature = GetOptionsSignature(options);
-            }
+            using var file = File.CreateText(_optionsFilePath);
+            var serializer = new JsonSerializer { Formatting = Formatting.Indented };
+            serializer.Serialize(file, options);
+            _originalOptionsSignature = GetOptionsSignature(options);
         }
     }
 

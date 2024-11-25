@@ -46,24 +46,22 @@ public class SlideFile
             throw new NotSupportedException("Missing archive entry name");
         }
 
-        using (var zip = ZipFile.OpenRead(FilePath))
-        {
-            var image = includeBitmapImage
-                ? ReadBackgroundImage(zip, slide.ArchiveEntryName!)
-                : null;
+        using var zip = ZipFile.OpenRead(FilePath);
+        var image = includeBitmapImage
+            ? ReadBackgroundImage(zip, slide.ArchiveEntryName!)
+            : null;
 
-            return new Slide
-            {
-                OriginalFilePath = slide.OriginalFilePath,
-                ArchiveEntryName = slide.ArchiveEntryName,
-                FadeInForward = slide.FadeInForward,
-                FadeInReverse = slide.FadeInReverse,
-                FadeOutForward = slide.FadeOutForward,
-                FadeOutReverse = slide.FadeOutReverse,
-                DwellTimeMilliseconds = slide.DwellTimeMilliseconds,
-                Image = image,
-            };
-        }
+        return new Slide
+        {
+            OriginalFilePath = slide.OriginalFilePath,
+            ArchiveEntryName = slide.ArchiveEntryName,
+            FadeInForward = slide.FadeInForward,
+            FadeInReverse = slide.FadeInReverse,
+            FadeOutForward = slide.FadeOutForward,
+            FadeOutReverse = slide.FadeOutReverse,
+            DwellTimeMilliseconds = slide.DwellTimeMilliseconds,
+            Image = image,
+        };
     }
 
     public IReadOnlyCollection<Slide> GetSlides(bool includeBitmapImage)
@@ -104,61 +102,52 @@ public class SlideFile
     {
         Directory.CreateDirectory(folder);
 
-        using (var zip = ZipFile.OpenRead(FilePath))
+        using var zip = ZipFile.OpenRead(FilePath);
+        foreach (var slide in _config.Slides)
         {
-            foreach (var slide in _config.Slides)
+            if (slide.ArchiveEntryName != null)
             {
-                if (slide.ArchiveEntryName != null)
-                {
-                    var entry = zip.GetEntry(slide.ArchiveEntryName);
-                    entry?.ExtractToFile(Path.Combine(folder, slide.ArchiveEntryName), overwrite: true);
-                }
+                var entry = zip.GetEntry(slide.ArchiveEntryName);
+                entry?.ExtractToFile(Path.Combine(folder, slide.ArchiveEntryName), overwrite: true);
             }
         }
     }
 
     private SlidesConfig Load()
     {
-        using (var zip = ZipFile.OpenRead(FilePath))
-        {
-            var configEntry = zip.GetEntry(ConfigEntryName) ?? throw new Exception($"Could not find {ConfigEntryName} entry");
+        using var zip = ZipFile.OpenRead(FilePath);
+        var configEntry = zip.GetEntry(ConfigEntryName) ?? throw new Exception($"Could not find {ConfigEntryName} entry");
 
-            using (var stream = configEntry.Open())
-            {
-                var serializer = new JsonSerializer();
+        using var stream = configEntry.Open();
+        var serializer = new JsonSerializer();
 
-                using (var sr = new StreamReader(stream))
-                using (var jsonTextReader = new JsonTextReader(sr))
-                {
-                    return serializer.Deserialize<SlidesConfig>(jsonTextReader)
-                           ?? throw new Exception($"Could not read {ConfigEntryName} entry");
-                }
-            }
-        }
+        using var sr = new StreamReader(stream);
+        using var jsonTextReader = new JsonTextReader(sr);
+        return serializer.Deserialize<SlidesConfig>(jsonTextReader)
+               ?? throw new Exception($"Could not read {ConfigEntryName} entry");
     }
 
     private static BitmapImage ReadBackgroundImage(ZipArchive zip, string entryName)
     {
         var entry = zip.GetEntry(entryName) ?? throw new Exception($"Could not read {entryName} entry");
 
-        using (var stream = entry.Open())
-        using (var memoryStream = new MemoryStream())
+        using var stream = entry.Open();
+        using var memoryStream = new MemoryStream();
+        
+        stream.CopyTo(memoryStream);
+
+        BitmapImage bmp;
+        try
         {
-            stream.CopyTo(memoryStream);
-
-            BitmapImage bmp;
-            try
-            {
-                bmp = CreateBitmapImage(memoryStream, ignoreColorProfile: false);
-            }
-            catch (ArgumentException)
-            {
-                // probably colour profile corruption
-                bmp = CreateBitmapImage(memoryStream, ignoreColorProfile: true);
-            }
-
-            return bmp;
+            bmp = CreateBitmapImage(memoryStream, ignoreColorProfile: false);
         }
+        catch (ArgumentException)
+        {
+            // probably colour profile corruption
+            bmp = CreateBitmapImage(memoryStream, ignoreColorProfile: true);
+        }
+
+        return bmp;
     }
 
     private static BitmapImage CreateBitmapImage(MemoryStream stream, bool ignoreColorProfile)

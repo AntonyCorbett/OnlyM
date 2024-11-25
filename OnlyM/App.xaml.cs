@@ -203,11 +203,9 @@ public partial class App : Application
 
     private static void AddEventLogEntry(string msg)
     {
-        using (var eventLog = new EventLog("Application"))
-        {
-            eventLog.Source = "Application";
-            eventLog.WriteEntry(msg, EventLogEntryType.Error);
-        }
+        using var eventLog = new EventLog("Application");
+        eventLog.Source = "Application";
+        eventLog.WriteEntry(msg, EventLogEntryType.Error);
     }
 
     [Conditional("USE_APP_CENTER")]

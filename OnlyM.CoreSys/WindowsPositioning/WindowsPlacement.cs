@@ -65,7 +65,7 @@ public static class WindowsPlacement
                     placement.normalPosition.Bottom = placement.normalPosition.Top + (int)sizeOverride.Height;
                 }
 
-                placement.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
+                placement.length = Marshal.SizeOf<WINDOWPLACEMENT>();
                 placement.flags = 0;
                 placement.showCmd = placement.showCmd == SwShowMinimized ? SwShowNormal : placement.showCmd;
                 WindowsPlacementNativeMethods.SetWindowPlacement(windowHandle, ref placement);
@@ -97,13 +97,11 @@ public static class WindowsPlacement
     {
         WindowsPlacementNativeMethods.GetWindowPlacement(windowHandle, out var placement);
 
-        using (var memoryStream = new MemoryStream())
-        {
-            var xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
-            Serializer.Serialize(xmlTextWriter, placement);
-            var xmlBytes = memoryStream.ToArray();
-            return Encoding.GetString(xmlBytes);
-        }
+        using var memoryStream = new MemoryStream();
+        var xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
+        Serializer.Serialize(xmlTextWriter, placement);
+        var xmlBytes = memoryStream.ToArray();
+        return Encoding.GetString(xmlBytes);
     }
 }
 

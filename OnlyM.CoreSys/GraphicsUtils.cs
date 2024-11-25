@@ -431,21 +431,19 @@ public static class GraphicsUtils
             // The TagLib call below is not thread-safe
             lock (TagLibLocker)
             {
-                using (var tf = TagLib.File.Create(imageFilePath))
+                using var tf = TagLib.File.Create(imageFilePath);
+                tf.Mode = TagLib.File.AccessMode.Read;
+
+                using var imageFile = tf as TagLib.Image.File;
+                if (imageFile != null)
                 {
-                    tf.Mode = TagLib.File.AccessMode.Read;
+                    // see here for Exif discussion:
+                    // http://sylvana.net/jpegcrop/exif_orientation.html
+                    // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
+                    var orientation = imageFile.ImageTag.Orientation;
 
-                    using var imageFile = tf as TagLib.Image.File;
-                    if (imageFile != null)
-                    {
-                        // see here for Exif discussion:
-                        // http://sylvana.net/jpegcrop/exif_orientation.html
-                        // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
-                        var orientation = imageFile.ImageTag.Orientation;
-
-                        return orientation != ImageOrientation.None &&
-                               orientation != ImageOrientation.TopLeft;
-                    }
+                    return orientation != ImageOrientation.None &&
+                           orientation != ImageOrientation.TopLeft;
                 }
             }
         }
@@ -513,11 +511,9 @@ public static class GraphicsUtils
 
             image.Mutate(c => c.Resize((int)newSize.Width, (int)newSize.Height));
 
-            using (var memoryStream = new MemoryStream())
-            {
-                image.SaveAsBmp(memoryStream);
-                result = memoryStream.ToArray();
-            }
+            using var memoryStream = new MemoryStream();
+            image.SaveAsBmp(memoryStream);
+            result = memoryStream.ToArray();
         }
 
         return result;
@@ -539,18 +535,17 @@ public static class GraphicsUtils
                 ? new SizeF(maxPixelDimension, maxPixelDimension * (float)srcBmp.Height / srcBmp.Width)
                 : new SizeF(maxPixelDimension * (float)srcBmp.Width / srcBmp.Height, maxPixelDimension);
 
-            using (var target = new Bitmap((int)newSize.Width, (int)newSize.Height))
-            using (var graphics = Graphics.FromImage(target))
-            {
-                graphics.CompositingQuality = CompositingQuality.HighSpeed;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.DrawImage(srcBmp, 0, 0, newSize.Width, newSize.Height);
+            using var target = new Bitmap((int)newSize.Width, (int)newSize.Height);
+            using var graphics = Graphics.FromImage(target);
 
-                using var memoryStream = new MemoryStream();
-                target.Save(memoryStream, ImageFormat.Jpeg);
-                result = memoryStream.ToArray();
-            }
+            graphics.CompositingQuality = CompositingQuality.HighSpeed;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.CompositingMode = CompositingMode.SourceCopy;
+            graphics.DrawImage(srcBmp, 0, 0, newSize.Width, newSize.Height);
+
+            using var memoryStream = new MemoryStream();
+            target.Save(memoryStream, ImageFormat.Jpeg);
+            result = memoryStream.ToArray();
         }
 
         return result;

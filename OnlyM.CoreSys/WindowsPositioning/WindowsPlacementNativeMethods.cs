@@ -143,7 +143,7 @@ internal static class WindowsPlacementNativeMethods
     {
         var sii = new SHSTOCKICONINFO
         {
-            cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO)),
+            cbSize = (uint)Marshal.SizeOf<SHSTOCKICONINFO>(),
         };
 
         Marshal.ThrowExceptionForHR(SHGetStockIconInfo(

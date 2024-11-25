@@ -15,11 +15,9 @@ public static class FileDownloader
 
         try
         {
-            using (var wc = WebUtils.CreateWebClient())
-            {
-                wc.DownloadFile(remoteUri, localFile);
-                return true;
-            }
+            using var wc = WebUtils.CreateWebClient();
+            wc.DownloadFile(remoteUri, localFile);
+            return true;
         }
         catch (Exception ex)
         {

@@ -21,22 +21,20 @@ internal static class FaviconHelper
 
         try
         {
-            using (var wc = WebUtils.CreateWebClient())
+            using var wc = WebUtils.CreateWebClient();
+            var uri = new Uri(iconUrl, UriKind.RelativeOrAbsolute);
+            if (!uri.IsAbsoluteUri)
             {
-                var uri = new Uri(iconUrl, UriKind.RelativeOrAbsolute);
-                if (!uri.IsAbsoluteUri)
+                var rootUrl = GetRootUrl(websiteUrl);
+                if (rootUrl == null)
                 {
-                    var rootUrl = GetRootUrl(websiteUrl);
-                    if (rootUrl == null)
-                    {
-                        return null;
-                    }
-
-                    iconUrl = uri.ToAbsolute(rootUrl);
+                    return null;
                 }
 
-                return iconUrl == null ? null : wc.DownloadData(iconUrl);
+                iconUrl = uri.ToAbsolute(rootUrl);
             }
+
+            return iconUrl == null ? null : wc.DownloadData(iconUrl);
         }
         catch (Exception)
         {
@@ -87,36 +85,34 @@ internal static class FaviconHelper
             return null;
         }
 
-        using (var wc = WebUtils.CreateWebClient())
+        using var wc = WebUtils.CreateWebClient();
+        var pageHtml = wc.DownloadString(websiteUrl);
+        var htmlDocument = new HtmlDocument();
+        htmlDocument.LoadHtml(pageHtml);
+
+        var appleIcon = htmlDocument.DocumentNode.SelectNodes("//link[contains(@rel, 'apple-touch-icon')]");
+        if (appleIcon != null && appleIcon.Count > 0)
         {
-            var pageHtml = wc.DownloadString(websiteUrl);
-            var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(pageHtml);
-
-            var appleIcon = htmlDocument.DocumentNode.SelectNodes("//link[contains(@rel, 'apple-touch-icon')]");
-            if (appleIcon != null && appleIcon.Count > 0)
+            var favicon = appleIcon.First();
+            var icon = favicon.GetAttributeValue("href", null);
+            if (!string.IsNullOrWhiteSpace(icon))
             {
-                var favicon = appleIcon.First();
-                var icon = favicon.GetAttributeValue("href", null);
-                if (!string.IsNullOrWhiteSpace(icon))
-                {
-                    return icon;
-                }
+                return icon;
             }
-
-            var elements = htmlDocument.DocumentNode.SelectNodes("//link[contains(@rel, 'icon')]");
-            if (elements != null && elements.Count > 0)
-            {
-                var favicon = elements.First();
-                var icon = favicon.GetAttributeValue("href", null);
-                if (!string.IsNullOrWhiteSpace(icon))
-                {
-                    return icon;
-                }
-            }
-
-            return null;
         }
+
+        var elements = htmlDocument.DocumentNode.SelectNodes("//link[contains(@rel, 'icon')]");
+        if (elements != null && elements.Count > 0)
+        {
+            var favicon = elements.First();
+            var icon = favicon.GetAttributeValue("href", null);
+            if (!string.IsNullOrWhiteSpace(icon))
+            {
+                return icon;
+            }
+        }
+
+        return null;
     }
 
     private static bool UrlExists(string url)

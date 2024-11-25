@@ -1011,10 +1011,10 @@ internal sealed class SettingsViewModel : ObservableObject
 
     private static MagnifierShapeItem[] GetMagnifierShapes()
     {
-        var values = Enum.GetValues(typeof(MagnifierShape));
+        var values = Enum.GetValues<MagnifierShape>();
         var result = new List<MagnifierShapeItem>(values.Length);
 
-        foreach (MagnifierShape v in values)
+        foreach (var v in values)
         {
             result.Add(new MagnifierShapeItem
             {
@@ -1030,7 +1030,7 @@ internal sealed class SettingsViewModel : ObservableObject
     {
         var result = new List<MagnifierSizeItem>();
 
-        foreach (MagnifierSize v in Enum.GetValues(typeof(MagnifierSize)))
+        foreach (var v in Enum.GetValues<MagnifierSize>())
         {
             result.Add(new MagnifierSizeItem
             {
@@ -1046,7 +1046,7 @@ internal sealed class SettingsViewModel : ObservableObject
     {
         var result = new List<ImageFadeSpeed>();
 
-        foreach (FadeSpeed v in Enum.GetValues(typeof(FadeSpeed)))
+        foreach (var v in Enum.GetValues<FadeSpeed>())
         {
             result.Add(new ImageFadeSpeed
             {
@@ -1062,7 +1062,7 @@ internal sealed class SettingsViewModel : ObservableObject
     {
         var result = new List<ImageFade>();
 
-        foreach (ImageFadeType v in Enum.GetValues(typeof(ImageFadeType)))
+        foreach (var v in Enum.GetValues<ImageFadeType>())
         {
             result.Add(new ImageFade
             {
@@ -1078,7 +1078,7 @@ internal sealed class SettingsViewModel : ObservableObject
     {
         var result = new List<LoggingLevel>();
 
-        foreach (LogEventLevel v in Enum.GetValues(typeof(LogEventLevel)))
+        foreach (var v in Enum.GetValues<LogEventLevel>())
         {
             result.Add(new LoggingLevel
             {

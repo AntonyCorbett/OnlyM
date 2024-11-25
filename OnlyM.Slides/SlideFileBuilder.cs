@@ -168,42 +168,34 @@ public class SlideFileBuilder
 
         _config.Sanitize();
 
-        using (var memoryStream = new MemoryStream())
+        using var memoryStream = new MemoryStream();
+        using (var zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
         {
-            using (var zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-            {
-                var configEntry = zip.CreateEntry(ConfigEntryName);
+            var configEntry = zip.CreateEntry(ConfigEntryName);
 
-                var serializer = new JsonSerializer { Formatting = Formatting.Indented };
+            var serializer = new JsonSerializer { Formatting = Formatting.Indented };
 
-                using (var entryStream = configEntry.Open())
-                using (var entryStreamWriter = new StreamWriter(entryStream))
-                using (var jsonTextWriter = new JsonTextWriter(entryStreamWriter))
-                {
-                    serializer.Serialize(jsonTextWriter, _config);
-                }
-            }
-
-            using (var fileStream = new FileStream(path, FileMode.Create))
-            {
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                memoryStream.CopyTo(fileStream);
-            }
+            using var entryStream = configEntry.Open();
+            using var entryStreamWriter = new StreamWriter(entryStream);
+            using var jsonTextWriter = new JsonTextWriter(entryStreamWriter);
+            serializer.Serialize(jsonTextWriter, _config);
         }
+
+        using var fileStream = new FileStream(path, FileMode.Create);
+        memoryStream.Seek(0, SeekOrigin.Begin);
+        memoryStream.CopyTo(fileStream);
     }
 
     private void AddBitmapImagesToArchive(
         string zipArchivePath, IReadOnlyList<SlideArchiveEntry> slides, int numEntriesBuilt, int numEntriesToBuild)
     {
-        using (var zip = ZipFile.Open(zipArchivePath, ZipArchiveMode.Update))
+        using var zip = ZipFile.Open(zipArchivePath, ZipArchiveMode.Update);
+        foreach (var slide in slides)
         {
-            foreach (var slide in slides)
+            if (slide.ArchiveEntryName != null && slide.Image != null)
             {
-                if (slide.ArchiveEntryName != null && slide.Image != null)
-                {
-                    AddBitmapImageToArchive(zip, slide.ArchiveEntryName, slide.Image);
-                    BuildProgress(CalcPercentComplete(++numEntriesBuilt, numEntriesToBuild));
-                }
+                AddBitmapImageToArchive(zip, slide.ArchiveEntryName, slide.Image);
+                BuildProgress(CalcPercentComplete(++numEntriesBuilt, numEntriesToBuild));
             }
         }
     }
@@ -215,17 +207,13 @@ public class SlideFileBuilder
         BitmapEncoder encoder = new JpegBitmapEncoder();
         encoder.Frames.Add(BitmapFrame.Create(slideImage));
 
-        using (var ms = new MemoryStream())
-        {
-            encoder.Save(ms);
-            ms.Seek(0, SeekOrigin.Begin);
+        using var ms = new MemoryStream();
+        encoder.Save(ms);
+        ms.Seek(0, SeekOrigin.Begin);
 
-            var entry = zip.CreateEntry(slideArchiveEntryName, CompressionLevel.Optimal);
-            using (var entryStream = entry.Open())
-            {
-                ms.CopyTo(entryStream);
-            }
-        }
+        var entry = zip.CreateEntry(slideArchiveEntryName, CompressionLevel.Optimal);
+        using var entryStream = entry.Open();
+        ms.CopyTo(entryStream);
     }
 
     private Slide CreateSlide(
