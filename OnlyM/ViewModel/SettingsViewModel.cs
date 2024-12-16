@@ -507,27 +507,6 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
-    public bool JwLibModeNotSet => !JwLibraryCompatibilityMode;
-
-    public bool JwLibraryCompatibilityMode
-    {
-        get => _optionsService.JwLibraryCompatibilityMode;
-        set
-        {
-            if (_optionsService.JwLibraryCompatibilityMode != value)
-            {
-                _optionsService.JwLibraryCompatibilityMode = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(JwLibModeNotSet));
-
-                if (value)
-                {
-                    PermanentBackdrop = false;
-                }
-            }
-        }
-    }
-
     public bool PermanentBackdrop
     {
         get => _optionsService.PermanentBackdrop;

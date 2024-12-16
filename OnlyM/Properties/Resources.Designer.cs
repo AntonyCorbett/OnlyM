@@ -19,7 +19,7 @@ namespace OnlyM.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -409,24 +409,6 @@ namespace OnlyM.Properties {
         public static string INCLUDE_BLANK {
             get {
                 return ResourceManager.GetString("INCLUDE_BLANK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to JW Library® compatibility mode.
-        /// </summary>
-        public static string JW_COMPAT_MODE {
-            get {
-                return ResourceManager.GetString("JW_COMPAT_MODE", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &quot;JW Library&quot; is a registered trademark of Watch Tower Bible and Tract Society of Pennsylvania.
-        /// </summary>
-        public static string JWL_TRADEMARK {
-            get {
-                return ResourceManager.GetString("JWL_TRADEMARK", resourceCulture);
             }
         }
         

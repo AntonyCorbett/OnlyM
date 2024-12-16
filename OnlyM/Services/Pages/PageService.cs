@@ -369,15 +369,6 @@ internal sealed class PageService : IDisposable, IPageService
         _mediaWindow.WebStatusEvent -= HandleWebStatusEvent;
     }
 
-    private void BringJwlToFront()
-    {
-        if (_optionsService.JwLibraryCompatibilityMode)
-        {
-            JwLibHelper.BringToFront();
-            Thread.Sleep(100);
-        }
-    }
-
     private void HandleMediaPositionChangedEvent(object? sender, OnlyMPositionChangedEventArgs e) =>
         MediaPositionChangedEvent?.Invoke(this, e);
 
@@ -412,7 +403,6 @@ internal sealed class PageService : IDisposable, IPageService
 
             _mediaWindow!.SaveWindowPos();
             _mediaWindow.Hide();
-            BringJwlToFront();
         }
     }
 
@@ -508,8 +498,6 @@ internal sealed class PageService : IDisposable, IPageService
         if (_mediaWindow != null)
         {
             AllowMediaWindowToClose = true;
-
-            BringJwlToFront();
 
             UnsubscribeMediaWindowEvents();
 

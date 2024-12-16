@@ -41,7 +41,6 @@ public sealed class Options
         AllowVideoPause = true;
         AllowVideoPositionSeeking = true;
         PermanentBackdrop = true;
-        JwLibraryCompatibilityMode = true;
         ConfirmVideoStop = false;
         MaxItemCount = DefaultMaxItemCount;
         MagnifierZoomLevel = DefaultMagnifierZoomLevel;
@@ -108,9 +107,7 @@ public sealed class Options
     public string? AppWindowPlacement { get; set; }
 
     public string? MediaWindowPlacement { get; set; }
-
-    public bool JwLibraryCompatibilityMode { get; set; }
-
+    
     public bool ConfirmVideoStop { get; set; }
 
     public string? Culture { get; set; }
@@ -157,11 +154,6 @@ public sealed class Options
         if (!Directory.Exists(MediaFolder))
         {
             MediaFolder = FileUtils.GetOnlyMDefaultMediaFolder();
-        }
-
-        if (JwLibraryCompatibilityMode)
-        {
-            PermanentBackdrop = false;
         }
 
         VideoScreenPosition.Sanitize();

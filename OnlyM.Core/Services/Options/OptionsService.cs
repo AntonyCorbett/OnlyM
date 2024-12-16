@@ -172,18 +172,6 @@ public sealed class OptionsService : IOptionsService
         }
     }
 
-    public bool JwLibraryCompatibilityMode
-    {
-        get => _options.Value.JwLibraryCompatibilityMode;
-        set
-        {
-            if (_options.Value.JwLibraryCompatibilityMode != value)
-            {
-                _options.Value.JwLibraryCompatibilityMode = value;
-            }
-        }
-    }
-
     public bool AllowVideoScrubbing
     {
         get => _options.Value.AllowVideoScrubbing;

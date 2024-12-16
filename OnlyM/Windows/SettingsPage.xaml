@@ -210,7 +210,6 @@
                           Style="{StaticResource SettingsCheckBoxStyle}"/>
 
                 <CheckBox IsChecked="{Binding PermanentBackdrop, Mode=TwoWay}"
-                          IsEnabled="{Binding JwLibModeNotSet, Mode=OneWay}"
                           Content="{x:Static resx:Resources.PERMANENT_BACKDROP}"
                           Style="{StaticResource SettingsCheckBoxStyle}"/>
 
@@ -218,16 +217,6 @@
                           IsEnabled="{Binding NotPermanentBackdrop, Mode=OneWay}"
                           Content="{x:Static resx:Resources.INCLUDE_BLANK}"
                           Style="{StaticResource SettingsCheckBoxStyle}"/>
-
-                <CheckBox IsChecked="{Binding JwLibraryCompatibilityMode, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.JW_COMPAT_MODE}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
-
-                <TextBlock Width="420"
-                           HorizontalAlignment="Left"
-                           TextWrapping="Wrap"
-                           Style="{StaticResource MiscNotesStyle}" 
-                           Text="{x:Static resx:Resources.JWL_TRADEMARK}" />
 
             </StackPanel>
         </GroupBox>
