@@ -2,12 +2,12 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 #define MyAppName "OnlyM"
 #define MyAppPublisher "Antony Corbett"
-#define MyAppURL "https://soundboxsoftware.com"
+#define MyAppURL "https://github.com/AntonyCorbett/OnlyM"
 #define MyAppExeName "OnlyM.exe"
 #define SlideManagerAppExeName "OnlyMSlideManager.exe"
 #define SlideManagerAppName "OnlyM Slide Manager"
 
-#define MyAppVersion GetFileVersion('..\OnlyM\bin\Release\net7.0-windows\publish\OnlyM.exe');
+#define MyAppVersion GetFileVersion('..\OnlyM\bin\Release\net8.0-windows\publish\OnlyM.exe');
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -46,7 +46,7 @@ Type: filesandordirs; Name: "{app}\*.*"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
-Source: "..\OnlyM\bin\Release\net7.0-windows\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+Source: "..\OnlyM\bin\Release\net8.0-windows\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 
 ; web shortcuts...
 Source: "..\UrlLinkFiles\JW Broadcasting.url"; DestDir: "{commonappdata}\OnlyM\Websites"
