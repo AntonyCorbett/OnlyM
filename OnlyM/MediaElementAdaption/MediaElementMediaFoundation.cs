@@ -40,7 +40,7 @@ internal sealed class MediaElementMediaFoundation : IMediaElement
         _mediaElement.MediaEnded += HandleMediaEnded;
         _mediaElement.MediaFailed += HandleMediaFailed;
 
-        _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(60) };
+        _timer = new DispatcherTimer { Interval = IMediaElement.PositionChangedInterval };
         _timer.Tick += TimerFire;
     }
 

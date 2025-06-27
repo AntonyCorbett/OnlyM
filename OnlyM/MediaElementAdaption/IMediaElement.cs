@@ -7,6 +7,8 @@ namespace OnlyM.MediaElementAdaption;
 
 internal interface IMediaElement
 {
+    protected static TimeSpan PositionChangedInterval = TimeSpan.FromMilliseconds(160);
+
     event EventHandler<OnlyMMediaOpenedEventArgs> MediaOpened;
 
     event EventHandler<OnlyMMediaClosedEventArgs> MediaClosed;

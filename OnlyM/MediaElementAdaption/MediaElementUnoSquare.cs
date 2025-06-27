@@ -11,6 +11,7 @@ namespace OnlyM.MediaElementAdaption;
 internal sealed class MediaElementUnoSquare : IMediaElement
 {
     private readonly Unosquare.FFME.MediaElement _mediaElement;
+    private TimeSpan _lastPositionChange;
 
     public MediaElementUnoSquare(Unosquare.FFME.MediaElement mediaElement)
     {
@@ -46,7 +47,7 @@ internal sealed class MediaElementUnoSquare : IMediaElement
         set => _mediaElement.Position = value;
     }
 
-    public Duration NaturalDuration => new(_mediaElement.NaturalDuration ?? default);
+    public Duration NaturalDuration => new(_mediaElement.NaturalDuration ?? TimeSpan.Zero);
 
     public FrameworkElement FrameworkElement => _mediaElement;
 
@@ -56,6 +57,8 @@ internal sealed class MediaElementUnoSquare : IMediaElement
 
     public async Task Play(Uri mediaPath, MediaClassification mediaClassification)
     {
+        _lastPositionChange = TimeSpan.Zero;
+
         IsPaused = false;
 
         mediaPath = FFmpegUtils.FixUnicodeUri(mediaPath);
@@ -115,8 +118,17 @@ internal sealed class MediaElementUnoSquare : IMediaElement
         e.Cancel = args.Cancel;
     }
 
-    private void HandlePositionChanged(object? sender, PositionChangedEventArgs e) =>
+    private void HandlePositionChanged(object? sender, PositionChangedEventArgs e)
+    {
+        if ((e.Position - _lastPositionChange) < IMediaElement.PositionChangedInterval)
+        {
+            // Avoid flooding with position change events
+            return;
+        }
+
+        _lastPositionChange = e.Position;
         PositionChanged?.Invoke(sender, new OnlyMPositionChangedEventArgs(MediaItemId, e.Position));
+    }
 
     private void HandleMessageLogged(object? sender, MediaLogMessageEventArgs e)
     {
