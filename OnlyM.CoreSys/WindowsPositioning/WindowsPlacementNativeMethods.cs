@@ -11,7 +11,7 @@ namespace OnlyM.CoreSys.WindowsPositioning;
 // ReSharper disable StyleCop.SA1121
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Global
-internal static class WindowsPlacementNativeMethods
+internal static partial class WindowsPlacementNativeMethods
 {
     private const int MAX_PATH = 260;
 
@@ -130,14 +130,18 @@ internal static class WindowsPlacementNativeMethods
 #pragma warning restore CA1712 // Do not prefix enum values with type name
     }
 
-    [DllImport("user32.dll")]
-    public static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref WINDOWPLACEMENT lpwndpl);
+    [LibraryImport("user32.dll", EntryPoint = "SetWindowPlacement", SetLastError = false, StringMarshalling = StringMarshalling.Utf16)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool SetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
 
-    [DllImport("user32.dll")]
-    public static extern bool GetWindowPlacement(IntPtr hWnd, out WINDOWPLACEMENT lpwndpl);
+    [LibraryImport("user32.dll", EntryPoint = "GetWindowPlacement", SetLastError = false, StringMarshalling = StringMarshalling.Utf16)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool GetWindowPlacement(IntPtr hWnd, out WINDOWPLACEMENT lpwndpl);
 
+#pragma warning disable SYSLIB1054 // not possible to use LibraryImport since SHSTOCKICONINFO contains a string field
     [DllImport("Shell32.dll", SetLastError = false)]
     public static extern int SHGetStockIconInfo(SHSTOCKICONID siid, SHGSI uFlags, ref SHSTOCKICONINFO psii);
+#pragma warning restore SYSLIB1054
 
     public static BitmapSource GetElevatedShieldBitmap()
     {
@@ -161,8 +165,9 @@ internal static class WindowsPlacementNativeMethods
         return shieldSource;
     }
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool DestroyIcon(IntPtr hIcon);
+    [LibraryImport("user32.dll", EntryPoint = "DestroyIcon", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool DestroyIcon(IntPtr hIcon);
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct SHSTOCKICONINFO

@@ -204,7 +204,7 @@ public class SlideFileBuilder
     {
         // This is a little odd (multiple streams and rewinding the memory stream!).
         // I can't find a better way of saving a BitmapSource in the archive entry.
-        BitmapEncoder encoder = new JpegBitmapEncoder();
+        var encoder = new JpegBitmapEncoder();
         encoder.Frames.Add(BitmapFrame.Create(slideImage));
 
         using var ms = new MemoryStream();

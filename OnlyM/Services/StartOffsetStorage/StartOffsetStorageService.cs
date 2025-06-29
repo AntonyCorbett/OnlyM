@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using OnlyM.Core.Services.Database;
 using Serilog;
+using static System.Array;
 
 namespace OnlyM.Services.StartOffsetStorage;
 
@@ -29,13 +30,13 @@ internal sealed class StartOffsetStorageService : IStartOffsetStorageService
 
         if (data?.StartOffsets == null)
         {
-            return Array.Empty<int>();
+            return [];
         }
 
         if (data.LengthSeconds != mediaDurationSeconds)
         {
             // file may have changed...
-            return Array.Empty<int>();
+            return [];
         }
 
         var result = new List<int>(data.StartOffsets.Count);

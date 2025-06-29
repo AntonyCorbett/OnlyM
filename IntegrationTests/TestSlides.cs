@@ -48,7 +48,7 @@ public class TestSlides
         {
             var slide = file.GetSlide(n);
 
-            BitmapEncoder encoder = new PngBitmapEncoder();
+            var encoder = new PngBitmapEncoder();
             Assert.IsNotNull(slide.Image);
             encoder.Frames.Add(BitmapFrame.Create(slide.Image));
 

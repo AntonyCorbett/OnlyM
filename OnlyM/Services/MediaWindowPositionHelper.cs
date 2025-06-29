@@ -28,7 +28,7 @@ internal static class MediaWindowPositionHelper
     public static void PositionMediaWindow(
         IOptionsService optionsService,
         ICommandLineService commandLineService,
-        Window mediaWindow,
+        MediaWindow mediaWindow,
         Screen monitor,
         (int dpiX, int dpiY) systemDpi,
         bool isVideo)
@@ -75,14 +75,14 @@ internal static class MediaWindowPositionHelper
         }
     }
 
-    private static void PrepareForFullScreenMonitorDisplay(Window mediaWindow)
+    private static void PrepareForFullScreenMonitorDisplay(MediaWindow mediaWindow)
     {
         mediaWindow.ResizeMode = ResizeMode.NoResize;
         mediaWindow.ShowInTaskbar = false;
         mediaWindow.WindowStyle = WindowStyle.None;
     }
 
-    private static void PrepareForWindowedDisplay(Window mediaWindow, Size windowSize)
+    private static void PrepareForWindowedDisplay(MediaWindow mediaWindow, Size windowSize)
     {
         if (windowSize.IsEmpty)
         {
@@ -99,11 +99,11 @@ internal static class MediaWindowPositionHelper
         mediaWindow.WindowStyle = WindowStyle.None;
     }
 
-    private static Grid? GetMainGrid(Window mediaWindow) =>
+    private static Grid? GetMainGrid(MediaWindow mediaWindow) =>
         FindVisualChildren<Grid>(mediaWindow).FirstOrDefault();
 
     private static void PositionWindowUsingHack(
-        Window mediaWindow, Grid? mainGrid, Screen monitor, int left, int top, int width, int height)
+        MediaWindow mediaWindow, Grid? mainGrid, Screen monitor, int left, int top, int width, int height)
     {
         var primaryMonitor = Screen.PrimaryScreen;
 

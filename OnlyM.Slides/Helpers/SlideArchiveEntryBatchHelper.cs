@@ -27,7 +27,9 @@ internal sealed class SlideArchiveEntryBatchHelper
         _batchSize = batchSize;
     }
 
+#pragma warning disable U2U1011
     public IReadOnlyList<SlideArchiveEntry>? GetBatch()
+#pragma warning restore U2U1011
     {
         var slideBatch = GetSlideBatch();
         if (slideBatch == null)

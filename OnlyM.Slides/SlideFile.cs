@@ -133,7 +133,7 @@ public class SlideFile
 
         using var stream = entry.Open();
         using var memoryStream = new MemoryStream();
-        
+
         stream.CopyTo(memoryStream);
 
         BitmapImage bmp;

@@ -946,9 +946,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
         foreach (var item in MediaItems)
         {
-            if (item.FilePath != null)
+            var filePath = item.FilePath;
+
+            if (filePath != null)
             {
-                if (!sourceFilePaths.Contains(item.FilePath))
+                if (!sourceFilePaths.Contains(filePath))
                 {
                     // remove this item.
                     itemsToRemove.Add(item);
@@ -956,7 +958,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 else
                 {
                     // perhaps the item has been changed or swapped for another media file of the same name!
-                    var file = files.SingleOrDefault(x => x.FullPath == item.FilePath);
+                    var file = files.SingleOrDefault(x => x.FullPath == filePath);
                     if (file != null && file.LastChanged != item.LastChanged)
                     {
                         // remove this item.
@@ -964,7 +966,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                     }
                     else
                     {
-                        destFilePaths.Add(item.FilePath);
+                        destFilePaths.Add(filePath);
                     }
                 }
             }
@@ -1013,7 +1015,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         InsertBlankMediaItem();
     }
 
-    private void ForciblyStopAllPlayback(IReadOnlyCollection<MediaItem>? activeItems)
+    private void ForciblyStopAllPlayback(List<MediaItem>? activeItems)
     {
         if (activeItems == null)
         {

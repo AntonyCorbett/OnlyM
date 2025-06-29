@@ -9,7 +9,7 @@ namespace OnlyMSlideManager.Helpers;
 
 internal static class DesignTimeSlideCreation
 {
-    public static IReadOnlyCollection<SlideItem> GenerateSlides(
+    public static List<SlideItem> GenerateSlides(
         int count, int thumbnailWidth, int thumbnailHeight)
     {
         var result = new List<SlideItem>(count + 1);

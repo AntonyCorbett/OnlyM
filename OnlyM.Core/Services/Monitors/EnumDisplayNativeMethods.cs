@@ -41,12 +41,14 @@ internal static class EnumDisplayNativeMethods
         Disconnect = 0x2000000,
     }
 
+#pragma warning disable SYSLIB1054 // not possible to use LibraryImport since DISPLAY_DEVICE contains a string field
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     public static extern bool EnumDisplayDevices(
         string? lpDevice,
         uint iDevNum,
         ref DISPLAY_DEVICE lpDisplayDevice,
         uint dwFlags);
+#pragma warning restore SYSLIB1054
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct DISPLAY_DEVICE

@@ -329,8 +329,7 @@ internal sealed class MainViewModel : ObservableObject
         UnhideCommand = new RelayCommand(UnhideAll);
     }
 
-    private void UnhideAll() => 
-        _hiddenMediaItemsService.UnhideAllMediaItems();
+    private void UnhideAll() => _hiddenMediaItemsService.UnhideAllMediaItems();
 
     private void LaunchReleasePage()
     {
@@ -403,7 +402,7 @@ internal sealed class MainViewModel : ObservableObject
     private void HandleCopyingFilesProgressEvent(object? sender, FilesCopyProgressEventArgs e) =>
         IsBusy = e.Status == FileCopyStatus.StartingCopy;
 
-    private void HandleHiddenItemsChangedEvent(object? sender, EventArgs e) => 
+    private void HandleHiddenItemsChangedEvent(object? sender, EventArgs e) =>
         OnPropertyChanged(nameof(IsUnhideButtonVisible));
 
     private static bool IsInDesignMode()

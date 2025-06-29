@@ -16,11 +16,11 @@ public class TestThumbnails
     [TestMethod]
     public void TestMethod1()
     {
-        ILogLevelSwitchService logSwitchService = new LogLevelSwitchService();
-        ICommandLineService commandLineService = new CommandLineService();
-        IDatabaseService db = new DatabaseService();
-        IOptionsService optionsService = new OptionsService(logSwitchService, commandLineService);
-        IThumbnailService service = new ThumbnailService(db, optionsService);
+        var logSwitchService = new LogLevelSwitchService();
+        var commandLineService = new CommandLineService();
+        var db = new DatabaseService();
+        var optionsService = new OptionsService(logSwitchService, commandLineService);
+        var service = new ThumbnailService(db, optionsService);
         service.ClearThumbCache();
 
         var folder = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyMIntegrationTests");

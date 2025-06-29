@@ -107,7 +107,7 @@ public sealed class Options
     public string? AppWindowPlacement { get; set; }
 
     public string? MediaWindowPlacement { get; set; }
-    
+
     public bool ConfirmVideoStop { get; set; }
 
     public string? Culture { get; set; }

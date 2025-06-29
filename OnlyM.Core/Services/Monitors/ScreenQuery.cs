@@ -18,7 +18,7 @@ namespace OnlyM.Core.Services.Monitors;
 
 //// see https://stackoverflow.com/a/28257839/8576725
 
-public static class ScreenQuery
+public static partial class ScreenQuery
 {
 #pragma warning disable SA1307 // Accessible fields must begin with upper-case letter
 #pragma warning disable SA1202 // Elements must be ordered by access
@@ -255,10 +255,11 @@ public static class ScreenQuery
         public string monitorDevicePath;
     }
 
-    [DllImport("user32.dll")]
-    private static extern int GetDisplayConfigBufferSizes(
+    [LibraryImport("user32.dll", EntryPoint = "GetDisplayConfigBufferSizes", SetLastError = false, StringMarshalling = StringMarshalling.Utf16)]
+    private static partial int GetDisplayConfigBufferSizes(
         QUERY_DEVICE_CONFIG_FLAGS flags, out uint numPathArrayElements, out uint numModeInfoArrayElements);
 
+#pragma warning disable SYSLIB1054 // not possible to use LibraryImport since DISPLAYCONFIG_PATH_INFO and DISPLAYCONFIG_MODE_INFO are not blittable
     [DllImport("user32.dll")]
     private static extern int QueryDisplayConfig(
         QUERY_DEVICE_CONFIG_FLAGS flags,
@@ -267,9 +268,12 @@ public static class ScreenQuery
         ref uint numModeInfoArrayElements,
         [Out] DISPLAYCONFIG_MODE_INFO[] ModeInfoArray,
         IntPtr currentTopologyId);
+#pragma warning restore SYSLIB1054
 
+#pragma warning disable SYSLIB1054 // not possible to use LibraryImport since DISPLAYCONFIG_TARGET_DEVICE_NAME is not blittable
     [DllImport("user32.dll")]
     private static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME deviceName);
+#pragma warning restore SYSLIB1054
 
     private static string MonitorFriendlyName(LUID adapterId, uint targetId)
     {

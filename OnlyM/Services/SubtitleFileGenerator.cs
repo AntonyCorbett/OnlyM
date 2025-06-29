@@ -16,8 +16,6 @@ internal static class SubtitleFileGenerator
         {
             Log.Logger.Debug($"Generating subtitle file for media {mediaItemFilePath}");
 
-            var ffmpegFolder = Unosquare.FFME.Library.FFmpegDirectory;
-
             var destFolder = Path.GetDirectoryName(mediaItemFilePath);
             if (destFolder == null)
             {
@@ -35,6 +33,8 @@ internal static class SubtitleFileGenerator
             var srtFile = Path.Combine(destFolder, Path.ChangeExtension(srtFileName, ".srt"));
             if (ShouldCreate(srtFile, videoFileInfo.CreationTimeUtc))
             {
+                var ffmpegFolder = Unosquare.FFME.Library.FFmpegDirectory;
+
                 SubtitleFileEvent?.Invoke(null, new SubtitleFileEventArgs { MediaItemId = mediaItemId, Starting = true });
 
                 if (!GraphicsUtils.GenerateSubtitleFile(

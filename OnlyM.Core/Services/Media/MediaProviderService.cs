@@ -143,11 +143,11 @@ public class MediaProviderService : IMediaProviderService
         return Path.GetExtension(fileName).Equals(".pdf", StringComparison.OrdinalIgnoreCase);
     }
 
-    private IReadOnlyCollection<MediaFile> GetMediaFilesInFolder(string? folder)
+    private List<MediaFile> GetMediaFilesInFolder(string? folder)
     {
         if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
         {
-            return Array.Empty<MediaFile>();
+            return [];
         }
 
         var files = Directory.GetFiles(folder);

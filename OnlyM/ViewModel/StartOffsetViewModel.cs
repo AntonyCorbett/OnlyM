@@ -218,7 +218,7 @@ internal sealed class StartOffsetViewModel : ObservableObject
 
     private string GenerateTimeString()
     {
-        var seconds = (ChosenHours * 60 * 60) + (ChosenMinutes * 60) + ChosenSeconds;
+        var seconds = (ChosenHours * (60 * 60)) + (ChosenMinutes * 60) + ChosenSeconds;
         return TimeSpan.FromSeconds(seconds).AsMediaDurationString();
     }
 

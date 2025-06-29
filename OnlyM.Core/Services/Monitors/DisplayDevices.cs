@@ -14,7 +14,7 @@ internal static class DisplayDevices
     /// Gets system display devices
     /// </summary>
     /// <returns>Collection of DisplayDeviceData</returns>
-    public static IEnumerable<DisplayDeviceData> ReadDisplayDevices()
+    public static List<DisplayDeviceData> ReadDisplayDevices()
     {
         Log.Logger.Debug("Reading display devices");
 

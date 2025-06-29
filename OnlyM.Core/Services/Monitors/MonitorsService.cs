@@ -58,10 +58,12 @@ public sealed class MonitorsService : IMonitorsService
 
     public SystemMonitor? GetMonitorForWindowHandle(IntPtr windowHandle)
     {
+#pragma warning disable U2U1212
         var screen = Screen.FromHandle(windowHandle);
         return GetSystemMonitors().SingleOrDefault(
             x => x.Monitor?.DeviceName != null &&
                  x.Monitor.DeviceName.Equals(screen.DeviceName, StringComparison.Ordinal));
+#pragma warning restore U2U1212
     }
 
     private static DisplayDeviceData? GetDeviceMatchingScreen(DisplayDeviceData[] devices, Screen screen)

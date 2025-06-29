@@ -693,8 +693,8 @@ public class MainViewModel : ObservableObject
         await InitNewSlideshow(null);
     }
 
-    private static async Task LoadShow(string path, SlideFileBuilder builder) =>
-        await Task.Run(() =>
+    private static Task LoadShow(string path, SlideFileBuilder builder) =>
+        Task.Run(() =>
         {
             try
             {

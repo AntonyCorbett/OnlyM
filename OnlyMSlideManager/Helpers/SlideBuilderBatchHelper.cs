@@ -17,7 +17,9 @@ internal sealed class SlideBuilderBatchHelper
         _batchSize = batchSize;
     }
 
+#pragma warning disable U2U1011
     public IReadOnlyList<Slide>? GetBatch()
+#pragma warning restore U2U1011
     {
         if (_currentIndex >= _slides.Count)
         {

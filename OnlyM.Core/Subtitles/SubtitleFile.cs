@@ -101,7 +101,7 @@ internal sealed class SubtitleFile
         return true;
     }
 
-    private static string StripHtml(IReadOnlyCollection<string> lines)
+    private static string StripHtml(List<string> lines)
     {
         var doc = new HtmlDocument();
         doc.LoadHtml(string.Join(Environment.NewLine, lines));

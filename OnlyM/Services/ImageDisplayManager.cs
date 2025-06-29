@@ -141,7 +141,9 @@ internal sealed class ImageDisplayManager
     public int GotoPreviousSlide()
     {
         var oldSlide = GetCurrentSlide();
+#pragma warning disable U2U1017
         var oldIndex = _currentSlideshowImageIndex;
+#pragma warning restore U2U1017
 
         --_currentSlideshowImageIndex;
 
@@ -169,7 +171,9 @@ internal sealed class ImageDisplayManager
     public int GotoNextSlide(Action? onTransitionFinished = null)
     {
         var oldSlide = GetCurrentSlide();
+#pragma warning disable U2U1017
         var oldIndex = _currentSlideshowImageIndex;
+#pragma warning restore U2U1017
 
         ++_currentSlideshowImageIndex;
 

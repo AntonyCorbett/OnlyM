@@ -649,7 +649,7 @@ public sealed class MediaItem : ObservableObject
         }
     }
 
-    private static string GenerateTimeString(long milliseconds) =>
+    private static string GenerateTimeString(int milliseconds) =>
         TimeSpan.FromMilliseconds(milliseconds).AsMediaDurationString();
 
     private void OnPlaybackPositionChangedEvent() =>

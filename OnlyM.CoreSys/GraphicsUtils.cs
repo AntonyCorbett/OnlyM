@@ -185,7 +185,7 @@ public static class GraphicsUtils
         if (factorHeight >= 1 && factorWidth >= 1)
         {
             using var memoryStream = new MemoryStream();
-            BitmapEncoder encoder = new PngBitmapEncoder();
+            var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(srcBmp));
 
             encoder.Save(memoryStream);
@@ -198,7 +198,7 @@ public static class GraphicsUtils
 
         using (var memoryStream = new MemoryStream())
         {
-            BitmapEncoder encoder = new PngBitmapEncoder();
+            var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(t));
 
             encoder.Save(memoryStream);

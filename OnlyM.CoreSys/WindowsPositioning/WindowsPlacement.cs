@@ -31,7 +31,6 @@ public static class WindowsPlacement
     private const int SwShowNormal = 1;
     private const int SwShowMinimized = 2;
 
-    private static readonly Encoding Encoding = new UTF8Encoding();
     private static readonly XmlSerializer Serializer = new(typeof(WINDOWPLACEMENT));
 
     public static void SetPlacement(this Window window, string placementJson) =>
@@ -43,7 +42,7 @@ public static class WindowsPlacement
         {
             var windowHandle = new WindowInteropHelper(window).Handle;
 
-            var xmlBytes = Encoding.GetBytes(placementJson);
+            var xmlBytes = Encoding.UTF8.GetBytes(placementJson);
             try
             {
                 WINDOWPLACEMENT placement;
@@ -101,7 +100,7 @@ public static class WindowsPlacement
         var xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
         Serializer.Serialize(xmlTextWriter, placement);
         var xmlBytes = memoryStream.ToArray();
-        return Encoding.GetString(xmlBytes);
+        return Encoding.UTF8.GetString(xmlBytes);
     }
 }
 

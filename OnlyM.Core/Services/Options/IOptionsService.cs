@@ -73,7 +73,7 @@ public interface IOptionsService
     bool ConfirmVideoStop { get; set; }
 
     bool AllowVideoScrubbing { get; set; }
-    
+
     bool ShowFreezeCommand { get; set; }
 
     int MaxItemCount { get; set; }

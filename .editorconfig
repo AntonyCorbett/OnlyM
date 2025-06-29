@@ -323,8 +323,26 @@ csharp_style_expression_bodied_local_functions = false:silent
 # CA2201: Do not raise reserved exception types
 dotnet_diagnostic.CA2201.severity = none
 csharp_style_prefer_primary_constructors = true:suggestion
-dotnet_diagnostic.SA1010.severity = suggestion
+dotnet_diagnostic.SA1010.severity = none
 csharp_prefer_system_threading_lock = true:suggestion
 
 # IDE0055: Fix formatting
 dotnet_diagnostic.IDE0055.severity = suggestion
+
+# IDE0079: Unnecessary suppression
+dotnet_diagnostic.IDE0079.severity = none
+
+# IDE0290: Use primary ctor
+dotnet_diagnostic.IDE0290.severity = none
+
+# IDE0066: Use switch expressions
+dotnet_diagnostic.IDE0066.severity = none
+
+# IDE0305: Collection init simplified
+dotnet_diagnostic.IDE0305.severity = none
+
+# U2U1201: Specify an initial capacity
+dotnet_diagnostic.U2U1201.severity = none
+
+# U2U1005: Interface implemented only once
+dotnet_diagnostic.U2U1005.severity = none
