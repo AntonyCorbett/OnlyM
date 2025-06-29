@@ -69,8 +69,8 @@ internal sealed class WebNavHeaderAdmin
     private void AnimateWebNavHeader(
         WebNavHeaderStatus startStatus,
         WebNavHeaderStatus endStatus,
-        double from,
-        double to,
+        int from,
+        int to,
         Action? onCompleted = null)
     {
         _webHeaderStatus = startStatus;

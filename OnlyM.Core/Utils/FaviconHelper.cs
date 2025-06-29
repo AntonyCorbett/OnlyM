@@ -94,7 +94,7 @@ internal static class FaviconHelper
         if (appleIcon != null && appleIcon.Count > 0)
         {
             var favicon = appleIcon.First();
-            var icon = favicon.GetAttributeValue("href", null);
+            var icon = favicon.GetAttributeValue("href", string.Empty);
             if (!string.IsNullOrWhiteSpace(icon))
             {
                 return icon;
@@ -105,7 +105,7 @@ internal static class FaviconHelper
         if (elements != null && elements.Count > 0)
         {
             var favicon = elements.First();
-            var icon = favicon.GetAttributeValue("href", null);
+            var icon = favicon.GetAttributeValue("href", string.Empty);
             if (!string.IsNullOrWhiteSpace(icon))
             {
                 return icon;
