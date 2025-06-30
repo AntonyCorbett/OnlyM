@@ -33,7 +33,7 @@ public class DatabaseService : IDatabaseService
     {
         using var c = CreateConnection();
         using var cmd = c.CreateCommand();
-        Log.Logger.Verbose($"Inserting into thumb table {originalPath}");
+        Log.Logger.Verbose("Inserting into thumb table {Path}", originalPath);
 
         var sb = new StringBuilder();
 
@@ -53,7 +53,7 @@ public class DatabaseService : IDatabaseService
     {
         using var c = CreateConnection();
         using var cmd = c.CreateCommand();
-        Log.Logger.Verbose($"Selecting from thumb table {originalPath}");
+        Log.Logger.Verbose("Selecting from thumb table {Path}", originalPath);
 
         cmd.CommandText = "select id, image, changed from thumb where path = @P";
         cmd.Parameters.AddWithValue("@P", originalPath);
@@ -81,7 +81,7 @@ public class DatabaseService : IDatabaseService
     {
         using var c = CreateConnection();
         using var cmd = c.CreateCommand();
-        Log.Logger.Verbose($"Inserting into browser table {url}");
+        Log.Logger.Verbose("Inserting into browser table {Url}", url);
 
         var sb = new StringBuilder();
 
@@ -100,7 +100,7 @@ public class DatabaseService : IDatabaseService
     {
         using var c = CreateConnection();
         using var cmd = c.CreateCommand();
-        Log.Logger.Verbose($"Inserting into mediaOptions table: {fileName}");
+        Log.Logger.Verbose("Inserting into mediaOptions table: {FileName}", fileName);
 
         var sb = new StringBuilder();
 
@@ -120,7 +120,7 @@ public class DatabaseService : IDatabaseService
     {
         using var c = CreateConnection();
         using var cmd = c.CreateCommand();
-        Log.Logger.Verbose($"Selecting from mediaOptions table: {fileName}");
+        Log.Logger.Verbose("Selecting from mediaOptions table: {FileName}", fileName);
 
         cmd.CommandText = "select id, fileName, startOffsets, lengthSeconds from mediaOptions where fileName = @F";
         cmd.Parameters.AddWithValue("@F", fileName.Trim());
@@ -147,7 +147,7 @@ public class DatabaseService : IDatabaseService
     {
         using var c = CreateConnection();
         using var cmd = c.CreateCommand();
-        Log.Logger.Verbose($"Selecting from browser table {url}");
+        Log.Logger.Verbose("Selecting from browser table {Url}", url);
 
         cmd.CommandText = "select id, url, zoom from browser where url = @U";
         cmd.Parameters.AddWithValue("@U", url.Trim());
@@ -313,17 +313,18 @@ public class DatabaseService : IDatabaseService
 
     private static List<int> ParseStartOffsets(string s)
     {
-        var result = new List<int>();
-
-        if (!string.IsNullOrEmpty(s))
+        if (string.IsNullOrEmpty(s))
         {
-            var tokens = s.Split([","], StringSplitOptions.RemoveEmptyEntries);
-            foreach (var token in tokens)
+            return [];
+        }
+
+        var result = new List<int>();
+        var tokens = s.Split([","], StringSplitOptions.RemoveEmptyEntries);
+        foreach (var token in tokens)
+        {
+            if (int.TryParse(token, out var seconds))
             {
-                if (int.TryParse(token, out var seconds))
-                {
-                    result.Add(seconds);
-                }
+                result.Add(seconds);
             }
         }
 

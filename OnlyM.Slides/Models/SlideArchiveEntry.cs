@@ -4,7 +4,7 @@ namespace OnlyM.Slides.Models;
 
 internal sealed class SlideArchiveEntry
 {
-    public string? ArchiveEntryName { get; set; }
+    public string? ArchiveEntryName { get; init; }
 
-    public BitmapSource? Image { get; set; }
+    public BitmapSource? Image { get; init; }
 }

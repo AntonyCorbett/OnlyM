@@ -12,7 +12,7 @@ namespace OnlyM.Windows;
 /// <summary>
 /// Interaction logic for OperatorPage.xaml
 /// </summary>
-public partial class OperatorPage : UserControl
+public partial class OperatorPage
 {
     public OperatorPage()
     {
@@ -46,17 +46,11 @@ public partial class OperatorPage : UserControl
             return;
         }
 
-        if (e.NewSize.Width >= 500)
+        vm.ThumbnailColWidth = e.NewSize.Width switch
         {
-            vm.ThumbnailColWidth = 180;
-        }
-        else if (e.NewSize.Width >= 400)
-        {
-            vm.ThumbnailColWidth = 100;
-        }
-        else
-        {
-            vm.ThumbnailColWidth = 46;
-        }
+            >= 500 => 180,
+            >= 400 => 100,
+            _ => 46
+        };
     }
 }

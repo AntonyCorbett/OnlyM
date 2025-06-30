@@ -4,7 +4,7 @@ namespace OnlyM.Slides.Models;
 
 public class BuildProgressEventArgs : EventArgs
 {
-    public string? EntryName { get; set; }
+    public string? EntryName { get; init; }
 
-    public double PercentageComplete { get; set; }
+    public double PercentageComplete { get; init; }
 }

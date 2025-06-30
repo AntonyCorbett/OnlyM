@@ -49,7 +49,7 @@ public sealed class MediaItem : ObservableObject
 
     public event EventHandler? PlaybackPositionChangedEvent;
 
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
     public bool IsVideo => MediaType?.Classification == MediaClassification.Video;
 
@@ -59,7 +59,7 @@ public sealed class MediaItem : ObservableObject
 
     public bool IsPdf => FilePath != null && Path.GetExtension(FilePath).Equals(".pdf", StringComparison.OrdinalIgnoreCase);
 
-    public bool IsBlankScreen { get; set; }
+    public bool IsBlankScreen { get; init; }
 
     public bool UseMirror
     {
@@ -142,9 +142,9 @@ public sealed class MediaItem : ObservableObject
 
     public static IEnumerable<PdfViewStyleAndDescription> PdfViewStyles =>
     [
-        new PdfViewStyleAndDescription { Style = PdfViewStyle.Default, Description = Properties.Resources.PDF_VIEW_STYLE_DEFAULT },
-        new PdfViewStyleAndDescription { Style = PdfViewStyle.VerticalFit, Description = Properties.Resources.PDF_VIEW_STYLE_VERT },
-        new PdfViewStyleAndDescription { Style = PdfViewStyle.HorizontalFit, Description = Properties.Resources.PDF_VIEW_STYLE_HORZ }
+        new() { Style = PdfViewStyle.Default, Description = Properties.Resources.PDF_VIEW_STYLE_DEFAULT },
+        new() { Style = PdfViewStyle.VerticalFit, Description = Properties.Resources.PDF_VIEW_STYLE_VERT },
+        new() { Style = PdfViewStyle.HorizontalFit, Description = Properties.Resources.PDF_VIEW_STYLE_HORZ }
     ];
 
     public string ChosenPdfPage
@@ -230,12 +230,7 @@ public sealed class MediaItem : ObservableObject
             var name = Path.GetFileNameWithoutExtension(FilePath);
 
             var prefix = name.GetNumericPrefix();
-            if (string.IsNullOrEmpty(prefix))
-            {
-                return name;
-            }
-
-            if (!int.TryParse(prefix, out var prefixNum))
+            if (string.IsNullOrEmpty(prefix) || !int.TryParse(prefix, out var prefixNum))
             {
                 return name;
             }
@@ -245,7 +240,7 @@ public sealed class MediaItem : ObservableObject
         }
     }
 
-    public string? FilePath { get; set; }
+    public string? FilePath { get; init; }
 
     public string? FileNameAsSubTitle
     {
@@ -285,7 +280,7 @@ public sealed class MediaItem : ObservableObject
             ? "Play"
             : "Pause";
 
-    public SupportedMediaType? MediaType { get; set; }
+    public SupportedMediaType? MediaType { get; init; }
 
     public ImageSource? ThumbnailImageSource
     {
@@ -532,7 +527,7 @@ public sealed class MediaItem : ObservableObject
     public string PlaybackTimeString
     {
         get => _playbackTimeString;
-        set
+        private set
         {
             if (!_playbackTimeString.Equals(value, StringComparison.Ordinal))
             {

@@ -41,7 +41,7 @@ internal sealed class AudioManager : IDisposable
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
         }
 
-        Log.Debug($"PlayAudio - Media Id = {_mediaItemId}");
+        Log.Debug("PlayAudio - Media Id = {MediaItemId}", _mediaItemId);
 
         if (_outputDevice == null)
         {

@@ -23,37 +23,37 @@ namespace OnlyM.CustomControls.MagnifierControl;
 public class Magnifier : Control
 {
     public static readonly DependencyProperty FrameTypeProperty = DependencyProperty.Register(
-        "FrameType",
+        nameof(FrameType),
         typeof(FrameType),
         typeof(Magnifier),
         new UIPropertyMetadata(FrameType.Circle, OnFrameTypeChanged));
 
     public static readonly DependencyProperty IsUsingZoomOnMouseWheelProperty = DependencyProperty.Register(
-        "IsUsingZoomOnMouseWheel",
+        nameof(IsUsingZoomOnMouseWheel),
         typeof(bool),
         typeof(Magnifier),
         new UIPropertyMetadata(true));
 
     public static readonly DependencyProperty RadiusProperty = DependencyProperty.Register(
-        "Radius",
+        nameof(Radius),
         typeof(double),
         typeof(Magnifier),
         new FrameworkPropertyMetadata(DefaultSize / 2, OnRadiusPropertyChanged));
 
     public static readonly DependencyProperty TargetProperty = DependencyProperty.Register(
-        "Target",
+        nameof(Target),
         typeof(UIElement),
         typeof(Magnifier));
 
     public static readonly DependencyProperty ZoomFactorProperty = DependencyProperty.Register(
-        "ZoomFactor",
+        nameof(ZoomFactor),
         typeof(double),
         typeof(Magnifier),
         new FrameworkPropertyMetadata(0.5, OnZoomFactorPropertyChanged),
         OnValidationCallback);
 
     public static readonly DependencyProperty ZoomFactorOnMouseWheelProperty = DependencyProperty.Register(
-        "ZoomFactorOnMouseWheel",
+        nameof(ZoomFactorOnMouseWheel),
         typeof(double),
         typeof(Magnifier),
         new FrameworkPropertyMetadata(0.1d, OnZoomFactorOnMouseWheelPropertyChanged),
@@ -140,26 +140,31 @@ public class Magnifier : Control
     public void Freeze(bool freeze) =>
         IsFrozen = freeze;
 
-    protected virtual void OnFrameTypeChanged(FrameType oldValue, FrameType newValue) => UpdateSizeFromRadius();
+    private void OnFrameTypeChanged() => UpdateSizeFromRadius();
 
-    protected virtual void OnRadiusChanged(DependencyPropertyChangedEventArgs e) => UpdateSizeFromRadius();
+    private void OnRadiusChanged() => UpdateSizeFromRadius();
 
-    protected virtual void OnZoomFactorChanged(DependencyPropertyChangedEventArgs e) => UpdateViewBox();
+    private void OnZoomFactorChanged() => UpdateViewBox();
 
-    protected virtual void OnZoomFactorOnMouseWheelChanged(DependencyPropertyChangedEventArgs e)
+    // ReSharper disable once MemberCanBeMadeStatic.Local
+#pragma warning disable U2U1002
+#pragma warning disable CA1822
+    private void OnZoomFactorOnMouseWheelChanged()
     {
     }
+#pragma warning restore CA1822
+#pragma warning restore U2U1002
 
     private static void OnFrameTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var m = (Magnifier)d;
-        m.OnFrameTypeChanged((FrameType)e.OldValue, (FrameType)e.NewValue);
+        m.OnFrameTypeChanged();
     }
 
     private static void OnRadiusPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var m = (Magnifier)d;
-        m.OnRadiusChanged(e);
+        m.OnRadiusChanged();
     }
 
     private static bool OnValidationCallback(object baseValue)
@@ -171,7 +176,7 @@ public class Magnifier : Control
     private static void OnZoomFactorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var m = (Magnifier)d;
-        m.OnZoomFactorChanged(e);
+        m.OnZoomFactorChanged();
     }
 
     private static bool OnZoomFactorOnMouseWheelValidationCallback(object baseValue)
@@ -183,7 +188,7 @@ public class Magnifier : Control
     private static void OnZoomFactorOnMouseWheelPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var m = (Magnifier)d;
-        m.OnZoomFactorOnMouseWheelChanged(e);
+        m.OnZoomFactorOnMouseWheelChanged();
     }
 
     private void OnSizeChangedEvent(object sender, SizeChangedEventArgs e) => UpdateViewBox();

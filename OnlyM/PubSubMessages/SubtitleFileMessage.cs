@@ -4,7 +4,7 @@ namespace OnlyM.PubSubMessages;
 
 internal sealed class SubtitleFileMessage
 {
-    public Guid MediaItemId { get; set; }
+    public Guid MediaItemId { get; init; }
 
-    public bool Starting { get; set; }
+    public bool Starting { get; init; }
 }

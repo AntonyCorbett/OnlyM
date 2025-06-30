@@ -14,7 +14,7 @@ using Serilog;
 
 namespace OnlyMSlideManager;
 #pragma warning disable CA1001
-public partial class App : Application
+public partial class App
 #pragma warning restore CA1001
 {
     private readonly string _appString = "OnlyMSlideManagerTool";

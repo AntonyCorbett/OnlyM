@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using HtmlAgilityPack;
 using OnlyM.Core.Extensions;
+using Serilog;
 
 namespace OnlyM.Core.Utils;
 
@@ -36,8 +37,9 @@ internal static class FaviconHelper
 
             return iconUrl == null ? null : wc.DownloadData(iconUrl);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Log.Logger.Warning(ex, "Could not load Fav Icon");
             return null;
         }
     }

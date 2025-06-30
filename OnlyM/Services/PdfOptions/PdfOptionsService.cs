@@ -12,18 +12,20 @@ internal sealed class PdfOptionsService : IPdfOptionsService
     {
         foreach (var item in items)
         {
-            if (item.IsPdf && item.FilePath != null)
+            if (!item.IsPdf || item.FilePath == null)
             {
-                if (_items.TryGetValue(item.FilePath, out var opts))
-                {
-                    item.ChosenPdfPage = opts.PageNumber.ToString(CultureInfo.InvariantCulture);
-                    item.ChosenPdfViewStyle = opts.Style;
-                }
-                else
-                {
-                    var options = new Models.PdfOptions { PageNumber = GetPageNumber(item.ChosenPdfPage), Style = item.ChosenPdfViewStyle };
-                    Add(item.FilePath, options);
-                }
+                continue;
+            }
+
+            if (_items.TryGetValue(item.FilePath, out var opts))
+            {
+                item.ChosenPdfPage = opts.PageNumber.ToString(CultureInfo.InvariantCulture);
+                item.ChosenPdfViewStyle = opts.Style;
+            }
+            else
+            {
+                var options = new Models.PdfOptions { PageNumber = GetPageNumber(item.ChosenPdfPage), Style = item.ChosenPdfViewStyle };
+                Add(item.FilePath, options);
             }
         }
     }

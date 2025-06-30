@@ -14,11 +14,11 @@ internal sealed class ShouldSaveViewModel
 
     public bool? Result { get; private set; }
 
-    public RelayCommand YesCommand { get; set; }
+    public RelayCommand YesCommand { get; }
 
-    public RelayCommand NoCommand { get; set; }
+    public RelayCommand NoCommand { get; }
 
-    public RelayCommand CancelCommand { get; set; }
+    public RelayCommand CancelCommand { get; }
 
     private void Cancel()
     {

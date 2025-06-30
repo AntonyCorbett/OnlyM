@@ -4,7 +4,7 @@ namespace OnlyM.Models;
 
 internal sealed class MagnifierShapeItem
 {
-    public MagnifierShape Shape { get; set; }
+    public MagnifierShape Shape { get; init; }
 
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 }

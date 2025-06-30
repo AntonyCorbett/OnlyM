@@ -16,7 +16,7 @@ namespace OnlyM.Windows;
 /// Interaction logic for MainWindow.xaml
 /// </summary>
 // ReSharper disable once UnusedMember.Global
-public partial class MainWindow : Window
+public partial class MainWindow
 {
     public MainWindow()
     {

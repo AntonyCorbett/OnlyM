@@ -201,7 +201,7 @@ internal sealed class MediaViewModel : ObservableObject
         }
     }
 
-    private void HandleRenderingMethodChangedEvent(object? sender, System.EventArgs e)
+    private void HandleRenderingMethodChangedEvent(object? sender, EventArgs e)
     {
         OnPropertyChanged(nameof(EngineIsFfmpeg));
         OnPropertyChanged(nameof(EngineIsMediaFoundation));

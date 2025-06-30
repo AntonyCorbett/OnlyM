@@ -81,7 +81,7 @@ public sealed class MonitorsService : IMonitorsService
 
         foreach (var screen in Screen.AllScreens)
         {
-            Log.Logger.Verbose($"Screen: {screen.DeviceName}");
+            Log.Logger.Verbose("Screen: {DeviceName}", screen.DeviceName);
 
             var deviceData = GetDeviceMatchingScreen(devices, screen);
             if (deviceData == null)
@@ -89,7 +89,7 @@ public sealed class MonitorsService : IMonitorsService
                 return null;
             }
 
-            Log.Logger.Verbose($"Matching device: {deviceData.DeviceString}, {deviceData.DeviceId}");
+            Log.Logger.Verbose("Matching device: {DeviceString}, {DeviceId}", deviceData.DeviceString, deviceData.DeviceId);
             result.Add((screen, deviceData));
         }
 

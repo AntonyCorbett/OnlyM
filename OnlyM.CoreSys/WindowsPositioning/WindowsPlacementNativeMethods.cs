@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using Serilog;
 
 namespace OnlyM.CoreSys.WindowsPositioning;
 // ReSharper disable IdentifierTypo
@@ -160,7 +161,10 @@ internal static partial class WindowsPlacementNativeMethods
             Int32Rect.Empty,
             BitmapSizeOptions.FromEmptyOptions());
 
-        DestroyIcon(sii.hIcon);
+        if (!DestroyIcon(sii.hIcon))
+        {
+            Log.Logger.Error("Could not DestroyIcon!");
+        }
 
         return shieldSource;
     }

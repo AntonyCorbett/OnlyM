@@ -40,7 +40,7 @@ internal static class MediaWindowPositionHelper
         var width = (area.Width * 96) / systemDpi.dpiX;
         var height = (area.Height * 96) / systemDpi.dpiY;
 
-        Log.Logger.Verbose($"Monitor = {monitor.DeviceName} Left = {left}, top = {top}");
+        Log.Logger.Verbose("Monitor = {DeviceName} Left = {Left}, top = {Top}", monitor.DeviceName, left, top);
 
         PrepareForFullScreenMonitorDisplay(mediaWindow);
 
@@ -164,7 +164,7 @@ internal static class MediaWindowPositionHelper
         }
         else
         {
-            // media monitor does not abutt the primary monitor
+            // media monitor does not abut the primary monitor
             // so the hack is abandoned.
             mediaWindow.Left = left;
             mediaWindow.Top = top;
@@ -214,20 +214,22 @@ internal static class MediaWindowPositionHelper
     private static IEnumerable<T> FindVisualChildren<T>(DependencyObject? depObj)
         where T : DependencyObject
     {
-        if (depObj != null)
+        if (depObj == null)
         {
-            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-            {
-                var child = VisualTreeHelper.GetChild(depObj, i);
-                if (child is T children)
-                {
-                    yield return children;
-                }
+            yield break;
+        }
 
-                foreach (var childOfChild in FindVisualChildren<T>(child))
-                {
-                    yield return childOfChild;
-                }
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+        {
+            var child = VisualTreeHelper.GetChild(depObj, i);
+            if (child is T children)
+            {
+                yield return children;
+            }
+
+            foreach (var childOfChild in FindVisualChildren<T>(child))
+            {
+                yield return childOfChild;
             }
         }
     }

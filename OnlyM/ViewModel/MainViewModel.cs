@@ -37,7 +37,6 @@ internal sealed class MainViewModel : ObservableObject
     private readonly IMediaStatusChangingService _mediaStatusChangingService;
     private readonly IHiddenMediaItemsService _hiddenMediaItemsService;
     private readonly ICommandLineService _commandLineService;
-    private readonly IMonitorsService _monitorsService;
 
     private bool _isBusy;
     private bool _isMediaListLoading;
@@ -57,7 +56,6 @@ internal sealed class MainViewModel : ObservableObject
         IDragAndDropService dragAndDropService)
     {
         _commandLineService = commandLineService;
-        _monitorsService = monitorsService;
 
         if (commandLineService.NoGpu || ForceSoftwareRendering())
         {
@@ -102,7 +100,7 @@ internal sealed class MainViewModel : ObservableObject
         }
 
         if (!string.IsNullOrWhiteSpace(_optionsService.MediaMonitorId) &&
-            _monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId) == null)
+            monitorsService.GetSystemMonitor(_optionsService.MediaMonitorId) == null)
         {
             // a monitor id is specified but it doesn't exist
             _optionsService.MediaMonitorId = null;
@@ -112,17 +110,17 @@ internal sealed class MainViewModel : ObservableObject
     }
 
     // commands...
-    public RelayCommand GotoSettingsCommand { get; set; } = null!;
+    public RelayCommand GotoSettingsCommand { get; private set; } = null!;
 
-    public RelayCommand GotoOperatorCommand { get; set; } = null!;
+    public RelayCommand GotoOperatorCommand { get; private set; } = null!;
 
-    public RelayCommand LaunchMediaFolderCommand { get; set; } = null!;
+    public RelayCommand LaunchMediaFolderCommand { get; private set; } = null!;
 
-    public RelayCommand LaunchHelpPageCommand { get; set; } = null!;
+    public RelayCommand LaunchHelpPageCommand { get; private set; } = null!;
 
-    public RelayCommand LaunchReleasePageCommand { get; set; } = null!;
+    public RelayCommand LaunchReleasePageCommand { get; private set; } = null!;
 
-    public RelayCommand UnhideCommand { get; set; } = null!;
+    public RelayCommand UnhideCommand { get; private set; } = null!;
 
     public ISnackbarMessageQueue TheSnackbarMessageQueue => _snackbarService.TheSnackbarMessageQueue;
 
@@ -152,20 +150,6 @@ internal sealed class MainViewModel : ObservableObject
             ? Properties.Resources.FOLDER_DISABLED
             : Properties.Resources.FOLDER;
 
-    public bool IsMediaListEmpty
-    {
-        get => _isMediaListEmpty;
-        set
-        {
-            if (_isMediaListEmpty != value)
-            {
-                _isMediaListEmpty = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(ShowDragAndDropHint));
-            }
-        }
-    }
-
     public bool IsUnhideButtonVisible =>
         IsInDesignMode() || (IsOperatorPageActive && !ShowProgressBar && _hiddenMediaItemsService.SomeHiddenMediaItems());
 
@@ -173,25 +157,10 @@ internal sealed class MainViewModel : ObservableObject
 
     public bool ShowDragAndDropHint => IsMediaListEmpty && IsOperatorPageActive;
 
-    public bool IsBusy
-    {
-        get => _isBusy;
-        set
-        {
-            if (_isBusy != value)
-            {
-                _isBusy = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsUnhideButtonVisible));
-                OnPropertyChanged(nameof(ShowProgressBar));
-            }
-        }
-    }
-
     public FrameworkElement? CurrentPage
     {
         get => _currentPage;
-        set
+        private set
         {
             if (_currentPage == null || !_currentPage.Equals(value))
             {
@@ -214,6 +183,35 @@ internal sealed class MainViewModel : ObservableObject
             {
                 _isMediaListLoading = value;
                 OnPropertyChanged();
+            }
+        }
+    }
+
+    private bool IsMediaListEmpty
+    {
+        get => _isMediaListEmpty;
+        set
+        {
+            if (_isMediaListEmpty != value)
+            {
+                _isMediaListEmpty = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ShowDragAndDropHint));
+            }
+        }
+    }
+
+    private bool IsBusy
+    {
+        get => _isBusy;
+        set
+        {
+            if (_isBusy != value)
+            {
+                _isBusy = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsUnhideButtonVisible));
+                OnPropertyChanged(nameof(ShowProgressBar));
             }
         }
     }
@@ -302,21 +300,21 @@ internal sealed class MainViewModel : ObservableObject
     private bool CheckVersionData()
     {
         var latestVersion = VersionDetection.GetLatestReleaseVersion();
-        if (latestVersion != null && latestVersion > VersionDetection.GetCurrentVersion())
+        if (latestVersion == null || latestVersion <= VersionDetection.GetCurrentVersion())
         {
-            // there is a new version....
-            _newVersionAvailable = true;
-            OnPropertyChanged(nameof(ShowNewVersionButton));
-
-            _snackbarService.Enqueue(
-                Properties.Resources.NEW_UPDATE_AVAILABLE,
-                Properties.Resources.VIEW,
-                LaunchReleasePage);
-
-            return false;
+            return true;
         }
 
-        return true;
+        // there is a new version....
+        _newVersionAvailable = true;
+        OnPropertyChanged(nameof(ShowNewVersionButton));
+
+        _snackbarService.Enqueue(
+            Properties.Resources.NEW_UPDATE_AVAILABLE,
+            Properties.Resources.VIEW,
+            LaunchReleasePage);
+
+        return false;
     }
 
     private void InitCommands()

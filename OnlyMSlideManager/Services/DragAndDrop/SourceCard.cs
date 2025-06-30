@@ -2,5 +2,5 @@
 
 internal sealed class SourceCard
 {
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 }

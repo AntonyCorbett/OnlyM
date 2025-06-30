@@ -21,12 +21,10 @@ internal sealed class ImageCache
     public BitmapSource? GetImage(string fullPath)
     {
         var info = new FileInfo(fullPath);
-        if (!info.Exists)
-        {
-            return null;
-        }
 
-        return InternalGetImage(fullPath, info.LastWriteTimeUtc.Ticks);
+        return !info.Exists
+            ? null
+            : InternalGetImage(fullPath, info.LastWriteTimeUtc.Ticks);
     }
 
     private BitmapSource? InternalGetImage(string fullPath, long lastChangedDate)
@@ -37,7 +35,9 @@ internal sealed class ImageCache
         {
             try
             {
-                var image = GraphicsUtils.Downsize(fullPath, MaxImageWidth, MaxImageHeight, ignoreInternalCache: true);
+                var image = GraphicsUtils.Downsize(
+                    fullPath, MaxImageWidth, MaxImageHeight, ignoreInternalCache: true);
+
                 result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow };
 
                 _cache.AddOrUpdate(
@@ -56,12 +56,12 @@ internal sealed class ImageCache
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, $"Could not cache image {fullPath}");
+                Log.Logger.Error(ex, "Could not cache image {Path}", fullPath);
             }
         }
         else
         {
-            Log.Logger.Debug($"Image in cache: {fullPath}");
+            Log.Logger.Debug("Image in cache: {Path}", fullPath);
             result.LastUsedUtc = DateTime.UtcNow;
         }
 

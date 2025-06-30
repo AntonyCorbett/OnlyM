@@ -15,13 +15,13 @@ public sealed class SlideItem : ObservableObject
 
     public event EventHandler? SlideItemModifiedEvent;
 
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
-    public bool IsEndMarker { get; set; }
+    public bool IsEndMarker { get; init; }
 
-    public string? OriginalFilePath { get; set; }
+    public string? OriginalFilePath { get; init; }
 
-    public ImageSource? ThumbnailImage { get; set; }
+    public ImageSource? ThumbnailImage { get; init; }
 
     public int SlideIndex { get; set; }
 
@@ -97,7 +97,7 @@ public sealed class SlideItem : ObservableObject
         }
     }
 
-    public string? DropZoneId { get; set; }
+    public string? DropZoneId { get; init; }
 
     private void OnSlideItemModifiedEvent() =>
         SlideItemModifiedEvent?.Invoke(this, EventArgs.Empty);

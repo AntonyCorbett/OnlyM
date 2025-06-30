@@ -2,9 +2,9 @@
 
 public class MediaFile
 {
-    public string? FullPath { get; set; }
+    public string? FullPath { get; init; }
 
-    public SupportedMediaType? MediaType { get; set; }
+    public SupportedMediaType? MediaType { get; init; }
 
-    public long LastChanged { get; set; }
+    public long LastChanged { get; init; }
 }

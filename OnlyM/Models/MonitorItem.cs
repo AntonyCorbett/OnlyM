@@ -17,11 +17,11 @@ internal sealed class MonitorItem
         MonitorName = sm.MonitorName;
     }
 
-    public Screen? Monitor { get; set; }
+    public Screen? Monitor { get; init; }
 
-    public string? MonitorName { get; set; }
+    public string? MonitorName { get; init; }
 
-    public string? MonitorId { get; set; }
+    public string? MonitorId { get; init; }
 
-    public string? FriendlyName { get; set; }
+    public string? FriendlyName { get; init; }
 }

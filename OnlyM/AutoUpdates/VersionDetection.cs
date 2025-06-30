@@ -7,43 +7,11 @@ namespace OnlyM.AutoUpdates;
 
 /// <summary>
 /// Used to get the installed OnlyM version and the 
-/// latest OnlyM release version from the github webpage.
+/// latest OnlyM release version from the GitHub webpage.
 /// </summary>
 internal static class VersionDetection
 {
     public static string LatestReleaseUrl => "https://github.com/AntonyCorbett/OnlyM/releases/latest";
-
-    public static string? GetLatestReleaseVersionString()
-    {
-        string? version = null;
-
-        try
-        {
-#pragma warning disable U2U1025
-            using var client = new HttpClient();
-#pragma warning restore U2U1025
-
-            var response = client.GetAsync(LatestReleaseUrl).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                var latestVersionUri = response.RequestMessage?.RequestUri;
-                if (latestVersionUri != null)
-                {
-                    var segments = latestVersionUri.Segments;
-                    if (segments.Length > 0)
-                    {
-                        version = segments[^1];
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Logger.Error(ex, "Getting latest release version");
-        }
-
-        return version;
-    }
 
     public static Version? GetLatestReleaseVersion()
     {
@@ -74,14 +42,41 @@ internal static class VersionDetection
     public static string GetCurrentVersionString()
     {
         var ver = GetCurrentVersion();
-        if (ver == null)
-        {
-            return "Unknown";
-        }
-
-        return $"{ver.Major}.{ver.Minor}.{ver.Build}.{ver.Revision}";
+        return ver == null ? "Unknown" : $"{ver.Major}.{ver.Minor}.{ver.Build}.{ver.Revision}";
     }
 
     public static Version? GetCurrentVersion() =>
         Assembly.GetExecutingAssembly().GetName().Version;
+
+    private static string? GetLatestReleaseVersionString()
+    {
+        string? version = null;
+
+        try
+        {
+#pragma warning disable U2U1025
+            using var client = new HttpClient();
+#pragma warning restore U2U1025
+
+            var response = client.GetAsync(LatestReleaseUrl).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var latestVersionUri = response.RequestMessage?.RequestUri;
+                if (latestVersionUri != null)
+                {
+                    var segments = latestVersionUri.Segments;
+                    if (segments.Length > 0)
+                    {
+                        version = segments[^1];
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Getting latest release version");
+        }
+
+        return version;
+    }
 }

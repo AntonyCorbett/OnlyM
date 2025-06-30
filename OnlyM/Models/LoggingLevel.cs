@@ -4,7 +4,7 @@ namespace OnlyM.Models;
 
 internal sealed class LoggingLevel
 {
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
-    public LogEventLevel Level { get; set; }
+    public LogEventLevel Level { get; init; }
 }

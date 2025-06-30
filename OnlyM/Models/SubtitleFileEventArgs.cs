@@ -4,7 +4,7 @@ namespace OnlyM.Models;
 
 internal sealed class SubtitleFileEventArgs
 {
-    public Guid MediaItemId { get; set; }
+    public Guid MediaItemId { get; init; }
 
-    public bool Starting { get; set; }
+    public bool Starting { get; init; }
 }

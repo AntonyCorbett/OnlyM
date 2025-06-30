@@ -19,17 +19,19 @@ public class SubtitleProvider
         {
             _file = new SubtitleFile(srtFilePath);
 
-            if (_file.Count > 0)
+            if (_file.Count <= 0)
             {
-                _timer = new DispatcherTimer();
-                _timer.Tick += HandleTimerTick;
-
-                _videoStartTime = DateTime.UtcNow - videoPlayHead;
-
-                OnSubtitleEvent(SubtitleStatus.NotShowing, null);
-
-                QueueNextSubtitle();
+                return;
             }
+
+            _timer = new DispatcherTimer();
+            _timer.Tick += HandleTimerTick;
+
+            _videoStartTime = DateTime.UtcNow - videoPlayHead;
+
+            OnSubtitleEvent(SubtitleStatus.NotShowing, null);
+
+            QueueNextSubtitle();
         }
     }
 

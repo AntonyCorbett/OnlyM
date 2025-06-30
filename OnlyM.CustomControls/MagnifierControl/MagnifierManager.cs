@@ -23,7 +23,7 @@ namespace OnlyM.CustomControls.MagnifierControl;
 public class MagnifierManager : DependencyObject
 {
     public static readonly DependencyProperty CurrentProperty = DependencyProperty.RegisterAttached(
-        "Magnifier",
+        nameof(Magnifier),
         typeof(Magnifier),
         typeof(UIElement),
         new FrameworkPropertyMetadata(null, OnMagnifierChanged));
@@ -32,16 +32,6 @@ public class MagnifierManager : DependencyObject
     private UIElement? _element;
 
     public static void SetMagnifier(UIElement element, Magnifier value) => element.SetValue(CurrentProperty, value);
-
-    public static Magnifier? GetMagnifier(UIElement? element)
-    {
-        if (element == null)
-        {
-            return null;
-        }
-
-        return (Magnifier)element.GetValue(CurrentProperty);
-    }
 
     private static void OnMagnifierChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -59,7 +49,9 @@ public class MagnifierManager : DependencyObject
 
     private void Element_MouseLeave(object sender, MouseEventArgs e)
     {
-        if (GetMagnifier(_element) is Magnifier magnifier && magnifier.IsFrozen)
+        var magnifier = GetMagnifier(_element);
+
+        if (magnifier is not null && magnifier.IsFrozen)
         {
             return;
         }
@@ -71,24 +63,28 @@ public class MagnifierManager : DependencyObject
 
     private void Element_MouseWheel(object sender, MouseWheelEventArgs e)
     {
-        if (GetMagnifier(_element) is Magnifier magnifier && magnifier.IsUsingZoomOnMouseWheel)
+        var magnifier = GetMagnifier(_element);
+
+        if (magnifier is null || !magnifier.IsUsingZoomOnMouseWheel)
         {
-            if (e.Delta < 0)
-            {
-                var newValue = magnifier.ZoomFactor + magnifier.ZoomFactorOnMouseWheel;
-                magnifier.SetCurrentValue(Magnifier.ZoomFactorProperty, newValue);
-            }
-            else if (e.Delta > 0)
-            {
-                var newValue = magnifier.ZoomFactor >= magnifier.ZoomFactorOnMouseWheel
-                    ? magnifier.ZoomFactor - magnifier.ZoomFactorOnMouseWheel
-                    : 0d;
-
-                magnifier.SetCurrentValue(Magnifier.ZoomFactorProperty, newValue);
-            }
-
-            _adorner?.UpdateViewBox();
+            return;
         }
+
+        if (e.Delta < 0)
+        {
+            var newValue = magnifier.ZoomFactor + magnifier.ZoomFactorOnMouseWheel;
+            magnifier.SetCurrentValue(Magnifier.ZoomFactorProperty, newValue);
+        }
+        else if (e.Delta > 0)
+        {
+            var newValue = magnifier.ZoomFactor >= magnifier.ZoomFactorOnMouseWheel
+                ? magnifier.ZoomFactor - magnifier.ZoomFactorOnMouseWheel
+                : 0d;
+
+            magnifier.SetCurrentValue(Magnifier.ZoomFactorProperty, newValue);
+        }
+
+        _adorner?.UpdateViewBox();
     }
 
     private void AttachToMagnifier(UIElement element, Magnifier magnifier)
@@ -132,5 +128,15 @@ public class MagnifierManager : DependencyObject
         {
             _adorner.Visibility = Visibility.Collapsed;
         }
+    }
+
+    private static Magnifier? GetMagnifier(UIElement? element)
+    {
+        if (element == null)
+        {
+            return null;
+        }
+
+        return (Magnifier)element.GetValue(CurrentProperty);
     }
 }

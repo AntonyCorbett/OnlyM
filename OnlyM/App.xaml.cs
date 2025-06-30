@@ -39,7 +39,7 @@ namespace OnlyM;
 /// Interaction logic for App.xaml
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Singleton")]
-public partial class App : Application
+public partial class App
 {
     private readonly string _appString = "OnlyMMeetingMedia";
     private readonly bool _successCefSharp;
@@ -51,7 +51,7 @@ public partial class App : Application
         {
             Unosquare.FFME.Library.FFmpegDirectory = FMpegFolderName;
 
-            // pre-load the CefSharp assemblies otherwise 1st instantiation is too long.
+            // preload the CefSharp assemblies otherwise 1st instantiation is too long.
             System.Reflection.Assembly.Load("CefSharp.Wpf");
 
             _successCefSharp = InitCef();
@@ -147,7 +147,7 @@ public partial class App : Application
 #pragma warning restore CA1305 // Specify IFormatProvider
 
         Log.Logger.Information("==== Launched ====");
-        Log.Logger.Information($"Version {VersionDetection.GetCurrentVersion()}");
+        Log.Logger.Information("Version {Version}", VersionDetection.GetCurrentVersion());
     }
 
     private bool AnotherInstanceRunning()

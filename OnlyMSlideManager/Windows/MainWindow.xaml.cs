@@ -12,7 +12,7 @@ using OnlyMSlideManager.ViewModel;
 
 namespace OnlyMSlideManager.Windows;
 
-public partial class MainWindow : Window
+public partial class MainWindow
 {
     public MainWindow()
     {

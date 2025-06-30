@@ -2,5 +2,5 @@
 
 internal sealed class WindowVisibilityChangedEventArgs
 {
-    public bool Visible { get; set; }
+    public bool Visible { get; init; }
 }

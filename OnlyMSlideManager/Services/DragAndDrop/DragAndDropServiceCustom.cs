@@ -70,24 +70,27 @@ internal sealed class DragAndDropServiceCustom : IDragAndDropServiceCustom
             return;
         }
 
-        // targetCardViewModel represents the card to the right of the drop zone.
-        if (rect.DataContext is SlideItem targetCardViewModel)
+        if (rect.DataContext is not SlideItem targetCardViewModel)
         {
-            if (_dragSourceCard?.DataContext is SlideItem sourceCardViewModel)
+            return;
+        }
+
+        // targetCardViewModel represents the card to the right of the drop zone.
+
+        if (_dragSourceCard?.DataContext is SlideItem sourceCardViewModel)
+        {
+            WeakReferenceMessenger.Default.Send(new ReorderMessage
             {
-                WeakReferenceMessenger.Default.Send(new ReorderMessage
-                {
-                    SourceItem = sourceCardViewModel,
-                    TargetId = targetCardViewModel.DropZoneId,
-                });
-            }
-            else
+                SourceItem = sourceCardViewModel,
+                TargetId = targetCardViewModel.DropZoneId,
+            });
+        }
+        else
+        {
+            // The drag object is from another application...
+            if (e.Data != null)
             {
-                // The drag object is from another application...
-                if (e.Data != null)
-                {
-                    HandleDropExternalImage(e.Data, targetCardViewModel);
-                }
+                HandleDropExternalImage(e.Data, targetCardViewModel);
             }
         }
     }
@@ -141,29 +144,31 @@ internal sealed class DragAndDropServiceCustom : IDragAndDropServiceCustom
         // Note that you can have more than one file...
         var files = (string[]?)data.GetData(DataFormats.FileDrop);
 
-        if (files != null && files.Length > 0)
+        if (files == null || files.Length <= 0)
         {
-            foreach (var file in files)
+            yield break;
+        }
+
+        foreach (var file in files)
+        {
+            if (Directory.Exists(file))
             {
-                if (Directory.Exists(file))
+                // a folder rather than a file.
+                foreach (var fileInFolder in Directory.EnumerateFiles(file))
                 {
-                    // a folder rather than a file.
-                    foreach (var fileInFolder in Directory.EnumerateFiles(file))
-                    {
-                        var fileToAdd = GetSupportedFile(fileInFolder);
-                        if (fileToAdd != null)
-                        {
-                            yield return fileToAdd;
-                        }
-                    }
-                }
-                else
-                {
-                    var fileToAdd = GetSupportedFile(file);
+                    var fileToAdd = GetSupportedFile(fileInFolder);
                     if (fileToAdd != null)
                     {
                         yield return fileToAdd;
                     }
+                }
+            }
+            else
+            {
+                var fileToAdd = GetSupportedFile(file);
+                if (fileToAdd != null)
+                {
+                    yield return fileToAdd;
                 }
             }
         }

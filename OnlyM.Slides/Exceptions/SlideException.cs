@@ -6,7 +6,6 @@ namespace OnlyM.Slides.Exceptions;
 public class SlideException : Exception
 {
     public SlideException()
-        : base()
     {
     }
 

@@ -98,12 +98,7 @@ public class MediaProviderService : IMediaProviderService
 
     public bool IsFileExtensionSupported(string extension)
     {
-        if (string.IsNullOrEmpty(extension))
-        {
-            return false;
-        }
-
-        return _supportedFileExtensions.Contains(extension);
+        return !string.IsNullOrEmpty(extension) && _supportedFileExtensions.Contains(extension);
     }
 
     public SupportedMediaType? GetSupportedMediaType(string? fileName)
@@ -126,7 +121,7 @@ public class MediaProviderService : IMediaProviderService
         {
             // the CefBrowser doesn't support files with '#' character in path!
             // work-around this by logging and saying unsupported...
-            Log.Logger.Warning($"'{fileName}' - web files with embedded # character not supported - rename the file!");
+            Log.Logger.Warning("'{FileName}' - web files with embedded # character not supported - rename the file!", fileName);
             return null;
         }
 
@@ -135,12 +130,8 @@ public class MediaProviderService : IMediaProviderService
 
     private static bool IsPdf(string fileName)
     {
-        if (string.IsNullOrEmpty(fileName))
-        {
-            return false;
-        }
-
-        return Path.GetExtension(fileName).Equals(".pdf", StringComparison.OrdinalIgnoreCase);
+        return !string.IsNullOrEmpty(fileName) &&
+               Path.GetExtension(fileName).Equals(".pdf", StringComparison.OrdinalIgnoreCase);
     }
 
     private List<MediaFile> GetMediaFilesInFolder(string? folder)
@@ -158,17 +149,19 @@ public class MediaProviderService : IMediaProviderService
         {
             var mediaType = GetSupportedMediaType(file);
 
-            if (mediaType != null)
+            if (mediaType == null)
             {
-                var lastChanged = File.GetLastWriteTimeUtc(file);
-
-                result.Add(new MediaFile
-                {
-                    FullPath = file,
-                    MediaType = mediaType,
-                    LastChanged = lastChanged.Ticks,
-                });
+                continue;
             }
+
+            var lastChanged = File.GetLastWriteTimeUtc(file);
+
+            result.Add(new MediaFile
+            {
+                FullPath = file,
+                MediaType = mediaType,
+                LastChanged = lastChanged.Ticks,
+            });
         }
 
         return result;

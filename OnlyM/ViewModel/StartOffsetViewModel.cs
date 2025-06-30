@@ -40,11 +40,11 @@ internal sealed class StartOffsetViewModel : ObservableObject
 
     public TimeSpan? Result { get; private set; }
 
-    public RelayCommand OkCommand { get; set; }
+    public RelayCommand OkCommand { get; private set; }
 
-    public RelayCommand CancelCommand { get; set; }
+    public RelayCommand CancelCommand { get; private set; }
 
-    public RelayCommand<int?> RemoveRecentTimeCommand { get; set; }
+    public RelayCommand<int?> RemoveRecentTimeCommand { get; private set; }
 
     public static IEnumerable<int> Hours => Enumerable.Range(0, 12);
 

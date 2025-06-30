@@ -46,7 +46,7 @@ public static class GraphicsUtils
         }
         catch (Exception ex)
         {
-            Log.Logger.Error(ex, $"Could not auto-rotate image {itemFilePath}");
+            Log.Logger.Error(ex, "Could not auto-rotate image {Path}", itemFilePath);
         }
 
         return false;
@@ -104,7 +104,7 @@ public static class GraphicsUtils
         }
         catch (Exception ex)
         {
-            Log.Logger.Error(ex, $"Could not auto-rotate and resize image {itemFilePath}");
+            Log.Logger.Error(ex, "Could not auto-rotate and resize image {Path}", itemFilePath);
         }
 
         return null;
@@ -277,11 +277,11 @@ public static class GraphicsUtils
                     return result;
                 }
 
-                Log.Logger.Debug($"Embedded thumbnail unavailable for video: {originalPath}");
+                Log.Logger.Debug("Embedded thumbnail unavailable for video: {Path}", originalPath);
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, $"Embedded thumbnail unavailable for video: {originalPath}");
+                Log.Logger.Error(ex, "Embedded thumbnail unavailable for video: {Path}", originalPath);
             }
         }
 
@@ -291,7 +291,7 @@ public static class GraphicsUtils
         }
         catch (Exception ex)
         {
-            Log.Logger.Error(ex, $"Could not create thumbnail for video: {originalPath}");
+            Log.Logger.Error(ex, "Could not create thumbnail for video: {Path}", originalPath);
         }
 
         return null;
@@ -318,7 +318,7 @@ public static class GraphicsUtils
         }
         catch (Exception ex)
         {
-            Log.Logger.Error(ex, $"Could not create subtitle file for video: {videoFilePath}");
+            Log.Logger.Error(ex, "Could not create subtitle file for video: {Path}", videoFilePath);
         }
 
         return false;
@@ -373,7 +373,7 @@ public static class GraphicsUtils
     // ReSharper disable once InconsistentNaming
     private static bool ExecuteFFMpeg(string ffmpegFolder, string arguments)
     {
-        Log.Logger.Debug($"Executing ffmpeg with args = {arguments}");
+        Log.Logger.Debug("Executing ffmpeg with args = {Args}", arguments);
 
         var ffmpegPath = Path.Combine(ffmpegFolder, "ffmpeg.exe");
 
@@ -403,7 +403,7 @@ public static class GraphicsUtils
                 p.Kill();
             }
 
-            Log.Logger.Debug($"Ffmpeg return code = {rv}");
+            Log.Logger.Debug("Ffmpeg return code = {rv}", rv);
 
             return rv;
         }
@@ -602,7 +602,7 @@ public static class GraphicsUtils
         }
         catch (Exception ex)
         {
-            Log.Logger.Error(ex, $"Could not load SVG image {imageFile}");
+            Log.Logger.Error(ex, "Could not load SVG image {FileName}", imageFile);
             return null;
         }
     }

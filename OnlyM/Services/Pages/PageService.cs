@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -98,7 +97,7 @@ internal sealed class PageService : IDisposable, IPageService
 
     public string SettingsPageName => "SettingsPage";
 
-    public bool AllowMediaWindowToClose { get; set; }
+    public bool AllowMediaWindowToClose { get; private set; }
 
     public bool IsMediaWindowVisible => _mediaWindow != null &&
                                         _mediaWindow.IsVisible &&
@@ -188,7 +187,7 @@ internal sealed class PageService : IDisposable, IPageService
         }
         catch (Exception ex)
         {
-            Log.Error(ex, $"Could not start media: {mediaItemToStart.FilePath}");
+            Log.Error(ex, "Could not start media: {Path}", mediaItemToStart.FilePath);
         }
     }
 
@@ -213,11 +212,18 @@ internal sealed class PageService : IDisposable, IPageService
 
     public async void ForciblyStopAllPlayback(IReadOnlyCollection<MediaItem> activeItems)
     {
-        CheckMediaWindow();
-
-        foreach (var item in activeItems)
+        try
         {
-            await _mediaWindow!.StopMediaAsync(item, true);
+            CheckMediaWindow();
+
+            foreach (var item in activeItems)
+            {
+                await _mediaWindow!.StopMediaAsync(item, true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not stop playback!");
         }
     }
 

@@ -2,7 +2,7 @@
 
 internal sealed class MirrorHotKeyItem
 {
-    public char Character { get; set; }
+    public char Character { get; init; }
 
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 }

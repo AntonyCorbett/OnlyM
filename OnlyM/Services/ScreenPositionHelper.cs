@@ -12,46 +12,50 @@ internal static class ScreenPositionHelper
     public static void SetScreenPosition(FrameworkElement element, ScreenPosition position)
     {
         var parent = GetParentWindow(element);
-        if (parent != null)
+        if (parent == null)
         {
-            if (position.IsFullScreen())
-            {
-                element.Margin = new Thickness(0, 0, 0, 0);
-            }
-            else
-            {
-                var leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
-                var topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
-                var rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
-                var bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
+            return;
+        }
 
-                element.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin);
-            }
+        if (position.IsFullScreen())
+        {
+            element.Margin = new Thickness(0, 0, 0, 0);
+        }
+        else
+        {
+            var leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
+            var topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
+            var rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
+            var bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
+
+            element.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin);
         }
     }
 
     public static void SetSubtitleBlockScreenPosition(TextBlock element, ScreenPosition position)
     {
         var parent = GetParentWindow(element);
-        if (parent != null)
+        if (parent == null)
         {
-            if (position.IsFullScreen())
-            {
-                element.Margin = new Thickness(0, 0, 0, parent.ActualHeight / 10);
-                element.FontSize = parent.ActualHeight / 22;
-            }
-            else
-            {
-                var leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
-                var topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
-                var rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
-                var bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
+            return;
+        }
 
-                var displayHeight = parent.ActualHeight - topMargin - bottomMargin;
+        if (position.IsFullScreen())
+        {
+            element.Margin = new Thickness(0, 0, 0, parent.ActualHeight / 10);
+            element.FontSize = parent.ActualHeight / 22;
+        }
+        else
+        {
+            var leftMargin = (parent.ActualWidth * position.LeftMarginPercentage) / 100.0;
+            var topMargin = (parent.ActualHeight * position.TopMarginPercentage) / 100.0;
+            var rightMargin = (parent.ActualWidth * position.RightMarginPercentage) / 100.0;
+            var bottomMargin = (parent.ActualHeight * position.BottomMarginPercentage) / 100.0;
 
-                element.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin + (displayHeight / 10));
-                element.FontSize = displayHeight / 22;
-            }
+            var displayHeight = parent.ActualHeight - topMargin - bottomMargin;
+
+            element.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin + (displayHeight / 10));
+            element.FontSize = displayHeight / 22;
         }
     }
 

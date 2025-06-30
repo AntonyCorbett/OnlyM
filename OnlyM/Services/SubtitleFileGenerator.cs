@@ -14,7 +14,7 @@ internal static class SubtitleFileGenerator
     {
         try
         {
-            Log.Logger.Debug($"Generating subtitle file for media {mediaItemFilePath}");
+            Log.Logger.Debug("Generating subtitle file for media {Path}", mediaItemFilePath);
 
             var destFolder = Path.GetDirectoryName(mediaItemFilePath);
             if (destFolder == null)
@@ -54,7 +54,7 @@ internal static class SubtitleFileGenerator
         }
         catch (Exception ex)
         {
-            Log.Logger.Error(ex, $"Could not create srt file for media: {mediaItemFilePath}");
+            Log.Logger.Error(ex, "Could not create srt file for media: {Path}", mediaItemFilePath);
             return null;
         }
     }

@@ -125,25 +125,25 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public ObservableCollectionEx<MediaItem> MediaItems { get; } = [];
 
-    public RelayCommand<Guid?> MediaControlCommand1 { get; set; } = null!;
+    public RelayCommand<Guid?> MediaControlCommand1 { get; private set; } = null!;
 
-    public RelayCommand<Guid?> MediaControlPauseCommand { get; set; } = null!;
+    public RelayCommand<Guid?> MediaControlPauseCommand { get; private set; } = null!;
 
-    public RelayCommand<Guid?> HideMediaItemCommand { get; set; } = null!;
+    public RelayCommand<Guid?> HideMediaItemCommand { get; private set; } = null!;
 
-    public RelayCommand<Guid?> DeleteMediaItemCommand { get; set; } = null!;
+    public RelayCommand<Guid?> DeleteMediaItemCommand { get; private set; } = null!;
 
-    public RelayCommand<Guid?> OpenCommandPanelCommand { get; set; } = null!;
+    public RelayCommand<Guid?> OpenCommandPanelCommand { get; private set; } = null!;
 
-    public RelayCommand<Guid?> CloseCommandPanelCommand { get; set; } = null!;
+    public RelayCommand<Guid?> CloseCommandPanelCommand { get; private set; } = null!;
 
-    public RelayCommand<Guid?> FreezeVideoCommand { get; set; } = null!;
+    public RelayCommand<Guid?> FreezeVideoCommand { get; private set; } = null!;
 
-    public RelayCommand<Guid?> PreviousSlideCommand { get; set; } = null!;
+    public RelayCommand<Guid?> PreviousSlideCommand { get; private set; } = null!;
 
-    public RelayCommand<Guid?> NextSlideCommand { get; set; } = null!;
+    public RelayCommand<Guid?> NextSlideCommand { get; private set; } = null!;
 
-    public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; set; } = null!;
+    public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; private set; } = null!;
 
     public int ThumbnailColWidth
     {
@@ -404,7 +404,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private void HandleSlideTransitionEvent(object? sender, SlideTransitionEventArgs e)
     {
-        Log.Debug($"HandleSlideTransitionEvent (id = {e.MediaItemId}, change = {e.Transition})");
+        Log.Debug("HandleSlideTransitionEvent (id = {MediaItemId}, change = {Transition})", e.MediaItemId, e.Transition);
 
         var mediaItem = GetMediaItem(e.MediaItemId);
         if (mediaItem == null)
@@ -427,7 +427,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private void HandleMediaChangeEvent(object? sender, MediaEventArgs e)
     {
-        Log.Debug($"HandleMediaChangeEvent (id = {e.MediaItemId}, change = {e.Change})");
+        Log.Debug("HandleMediaChangeEvent (id = {MediaItemId}, change = {Change})", e.MediaItemId, e.Change);
 
         var mediaItem = GetMediaItem(e.MediaItemId);
         if (mediaItem == null)
@@ -435,7 +435,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             return;
         }
 
-        Log.Debug(mediaItem.Title ?? "untitled");
+        Log.Debug("Title={Title}", mediaItem.Title ?? "untitled");
 
         switch (e.Change)
         {
@@ -547,20 +547,22 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
 
         var mediaItem = GetMediaItem(mediaItemId.Value);
-        if (mediaItem?.FilePath != null)
+        if (mediaItem?.FilePath == null)
         {
-            Debug.Assert(
-                mediaItem.MediaType?.Classification == MediaClassification.Video,
-                "mediaItem.MediaType.Classification == MediaClassification.Video");
+            return;
+        }
 
-            if (mediaItem.PauseOnLastFrame)
-            {
-                _frozenVideosService.Add(mediaItem.FilePath);
-            }
-            else
-            {
-                _frozenVideosService.Remove(mediaItem.FilePath);
-            }
+        Debug.Assert(
+            mediaItem.MediaType?.Classification == MediaClassification.Video,
+            "mediaItem.MediaType.Classification == MediaClassification.Video");
+
+        if (mediaItem.PauseOnLastFrame)
+        {
+            _frozenVideosService.Add(mediaItem.FilePath);
+        }
+        else
+        {
+            _frozenVideosService.Remove(mediaItem.FilePath);
         }
     }
 
@@ -616,13 +618,15 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             return;
         }
 
-        if (!_mediaStatusChangingService.IsMediaStatusChanging())
+        if (_mediaStatusChangingService.IsMediaStatusChanging())
         {
-            var mediaItem = GetMediaItem(mediaItemId.Value);
-            if (mediaItem != null && !mediaItem.IsMediaChanging)
-            {
-                mediaItem.CurrentSlideshowIndex = _pageService.GotoPreviousSlide();
-            }
+            return;
+        }
+
+        var mediaItem = GetMediaItem(mediaItemId.Value);
+        if (mediaItem != null && !mediaItem.IsMediaChanging)
+        {
+            mediaItem.CurrentSlideshowIndex = _pageService.GotoPreviousSlide();
         }
     }
 
@@ -633,13 +637,15 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             return;
         }
 
-        if (!_mediaStatusChangingService.IsMediaStatusChanging())
+        if (_mediaStatusChangingService.IsMediaStatusChanging())
         {
-            var mediaItem = GetMediaItem(mediaItemId.Value);
-            if (mediaItem != null && !mediaItem.IsMediaChanging)
-            {
-                mediaItem.CurrentSlideshowIndex = _pageService.GotoNextSlide();
-            }
+            return;
+        }
+
+        var mediaItem = GetMediaItem(mediaItemId.Value);
+        if (mediaItem != null && !mediaItem.IsMediaChanging)
+        {
+            mediaItem.CurrentSlideshowIndex = _pageService.GotoNextSlide();
         }
     }
 
@@ -651,16 +657,18 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
 
         var mediaItem = GetMediaItem(mediaItemId.Value);
-        if (mediaItem?.FilePath != null)
+        if (mediaItem?.FilePath == null)
         {
-            mediaItem.IsCommandPanelOpen = false;
-
-            Task.Delay(400).ContinueWith(_ =>
-            {
-                mediaItem.IsVisible = false;
-                _hiddenMediaItemsService.Add(mediaItem.FilePath);
-            });
+            return;
         }
+
+        mediaItem.IsCommandPanelOpen = false;
+
+        Task.Delay(400).ContinueWith(_ =>
+        {
+            mediaItem.IsVisible = false;
+            _hiddenMediaItemsService.Add(mediaItem.FilePath);
+        });
     }
 
     private void DeleteMediaItem(Guid? mediaItemId)
@@ -671,16 +679,18 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
 
         var mediaItem = GetMediaItem(mediaItemId.Value);
-        if (mediaItem?.FilePath != null)
+        if (mediaItem?.FilePath == null)
         {
-            if (FileUtils.SafeDeleteFile(mediaItem.FilePath))
-            {
-                mediaItem.IsCommandPanelOpen = false;
-            }
-            else
-            {
-                _snackbarService.EnqueueWithOk(Properties.Resources.CANNOT_DELETE_FILE, Properties.Resources.OK);
-            }
+            return;
+        }
+
+        if (FileUtils.SafeDeleteFile(mediaItem.FilePath))
+        {
+            mediaItem.IsCommandPanelOpen = false;
+        }
+        else
+        {
+            _snackbarService.EnqueueWithOk(Properties.Resources.CANNOT_DELETE_FILE, Properties.Resources.OK);
         }
     }
 
@@ -688,10 +698,13 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         mediaItem.MediaType?.Classification == MediaClassification.Audio ||
         mediaItem.MediaType?.Classification == MediaClassification.Video;
 
+    // ReSharper disable once MemberCanBeMadeStatic.Local
     private bool IsVideo(MediaItem mediaItem) => mediaItem.IsVideo;
 
+    // ReSharper disable once MemberCanBeMadeStatic.Local
     private bool IsRollingSlideshow(MediaItem mediaItem) => mediaItem.IsRollingSlideshow;
 
+    // ReSharper disable once MemberCanBeMadeStatic.Local
     private bool IsWeb(MediaItem mediaItem) => mediaItem.IsWeb;
 
     private async Task MediaPauseControl(Guid? mediaItemId)
@@ -719,7 +732,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             var mediaItem = GetMediaItem(mediaItemId);
             if (mediaItem == null || !IsVideoOrAudio(mediaItem))
             {
-                Log.Error($"Media Item not found (id = {mediaItemId})");
+                Log.Error("Media Item not found (id = {MediaItemId})", mediaItemId);
                 return;
             }
 
@@ -767,12 +780,12 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         // only allow start/stop media when nothing is changing.
         if (!_mediaStatusChangingService.IsMediaStatusChanging())
         {
-            Log.Debug($"MediaControl1 (id = {mediaItemId})");
+            Log.Debug("MediaControl1 (id = {MediaItemId})", mediaItemId);
 
             var mediaItem = GetMediaItem(mediaItemId);
             if (mediaItem == null)
             {
-                Log.Error($"Media Item not found (id = {mediaItemId})");
+                Log.Error("Media Item not found (id = {MediaItemId})", mediaItemId);
                 return;
             }
 
@@ -824,45 +837,25 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private bool VideoOrAudioIsActive()
     {
         var currentItems = GetCurrentMediaItems();
-        if (currentItems == null)
-        {
-            return false;
-        }
-
-        return currentItems.Any(IsVideoOrAudio);
+        return currentItems != null && currentItems.Any(IsVideoOrAudio);
     }
 
     private bool VideoIsActive()
     {
         var currentItems = GetCurrentMediaItems();
-        if (currentItems == null)
-        {
-            return false;
-        }
-
-        return currentItems.Any(IsVideo);
+        return currentItems != null && currentItems.Any(IsVideo);
     }
 
     private bool RollingSlideshowIsActive()
     {
         var currentItems = GetCurrentMediaItems();
-        if (currentItems == null)
-        {
-            return false;
-        }
-
-        return currentItems.Any(IsRollingSlideshow);
+        return currentItems != null && currentItems.Any(IsRollingSlideshow);
     }
 
     private bool WebIsActive()
     {
         var currentItems = GetCurrentMediaItems();
-        if (currentItems == null)
-        {
-            return false;
-        }
-
-        return currentItems.Any(IsWeb);
+        return currentItems != null && currentItems.Any(IsWeb);
     }
 
     private MediaItem? GetNextImageItem(MediaItem? currentMediaItem)
@@ -948,26 +941,28 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         {
             var filePath = item.FilePath;
 
-            if (filePath != null)
+            if (filePath == null)
             {
-                if (!sourceFilePaths.Contains(filePath))
+                continue;
+            }
+
+            if (!sourceFilePaths.Contains(filePath))
+            {
+                // remove this item.
+                itemsToRemove.Add(item);
+            }
+            else
+            {
+                // perhaps the item has been changed or swapped for another media file of the same name!
+                var file = files.SingleOrDefault(x => x.FullPath == filePath);
+                if (file != null && file.LastChanged != item.LastChanged)
                 {
                     // remove this item.
                     itemsToRemove.Add(item);
                 }
                 else
                 {
-                    // perhaps the item has been changed or swapped for another media file of the same name!
-                    var file = files.SingleOrDefault(x => x.FullPath == filePath);
-                    if (file != null && file.LastChanged != item.LastChanged)
-                    {
-                        // remove this item.
-                        itemsToRemove.Add(item);
-                    }
-                    else
-                    {
-                        destFilePaths.Add(filePath);
-                    }
+                    destFilePaths.Add(filePath);
                 }
             }
         }
@@ -978,7 +973,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         if (count > 0)
         {
             // we have deleted one or more items that are currently being displayed!
-            Log.Logger.Warning($"User deleted {count} active items");
+            Log.Logger.Warning("User deleted {Count} active items", count);
 
             ForciblyStopAllPlayback(currentItems);
 
@@ -1063,52 +1058,56 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     {
         // only add a "blank screen" item if we don't already display
         // a permanent black backdrop.
-        if (!_optionsService.PermanentBackdrop && _optionsService.IncludeBlankScreenItem)
+        if (_optionsService.PermanentBackdrop || !_optionsService.IncludeBlankScreenItem)
         {
-            var blankScreenPath = GetBlankScreenPath();
-
-            var item = new MediaItem
-            {
-                MediaType = _mediaProviderService.GetSupportedMediaType(blankScreenPath),
-                Id = Guid.NewGuid(),
-                IsBlankScreen = true,
-                IsVisible = true,
-                AllowFreezeCommand = _optionsService.ShowFreezeCommand,
-                CommandPanelVisible = _optionsService.ShowMediaItemCommandPanel,
-                Title = Properties.Resources.BLANK_SCREEN,
-                FilePath = blankScreenPath,
-                FileNameAsSubTitle = null,
-                LastChanged = 0,
-            };
-
-            MediaItems.Insert(0, item);
-
-            _metaDataProducer.Add(item);
+            return;
         }
+
+        var blankScreenPath = GetBlankScreenPath();
+
+        var item = new MediaItem
+        {
+            MediaType = _mediaProviderService.GetSupportedMediaType(blankScreenPath),
+            Id = Guid.NewGuid(),
+            IsBlankScreen = true,
+            IsVisible = true,
+            AllowFreezeCommand = _optionsService.ShowFreezeCommand,
+            CommandPanelVisible = _optionsService.ShowMediaItemCommandPanel,
+            Title = Properties.Resources.BLANK_SCREEN,
+            FilePath = blankScreenPath,
+            FileNameAsSubTitle = null,
+            LastChanged = 0,
+        };
+
+        MediaItems.Insert(0, item);
+
+        _metaDataProducer.Add(item);
     }
 
     private string? GetBlankScreenPath()
     {
-        if (_blankScreenImagePath == null)
+        if (_blankScreenImagePath != null)
         {
-            try
-            {
-                var tempFolder = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyM", "TempImages");
-                FileUtils.CreateDirectory(tempFolder);
+            return _blankScreenImagePath;
+        }
 
-                var path = Path.Combine(tempFolder, "BlankScreen.png");
+        try
+        {
+            var tempFolder = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyM", "TempImages");
+            FileUtils.CreateDirectory(tempFolder);
 
-                var image = Properties.Resources.blank;
+            var path = Path.Combine(tempFolder, "BlankScreen.png");
 
-                // overwrites it each time OnlyM is launched
-                image.Save(path);
+            var image = Properties.Resources.blank;
 
-                _blankScreenImagePath = path;
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not save blank screen image");
-            }
+            // overwrites it each time OnlyM is launched
+            image.Save(path);
+
+            _blankScreenImagePath = path;
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not save blank screen image");
         }
 
         return _blankScreenImagePath;

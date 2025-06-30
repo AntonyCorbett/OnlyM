@@ -96,7 +96,7 @@ public class MainViewModel : ObservableObject
     public string? StatusText
     {
         get => _statusText;
-        set => SetProperty(ref _statusText, value);
+        private set => SetProperty(ref _statusText, value);
     }
 
     public bool IsProgressVisible
@@ -383,6 +383,7 @@ public class MainViewModel : ObservableObject
     }
 
     // exceptions caught in SaveFile()
+    // ReSharper disable once AsyncVoidMethod
     private async void DoSaveFile()
     {
         Keyboard.ClearFocus();
@@ -420,7 +421,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Log.Logger.Error(ex, $"Could not save file: {CurrentSlideshowPath}");
+            Log.Logger.Error(ex, "Could not save file: {Path}", CurrentSlideshowPath);
             _snackbarService.EnqueueWithOk(Properties.Resources.COULD_NOT_SAVE, Properties.Resources.OK);
         }
     }
@@ -553,17 +554,19 @@ public class MainViewModel : ObservableObject
 
     private Dictionary<string, byte[]> GetThumbnailCache()
     {
+        if (_currentSlideFileBuilder == null || _currentSlideFileBuilder.SlideCount <= 0)
+        {
+            return [];
+        }
+
         var result = new Dictionary<string, byte[]>();
 
-        if (_currentSlideFileBuilder != null && _currentSlideFileBuilder.SlideCount > 0)
+        foreach (var slide in SlideItems)
         {
-            foreach (var slide in SlideItems)
+            var bmp = GraphicsUtils.ImageSourceToJpegBytes(slide.ThumbnailImage);
+            if (bmp != null && slide.OriginalFilePath != null)
             {
-                var bmp = GraphicsUtils.ImageSourceToJpegBytes(slide.ThumbnailImage);
-                if (bmp != null && slide.OriginalFilePath != null)
-                {
-                    result.TryAdd(slide.OriginalFilePath, bmp);
-                }
+                result.TryAdd(slide.OriginalFilePath, bmp);
             }
         }
 
@@ -901,6 +904,8 @@ public class MainViewModel : ObservableObject
         CommandManager.InvalidateRequerySuggested();
     }
 
+    // exceptions caught in DropImages
+    // ReSharper disable once AsyncVoidMethod
     private async void OnDropImageFilesMessage(object sender, DropImagesMessage message)
     {
         if (message.FileList == null)
@@ -988,21 +993,23 @@ public class MainViewModel : ObservableObject
 
         foreach (var folder in subFolders)
         {
-            if (!string.IsNullOrEmpty(folder))
+            if (string.IsNullOrEmpty(folder))
             {
-                try
+                continue;
+            }
+
+            try
+            {
+                var c = new CultureInfo(System.IO.Path.GetFileNameWithoutExtension(folder));
+                result.Add(new LanguageItem
                 {
-                    var c = new CultureInfo(System.IO.Path.GetFileNameWithoutExtension(folder));
-                    result.Add(new LanguageItem
-                    {
-                        LanguageId = c.Name,
-                        LanguageName = c.EnglishName,
-                    });
-                }
-                catch (CultureNotFoundException)
-                {
-                    // expected
-                }
+                    LanguageId = c.Name,
+                    LanguageName = c.EnglishName,
+                });
+            }
+            catch (CultureNotFoundException)
+            {
+                // expected
             }
         }
 

@@ -38,15 +38,17 @@ public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
         get => _watcher?.EnableRaisingEvents ?? false;
         set
         {
-            if (_watcher != null && _watcher.EnableRaisingEvents != value)
+            if (_watcher == null || _watcher.EnableRaisingEvents == value)
             {
-                if (value && !Directory.Exists(_optionsService.MediaFolder))
-                {
-                    return;
-                }
-
-                _watcher.EnableRaisingEvents = value;
+                return;
             }
+
+            if (value && !Directory.Exists(_optionsService.MediaFolder))
+            {
+                return;
+            }
+
+            _watcher.EnableRaisingEvents = value;
         }
     }
 

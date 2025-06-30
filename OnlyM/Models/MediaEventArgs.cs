@@ -5,9 +5,9 @@ namespace OnlyM.Models;
 
 public class MediaEventArgs : EventArgs
 {
-    public Guid MediaItemId { get; set; }
+    public Guid MediaItemId { get; init; }
 
-    public MediaClassification Classification { get; set; }
+    public MediaClassification Classification { get; init; }
 
-    public MediaChange Change { get; set; }
+    public MediaChange Change { get; init; }
 }

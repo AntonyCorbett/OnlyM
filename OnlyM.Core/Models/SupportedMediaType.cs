@@ -2,9 +2,9 @@
 
 public class SupportedMediaType
 {
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
-    public MediaClassification Classification { get; set; }
+    public MediaClassification Classification { get; init; }
 
-    public string? FileExtension { get; set; }
+    public string? FileExtension { get; init; }
 }

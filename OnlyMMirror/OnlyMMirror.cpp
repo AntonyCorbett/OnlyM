@@ -201,7 +201,7 @@ BOOL CALLBACK OnlyMMonitorEnumProc(HMONITOR hMonitor, HDC /*hdcMonitor*/, LPRECT
 {
 	if (hMonitor)
 	{
-		MONITORINFOEX info;
+        MONITORINFOEX info{};
 		info.cbSize = sizeof(MONITORINFOEX);
 		::GetMonitorInfo(hMonitor, &info);
 
@@ -359,7 +359,7 @@ void CALLBACK UpdateMirrorWindow(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /*idEven
 		int width = (int)((magWindowRect.right - magWindowRect.left) / ZoomFactor);
 		int height = (int)((magWindowRect.bottom - magWindowRect.top) / ZoomFactor);
 
-		RECT sourceRect;
+        RECT sourceRect{};
 		sourceRect.left = mousePoint.x - width / 2;
 		sourceRect.top = mousePoint.y - height / 2;
 

@@ -4,9 +4,9 @@ namespace OnlyM.Core.Models;
 
 public class MediaMetaData
 {
-    public string? Title { get; set; }
+    public string? Title { get; init; }
 
-    public TimeSpan Duration { get; set; }
+    public TimeSpan Duration { get; init; }
 
-    public int VideoRotation { get; set; } // only used for videos
+    public int VideoRotation { get; init; } // only used for videos
 }

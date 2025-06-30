@@ -21,7 +21,7 @@ public static class FileDownloader
         }
         catch (Exception ex)
         {
-            Log.Logger.Error(ex, $"Could not download {remoteUri}");
+            Log.Logger.Error(ex, "Could not download {uri}", remoteUri);
         }
 
         return false;

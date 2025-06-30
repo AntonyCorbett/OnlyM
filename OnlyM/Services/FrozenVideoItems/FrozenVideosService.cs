@@ -11,16 +11,18 @@ internal sealed class FrozenVideosService : IFrozenVideosService
     {
         foreach (var item in items)
         {
-            if (item.FilePath != null)
+            if (item.FilePath == null)
             {
-                if (item.PauseOnLastFrame)
-                {
-                    _frozenItems.Add(item.FilePath);
-                }
-                else if (_frozenItems.Contains(item.FilePath))
-                {
-                    item.PauseOnLastFrame = true;
-                }
+                continue;
+            }
+
+            if (item.PauseOnLastFrame)
+            {
+                _frozenItems.Add(item.FilePath);
+            }
+            else if (_frozenItems.Contains(item.FilePath))
+            {
+                item.PauseOnLastFrame = true;
             }
         }
     }

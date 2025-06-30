@@ -4,7 +4,7 @@ namespace OnlyM.Models;
 
 internal sealed class RenderingMethodItem
 {
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
-    public RenderingMethod Method { get; set; }
+    public RenderingMethod Method { get; init; }
 }

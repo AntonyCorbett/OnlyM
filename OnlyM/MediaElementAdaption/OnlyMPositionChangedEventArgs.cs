@@ -10,7 +10,7 @@ public class OnlyMPositionChangedEventArgs : EventArgs
         Position = position;
     }
 
-    public Guid MediaItemId { get; set; }
+    public Guid MediaItemId { get; }
 
     public TimeSpan Position { get; }
 }

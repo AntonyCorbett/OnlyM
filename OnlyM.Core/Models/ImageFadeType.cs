@@ -23,7 +23,7 @@ public enum ImageFadeType
     FadeInOut,
 
     /// <summary>
-    /// Cross fade.
+    /// Crossfade.
     /// </summary>
     CrossFade,
 }

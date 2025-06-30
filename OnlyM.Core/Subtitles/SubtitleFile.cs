@@ -110,12 +110,7 @@ internal sealed class SubtitleFile
 
     private static string StripAssCodes(string s)
     {
-        if (string.IsNullOrEmpty(s))
-        {
-            return s;
-        }
-
-        if (!s.Contains(AssStartToken))
+        if (string.IsNullOrEmpty(s) || !s.Contains(AssStartToken))
         {
             return s;
         }

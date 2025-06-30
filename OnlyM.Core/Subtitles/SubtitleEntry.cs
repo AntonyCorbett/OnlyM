@@ -2,9 +2,9 @@
 
 internal sealed class SubtitleEntry
 {
-    public int Number { get; set; }
+    public int Number { get; init; }
 
-    public SubtitleTiming? Timing { get; set; }
+    public SubtitleTiming? Timing { get; init; }
 
-    public string? Text { get; set; }
+    public string? Text { get; init; }
 }

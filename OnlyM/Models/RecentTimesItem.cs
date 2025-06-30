@@ -5,7 +5,7 @@ namespace OnlyM.Models;
 
 internal sealed class RecentTimesItem
 {
-    public int Seconds { get; set; }
+    public int Seconds { get; init; }
 
     public string AsString => ToString();
 
@@ -13,11 +13,8 @@ internal sealed class RecentTimesItem
 
     public override string ToString()
     {
-        if (Seconds == 0)
-        {
-            return Properties.Resources.CLEAR_RECENTS;
-        }
-
-        return TimeSpan.FromSeconds(Seconds).AsMediaDurationString();
+        return Seconds == 0
+            ? Properties.Resources.CLEAR_RECENTS
+            : TimeSpan.FromSeconds(Seconds).AsMediaDurationString();
     }
 }

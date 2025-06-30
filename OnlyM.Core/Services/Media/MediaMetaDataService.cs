@@ -37,15 +37,15 @@ public class MediaMetaDataService : IMediaMetaDataService
         }
         catch (VideoFileInUseException)
         {
-            Log.Logger.Information($"Waiting for file to become available: {mediaItemFilePath}");
+            Log.Logger.Information("Waiting for file to become available: {Path}", mediaItemFilePath);
         }
         catch (IOException)
         {
-            Log.Logger.Error($"Could not get metadata from file: {mediaItemFilePath} (in use)");
+            Log.Logger.Error("Could not get metadata from file: {Path} (in use)", mediaItemFilePath);
         }
         catch (Exception ex)
         {
-            Log.Logger.Error(ex, $"Could not get metadata from file: {mediaItemFilePath}");
+            Log.Logger.Error(ex, "Could not get metadata from file: {Path}", mediaItemFilePath);
         }
 
         return null;

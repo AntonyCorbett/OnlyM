@@ -10,7 +10,7 @@ internal sealed class OnlyMLogMessageEventArgs
         Message = message;
     }
 
-    public string Message { get; set; }
+    public string Message { get; }
 
-    public LogEventLevel Level { get; set; }
+    public LogEventLevel Level { get; }
 }

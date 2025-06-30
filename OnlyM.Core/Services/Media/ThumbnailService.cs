@@ -88,7 +88,7 @@ public sealed class ThumbnailService : IThumbnailService
         long originalLastChanged,
         out bool foundInCache)
     {
-        Log.Logger.Debug($"Getting thumbnail: {originalPath}");
+        Log.Logger.Debug("Getting thumbnail: {Path}", originalPath);
 
         var result = _databaseService.GetThumbnailFromCache(originalPath, originalLastChanged);
         if (result != null)
@@ -108,7 +108,7 @@ public sealed class ThumbnailService : IThumbnailService
         }
         catch (Exception ex)
         {
-            Log.Logger.Error(ex, $"Could not get a thumbnail for {originalPath}");
+            Log.Logger.Error(ex, "Could not get a thumbnail for {Path}", originalPath);
             result = _standardUnknownThumbnail.Value;
         }
 
@@ -144,12 +144,9 @@ public sealed class ThumbnailService : IThumbnailService
                     tempThumbnailFolder,
                     _optionsService.EmbeddedThumbnails);
 
-                if (string.IsNullOrEmpty(tempFile))
-                {
-                    return null;
-                }
-
-                return File.ReadAllBytes(tempFile);
+                return string.IsNullOrEmpty(tempFile)
+                    ? null
+                    : File.ReadAllBytes(tempFile);
 
             case MediaClassification.Audio:
                 return _standardAudioThumbnail.Value;
@@ -180,12 +177,9 @@ public sealed class ThumbnailService : IThumbnailService
         var helper = new WebShortcutHelper(originalPath);
 
         var bytes = FaviconHelper.GetIconImage(helper.Uri);
-        if (bytes != null)
-        {
-            return CreateFramedSmallIcon(bytes);
-        }
-
-        return _standardWebThumbnail.Value;
+        return bytes != null
+            ? CreateFramedSmallIcon(bytes)
+            : _standardWebThumbnail.Value;
     }
 
     private byte[]? GetPdfThumbnail(string originalPath)
@@ -205,8 +199,9 @@ public sealed class ThumbnailService : IThumbnailService
             encoder.Save(stream);
             return stream.ToArray();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Log.Logger.Warning(ex, "Could not get PDF thumbnail {Path}", originalPath);
             return _standardPdfThumbnail.Value;
         }
     }
@@ -221,32 +216,34 @@ public sealed class ThumbnailService : IThumbnailService
             return null;
         }
 
-        if (Math.Max(image.Height, image.Width) < pixelSize)
+        if (!(Math.Max(image.Height, image.Width) < pixelSize))
         {
-            var visual = new DrawingVisual();
-            using (var drawingContext = visual.RenderOpen())
-            {
-                drawingContext.DrawRectangle(
-                    System.Windows.Media.Brushes.Black,
-                    null,
-                    new Rect(0, 0, pixelSize, pixelSize));
-
-                var left = (pixelSize - image.Width) / 2;
-                var top = (pixelSize - image.Height) / 2;
-
-                drawingContext.DrawImage(image, new Rect(left, top, image.Width, image.Height));
-            }
-
-            var bitmap = new RenderTargetBitmap(pixelSize, pixelSize, 96, 96, PixelFormats.Pbgra32);
-            bitmap.Render(visual);
-
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bitmap));
-
-            using var stream = new MemoryStream();
-            encoder.Save(stream);
-            bytes = stream.ToArray();
+            return bytes;
         }
+
+        var visual = new DrawingVisual();
+        using (var drawingContext = visual.RenderOpen())
+        {
+            drawingContext.DrawRectangle(
+                System.Windows.Media.Brushes.Black,
+                null,
+                new Rect(0, 0, pixelSize, pixelSize));
+
+            var left = (pixelSize - image.Width) / 2;
+            var top = (pixelSize - image.Height) / 2;
+
+            drawingContext.DrawImage(image, new Rect(left, top, image.Width, image.Height));
+        }
+
+        var bitmap = new RenderTargetBitmap(pixelSize, pixelSize, 96, 96, PixelFormats.Pbgra32);
+        bitmap.Render(visual);
+
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(bitmap));
+
+        using var stream = new MemoryStream();
+        encoder.Save(stream);
+        bytes = stream.ToArray();
 
         return bytes;
     }
@@ -260,12 +257,9 @@ public sealed class ThumbnailService : IThumbnailService
         }
 
         var slide = file.GetSlide(0);
-        if (slide.Image == null)
-        {
-            return _standardUnknownThumbnail.Value;
-        }
-
-        return GraphicsUtils.CreateThumbnailOfImage(slide.Image, MaxPixelDimension);
+        return slide.Image == null
+            ? _standardUnknownThumbnail.Value
+            : GraphicsUtils.CreateThumbnailOfImage(slide.Image, MaxPixelDimension);
     }
 
     private void OnThumbnailsPurgedEvent() =>

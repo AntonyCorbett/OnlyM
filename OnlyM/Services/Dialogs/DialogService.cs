@@ -21,7 +21,7 @@ internal sealed class DialogService : IDialogService
 
         await DialogHost.Show(
             dialog,
-            (object sender, DialogClosingEventArgs args) => _isDialogVisible = false);
+            (object _, DialogClosingEventArgs args) => _isDialogVisible = false);
 
         return dc.Result;
     }

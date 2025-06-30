@@ -193,26 +193,26 @@ internal sealed class DragAndDropService : IDragAndDropService
     private static int CopyAsSlideshow(string mediaFolder, IDataObject data, string[] files)
     {
         var title = GetOnlyVTitle(data);
-        if (!string.IsNullOrEmpty(title))
+        if (string.IsNullOrEmpty(title))
         {
-            const int maxSlideWidth = 1920;
-            const int maxSlideHeight = 1080;
-
-            var sfb = new SlideFileBuilder(maxSlideWidth, maxSlideHeight) { AutoPlay = false, Loop = false };
-
-            for (var n = 0; n < files.Length; ++n)
-            {
-                var file = files[n];
-                sfb.AddSlide(file, n == 0, false, n == file.Length - 1, false);
-            }
-
-            var destFilename = Path.Combine(mediaFolder, title + SlideFile.FileExtension);
-            sfb.Build(destFilename, overwrite: true);
-
-            return 1;
+            return 0;
         }
 
-        return 0;
+        const int maxSlideWidth = 1920;
+        const int maxSlideHeight = 1080;
+
+        var sfb = new SlideFileBuilder(maxSlideWidth, maxSlideHeight) { AutoPlay = false, Loop = false };
+
+        for (var n = 0; n < files.Length; ++n)
+        {
+            var file = files[n];
+            sfb.AddSlide(file, n == 0, false, n == file.Length - 1, false);
+        }
+
+        var destFilename = Path.Combine(mediaFolder, title + SlideFile.FileExtension);
+        sfb.Build(destFilename, overwrite: true);
+
+        return 1;
     }
 
     private static int CopyAsIndividualFiles(string mediaFolder, string[] files)
@@ -242,23 +242,25 @@ internal sealed class DragAndDropService : IDragAndDropService
 
         foreach (var uri in uriList)
         {
-            if (!string.IsNullOrEmpty(uri))
+            if (string.IsNullOrEmpty(uri))
             {
-                if (IsMediaFileUrl(uri))
+                continue;
+            }
+
+            if (IsMediaFileUrl(uri))
+            {
+                // uri points to a media item.
+                if (CopyAsMediaFileFromUri(mediaFolder, uri))
                 {
-                    // uri points to a media item.
-                    if (CopyAsMediaFileFromUri(mediaFolder, uri))
-                    {
-                        ++count;
-                    }
+                    ++count;
                 }
-                else
+            }
+            else
+            {
+                // uri should be treated as a web shortcut.
+                if (CreateShortcutFromUri(mediaFolder, uri))
                 {
-                    // uri should be treated as a web shortcut.
-                    if (CreateShortcutFromUri(mediaFolder, uri))
-                    {
-                        ++count;
-                    }
+                    ++count;
                 }
             }
         }
@@ -350,12 +352,10 @@ internal sealed class DragAndDropService : IDragAndDropService
         var hashCode = uri.GetHashCode();
 
         var webPageTitle = WebPageTitleHelper.Get(uri);
-        if (!string.IsNullOrEmpty(webPageTitle))
-        {
-            return $"{FileUtils.CoerceValidFileName(webPageTitle)}{hashCode}.url";
-        }
 
-        return $"{FileUtils.CoerceValidFileName(uri.Host)}-{hashCode}.url";
+        return !string.IsNullOrEmpty(webPageTitle)
+            ? $"{FileUtils.CoerceValidFileName(webPageTitle)}{hashCode}.url"
+            : $"{FileUtils.CoerceValidFileName(uri.Host)}-{hashCode}.url";
     }
 
     private static string GetWebDownloadTempFolder()
@@ -367,25 +367,25 @@ internal sealed class DragAndDropService : IDragAndDropService
 
     private static bool CopyFileInternal(string sourceFile, string destFile)
     {
-        if (!string.IsNullOrEmpty(destFile) && !File.Exists(destFile))
+        if (string.IsNullOrEmpty(destFile) || File.Exists(destFile))
         {
-            var destFolder = Path.GetDirectoryName(destFile);
-            if (string.IsNullOrEmpty(destFolder))
-            {
-                return false;
-            }
-
-            // this is better for ths folder watcher which triggers as soon as a file write 
-            // begins. A large file would not be completely written before the folder watcher
-            // triggers an attempt to analyse the file, extract thumbnail etc.
-            var tempFileName = Path.Combine(destFolder, Path.GetRandomFileName());
-            File.Copy(sourceFile, tempFileName, true);
-            File.Move(tempFileName, destFile);
-
-            return true;
+            return false;
         }
 
-        return false;
+        var destFolder = Path.GetDirectoryName(destFile);
+        if (string.IsNullOrEmpty(destFolder))
+        {
+            return false;
+        }
+
+        // this is better for ths folder watcher which triggers as soon as a file write 
+        // begins. A large file would not be completely written before the folder watcher
+        // triggers an attempt to analyse the file, extract thumbnail etc.
+        var tempFileName = Path.Combine(destFolder, Path.GetRandomFileName());
+        File.Copy(sourceFile, tempFileName, true);
+        File.Move(tempFileName, destFile);
+
+        return true;
     }
 
     private bool IsMediaFileUrl(string uri)
@@ -400,16 +400,13 @@ internal sealed class DragAndDropService : IDragAndDropService
 
     private static bool DataIsFromOnlyV(IDataObject data)
     {
-        if (data.GetDataPresent(DataFormats.StringFormat))
+        if (!data.GetDataPresent(DataFormats.StringFormat))
         {
-            var s = (string?)data.GetData(DataFormats.StringFormat);
-            if (s != null && s.StartsWith("OnlyV|", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
+            return false;
         }
 
-        return false;
+        var s = (string?)data.GetData(DataFormats.StringFormat);
+        return s != null && s.StartsWith("OnlyV|", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string? GetOnlyVTitle(IDataObject data)
@@ -420,21 +417,25 @@ internal sealed class DragAndDropService : IDragAndDropService
 
     private static List<string> GetSupportedUrls(IDataObject data)
     {
+        if (!data.GetDataPresent(DataFormats.StringFormat))
+        {
+            return [];
+        }
+
+        var s = (string?)data.GetData(DataFormats.StringFormat);
+
+        if (string.IsNullOrEmpty(s))
+        {
+            return [];
+        }
+
         var result = new List<string>();
 
-        if (data.GetDataPresent(DataFormats.StringFormat))
+        using var reader = new StringReader(s);
+        var line = reader.ReadLine();
+        if (!string.IsNullOrEmpty(line) && IsAcceptableUri(line))
         {
-            var s = (string?)data.GetData(DataFormats.StringFormat);
-
-            if (!string.IsNullOrEmpty(s))
-            {
-                using var reader = new StringReader(s);
-                var line = reader.ReadLine();
-                if (!string.IsNullOrEmpty(line) && IsAcceptableUri(line))
-                {
-                    result.Add(line.Trim());
-                }
-            }
+            result.Add(line.Trim());
         }
 
         return result;
@@ -483,7 +484,7 @@ internal sealed class DragAndDropService : IDragAndDropService
             }
         }
 
-        Log.Logger.Verbose($"Found {result.Count} supported files in drag-and-drop operation");
+        Log.Logger.Verbose("Found {Count} supported files in drag-and-drop operation", result.Count);
 
         result.Sort();
 

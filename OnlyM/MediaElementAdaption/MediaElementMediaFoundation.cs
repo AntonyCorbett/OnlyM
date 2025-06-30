@@ -13,7 +13,7 @@ internal sealed class MediaElementMediaFoundation : IMediaElement
 {
     // note that _audioPlayer is used for audio-only playback (e.g. MP3 files).
     // Videos are rendered using _mediaElement. It should be possible to use MediaElement
-    // exclusively, but it must be part of the visual tree in order to work correctly
+    // exclusively, but it must be part of the visual tree in order to work correctly,
     // and we want to be able to play audio without the need to create the MediaWindow.
     private readonly Lazy<MediaPlayer> _audioPlayer;
     private readonly MediaElement _mediaElement;
@@ -78,12 +78,9 @@ internal sealed class MediaElementMediaFoundation : IMediaElement
     {
         get
         {
-            if (_currentMediaClassification == MediaClassification.Audio)
-            {
-                return _audioPlayer.Value.Position;
-            }
-
-            return _mediaElement.Position;
+            return _currentMediaClassification == MediaClassification.Audio
+                ? _audioPlayer.Value.Position
+                : _mediaElement.Position;
         }
 
         set
@@ -99,18 +96,10 @@ internal sealed class MediaElementMediaFoundation : IMediaElement
         }
     }
 
-    public Duration NaturalDuration
-    {
-        get
-        {
-            if (_currentMediaClassification == MediaClassification.Audio)
-            {
-                return _audioPlayer.Value.NaturalDuration;
-            }
-
-            return _mediaElement.NaturalDuration;
-        }
-    }
+    public Duration NaturalDuration =>
+        _currentMediaClassification == MediaClassification.Audio
+            ? _audioPlayer.Value.NaturalDuration
+            : _mediaElement.NaturalDuration;
 
     public Task Play(Uri mediaPath, MediaClassification mediaClassification)
     {

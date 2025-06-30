@@ -151,7 +151,7 @@ internal sealed class WebDisplayManager : IDisposable
             return;
         }
 
-        Log.Logger.Debug($"Mirror path = {mirrorExePath}");
+        Log.Logger.Debug("Mirror path = {Path}", mirrorExePath);
 
         var mainWindow = Application.Current.MainWindow;
         if (mainWindow == null)
@@ -176,8 +176,8 @@ internal sealed class WebDisplayManager : IDisposable
             return;
         }
 
-        Log.Logger.Debug($"Main monitor = {onlyMMonitor.Monitor?.DeviceName}");
-        Log.Logger.Debug($"Media monitor = {mediaMonitor.Monitor?.DeviceName}");
+        Log.Logger.Debug("Main monitor = {Device}", onlyMMonitor.Monitor?.DeviceName);
+        Log.Logger.Debug("Media monitor = {Device}", mediaMonitor.Monitor?.DeviceName);
 
         StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = Properties.Resources.LAUNCHING_MIRROR });
 
@@ -189,7 +189,7 @@ internal sealed class WebDisplayManager : IDisposable
             var commandLineArgs =
                 $"{onlyMMonitor.Monitor?.DeviceName} {mediaMonitor.Monitor?.DeviceName} {zoomStr} {hotKey}";
 
-            Log.Logger.Debug($"Starting mirror exe with args = {commandLineArgs}");
+            Log.Logger.Debug("Starting mirror exe with args = {Args}", commandLineArgs);
 
             _mirrorProcess = new Process
             {
@@ -315,7 +315,14 @@ internal sealed class WebDisplayManager : IDisposable
 
         Application.Current.Dispatcher.Invoke(async () =>
         {
-            Log.Debug(e.IsLoading ? $"Loading web page = {_browser.Address}" : "Loaded web page");
+            if (e.IsLoading)
+            {
+                Log.Debug("Loading web page = {Address}", _browser.Address);
+            }
+            else
+            {
+                Log.Debug("Loaded web page");
+            }
 
             if (!e.IsLoading && !_showing && _currentMediaItemUrl != null)
             {
@@ -419,7 +426,7 @@ internal sealed class WebDisplayManager : IDisposable
         }
         else
         {
-            Log.Logger.Error($"Mirror process exited with exit code {_mirrorProcess.ExitCode}");
+            Log.Logger.Error("Mirror process exited with exit code {ExitCode}", _mirrorProcess.ExitCode);
 
             if (_mirrorProcess.ExitCode == 5)
             {

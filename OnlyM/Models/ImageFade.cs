@@ -4,7 +4,7 @@ namespace OnlyM.Models;
 
 internal sealed class ImageFade
 {
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
-    public ImageFadeType Fade { get; set; }
+    public ImageFadeType Fade { get; init; }
 }

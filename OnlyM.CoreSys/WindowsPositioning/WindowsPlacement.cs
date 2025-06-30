@@ -38,41 +38,43 @@ public static class WindowsPlacement
 
     public static void SetPlacement(this Window window, string placementJson, Size sizeOverride)
     {
-        if (!string.IsNullOrEmpty(placementJson))
+        if (string.IsNullOrEmpty(placementJson))
         {
-            var windowHandle = new WindowInteropHelper(window).Handle;
+            return;
+        }
 
-            var xmlBytes = Encoding.UTF8.GetBytes(placementJson);
-            try
+        var windowHandle = new WindowInteropHelper(window).Handle;
+
+        var xmlBytes = Encoding.UTF8.GetBytes(placementJson);
+        try
+        {
+            WINDOWPLACEMENT placement;
+            using (var memoryStream = new MemoryStream(xmlBytes))
+            using (var reader = XmlReader.Create(memoryStream))
             {
-                WINDOWPLACEMENT placement;
-                using (var memoryStream = new MemoryStream(xmlBytes))
-                using (var reader = XmlReader.Create(memoryStream))
+                var obj = (WINDOWPLACEMENT?)Serializer.Deserialize(reader);
+                if (obj == null)
                 {
-                    var obj = (WINDOWPLACEMENT?)Serializer.Deserialize(reader);
-                    if (obj == null)
-                    {
-                        return;
-                    }
-
-                    placement = obj.Value;
+                    return;
                 }
 
-                if (!sizeOverride.IsEmpty)
-                {
-                    placement.normalPosition.Right = placement.normalPosition.Left + (int)sizeOverride.Width;
-                    placement.normalPosition.Bottom = placement.normalPosition.Top + (int)sizeOverride.Height;
-                }
+                placement = obj.Value;
+            }
 
-                placement.length = Marshal.SizeOf<WINDOWPLACEMENT>();
-                placement.flags = 0;
-                placement.showCmd = placement.showCmd == SwShowMinimized ? SwShowNormal : placement.showCmd;
-                WindowsPlacementNativeMethods.SetWindowPlacement(windowHandle, ref placement);
-            }
-            catch (InvalidOperationException ex)
+            if (!sizeOverride.IsEmpty)
             {
-                Log.Logger.Error(ex, "Parsing placement XML failed");
+                placement.normalPosition.Right = placement.normalPosition.Left + (int)sizeOverride.Width;
+                placement.normalPosition.Bottom = placement.normalPosition.Top + (int)sizeOverride.Height;
             }
+
+            placement.length = Marshal.SizeOf<WINDOWPLACEMENT>();
+            placement.flags = 0;
+            placement.showCmd = placement.showCmd == SwShowMinimized ? SwShowNormal : placement.showCmd;
+            WindowsPlacementNativeMethods.SetWindowPlacement(windowHandle, ref placement);
+        }
+        catch (InvalidOperationException ex)
+        {
+            Log.Logger.Error(ex, "Parsing placement XML failed");
         }
     }
 

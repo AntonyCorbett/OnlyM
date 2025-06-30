@@ -90,19 +90,19 @@ internal sealed class SettingsViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
     }
 
-    public RelayCommand Set360PSizeCommand { get; set; } = null!;
+    public RelayCommand Set360PSizeCommand { get; private set; } = null!;
 
-    public RelayCommand Set480PSizeCommand { get; set; } = null!;
+    public RelayCommand Set480PSizeCommand { get; private set; } = null!;
 
-    public RelayCommand Set720PSizeCommand { get; set; } = null!;
+    public RelayCommand Set720PSizeCommand { get; private set; } = null!;
 
-    public RelayCommand Set1080PSizeCommand { get; set; } = null!;
+    public RelayCommand Set1080PSizeCommand { get; private set; } = null!;
 
-    public RelayCommand PurgeThumbnailCacheCommand { get; set; } = null!;
+    public RelayCommand PurgeThumbnailCacheCommand { get; private set; } = null!;
 
-    public RelayCommand PurgeWebCacheCommand { get; set; } = null!;
+    public RelayCommand PurgeWebCacheCommand { get; private set; } = null!;
 
-    public RelayCommand OpenMediaFolderCommand { get; set; } = null!;
+    public RelayCommand OpenMediaFolderCommand { get; private set; } = null!;
 
     public ObservableCollection<string> RecentMediaFolders => _recentlyUsedMediaFolders.GetFolders();
 
@@ -601,20 +601,6 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
-    public bool IsMediaActive
-    {
-        get => _isMediaActive;
-        set
-        {
-            if (_isMediaActive != value)
-            {
-                _isMediaActive = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsMediaInactive));
-            }
-        }
-    }
-
     public bool IsMediaFolderOverriden => _optionsService.IsCommandLineMediaFolderSpecified();
 
     public bool IsMediaInactive => !IsMediaActive;
@@ -933,7 +919,7 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
-    public Size MediaWindowSize
+    private Size MediaWindowSize
     {
         get => _optionsService.MediaWindowSize;
         set
@@ -950,6 +936,19 @@ internal sealed class SettingsViewModel : ObservableObject
             OnPropertyChanged(nameof(Is480PSize));
             OnPropertyChanged(nameof(Is720PSize));
             OnPropertyChanged(nameof(Is1080PSize));
+        }
+    }
+
+    private bool IsMediaActive
+    {
+        get => _isMediaActive;
+        set
+        {
+            if (_isMediaActive != value)
+            {
+                SetProperty(ref _isMediaActive, value);
+                OnPropertyChanged(nameof(IsMediaInactive));
+            }
         }
     }
 

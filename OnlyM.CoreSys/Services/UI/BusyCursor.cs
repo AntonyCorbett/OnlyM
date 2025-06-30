@@ -7,13 +7,13 @@ namespace OnlyM.CoreSys.Services.UI;
 
 public sealed class BusyCursor : IDisposable
 {
-    private static int BusyCount;
+    private static int _busyCount;
 
     public BusyCursor()
     {
         Application.Current.Dispatcher.Invoke(() =>
         {
-            Interlocked.Increment(ref BusyCount);
+            Interlocked.Increment(ref _busyCount);
             StatusChangedEvent?.Invoke(null, EventArgs.Empty);
             Mouse.OverrideCursor = Cursors.Wait;
         });
@@ -21,15 +21,15 @@ public sealed class BusyCursor : IDisposable
 
     public static event EventHandler? StatusChangedEvent;
 
-    public static bool IsBusy() => BusyCount > 0;
+    public static bool IsBusy() => _busyCount > 0;
 
     public void Dispose() =>
         Application.Current.Dispatcher.Invoke(() =>
         {
-            Interlocked.Decrement(ref BusyCount);
+            Interlocked.Decrement(ref _busyCount);
             StatusChangedEvent?.Invoke(null, EventArgs.Empty);
 
-            if (BusyCount == 0)
+            if (_busyCount == 0)
             {
                 Mouse.OverrideCursor = null;
             }

@@ -118,7 +118,7 @@ public sealed partial class MediaWindow : IDisposable
         IReadOnlyCollection<MediaItem>? currentMediaItems,
         bool startFromPaused)
     {
-        Log.Logger.Information($"Starting media {mediaItemToStart.FilePath}");
+        Log.Logger.Information("Starting media {Path}", mediaItemToStart.FilePath);
 
         var vm = (MediaViewModel)DataContext;
         vm.VideoRotation = 0;
@@ -168,7 +168,7 @@ public sealed partial class MediaWindow : IDisposable
             return;
         }
 
-        Log.Logger.Information($"Stopping media {mediaItem.FilePath}");
+        Log.Logger.Information("Stopping media {Path}", mediaItem.FilePath);
 
         switch (mediaItem.MediaType?.Classification)
         {
@@ -203,7 +203,7 @@ public sealed partial class MediaWindow : IDisposable
             mediaItem.MediaType?.Classification == MediaClassification.Video,
             "Expecting audio or video media item");
 
-        Log.Logger.Information($"Pausing media {mediaItem.FilePath}");
+        Log.Logger.Information("Pausing media {Path}", mediaItem.FilePath);
 
         await PauseVideoOrAudioAsync(mediaItem);
     }
@@ -268,8 +268,13 @@ public sealed partial class MediaWindow : IDisposable
 
     private async void HandleVideoPlaybackPositionChangedEvent(object? sender, EventArgs e)
     {
-        if (_optionsService.AllowVideoScrubbing)
+        try
         {
+            if (!_optionsService.AllowVideoScrubbing)
+            {
+                return;
+            }
+
             var item = (MediaItem?)sender;
             if (item == null)
             {
@@ -280,21 +285,27 @@ public sealed partial class MediaWindow : IDisposable
             await _videoDisplayManager!.SetPlaybackPosition(
                 TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
         }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Error setting video playback position");
+        }
     }
 
     private void HandleAudioPlaybackPositionChangedEvent(object? sender, EventArgs e)
     {
-        if (_optionsService.AllowVideoScrubbing)
+        if (!_optionsService.AllowVideoScrubbing)
         {
-            var item = (MediaItem?)sender;
-            if (item == null)
-            {
-                return;
-            }
-
-            _audioManager.SetPlaybackPosition(
-                TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
+            return;
         }
+
+        var item = (MediaItem?)sender;
+        if (item == null)
+        {
+            return;
+        }
+
+        _audioManager.SetPlaybackPosition(
+            TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
     }
 
     private async Task HideVideoAsync(MediaItem mediaItem)
@@ -311,18 +322,20 @@ public sealed partial class MediaWindow : IDisposable
             x => x.MediaType?.Classification == MediaClassification.Image ||
                  x.MediaType?.Classification == MediaClassification.Slideshow);
 
-        if (imageItem != null)
+        if (imageItem == null)
         {
-            switch (imageItem.MediaType?.Classification)
-            {
-                case MediaClassification.Image:
-                    _imageDisplayManager.HideSingleImage(imageItem.Id);
-                    break;
+            return;
+        }
 
-                case MediaClassification.Slideshow:
-                    _imageDisplayManager.StopSlideshow(imageItem.Id);
-                    break;
-            }
+        switch (imageItem.MediaType?.Classification)
+        {
+            case MediaClassification.Image:
+                _imageDisplayManager.HideSingleImage(imageItem.Id);
+                break;
+
+            case MediaClassification.Slideshow:
+                _imageDisplayManager.StopSlideshow(imageItem.Id);
+                break;
         }
     }
 

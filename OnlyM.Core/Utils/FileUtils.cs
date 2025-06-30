@@ -15,7 +15,7 @@ public static class FileUtils
     private static readonly string OptionsFileName = "options.json";
 
     /// <summary>
-    /// Creates directory if it doesn't exist. Throws if cannot be created
+    /// Creates directory if it doesn't exist. Throws if it cannot be created
     /// </summary>
     /// <param name="folderPath">Directory to create</param>
     public static void CreateDirectory(string folderPath)

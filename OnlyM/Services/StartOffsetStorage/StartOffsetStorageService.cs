@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using OnlyM.Core.Services.Database;
 using Serilog;
-using static System.Array;
 
 namespace OnlyM.Services.StartOffsetStorage;
 

@@ -65,7 +65,7 @@ internal sealed class VideoDisplayManager : IDisposable
         _mediaItemId = mediaItemId;
         _mediaItemFilePath = mediaItemFilePath;
 
-        Log.Debug($"ShowVideo - Media Id = {_mediaItemId}");
+        Log.Debug("ShowVideo - Media Id = {MediaItemId}", _mediaItemId);
 
         _startPosition = startOffset;
         _lastPosition = TimeSpan.Zero;
@@ -85,7 +85,7 @@ internal sealed class VideoDisplayManager : IDisposable
         }
         else
         {
-            Log.Debug($"Firing Started - Media Id = {_mediaItemId}");
+            Log.Debug("Firing Started - Media Id = {MediaItemId}", _mediaItemId);
 
             await CreateSubtitleFile(mediaItemFilePath);
 
@@ -139,14 +139,21 @@ internal sealed class VideoDisplayManager : IDisposable
 
     private async void HandleMediaOpened(object? sender, OnlyMMediaOpenedEventArgs e)
     {
-        Log.Logger.Information("Opened");
+        try
+        {
+            Log.Logger.Information("Opened");
 
-        _firedNearEndEvent = false;
+            _firedNearEndEvent = false;
 
-        _mediaElement.Position = _startPosition;
-        OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
+            _mediaElement.Position = _startPosition;
+            OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
 
-        await CreateSubtitleProvider(_mediaItemFilePath, _startPosition);
+            await CreateSubtitleProvider(_mediaItemFilePath, _startPosition);
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Error opening media");
+        }
     }
 
     private void HandleMediaClosed(object? sender, OnlyMMediaClosedEventArgs e)
@@ -160,12 +167,19 @@ internal sealed class VideoDisplayManager : IDisposable
 
     private async void HandleMediaEnded(object? sender, OnlyMMediaEndedEventArgs e)
     {
-        Log.Logger.Debug("Media ended");
-
-        if (!_mediaElement.IsPaused)
+        try
         {
-            OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
-            await _mediaElement.Close();
+            Log.Logger.Debug("Media ended");
+
+            if (!_mediaElement.IsPaused)
+            {
+                OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Stopped));
+                await _mediaElement.Close();
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Error handling media ended");
         }
     }
 
@@ -201,23 +215,23 @@ internal sealed class VideoDisplayManager : IDisposable
         switch (e.Level)
         {
             case LogEventLevel.Debug:
-                Log.Logger.Debug(e.Message);
+                Log.Logger.Debug("{LogMessage}", e.Message);
                 break;
 
             case LogEventLevel.Error:
-                Log.Logger.Error(e.Message);
+                Log.Logger.Error("{LogMessage}", e.Message);
                 break;
 
             case LogEventLevel.Information:
-                Log.Logger.Information(e.Message);
+                Log.Logger.Information("{LogMessage}", e.Message);
                 break;
 
             case LogEventLevel.Verbose:
-                Log.Logger.Verbose(e.Message);
+                Log.Logger.Verbose("{LogMessage}", e.Message);
                 break;
 
             case LogEventLevel.Warning:
-                Log.Logger.Warning(e.Message);
+                Log.Logger.Warning("{LogMessage}", e.Message);
                 break;
         }
     }

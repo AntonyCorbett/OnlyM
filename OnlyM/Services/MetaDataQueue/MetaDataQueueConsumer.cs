@@ -60,7 +60,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
             {
                 var nextItem = _collection.Take(_cancellationToken);
 
-                Log.Logger.Debug($"Consuming item {nextItem.FilePath}");
+                Log.Logger.Debug("Consuming item {Path}", nextItem.FilePath);
 
                 if (!IsPopulated(nextItem))
                 {
@@ -101,7 +101,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
 
     private void ItemCompleted(MediaItem nextItem)
     {
-        Log.Logger.Debug($"Done item {nextItem.FilePath}");
+        Log.Logger.Debug("Done item {Path}", nextItem.FilePath);
         ItemCompletedEvent?.Invoke(this, new ItemMetaDataPopulatedEventArgs { MediaItem = nextItem });
     }
 
@@ -110,7 +110,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
             .ContinueWith(
                 _ =>
                 {
-                    Log.Logger.Debug($"Replaced in queue {mediaItem.FilePath}");
+                    Log.Logger.Debug("Replaced in queue {Path}", mediaItem.FilePath);
                     _collection.Add(mediaItem, _cancellationToken);
                 },
                 _cancellationToken);

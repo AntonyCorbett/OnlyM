@@ -20,9 +20,17 @@ namespace OnlyM.CustomControls.Converters;
 
 public class RadiusConverter : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) =>
-        (double?)value * 2;
+    public object Convert(
+        object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture)
+    {
+        if (value == null)
+        {
+            return 0.0;
+        }
 
-    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) =>
+        return (double)value * 2;
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture) =>
         throw new NotImplementedException();
 }

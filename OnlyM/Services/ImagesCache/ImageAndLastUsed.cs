@@ -5,7 +5,7 @@ namespace OnlyM.Services.ImagesCache;
 
 internal sealed class ImageAndLastUsed
 {
-    public BitmapSource? BitmapImage { get; set; }
+    public BitmapSource? BitmapImage { get; init; }
 
     public DateTime LastUsedUtc { get; set; }
 }

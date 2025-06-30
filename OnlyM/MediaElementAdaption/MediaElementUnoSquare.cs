@@ -98,8 +98,15 @@ internal sealed class MediaElementUnoSquare : IMediaElement
 
     private async void HandleMediaOpened(object? sender, MediaOpenedEventArgs e)
     {
-        await _mediaElement.Play();
-        MediaOpened?.Invoke(sender, new OnlyMMediaOpenedEventArgs());
+        try
+        {
+            await _mediaElement.Play();
+            MediaOpened?.Invoke(sender, new OnlyMMediaOpenedEventArgs());
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Logger.Error(ex, "HandleMediaOpen");
+        }
     }
 
     private void HandleMediaClosed(object? sender, EventArgs e) =>

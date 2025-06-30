@@ -4,9 +4,9 @@ namespace OnlyM.Core.Subtitles;
 
 public class SubtitleTiming
 {
-    public TimeSpan Start { get; set; }
+    public TimeSpan Start { get; private init; }
 
-    public TimeSpan End { get; set; }
+    public TimeSpan End { get; private init; }
 
     public static bool TryParse(string line, out SubtitleTiming? value)
     {
