@@ -9,7 +9,7 @@ using OnlyM.Core.Models;
 
 namespace OnlyM.Models;
 
-public sealed class MediaItem : ObservableObject
+public class MediaItem : ObservableObject
 {
     private static readonly SolidColorBrush ImageIconBrush = new(Colors.DarkGreen);
     private static readonly SolidColorBrush AudioIconBrush = new(Colors.CornflowerBlue);

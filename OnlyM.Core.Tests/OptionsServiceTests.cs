@@ -103,7 +103,7 @@ public class OptionsServiceTests
         var currentValue = _service.ShowFreezeCommand;
         var newValue = !currentValue;
 
-        _service.ShowFreezeCommandChangedEvent += (_,_) => eventRaised = true;
+        _service.ShowFreezeCommandChangedEvent += (_, _) => eventRaised = true;
         _service.ShowFreezeCommand = newValue;
         Assert.Equal(newValue, _service.ShowFreezeCommand);
         Assert.True(eventRaised);
@@ -113,7 +113,7 @@ public class OptionsServiceTests
     public void MaxItemCount_GetSet_Works()
     {
         var eventRaised = false;
-        _service.MaxItemCountChangedEvent += (_,_) => eventRaised = true;
+        _service.MaxItemCountChangedEvent += (_, _) => eventRaised = true;
         _service.MaxItemCount = 42;
         Assert.Equal(42, _service.MaxItemCount);
         Assert.True(eventRaised);
@@ -123,7 +123,7 @@ public class OptionsServiceTests
     public void OperatingDate_GetSet_Works()
     {
         var eventRaised = false;
-        _service.OperatingDateChangedEvent += (_,_) => eventRaised = true;
+        _service.OperatingDateChangedEvent += (_, _) => eventRaised = true;
         var date = DateTime.Today.AddDays(1);
         _service.OperatingDate = date;
         Assert.Equal(date, _service.OperatingDate);
@@ -137,7 +137,7 @@ public class OptionsServiceTests
         var currentValue = _service.ShowMediaItemCommandPanel;
         var newValue = !currentValue;
 
-        _service.ShowMediaItemCommandPanelChangedEvent += (_,_) => eventRaised = true;
+        _service.ShowMediaItemCommandPanelChangedEvent += (_, _) => eventRaised = true;
         _service.ShowMediaItemCommandPanel = newValue;
         Assert.Equal(newValue, _service.ShowMediaItemCommandPanel);
         Assert.True(eventRaised);
@@ -147,9 +147,9 @@ public class OptionsServiceTests
     public void VideoScreenPosition_GetSet_Works()
     {
         var eventRaised = false;
-        var newValue = new ScreenPosition(1,1,1,1);
+        var newValue = new ScreenPosition(1, 1, 1, 1);
 
-        _service.VideoScreenPositionChangedEvent += (_,_) => eventRaised = true;
+        _service.VideoScreenPositionChangedEvent += (_, _) => eventRaised = true;
         _service.VideoScreenPosition = newValue;
         Assert.Equal(newValue, _service.VideoScreenPosition);
         Assert.True(eventRaised);
@@ -159,8 +159,8 @@ public class OptionsServiceTests
     public void ImageScreenPosition_GetSet_Works()
     {
         var eventRaised = false;
-        _service.ImageScreenPositionChangedEvent += (_,_) => eventRaised = true;
-        var pos = new ScreenPosition(1,1,1,1);
+        _service.ImageScreenPositionChangedEvent += (_, _) => eventRaised = true;
+        var pos = new ScreenPosition(1, 1, 1, 1);
         _service.ImageScreenPosition = pos;
         Assert.Equal(pos, _service.ImageScreenPosition);
         Assert.True(eventRaised);
@@ -170,8 +170,8 @@ public class OptionsServiceTests
     public void WebScreenPosition_GetSet_Works()
     {
         var eventRaised = false;
-        _service.WebScreenPositionChangedEvent += (_,_) => eventRaised = true;
-        var pos = new ScreenPosition(1,1,1,1);
+        _service.WebScreenPositionChangedEvent += (_, _) => eventRaised = true;
+        var pos = new ScreenPosition(1, 1, 1, 1);
         _service.WebScreenPosition = pos;
         Assert.Equal(pos, _service.WebScreenPosition);
         Assert.True(eventRaised);
@@ -181,7 +181,7 @@ public class OptionsServiceTests
     public void IncludeBlankScreenItem_GetSet_Works()
     {
         var eventRaised = false;
-        _service.IncludeBlankScreenItemChangedEvent += (_,_) => eventRaised = true;
+        _service.IncludeBlankScreenItemChangedEvent += (_, _) => eventRaised = true;
         _service.IncludeBlankScreenItem = true;
         Assert.True(_service.IncludeBlankScreenItem);
         Assert.True(eventRaised);
@@ -191,7 +191,7 @@ public class OptionsServiceTests
     public void UseInternalMediaTitles_GetSet_Works()
     {
         var eventRaised = false;
-        _service.UseInternalMediaTitlesChangedEvent += (_,_) => eventRaised = true;
+        _service.UseInternalMediaTitlesChangedEvent += (_, _) => eventRaised = true;
         _service.UseInternalMediaTitles = true;
         Assert.True(_service.UseInternalMediaTitles);
         Assert.True(eventRaised);
@@ -201,7 +201,7 @@ public class OptionsServiceTests
     public void ShowVideoSubtitles_GetSet_Works()
     {
         var eventRaised = false;
-        _service.ShowSubtitlesChangedEvent += (_,_) => eventRaised = true;
+        _service.ShowSubtitlesChangedEvent += (_, _) => eventRaised = true;
         _service.ShowVideoSubtitles = true;
         Assert.True(_service.ShowVideoSubtitles);
         Assert.True(eventRaised);
@@ -214,7 +214,7 @@ public class OptionsServiceTests
         var currentValue = _service.AllowVideoPositionSeeking;
         var newValue = !currentValue;
 
-        _service.AllowVideoPositionSeekingChangedEvent += (_,_) => eventRaised = true;
+        _service.AllowVideoPositionSeekingChangedEvent += (_, _) => eventRaised = true;
         _service.AllowVideoPositionSeeking = newValue;
         Assert.Equal(newValue, _service.AllowVideoPositionSeeking);
         Assert.True(eventRaised);
@@ -227,7 +227,7 @@ public class OptionsServiceTests
         var currentValue = _service.AllowVideoPause;
         var newValue = !currentValue;
 
-        _service.AllowVideoPauseChangedEvent += (_,_) => eventRaised = true;
+        _service.AllowVideoPauseChangedEvent += (_, _) => eventRaised = true;
         _service.AllowVideoPause = newValue;
         Assert.Equal(newValue, _service.AllowVideoPause);
         Assert.True(eventRaised);
@@ -237,7 +237,7 @@ public class OptionsServiceTests
     public void PermanentBackdrop_GetSet_Works()
     {
         var eventRaised = false;
-        _service.PermanentBackdropChangedEvent += (_,_) => eventRaised = true;
+        _service.PermanentBackdropChangedEvent += (_, _) => eventRaised = true;
         _service.PermanentBackdrop = true;
         Assert.True(_service.PermanentBackdrop);
         Assert.True(eventRaised);
@@ -250,7 +250,7 @@ public class OptionsServiceTests
         var currentValue = _service.RenderingMethod;
         var newValue = currentValue == RenderingMethod.Ffmpeg ? RenderingMethod.MediaFoundation : RenderingMethod.Ffmpeg;
 
-        _service.RenderingMethodChangedEvent += (_,_) => eventRaised = true;
+        _service.RenderingMethodChangedEvent += (_, _) => eventRaised = true;
         _service.RenderingMethod = newValue;
         Assert.Equal(newValue, _service.RenderingMethod);
         Assert.True(eventRaised);
@@ -260,7 +260,7 @@ public class OptionsServiceTests
     public void MediaMonitorId_GetSet_Works()
     {
         var eventRaised = false;
-        _service.MediaMonitorChangedEvent += (_,_) => eventRaised = true;
+        _service.MediaMonitorChangedEvent += (_, _) => eventRaised = true;
         _service.MediaMonitorId = "monitor";
         Assert.Equal("monitor", _service.MediaMonitorId);
         Assert.True(eventRaised);
@@ -270,7 +270,7 @@ public class OptionsServiceTests
     public void MediaWindowed_GetSet_Works()
     {
         var eventRaised = false;
-        _service.MediaMonitorChangedEvent += (_,_) => eventRaised = true;
+        _service.MediaMonitorChangedEvent += (_, _) => eventRaised = true;
         _service.MediaWindowed = true;
         Assert.True(_service.MediaWindowed);
         Assert.True(eventRaised);
@@ -280,7 +280,7 @@ public class OptionsServiceTests
     public void MediaWindowSize_GetSet_Works()
     {
         var eventRaised = false;
-        _service.MediaMonitorChangedEvent += (_,_) => eventRaised = true;
+        _service.MediaMonitorChangedEvent += (_, _) => eventRaised = true;
         var size = new Size(100, 100);
         _service.MediaWindowSize = size;
         Assert.Equal(size, _service.MediaWindowSize);
@@ -294,7 +294,7 @@ public class OptionsServiceTests
         var currentValue = _service.WindowedAlwaysOnTop;
         var newValue = !currentValue;
 
-        _service.WindowedMediaAlwaysOnTopChangedEvent += (_,_) => eventRaised = true;
+        _service.WindowedMediaAlwaysOnTopChangedEvent += (_, _) => eventRaised = true;
         _service.WindowedAlwaysOnTop = newValue;
         Assert.Equal(newValue, _service.WindowedAlwaysOnTop);
         Assert.True(eventRaised);
@@ -304,7 +304,7 @@ public class OptionsServiceTests
     public void BrowserZoomLevelIncrement_GetSet_Works()
     {
         var eventRaised = false;
-        _service.BrowserChangedEvent += (_,_) => eventRaised = true;
+        _service.BrowserChangedEvent += (_, _) => eventRaised = true;
         _service.BrowserZoomLevelIncrement = 1.5;
         Assert.Equal(1.5, _service.BrowserZoomLevelIncrement);
         Assert.True(eventRaised);
@@ -322,7 +322,7 @@ public class OptionsServiceTests
     public void AlwaysOnTop_GetSet_Works()
     {
         var eventRaised = false;
-        _service.AlwaysOnTopChangedEvent += (_,_) => eventRaised = true;
+        _service.AlwaysOnTopChangedEvent += (_, _) => eventRaised = true;
         _service.AlwaysOnTop = true;
         Assert.True(_service.AlwaysOnTop);
         Assert.True(eventRaised);
@@ -332,7 +332,7 @@ public class OptionsServiceTests
     public void MagnifierFrameThickness_GetSet_Works()
     {
         var eventRaised = false;
-        _service.MagnifierChangedEvent += (_,_) => eventRaised = true;
+        _service.MagnifierChangedEvent += (_, _) => eventRaised = true;
         _service.MagnifierFrameThickness = 2.5;
         Assert.Equal(2.5, _service.MagnifierFrameThickness);
         Assert.True(eventRaised);
@@ -342,7 +342,7 @@ public class OptionsServiceTests
     public void MagnifierShape_GetSet_Works()
     {
         var eventRaised = false;
-        _service.MagnifierChangedEvent += (_,_) => eventRaised = true;
+        _service.MagnifierChangedEvent += (_, _) => eventRaised = true;
         _service.MagnifierShape = MagnifierShape.Circle;
         Assert.Equal(MagnifierShape.Circle, _service.MagnifierShape);
         Assert.True(eventRaised);
@@ -355,7 +355,7 @@ public class OptionsServiceTests
         var currentValue = _service.MagnifierSize;
         var newValue = currentValue == MagnifierSize.Large ? MagnifierSize.Medium : MagnifierSize.Large;
 
-        _service.MagnifierChangedEvent += (_,_) => eventRaised = true;
+        _service.MagnifierChangedEvent += (_, _) => eventRaised = true;
         _service.MagnifierSize = newValue;
         Assert.Equal(newValue, _service.MagnifierSize);
         Assert.True(eventRaised);
@@ -365,7 +365,7 @@ public class OptionsServiceTests
     public void MagnifierZoomLevel_GetSet_Works()
     {
         var eventRaised = false;
-        _service.MagnifierChangedEvent += (_,_) => eventRaised = true;
+        _service.MagnifierChangedEvent += (_, _) => eventRaised = true;
         _service.MagnifierZoomLevel = 1.2;
         Assert.Equal(1.2, _service.MagnifierZoomLevel);
         Assert.True(eventRaised);
@@ -375,7 +375,7 @@ public class OptionsServiceTests
     public void ImageFadeSpeed_GetSet_Works()
     {
         var eventRaised = false;
-        _service.ImageFadeSpeedChangedEvent += (_,_) => eventRaised = true;
+        _service.ImageFadeSpeedChangedEvent += (_, _) => eventRaised = true;
         _service.ImageFadeSpeed = FadeSpeed.Fast;
         Assert.Equal(FadeSpeed.Fast, _service.ImageFadeSpeed);
         Assert.True(eventRaised);
@@ -385,7 +385,7 @@ public class OptionsServiceTests
     public void ImageFadeType_GetSet_Works()
     {
         var eventRaised = false;
-        _service.ImageFadeTypeChangedEvent += (_,_) => eventRaised = true;
+        _service.ImageFadeTypeChangedEvent += (_, _) => eventRaised = true;
         _service.ImageFadeType = ImageFadeType.FadeIn;
         Assert.Equal(ImageFadeType.FadeIn, _service.ImageFadeType);
         Assert.True(eventRaised);
@@ -398,7 +398,7 @@ public class OptionsServiceTests
         var currentValue = _service.AutoRotateImages;
         var newValue = !currentValue;
 
-        _service.AutoRotateChangedEvent += (_,_) => eventRaised = true;
+        _service.AutoRotateChangedEvent += (_, _) => eventRaised = true;
         _service.AutoRotateImages = newValue;
         Assert.Equal(newValue, _service.AutoRotateImages);
         Assert.True(eventRaised);
@@ -408,7 +408,7 @@ public class OptionsServiceTests
     public void MediaFolder_GetSet_Works()
     {
         var eventRaised = false;
-        _service.MediaFolderChangedEvent += (_,_) => eventRaised = true;
+        _service.MediaFolderChangedEvent += (_, _) => eventRaised = true;
         _service.MediaFolder = "folder";
         Assert.Equal("folder", _service.MediaFolder);
         Assert.True(eventRaised);
@@ -428,7 +428,7 @@ public class OptionsServiceTests
         var currentValue = _service.AllowMirror;
         var newValue = !currentValue;
 
-        _service.AllowMirrorChangedEvent += (_,_) => eventRaised = true;
+        _service.AllowMirrorChangedEvent += (_, _) => eventRaised = true;
         _service.AllowMirror = newValue;
         Assert.Equal(newValue, _service.AllowMirror);
         Assert.True(eventRaised);

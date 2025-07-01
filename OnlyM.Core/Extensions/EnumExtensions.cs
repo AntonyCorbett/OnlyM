@@ -4,6 +4,10 @@ using Serilog.Events;
 
 namespace OnlyM.Core.Extensions;
 
+/// <summary>
+/// These extension methods make it easy to convert enum values to user-friendly,
+/// localized strings or associated values
+/// </summary>
 public static class EnumExtensions
 {
     public static string GetDescriptiveName(this MagnifierShape shape)

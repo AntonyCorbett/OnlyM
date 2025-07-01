@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlyM.CustomControls", "Onl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlyM.Core.Tests", "OnlyM.Core.Tests\OnlyM.Core.Tests.csproj", "{AE3390D2-288F-46CB-969A-21BD0AB7E9F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlyM.Tests", "OnlyM.Tests\OnlyM.Tests.csproj", "{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,6 +151,18 @@ Global
 		{AE3390D2-288F-46CB-969A-21BD0AB7E9F2}.Release|x64.Build.0 = Release|Any CPU
 		{AE3390D2-288F-46CB-969A-21BD0AB7E9F2}.Release|x86.ActiveCfg = Release|Any CPU
 		{AE3390D2-288F-46CB-969A-21BD0AB7E9F2}.Release|x86.Build.0 = Release|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Debug|x64.Build.0 = Debug|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Debug|x86.Build.0 = Debug|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Release|x64.ActiveCfg = Release|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Release|x64.Build.0 = Release|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Release|x86.ActiveCfg = Release|Any CPU
+		{CBE6A6D9-C65F-4D36-A34D-BFE5EB437F15}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
