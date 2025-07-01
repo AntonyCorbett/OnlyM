@@ -162,10 +162,8 @@ internal sealed class MainViewModel : ObservableObject
         get => _currentPage;
         private set
         {
-            if (_currentPage == null || !_currentPage.Equals(value))
+            if (SetProperty(ref _currentPage, value))
             {
-                _currentPage = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsSettingsPageActive));
                 OnPropertyChanged(nameof(IsOperatorPageActive));
                 OnPropertyChanged(nameof(ShowNewVersionButton));
@@ -177,14 +175,7 @@ internal sealed class MainViewModel : ObservableObject
     public bool IsMediaListLoading
     {
         get => _isMediaListLoading;
-        set
-        {
-            if (_isMediaListLoading != value)
-            {
-                _isMediaListLoading = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _isMediaListLoading, value);
     }
 
     private bool IsMediaListEmpty
@@ -192,10 +183,8 @@ internal sealed class MainViewModel : ObservableObject
         get => _isMediaListEmpty;
         set
         {
-            if (_isMediaListEmpty != value)
+            if (SetProperty(ref _isMediaListEmpty, value))
             {
-                _isMediaListEmpty = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(ShowDragAndDropHint));
             }
         }
@@ -206,10 +195,8 @@ internal sealed class MainViewModel : ObservableObject
         get => _isBusy;
         set
         {
-            if (_isBusy != value)
+            if (SetProperty(ref _isBusy, value))
             {
-                _isBusy = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsUnhideButtonVisible));
                 OnPropertyChanged(nameof(ShowProgressBar));
             }

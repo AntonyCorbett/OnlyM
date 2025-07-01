@@ -148,14 +148,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     public int ThumbnailColWidth
     {
         get => _thumbnailColWidth;
-        set
-        {
-            if (_thumbnailColWidth != value)
-            {
-                _thumbnailColWidth = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _thumbnailColWidth, value);
     }
 
     public void Dispose()

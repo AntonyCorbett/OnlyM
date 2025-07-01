@@ -44,7 +44,7 @@ public class CommandLineService : ICommandLineService
 
     public bool DisableVideoRenderingFix { get; set; }
 
-    private static string? GetFullSourcePath(string? sourcePath)
+    internal static string? GetFullSourcePath(string? sourcePath)
     {
         try
         {

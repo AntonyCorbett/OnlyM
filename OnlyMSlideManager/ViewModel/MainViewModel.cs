@@ -122,16 +122,13 @@ public class MainViewModel : ObservableObject
         get => _autoPlay;
         set
         {
-            if (value != _autoPlay)
+            if (SetProperty(ref _autoPlay, value))
             {
-                _autoPlay = value;
-
                 if (value != null && _currentSlideFileBuilder != null)
                 {
                     _currentSlideFileBuilder.AutoPlay = value.Value;
                 }
 
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(CanLoop));
                 OnPropertyChanged(nameof(CanAutoClose));
             }
@@ -143,16 +140,12 @@ public class MainViewModel : ObservableObject
         get => _autoClose;
         set
         {
-            if (value != _autoClose)
+            if (SetProperty(ref _autoClose, value))
             {
-                _autoClose = value;
-
                 if (value != null && _currentSlideFileBuilder != null)
                 {
                     _currentSlideFileBuilder.AutoClose = value.Value;
                 }
-
-                OnPropertyChanged();
             }
         }
     }
@@ -162,16 +155,13 @@ public class MainViewModel : ObservableObject
         get => _loop;
         set
         {
-            if (value != _loop)
+            if (SetProperty(ref _loop, value))
             {
-                _loop = value;
-
                 if (value != null && _currentSlideFileBuilder != null)
                 {
                     _currentSlideFileBuilder.Loop = value.Value;
                 }
 
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(CanAutoClose));
             }
         }
@@ -182,9 +172,8 @@ public class MainViewModel : ObservableObject
         get => _dwellTimeSeconds;
         set
         {
-            if (value != _dwellTimeSeconds)
+            if (SetProperty(ref _dwellTimeSeconds, value))
             {
-                _dwellTimeSeconds = value;
                 if (_currentSlideFileBuilder != null)
                 {
                     if (value == null)
@@ -196,8 +185,6 @@ public class MainViewModel : ObservableObject
                         _currentSlideFileBuilder.DwellTimeMilliseconds = _dwellTimeSeconds!.Value * 1000;
                     }
                 }
-
-                OnPropertyChanged();
             }
         }
     }
@@ -254,10 +241,8 @@ public class MainViewModel : ObservableObject
         get => _currentSlideshowPath;
         set
         {
-            if (_currentSlideshowPath == null || _currentSlideshowPath != value)
+            if (SetProperty(ref _currentSlideshowPath, value))
             {
-                _currentSlideshowPath = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(MainWindowCaption));
             }
         }

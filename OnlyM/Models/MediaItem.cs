@@ -64,14 +64,7 @@ public sealed class MediaItem : ObservableObject
     public bool UseMirror
     {
         get => _useMirror;
-        set
-        {
-            if (_useMirror != value)
-            {
-                _useMirror = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _useMirror, value);
     }
 
     public bool AllowUseMirror
@@ -79,10 +72,8 @@ public sealed class MediaItem : ObservableObject
         get => _allowUseMirror;
         set
         {
-            if (_allowUseMirror != value)
+            if (SetProperty(ref _allowUseMirror, value))
             {
-                _allowUseMirror = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsWebAndAllowMirror));
             }
         }
@@ -93,10 +84,8 @@ public sealed class MediaItem : ObservableObject
         get => _commandPanelVisible;
         set
         {
-            if (_commandPanelVisible != value)
+            if (SetProperty(ref _commandPanelVisible, value))
             {
-                _commandPanelVisible = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(CommandPanelBtnColWidth));
 
                 if (!_commandPanelVisible && IsCommandPanelOpen)
@@ -110,14 +99,7 @@ public sealed class MediaItem : ObservableObject
     public bool PauseOnLastFrame
     {
         get => _pauseOnLastFrame;
-        set
-        {
-            if (_pauseOnLastFrame != value)
-            {
-                _pauseOnLastFrame = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _pauseOnLastFrame, value);
     }
 
     public bool AllowFreezeCommand
@@ -125,10 +107,8 @@ public sealed class MediaItem : ObservableObject
         get => _allowFreezeCommand;
         set
         {
-            if (_allowFreezeCommand != value)
+            if (SetProperty(ref _allowFreezeCommand, value))
             {
-                _allowFreezeCommand = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(ShouldDisplayFreezeCommand));
             }
         }
@@ -165,40 +145,19 @@ public sealed class MediaItem : ObservableObject
     public PdfViewStyle ChosenPdfViewStyle
     {
         get => _pdfViewStyle;
-        set
-        {
-            if (_pdfViewStyle != value)
-            {
-                _pdfViewStyle = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _pdfViewStyle, value);
     }
 
     public bool IsCommandPanelOpen
     {
         get => _isCommandPanelOpen;
-        set
-        {
-            if (_isCommandPanelOpen != value)
-            {
-                _isCommandPanelOpen = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _isCommandPanelOpen, value);
     }
 
     public bool IsVisible
     {
         get => _isVisible;
-        set
-        {
-            if (_isVisible != value)
-            {
-                _isVisible = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _isVisible, value);
     }
 
     public bool CommandPanelEnabled => !IsBlankScreen && !IsMediaActive;
@@ -245,14 +204,7 @@ public sealed class MediaItem : ObservableObject
     public string? FileNameAsSubTitle
     {
         get => _fileNameAsSubTitle;
-        set
-        {
-            if (_fileNameAsSubTitle != value)
-            {
-                _fileNameAsSubTitle = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _fileNameAsSubTitle, value);
     }
 
     public long LastChanged { get; set; }
@@ -263,10 +215,8 @@ public sealed class MediaItem : ObservableObject
 
         set
         {
-            if (_isPaused != value)
+            if (SetProperty(ref _isPaused, value))
             {
-                _isPaused = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(PauseIconKind));
                 OnPropertyChanged(nameof(HasDurationAndIsPlaying));
                 OnPropertyChanged(nameof(IsSliderVisible));
@@ -312,10 +262,8 @@ public sealed class MediaItem : ObservableObject
         get => _isMediaActive;
         set
         {
-            if (_isMediaActive != value)
+            if (SetProperty(ref _isMediaActive, value))
             {
-                _isMediaActive = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(HasDurationAndIsPlaying));
                 OnPropertyChanged(nameof(IsPauseButtonVisible));
                 OnPropertyChanged(nameof(IsPlayButtonVisible));
@@ -335,27 +283,13 @@ public sealed class MediaItem : ObservableObject
     public bool IsMediaChanging
     {
         get => _isMediaChanging;
-        set
-        {
-            if (_isMediaChanging != value)
-            {
-                _isMediaChanging = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _isMediaChanging, value);
     }
 
     public bool IsPlayButtonEnabled
     {
         get => _isPlayButtonEnabled;
-        set
-        {
-            if (_isPlayButtonEnabled != value)
-            {
-                _isPlayButtonEnabled = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _isPlayButtonEnabled, value);
     }
 
     public int SlideshowCount
@@ -363,10 +297,8 @@ public sealed class MediaItem : ObservableObject
         get => _slideshowCount;
         set
         {
-            if (_slideshowCount != value)
+            if (SetProperty(ref _slideshowCount, value))
             {
-                _slideshowCount = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(SlideshowProgressString));
             }
         }
@@ -377,10 +309,8 @@ public sealed class MediaItem : ObservableObject
         get => _isRollingSlideshow;
         set
         {
-            if (_isRollingSlideshow != value)
+            if (SetProperty(ref _isRollingSlideshow, value))
             {
-                _isRollingSlideshow = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(SlideshowProgressString));
             }
         }
@@ -393,10 +323,8 @@ public sealed class MediaItem : ObservableObject
         get => _currentSlideshowIndex;
         set
         {
-            if (_currentSlideshowIndex != value)
+            if (SetProperty(ref _currentSlideshowIndex, value))
             {
-                _currentSlideshowIndex = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsPreviousSlideButtonEnabled));
                 OnPropertyChanged(nameof(IsNextSlideButtonEnabled));
                 OnPropertyChanged(nameof(SlideshowProgressString));
@@ -429,10 +357,8 @@ public sealed class MediaItem : ObservableObject
         get => _allowPositionSeeking;
         set
         {
-            if (_allowPositionSeeking != value)
+            if (SetProperty(ref _allowPositionSeeking, value))
             {
-                _allowPositionSeeking = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsSliderVisible));
                 OnPropertyChanged(nameof(IsStartOffsetButtonVisible));
             }
@@ -444,10 +370,8 @@ public sealed class MediaItem : ObservableObject
         get => _allowPause;
         set
         {
-            if (_allowPause != value)
+            if (SetProperty(ref _allowPause, value))
             {
-                _allowPause = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsPauseButtonVisible));
             }
         }
@@ -460,14 +384,7 @@ public sealed class MediaItem : ObservableObject
     public string? MiscText
     {
         get => _miscText;
-        set
-        {
-            if (_miscText != value)
-            {
-                _miscText = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _miscText, value);
     }
 
     public bool IsSliderVisible =>
@@ -512,13 +429,9 @@ public sealed class MediaItem : ObservableObject
         get => _playbackPositionDeciseconds;
         set
         {
-            if (_playbackPositionDeciseconds != value)
+            if (SetProperty(ref _playbackPositionDeciseconds, value))
             {
-                _playbackPositionDeciseconds = value;
-
                 PlaybackTimeString = GenerateTimeString(_playbackPositionDeciseconds * 100);
-
-                OnPropertyChanged();
                 OnPlaybackPositionChangedEvent();
             }
         }
@@ -544,11 +457,8 @@ public sealed class MediaItem : ObservableObject
         get => _durationDeciseconds;
         set
         {
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (_durationDeciseconds != value)
+            if (SetProperty(ref _durationDeciseconds, value))
             {
-                _durationDeciseconds = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(DurationString));
                 OnPropertyChanged(nameof(IsPreparingMedia));
                 OnPropertyChanged(nameof(IsPlayButtonVisible));

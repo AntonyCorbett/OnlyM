@@ -66,10 +66,8 @@ internal sealed class StartOffsetViewModel : ObservableObject
         get => _chosenHours;
         set
         {
-            if (_chosenHours != value)
+            if (SetProperty(ref _chosenHours, value))
             {
-                _chosenHours = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(ChosenTimeAsString));
                 OnPropertyChanged(nameof(ChosenTimeBrush));
                 OnPropertyChanged(nameof(IsTimeValid));
@@ -82,10 +80,8 @@ internal sealed class StartOffsetViewModel : ObservableObject
         get => _chosenMinutes;
         set
         {
-            if (_chosenMinutes != value)
+            if (SetProperty(ref _chosenMinutes, value))
             {
-                _chosenMinutes = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(ChosenTimeAsString));
                 OnPropertyChanged(nameof(ChosenTimeBrush));
                 OnPropertyChanged(nameof(IsTimeValid));
@@ -98,10 +94,8 @@ internal sealed class StartOffsetViewModel : ObservableObject
         get => _chosenSeconds;
         set
         {
-            if (_chosenSeconds != value)
+            if (SetProperty(ref _chosenSeconds, value))
             {
-                _chosenSeconds = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(ChosenTimeAsString));
                 OnPropertyChanged(nameof(ChosenTimeBrush));
                 OnPropertyChanged(nameof(IsTimeValid));

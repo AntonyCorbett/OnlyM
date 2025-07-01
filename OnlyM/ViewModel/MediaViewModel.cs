@@ -34,14 +34,7 @@ internal sealed class MediaViewModel : ObservableObject
     public int VideoRotation
     {
         get => _videoRotation;
-        set
-        {
-            if (_videoRotation != value)
-            {
-                _videoRotation = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _videoRotation, value);
     }
 
     public bool EngineIsMediaFoundation => _optionsService.RenderingMethod == RenderingMethod.MediaFoundation;
@@ -67,10 +60,8 @@ internal sealed class MediaViewModel : ObservableObject
         get => _windowSize;
         set
         {
-            if (_windowSize != value)
+            if (SetProperty(ref _windowSize, value))
             {
-                _windowSize = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(MagnifierRadius));
             }
         }
@@ -93,27 +84,13 @@ internal sealed class MediaViewModel : ObservableObject
     public bool IsWebPage
     {
         get => _isWebPage;
-        set
-        {
-            if (_isWebPage != value)
-            {
-                _isWebPage = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _isWebPage, value);
     }
 
     public bool IsMagnifierVisible
     {
         get => _isMagnifierVisible;
-        set
-        {
-            if (_isMagnifierVisible != value)
-            {
-                _isMagnifierVisible = value;
-                OnPropertyChanged();
-            }
-        }
+        set => SetProperty(ref _isMagnifierVisible, value);
     }
 
     public double MagnifierZoomLevel
@@ -135,10 +112,8 @@ internal sealed class MediaViewModel : ObservableObject
         get => _subtitleText;
         set
         {
-            if (_subtitleText != value)
+            if (SetProperty(ref _subtitleText, value))
             {
-                _subtitleText = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(SubTitleTextIsNotEmpty));
             }
         }
