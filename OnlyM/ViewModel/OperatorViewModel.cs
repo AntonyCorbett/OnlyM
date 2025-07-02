@@ -182,19 +182,24 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private void HandleUnhideAllEvent(object? sender, EventArgs e)
     {
-        foreach (var item in MediaItems)
+        using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
         {
-            item.IsVisible = true;
+            foreach (var item in MediaItems)
+            {
+                item.IsVisible = true;
+            }
         }
     }
 
     private void HandleShowMediaItemCommandPanelChangedEvent(object? sender, EventArgs e)
     {
         var visible = _optionsService.ShowMediaItemCommandPanel;
-
-        foreach (var item in MediaItems)
+        using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
         {
-            item.CommandPanelVisible = visible;
+            foreach (var item in MediaItems)
+            {
+                item.CommandPanelVisible = visible;
+            }
         }
     }
 
@@ -883,12 +888,15 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private void HandleThumbnailsPurgedEvent(object? sender, EventArgs e)
     {
-        foreach (var item in MediaItems)
+        using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
         {
-            item.ThumbnailImageSource = null;
-        }
+            foreach (var item in MediaItems)
+            {
+                item.ThumbnailImageSource = null;
+            }
 
-        FillThumbnailsAndMetaData();
+            FillThumbnailsAndMetaData();
+        }
     }
 
     private void LoadMediaItems()

@@ -115,8 +115,8 @@ internal sealed class MetaDataQueueConsumer : IDisposable
                 },
                 _cancellationToken);
 
-    private Task PopulateThumbnailAndMetaDataAsync(MediaItem mediaItem) =>
-        Application.Current.Dispatcher.Invoke(async () =>
+    private async Task PopulateThumbnailAndMetaDataAsync(MediaItem mediaItem) =>
+        await Application.Current.Dispatcher.InvokeAsync(async () =>
         {
             await PopulateSlideDataAsync(mediaItem);
             await PopulateThumbnailAsync(mediaItem);

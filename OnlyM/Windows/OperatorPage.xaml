@@ -241,7 +241,7 @@
                             <!--  Main section of Card  -->
                             <Grid Grid.Column="2" Margin="10,0,0,0">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="36" />
                                     <RowDefinition Height="28" />
                                 </Grid.RowDefinitions>
@@ -267,7 +267,6 @@
                                         <ColumnDefinition Width="95" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-
 
                                     <!--  TextBlocks generally used to show media length and duration  -->
 
