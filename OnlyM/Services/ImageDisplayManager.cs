@@ -28,6 +28,7 @@ internal sealed class ImageDisplayManager
 
     private readonly string _slideshowStagingFolder;
     private readonly DispatcherTimer _slideshowTimer = new();
+    private readonly object _slideshowLock = new();
 
     private readonly Image _image1;
     private readonly Image _image2;
@@ -126,16 +127,19 @@ internal sealed class ImageDisplayManager
 
     public void StartSlideshow(string mediaItemFilePath, Guid mediaItemId)
     {
-        _slideshowTransitioning = false;
-        _currentSlideshowImageIndex = 0;
+        lock (_slideshowLock)
+        {
+            _slideshowTransitioning = false;
+            _currentSlideshowImageIndex = 0;
 
-        _slideshowGuid = mediaItemId;
+            _slideshowGuid = mediaItemId;
 
-        InitFromSlideshowFile(mediaItemFilePath);
+            InitFromSlideshowFile(mediaItemFilePath);
 
-        DisplaySlide(GetCurrentSlide(), mediaItemId, null, 0, _currentSlideshowImageIndex);
+            DisplaySlide(GetCurrentSlide(), mediaItemId, null, 0, _currentSlideshowImageIndex);
 
-        ConfigureSlideshowAutoPlayTimer();
+            ConfigureSlideshowAutoPlayTimer();
+        }
     }
 
     public int GotoPreviousSlide()
@@ -482,6 +486,7 @@ internal sealed class ImageDisplayManager
         int newIndex,
         Action? onTransitionFinished = null)
     {
+        ArgumentNullException.ThrowIfNull(slide);
         ArgumentNullException.ThrowIfNull(slide.ArchiveEntryName);
 
         var direction = newIndex >= oldIndex ? SlideDirection.Forward : SlideDirection.Reverse;
