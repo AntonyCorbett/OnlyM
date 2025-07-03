@@ -183,7 +183,7 @@ public sealed partial class MediaWindow : IDisposable
 
             case MediaClassification.Video:
                 mediaItem.PlaybackPositionChangedEvent -= HandleVideoPlaybackPositionChangedEvent;
-                await HideVideoAsync(mediaItem).ConfigureAwait(false);
+                await HideVideoAsync(mediaItem);
                 break;
 
             case MediaClassification.Slideshow:
@@ -205,7 +205,7 @@ public sealed partial class MediaWindow : IDisposable
 
         Log.Logger.Information("Pausing media {Path}", mediaItem.FilePath);
 
-        await PauseVideoOrAudioAsync(mediaItem).ConfigureAwait(false);
+        await PauseVideoOrAudioAsync(mediaItem);
     }
 
     public int GotoPreviousSlide() => _imageDisplayManager.GotoPreviousSlide();
@@ -247,7 +247,7 @@ public sealed partial class MediaWindow : IDisposable
         {
             case MediaClassification.Video:
                 CheckVideoDisplayManager();
-                await _videoDisplayManager!.PauseVideoAsync(mediaItem.Id).ConfigureAwait(false);
+                await _videoDisplayManager!.PauseVideoAsync(mediaItem.Id);
                 mediaItem.PlaybackPositionChangedEvent += HandleVideoPlaybackPositionChangedEvent;
                 break;
 
@@ -283,8 +283,7 @@ public sealed partial class MediaWindow : IDisposable
 
             CheckVideoDisplayManager();
             await _videoDisplayManager!.SetPlaybackPosition(
-                TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100))
-                .ConfigureAwait(false);
+                TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
         }
         catch (Exception ex)
         {
@@ -312,7 +311,7 @@ public sealed partial class MediaWindow : IDisposable
     private async Task HideVideoAsync(MediaItem mediaItem)
     {
         CheckVideoDisplayManager();
-        await _videoDisplayManager!.HideVideoAsync(mediaItem.Id).ConfigureAwait(false);
+        await _videoDisplayManager!.HideVideoAsync(mediaItem.Id);
     }
 
     private void StopAudio(MediaItem mediaItem) => _audioManager.StopAudio(mediaItem.Id);
