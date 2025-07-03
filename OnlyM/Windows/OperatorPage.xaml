@@ -42,7 +42,7 @@
                 <!--  Media Item Card  -->
                 <materialDesign:Card
                     x:Name="TheCard"
-                    Height="120"
+                    Height="124"
                     Margin="4"
                     Padding="4"
                     materialDesign:ElevationAssist.Elevation="Dp1"
