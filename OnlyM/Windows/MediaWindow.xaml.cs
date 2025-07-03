@@ -183,7 +183,7 @@ public sealed partial class MediaWindow : IDisposable
 
             case MediaClassification.Video:
                 mediaItem.PlaybackPositionChangedEvent -= HandleVideoPlaybackPositionChangedEvent;
-                await HideVideoAsync(mediaItem);
+                await HideVideoAsync(mediaItem).ConfigureAwait(false);
                 break;
 
             case MediaClassification.Slideshow:
@@ -205,7 +205,7 @@ public sealed partial class MediaWindow : IDisposable
 
         Log.Logger.Information("Pausing media {Path}", mediaItem.FilePath);
 
-        await PauseVideoOrAudioAsync(mediaItem);
+        await PauseVideoOrAudioAsync(mediaItem).ConfigureAwait(false);
     }
 
     public int GotoPreviousSlide() => _imageDisplayManager.GotoPreviousSlide();
@@ -247,7 +247,7 @@ public sealed partial class MediaWindow : IDisposable
         {
             case MediaClassification.Video:
                 CheckVideoDisplayManager();
-                await _videoDisplayManager!.PauseVideoAsync(mediaItem.Id);
+                await _videoDisplayManager!.PauseVideoAsync(mediaItem.Id).ConfigureAwait(false);
                 mediaItem.PlaybackPositionChangedEvent += HandleVideoPlaybackPositionChangedEvent;
                 break;
 
@@ -312,7 +312,7 @@ public sealed partial class MediaWindow : IDisposable
     private async Task HideVideoAsync(MediaItem mediaItem)
     {
         CheckVideoDisplayManager();
-        await _videoDisplayManager!.HideVideoAsync(mediaItem.Id);
+        await _videoDisplayManager!.HideVideoAsync(mediaItem.Id).ConfigureAwait(false);
     }
 
     private void StopAudio(MediaItem mediaItem) => _audioManager.StopAudio(mediaItem.Id);
