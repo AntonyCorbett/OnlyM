@@ -283,7 +283,8 @@ public sealed partial class MediaWindow : IDisposable
 
             CheckVideoDisplayManager();
             await _videoDisplayManager!.SetPlaybackPosition(
-                TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100));
+                TimeSpan.FromMilliseconds(item.PlaybackPositionDeciseconds * 100))
+                .ConfigureAwait(false);
         }
         catch (Exception ex)
         {
