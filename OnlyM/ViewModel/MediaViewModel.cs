@@ -55,12 +55,6 @@ internal sealed class MediaViewModel : ObservableObject
         set => SetProperty(ref _webBrowser, value);
     }
 
-    //public IWpfWebBrowser? WebBrowser
-    //{
-    //    get => _webBrowser;
-    //    set => SetProperty(ref _webBrowser, value);
-    //}
-
     public Size WindowSize
     {
         get => _windowSize;
