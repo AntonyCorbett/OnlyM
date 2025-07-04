@@ -326,6 +326,7 @@ BOOL SetupMirror(HINSTANCE hinst)
 
 	// Create a magnifier control that fills the client area.
 	GetClientRect(hwndHost, &magWindowRect);
+
 	hwndMag = CreateWindow(WC_MAGNIFIER, TEXT("MagnifierWindow"),
 		WS_CHILD | MS_SHOWMAGNIFIEDCURSOR | WS_VISIBLE,
 		magWindowRect.left, magWindowRect.top, magWindowRect.right, magWindowRect.bottom, hwndHost, NULL, hInst, NULL);
@@ -390,7 +391,7 @@ void CALLBACK UpdateMirrorWindow(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /*idEven
 		// Set the source rectangle for the magnifier control.
 		MagSetWindowSource(hwndMag, sourceRect);
 
-		// Reclaim topmost status, to prevent non-mirrrored menus from remaining in view. 
+		// Reclaim topmost status, to prevent non-mirrored menus from remaining in view. 
 		SetWindowPos(hwndHost, HWND_TOPMOST, 0, 0, 0, 0,
 			SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 

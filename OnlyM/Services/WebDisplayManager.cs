@@ -71,6 +71,10 @@ internal sealed class WebDisplayManager : IDisposable
         bool showMirror,
         ScreenPosition screenPosition)
     {
+        ArgumentNullException.ThrowIfNull(mediaItemFilePath);
+        ArgumentNullException.ThrowIfNull(screenPosition);
+        ArgumentOutOfRangeException.ThrowIfNegative(pdfStartingPage);
+
         _useMirror = showMirror;
 
         if (string.IsNullOrEmpty(mediaItemFilePath))
@@ -125,7 +129,7 @@ internal sealed class WebDisplayManager : IDisposable
         });
     }
 
-    public void ShowMirror()
+    public async Task ShowMirrorAsync()
     {
         Log.Logger.Debug("Attempting to open mirror");
 
@@ -135,19 +139,9 @@ internal sealed class WebDisplayManager : IDisposable
             return;
         }
 
-        var folder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location);
-        if (folder == null)
+        var mirrorExePath = GetMirrorExePath();
+        if (mirrorExePath == null)
         {
-            Log.Logger.Error("Could not get assembly folder");
-            return;
-        }
-
-        const string mirrorExeFileName = "OnlyMMirror.exe";
-
-        var mirrorExePath = Path.Combine(folder, mirrorExeFileName);
-        if (!File.Exists(mirrorExePath))
-        {
-            Log.Logger.Error($"Could not find {mirrorExeFileName}");
             return;
         }
 
@@ -214,8 +208,9 @@ internal sealed class WebDisplayManager : IDisposable
         }
         finally
         {
-            Task.Delay(1000).ContinueWith(_ => Application.Current.Dispatcher.Invoke(()
-                => StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty })));
+            await Task.Delay(1000);
+            await Application.Current.Dispatcher.InvokeAsync(()
+                => StatusEvent?.Invoke(this, new WebBrowserProgressEventArgs { Description = string.Empty }));
         }
     }
 
@@ -337,7 +332,7 @@ internal sealed class WebDisplayManager : IDisposable
 
                     if (_useMirror)
                     {
-                        ShowMirror();
+                        _ = ShowMirrorAsync();
                     }
                 });
             }
@@ -448,5 +443,57 @@ internal sealed class WebDisplayManager : IDisposable
             case PdfViewStyle.Default:
                 return string.Empty;
         }
+    }
+
+    private static string? GetCurrentProjectFolderWhenDebugging()
+    {
+        var workingDirectory = Environment.CurrentDirectory;
+        return Directory.GetParent(workingDirectory)?.Parent?.Parent?.FullName;
+    }
+
+    private static string? GetCurrentSolutionFolderWhenDebugging()
+    {
+        var workingDirectory = Environment.CurrentDirectory;
+        return Directory.GetParent(workingDirectory)?.Parent?.Parent?.Parent?.FullName;
+    }
+
+    private static string? GetMirrorExePath()
+    {
+        const string mirrorExeFileName = "OnlyMMirror.exe";
+
+        // ReSharper disable once JoinDeclarationAndInitializer
+        string? mirrorExePath = null;
+
+#if DEBUG
+        var solutionFolder = GetCurrentSolutionFolderWhenDebugging();
+        if (solutionFolder != null)
+        {
+            var folder = Path.Combine(solutionFolder, "Debug");
+            if (!Directory.Exists(folder))
+            {
+                Log.Logger.Error("Could not find OnlyMMirror bin folder");
+                return null;
+            }
+
+            mirrorExePath = Path.Combine(folder, mirrorExeFileName);
+        }
+#else
+        var folder = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()?.Location);
+        if (folder == null)
+        {
+            Log.Logger.Error("Could not get assembly folder");
+            return null;
+        }
+        
+        mirrorExePath = Path.Combine(folder, mirrorExeFileName);
+#endif
+
+        if (!File.Exists(mirrorExePath))
+        {
+            Log.Logger.Error($"Could not find {mirrorExeFileName}");
+            return null;
+        }
+
+        return mirrorExePath;
     }
 }

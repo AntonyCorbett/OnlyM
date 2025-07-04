@@ -97,7 +97,7 @@ public sealed partial class MediaWindow : IDisposable
     {
         if (show)
         {
-            _webDisplayManager.ShowMirror();
+            _ = _webDisplayManager.ShowMirrorAsync();
         }
         else
         {
