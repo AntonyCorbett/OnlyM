@@ -5,6 +5,8 @@
 #include <strsafe.h>
 #include <magnification.h>
 
+#include "Resource.h"
+
 // WS_DISABLED prevents window being moved
 #define HOST_WINDOW_STYLES WS_CLIPCHILDREN | WS_CAPTION | WS_DISABLED
 #define HOST_WINDOW_STYLES_EX WS_EX_TOPMOST | WS_EX_TOOLWINDOW
@@ -16,8 +18,11 @@ const TCHAR         WindowTitle[] = TEXT("OnlyM Mirror");
 const UINT          timerInterval = 60; 
 HWND                hwndMag;
 HWND                hwndHost;
+HWND                hwndInstructions;
 RECT                magWindowRect;
 RECT                hostWindowRect;
+int                 instructionsHeight;
+HBRUSH              instructionsBrush = nullptr;
 
 // Forward declarations.
 ATOM                RegisterHostWindowClass(HINSTANCE hInstance);
@@ -220,27 +225,54 @@ BOOL CALLBACK OnlyMMonitorEnumProc(HMONITOR hMonitor, HDC /*hdcMonitor*/, LPRECT
 }
 
 // Window procedure for the window that hosts the mirror.
-LRESULT CALLBACK HostWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK HostWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
 		case WM_SETCURSOR:
 			SetCursor(nullptr);
-			return TRUE;
-			break;
+			return TRUE;			
 
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			break;
+        case WM_DESTROY:
+            if (instructionsBrush)
+            {
+                DeleteObject(instructionsBrush);
+                instructionsBrush = nullptr;
+            }
+            PostQuitMessage(0);
+            break;
 
 		case WM_SIZE:
-			if (hwndMag != nullptr)
-			{
-				GetClientRect(hWnd, &magWindowRect);
-				// Resize the control to fill the window.
-				SetWindowPos(hwndMag, nullptr, magWindowRect.left, magWindowRect.top, magWindowRect.right, magWindowRect.bottom, 0);
-			}
-			break;
+            if (hwndMag != nullptr && hwndInstructions != nullptr)
+            {
+                RECT clientRect;
+                GetClientRect(hWnd, &clientRect);
+
+                // Resize magnifier to fill all but bottom area
+                SetWindowPos(hwndMag, nullptr,
+                    0, 0,
+                    clientRect.right, clientRect.bottom - instructionsHeight,
+                    SWP_NOZORDER);
+
+                // Position instructions at bottom
+                SetWindowPos(hwndInstructions, nullptr,
+                    0, clientRect.bottom - instructionsHeight,
+                    clientRect.right, instructionsHeight,
+                    SWP_NOZORDER);
+            }
+            break;
+
+        case WM_CTLCOLORSTATIC:
+        {
+            HWND hwndStatic = (HWND)lParam;
+            if (hwndStatic == hwndInstructions && instructionsBrush != nullptr)
+            {
+                SetBkColor((HDC)wParam, RGB(255, 255, 192)); // Match brush color
+                SetTextColor((HDC)wParam, RGB(0, 0, 0));     // Black text
+                return (INT_PTR)instructionsBrush;
+            }
+            break;
+        }
 
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
@@ -265,97 +297,6 @@ ATOM RegisterHostWindowClass(HINSTANCE hInstance)
 	return RegisterClassEx(&wcex);
 }
 
-// Creates the windows and initializes mirror.
-BOOL SetupMirror(HINSTANCE hinst)
-{
-    // Set bounds of host window according to size of media monitor...
-    int mediaMonitorHeight = targetMonitorRect.bottom - targetMonitorRect.top;
-    int mediaMonitorWidth = targetMonitorRect.right - targetMonitorRect.left;
-
-    int hostMonitorHeight = mainMonitorRect.bottom - mainMonitorRect.top;
-    int hostMonitorWidth = mainMonitorRect.right - mainMonitorRect.left;
-
-    // Calculate the maximum zoom factor that fits in the main monitor
-    float maxZoomWidth = (float)hostMonitorWidth / (float)mediaMonitorWidth;
-    float maxZoomHeight = (float)hostMonitorHeight / (float)mediaMonitorHeight;
-    float maxZoom = (maxZoomWidth < maxZoomHeight) ? maxZoomWidth : maxZoomHeight;
-
-    // Clamp ZoomFactor if needed
-    if (ZoomFactor > maxZoom)
-    {
-        ZoomFactor = maxZoom;
-    }
-
-    // Calculate the intended client area size (scaled by ZoomFactor)
-    int clientHeight = static_cast<int>(mediaMonitorHeight * ZoomFactor);
-    int clientWidth = static_cast<int>(mediaMonitorWidth * ZoomFactor);
-
-    // Calculate the window rectangle needed to get the desired client area
-    RECT windowRect = { 0, 0, clientWidth, clientHeight };
-    AdjustWindowRectEx(&windowRect, HOST_WINDOW_STYLES, FALSE, HOST_WINDOW_STYLES_EX);
-
-    int winWidth = windowRect.right - windowRect.left;
-    int winHeight = windowRect.bottom - windowRect.top;
-
-    // Center the window in the host monitor
-    int winLeft = mainMonitorRect.left + (hostMonitorWidth - winWidth) / 2;
-    int winTop = mainMonitorRect.top + (hostMonitorHeight - winHeight) / 2;
-
-    // Clamp to ensure the window is fully visible within the main monitor
-    if (winLeft < mainMonitorRect.left)
-    {
-        winLeft = mainMonitorRect.left;
-    }
-
-    if (winTop < mainMonitorRect.top)
-    {
-        winTop = mainMonitorRect.top;
-    }
-
-    // Create the host window.
-    RegisterHostWindowClass(hinst);
-    hwndHost = CreateWindowEx(
-        HOST_WINDOW_STYLES_EX,
-        WindowClassName, WindowTitle,
-        HOST_WINDOW_STYLES,
-        winLeft, winTop, winWidth, winHeight,
-        nullptr, nullptr, hInst, nullptr);
-
-    if (!hwndHost)
-    {
-        return FALSE;
-    }
-
-    hCursorArrow = LoadCursor(nullptr, IDC_ARROW);
-
-    // Make the window opaque...
-    SetLayeredWindowAttributes(hwndHost, 0, 255, LWA_ALPHA);
-
-    // Create a magnifier control that fills the client area.
-    GetClientRect(hwndHost, &magWindowRect);
-
-    hwndMag = CreateWindow(
-        WC_MAGNIFIER, TEXT("MagnifierWindow"),
-        WS_CHILD | MS_SHOWMAGNIFIEDCURSOR | WS_VISIBLE,
-        magWindowRect.left, magWindowRect.top,
-        magWindowRect.right - magWindowRect.left,
-        magWindowRect.bottom - magWindowRect.top,
-        hwndHost, NULL, hInst, NULL);
-
-    if (!hwndMag)
-    {
-        return FALSE;
-    }
-
-    // Set the magnification factor.
-    MAGTRANSFORM matrix = {};
-    matrix.v[0][0] = ZoomFactor;
-    matrix.v[1][1] = ZoomFactor;
-    matrix.v[2][2] = 1.0f;
-
-    return MagSetWindowTransform(hwndMag, &matrix);
-}
-
 // Sets the source rectangle and updates the window. Called by a timer.
 void CALLBACK UpdateMirrorWindow(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /*idEvent*/, DWORD /*dwTime*/)
 {
@@ -371,4 +312,118 @@ void CALLBACK UpdateMirrorWindow(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /*idEven
 
     // Force redraw.
     InvalidateRect(hwndMag, nullptr, TRUE);
+}
+
+BOOL SetupMirror(HINSTANCE hinst)
+{
+    // 1. Calculate font and instructionsHeight FIRST
+    int fontPointSize = 24;
+    HDC hdcScreen = GetDC(nullptr);
+    int fontHeight = -MulDiv(fontPointSize, GetDeviceCaps(hdcScreen, LOGPIXELSY), 72);
+    ReleaseDC(nullptr, hdcScreen);
+
+    HFONT hFont = CreateFont(
+        fontHeight, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+        ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+        DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, TEXT("Segoe UI"));
+
+    instructionsHeight = 3 * abs(fontHeight);
+
+    // 2. Set bounds of host window according to size of media monitor...
+    int mediaMonitorHeight = targetMonitorRect.bottom - targetMonitorRect.top;
+    int mediaMonitorWidth = targetMonitorRect.right - targetMonitorRect.left;
+
+    int hostMonitorHeight = mainMonitorRect.bottom - mainMonitorRect.top;
+    int hostMonitorWidth = mainMonitorRect.right - mainMonitorRect.left;
+
+    // 3. Calculate the maximum zoom factor that fits in the main monitor
+    float maxZoomWidth = (float)hostMonitorWidth / (float)mediaMonitorWidth;
+    float maxZoomHeight = (float)(hostMonitorHeight - instructionsHeight) / (float)mediaMonitorHeight;
+    float maxZoom = (maxZoomWidth < maxZoomHeight) ? maxZoomWidth : maxZoomHeight;
+
+    if (ZoomFactor > maxZoom)
+    {
+        ZoomFactor = maxZoom;
+    }
+
+    // 4. Calculate the intended client area size (scaled by ZoomFactor)
+    int clientHeight = static_cast<int>(mediaMonitorHeight * ZoomFactor);
+    int clientWidth = static_cast<int>(mediaMonitorWidth * ZoomFactor);
+
+    // 5. Add space for instructions
+    RECT windowRect = { 0, 0, clientWidth, clientHeight + instructionsHeight };
+    AdjustWindowRectEx(&windowRect, HOST_WINDOW_STYLES, FALSE, HOST_WINDOW_STYLES_EX);
+
+    int winWidth = windowRect.right - windowRect.left;
+    int winHeight = windowRect.bottom - windowRect.top;
+
+    // 6. Center the window in the host monitor
+    int winLeft = mainMonitorRect.left + (hostMonitorWidth - winWidth) / 2;
+    int winTop = mainMonitorRect.top + (hostMonitorHeight - winHeight) / 2;
+
+    if (winLeft < mainMonitorRect.left)
+        winLeft = mainMonitorRect.left;
+    if (winTop < mainMonitorRect.top)
+        winTop = mainMonitorRect.top;
+
+    // 7. Create the host window
+    RegisterHostWindowClass(hinst);
+    hwndHost = CreateWindowEx(
+        HOST_WINDOW_STYLES_EX,
+        WindowClassName, WindowTitle,
+        HOST_WINDOW_STYLES,
+        winLeft, winTop, winWidth, winHeight,
+        nullptr, nullptr, hInst, nullptr);
+
+    if (!hwndHost)
+    {
+        return FALSE;
+    }
+
+    // 8. Get client area rect
+    RECT clientRect;
+    GetClientRect(hwndHost, &clientRect);
+
+    // 9. Create magnifier control (positioned at top)
+    hwndMag = CreateWindow(
+        WC_MAGNIFIER, TEXT("MagnifierWindow"),
+        WS_CHILD | MS_SHOWMAGNIFIEDCURSOR | WS_VISIBLE,
+        0, 0,
+        clientRect.right, clientRect.bottom - instructionsHeight,
+        hwndHost, nullptr, hInst, nullptr);
+
+    if (!hwndMag)
+    {
+        return FALSE;
+    }
+
+    // 10. Create instructions static control (positioned at bottom)
+    hwndInstructions = CreateWindow(
+        TEXT("STATIC"), TEXT("Mirror Window - Press ALT+Z to close"),
+        WS_CHILD | WS_VISIBLE | SS_CENTER | SS_CENTERIMAGE,
+        0, clientRect.bottom - instructionsHeight,
+        clientRect.right, instructionsHeight,
+        hwndHost, (HMENU)IDC_INSTRUCTIONS, hInst, nullptr);
+
+    if (!hwndInstructions)
+    {
+        return FALSE;
+    }
+
+    // 11. Set background brush for instructions
+    if (instructionsBrush == nullptr)
+    {
+        instructionsBrush = CreateSolidBrush(RGB(255, 255, 192)); // Light yellow
+    }
+
+    // 12. Set the font for the instructions window
+    SendMessage(hwndInstructions, WM_SETFONT, (WPARAM)hFont, TRUE);
+
+    // 13. Set the magnification factor
+    MAGTRANSFORM matrix = {};
+    matrix.v[0][0] = ZoomFactor;
+    matrix.v[1][1] = ZoomFactor;
+    matrix.v[2][2] = 1.0f;
+
+    return MagSetWindowTransform(hwndMag, &matrix);
 }

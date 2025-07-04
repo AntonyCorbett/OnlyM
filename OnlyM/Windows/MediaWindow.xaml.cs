@@ -241,6 +241,37 @@ public sealed partial class MediaWindow : IDisposable
         base.OnClosing(e);
     }
 
+    // Note that we must handle Alt+Left and Alt+Right (and any other Alt key combinations in code behind
+    // rather than as KeyBindings in Xaml because WPF treats certain key combinations with Alt as
+    // "system keys" (for menu navigation compatibility).
+    protected override void OnPreviewKeyDown(KeyEventArgs e)
+    {
+        // Handle Alt+Left and Alt+Right as "system keys"
+        if (e.KeyboardDevice.Modifiers == ModifierKeys.Alt && e.Key == Key.System)
+        {
+            if (e.SystemKey == Key.Left)
+            {
+                if (Browser != null && Browser.BackCommand.CanExecute(null))
+                {
+                    Browser.BackCommand.Execute(null);
+                    e.Handled = true;
+                }
+            }
+            else if (e.SystemKey == Key.Right)
+            {
+                if (Browser != null && Browser.ForwardCommand.CanExecute(null))
+                {
+                    Browser.ForwardCommand.Execute(null);
+                    e.Handled = true;
+                }
+            }
+        }
+        else
+        {
+            base.OnPreviewKeyDown(e);
+        }
+    }
+
     private async Task PauseVideoOrAudioAsync(MediaItem mediaItem)
     {
         switch (mediaItem.MediaType?.Classification)

@@ -11,6 +11,7 @@
 #define IDC_ONLYMMIRROR                 109
 #define IDR_MAINFRAME                   128
 #define IDC_STATIC                      -1
+#define IDC_INSTRUCTIONS                1001
 
 // Next default values for new objects
 // 

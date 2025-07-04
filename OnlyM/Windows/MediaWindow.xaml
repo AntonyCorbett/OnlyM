@@ -117,49 +117,39 @@
             <Grid.InputBindings>
                 <KeyBinding
                     Key="Add"
-                    Command="{Binding WebBrowser.ZoomInCommand}"
+                    Command="{Binding WebBrowser.ZoomInCommand, FallbackValue=null}"
                     Modifiers="Control" />
                 <KeyBinding
                     Key="OemPlus"
-                    Command="{Binding WebBrowser.ZoomInCommand}"
+                    Command="{Binding WebBrowser.ZoomInCommand, FallbackValue=null}"
                     Modifiers="Control" />
                 <KeyBinding
                     Key="Subtract"
-                    Command="{Binding WebBrowser.ZoomOutCommand}"
+                    Command="{Binding WebBrowser.ZoomOutCommand, FallbackValue=null}"
                     Modifiers="Control" />
                 <KeyBinding
                     Key="OemMinus"
-                    Command="{Binding WebBrowser.ZoomOutCommand}"
+                    Command="{Binding WebBrowser.ZoomOutCommand, FallbackValue=null}"
                     Modifiers="Control" />
                 <KeyBinding
                     Key="D0"
-                    Command="{Binding WebBrowser.ZoomResetCommand}"
+                    Command="{Binding WebBrowser.ZoomResetCommand, FallbackValue=null}"
                     Modifiers="Control" />
 
-                <KeyBinding
-                    Key="BrowserBack"
-                    Command="{Binding WebBrowser.BackCommand}"
-                    Modifiers="Control" />
-                <KeyBinding
-                    Key="BrowserForward"
-                    Command="{Binding WebBrowser.ForwardCommand}"
-                    Modifiers="Control" />
-                <KeyBinding
-                    Key="BrowserRefresh"
-                    Command="{Binding WebBrowser.ReloadCommand}"
-                    Modifiers="Control" />
+                <!--  Special keyboard keys  -->
+                <KeyBinding Key="BrowserBack" Command="{Binding WebBrowser.BackCommand, FallbackValue=null}" />
+                <KeyBinding Key="BrowserForward" Command="{Binding WebBrowser.ForwardCommand, FallbackValue=null}" />
+                <KeyBinding Key="BrowserRefresh" Command="{Binding WebBrowser.ReloadCommand, FallbackValue=null}" />
+                <KeyBinding Key="BrowserStop" Command="{Binding WebBrowser.StopCommand, FallbackValue=null}" />
+
+                <!--  Note that any Alt key combinations, e.g. Alt+LEFT and Alt+RIGHT are handled in OnPreviewKeyDown in code behind  -->
+
                 <KeyBinding
                     Key="F5"
-                    Command="{Binding WebBrowser.ReloadCommand}"
+                    Command="{Binding WebBrowser.ReloadCommand, FallbackValue=null}"
                     Modifiers="Control" />
-                <KeyBinding
-                    Key="BrowserStop"
-                    Command="{Binding WebBrowser.StopCommand}"
-                    Modifiers="Control" />
-                <KeyBinding
-                    Key="Escape"
-                    Command="{Binding WebBrowser.StopCommand}"
-                    Modifiers="Control" />
+
+                <KeyBinding Key="Escape" Command="{Binding WebBrowser.StopCommand, FallbackValue=null}" />
 
                 <KeyBinding Key="F1" Command="{Binding ToggleMagnifier}" />
                 <KeyBinding Key="F2" Command="{Binding ToggleMagnifierFrame}" />
@@ -212,21 +202,21 @@
                     Margin="5,0,0,0"
                     Orientation="Horizontal"
                     Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Button Command="{Binding WebBrowser.BackCommand}" Style="{StaticResource NavButtonStyle}">
+                    <Button Command="{Binding WebBrowser.BackCommand, FallbackValue=null}" Style="{StaticResource NavButtonStyle}">
                         <materialDesign:PackIcon
                             Width="32"
                             Height="32"
                             Kind="ArrowLeftBold" />
                     </Button>
 
-                    <Button Command="{Binding WebBrowser.ForwardCommand}" Style="{StaticResource NavButtonStyle}">
+                    <Button Command="{Binding WebBrowser.ForwardCommand, FallbackValue=null}" Style="{StaticResource NavButtonStyle}">
                         <materialDesign:PackIcon
                             Width="32"
                             Height="32"
                             Kind="ArrowRightBold" />
                     </Button>
 
-                    <Button Command="{Binding WebBrowser.ReloadCommand}" Style="{StaticResource RefreshButtonStyle}">
+                    <Button Command="{Binding WebBrowser.ReloadCommand, FallbackValue=null}" Style="{StaticResource RefreshButtonStyle}">
                         <materialDesign:PackIcon
                             Width="32"
                             Height="32"
@@ -241,7 +231,7 @@
                     VerticalAlignment="Center"
                     FontSize="28"
                     Foreground="{StaticResource PrimaryHueLightBrush}"
-                    Text="{Binding WebBrowser.Title}"
+                    Text="{Binding WebBrowser.Title, FallbackValue=null}"
                     TextTrimming="CharacterEllipsis"
                     Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
@@ -298,7 +288,7 @@
                     </Button>
 
                     <Button
-                        Command="{Binding WebBrowser.ZoomInCommand}"
+                        Command="{Binding WebBrowser.ZoomInCommand, FallbackValue=null}"
                         Style="{StaticResource ZoomButtonStyle}"
                         Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <materialDesign:PackIcon
@@ -308,7 +298,7 @@
                     </Button>
 
                     <Button
-                        Command="{Binding WebBrowser.ZoomOutCommand}"
+                        Command="{Binding WebBrowser.ZoomOutCommand, FallbackValue=null}"
                         Style="{StaticResource ZoomButtonStyle}"
                         Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <materialDesign:PackIcon
@@ -318,7 +308,7 @@
                     </Button>
 
                     <Button
-                        Command="{Binding WebBrowser.ZoomResetCommand}"
+                        Command="{Binding WebBrowser.ZoomResetCommand, FallbackValue=null}"
                         Style="{StaticResource ZoomButtonStyle}"
                         Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <materialDesign:PackIcon

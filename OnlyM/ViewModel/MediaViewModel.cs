@@ -14,7 +14,7 @@ internal sealed class MediaViewModel : ObservableObject
 {
     private readonly IOptionsService _optionsService;
     private string? _subtitleText;
-    private IWpfWebBrowser? _webBrowser;
+    private IWpfChromiumWebBrowser? _webBrowser;
     private bool _isMagnifierVisible;
     private Size _windowSize;
     private bool _isWebPage;
@@ -49,11 +49,17 @@ internal sealed class MediaViewModel : ObservableObject
 
     public RelayCommand MagnifierLarger { get; set; } = null!;
 
-    public IWpfWebBrowser? WebBrowser
+    public IWpfChromiumWebBrowser? WebBrowser
     {
         get => _webBrowser;
         set => SetProperty(ref _webBrowser, value);
     }
+
+    //public IWpfWebBrowser? WebBrowser
+    //{
+    //    get => _webBrowser;
+    //    set => SetProperty(ref _webBrowser, value);
+    //}
 
     public Size WindowSize
     {
