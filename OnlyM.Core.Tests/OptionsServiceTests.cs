@@ -493,6 +493,36 @@ public class OptionsServiceTests
     }
 
     [Fact]
+    public void MirrorZoom_GetSet_Works_With_Value_LessThan_Minimum()
+    {
+        _service.MirrorZoom = Options.MinMirrorZoom - 0.1;
+        Assert.Equal(Options.MinMirrorZoom, _service.MirrorZoom);
+    }
+
+    [Fact]
+    public void MirrorZoom_GetSet_Works_With_Value_MoreThan_Maximum()
+    {
+        _service.MirrorZoom = Options.MaxMirrorZoom + 0.1;
+        Assert.Equal(Options.MaxMirrorZoom, _service.MirrorZoom);
+    }
+
+    [Fact]
+    public void MirrorZoom_GetSet_Works_With_Normalisation()
+    {
+        _service.MirrorZoom = Options.DefaultMirrorZoom + 0.01;
+        Assert.Equal(Options.DefaultMirrorZoom, _service.MirrorZoom);
+
+        _service.MirrorZoom = Options.DefaultMirrorZoom - 0.05;
+        Assert.Equal(Options.DefaultMirrorZoom, _service.MirrorZoom);
+
+        _service.MirrorZoom = Options.DefaultMirrorZoom + 0.1;
+        Assert.Equal(Options.DefaultMirrorZoom + 0.1, _service.MirrorZoom);
+
+        _service.MirrorZoom = Options.DefaultMirrorZoom + 0.18;
+        Assert.Equal(Options.DefaultMirrorZoom + 0.2, _service.MirrorZoom);
+    }
+
+    [Fact]
     public void MirrorHotKey_GetSet_Works()
     {
         var currentValue = _service.MirrorHotKey;

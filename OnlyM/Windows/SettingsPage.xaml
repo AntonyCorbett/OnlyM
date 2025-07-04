@@ -1,20 +1,22 @@
-﻿<UserControl x:Class="OnlyM.Windows.SettingsPage"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             DataContext="{Binding Settings, Mode=OneWay, Source={StaticResource Locator}}"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:resx="clr-namespace:OnlyM.Properties"
-             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-             TextElement.FontWeight="Regular"
-             TextElement.FontSize="15"
-             TextOptions.TextFormattingMode="Ideal"
-             TextOptions.TextRenderingMode="Auto"
-             Background="{DynamicResource MaterialDesignPaper}"
-             FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DesignHeight="1550" d:DesignWidth="1600">
+﻿<UserControl
+    x:Class="OnlyM.Windows.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:resx="clr-namespace:OnlyM.Properties"
+    d:DesignHeight="1550"
+    d:DesignWidth="1600"
+    Background="{DynamicResource MaterialDesignPaper}"
+    DataContext="{Binding Settings, Mode=OneWay, Source={StaticResource Locator}}"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    TextElement.FontSize="15"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -31,102 +33,138 @@
                 <Setter Property="Margin" Value="0,10,0,10" />
             </Style>
 
-            <Style x:Key="SettingsLabelStyle" TargetType="{x:Type Label}" BasedOn="{StaticResource MaterialDesignLabel}">
+            <Style
+                x:Key="SettingsLabelStyle"
+                BasedOn="{StaticResource MaterialDesignLabel}"
+                TargetType="{x:Type Label}">
                 <Setter Property="Margin" Value="-5,0,0,0" />
                 <Setter Property="FontSize" Value="12" />
             </Style>
 
             <Style x:Key="SettingsMarginStackPanelStyle" TargetType="{x:Type StackPanel}">
-                <Setter Property="Margin" Value="10,0,0,0"/>
-                <Setter Property="Height" Value="45"/>
-                <Setter Property="Orientation" Value="Horizontal"/>
+                <Setter Property="Margin" Value="10,0,0,0" />
+                <Setter Property="Height" Value="45" />
+                <Setter Property="Orientation" Value="Horizontal" />
             </Style>
 
-            <Style x:Key="SettingsButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedLightButton}">
-                <Setter Property="Margin" Value="0,5,0,5"/>
-                <Setter Property="Width" Value="250"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Style
+                x:Key="SettingsButtonStyle"
+                BasedOn="{StaticResource MaterialDesignRaisedLightButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="0,5,0,5" />
+                <Setter Property="Width" Value="250" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
             </Style>
 
-            <Style x:Key="SettingsComboBoxStyle" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignComboBox}">
-                <Setter Property="Margin" Value="0,5,0,7"/>
-                <Setter Property="Width" Value="420"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Style
+                x:Key="SettingsComboBoxStyle"
+                BasedOn="{StaticResource MaterialDesignComboBox}"
+                TargetType="{x:Type ComboBox}">
+                <Setter Property="Margin" Value="0,5,0,7" />
+                <Setter Property="Width" Value="420" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="materialDesign:ComboBoxAssist.ClassicMode" Value="true" />
             </Style>
 
-            <Style x:Key="SettingsCheckBoxStyle" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignCheckBox}">
-                <Setter Property="Margin" Value="0,5,0,5"/>
+            <Style
+                x:Key="SettingsCheckBoxStyle"
+                BasedOn="{StaticResource MaterialDesignCheckBox}"
+                TargetType="{x:Type CheckBox}">
+                <Setter Property="Margin" Value="0,5,0,5" />
             </Style>
-            <Style x:Key="SettingsRadioButtonStyle" TargetType="{x:Type RadioButton}" BasedOn="{StaticResource MaterialDesignRadioButton}">
-                <Setter Property="Margin" Value="0,5,0,5"/>
+            <Style
+                x:Key="SettingsRadioButtonStyle"
+                BasedOn="{StaticResource MaterialDesignRadioButton}"
+                TargetType="{x:Type RadioButton}">
+                <Setter Property="Margin" Value="0,5,0,5" />
             </Style>
 
-            <Style x:Key="SettingsGroupBoxStyle" TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignGroupBox}">
+            <Style
+                x:Key="SettingsGroupBoxStyle"
+                BasedOn="{StaticResource MaterialDesignGroupBox}"
+                TargetType="{x:Type GroupBox}">
                 <Setter Property="Width" Value="450" />
                 <Setter Property="Margin" Value="10,6" />
                 <Setter Property="Padding" Value="10" />
             </Style>
 
-            <Style x:Key="SettingsTextBoxStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                <Setter Property="Margin" Value="0,5,0,5"/>
-                <Setter Property="Width" Value="420"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Style
+                x:Key="SettingsTextBoxStyle"
+                BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}"
+                TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="0,5,0,5" />
+                <Setter Property="Width" Value="420" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
             </Style>
 
-            <Style x:Key="MarginsSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignDiscreteSlider}">
-                <Setter Property="Margin" Value="10,3,0,3"/>
-                <Setter Property="Width" Value="380"/>
-                <Setter Property="Minimum" Value="0"/>
-                <Setter Property="Maximum" Value="90"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="TickFrequency" Value="10"/>
+            <Style
+                x:Key="MarginsSliderStyle"
+                BasedOn="{StaticResource MaterialDesignDiscreteSlider}"
+                TargetType="{x:Type Slider}">
+                <Setter Property="Margin" Value="10,3,0,3" />
+                <Setter Property="Width" Value="380" />
+                <Setter Property="Minimum" Value="0" />
+                <Setter Property="Maximum" Value="90" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="TickFrequency" Value="10" />
             </Style>
 
-            <Style x:Key="MagnificationSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignSlider}">
-                <Setter Property="Margin" Value="0,3,0,3"/>
-                <Setter Property="Width" Value="420"/>
-                <Setter Property="Minimum" Value="0.3"/>
-                <Setter Property="Maximum" Value="1.0"/>
-                <Setter Property="SmallChange" Value="0.1"/>
-                <Setter Property="LargeChange" Value="0.2"/>
+            <Style
+                x:Key="MagnificationSliderStyle"
+                BasedOn="{StaticResource MaterialDesignSlider}"
+                TargetType="{x:Type Slider}">
+                <Setter Property="Margin" Value="0,3,0,3" />
+                <Setter Property="Width" Value="420" />
+                <Setter Property="Minimum" Value="0.3" />
+                <Setter Property="Maximum" Value="1.0" />
+                <Setter Property="SmallChange" Value="0.1" />
+                <Setter Property="LargeChange" Value="0.2" />
                 <Setter Property="IsDirectionReversed" Value="True" />
-                <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="TickFrequency" Value="0.1"/>
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="TickFrequency" Value="0.1" />
             </Style>
 
-            <Style x:Key="WebPageZoomSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignSlider}">
-                <Setter Property="Margin" Value="0,0,0,3"/>
-                <Setter Property="Width" Value="420"/>
-                <Setter Property="Minimum" Value="0.1"/>
-                <Setter Property="Maximum" Value="1.0"/>
-                <Setter Property="SmallChange" Value="0.1"/>
-                <Setter Property="LargeChange" Value="0.2"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="TickFrequency" Value="0.1"/>
+            <Style
+                x:Key="WebPageZoomSliderStyle"
+                BasedOn="{StaticResource MaterialDesignSlider}"
+                TargetType="{x:Type Slider}">
+                <Setter Property="Margin" Value="0,0,0,3" />
+                <Setter Property="Width" Value="420" />
+                <Setter Property="Minimum" Value="0.1" />
+                <Setter Property="Maximum" Value="1.0" />
+                <Setter Property="SmallChange" Value="0.1" />
+                <Setter Property="LargeChange" Value="0.2" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="TickFrequency" Value="0.1" />
             </Style>
 
-            <Style x:Key="MagnificationFrameThicknessSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignSlider}">
-                <Setter Property="Margin" Value="0,0,0,3"/>
-                <Setter Property="Width" Value="420"/>
-                <Setter Property="Minimum" Value="0"/>
-                <Setter Property="Maximum" Value="5"/>
-                <Setter Property="SmallChange" Value="0.5"/>
-                <Setter Property="LargeChange" Value="1"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="TickFrequency" Value="1"/>
+            <Style
+                x:Key="MagnificationFrameThicknessSliderStyle"
+                BasedOn="{StaticResource MaterialDesignSlider}"
+                TargetType="{x:Type Slider}">
+                <Setter Property="Margin" Value="0,0,0,3" />
+                <Setter Property="Width" Value="420" />
+                <Setter Property="Minimum" Value="0" />
+                <Setter Property="Maximum" Value="5" />
+                <Setter Property="SmallChange" Value="0.5" />
+                <Setter Property="LargeChange" Value="1" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="TickFrequency" Value="1" />
             </Style>
 
-            <Style x:Key="MirrorZoomSliderStyle" TargetType="{x:Type Slider}" BasedOn="{StaticResource MaterialDesignSlider}">
-                <Setter Property="Margin" Value="0,0,0,3"/>
-                <Setter Property="Width" Value="420"/>
-                <Setter Property="Minimum" Value="1.0"/>
-                <Setter Property="Maximum" Value="3.0"/>
-                <Setter Property="SmallChange" Value="0.1"/>
-                <Setter Property="LargeChange" Value="0.5"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="TickFrequency" Value="0.5"/>
+            <Style
+                x:Key="MirrorZoomSliderStyle"
+                BasedOn="{StaticResource MaterialDesignDiscreteSlider}"
+                TargetType="{x:Type Slider}">
+                <Setter Property="Margin" Value="0,0,0,3" />
+                <Setter Property="Width" Value="420" />
+                <Setter Property="Minimum" Value="{Binding MinMirrorZoom}" />
+                <Setter Property="Maximum" Value="{Binding MaxMirrorZoom}" />
+                <Setter Property="SmallChange" Value="0.1" />
+                <Setter Property="LargeChange" Value="0.5" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="TickFrequency" Value="0.1" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -134,8 +172,12 @@
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="UserControl.Loaded">
             <BeginStoryboard>
-                <Storyboard >
-                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:1" />
+                <Storyboard>
+                    <DoubleAnimation
+                        Storyboard.TargetProperty="Opacity"
+                        From="0.0"
+                        To="1.0"
+                        Duration="0:0:1" />
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>
@@ -145,78 +187,100 @@
         <GroupBox Header="{x:Static resx:Resources.SECTION_DISPLAY}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
-                <ComboBox ItemsSource="{Binding Monitors}"
-                          Style="{StaticResource SettingsComboBoxStyle}" 
-                          materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.MEDIA_MONITOR}"
-                          SelectedValuePath="MonitorId" 
-                          DisplayMemberPath="FriendlyName"
-                          IsEnabled="{Binding CanChangeMonitor}"
-                          SelectedValue="{Binding MonitorId, Mode=TwoWay}">
-                </ComboBox>
+                <ComboBox
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.MEDIA_MONITOR}"
+                    materialDesign:HintAssist.IsFloating="True"
+                    DisplayMemberPath="FriendlyName"
+                    IsEnabled="{Binding CanChangeMonitor}"
+                    ItemsSource="{Binding Monitors}"
+                    SelectedValue="{Binding MonitorId, Mode=TwoWay}"
+                    SelectedValuePath="MonitorId"
+                    Style="{StaticResource SettingsComboBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding MediaWindowed, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.MEDIA_WINDOWED}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.MEDIA_WINDOWED}"
+                    IsChecked="{Binding MediaWindowed, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <StackPanel Orientation="Vertical" Margin="25,0,0,0" IsEnabled="{Binding MediaWindowed, Mode=OneWay}">
-                    <RadioButton GroupName="WindowSize" 
-                                 Content="{x:Static resx:Resources.MEDIA_WINDOW_RESIZABLE}" 
-                                 IsChecked="{Binding MediaWindowResizable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                 Style="{StaticResource SettingsRadioButtonStyle}" />
-                    <RadioButton GroupName="WindowSize" 
-                                 IsChecked="{Binding MediaWindowFixed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource SettingsRadioButtonStyle}" >
-                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding MediaWindowFixed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
-                            <TextBlock Text="{x:Static resx:Resources.MEDIA_WINDOW_FIXED_SIZE}" VerticalAlignment="Center" Margin="0,0,10,0" />
-                            <TextBox Text="{Binding MediaWindowWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                     MinWidth="50" TextAlignment="Center" />
+                <StackPanel
+                    Margin="25,0,0,0"
+                    IsEnabled="{Binding MediaWindowed, Mode=OneWay}"
+                    Orientation="Vertical">
+                    <RadioButton
+                        Content="{x:Static resx:Resources.MEDIA_WINDOW_RESIZABLE}"
+                        GroupName="WindowSize"
+                        IsChecked="{Binding MediaWindowResizable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource SettingsRadioButtonStyle}" />
+                    <RadioButton
+                        GroupName="WindowSize"
+                        IsChecked="{Binding MediaWindowFixed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource SettingsRadioButtonStyle}">
+                        <StackPanel IsEnabled="{Binding MediaWindowFixed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Orientation="Horizontal">
+                            <TextBlock
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center"
+                                Text="{x:Static resx:Resources.MEDIA_WINDOW_FIXED_SIZE}" />
+                            <TextBox
+                                MinWidth="50"
+                                Text="{Binding MediaWindowWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextAlignment="Center" />
 
-                            <TextBlock Text="x" VerticalAlignment="Center" Margin="10,0,10,0" />
-                            <TextBox Text="{Binding MediaWindowHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                     MinWidth="50" TextAlignment="Center" />
+                            <TextBlock
+                                Margin="10,0,10,0"
+                                VerticalAlignment="Center"
+                                Text="x" />
+                            <TextBox
+                                MinWidth="50"
+                                Text="{Binding MediaWindowHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextAlignment="Center" />
                         </StackPanel>
                     </RadioButton>
-                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding MediaWindowFixed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="20,0,0,0">
-                        <Button 
-                            Style="{StaticResource MaterialDesignRaisedLightButton}" 
+                    <StackPanel
+                        Margin="20,0,0,0"
+                        IsEnabled="{Binding MediaWindowFixed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        Orientation="Horizontal">
+                        <Button
                             Command="{Binding Set360PSizeCommand}"
+                            Content="360p"
                             IsEnabled="{Binding Is360PSize, Converter={StaticResource InvertBooleanConverter}}"
-                            Content="360p" />
-                        <Button 
-                            Style="{StaticResource MaterialDesignRaisedLightButton}" 
+                            Style="{StaticResource MaterialDesignRaisedLightButton}" />
+                        <Button
                             Margin="10,0,0,0"
                             Command="{Binding Set480PSizeCommand}"
+                            Content="480p"
                             IsEnabled="{Binding Is480PSize, Converter={StaticResource InvertBooleanConverter}}"
-                            Content="480p" />
-                        <Button 
-                            Style="{StaticResource MaterialDesignRaisedLightButton}" 
+                            Style="{StaticResource MaterialDesignRaisedLightButton}" />
+                        <Button
                             Margin="10,0,0,0"
                             Command="{Binding Set720PSizeCommand}"
-                            IsEnabled="{Binding Is720PSize, Converter={StaticResource InvertBooleanConverter}}"
+                            Content="720p"
                             FontWeight="Bold"
-                            Content="720p" />
-                        <Button 
-                            Style="{StaticResource MaterialDesignRaisedLightButton}" 
+                            IsEnabled="{Binding Is720PSize, Converter={StaticResource InvertBooleanConverter}}"
+                            Style="{StaticResource MaterialDesignRaisedLightButton}" />
+                        <Button
                             Margin="10,0,0,0"
                             Command="{Binding Set1080PSizeCommand}"
+                            Content="1080p"
                             IsEnabled="{Binding Is1080PSize, Converter={StaticResource InvertBooleanConverter}}"
-                            Content="1080p" />
+                            Style="{StaticResource MaterialDesignRaisedLightButton}" />
                     </StackPanel>
                 </StackPanel>
 
-                <CheckBox IsChecked="{Binding WindowedAlwaysOnTop, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.MEDIA_WINDOWED_ON_TOP}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.MEDIA_WINDOWED_ON_TOP}"
+                    IsChecked="{Binding WindowedAlwaysOnTop, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding PermanentBackdrop, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.PERMANENT_BACKDROP}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.PERMANENT_BACKDROP}"
+                    IsChecked="{Binding PermanentBackdrop, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding IncludeBlankScreenItem, Mode=TwoWay}"
-                          IsEnabled="{Binding NotPermanentBackdrop, Mode=OneWay}"
-                          Content="{x:Static resx:Resources.INCLUDE_BLANK}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.INCLUDE_BLANK}"
+                    IsChecked="{Binding IncludeBlankScreenItem, Mode=TwoWay}"
+                    IsEnabled="{Binding NotPermanentBackdrop, Mode=OneWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
             </StackPanel>
         </GroupBox>
@@ -225,54 +289,61 @@
             <StackPanel Orientation="Vertical">
 
                 <StackPanel Orientation="Horizontal">
-                    <ComboBox ItemsSource="{Binding RecentMediaFolders}"
-                              Style="{StaticResource SettingsComboBoxStyle}" 
-                              Width="376"
-                              Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource InverseBoolToVisConverter}}"
-                              IsEnabled="{Binding IsMediaInactive}"
-                              materialDesign:HintAssist.IsFloating="True"
-                              materialDesign:HintAssist.Hint="{x:Static resx:Resources.MEDIA_FOLDER}"
-                              SelectedValue="{Binding MediaFolder, Mode=TwoWay}"/>
+                    <ComboBox
+                        Width="376"
+                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.MEDIA_FOLDER}"
+                        materialDesign:HintAssist.IsFloating="True"
+                        IsEnabled="{Binding IsMediaInactive}"
+                        ItemsSource="{Binding RecentMediaFolders}"
+                        SelectedValue="{Binding MediaFolder, Mode=TwoWay}"
+                        Style="{StaticResource SettingsComboBoxStyle}"
+                        Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource InverseBoolToVisConverter}}" />
 
-                    <Button Style="{StaticResource MaterialDesignRaisedLightButton}" 
-                            Command="{Binding OpenMediaFolderCommand}"
-                            IsEnabled="{Binding IsMediaInactive}"
-                            Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource InverseBoolToVisConverter}}"
-                            Margin="5,0,0,0"
-                            Content="{materialDesign:PackIcon FolderOpen}"/>
+                    <Button
+                        Margin="5,0,0,0"
+                        Command="{Binding OpenMediaFolderCommand}"
+                        Content="{materialDesign:PackIcon FolderOpen}"
+                        IsEnabled="{Binding IsMediaInactive}"
+                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource InverseBoolToVisConverter}}" />
 
                 </StackPanel>
 
-                <TextBlock Margin="0,10,0,0" 
-                           Style="{StaticResource MiscNotesStyle}" 
-                           Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource BooleanToVisibilityConverter}}"
-                           Text ="{x:Static resx:Resources.MEDIA_FOLDER_CMDLINE}" />
-                <TextBlock Margin="0,5,0,10" 
-                           Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource BooleanToVisibilityConverter}}"
-                           Text ="{Binding MediaFolder}" />
+                <TextBlock
+                    Margin="0,10,0,0"
+                    Style="{StaticResource MiscNotesStyle}"
+                    Text="{x:Static resx:Resources.MEDIA_FOLDER_CMDLINE}"
+                    Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <TextBlock
+                    Margin="0,5,0,10"
+                    Text="{Binding MediaFolder}"
+                    Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                <CheckBox IsChecked="{Binding EmbeddedThumbnails, Mode=TwoWay}"
-                          Content = "{x:Static resx:Resources.USE_THUMBS}" 
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.USE_THUMBS}"
+                    IsChecked="{Binding EmbeddedThumbnails, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding UseInternalMediaTitles, Mode=TwoWay}"
-                          Content = "{x:Static resx:Resources.USE_TITLES}" 
-                          Style="{StaticResource SettingsCheckBoxStyle}" />
+                <CheckBox
+                    Content="{x:Static resx:Resources.USE_TITLES}"
+                    IsChecked="{Binding UseInternalMediaTitles, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding ShowCommandPanel, Mode=TwoWay}"
-                          Content = "{x:Static resx:Resources.USE_CMD_PANEL}" 
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.USE_CMD_PANEL}"
+                    IsChecked="{Binding ShowCommandPanel, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
                 <TextBox
                     materialDesign:HintAssist.Hint="{x:Static resx:Resources.MAX_ITEMS}"
-                    Text="{Binding MaxItemCount, Mode=TwoWay}"
-                    Style="{StaticResource SettingsTextBoxStyle}" />
+                    Style="{StaticResource SettingsTextBoxStyle}"
+                    Text="{Binding MaxItemCount, Mode=TwoWay}" />
 
-                <Button 
-                    Style="{StaticResource SettingsButtonStyle}" 
+                <Button
                     Margin="0,10,0,0"
                     Command="{Binding PurgeThumbnailCacheCommand}"
-                    Content="{x:Static resx:Resources.PURGE_THUMBS}" />
+                    Content="{x:Static resx:Resources.PURGE_THUMBS}"
+                    Style="{StaticResource SettingsButtonStyle}" />
 
             </StackPanel>
         </GroupBox>
@@ -280,73 +351,71 @@
         <GroupBox Header="{x:Static resx:Resources.SECTION_WEB}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
-                <ComboBox ItemsSource="{Binding MagnifierShapes}"
-                          Style="{StaticResource SettingsComboBoxStyle}" 
-                          materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.WEB_MAGNIFIER_SHAPE}"
-                          SelectedValuePath="Shape" 
-                          DisplayMemberPath="Name"
-                          SelectedValue="{Binding MagnifierShape, Mode=TwoWay}"/>
+                <ComboBox
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.WEB_MAGNIFIER_SHAPE}"
+                    materialDesign:HintAssist.IsFloating="True"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding MagnifierShapes}"
+                    SelectedValue="{Binding MagnifierShape, Mode=TwoWay}"
+                    SelectedValuePath="Shape"
+                    Style="{StaticResource SettingsComboBoxStyle}" />
 
-                <ComboBox ItemsSource="{Binding MagnifierSizes}"
-                          Style="{StaticResource SettingsComboBoxStyle}" 
-                          materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.WEB_MAGNIFIER_SIZE}"
-                          SelectedValuePath="Size" 
-                          DisplayMemberPath="Name"
-                          SelectedValue="{Binding MagnifierSize, Mode=TwoWay}"/>
+                <ComboBox
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.WEB_MAGNIFIER_SIZE}"
+                    materialDesign:HintAssist.IsFloating="True"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding MagnifierSizes}"
+                    SelectedValue="{Binding MagnifierSize, Mode=TwoWay}"
+                    SelectedValuePath="Size"
+                    Style="{StaticResource SettingsComboBoxStyle}" />
 
 
-                <Label Style="{StaticResource SettingsLabelStyle}" 
-                           Content="{x:Static resx:Resources.WEB_MAGNIFIER_ZOOM}"/>
+                <Label Content="{x:Static resx:Resources.WEB_MAGNIFIER_ZOOM}" Style="{StaticResource SettingsLabelStyle}" />
 
-                <Slider Style="{StaticResource MagnificationSliderStyle}" 
-                        Value="{Binding MagnifierZoomLevel, Mode=TwoWay}"/>
+                <Slider Style="{StaticResource MagnificationSliderStyle}" Value="{Binding MagnifierZoomLevel, Mode=TwoWay}" />
 
-                <Label Style="{StaticResource SettingsLabelStyle}" 
-                           Content="{x:Static resx:Resources.WEB_ZOOM_INCREMENT}"/>
+                <Label Content="{x:Static resx:Resources.WEB_ZOOM_INCREMENT}" Style="{StaticResource SettingsLabelStyle}" />
 
-                <Slider Style="{StaticResource WebPageZoomSliderStyle}" 
-                        Value="{Binding WebPageZoomIncrement, Mode=TwoWay}"/>
+                <Slider Style="{StaticResource WebPageZoomSliderStyle}" Value="{Binding WebPageZoomIncrement, Mode=TwoWay}" />
 
-                <Label Style="{StaticResource SettingsLabelStyle}" 
-                       Content="{x:Static resx:Resources.WEB_MAGNIFIER_FRAME_THICKNESS}"/>
+                <Label Content="{x:Static resx:Resources.WEB_MAGNIFIER_FRAME_THICKNESS}" Style="{StaticResource SettingsLabelStyle}" />
 
-                <Slider Style="{StaticResource MagnificationFrameThicknessSliderStyle}" 
-                        Value="{Binding MagnifierFrameThickness, Mode=TwoWay}"/>
+                <Slider Style="{StaticResource MagnificationFrameThicknessSliderStyle}" Value="{Binding MagnifierFrameThickness, Mode=TwoWay}" />
 
-                <CheckBox IsChecked="{Binding AllowMirror, Mode=TwoWay}"
-                          Content = "{x:Static resx:Resources.ALLOW_MIRROR}" 
-                          Style="{StaticResource SettingsCheckBoxStyle}" />
+                <CheckBox
+                    Content="{x:Static resx:Resources.ALLOW_MIRROR}"
+                    IsChecked="{Binding AllowMirror, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding MirrorByDefault, Mode=TwoWay}"
-                          Content = "{x:Static resx:Resources.MIRROR_BY_DEFAULT}" 
-                          Style="{StaticResource SettingsCheckBoxStyle}" />
+                <CheckBox
+                    Content="{x:Static resx:Resources.MIRROR_BY_DEFAULT}"
+                    IsChecked="{Binding MirrorByDefault, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <Label Style="{StaticResource SettingsLabelStyle}" 
-                       Content="{x:Static resx:Resources.MIRROR_ZOOM}"/>
+                <Label Content="{x:Static resx:Resources.MIRROR_ZOOM}" Style="{StaticResource SettingsLabelStyle}" />
 
-                <Slider Style="{StaticResource MirrorZoomSliderStyle}" 
-                        Value="{Binding MirrorZoom, Mode=TwoWay}"/>
+                <Slider Style="{StaticResource MirrorZoomSliderStyle}" Value="{Binding MirrorZoom, Mode=TwoWay}" />
 
-                <ComboBox ItemsSource="{Binding MirrorHotKeys}"
-                          Style="{StaticResource SettingsComboBoxStyle}" 
-                          materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.MIRROR_HOTKEY}"
-                          SelectedValuePath="Character" 
-                          DisplayMemberPath="Name"
-                          SelectedValue="{Binding MirrorHotKey, Mode=TwoWay}"/>
+                <ComboBox
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.MIRROR_HOTKEY}"
+                    materialDesign:HintAssist.IsFloating="True"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding MirrorHotKeys}"
+                    SelectedValue="{Binding MirrorHotKey, Mode=TwoWay}"
+                    SelectedValuePath="Character"
+                    Style="{StaticResource SettingsComboBoxStyle}" />
 
-                <Button 
-                    Style="{StaticResource SettingsButtonStyle}" 
+                <Button
                     Margin="0,10,0,0"
                     Command="{Binding PurgeWebCacheCommand}"
-                    Content="{x:Static resx:Resources.PURGE_WEB_CACHE}" />
+                    Content="{x:Static resx:Resources.PURGE_WEB_CACHE}"
+                    Style="{StaticResource SettingsButtonStyle}" />
 
-                <TextBlock Style="{StaticResource MiscNotesStyle}" 
-                           TextWrapping="Wrap"
-                           Visibility="{Binding Path=IsBrowserCachePurgeQueued, Converter={StaticResource BooleanToVisibilityConverter}}"
-                           Text="{x:Static resx:Resources.PURGE_WEB_CACHE_RESTART}"/>
+                <TextBlock
+                    Style="{StaticResource MiscNotesStyle}"
+                    Text="{x:Static resx:Resources.PURGE_WEB_CACHE_RESTART}"
+                    TextWrapping="Wrap"
+                    Visibility="{Binding Path=IsBrowserCachePurgeQueued, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
             </StackPanel>
         </GroupBox>
@@ -354,195 +423,220 @@
         <GroupBox Header="{x:Static resx:Resources.SECTION_IMAGES}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
-                <ComboBox ItemsSource="{Binding ImageFadeTypes}"
-                          Style="{StaticResource SettingsComboBoxStyle}" 
-                          materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.FADING_STYLE}"
-                          SelectedValuePath="Fade" 
-                          DisplayMemberPath="Name"
-                          SelectedValue="{Binding ImageFadeType, Mode=TwoWay}"/>
+                <ComboBox
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.FADING_STYLE}"
+                    materialDesign:HintAssist.IsFloating="True"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding ImageFadeTypes}"
+                    SelectedValue="{Binding ImageFadeType, Mode=TwoWay}"
+                    SelectedValuePath="Fade"
+                    Style="{StaticResource SettingsComboBoxStyle}" />
 
-                <ComboBox ItemsSource="{Binding FadeSpeedTypes}"
-                          Style="{StaticResource SettingsComboBoxStyle}" 
-                          materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.FADING_SPEED}"
-                          SelectedValuePath="Speed" 
-                          DisplayMemberPath="Name"
-                          SelectedValue="{Binding FadeSpeedType, Mode=TwoWay}"/>
+                <ComboBox
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.FADING_SPEED}"
+                    materialDesign:HintAssist.IsFloating="True"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding FadeSpeedTypes}"
+                    SelectedValue="{Binding FadeSpeedType, Mode=TwoWay}"
+                    SelectedValuePath="Speed"
+                    Style="{StaticResource SettingsComboBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding CacheImages, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.CACHE_IMAGES}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.CACHE_IMAGES}"
+                    IsChecked="{Binding CacheImages, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding AutoRotateImages, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.AUTO_ROTATE}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.AUTO_ROTATE}"
+                    IsChecked="{Binding AutoRotateImages, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
             </StackPanel>
         </GroupBox>
 
         <GroupBox Header="{x:Static resx:Resources.SECTION_VIDEO_AUDIO}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
-                <ComboBox ItemsSource="{Binding RenderingMethods}"
-                          IsEnabled="{Binding IsMediaInactive}"
-                          Style="{StaticResource SettingsComboBoxStyle}" 
-                          materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.RENDERING_ENGINE}"
-                          SelectedValuePath="Method" 
-                          DisplayMemberPath="Name"
-                          SelectedValue="{Binding RenderingMethod, Mode=TwoWay}">
-                </ComboBox>
+                <ComboBox
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.RENDERING_ENGINE}"
+                    materialDesign:HintAssist.IsFloating="True"
+                    DisplayMemberPath="Name"
+                    IsEnabled="{Binding IsMediaInactive}"
+                    ItemsSource="{Binding RenderingMethods}"
+                    SelectedValue="{Binding RenderingMethod, Mode=TwoWay}"
+                    SelectedValuePath="Method"
+                    Style="{StaticResource SettingsComboBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding ShowVideoSubtitles, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.SHOW_SUBTITLES}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.SHOW_SUBTITLES}"
+                    IsChecked="{Binding ShowVideoSubtitles, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding AllowVideoPositionSeeking, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.ALLOW_SEEK}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.ALLOW_SEEK}"
+                    IsChecked="{Binding AllowVideoPositionSeeking, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding AllowVideoScrubbing, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.ALLOW_SCRUB}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.ALLOW_SCRUB}"
+                    IsChecked="{Binding AllowVideoScrubbing, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding AllowVideoPause, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.ALLOW_PAUSE}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.ALLOW_PAUSE}"
+                    IsChecked="{Binding AllowVideoPause, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding ShowFreezeCommand, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.SHOW_FREEZE}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.SHOW_FREEZE}"
+                    IsChecked="{Binding ShowFreezeCommand, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <CheckBox IsChecked="{Binding ConfirmWhenStoppingVideo, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.CONFIRM_STOP}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.CONFIRM_STOP}"
+                    IsChecked="{Binding ConfirmWhenStoppingVideo, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
             </StackPanel>
         </GroupBox>
 
         <GroupBox Header="{x:Static resx:Resources.SECTION_MARGINS}" Style="{StaticResource SettingsGroupBoxStyle}">
 
             <StackPanel Margin="0,0,0,10" Orientation="Vertical">
-                <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
-                           Text="{x:Static resx:Resources.VIDEO_MARGINS}"
-                           Margin="0,10,0,4"/>
+                <TextBlock
+                    Margin="0,10,0,4"
+                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                    Text="{x:Static resx:Resources.VIDEO_MARGINS}" />
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="BorderLeft" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderLeft" />
 
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding VideoScreenLeftMargin, Mode=TwoWay}"/>
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding VideoScreenLeftMargin, Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="BorderTop" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderTop" />
 
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding VideoScreenTopMargin, Mode=TwoWay}"/>
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding VideoScreenTopMargin, Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="BorderRight" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding VideoScreenRightMargin, Mode=TwoWay}"/>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderRight" />
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding VideoScreenRightMargin, Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="BorderBottom" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderBottom" />
 
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding VideoScreenBottomMargin, Mode=TwoWay}"/>
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding VideoScreenBottomMargin, Mode=TwoWay}" />
                 </StackPanel>
 
-                <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
-                           Text="{x:Static resx:Resources.IMAGE_MARGINS}"
-                           Margin="0,10,0,4"/>
+                <TextBlock
+                    Margin="0,10,0,4"
+                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                    Text="{x:Static resx:Resources.IMAGE_MARGINS}" />
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="BorderLeft" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderLeft" />
 
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding ImageScreenLeftMargin, Mode=TwoWay}"/>
-                </StackPanel>
-
-                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-
-                    <materialDesign:PackIcon Kind="BorderTop" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
-
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding ImageScreenTopMargin, Mode=TwoWay}"/>
-                </StackPanel>
-
-                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-
-                    <materialDesign:PackIcon Kind="BorderRight" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
-
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding ImageScreenRightMargin, Mode=TwoWay}"/>
-                </StackPanel>
-
-                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="BorderBottom" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
-
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding ImageScreenBottomMargin, Mode=TwoWay}"/>
-                </StackPanel>
-
-                <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
-                           Text="{x:Static resx:Resources.WEB_MARGINS}"
-                           Margin="0,10,0,4"/>
-
-                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="BorderLeft" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
-
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding WebScreenLeftMargin, Mode=TwoWay}"/>
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding ImageScreenLeftMargin, Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
 
-                    <materialDesign:PackIcon Kind="BorderTop" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderTop" />
 
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding WebScreenTopMargin, Mode=TwoWay}"/>
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding ImageScreenTopMargin, Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
 
-                    <materialDesign:PackIcon Kind="BorderRight" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderRight" />
 
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding WebScreenRightMargin, Mode=TwoWay}"/>
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding ImageScreenRightMargin, Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
-                    <materialDesign:PackIcon Kind="BorderBottom" 
-                                             VerticalAlignment="Center"
-                                             Width="24" Height="24"/>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderBottom" />
 
-                    <Slider Style="{StaticResource MarginsSliderStyle}" 
-                            Value="{Binding WebScreenBottomMargin, Mode=TwoWay}"/>
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding ImageScreenBottomMargin, Mode=TwoWay}" />
+                </StackPanel>
+
+                <TextBlock
+                    Margin="0,10,0,4"
+                    Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                    Text="{x:Static resx:Resources.WEB_MARGINS}" />
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderLeft" />
+
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding WebScreenLeftMargin, Mode=TwoWay}" />
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderTop" />
+
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding WebScreenTopMargin, Mode=TwoWay}" />
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderRight" />
+
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding WebScreenRightMargin, Mode=TwoWay}" />
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="BorderBottom" />
+
+                    <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding WebScreenBottomMargin, Mode=TwoWay}" />
                 </StackPanel>
 
             </StackPanel>
@@ -551,53 +645,59 @@
         <GroupBox Header="{x:Static resx:Resources.SECTION_MISC}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
-                <TextBlock Text="{Binding AppVersionStr}" 
-                           FontSize="12"
-                           Margin="0,0,0,15"
-                           Foreground="{StaticResource MaterialDesignDarkBackground}" />
+                <TextBlock
+                    Margin="0,0,0,15"
+                    FontSize="12"
+                    Foreground="{StaticResource MaterialDesignDarkBackground}"
+                    Text="{Binding AppVersionStr}" />
 
                 <DatePicker
-                    HorizontalAlignment="Left"
-                    Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
                     Name="LocaleDatePicker"
-                    IsEnabled="{Binding IsMediaInactive}"
+                    Width="420"
                     Margin="0,0,0,10"
+                    HorizontalAlignment="Left"
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.CURRENT_DATE}"
+                    IsEnabled="{Binding IsMediaInactive}"
                     SelectedDate="{Binding MediaCalendarDate}"
                     SelectedDateFormat="Long"
-                    Width="420"
-                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.CURRENT_DATE}" />
+                    Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
 
-                <CheckBox IsChecked="{Binding AlwaysOnTop, Mode=TwoWay}"
-                          Content="{x:Static resx:Resources.ON_TOP}"
-                          Style="{StaticResource SettingsCheckBoxStyle}"/>
+                <CheckBox
+                    Content="{x:Static resx:Resources.ON_TOP}"
+                    IsChecked="{Binding AlwaysOnTop, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <ComboBox ItemsSource="{Binding LoggingLevels}"
-                          Style="{StaticResource SettingsComboBoxStyle}" 
-                          materialDesign:HintAssist.IsFloating="True"
-                          materialDesign:HintAssist.Hint="{x:Static resx:Resources.LOGGING_LEVEL}"
-                          SelectedValuePath="Level" 
-                          DisplayMemberPath="Name"
-                          SelectedValue="{Binding LogEventLevel, Mode=TwoWay}"/>
+                <ComboBox
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.LOGGING_LEVEL}"
+                    materialDesign:HintAssist.IsFloating="True"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding LoggingLevels}"
+                    SelectedValue="{Binding LogEventLevel, Mode=TwoWay}"
+                    SelectedValuePath="Level"
+                    Style="{StaticResource SettingsComboBoxStyle}" />
 
                 <DockPanel>
-                    <materialDesign:PackIcon Kind="Translate" 
-                                             Width="24" 
-                                             Height="24"
-                                             Margin="0,0,6,0"
-                                             VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding Languages}" 
-                              Style="{StaticResource SettingsComboBoxStyle}"
-                              materialDesign:HintAssist.IsFloating="True"
-                              Width="390"
-                              materialDesign:HintAssist.Hint="{x:Static resx:Resources.LANGUAGE}"
-                              SelectedValuePath="LanguageId" 
-                              DisplayMemberPath="LanguageName"
-                              SelectedValue="{Binding LanguageId, Mode=TwoWay}"/>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        Margin="0,0,6,0"
+                        VerticalAlignment="Center"
+                        Kind="Translate" />
+                    <ComboBox
+                        Width="390"
+                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.LANGUAGE}"
+                        materialDesign:HintAssist.IsFloating="True"
+                        DisplayMemberPath="LanguageName"
+                        ItemsSource="{Binding Languages}"
+                        SelectedValue="{Binding LanguageId, Mode=TwoWay}"
+                        SelectedValuePath="LanguageId"
+                        Style="{StaticResource SettingsComboBoxStyle}" />
                 </DockPanel>
 
-                <TextBlock Style="{StaticResource MiscNotesStyle}" 
-                           TextWrapping="Wrap"
-                           Text="{x:Static resx:Resources.RESTART_LANGUAGE}"/>
+                <TextBlock
+                    Style="{StaticResource MiscNotesStyle}"
+                    Text="{x:Static resx:Resources.RESTART_LANGUAGE}"
+                    TextWrapping="Wrap" />
 
             </StackPanel>
         </GroupBox>

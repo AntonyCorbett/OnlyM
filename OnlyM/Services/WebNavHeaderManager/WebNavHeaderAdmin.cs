@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,8 @@ internal sealed class WebNavHeaderAdmin
 
     public void MouseMove(Point pos)
     {
+        Debug.WriteLine(pos);
+
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
         switch (_webHeaderStatus)
         {

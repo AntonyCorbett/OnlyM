@@ -320,7 +320,7 @@ public sealed class OptionsService : IOptionsService
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (_options.Value.MirrorZoom != value)
             {
-                _options.Value.MirrorZoom = value;
+                _options.Value.MirrorZoom = Options.GetNormalisedMirrorZoom(value);
             }
         }
     }

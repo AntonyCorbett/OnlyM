@@ -11,6 +11,10 @@ namespace OnlyM.Core.Services.Options;
 
 public sealed class Options
 {
+    public static readonly double MinMirrorZoom = 0.5;
+    public static readonly double MaxMirrorZoom = 2.0;
+    public static readonly double DefaultMirrorZoom = 1.0;
+
     private const int AbsoluteMaxItemCount = 200;
     private const int DefaultMaxItemCount = 50;
 
@@ -21,9 +25,6 @@ public sealed class Options
     private const double DefaultBrowserFrameThickness = 2.0;
     private const double MaxBrowserFrameThickness = 5.0;
 
-    private const double MinMirrorZoom = 1.0;
-    private const double MaxMirrorZoom = 2.0;
-    private const double DefaultMirrorZoom = 1.0;
     private const char DefaultMirrorHotKey = 'Z';
 
     public Options()
@@ -206,14 +207,28 @@ public sealed class Options
             MagnifierFrameThickness = DefaultBrowserFrameThickness;
         }
 
-        if (MirrorZoom < MinMirrorZoom || MirrorZoom > MaxMirrorZoom)
-        {
-            MirrorZoom = DefaultMirrorZoom;
-        }
+        MirrorZoom = GetNormalisedMirrorZoom(MirrorZoom);
 
         if (MirrorHotKey < 'A' || MirrorHotKey > 'Z')
         {
             MirrorHotKey = DefaultMirrorHotKey;
         }
+    }
+
+    public static double GetNormalisedMirrorZoom(double value)
+    {
+        if (value < Options.MinMirrorZoom)
+        {
+            return Options.MinMirrorZoom;
+        }
+
+        if (value > Options.MaxMirrorZoom)
+        {
+            return Options.MaxMirrorZoom;
+        }
+
+        var d = (int)Math.Round(value * 10);
+
+        return d / 10.0;
     }
 }

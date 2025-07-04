@@ -122,6 +122,14 @@ internal sealed class SettingsViewModel : ObservableObject
 
     public bool IsBrowserCachePurgeQueued => _optionsService.ShouldPurgeBrowserCacheOnStartup;
 
+    // ReSharper disable once MemberCanBeMadeStatic.Global
+#pragma warning disable CA1822
+    public double MinMirrorZoom => Options.MinMirrorZoom;
+
+    // ReSharper disable once MemberCanBeMadeStatic.Global
+    public double MaxMirrorZoom => Options.MaxMirrorZoom;
+#pragma warning restore CA1822
+
     public string MaxItemCount
     {
         get => _optionsService.MaxItemCount.ToString(CultureInfo.InvariantCulture);

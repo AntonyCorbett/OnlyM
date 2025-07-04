@@ -90,7 +90,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 
 		MSG msg;
 		BOOL bRet;
-		while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0)			
+		while ((bRet = GetMessage(&msg, nullptr, 0, 0)) != 0)			
 		{
 			if (bRet == -1)
 			{
@@ -109,13 +109,13 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 		}
 
 		// Shut down.
-		KillTimer(NULL, timerId);
+		KillTimer(nullptr, timerId);
 		MagUninitialize();
 
 		// find OnlyM window and reposition cursor over it...
 		RepositionCursor();
 
-		rv = (int)msg.wParam;
+		rv = static_cast<int>(msg.wParam);
 
 		::CloseHandle(hMutex);
 	}
@@ -139,7 +139,7 @@ void PositionCursor()
 // position cursor back in the OnlyM window...
 void RepositionCursor()
 {
-	HWND hWnd = ::FindWindow(NULL, "S o u n d B o x - O N L Y M");
+	const HWND hWnd = ::FindWindow(nullptr, "S o u n d B o x - O N L Y M");
 	if (hWnd)
 	{
 		RECT r;
@@ -167,8 +167,8 @@ BOOL InitFromCommandLine()
 
 	if (__argc >= 4)
 	{
-		ZoomFactor = (float)atof(__argv[3]);
-		if (ZoomFactor == 0.0F)
+		ZoomFactor = static_cast<float>(atof(__argv[3]));
+		if (ZoomFactor <= 0.0F)
 		{
 			ZoomFactor = 1.0F;
 		}
@@ -184,7 +184,7 @@ BOOL InitFromCommandLine()
 
 BOOL InitMonitors()
 {
-	EnumDisplayMonitors(NULL, NULL, OnlyMMonitorEnumProc, 0);
+	EnumDisplayMonitors(nullptr, nullptr, OnlyMMonitorEnumProc, 0);
 
 	return
 		mainMonitorRect.left != mainMonitorRect.right &&
@@ -194,7 +194,7 @@ BOOL InitMonitors()
 BOOL InitHotKey()
 {
 	UINT vkCode = 0x41 + HotKey - 'A';
-	return ::RegisterHotKey(NULL, 1, MOD_ALT, vkCode);  //0x5A is 'Z'
+	return ::RegisterHotKey(nullptr, 1, MOD_ALT, vkCode);  //0x5A is 'Z'
 }
 
 BOOL CALLBACK OnlyMMonitorEnumProc(HMONITOR hMonitor, HDC /*hdcMonitor*/, LPRECT /*lprcMonitor*/, LPARAM /*dwData*/)
@@ -225,7 +225,7 @@ LRESULT CALLBACK HostWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 	switch (message)
 	{
 		case WM_SETCURSOR:
-			SetCursor(NULL);
+			SetCursor(nullptr);
 			return TRUE;
 			break;
 
@@ -234,11 +234,11 @@ LRESULT CALLBACK HostWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			break;
 
 		case WM_SIZE:
-			if (hwndMag != NULL)
+			if (hwndMag != nullptr)
 			{
 				GetClientRect(hWnd, &magWindowRect);
 				// Resize the control to fill the window.
-				SetWindowPos(hwndMag, NULL, magWindowRect.left, magWindowRect.top, magWindowRect.right, magWindowRect.bottom, 0);
+				SetWindowPos(hwndMag, nullptr, magWindowRect.left, magWindowRect.top, magWindowRect.right, magWindowRect.bottom, 0);
 			}
 			break;
 
@@ -258,7 +258,7 @@ ATOM RegisterHostWindowClass(HINSTANCE hInstance)
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
 	wcex.lpfnWndProc = HostWndProc;
 	wcex.hInstance = hInstance;
-	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(1 + COLOR_BTNFACE);
 	wcex.lpszClassName = WindowClassName;
 
@@ -268,134 +268,107 @@ ATOM RegisterHostWindowClass(HINSTANCE hInstance)
 // Creates the windows and initializes mirror.
 BOOL SetupMirror(HINSTANCE hinst)
 {
-	// Set bounds of host window according to size of media monitor...
-	int mediaMonitorHeight = targetMonitorRect.bottom - targetMonitorRect.top;
-	int mediaMonitorWidth = targetMonitorRect.right - targetMonitorRect.left;
+    // Set bounds of host window according to size of media monitor...
+    int mediaMonitorHeight = targetMonitorRect.bottom - targetMonitorRect.top;
+    int mediaMonitorWidth = targetMonitorRect.right - targetMonitorRect.left;
 
-	int hostMonitorHeight = mainMonitorRect.bottom - mainMonitorRect.top;
-	int hostMonitorWidth = mainMonitorRect.right - mainMonitorRect.left;
+    int hostMonitorHeight = mainMonitorRect.bottom - mainMonitorRect.top;
+    int hostMonitorWidth = mainMonitorRect.right - mainMonitorRect.left;
 
-	// limit the size of the host...
-	int maxHostHeight = hostMonitorHeight - (hostMonitorHeight / 20);
-	int maxHostWidth = hostMonitorWidth - (hostMonitorWidth / 20);
-			
-	// calculate the proposed host rect
-	hostWindowRect.top = mainMonitorRect.top;
-	hostWindowRect.bottom = hostWindowRect.top + mediaMonitorHeight;
-	hostWindowRect.left = mainMonitorRect.left;
-	hostWindowRect.right = hostWindowRect.left + mediaMonitorWidth;
-	
-	// adjust hostWindowRect to get external size of the window required for the specified client rect
-	::AdjustWindowRectEx(&hostWindowRect, HOST_WINDOW_STYLES, FALSE, HOST_WINDOW_STYLES_EX);
+    // Calculate the maximum zoom factor that fits in the main monitor
+    float maxZoomWidth = (float)hostMonitorWidth / (float)mediaMonitorWidth;
+    float maxZoomHeight = (float)hostMonitorHeight / (float)mediaMonitorHeight;
+    float maxZoom = (maxZoomWidth < maxZoomHeight) ? maxZoomWidth : maxZoomHeight;
 
-	int winHeight = hostWindowRect.bottom - hostWindowRect.top;
-	int winWidth = hostWindowRect.right - hostWindowRect.left;
+    // Clamp ZoomFactor if needed
+    if (ZoomFactor > maxZoom)
+    {
+        ZoomFactor = maxZoom;
+    }
 
-	if (winHeight > maxHostHeight)
-	{
-		winHeight = maxHostHeight;
-	}
+    // Calculate the intended client area size (scaled by ZoomFactor)
+    int clientHeight = static_cast<int>(mediaMonitorHeight * ZoomFactor);
+    int clientWidth = static_cast<int>(mediaMonitorWidth * ZoomFactor);
 
-	if (winWidth > maxHostWidth)
-	{
-		winWidth = maxHostWidth;
-	}
+    // Calculate the window rectangle needed to get the desired client area
+    RECT windowRect = { 0, 0, clientWidth, clientHeight };
+    AdjustWindowRectEx(&windowRect, HOST_WINDOW_STYLES, FALSE, HOST_WINDOW_STYLES_EX);
 
-	hostWindowRect.top = mainMonitorRect.top + ((hostMonitorHeight - winHeight) / 2);
-	hostWindowRect.bottom = hostWindowRect.top + winHeight;
-	hostWindowRect.left = mainMonitorRect.left + ((hostMonitorWidth - winWidth) / 2);
-	hostWindowRect.right = hostWindowRect.left + winWidth;
+    int winWidth = windowRect.right - windowRect.left;
+    int winHeight = windowRect.bottom - windowRect.top;
 
-	// Create the host window.
-	RegisterHostWindowClass(hinst);
-	hwndHost = CreateWindowEx(HOST_WINDOW_STYLES_EX,
-		WindowClassName, WindowTitle,
-		HOST_WINDOW_STYLES,
-		hostWindowRect.left, hostWindowRect.top, hostWindowRect.right - hostWindowRect.left, hostWindowRect.bottom - hostWindowRect.top,
-		NULL, NULL, hInst, NULL);
+    // Center the window in the host monitor
+    int winLeft = mainMonitorRect.left + (hostMonitorWidth - winWidth) / 2;
+    int winTop = mainMonitorRect.top + (hostMonitorHeight - winHeight) / 2;
 
-	if (!hwndHost)
-	{
-		return FALSE;
-	}
+    // Clamp to ensure the window is fully visible within the main monitor
+    if (winLeft < mainMonitorRect.left)
+    {
+        winLeft = mainMonitorRect.left;
+    }
 
-	hCursorArrow = LoadCursor(NULL, IDC_ARROW);
+    if (winTop < mainMonitorRect.top)
+    {
+        winTop = mainMonitorRect.top;
+    }
 
-	// Make the window opaque...
-	SetLayeredWindowAttributes(hwndHost, 0, 255, LWA_ALPHA);
+    // Create the host window.
+    RegisterHostWindowClass(hinst);
+    hwndHost = CreateWindowEx(
+        HOST_WINDOW_STYLES_EX,
+        WindowClassName, WindowTitle,
+        HOST_WINDOW_STYLES,
+        winLeft, winTop, winWidth, winHeight,
+        nullptr, nullptr, hInst, nullptr);
 
-	// Create a magnifier control that fills the client area.
-	GetClientRect(hwndHost, &magWindowRect);
+    if (!hwndHost)
+    {
+        return FALSE;
+    }
 
-	hwndMag = CreateWindow(WC_MAGNIFIER, TEXT("MagnifierWindow"),
-		WS_CHILD | MS_SHOWMAGNIFIEDCURSOR | WS_VISIBLE,
-		magWindowRect.left, magWindowRect.top, magWindowRect.right, magWindowRect.bottom, hwndHost, NULL, hInst, NULL);
+    hCursorArrow = LoadCursor(nullptr, IDC_ARROW);
 
-	if (!hwndMag)
-	{
-		return FALSE;
-	}
+    // Make the window opaque...
+    SetLayeredWindowAttributes(hwndHost, 0, 255, LWA_ALPHA);
 
-	// Set the magnification factor.
-	MAGTRANSFORM matrix;
-	memset(&matrix, 0, sizeof(matrix));
-	matrix.v[0][0] = ZoomFactor;
-	matrix.v[1][1] = ZoomFactor;
-	matrix.v[2][2] = 1.0f;
+    // Create a magnifier control that fills the client area.
+    GetClientRect(hwndHost, &magWindowRect);
 
-	BOOL ret = MagSetWindowTransform(hwndMag, &matrix);
+    hwndMag = CreateWindow(
+        WC_MAGNIFIER, TEXT("MagnifierWindow"),
+        WS_CHILD | MS_SHOWMAGNIFIEDCURSOR | WS_VISIBLE,
+        magWindowRect.left, magWindowRect.top,
+        magWindowRect.right - magWindowRect.left,
+        magWindowRect.bottom - magWindowRect.top,
+        hwndHost, NULL, hInst, NULL);
 
-	return ret;
+    if (!hwndMag)
+    {
+        return FALSE;
+    }
+
+    // Set the magnification factor.
+    MAGTRANSFORM matrix = {};
+    matrix.v[0][0] = ZoomFactor;
+    matrix.v[1][1] = ZoomFactor;
+    matrix.v[2][2] = 1.0f;
+
+    return MagSetWindowTransform(hwndMag, &matrix);
 }
 
 // Sets the source rectangle and updates the window. Called by a timer.
 void CALLBACK UpdateMirrorWindow(HWND /*hwnd*/, UINT /*uMsg*/, UINT_PTR /*idEvent*/, DWORD /*dwTime*/)
 {
-	POINT mousePoint;
-	GetCursorPos(&mousePoint);
+    // Always show the full target monitor area
+    const RECT sourceRect = targetMonitorRect;
 
-	if (mousePoint.x >= targetMonitorRect.left && mousePoint.x <= targetMonitorRect.right &&
-		mousePoint.y >= targetMonitorRect.top && mousePoint.y <= targetMonitorRect.bottom)
-	{
-		int width = (int)((magWindowRect.right - magWindowRect.left) / ZoomFactor);
-		int height = (int)((magWindowRect.bottom - magWindowRect.top) / ZoomFactor);
+    // Set the source rectangle for the magnifier control.
+    MagSetWindowSource(hwndMag, sourceRect);
 
-        RECT sourceRect{};
-		sourceRect.left = mousePoint.x - width / 2;
-		sourceRect.top = mousePoint.y - height / 2;
+    // Reclaim topmost status, to prevent non-mirrored menus from remaining in view. 
+    SetWindowPos(hwndHost, HWND_TOPMOST, 0, 0, 0, 0,
+        SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 
-		if (sourceRect.left < targetMonitorRect.left)
-		{
-			sourceRect.left = targetMonitorRect.left;
-		}
-
-		if (sourceRect.left > targetMonitorRect.right - width)
-		{
-			sourceRect.left = targetMonitorRect.right - width;
-		}
-
-		sourceRect.right = sourceRect.left + width;
-
-		if (sourceRect.top < targetMonitorRect.top)
-		{
-			sourceRect.top = targetMonitorRect.top;
-		}
-
-		if (sourceRect.top > targetMonitorRect.bottom - height)
-		{
-			sourceRect.top = targetMonitorRect.bottom - height;
-		}
-
-		sourceRect.bottom = sourceRect.top + height;
-
-		// Set the source rectangle for the magnifier control.
-		MagSetWindowSource(hwndMag, sourceRect);
-
-		// Reclaim topmost status, to prevent non-mirrored menus from remaining in view. 
-		SetWindowPos(hwndHost, HWND_TOPMOST, 0, 0, 0, 0,
-			SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
-
-		// Force redraw.
-		InvalidateRect(hwndMag, NULL, TRUE);
-	}
+    // Force redraw.
+    InvalidateRect(hwndMag, nullptr, TRUE);
 }
