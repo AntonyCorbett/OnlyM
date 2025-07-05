@@ -1,0 +1,25 @@
+Tidy up drop down nav bar
+Include Close button as alternative to Alt-Z
+Include hotkeys for the nav bar commands and add to instructions
+
+ALT+RIGHT = nav forwards
+ALT+LEFT - nav back
+ALT+HOME = home page (FIX)
+HOME = top of page
+END = end of page
+
+CTRL+PLUS = magnify
+CTRL+MINUS = reduce
+CTRL+0 - 100% size
+CTRL+F5 = reload
+
+F1 = Toggle magnifier
+F2 = Toggle frame shape
+F3 = Enlarge magnifier
+F4 = Reduce magnifier
+
+Fix - Need to Uncheck the "Mirror" checkbox if the user manually closes the mirror window
+ALT+HOME = home page (FIX)
+Fix - A second launching of the web browser remembers the history! We need a way of clearing the history. Only possible by regenerating the browser instance. Avoid!
+
+Update wiki. Describe limitations of browser (media, popups, etc)

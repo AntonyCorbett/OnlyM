@@ -21,6 +21,11 @@ using Serilog;
 
 namespace OnlyM.Services;
 
+// Note that the Chromium browser instance is created in the Media Window XAML, and is a singleton.
+// This means the browser page history is retained between several displays of a web page. It might
+// be better to recreate the browser instance, thus clearing the history each time, but this seems 
+// inefficient for such a minor requirement.
+
 internal sealed class WebDisplayManager : IDisposable
 {
     private readonly ChromiumWebBrowser _browser;
