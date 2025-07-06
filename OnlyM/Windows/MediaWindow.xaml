@@ -7,6 +7,7 @@
     xmlns:magnifierControl="clr-namespace:OnlyM.CustomControls.MagnifierControl;assembly=OnlyM.CustomControls"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:resx="clr-namespace:OnlyM.Properties"
     xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
     Title="OnlyM Media Window"
     Width="500"
@@ -49,6 +50,8 @@
                 x:Key="ZoomButtonStyle"
                 BasedOn="{StaticResource MaterialDesignFloatingActionLightButton}"
                 TargetType="{x:Type Button}">
+                <Setter Property="Width" Value="38" />
+                <Setter Property="Height" Value="38" />
                 <Setter Property="Margin" Value="5,0,0,0" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
@@ -57,8 +60,18 @@
                 x:Key="ToggleBtnStyle"
                 BasedOn="{StaticResource MaterialDesignActionToggleButton}"
                 TargetType="{x:Type ToggleButton}">
-                <Setter Property="Width" Value="40" />
-                <Setter Property="Height" Value="40" />
+                <Setter Property="Width" Value="38" />
+                <Setter Property="Height" Value="38" />
+                <Setter Property="Margin" Value="0,0,10,0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style
+                x:Key="OnOffToggleBtnStyle"
+                BasedOn="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
+                TargetType="{x:Type ToggleButton}">
+                <Setter Property="Width" Value="38" />
+                <Setter Property="Height" Value="38" />
                 <Setter Property="Margin" Value="0,0,10,0" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
@@ -153,8 +166,8 @@
 
                 <KeyBinding Key="F1" Command="{Binding ToggleMagnifier}" />
                 <KeyBinding Key="F2" Command="{Binding ToggleMagnifierFrame}" />
-                <KeyBinding Key="F3" Command="{Binding MagnifierLarger}" />
-                <KeyBinding Key="F4" Command="{Binding MagnifierSmaller}" />
+                <KeyBinding Key="F3" Command="{Binding MagnifierSmaller}" />
+                <KeyBinding Key="F4" Command="{Binding MagnifierLarger}" />
 
             </Grid.InputBindings>
 
@@ -193,7 +206,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="190" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="395" />
+                    <ColumnDefinition Width="400" />
                 </Grid.ColumnDefinitions>
 
                 <!--  Web navigation buttons stack panel  -->
@@ -202,21 +215,30 @@
                     Margin="5,0,0,0"
                     Orientation="Horizontal"
                     Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Button Command="{Binding WebBrowser.BackCommand, FallbackValue=null}" Style="{StaticResource NavButtonStyle}">
+                    <Button
+                        Command="{Binding WebBrowser.BackCommand, FallbackValue=null}"
+                        Style="{StaticResource NavButtonStyle}"
+                        ToolTip="{x:Static resx:Resources.WEB_NAV_BACK}">
                         <materialDesign:PackIcon
                             Width="32"
                             Height="32"
                             Kind="ArrowLeftBold" />
                     </Button>
 
-                    <Button Command="{Binding WebBrowser.ForwardCommand, FallbackValue=null}" Style="{StaticResource NavButtonStyle}">
+                    <Button
+                        Command="{Binding WebBrowser.ForwardCommand, FallbackValue=null}"
+                        Style="{StaticResource NavButtonStyle}"
+                        ToolTip="{x:Static resx:Resources.WEB_NAV_FORWARD}">
                         <materialDesign:PackIcon
                             Width="32"
                             Height="32"
                             Kind="ArrowRightBold" />
                     </Button>
 
-                    <Button Command="{Binding WebBrowser.ReloadCommand, FallbackValue=null}" Style="{StaticResource RefreshButtonStyle}">
+                    <Button
+                        Command="{Binding WebBrowser.ReloadCommand, FallbackValue=null}"
+                        Style="{StaticResource RefreshButtonStyle}"
+                        ToolTip="{x:Static resx:Resources.WEB_PAGE_RELOAD}">
                         <materialDesign:PackIcon
                             Width="32"
                             Height="32"
@@ -236,86 +258,150 @@
                     Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                 <!--  Web page magnifier buttons etc  -->
+
                 <StackPanel
                     Grid.Column="2"
-                    Margin="0,0,5,0"
+                    Margin="0,0,20,0"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
-                    <ToggleButton IsChecked="{Binding IsMagnifierVisible, Mode=TwoWay}" Style="{StaticResource ToggleBtnStyle}">
-                        <ToggleButton.Content>
-                            <Grid>
-                                <materialDesign:PackIcon
-                                    Width="28"
-                                    Height="28"
-                                    Kind="Close" />
-                            </Grid>
-                        </ToggleButton.Content>
-                        <materialDesign:ToggleButtonAssist.OnContent>
-                            <materialDesign:PackIcon
-                                Width="28"
-                                Height="28"
-                                Kind="Check" />
-                        </materialDesign:ToggleButtonAssist.OnContent>
-                    </ToggleButton>
 
-                    <ToggleButton IsChecked="{Binding IsMagnifierFrameSquare, Mode=TwoWay}" Style="{StaticResource ToggleBtnStyle}">
-                        <ToggleButton.Content>
-                            <materialDesign:PackIcon
-                                Width="28"
-                                Height="28"
-                                Kind="CircleOutline" />
-                        </ToggleButton.Content>
-                        <materialDesign:ToggleButtonAssist.OnContent>
-                            <materialDesign:PackIcon
-                                Width="28"
-                                Height="28"
-                                Kind="SquareOutline" />
-                        </materialDesign:ToggleButtonAssist.OnContent>
-                    </ToggleButton>
+                    <!--  Magnifier controls  -->
 
-                    <Button Command="{Binding MagnifierLarger}" Style="{StaticResource MagnifierSizeButtonStyle}">
-                        <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
-                            Kind="Plus" />
-                    </Button>
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Grid.Row="0"
+                            Margin="0,-6,0,0"
+                            HorizontalAlignment="Center"
+                            Foreground="{StaticResource PrimaryHueLightBrush}"
+                            Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                            Text="{Binding MagnifierDescription}"
+                            TextTrimming="CharacterEllipsis" />
+                        <Border
+                            Grid.Row="1"
+                            BorderBrush="{StaticResource PrimaryHueLightBrush}"
+                            BorderThickness="0,0.5,0,0">
+                            <StackPanel Margin="10,6,0,0" Orientation="Horizontal">
+                                <ToggleButton
+                                    IsChecked="{Binding IsMagnifierVisible, Mode=TwoWay}"
+                                    Style="{StaticResource OnOffToggleBtnStyle}"
+                                    ToolTip="{x:Static resx:Resources.WEB_MAGNIFIER_ON_OFF_TOGGLE}">
+                                    <materialDesign:PackIcon
+                                        Width="24"
+                                        Height="24"
+                                        Kind="Magnify" />
+                                </ToggleButton>
 
-                    <Button Command="{Binding MagnifierSmaller}" Style="{StaticResource MagnifierSizeButtonStyle}">
-                        <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
-                            Kind="Minus" />
-                    </Button>
+                                <ToggleButton
+                                    IsChecked="{Binding IsMagnifierFrameSquare, Mode=TwoWay}"
+                                    IsEnabled="{Binding IsMagnifierVisible}"
+                                    Style="{StaticResource ToggleBtnStyle}"
+                                    ToolTip="{x:Static resx:Resources.WEB_MAGNIFIER_SHAPE_SWITCH}">
+                                    <ToggleButton.Content>
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="CircleOutline" />
+                                    </ToggleButton.Content>
+                                    <materialDesign:ToggleButtonAssist.OnContent>
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="SquareOutline" />
+                                    </materialDesign:ToggleButtonAssist.OnContent>
+                                </ToggleButton>
 
-                    <Button
-                        Command="{Binding WebBrowser.ZoomInCommand, FallbackValue=null}"
-                        Style="{StaticResource ZoomButtonStyle}"
-                        Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <materialDesign:PackIcon
-                            Width="32"
-                            Height="32"
-                            Kind="PlusCircleOutline" />
-                    </Button>
+                                <Button
+                                    Command="{Binding MagnifierSmaller}"
+                                    IsEnabled="{Binding IsMagnifierVisible}"
+                                    Style="{StaticResource MagnifierSizeButtonStyle}"
+                                    ToolTip="{x:Static resx:Resources.WEB_MAGNIFIER_SMALLER}">
+                                    <materialDesign:PackIcon
+                                        Width="24"
+                                        Height="24"
+                                        Kind="Minus" />
+                                </Button>
 
-                    <Button
-                        Command="{Binding WebBrowser.ZoomOutCommand, FallbackValue=null}"
-                        Style="{StaticResource ZoomButtonStyle}"
-                        Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <materialDesign:PackIcon
-                            Width="32"
-                            Height="32"
-                            Kind="MinusCircleOutline" />
-                    </Button>
+                                <Button
+                                    Command="{Binding MagnifierLarger}"
+                                    IsEnabled="{Binding IsMagnifierVisible}"
+                                    Style="{StaticResource MagnifierSizeButtonStyle}"
+                                    ToolTip="{x:Static resx:Resources.WEB_MAGNIFIER_LARGER}">
+                                    <materialDesign:PackIcon
+                                        Width="24"
+                                        Height="24"
+                                        Kind="Plus" />
+                                </Button>
 
-                    <Button
-                        Command="{Binding WebBrowser.ZoomResetCommand, FallbackValue=null}"
-                        Style="{StaticResource ZoomButtonStyle}"
-                        Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <materialDesign:PackIcon
-                            Width="32"
-                            Height="32"
-                            Kind="CircleOutline" />
-                    </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!--  Page Size controls  -->
+
+                    <Grid
+                        Margin="20,0,0,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Grid.Row="0"
+                            Margin="0,-6,0,0"
+                            HorizontalAlignment="Center"
+                            Foreground="{StaticResource PrimaryHueLightBrush}"
+                            Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                            Text="{x:Static resx:Resources.WEB_PAGE_SIZE}"
+                            TextTrimming="CharacterEllipsis" />
+                        <Border
+                            Grid.Row="1"
+                            BorderBrush="{StaticResource PrimaryHueLightBrush}"
+                            BorderThickness="0,0.5,0,0">
+                            <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
+
+                                <Button
+                                    Command="{Binding WebBrowser.ZoomOutCommand, FallbackValue=null}"
+                                    Style="{StaticResource ZoomButtonStyle}"
+                                    ToolTip="{x:Static resx:Resources.WEB_PAGE_SMALLER}"
+                                    Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <materialDesign:PackIcon
+                                        Width="24"
+                                        Height="24"
+                                        Kind="Minus" />
+                                </Button>
+
+                                <Button
+                                    Command="{Binding WebBrowser.ZoomInCommand, FallbackValue=null}"
+                                    Style="{StaticResource ZoomButtonStyle}"
+                                    ToolTip="{x:Static resx:Resources.WEB_PAGE_LARGER}"
+                                    Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <materialDesign:PackIcon
+                                        Width="24"
+                                        Height="24"
+                                        Kind="Plus" />
+                                </Button>
+
+                                <Button
+                                    Command="{Binding WebBrowser.ZoomResetCommand, FallbackValue=null}"
+                                    Style="{StaticResource ZoomButtonStyle}"
+                                    ToolTip="{x:Static resx:Resources.WEB_PAGE_RESET}"
+                                    Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <materialDesign:PackIcon
+                                        Width="24"
+                                        Height="24"
+                                        Kind="CircleOutline" />
+                                </Button>
+
+
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
 
                 </StackPanel>
 

@@ -1,6 +1,4 @@
-Tidy up drop down nav bar
 Include Close button as alternative to Alt-Z
-Include hotkeys for the nav bar commands and add to instructions
 
 ALT+RIGHT = nav forwards
 ALT+LEFT - nav back
@@ -15,11 +13,12 @@ CTRL+F5 = reload
 
 F1 = Toggle magnifier
 F2 = Toggle frame shape
-F3 = Enlarge magnifier
-F4 = Reduce magnifier
+
+F3 = Reduce magnifier
+F4 = Enlarge magnifier
 
 Fix - Need to Uncheck the "Mirror" checkbox if the user manually closes the mirror window
-ALT+HOME = home page (FIX)
-Fix - A second launching of the web browser remembers the history! We need a way of clearing the history. Only possible by regenerating the browser instance. Avoid!
+ALT+HOME = home page (FIX). Also close the mirror when user unchecks the "Mirror" checkbox
 
 Update wiki. Describe limitations of browser (media, popups, etc)
+

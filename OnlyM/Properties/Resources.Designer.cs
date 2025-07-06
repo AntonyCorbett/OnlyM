@@ -1007,6 +1007,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Magnifier.
+        /// </summary>
+        public static string WEB_MAGNIFIER {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Magnifier frame thickness.
         /// </summary>
         public static string WEB_MAGNIFIER_FRAME_THICKNESS {
@@ -1016,11 +1025,56 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Larger (F4).
+        /// </summary>
+        public static string WEB_MAGNIFIER_LARGER {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_LARGER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OFF.
+        /// </summary>
+        public static string WEB_MAGNIFIER_OFF {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_OFF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ON.
+        /// </summary>
+        public static string WEB_MAGNIFIER_ON {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_ON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On/Off (F1).
+        /// </summary>
+        public static string WEB_MAGNIFIER_ON_OFF_TOGGLE {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_ON_OFF_TOGGLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Magnifier shape.
         /// </summary>
         public static string WEB_MAGNIFIER_SHAPE {
             get {
                 return ResourceManager.GetString("WEB_MAGNIFIER_SHAPE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shape (F2).
+        /// </summary>
+        public static string WEB_MAGNIFIER_SHAPE_SWITCH {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_SHAPE_SWITCH", resourceCulture);
             }
         }
         
@@ -1043,6 +1097,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Smaller (F3).
+        /// </summary>
+        public static string WEB_MAGNIFIER_SMALLER {
+            get {
+                return ResourceManager.GetString("WEB_MAGNIFIER_SMALLER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Magnifier magnification level.
         /// </summary>
         public static string WEB_MAGNIFIER_ZOOM {
@@ -1057,6 +1120,69 @@ namespace OnlyM.Properties {
         public static string WEB_MARGINS {
             get {
                 return ResourceManager.GetString("WEB_MARGINS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back (Alt-Left).
+        /// </summary>
+        public static string WEB_NAV_BACK {
+            get {
+                return ResourceManager.GetString("WEB_NAV_BACK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forward (Alt-Right).
+        /// </summary>
+        public static string WEB_NAV_FORWARD {
+            get {
+                return ResourceManager.GetString("WEB_NAV_FORWARD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Larger (Ctrl+Plus).
+        /// </summary>
+        public static string WEB_PAGE_LARGER {
+            get {
+                return ResourceManager.GetString("WEB_PAGE_LARGER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reload Page (Ctrl+F5).
+        /// </summary>
+        public static string WEB_PAGE_RELOAD {
+            get {
+                return ResourceManager.GetString("WEB_PAGE_RELOAD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset Size (Ctrl+0).
+        /// </summary>
+        public static string WEB_PAGE_RESET {
+            get {
+                return ResourceManager.GetString("WEB_PAGE_RESET", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page Size.
+        /// </summary>
+        public static string WEB_PAGE_SIZE {
+            get {
+                return ResourceManager.GetString("WEB_PAGE_SIZE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smaller (Ctrl+Minus).
+        /// </summary>
+        public static string WEB_PAGE_SMALLER {
+            get {
+                return ResourceManager.GetString("WEB_PAGE_SMALLER", resourceCulture);
             }
         }
         

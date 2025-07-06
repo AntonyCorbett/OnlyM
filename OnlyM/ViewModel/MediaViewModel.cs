@@ -3,6 +3,7 @@ using System.Windows;
 using CefSharp.Wpf;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using OnlyM.Core.Extensions;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.Options;
 using OnlyM.CustomControls.MagnifierControl;
@@ -90,7 +91,11 @@ internal sealed class MediaViewModel : ObservableObject
     public bool IsMagnifierVisible
     {
         get => _isMagnifierVisible;
-        set => SetProperty(ref _isMagnifierVisible, value);
+        set
+        {
+            SetProperty(ref _isMagnifierVisible, value);
+            OnPropertyChanged(nameof(MagnifierDescription));
+        }
     }
 
     public double MagnifierZoomLevel
@@ -161,6 +166,36 @@ internal sealed class MediaViewModel : ObservableObject
 
     public bool SubTitleTextIsNotEmpty => !string.IsNullOrEmpty(SubTitleText);
 
+    public string MagnifierDescription
+    {
+        get
+        {
+            var onOffText = IsMagnifierVisible ? Properties.Resources.WEB_MAGNIFIER_ON : Properties.Resources.WEB_MAGNIFIER_OFF;
+            var shapeText = MagnifierShape.GetDescriptiveName();
+            var sizeText = MagnifierSize.GetDescriptiveName();
+
+            return $"{Properties.Resources.WEB_MAGNIFIER}: {onOffText}, {shapeText} - {sizeText}";
+        }
+    }
+
+    private MagnifierSize MagnifierSize
+    {
+        get => _optionsService.MagnifierSize;
+        set
+        {
+            if (_optionsService.MagnifierSize != value)
+            {
+                _optionsService.MagnifierSize = value;
+                OnPropertyChanged();
+                
+                OnPropertyChanged(nameof(MagnifierRadius));
+                OnPropertyChanged(nameof(MagnifierDescription));
+                MagnifierLarger.NotifyCanExecuteChanged();
+                MagnifierSmaller.NotifyCanExecuteChanged();
+            }
+        }
+    }
+
     private MagnifierShape MagnifierShape
     {
         get => _optionsService.MagnifierShape;
@@ -172,6 +207,7 @@ internal sealed class MediaViewModel : ObservableObject
 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMagnifierFrameSquare));
+                OnPropertyChanged(nameof(MagnifierDescription));
             }
         }
     }
@@ -186,66 +222,70 @@ internal sealed class MediaViewModel : ObservableObject
     {
         ToggleMagnifier = new RelayCommand(DoToggleMagnifier);
         ToggleMagnifierFrame = new RelayCommand(DoToggleMagnifierFrame);
-        MagnifierSmaller = new RelayCommand(DoMagnifierSmaller);
-        MagnifierLarger = new RelayCommand(DoMagnifierLarger);
+        MagnifierSmaller = new RelayCommand(DoMagnifierSmaller, CanExecuteDoMagnifierSmaller);
+        MagnifierLarger = new RelayCommand(DoMagnifierLarger, CanExecuteDoMagnifierLarger);
     }
+
+    private bool CanExecuteDoMagnifierSmaller() => MagnifierSize != MagnifierSize.XXSmall;
+
+    private bool CanExecuteDoMagnifierLarger() => MagnifierSize != MagnifierSize.XXLarge;
 
     private void DoMagnifierLarger()
     {
-        switch (_optionsService.MagnifierSize)
+        switch (MagnifierSize)
         {
             case MagnifierSize.XXSmall:
-                _optionsService.MagnifierSize = MagnifierSize.XSmall;
+                MagnifierSize = MagnifierSize.XSmall;
                 break;
 
             case MagnifierSize.XSmall:
-                _optionsService.MagnifierSize = MagnifierSize.Small;
+                MagnifierSize =MagnifierSize.Small;
                 break;
 
             case MagnifierSize.Small:
-                _optionsService.MagnifierSize = MagnifierSize.Medium;
+                MagnifierSize = MagnifierSize.Medium;
                 break;
 
             case MagnifierSize.Medium:
-                _optionsService.MagnifierSize = MagnifierSize.Large;
+                MagnifierSize = MagnifierSize.Large;
                 break;
 
             case MagnifierSize.Large:
-                _optionsService.MagnifierSize = MagnifierSize.XLarge;
+                MagnifierSize = MagnifierSize.XLarge;
                 break;
 
             case MagnifierSize.XLarge:
-                _optionsService.MagnifierSize = MagnifierSize.XXLarge;
+                MagnifierSize = MagnifierSize.XXLarge;
                 break;
         }
     }
 
     private void DoMagnifierSmaller()
     {
-        switch (_optionsService.MagnifierSize)
+        switch (MagnifierSize)
         {
             case MagnifierSize.XXLarge:
-                _optionsService.MagnifierSize = MagnifierSize.XLarge;
+                MagnifierSize = MagnifierSize.XLarge;
                 break;
 
             case MagnifierSize.XLarge:
-                _optionsService.MagnifierSize = MagnifierSize.Large;
+                MagnifierSize = MagnifierSize.Large;
                 break;
 
             case MagnifierSize.Large:
-                _optionsService.MagnifierSize = MagnifierSize.Medium;
+                MagnifierSize = MagnifierSize.Medium;
                 break;
 
             case MagnifierSize.Medium:
-                _optionsService.MagnifierSize = MagnifierSize.Small;
+                MagnifierSize = MagnifierSize.Small;
                 break;
 
             case MagnifierSize.Small:
-                _optionsService.MagnifierSize = MagnifierSize.XSmall;
+                MagnifierSize = MagnifierSize.XSmall;
                 break;
 
             case MagnifierSize.XSmall:
-                _optionsService.MagnifierSize = MagnifierSize.XXSmall;
+                MagnifierSize = MagnifierSize.XXSmall;
                 break;
         }
     }
@@ -272,7 +312,7 @@ internal sealed class MediaViewModel : ObservableObject
         const int minDelta = 10;
         var delta = Math.Max(WindowSize.Height / 40, minDelta);
 
-        switch (_optionsService.MagnifierSize)
+        switch (MagnifierSize)
         {
             default:
             case MagnifierSize.Medium:
