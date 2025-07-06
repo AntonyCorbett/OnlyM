@@ -1,11 +1,16 @@
 #include "stdafx.h"
 
 #include <windows.h>
+#include <d3d11.h>
+#include <dxgi1_2.h>
 #include <wincodec.h>
 #include <strsafe.h>
-#include <magnification.h>
 
 #include "Resource.h"
+
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "dxgi.lib")
+
 
 // WS_DISABLED prevents window being moved
 #define HOST_WINDOW_STYLES (WS_CLIPCHILDREN | WS_CAPTION | WS_DISABLED)
@@ -19,8 +24,7 @@ constexpr int MaxMonitorNameLength = 32;
 
 namespace
 {
-    HINSTANCE applicationInstance;
-    HWND magnifierWindow;
+    HINSTANCE applicationInstance;    
     HWND hostWindow;
     HWND instructionsWindow;
     int instructionsHeight;
@@ -31,6 +35,11 @@ namespace
     TCHAR targetMonitorName[MaxMonitorNameLength + 1];
     float zoomFactor = 1.0F;
     TCHAR hotKey = 'Z';
+
+    ID3D11Device* g_d3dDevice = nullptr;
+    ID3D11DeviceContext* g_d3dContext = nullptr;
+    IDXGIOutputDuplication* g_deskDupl = nullptr;
+    int GetMonitorIndexForName(const char* deviceName);
 }
 
 // Forward declarations.
@@ -44,7 +53,9 @@ namespace
     bool InitHotKey();
     bool InitFromCommandLine();
     void RepositionCursor();
-    void PositionCursor();
+    void PositionCursor();    
+    ID3D11Texture2D* AcquireNextFrame();
+    void BlitFrameToWindow(ID3D11Texture2D* frame, HWND hwnd);
 }
 
 /// <summary>
@@ -70,11 +81,6 @@ int APIENTRY WinMain(
 	if (!InitMonitors())
 	{
 		return 4;
-	}
-
-	if (!MagInitialize())
-	{
-		return 2;
 	}
 
 	if (!SetupMirror(hInstance))
@@ -103,7 +109,7 @@ int APIENTRY WinMain(
 
 		::SetWindowText(hostWindow, caption);
 		const UINT_PTR timerId = SetTimer(hostWindow, 0, TimerInterval, UpdateMirrorWindow);
-
+        
 		MSG msg;
         while (true)
         {
@@ -135,7 +141,6 @@ int APIENTRY WinMain(
 
 		// Shut down.
 		KillTimer(nullptr, timerId);
-		MagUninitialize();
 
 		// find OnlyM window and reposition cursor over it...
 		RepositionCursor();
@@ -181,6 +186,12 @@ namespace
 
     bool InitFromCommandLine()
     {
+        lstrcpyn(mainMonitorName, TEXT("\\\\.\\DISPLAY2"), MaxMonitorNameLength);
+        lstrcpyn(targetMonitorName, TEXT("\\\\.\\DISPLAY1"), MaxMonitorNameLength);
+        zoomFactor = 1.0F;  // Default zoom factor
+        hotKey = 'Z';  // Default hotkey
+        return true;
+
         bool rv = FALSE;
 
         if (__argc >= 3)
@@ -251,6 +262,22 @@ namespace
     {
         switch (message)
         {
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(window, &ps);
+
+            ID3D11Texture2D* frame = AcquireNextFrame();
+            if (frame)
+            {
+                BlitFrameToWindow(frame, window);
+                frame->Release();
+            }
+
+            EndPaint(window, &ps);
+            return 0;
+        }
+
         case WM_SETCURSOR:
             SetCursor(nullptr);
             return TRUE;
@@ -261,20 +288,19 @@ namespace
                 DeleteObject(instructionsBrush);
                 instructionsBrush = nullptr;
             }
+
+            if (g_deskDupl) { g_deskDupl->Release(); g_deskDupl = nullptr; }
+            if (g_d3dContext) { g_d3dContext->Release(); g_d3dContext = nullptr; }
+            if (g_d3dDevice) { g_d3dDevice->Release(); g_d3dDevice = nullptr; }
+
             PostQuitMessage(0);
             break;
 
         case WM_SIZE:
-            if (magnifierWindow != nullptr && instructionsWindow != nullptr)
+            if (instructionsWindow != nullptr)
             {
                 RECT clientRect;
                 GetClientRect(window, &clientRect);
-
-                // Resize magnifier to fill all but bottom area
-                SetWindowPos(magnifierWindow, nullptr,
-                    0, 0,
-                    clientRect.right, clientRect.bottom - instructionsHeight,
-                    SWP_NOZORDER);
 
                 // Position instructions at bottom
                 SetWindowPos(instructionsWindow, nullptr,
@@ -301,7 +327,7 @@ namespace
             return DefWindowProc(window, message, wParam, lParam);
         }
 
-        return 0;
+        return DefWindowProc(window, message, wParam, lParam);
     }
 
     //  Registers the window class for the window that contains the magnification control.
@@ -314,8 +340,9 @@ namespace
         windowClassEx.lpfnWndProc = HostWndProc;
         windowClassEx.hInstance = instance;
         windowClassEx.hCursor = LoadCursor(nullptr, IDC_ARROW);
-        windowClassEx.hbrBackground = reinterpret_cast<HBRUSH>(1 + COLOR_BTNFACE);  // NOLINT(performance-no-int-to-ptr)
+        //windowClassEx.hbrBackground = reinterpret_cast<HBRUSH>(1 + COLOR_BTNFACE);  // NOLINT(performance-no-int-to-ptr)
         windowClassEx.lpszClassName = WindowClassName;
+        windowClassEx.hbrBackground = nullptr;
 
         return RegisterClassEx(&windowClassEx);
     }
@@ -323,18 +350,180 @@ namespace
     // Sets the source rectangle and updates the window. Called by a timer.
     void CALLBACK UpdateMirrorWindow(HWND /*hostWindow*/, UINT /*message*/, UINT_PTR /*eventId*/, DWORD /*time*/)
     {
-        // Always show the full target monitor area
-        const RECT sourceRect = targetMonitorRect;
-
-        // Set the source rectangle for the magnifier control.
-        MagSetWindowSource(magnifierWindow, sourceRect);
-
         // Reclaim topmost status, to prevent non-mirrored menus from remaining in view. 
         SetWindowPos(hostWindow, HWND_TOPMOST, 0, 0, 0, 0,
             SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 
         // Force redraw.
-        InvalidateRect(magnifierWindow, nullptr, TRUE);
+        InvalidateRect(hostWindow, nullptr, false);
+    }
+
+    void BlitFrameToWindow(ID3D11Texture2D* frame, HWND hwnd)
+    {
+        if (!frame) return;
+
+        // Get frame description
+        D3D11_TEXTURE2D_DESC desc;
+        frame->GetDesc(&desc);
+
+        // Create staging texture
+        D3D11_TEXTURE2D_DESC stagingDesc = desc;
+        stagingDesc.Usage = D3D11_USAGE_STAGING;
+        stagingDesc.BindFlags = 0;
+        stagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+        stagingDesc.MiscFlags = 0;
+
+        ID3D11Texture2D* staging = nullptr;
+        g_d3dDevice->CreateTexture2D(&stagingDesc, nullptr, &staging);
+
+        // Copy frame to staging
+        g_d3dContext->CopyResource(staging, frame);
+
+        // Map and get data
+        D3D11_MAPPED_SUBRESOURCE mapped;
+        if (SUCCEEDED(g_d3dContext->Map(staging, 0, D3D11_MAP_READ, 0, &mapped)))
+        {
+            // Check if the first pixel is non-black
+            unsigned char* p = (unsigned char*)mapped.pData;
+            char buf[128];
+            sprintf_s(buf, "First pixel: B=%d G=%d R=%d A=%d\n", p[0], p[1], p[2], p[3]);
+            OutputDebugStringA(buf);
+
+            // Get the window's client area size
+            RECT clientRect;
+            GetClientRect(hwnd, &clientRect);
+            int winWidth = clientRect.right - clientRect.left;
+            int winHeight = clientRect.bottom - clientRect.top;
+
+            // Blit to window using GDI, scaling to fit the client area
+            HDC hdc = GetDC(hwnd);
+            BITMAPINFO bmi = {};
+            bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+            bmi.bmiHeader.biWidth = desc.Width;
+            bmi.bmiHeader.biHeight = -LONG(desc.Height); // top-down
+            bmi.bmiHeader.biPlanes = 1;
+            bmi.bmiHeader.biBitCount = 32;
+            bmi.bmiHeader.biCompression = BI_RGB;
+
+            StretchDIBits(
+                hdc,
+                0, 0, winWidth, winHeight, // destination: full client area
+                0, 0, desc.Width, desc.Height, // source: full captured frame
+                mapped.pData, &bmi, DIB_RGB_COLORS, SRCCOPY);
+
+            ReleaseDC(hwnd, hdc);
+            g_d3dContext->Unmap(staging, 0);
+        }
+        staging->Release();
+    }
+
+    ID3D11Texture2D* AcquireNextFrame()
+    {
+        if (!g_deskDupl) return nullptr;
+
+        DXGI_OUTDUPL_FRAME_INFO frameInfo;
+        IDXGIResource* desktopResource = nullptr;
+        HRESULT hr = g_deskDupl->AcquireNextFrame(16, &frameInfo, &desktopResource);
+        if (hr == DXGI_ERROR_WAIT_TIMEOUT)
+        {
+            // No new frame, not an error
+            return nullptr;
+        }
+
+        if (FAILED(hr)) 
+        {
+            char buf[128];
+            sprintf_s(buf, "AcquireNextFrame failed: 0x%08X\n", hr);
+            OutputDebugStringA(buf);
+            return nullptr;
+        }
+
+        ID3D11Texture2D* frame = nullptr;
+        desktopResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&frame);
+        desktopResource->Release();
+        g_deskDupl->ReleaseFrame();
+
+        return frame; // Caller must Release() when done
+    }
+
+    struct AdapterOutputIndex
+    {
+        int adapterIndex;
+        int outputIndex;
+    };
+
+    AdapterOutputIndex GetAdapterOutputIndexForName(const char* deviceName)
+    {
+        IDXGIFactory1* pFactory = nullptr;
+        if (FAILED(CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&pFactory)))
+            return { 0, 0 };
+
+        AdapterOutputIndex result = { 0, 0 };
+        IDXGIAdapter1* pAdapter = nullptr;
+        for (UINT adapterIndex = 0;
+            pFactory->EnumAdapters1(adapterIndex, &pAdapter) != DXGI_ERROR_NOT_FOUND;
+            ++adapterIndex)
+        {
+            IDXGIOutput* pOutput = nullptr;
+            for (UINT outputIndex = 0;
+                pAdapter->EnumOutputs(outputIndex, &pOutput) != DXGI_ERROR_NOT_FOUND;
+                ++outputIndex)
+            {
+                DXGI_OUTPUT_DESC desc;
+                if (SUCCEEDED(pOutput->GetDesc(&desc)))
+                {
+                    char outputName[32];
+                    size_t converted = 0;
+                    wcstombs_s(&converted, outputName, desc.DeviceName, _TRUNCATE);
+                    if (strcmp(outputName, deviceName) == 0)
+                    {
+                        pOutput->Release();
+                        pAdapter->Release();
+                        pFactory->Release();
+                        return { (int)adapterIndex, (int)outputIndex };
+                    }
+                }
+                pOutput->Release();
+            }
+            pAdapter->Release();
+        }
+        pFactory->Release();
+        return { 0, 0 }; // fallback
+    }
+
+    bool InitDirectXDuplication(int adapterIndex, int outputIndex)
+    {
+        HRESULT hr;
+        IDXGIFactory1* pFactory = nullptr;
+        hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&pFactory);
+        if (FAILED(hr)) return false;
+
+        IDXGIAdapter1* pAdapter = nullptr;
+        hr = pFactory->EnumAdapters1(adapterIndex, &pAdapter);
+        pFactory->Release();
+        if (FAILED(hr)) return false;
+
+        // *** CRITICAL: Use pAdapter and D3D_DRIVER_TYPE_UNKNOWN ***
+        hr = D3D11CreateDevice(
+            pAdapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, 0, nullptr, 0,
+            D3D11_SDK_VERSION, &g_d3dDevice, nullptr, &g_d3dContext);
+        if (FAILED(hr)) { pAdapter->Release(); return false; }
+
+        IDXGIOutput* dxgiOutput = nullptr;
+        hr = pAdapter->EnumOutputs(outputIndex, &dxgiOutput);
+        pAdapter->Release();
+        if (FAILED(hr)) return false;
+
+        IDXGIOutput1* dxgiOutput1 = nullptr;
+        hr = dxgiOutput->QueryInterface(__uuidof(IDXGIOutput1), (void**)&dxgiOutput1);
+        dxgiOutput->Release();
+        if (FAILED(hr)) return false;
+
+        hr = dxgiOutput1->DuplicateOutput(g_d3dDevice, &g_deskDupl);
+        dxgiOutput1->Release();
+        if (FAILED(hr)) return false;
+
+        return true;
     }
 
     bool SetupMirror(const HINSTANCE instance)
@@ -412,25 +601,12 @@ namespace
             return FALSE;
         }
 
+        AdapterOutputIndex idx = GetAdapterOutputIndexForName(targetMonitorName);
+        InitDirectXDuplication(idx.adapterIndex, idx.outputIndex);
+
         // 8. Get client area rect
         RECT clientRect;
         GetClientRect(hostWindow, &clientRect);
-
-        // 9. Create magnifier control (positioned at top)
-        magnifierWindow = CreateWindow(
-            WC_MAGNIFIER, 
-            TEXT("MagnifierWindow"),
-            WS_CHILD | MS_SHOWMAGNIFIEDCURSOR | WS_VISIBLE,
-            0, 0, clientRect.right, clientRect.bottom - instructionsHeight,
-            hostWindow, 
-            nullptr, 
-            applicationInstance, 
-            nullptr);
-
-        if (!magnifierWindow)
-        {
-            return FALSE;
-        }
 
         // 10. Create instructions static control (positioned at bottom)
         instructionsWindow = CreateWindow(
@@ -457,12 +633,6 @@ namespace
         // 12. Set the font for the instructions window
         SendMessage(instructionsWindow, WM_SETFONT, reinterpret_cast<WPARAM>(hFont), TRUE);
 
-        // 13. Set the magnification factor
-        MAGTRANSFORM matrix = {};
-        matrix.v[0][0] = zoomFactor;
-        matrix.v[1][1] = zoomFactor;
-        matrix.v[2][2] = 1.0f;
-
-        return MagSetWindowTransform(magnifierWindow, &matrix);
+        return true;
     }
 }
