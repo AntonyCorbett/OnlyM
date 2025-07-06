@@ -187,7 +187,7 @@ internal sealed class MediaViewModel : ObservableObject
             {
                 _optionsService.MagnifierSize = value;
                 OnPropertyChanged();
-                
+
                 OnPropertyChanged(nameof(MagnifierRadius));
                 OnPropertyChanged(nameof(MagnifierDescription));
                 MagnifierLarger.NotifyCanExecuteChanged();
@@ -239,7 +239,7 @@ internal sealed class MediaViewModel : ObservableObject
                 break;
 
             case MagnifierSize.XSmall:
-                MagnifierSize =MagnifierSize.Small;
+                MagnifierSize = MagnifierSize.Small;
                 break;
 
             case MagnifierSize.Small:
