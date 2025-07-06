@@ -1,11 +1,15 @@
 #include "stdafx.h"
 
 #include <windows.h>
+#include <gdiplus.h>
 #include <wincodec.h>
 #include <strsafe.h>
-#include <magnification.h>
 
 #include "Resource.h"
+
+#pragma comment (lib,"gdiplus.lib")
+
+using namespace Gdiplus;
 
 // WS_DISABLED prevents window being moved
 #define HOST_WINDOW_STYLES (WS_CLIPCHILDREN | WS_CAPTION | WS_DISABLED)
@@ -14,13 +18,12 @@
 // Global variables and strings.
 constexpr TCHAR WindowClassName[] = TEXT("OnlyMMirrorWindow");
 constexpr TCHAR WindowTitle[] = TEXT("OnlyM Mirror");
-constexpr UINT TimerInterval = 60;
+constexpr UINT TimerInterval = 150;
 constexpr int MaxMonitorNameLength = 32;
 
 namespace
 {
-    HINSTANCE applicationInstance;
-    HWND magnifierWindow;
+    HINSTANCE applicationInstance;    
     HWND hostWindow;
     HWND instructionsWindow;
     int instructionsHeight;
@@ -31,6 +34,7 @@ namespace
     TCHAR targetMonitorName[MaxMonitorNameLength + 1];
     float zoomFactor = 1.0F;
     TCHAR hotKey = 'Z';
+    HBITMAP g_hMirrorBitmap = nullptr;
 }
 
 // Forward declarations.
@@ -45,6 +49,7 @@ namespace
     bool InitFromCommandLine();
     void RepositionCursor();
     void PositionCursor();
+    HBITMAP CaptureMonitorBitmap(const RECT& rc);
 }
 
 /// <summary>
@@ -72,11 +77,6 @@ int APIENTRY WinMain(
 		return 4;
 	}
 
-	if (!MagInitialize())
-	{
-		return 2;
-	}
-
 	if (!SetupMirror(hInstance))
 	{
 		return 3;
@@ -93,6 +93,14 @@ int APIENTRY WinMain(
 	const HANDLE applicationMutex = ::CreateMutex(nullptr, TRUE, "OnlyMMirrorMutex");
 	if (applicationMutex && ::GetLastError() != ERROR_ALREADY_EXISTS)
 	{
+        ULONG_PTR gdiplusToken;
+        GdiplusStartupInput gdiplusStartupInput;
+        Status status = GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr);
+        if (status != Ok)
+        {
+            return 2;
+        }
+
 		ShowWindow(hostWindow, nCmdShow | SW_SHOWNA);		
 		UpdateWindow(hostWindow);
 
@@ -133,9 +141,9 @@ int APIENTRY WinMain(
             }
 		}
 
-		// Shut down.
-		KillTimer(nullptr, timerId);
-		MagUninitialize();
+		// Shut down.        
+		KillTimer(nullptr, timerId);		
+        GdiplusShutdown(gdiplusToken);
 
 		// find OnlyM window and reposition cursor over it...
 		RepositionCursor();
@@ -154,6 +162,26 @@ int APIENTRY WinMain(
 
 namespace
 {
+    // Capture the target monitor to a HBITMAP
+    HBITMAP CaptureMonitorBitmap(const RECT& rc)
+    {
+        int width = rc.right - rc.left;
+        int height = rc.bottom - rc.top;
+
+        HDC hScreenDC = GetDC(nullptr);
+        HDC hMemDC = CreateCompatibleDC(hScreenDC);
+        HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, width, height);
+        HGDIOBJ hOld = SelectObject(hMemDC, hBitmap);
+
+        BitBlt(hMemDC, 0, 0, width, height, hScreenDC, rc.left, rc.top, SRCCOPY);
+
+        SelectObject(hMemDC, hOld);
+        DeleteDC(hMemDC);
+        ReleaseDC(nullptr, hScreenDC);
+
+        return hBitmap;
+    }
+
     // position cursor in centre of target monitor...
     void PositionCursor()
     {
@@ -251,6 +279,32 @@ namespace
     {
         switch (message)
         {
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(window, &ps);
+
+            RECT clientRect;
+            GetClientRect(window, &clientRect);
+
+            if (g_hMirrorBitmap)
+            {
+                Graphics graphics(hdc);
+                graphics.SetInterpolationMode(InterpolationModeHighQualityBicubic);
+
+                Bitmap bitmap(g_hMirrorBitmap, nullptr);
+
+                // Draw the bitmap scaled to fit the client area (excluding instructions area)
+                graphics.DrawImage(
+                    &bitmap,
+                    0, 0, clientRect.right, clientRect.bottom - instructionsHeight
+                );
+            }
+
+            EndPaint(window, &ps);
+            return 0;
+        }
+
         case WM_SETCURSOR:
             SetCursor(nullptr);
             return TRUE;
@@ -261,20 +315,22 @@ namespace
                 DeleteObject(instructionsBrush);
                 instructionsBrush = nullptr;
             }
+
+            if (g_hMirrorBitmap)
+            {
+                DeleteObject(g_hMirrorBitmap);
+                g_hMirrorBitmap = nullptr;
+            }
+
             PostQuitMessage(0);
+
             break;
 
         case WM_SIZE:
-            if (magnifierWindow != nullptr && instructionsWindow != nullptr)
+            if (instructionsWindow != nullptr)
             {
                 RECT clientRect;
                 GetClientRect(window, &clientRect);
-
-                // Resize magnifier to fill all but bottom area
-                SetWindowPos(magnifierWindow, nullptr,
-                    0, 0,
-                    clientRect.right, clientRect.bottom - instructionsHeight,
-                    SWP_NOZORDER);
 
                 // Position instructions at bottom
                 SetWindowPos(instructionsWindow, nullptr,
@@ -326,15 +382,19 @@ namespace
         // Always show the full target monitor area
         const RECT sourceRect = targetMonitorRect;
 
-        // Set the source rectangle for the magnifier control.
-        MagSetWindowSource(magnifierWindow, sourceRect);
-
         // Reclaim topmost status, to prevent non-mirrored menus from remaining in view. 
         SetWindowPos(hostWindow, HWND_TOPMOST, 0, 0, 0, 0,
             SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 
+        if (g_hMirrorBitmap)
+        {
+            DeleteObject(g_hMirrorBitmap);            
+        }
+
+        g_hMirrorBitmap = CaptureMonitorBitmap(targetMonitorRect);
+
         // Force redraw.
-        InvalidateRect(magnifierWindow, nullptr, TRUE);
+        InvalidateRect(hostWindow, nullptr, TRUE);
     }
 
     bool SetupMirror(const HINSTANCE instance)
@@ -416,21 +476,7 @@ namespace
         RECT clientRect;
         GetClientRect(hostWindow, &clientRect);
 
-        // 9. Create magnifier control (positioned at top)
-        magnifierWindow = CreateWindow(
-            WC_MAGNIFIER, 
-            TEXT("MagnifierWindow"),
-            WS_CHILD | MS_SHOWMAGNIFIEDCURSOR | WS_VISIBLE,
-            0, 0, clientRect.right, clientRect.bottom - instructionsHeight,
-            hostWindow, 
-            nullptr, 
-            applicationInstance, 
-            nullptr);
-
-        if (!magnifierWindow)
-        {
-            return FALSE;
-        }
+        g_hMirrorBitmap = CaptureMonitorBitmap(targetMonitorRect);
 
         // 10. Create instructions static control (positioned at bottom)
         instructionsWindow = CreateWindow(
@@ -457,12 +503,9 @@ namespace
         // 12. Set the font for the instructions window
         SendMessage(instructionsWindow, WM_SETFONT, reinterpret_cast<WPARAM>(hFont), TRUE);
 
-        // 13. Set the magnification factor
-        MAGTRANSFORM matrix = {};
-        matrix.v[0][0] = zoomFactor;
-        matrix.v[1][1] = zoomFactor;
-        matrix.v[2][2] = 1.0f;
+        // Invalidate the host window to trigger WM_PAINT
+        InvalidateRect(hostWindow, nullptr, TRUE);        
 
-        return MagSetWindowTransform(magnifierWindow, &matrix);
+        return true;
     }
 }
