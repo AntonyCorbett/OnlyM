@@ -16,23 +16,16 @@ InstructionsWindow::~InstructionsWindow()
     Destroy();
 }
 
-int InstructionsWindow::CalculateInstructionHeight()
+int InstructionsWindow::CalculateInstructionsWindowHeight()
 {
     const int lineHeight = GetSystemMetrics(SM_CYMENU); // Standard menu text height
-    return 6 * lineHeight; // For 6 lines of text
+    return 4 * lineHeight; // For 4 lines of text
 }
 
-//int InstructionsWindow::CalculateInstructionHeight()
-//{
-//    constexpr int fontPointSize = 24;
-//    const HDC hdcScreen = GetDC(nullptr);
-//    const int fontHeight = -MulDiv(fontPointSize, GetDeviceCaps(hdcScreen, LOGPIXELSY), 72);
-//    ReleaseDC(nullptr, hdcScreen);
-//    return 3 * abs(fontHeight);
-//}
-
 bool InstructionsWindow::Create(
-    const HWND parent, const HINSTANCE instance, const int y, const int width, const int height, TCHAR hotKey)
+    const HWND parent, const HINSTANCE instance, 
+    const int y, const int width, const int height, 
+    const TCHAR hotKey)
 {
     Destroy();    
 
@@ -56,6 +49,11 @@ bool InstructionsWindow::Create(
         brushHandle_ = CreateSolidBrush(RGB(255, 255, 192));
     }
 
+    SetWindowLongPtr(windowHandle_, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+    originalProc_ = reinterpret_cast<WNDPROC>(  // NOLINT(performance-no-int-to-ptr)
+        SetWindowLongPtr(
+            windowHandle_, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&InstructionsWindow::StaticWndProc)));
+
     if (!fontHandle_)
     {
         constexpr int fontPointSize = 12;
@@ -65,9 +63,7 @@ bool InstructionsWindow::Create(
         fontHandle_ = CreateFont(
             fontHeight, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
             ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-            DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Segoe UI"));
-
-        height_ = CalculateInstructionHeight();
+            DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Segoe UI"));        
     }
 
     SendMessage(windowHandle_, WM_SETFONT, reinterpret_cast<WPARAM>(fontHandle_), TRUE);
@@ -77,10 +73,57 @@ bool InstructionsWindow::Create(
 
     TCHAR multiLineText[256];
     _stprintf_s(multiLineText, TEXT("%s\r\nHello\r\nWorld"), altZ);
-
+        
     SetWindowText(windowHandle_, multiLineText);
 
     return true;
+}
+
+LRESULT CALLBACK InstructionsWindow::StaticWndProc(
+    const HWND windowHandle, const UINT msg, const WPARAM wParam, const LPARAM lParam)
+{
+    const InstructionsWindow* self = reinterpret_cast<InstructionsWindow*>( // NOLINT(performance-no-int-to-ptr)
+        GetWindowLongPtr(windowHandle, GWLP_USERDATA));
+
+    if (!self)
+    {
+        return DefWindowProc(windowHandle, msg, wParam, lParam);
+    }
+
+    if (msg == WM_PAINT)
+    {
+        PAINTSTRUCT ps;
+        const HDC hdc = BeginPaint(windowHandle, &ps);
+
+        RECT rc;
+        GetClientRect(windowHandle, &rc);
+
+        // Fill the background with yellow
+        FillRect(hdc, &rc, self->brushHandle_);
+
+        // Set your desired padding here (e.g., 8 pixels)
+        constexpr int padding = 8;
+        rc.left += padding;
+        rc.top += padding;
+        rc.right -= padding;
+        rc.bottom -= padding;
+
+        SetBkColor(hdc, RGB(255, 255, 192));
+        SetTextColor(hdc, RGB(0, 0, 0));
+        const HFONT oldFont = static_cast<HFONT>(SelectObject(hdc, self->fontHandle_));
+        TCHAR buffer[256];
+        GetWindowText(windowHandle, buffer, _countof(buffer));
+        DrawText(hdc, buffer, -1, &rc, DT_LEFT | DT_TOP | DT_NOPREFIX | DT_WORDBREAK);  // NOLINT(misc-redundant-expression)
+        SelectObject(hdc, oldFont);
+
+        EndPaint(windowHandle, &ps);
+        return 0;
+    }
+
+    // Call original proc for all other messages
+    return self->originalProc_
+        ? CallWindowProc(self->originalProc_, windowHandle, msg, wParam, lParam)
+        : DefWindowProc(windowHandle, msg, wParam, lParam);
 }
 
 void InstructionsWindow::Destroy()
@@ -90,11 +133,13 @@ void InstructionsWindow::Destroy()
         DestroyWindow(windowHandle_);
         windowHandle_ = nullptr;
     }
+
     if (fontHandle_)
     {
         DeleteObject(fontHandle_);
         fontHandle_ = nullptr;
     }
+
     if (brushHandle_)
     {
         DeleteObject(brushHandle_);
@@ -105,18 +150,6 @@ void InstructionsWindow::Destroy()
 HWND InstructionsWindow::GetWindowHandle() const { return windowHandle_; }
 int InstructionsWindow::GetHeight() const { return height_; }
 
-INT_PTR InstructionsWindow::HandleCtlColorStatic(const HWND controlWindow, const HDC hdc)
-{
-    if (controlWindow == windowHandle_ && brushHandle_)
-    {
-        SetBkColor(hdc, RGB(255, 255, 192));
-        SetTextColor(hdc, RGB(0, 0, 0));
-        return reinterpret_cast<INT_PTR>(brushHandle_);
-    }
-
-    return 0;
-}
-
 void InstructionsWindow::RepositionWithHost(const RECT& hostClientRect) const
 {
     if (windowHandle_)
@@ -126,7 +159,7 @@ void InstructionsWindow::RepositionWithHost(const RECT& hostClientRect) const
     }
 }
 
-void InstructionsWindow::Resize(const int x, const int y, const int width, const int height)
+void InstructionsWindow::Resize(const int x, const int y, const int width, const int height) const
 {
     if (windowHandle_)
     {

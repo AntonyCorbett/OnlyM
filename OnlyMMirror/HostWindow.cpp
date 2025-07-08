@@ -5,7 +5,7 @@
 const TCHAR* HostWindow::GetWindowClassName() { return TEXT("OnlyMMirrorWindow"); }
 
 HostWindow::HostWindow()
-    : windowHandle_(nullptr), instructionsHeight_(0), zoomFactor_(1.0f), hInstance_(nullptr)
+    : windowHandle_(nullptr), instructionsWindowHeight_(0), zoomFactor_(1.0f), hInstance_(nullptr)
 {
     ZeroMemory(&targetMonitorRect_, sizeof(targetMonitorRect_));
 }
@@ -33,14 +33,14 @@ bool HostWindow::Create(
     const int x, const int y, const int width, const int height, 
     const float zoomFactor, 
     const RECT& targetMonitorRect,
-    TCHAR hotKey)
+    const TCHAR hotKey)
 {
     Destroy();
 
     hInstance_ = instance;
     zoomFactor_ = zoomFactor;
     targetMonitorRect_ = targetMonitorRect;
-    instructionsHeight_ = InstructionsWindow::CalculateInstructionHeight();
+    instructionsWindowHeight_ = InstructionsWindow::CalculateInstructionsWindowHeight();
 
     RegisterWindowClass();
 
@@ -66,11 +66,11 @@ bool HostWindow::Create(
 
     magnifierWindow_.Create(
         windowHandle_, hInstance_, 
-        0, 0, clientRect.right, clientRect.bottom - instructionsHeight_);
+        0, 0, clientRect.right, clientRect.bottom - instructionsWindowHeight_);
 
     instructionsWindow_.Create(
         windowHandle_, hInstance_, 
-        clientRect.bottom - instructionsHeight_, clientRect.right, instructionsHeight_,
+        clientRect.bottom - instructionsWindowHeight_, clientRect.right, instructionsWindowHeight_,
         hotKey);
 
     return magnifierWindow_.SetTransform(zoomFactor_);    
@@ -89,13 +89,37 @@ void HostWindow::Destroy()
 
 HWND HostWindow::GetWindowHandle() const { return windowHandle_; }
 
-void HostWindow::Show(int nCmdShow) const { if (windowHandle_) ShowWindow(windowHandle_, nCmdShow | SW_SHOWNA); }
+void HostWindow::Show(const int nCmdShow) const
+{
+    if (windowHandle_)
+    {
+        ShowWindow(windowHandle_, nCmdShow | SW_SHOWNA);
+    }
+}
 
-void HostWindow::Update() const { if (windowHandle_) UpdateWindow(windowHandle_); }
+void HostWindow::Update() const
+{
+    if (windowHandle_)
+    {
+        UpdateWindow(windowHandle_);
+    }
+}
 
-void HostWindow::SetCaption(const TCHAR* caption) const { if (windowHandle_) SetWindowText(windowHandle_, caption); }
+void HostWindow::SetCaption(const TCHAR* caption) const
+{
+    if (windowHandle_)
+    {
+        SetWindowText(windowHandle_, caption);
+    }
+}
 
-void HostWindow::SetTopMost() const { if (windowHandle_) SetWindowPos(windowHandle_, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE); }
+void HostWindow::SetTopMost() const
+{
+    if (windowHandle_)
+    {
+        SetWindowPos(windowHandle_, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+    }
+}
 
 void HostWindow::UpdateMirror(const RECT& sourceRect) const
 {
@@ -108,11 +132,13 @@ void HostWindow::PositionCursor() const
 {
     const int width = targetMonitorRect_.right - targetMonitorRect_.left;
     const int height = targetMonitorRect_.bottom - targetMonitorRect_.top;
+
     SetCursorPos(targetMonitorRect_.left + width / 2, targetMonitorRect_.top + height / 2);
 }
 
 void HostWindow::RepositionCursor()
 {
+    // this is a little fragile because it depends on the OnlyM window title
     const HWND window = ::FindWindow(nullptr, "S o u n d B o x - O N L Y M");
     if (window)
     {
@@ -130,14 +156,14 @@ MagnifierWindow& HostWindow::GetMagnifierWindow() { return magnifierWindow_; }
 
 InstructionsWindow& HostWindow::GetInstructionsWindow() { return instructionsWindow_; }
 
-void HostWindow::OnSize()
+void HostWindow::OnSize() const
 {
     if (magnifierWindow_.GetWindowHandle() && instructionsWindow_.GetWindowHandle())
     {
         RECT clientRect;
         GetClientRect(windowHandle_, &clientRect);
-        magnifierWindow_.Resize(0, 0, clientRect.right, clientRect.bottom - instructionsHeight_);
-        instructionsWindow_.Resize(0, clientRect.bottom - instructionsHeight_, clientRect.right, instructionsHeight_);
+        magnifierWindow_.Resize(0, 0, clientRect.right, clientRect.bottom - instructionsWindowHeight_);
+        instructionsWindow_.Resize(0, clientRect.bottom - instructionsWindowHeight_, clientRect.right, instructionsWindowHeight_);
     }
 }
 
@@ -148,20 +174,12 @@ void HostWindow::OnDestroy()
     PostQuitMessage(0);
 }
 
-void HostWindow::OnCtlColorStatic(WPARAM wParam, LPARAM lParam, LRESULT& result, bool& handled)
-{
-    const HWND controlWindow = reinterpret_cast<HWND>(lParam);  // NOLINT(performance-no-int-to-ptr)
-    const HDC hdc = reinterpret_cast<HDC>(wParam);  // NOLINT(performance-no-int-to-ptr)
-    result = instructionsWindow_.HandleCtlColorStatic(controlWindow, hdc);
-    handled = (result != 0);
-}
-
 LRESULT CALLBACK HostWindow::WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    HostWindow* self = nullptr;
+    HostWindow* self;
     if (message == WM_NCCREATE)
     {
-        CREATESTRUCT* cs = reinterpret_cast<CREATESTRUCT*>(lParam);  // NOLINT(performance-no-int-to-ptr)
+        const CREATESTRUCT* cs = reinterpret_cast<CREATESTRUCT*>(lParam);  // NOLINT(performance-no-int-to-ptr)
         self = static_cast<HostWindow*>(cs->lpCreateParams);
         SetWindowLongPtr(windowHandle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(self));
         self->windowHandle_ = windowHandle;
@@ -178,25 +196,20 @@ LRESULT CALLBACK HostWindow::WindowProc(HWND windowHandle, UINT message, WPARAM 
 
     switch (message)
     {
-    case WM_SETCURSOR:
-        SetCursor(nullptr);
-        return TRUE;
-    case WM_DESTROY:
-        self->OnDestroy();
-        break;
-    case WM_SIZE:
-        self->OnSize();
-        break;
-    case WM_CTLCOLORSTATIC:
-    {
-        LRESULT result = 0;
-        bool handled = false;
-        self->OnCtlColorStatic(wParam, lParam, result, handled);
-        if (handled) return result;
-        break;
-    }
-    default:
-        return DefWindowProc(windowHandle, message, wParam, lParam);
+        case WM_SETCURSOR:
+            SetCursor(nullptr);
+            return TRUE;
+
+        case WM_DESTROY:
+            self->OnDestroy();
+            break;
+
+        case WM_SIZE:
+            self->OnSize();
+            break;
+
+        default:
+            return DefWindowProc(windowHandle, message, wParam, lParam);
     }
     return 0;
 }

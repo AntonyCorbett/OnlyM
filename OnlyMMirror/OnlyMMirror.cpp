@@ -222,7 +222,7 @@ namespace
     bool SetupMirror(const HINSTANCE instance)
     {
         // 1. Calculate height of instructionsWindow
-        const int instructionsHeight = InstructionsWindow::CalculateInstructionHeight();
+        const int instructionsHeight = InstructionsWindow::CalculateInstructionsWindowHeight();
 
         // 2. Set bounds of host window according to size of media monitor...
         const int mediaMonitorHeight = targetMonitorRect.bottom - targetMonitorRect.top;

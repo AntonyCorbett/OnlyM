@@ -6,7 +6,8 @@ MagnifierWindow::MagnifierWindow() : windowHandle_(nullptr) {}
 
 MagnifierWindow::~MagnifierWindow() { Destroy(); }
 
-bool MagnifierWindow::Create(const HWND parent, const HINSTANCE instance, const int x, const int y, const int width, const int height)
+bool MagnifierWindow::Create(
+    const HWND parent, const HINSTANCE instance, const int x, const int y, const int width, const int height)
 {
     Destroy();
 

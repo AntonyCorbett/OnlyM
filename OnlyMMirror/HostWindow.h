@@ -35,12 +35,12 @@ private:
     HWND windowHandle_;
     MagnifierWindow magnifierWindow_;
     InstructionsWindow instructionsWindow_;
-    int instructionsHeight_;
+    int instructionsWindowHeight_;
     float zoomFactor_;
     RECT targetMonitorRect_;
     HINSTANCE hInstance_;
-    void OnSize();
+    void OnSize() const;
     void OnDestroy();
-    void OnCtlColorStatic(WPARAM wParam, LPARAM lParam, LRESULT& result, bool& handled);
+    //void OnCtlColorStatic(WPARAM wParam, LPARAM lParam, LRESULT& result, bool& handled);
     void RegisterWindowClass() const;
 };
