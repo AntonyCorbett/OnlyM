@@ -241,10 +241,26 @@ public sealed partial class MediaWindow : IDisposable
         base.OnClosing(e);
     }
 
-    // Note that we must handle Alt+Left and Alt+Right (and any other Alt key combinations in code behind
+    // Note that we must handle Alt+Left and Alt+Right (and any other Alt key combinations) in code behind
     // rather than as KeyBindings in Xaml because WPF treats certain key combinations with Alt as
     // "system keys" (for menu navigation compatibility).
     protected override void OnPreviewKeyDown(KeyEventArgs e)
+    {
+        var vm = DataContext as MediaViewModel;
+        if (vm?.IsWebPage == false)
+        {
+            return;
+        }
+
+        HandleWebKeyDown(e);
+
+        if (!e.Handled)
+        {
+            base.OnPreviewKeyDown(e);
+        }
+    }
+
+    private void HandleWebKeyDown(KeyEventArgs e)
     {
         // Handle Alt+Left and Alt+Right as "system keys"
         if (e.KeyboardDevice.Modifiers == ModifierKeys.Alt && e.Key == Key.System)
@@ -265,10 +281,12 @@ public sealed partial class MediaWindow : IDisposable
                     e.Handled = true;
                 }
             }
-        }
-        else
-        {
-            base.OnPreviewKeyDown(e);
+            else if (e.SystemKey == Key.Home)
+            {
+                // Handle Alt+Home to go to the home page
+                _webDisplayManager.NavigateToHomeUrl();
+                e.Handled = true;
+            }
         }
     }
 

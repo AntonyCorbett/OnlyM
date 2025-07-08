@@ -68,6 +68,11 @@ internal sealed class WebDisplayManager : IDisposable
 
     public event EventHandler<WebBrowserProgressEventArgs>? StatusEvent;
 
+    public void NavigateToHomeUrl()
+    {
+        _browser.Load(_currentMediaItemUrl);
+    }
+
     public void ShowWeb(
         string mediaItemFilePath,
         Guid mediaItemId,

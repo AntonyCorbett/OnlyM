@@ -2,7 +2,7 @@ Include Close button as alternative to Alt-Z
 
 ALT+RIGHT = nav forwards
 ALT+LEFT - nav back
-ALT+HOME = home page (FIX)
+ALT+HOME = home page
 HOME = top of page
 END = end of page
 
@@ -17,8 +17,7 @@ F2 = Toggle frame shape
 F3 = Reduce magnifier
 F4 = Enlarge magnifier
 
-Fix - Need to Uncheck the "Mirror" checkbox if the user manually closes the mirror window
-ALT+HOME = home page (FIX). Also close the mirror when user unchecks the "Mirror" checkbox
+Fix - Need to Uncheck the "Mirror" checkbox if the user manually closes the mirror window. Also close the mirror when user unchecks the "Mirror" checkbox. Or perhaps replace the chekbox with a button?
 
 Update wiki. Describe limitations of browser (media, popups, etc)
 
