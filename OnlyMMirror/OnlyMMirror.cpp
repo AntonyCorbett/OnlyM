@@ -4,27 +4,22 @@
 #include <wincodec.h>
 #include <strsafe.h>
 #include <magnification.h>
-
-#include "Resource.h"
+#include "InstructionsWindow.h"
+#include "HostWindow.h"
 
 // WS_DISABLED prevents window being moved
 #define HOST_WINDOW_STYLES (WS_CLIPCHILDREN | WS_CAPTION | WS_DISABLED)
 #define HOST_WINDOW_STYLES_EX (WS_EX_TOPMOST | WS_EX_TOOLWINDOW)
 
 // Global variables and strings.
-constexpr TCHAR WindowClassName[] = TEXT("OnlyMMirrorWindow");
 constexpr TCHAR WindowTitle[] = TEXT("OnlyM Mirror");
-constexpr UINT TimerInterval = 60;
+constexpr UINT TimerInterval = 100;
 constexpr int MaxMonitorNameLength = 32;
 
 namespace
 {
     HINSTANCE applicationInstance;
-    HWND magnifierWindow;
-    HWND hostWindow;
-    HWND instructionsWindow;
-    int instructionsHeight;
-    HBRUSH instructionsBrush = nullptr;
+    HostWindow hostWindow;
     RECT mainMonitorRect;
     RECT targetMonitorRect;
     TCHAR mainMonitorName[MaxMonitorNameLength + 1];
@@ -36,15 +31,12 @@ namespace
 // Forward declarations.
 namespace
 {
-    ATOM RegisterHostWindowClass(HINSTANCE instance);
     bool SetupMirror(HINSTANCE instance);
     void CALLBACK UpdateMirrorWindow(HWND /*hostWindow*/, UINT /*message*/, UINT_PTR /*eventId*/, DWORD /*time*/);
     BOOL CALLBACK OnlyMMonitorEnumProc(HMONITOR monitor, HDC monitorDeviceContext, LPRECT monitorRect, LPARAM data);
     bool InitMonitors();
     bool InitHotKey();
     bool InitFromCommandLine();
-    void RepositionCursor();
-    void PositionCursor();
 }
 
 /// <summary>
@@ -82,27 +74,26 @@ int APIENTRY WinMain(
 		return 3;
 	}
 
-	if (!InitHotKey())
-	{
-		// NB - this exit code is used in OnlyM (WebDisplayManager)
-		return 5;
-	}
+    if (!InitHotKey())
+    {
+        // NB - this exit code is used in OnlyM (WebDisplayManager)
+        return 5;
+    }
 
 	int rv;
 
 	const HANDLE applicationMutex = ::CreateMutex(nullptr, TRUE, "OnlyMMirrorMutex");
 	if (applicationMutex && ::GetLastError() != ERROR_ALREADY_EXISTS)
 	{
-		ShowWindow(hostWindow, nCmdShow | SW_SHOWNA);		
-		UpdateWindow(hostWindow);
-
-		PositionCursor();
+		hostWindow.Show(nCmdShow);
+		hostWindow.Update();
+		hostWindow.PositionCursor();
 
 		TCHAR caption[64];
 		(void)sprintf_s(caption, "%s (ALT+%c to close)", WindowTitle, hotKey);
 
-		::SetWindowText(hostWindow, caption);
-		const UINT_PTR timerId = SetTimer(hostWindow, 0, TimerInterval, UpdateMirrorWindow);
+		hostWindow.SetCaption(caption);
+		const UINT_PTR timerId = SetTimer(hostWindow.GetWindowHandle(), 0, TimerInterval, UpdateMirrorWindow);
 
 		MSG msg;
         while (true)
@@ -138,7 +129,7 @@ int APIENTRY WinMain(
 		MagUninitialize();
 
 		// find OnlyM window and reposition cursor over it...
-		RepositionCursor();
+		hostWindow.RepositionCursor();
 
 		rv = static_cast<int>(msg.wParam);
 
@@ -154,31 +145,6 @@ int APIENTRY WinMain(
 
 namespace
 {
-    // position cursor in centre of target monitor...
-    void PositionCursor()
-    {
-        const int width = targetMonitorRect.right - targetMonitorRect.left;
-        const int height = targetMonitorRect.bottom - targetMonitorRect.top;
-
-        SetCursorPos(targetMonitorRect.left + width / 2, targetMonitorRect.top + height / 2);
-    }
-
-    // position cursor back in the OnlyM window...
-    void RepositionCursor()
-    {
-        const HWND window = ::FindWindow(nullptr, "S o u n d B o x - O N L Y M");
-        if (window)
-        {
-            RECT r;
-            if (GetWindowRect(window, &r))
-            {
-                const int width = r.right - r.left;
-                const int height = r.bottom - r.top;
-                SetCursorPos(r.left + width / 2, r.top + height / 2);
-            }
-        }
-    }
-
     bool InitFromCommandLine()
     {
         bool rv = FALSE;
@@ -224,7 +190,8 @@ namespace
         return ::RegisterHotKey(nullptr, 1, MOD_ALT, vkCode);  //0x5A is 'Z'
     }
 
-    BOOL CALLBACK OnlyMMonitorEnumProc(HMONITOR monitor, HDC /*monitorDeviceContext*/, LPRECT /*monitorRect*/, LPARAM /*data*/)
+    BOOL CALLBACK OnlyMMonitorEnumProc(
+        HMONITOR monitor, HDC /*monitorDeviceContext*/, LPRECT /*monitorRect*/, LPARAM /*data*/)
     {
         if (monitor)
         {
@@ -246,111 +213,16 @@ namespace
         return true;
     }
 
-    // Window procedure for the window that hosts the mirror.
-    LRESULT CALLBACK HostWndProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
-    {
-        switch (message)
-        {
-        case WM_SETCURSOR:
-            SetCursor(nullptr);
-            return TRUE;
-
-        case WM_DESTROY:
-            if (instructionsBrush)
-            {
-                DeleteObject(instructionsBrush);
-                instructionsBrush = nullptr;
-            }
-            PostQuitMessage(0);
-            break;
-
-        case WM_SIZE:
-            if (magnifierWindow != nullptr && instructionsWindow != nullptr)
-            {
-                RECT clientRect;
-                GetClientRect(window, &clientRect);
-
-                // Resize magnifier to fill all but bottom area
-                SetWindowPos(magnifierWindow, nullptr,
-                    0, 0,
-                    clientRect.right, clientRect.bottom - instructionsHeight,
-                    SWP_NOZORDER);
-
-                // Position instructions at bottom
-                SetWindowPos(instructionsWindow, nullptr,
-                    0, clientRect.bottom - instructionsHeight,
-                    clientRect.right, instructionsHeight,
-                    SWP_NOZORDER);
-            }
-            break;
-
-        case WM_CTLCOLORSTATIC:
-        {
-            const HWND controlWindow = reinterpret_cast<HWND>(lParam);  // NOLINT(performance-no-int-to-ptr)
-            if (controlWindow == instructionsWindow && instructionsBrush != nullptr)
-            {
-                const auto hdc = reinterpret_cast<HDC>(wParam);  // NOLINT(performance-no-int-to-ptr)
-                SetBkColor(hdc, RGB(255, 255, 192)); // Match brush color
-                SetTextColor(hdc, RGB(0, 0, 0));     // Black text
-                return reinterpret_cast<INT_PTR>(instructionsBrush);
-            }
-            break;
-        }
-
-        default:
-            return DefWindowProc(window, message, wParam, lParam);
-        }
-
-        return 0;
-    }
-
-    //  Registers the window class for the window that contains the magnification control.
-    ATOM RegisterHostWindowClass(const HINSTANCE instance)
-    {
-        WNDCLASSEX windowClassEx = {};
-
-        windowClassEx.cbSize = sizeof(WNDCLASSEX);
-        windowClassEx.style = CS_HREDRAW | CS_VREDRAW;
-        windowClassEx.lpfnWndProc = HostWndProc;
-        windowClassEx.hInstance = instance;
-        windowClassEx.hCursor = LoadCursor(nullptr, IDC_ARROW);
-        windowClassEx.hbrBackground = reinterpret_cast<HBRUSH>(1 + COLOR_BTNFACE);  // NOLINT(performance-no-int-to-ptr)
-        windowClassEx.lpszClassName = WindowClassName;
-
-        return RegisterClassEx(&windowClassEx);
-    }
-
     // Sets the source rectangle and updates the window. Called by a timer.
     void CALLBACK UpdateMirrorWindow(HWND /*hostWindow*/, UINT /*message*/, UINT_PTR /*eventId*/, DWORD /*time*/)
     {
-        // Always show the full target monitor area
-        const RECT sourceRect = targetMonitorRect;
-
-        // Set the source rectangle for the magnifier control.
-        MagSetWindowSource(magnifierWindow, sourceRect);
-
-        // Reclaim topmost status, to prevent non-mirrored menus from remaining in view. 
-        SetWindowPos(hostWindow, HWND_TOPMOST, 0, 0, 0, 0,
-            SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
-
-        // Force redraw.
-        InvalidateRect(magnifierWindow, nullptr, TRUE);
+        hostWindow.UpdateMirror(targetMonitorRect);
     }
 
     bool SetupMirror(const HINSTANCE instance)
     {
-        // 1. Calculate font and instructionsHeight FIRST
-        constexpr int fontPointSize = 24;
-        const HDC hdcScreen = GetDC(nullptr);
-        const int fontHeight = -MulDiv(fontPointSize, GetDeviceCaps(hdcScreen, LOGPIXELSY), 72);
-        ReleaseDC(nullptr, hdcScreen);
-
-        HFONT hFont = CreateFont(
-            fontHeight, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
-            ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-            DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Segoe UI"));
-
-        instructionsHeight = 3 * abs(fontHeight);
+        // 1. Calculate height of instructionsWindow
+        const int instructionsHeight = InstructionsWindow::CalculateInstructionHeight();
 
         // 2. Set bounds of host window according to size of media monitor...
         const int mediaMonitorHeight = targetMonitorRect.bottom - targetMonitorRect.top;
@@ -394,75 +266,7 @@ namespace
             winTop = mainMonitorRect.top;
         }
 
-        // 7. Create the host window
-        RegisterHostWindowClass(instance);
-        hostWindow = CreateWindowEx(
-            HOST_WINDOW_STYLES_EX,
-            WindowClassName, 
-            WindowTitle,
-            HOST_WINDOW_STYLES,
-            winLeft, winTop, winWidth, winHeight,
-            nullptr, 
-            nullptr, 
-            applicationInstance, 
-            nullptr);
-
-        if (!hostWindow)
-        {
-            return FALSE;
-        }
-
-        // 8. Get client area rect
-        RECT clientRect;
-        GetClientRect(hostWindow, &clientRect);
-
-        // 9. Create magnifier control (positioned at top)
-        magnifierWindow = CreateWindow(
-            WC_MAGNIFIER, 
-            TEXT("MagnifierWindow"),
-            WS_CHILD | MS_SHOWMAGNIFIEDCURSOR | WS_VISIBLE,
-            0, 0, clientRect.right, clientRect.bottom - instructionsHeight,
-            hostWindow, 
-            nullptr, 
-            applicationInstance, 
-            nullptr);
-
-        if (!magnifierWindow)
-        {
-            return FALSE;
-        }
-
-        // 10. Create instructions static control (positioned at bottom)
-        instructionsWindow = CreateWindow(
-            TEXT("STATIC"), 
-            TEXT("Mirror Window - Press ALT+Z to close"),
-            WS_CHILD | WS_VISIBLE | SS_CENTER | SS_CENTERIMAGE,
-            0, clientRect.bottom - instructionsHeight, clientRect.right, instructionsHeight,
-            hostWindow, 
-            reinterpret_cast<HMENU>(IDC_INSTRUCTIONS),
-            applicationInstance, 
-            nullptr);
-
-        if (!instructionsWindow)
-        {
-            return FALSE;
-        }
-
-        // 11. Set background brush for instructions
-        if (instructionsBrush == nullptr)
-        {
-            instructionsBrush = CreateSolidBrush(RGB(255, 255, 192)); // Light yellow
-        }
-
-        // 12. Set the font for the instructions window
-        SendMessage(instructionsWindow, WM_SETFONT, reinterpret_cast<WPARAM>(hFont), TRUE);
-
-        // 13. Set the magnification factor
-        MAGTRANSFORM matrix = {};
-        matrix.v[0][0] = zoomFactor;
-        matrix.v[1][1] = zoomFactor;
-        matrix.v[2][2] = 1.0f;
-
-        return MagSetWindowTransform(magnifierWindow, &matrix);
+        return hostWindow.Create(
+            instance, winLeft, winTop, winWidth, winHeight, zoomFactor, targetMonitorRect, hotKey);
     }
 }
