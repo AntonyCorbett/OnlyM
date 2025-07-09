@@ -78,8 +78,8 @@ bool DuplicationWindow::LoadDefaultCursor()
 
     cursorShapeInfo_.Width = width;
     cursorShapeInfo_.Height = height;
-    cursorShapeInfo_.HotSpot.x = iconInfo.xHotspot;
-    cursorShapeInfo_.HotSpot.y = iconInfo.yHotspot;
+    cursorShapeInfo_.HotSpot.x = iconInfo.xHotspot;  // NOLINT(cppcoreguidelines-narrowing-conversions, bugprone-narrowing-conversions)
+    cursorShapeInfo_.HotSpot.y = iconInfo.yHotspot;  // NOLINT(bugprone-narrowing-conversions, cppcoreguidelines-narrowing-conversions)
 
     std::vector<BYTE> cursorPixels(width * height * 4);
 
@@ -657,7 +657,8 @@ bool DuplicationWindow::CaptureFrame()
     {
         // We have a new frame, process it.
         ID3D11Texture2D* desktopTexture = nullptr;
-        if (SUCCEEDED(desktopResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&desktopTexture))))
+        if (SUCCEEDED(desktopResource->QueryInterface(  // NOLINT(clang-diagnostic-language-extension-token)
+            __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&desktopTexture))))
         {
             D3D11_TEXTURE2D_DESC newDesc;
             desktopTexture->GetDesc(&newDesc);
@@ -781,16 +782,18 @@ bool DuplicationWindow::RenderFrame() const
 
         // Calculate cursor position in normalized device coordinates, accounting for the hotspot
         const float cursorX =
-            (static_cast<float>(cursorPosition_.x - cursorShapeInfo_.HotSpot.x) / textureDesc.Width) * 2.0f - 1.0f;
+            (static_cast<float>(
+                cursorPosition_.x - cursorShapeInfo_.HotSpot.x) / textureDesc.Width) * 2.0f - 1.0f;  // NOLINT(bugprone-narrowing-conversions, cppcoreguidelines-narrowing-conversions, clang-diagnostic-implicit-int-float-conversion)
 
         const float cursorY =
-            1.0f - (static_cast<float>(cursorPosition_.y - cursorShapeInfo_.HotSpot.y) / textureDesc.Height) * 2.0f;
+            1.0f - (static_cast<float>(
+                cursorPosition_.y - cursorShapeInfo_.HotSpot.y) / textureDesc.Height) * 2.0f;  // NOLINT(bugprone-narrowing-conversions, clang-diagnostic-implicit-int-float-conversion, cppcoreguidelines-narrowing-conversions)
 
         const float cursorWidth =
-            (static_cast<float>(cursorShapeInfo_.Width) / textureDesc.Width) * 2.0f;
+            (static_cast<float>(cursorShapeInfo_.Width) / textureDesc.Width) * 2.0f;  // NOLINT(bugprone-narrowing-conversions, clang-diagnostic-implicit-int-float-conversion, cppcoreguidelines-narrowing-conversions)
 
         const float cursorHeight =
-            (static_cast<float>(cursorShapeInfo_.Height) / textureDesc.Height) * 2.0f;
+            (static_cast<float>(cursorShapeInfo_.Height) / textureDesc.Height) * 2.0f; // NOLINT(bugprone-narrowing-conversions, clang-diagnostic-implicit-int-float-conversion, cppcoreguidelines-narrowing-conversions)
 
         const Vertex cursorVertices[] =
         {

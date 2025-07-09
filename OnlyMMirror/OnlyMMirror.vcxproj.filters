@@ -30,9 +30,6 @@
     <ClInclude Include="InstructionsWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MagnifierWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HostWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -48,9 +45,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InstructionsWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MagnifierWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HostWindow.cpp">

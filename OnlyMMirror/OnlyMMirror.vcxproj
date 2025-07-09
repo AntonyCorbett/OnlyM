@@ -153,7 +153,6 @@
     <ClInclude Include="DuplicationWindow.h" />
     <ClInclude Include="HostWindow.h" />
     <ClInclude Include="InstructionsWindow.h" />
-    <ClInclude Include="MagnifierWindow.h" />
     <ClInclude Include="OnlyMMirror.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -163,7 +162,6 @@
     <ClCompile Include="DuplicationWindow.cpp" />
     <ClCompile Include="HostWindow.cpp" />
     <ClCompile Include="InstructionsWindow.cpp" />
-    <ClCompile Include="MagnifierWindow.cpp" />
     <ClCompile Include="OnlyMMirror.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
