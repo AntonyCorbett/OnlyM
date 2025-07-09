@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -338,15 +339,40 @@ internal sealed class WebDisplayManager : IDisposable
                 FadeBrowser(true, () =>
                 {
                     OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Started));
-                    _browserGrid.Focus();
 
                     if (_useMirror)
                     {
-                        _ = ShowMirrorAsync();
+                        _ = ShowMirrorAsync().ContinueWith(
+                            _ => SetFocusToBrowserGrid(), TaskScheduler.FromCurrentSynchronizationContext());
+                    }
+                    else
+                    {
+                        _browserGrid.Focus();
                     }
                 });
             }
         });
+    }
+
+#pragma warning disable SYSLIB1054
+    [DllImport("user32.dll")]
+    private static extern bool SetForegroundWindow(IntPtr hWnd);
+#pragma warning restore SYSLIB1054
+
+    private void SetFocusToBrowserGrid()
+    {
+        Application.Current.Dispatcher.BeginInvoke(
+            () =>
+            {
+                // Set focus back to the browser grid after the mirror is shown and UI is idle
+                var mainWindow = Application.Current.MainWindow;
+                if (mainWindow != null)
+                {
+                    SetForegroundWindow(new WindowInteropHelper(mainWindow).Handle);
+                }
+
+                _browserGrid.Focus();
+            }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
     }
 
     private void FadeBrowser(bool fadeIn, Action completed)
@@ -453,12 +479,6 @@ internal sealed class WebDisplayManager : IDisposable
             case PdfViewStyle.Default:
                 return string.Empty;
         }
-    }
-
-    private static string? GetCurrentProjectFolderWhenDebugging()
-    {
-        var workingDirectory = Environment.CurrentDirectory;
-        return Directory.GetParent(workingDirectory)?.Parent?.Parent?.FullName;
     }
 
     private static string? GetCurrentSolutionFolderWhenDebugging()
