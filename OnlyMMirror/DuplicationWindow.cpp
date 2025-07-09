@@ -641,127 +641,82 @@ bool DuplicationWindow::CaptureFrame()
         return false;
     }
 
-    DXGI_OUTDUPL_FRAME_INFO frameInfo;
+    DXGI_OUTDUPL_FRAME_INFO frameInfo = {}; // Zero-initialize
     IDXGIResource* desktopResource = nullptr;
 
     HRESULT hr = duplication_->AcquireNextFrame(0, &frameInfo, &desktopResource);
-    if (hr == DXGI_ERROR_WAIT_TIMEOUT)
+
+    // Only update cursor data if the mouse has actually moved.
+    if (frameInfo.LastMouseUpdateTime.QuadPart != 0)
     {
-        // No new frame available - continue with existing captured texture if available
-        return capturedTexture_ != nullptr;
+        cursorPosition_ = frameInfo.PointerPosition.Position;
+        cursorVisible_ = frameInfo.PointerPosition.Visible;
     }
 
-    if (FAILED(hr))
+    if (hr == S_OK)
     {
-        // Handle DXGI_ERROR_INVALID_CALL and other errors by recreating duplication
-        if (hr == DXGI_ERROR_INVALID_CALL || hr == DXGI_ERROR_ACCESS_LOST)
+        // We have a new frame, process it.
+        ID3D11Texture2D* desktopTexture = nullptr;
+        if (SUCCEEDED(desktopResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&desktopTexture))))
         {
-            CleanupDuplication();
-            if (InitializeDuplication())
+            D3D11_TEXTURE2D_DESC newDesc;
+            desktopTexture->GetDesc(&newDesc);
+
+            bool needRecreate = false;
+            if (capturedTexture_)
             {
-                // Try again after reinitializing
-                hr = duplication_->AcquireNextFrame(0, &frameInfo, &desktopResource);
-                if (FAILED(hr))
-                {
-                    return capturedTexture_ != nullptr;
-                }
+                D3D11_TEXTURE2D_DESC existingDesc;
+                capturedTexture_->GetDesc(&existingDesc);
+                needRecreate = (existingDesc.Width != newDesc.Width ||
+                    existingDesc.Height != newDesc.Height ||
+                    existingDesc.Format != newDesc.Format);
             }
             else
             {
-                return false;
+                needRecreate = true;
             }
+
+            if (needRecreate)
+            {
+                if (capturedTexture_) { capturedTexture_->Release(); capturedTexture_ = nullptr; }
+                if (capturedSRV_) { capturedSRV_->Release(); capturedSRV_ = nullptr; }
+
+                D3D11_TEXTURE2D_DESC desc = newDesc;
+                desc.Usage = D3D11_USAGE_DEFAULT;
+                desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+                desc.CPUAccessFlags = 0;
+                desc.MiscFlags = 0;
+
+                if (SUCCEEDED(d3dDevice_->CreateTexture2D(&desc, nullptr, &capturedTexture_)))
+                {
+                    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+                    srvDesc.Format = desc.Format;
+                    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+                    srvDesc.Texture2D.MipLevels = 1;
+                    d3dDevice_->CreateShaderResourceView(capturedTexture_, &srvDesc, &capturedSRV_);
+                }
+            }
+
+            if (capturedTexture_)
+            {
+                d3dContext_->CopySubresourceRegion(capturedTexture_, 0, 0, 0, 0, desktopTexture, 0, nullptr);
+            }
+
+            desktopTexture->Release();
         }
-        else
-        {
-            return false;
-        }
-    }
 
-    // Handle cursor updates - ONLY position and visibility
-    cursorVisible_ = frameInfo.PointerPosition.Visible;
-    if (cursorVisible_)
-    {
-        cursorPosition_ = frameInfo.PointerPosition.Position;
-    }
-
-    // We no longer process shape updates, so the rest of the old cursor logic is removed.
-
-
-    // Get the desktop texture
-    ID3D11Texture2D* desktopTexture = nullptr;
-    hr = desktopResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&desktopTexture));  // NOLINT(clang-diagnostic-language-extension-token)
-    desktopResource->Release();
-    if (FAILED(hr))
-    {
-        // ReSharper disable once CppFunctionResultShouldBeUsed
+        desktopResource->Release();
         duplication_->ReleaseFrame();
-        return false;
     }
-
-    // Get texture description to check if we need to recreate our resources
-    D3D11_TEXTURE2D_DESC newDesc;
-    desktopTexture->GetDesc(&newDesc);
-
-    bool needRecreate = false;
-    if (capturedTexture_)
+    else if (hr != DXGI_ERROR_WAIT_TIMEOUT)
     {
-        D3D11_TEXTURE2D_DESC existingDesc;
-        capturedTexture_->GetDesc(&existingDesc);
-        needRecreate = (existingDesc.Width != newDesc.Width ||
-            existingDesc.Height != newDesc.Height ||
-            existingDesc.Format != newDesc.Format);
-    }
-    else
-    {
-        needRecreate = true;
+        // A real error occurred (not a timeout). Re-initialize the duplication.
+        CleanupDuplication();
+        InitializeDuplication();
     }
 
-    // Recreate texture and SRV only if necessary
-    if (needRecreate)
-    {
-        if (capturedTexture_)
-        {
-            capturedTexture_->Release();
-            capturedTexture_ = nullptr;
-        }
-
-        if (capturedSRV_)
-        {
-            capturedSRV_->Release();
-            capturedSRV_ = nullptr;
-        }
-
-        D3D11_TEXTURE2D_DESC desc = newDesc;
-        desc.Usage = D3D11_USAGE_DEFAULT;
-        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        desc.CPUAccessFlags = 0;
-        desc.MiscFlags = 0;
-
-        hr = d3dDevice_->CreateTexture2D(&desc, nullptr, &capturedTexture_);
-        if (SUCCEEDED(hr))
-        {
-            // Create shader resource view
-            D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-            srvDesc.Format = desc.Format;
-            srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-            srvDesc.Texture2D.MipLevels = 1;
-
-            hr = d3dDevice_->CreateShaderResourceView(capturedTexture_, &srvDesc, &capturedSRV_);
-        }
-    }
-
-    // Copy the desktop content to our texture
-    if (SUCCEEDED(hr) && capturedTexture_)
-    {
-        d3dContext_->CopySubresourceRegion(capturedTexture_, 0, 0, 0, 0, desktopTexture, 0, nullptr);
-    }
-
-    desktopTexture->Release();
-
-    // ReSharper disable once CppFunctionResultShouldBeUsed
-    duplication_->ReleaseFrame();
-
-    return SUCCEEDED(hr) && capturedTexture_ != nullptr;
+    // We can always try to render, as long as we have a texture from a previous successful frame.
+    return capturedTexture_ != nullptr;
 }
 
 bool DuplicationWindow::RenderFrame() const
