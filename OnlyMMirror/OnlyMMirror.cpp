@@ -3,7 +3,6 @@
 #include <windows.h>
 #include <wincodec.h>
 #include <strsafe.h>
-#include <magnification.h>
 #include "InstructionsWindow.h"
 #include "HostWindow.h"
 
@@ -13,7 +12,7 @@
 
 // Global variables and strings.
 constexpr TCHAR WindowTitle[] = TEXT("OnlyM Mirror");
-constexpr UINT TimerInterval = 100;
+constexpr UINT TimerInterval = 16; // ~60 FPS for smooth updates
 constexpr int MaxMonitorNameLength = 32;
 
 namespace
@@ -62,11 +61,6 @@ int APIENTRY WinMain(
 	if (!InitMonitors())
 	{
 		return 4;
-	}
-
-	if (!MagInitialize())
-	{
-		return 2;
 	}
 
 	if (!SetupMirror(hInstance))
@@ -126,7 +120,6 @@ int APIENTRY WinMain(
 
 		// Shut down.
 		KillTimer(nullptr, timerId);
-		MagUninitialize();
 
 		// find OnlyM window and reposition cursor over it...
 		hostWindow.RepositionCursor();
@@ -267,6 +260,6 @@ namespace
         }
 
         return hostWindow.Create(
-            instance, winLeft, winTop, winWidth, winHeight, zoomFactor, targetMonitorRect, hotKey);
+            instance, winLeft, winTop, winWidth, winHeight, zoomFactor, targetMonitorRect, hotKey, targetMonitorName);
     }
 }

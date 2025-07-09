@@ -1,6 +1,6 @@
 #pragma once
 #include <windows.h>
-#include "MagnifierWindow.h"
+#include "DuplicationWindow.h"
 #include "InstructionsWindow.h"
 
 class HostWindow  // NOLINT(cppcoreguidelines-special-member-functions)
@@ -14,7 +14,8 @@ public:
         int x, int y, int width, int height, 
         float zoomFactor, 
         const RECT& targetMonitorRect, 
-        TCHAR hotKey);
+        TCHAR hotKey,
+        const char* targetMonitorName = nullptr);
 
     void Destroy();
     HWND GetWindowHandle() const;
@@ -22,10 +23,10 @@ public:
     void Update() const;
     void SetCaption(const TCHAR* caption) const;
     void SetTopMost() const;
-    void UpdateMirror(const RECT& sourceRect) const;
+    void UpdateMirror(const RECT& sourceRect);
     void PositionCursor() const;
     static void RepositionCursor();
-    MagnifierWindow& GetMagnifierWindow();
+    DuplicationWindow& GetDuplicationWindow();
     InstructionsWindow& GetInstructionsWindow();
 
     static LRESULT CALLBACK WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);
@@ -33,7 +34,7 @@ public:
 
 private:
     HWND windowHandle_;
-    MagnifierWindow magnifierWindow_;
+    DuplicationWindow duplicationWindow_;
     InstructionsWindow instructionsWindow_;
     int instructionsWindowHeight_;
     float zoomFactor_;
@@ -41,6 +42,5 @@ private:
     HINSTANCE hInstance_;
     void OnSize() const;
     void OnDestroy();
-    //void OnCtlColorStatic(WPARAM wParam, LPARAM lParam, LRESULT& result, bool& handled);
     void RegisterWindowClass() const;
 };

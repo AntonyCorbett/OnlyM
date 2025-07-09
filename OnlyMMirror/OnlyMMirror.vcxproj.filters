@@ -36,6 +36,9 @@
     <ClInclude Include="HostWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DuplicationWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -53,6 +56,9 @@
     <ClCompile Include="HostWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DuplicationWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OnlyMMirror.rc">
@@ -66,5 +72,8 @@
     <Image Include="OnlyMMirror.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DesktopDuplication_README.md" />
   </ItemGroup>
 </Project>

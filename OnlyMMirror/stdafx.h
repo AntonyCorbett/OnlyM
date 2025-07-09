@@ -11,6 +11,11 @@
 // Windows Header Files
 #include <windows.h>
 
+// DirectX Headers for Desktop Duplication API
+#include <d3d11.h>
+#include <dxgi1_2.h>
+#include <d3dcompiler.h>
+
 // C RunTime Header Files
 #include <stdlib.h>
 #include <malloc.h>

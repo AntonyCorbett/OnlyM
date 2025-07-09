@@ -33,7 +33,8 @@ bool HostWindow::Create(
     const int x, const int y, const int width, const int height, 
     const float zoomFactor, 
     const RECT& targetMonitorRect,
-    const TCHAR hotKey)
+    const TCHAR hotKey,
+    const char* targetMonitorName)
 {
     Destroy();
 
@@ -64,22 +65,23 @@ bool HostWindow::Create(
     RECT clientRect;
     GetClientRect(windowHandle_, &clientRect);
 
-    magnifierWindow_.Create(
+    duplicationWindow_.Create(
         windowHandle_, hInstance_, 
-        0, 0, clientRect.right, clientRect.bottom - instructionsWindowHeight_);
+        0, 0, clientRect.right, clientRect.bottom - instructionsWindowHeight_,
+        targetMonitorName);
 
     instructionsWindow_.Create(
         windowHandle_, hInstance_, 
         clientRect.bottom - instructionsWindowHeight_, clientRect.right, instructionsWindowHeight_,
         hotKey);
 
-    return magnifierWindow_.SetTransform(zoomFactor_);    
+    return duplicationWindow_.SetTransform(zoomFactor_);    
 }
 
 void HostWindow::Destroy()
 {
     instructionsWindow_.Destroy();
-    magnifierWindow_.Destroy();
+    duplicationWindow_.Destroy();
     if (windowHandle_)
     {
         DestroyWindow(windowHandle_);
@@ -121,11 +123,15 @@ void HostWindow::SetTopMost() const
     }
 }
 
-void HostWindow::UpdateMirror(const RECT& sourceRect) const
+void HostWindow::UpdateMirror(const RECT& sourceRect)
 {
-    magnifierWindow_.SetSourceRect(sourceRect);
+    duplicationWindow_.SetSourceRect(sourceRect);
     SetTopMost();
-    InvalidateRect(magnifierWindow_.GetWindowHandle(), nullptr, TRUE);
+    
+    // Trigger a frame update
+    duplicationWindow_.UpdateFrame();
+    
+    InvalidateRect(duplicationWindow_.GetWindowHandle(), nullptr, TRUE);
 }
 
 void HostWindow::PositionCursor() const
@@ -152,17 +158,17 @@ void HostWindow::RepositionCursor()
     }
 }
 
-MagnifierWindow& HostWindow::GetMagnifierWindow() { return magnifierWindow_; }
+DuplicationWindow& HostWindow::GetDuplicationWindow() { return duplicationWindow_; }
 
 InstructionsWindow& HostWindow::GetInstructionsWindow() { return instructionsWindow_; }
 
 void HostWindow::OnSize() const
 {
-    if (magnifierWindow_.GetWindowHandle() && instructionsWindow_.GetWindowHandle())
+    if (duplicationWindow_.GetWindowHandle() && instructionsWindow_.GetWindowHandle())
     {
         RECT clientRect;
         GetClientRect(windowHandle_, &clientRect);
-        magnifierWindow_.Resize(0, 0, clientRect.right, clientRect.bottom - instructionsWindowHeight_);
+        duplicationWindow_.Resize(0, 0, clientRect.right, clientRect.bottom - instructionsWindowHeight_);
         instructionsWindow_.Resize(0, clientRect.bottom - instructionsWindowHeight_, clientRect.right, instructionsWindowHeight_);
     }
 }
@@ -170,7 +176,7 @@ void HostWindow::OnSize() const
 void HostWindow::OnDestroy()
 {
     instructionsWindow_.Destroy();
-    magnifierWindow_.Destroy();
+    duplicationWindow_.Destroy();
     PostQuitMessage(0);
 }
 

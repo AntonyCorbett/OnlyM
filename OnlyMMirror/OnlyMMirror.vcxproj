@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DuplicationWindow.h" />
     <ClInclude Include="HostWindow.h" />
     <ClInclude Include="InstructionsWindow.h" />
     <ClInclude Include="MagnifierWindow.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DuplicationWindow.cpp" />
     <ClCompile Include="HostWindow.cpp" />
     <ClCompile Include="InstructionsWindow.cpp" />
     <ClCompile Include="MagnifierWindow.cpp" />
@@ -176,6 +178,9 @@
   <ItemGroup>
     <Image Include="OnlyMMirror.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DesktopDuplication_README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
