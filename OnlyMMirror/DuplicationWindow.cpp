@@ -60,12 +60,9 @@ DuplicationWindow::DuplicationWindow()
       capturedTexture_(nullptr), capturedSRV_(nullptr), samplerState_(nullptr),
       duplication_(nullptr), output_(nullptr), vertexShader_(nullptr), 
       pixelShader_(nullptr), vertexBuffer_(nullptr), inputLayout_(nullptr),
-      mouseTexture_(nullptr), mouseSRV_(nullptr), mouseVertexBuffer_(nullptr),
-      mouseVisible_(false), mouseWidth_(0), mouseHeight_(0),
       zoomFactor_(1.0f), windowWidth_(0), windowHeight_(0)
 {
     ZeroMemory(&sourceRect_, sizeof(sourceRect_));
-    ZeroMemory(&mousePosition_, sizeof(mousePosition_));
     ZeroMemory(&targetMonitorRect_, sizeof(targetMonitorRect_));
 }
 
@@ -152,8 +149,6 @@ bool DuplicationWindow::UpdateFrame()
 {
     // Try to capture a new frame (may reuse existing if no new frame available)
     bool hasCapturedContent = CaptureFrame();
-    // Get current mouse pointer information
-    GetMousePointerInfo();
     // Always try to render if we have content, regardless of timing
     if (hasCapturedContent) {
         return RenderFrame();
@@ -437,74 +432,6 @@ void DuplicationWindow::CleanupDuplication()
     if (output_) { output_->Release(); output_ = nullptr; }
 }
 
-// Helper: Convert HICON to D3D11 texture
-bool DuplicationWindow::UpdateMouseTexture(HICON hIcon, int width, int height)
-{
-    if (mouseTexture_) { mouseTexture_->Release(); mouseTexture_ = nullptr; }
-    if (mouseSRV_) { mouseSRV_->Release(); mouseSRV_ = nullptr; }
-
-    if (!hIcon || width <= 0 || height <= 0) {
-        OutputDebugStringA("[DIAG] Invalid HICON or size for mouse texture.\n");
-        return false;
-    }
-
-    // Create a 32-bit BGRA DIB section
-    BITMAPV5HEADER bi = {};
-    bi.bV5Size = sizeof(BITMAPV5HEADER);
-    bi.bV5Width = width;
-    bi.bV5Height = -height; // top-down
-    bi.bV5Planes = 1;
-    bi.bV5BitCount = 32;
-    bi.bV5Compression = BI_BITFIELDS;
-    bi.bV5RedMask   = 0x00FF0000;
-    bi.bV5GreenMask = 0x0000FF00;
-    bi.bV5BlueMask  = 0x000000FF;
-    bi.bV5AlphaMask = 0xFF000000;
-
-    void* pBits = nullptr;
-    HDC hdc = GetDC(nullptr);
-    HBITMAP hBitmap = CreateDIBSection(hdc, (BITMAPINFO*)&bi, DIB_RGB_COLORS, &pBits, nullptr, 0);
-    HDC hMemDC = CreateCompatibleDC(hdc);
-    HGDIOBJ oldBmp = SelectObject(hMemDC, hBitmap);
-    PatBlt(hMemDC, 0, 0, width, height, WHITENESS);
-    DrawIconEx(hMemDC, 0, 0, hIcon, width, height, 0, nullptr, DI_NORMAL);
-    // Copy to D3D11 texture
-    D3D11_TEXTURE2D_DESC desc = {};
-    desc.Width = width;
-    desc.Height = height;
-    desc.MipLevels = 1;
-    desc.ArraySize = 1;
-    desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-    desc.SampleDesc.Count = 1;
-    desc.Usage = D3D11_USAGE_DEFAULT;
-    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-    D3D11_SUBRESOURCE_DATA initData = {};
-    initData.pSysMem = pBits;
-    initData.SysMemPitch = width * 4;
-    HRESULT hr = d3dDevice_->CreateTexture2D(&desc, &initData, &mouseTexture_);
-    if (SUCCEEDED(hr)) {
-        D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-        srvDesc.Format = desc.Format;
-        srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        srvDesc.Texture2D.MipLevels = 1;
-        hr = d3dDevice_->CreateShaderResourceView(mouseTexture_, &srvDesc, &mouseSRV_);
-        if (FAILED(hr)) {
-            OutputDebugStringA("[DIAG] Failed to create mouse SRV.\n");
-        }
-    } else {
-        OutputDebugStringA("[DIAG] Failed to create mouse texture.\n");
-    }
-    // Cleanup
-    SelectObject(hMemDC, oldBmp);
-    DeleteDC(hMemDC);
-    DeleteObject(hBitmap);
-    ReleaseDC(nullptr, hdc);
-    if (mouseTexture_ && mouseSRV_) {
-        OutputDebugStringA("[DIAG] Mouse texture and SRV created successfully.\n");
-    }
-    return mouseTexture_ && mouseSRV_;
-}
-
 bool DuplicationWindow::CaptureFrame()
 {
     if (!duplication_) {
@@ -623,7 +550,7 @@ bool DuplicationWindow::RenderFrame()
     float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
     d3dContext_->ClearRenderTargetView(renderTargetView_, clearColor);
 
-    // The captured texture contains only the target monitor's content (not the entire desktop)
+    // Draw the captured desktop texture
     D3D11_TEXTURE2D_DESC textureDesc;
     capturedTexture_->GetDesc(&textureDesc);
     Vertex vertices[] = {
@@ -656,62 +583,6 @@ bool DuplicationWindow::RenderFrame()
         return false;
     }
     return SUCCEEDED(hr);
-}
-
-bool DuplicationWindow::GetMousePointerInfo()
-{
-    CURSORINFO cursorInfo;
-    cursorInfo.cbSize = sizeof(CURSORINFO);
-    if (!GetCursorInfo(&cursorInfo)) {
-        mouseVisible_ = false;
-        OutputDebugStringA("[DIAG] GetCursorInfo failed.\n");
-        return false;
-    }
-    mouseVisible_ = (cursorInfo.flags == CURSOR_SHOWING);
-    if (!mouseVisible_) {
-        OutputDebugStringA("[DIAG] Mouse not visible.\n");
-        return true;
-    }
-    // Get cursor position relative to target monitor
-    POINT cursorPos = cursorInfo.ptScreenPos;
-    bool isOnTargetMonitor = true;
-    if (targetMonitorRect_.right > targetMonitorRect_.left && 
-        targetMonitorRect_.bottom > targetMonitorRect_.top) {
-        isOnTargetMonitor = (cursorPos.x >= targetMonitorRect_.left && cursorPos.x < targetMonitorRect_.right &&
-                            cursorPos.y >= targetMonitorRect_.top && cursorPos.y < targetMonitorRect_.bottom);
-    }
-    if (isOnTargetMonitor) {
-        mousePosition_.x = cursorPos.x - targetMonitorRect_.left;
-        mousePosition_.y = cursorPos.y - targetMonitorRect_.top;
-        ICONINFO iconInfo;
-        if (GetIconInfo(cursorInfo.hCursor, &iconInfo)) {
-            BITMAP bitmap;
-            if (GetObject(iconInfo.hbmColor ? iconInfo.hbmColor : iconInfo.hbmMask, sizeof(bitmap), &bitmap)) {
-                mouseWidth_ = bitmap.bmWidth;
-                mouseHeight_ = abs(bitmap.bmHeight);
-                mousePosition_.x -= iconInfo.xHotspot;
-                mousePosition_.y -= iconInfo.yHotspot;
-                // Update mouse texture if needed
-                static HICON lastIcon = nullptr;
-                static int lastW = 0, lastH = 0;
-                if (cursorInfo.hCursor != lastIcon || mouseWidth_ != lastW || mouseHeight_ != lastH) {
-                    char buf[128];
-                    sprintf_s(buf, "[DIAG] UpdateMouseTexture: w=%d h=%d hotspot=(%d,%d)\n", mouseWidth_, mouseHeight_, iconInfo.xHotspot, iconInfo.yHotspot);
-                    OutputDebugStringA(buf);
-                    UpdateMouseTexture(cursorInfo.hCursor, mouseWidth_, mouseHeight_);
-                    lastIcon = cursorInfo.hCursor;
-                    lastW = mouseWidth_;
-                    lastH = mouseHeight_;
-                }
-            }
-            if (iconInfo.hbmColor) DeleteObject(iconInfo.hbmColor);
-            if (iconInfo.hbmMask) DeleteObject(iconInfo.hbmMask);
-        }
-    } else {
-        mouseVisible_ = false;
-        OutputDebugStringA("[DIAG] Mouse not on target monitor.\n");
-    }
-    return true;
 }
 
 LRESULT CALLBACK DuplicationWindow::WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

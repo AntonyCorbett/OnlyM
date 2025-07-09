@@ -18,7 +18,6 @@ public:
     bool SetTransform(float zoomFactor);
     void Resize(int x, int y, int width, int height) const;
     bool UpdateFrame();
-    bool UpdateMouseTexture(HICON hIcon, int width, int height);
 
 private:
     bool InitializeDX();
@@ -28,8 +27,6 @@ private:
     bool CaptureFrame();
     bool RenderFrame();
     bool FindTargetOutput();
-    bool GetMousePointerInfo();
-    void CleanupMousePointer();
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
     static const TCHAR* GetWindowClassName();
 
@@ -56,23 +53,13 @@ private:
     ID3D11Buffer* vertexBuffer_;
     ID3D11InputLayout* inputLayout_;
     
-    // Mouse pointer resources
-    ID3D11Texture2D* mouseTexture_;
-    ID3D11ShaderResourceView* mouseSRV_;
-    ID3D11Buffer* mouseVertexBuffer_;
-    POINT mousePosition_;
-    bool mouseVisible_;
-    int mouseWidth_;
-    int mouseHeight_;
-    RECT targetMonitorRect_;
-    
     // Rendering parameters
     RECT sourceRect_;
     float zoomFactor_;
     int windowWidth_;
     int windowHeight_;
+    RECT targetMonitorRect_;
     
     // Monitor selection
     std::string targetMonitorName_;
-    ID3D11PixelShader* cursorPixelShader_ = nullptr; // Diagnostic solid color shader
 };
