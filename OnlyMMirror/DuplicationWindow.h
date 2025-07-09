@@ -30,6 +30,7 @@ private:
     bool CaptureFrame();
     bool RenderFrame() const;
     bool FindTargetOutput();
+    bool LoadDefaultCursor();     
     static LRESULT CALLBACK WindowProc(HWND windowHandle, UINT msg, WPARAM wParam, LPARAM lParam);
     static const TCHAR* GetWindowClassName();
 
@@ -68,10 +69,11 @@ private:
 
     // Cursor-related resources
     ID3D11Texture2D* cursorTexture_;
+    // ReSharper disable once CppInconsistentNaming
     ID3D11ShaderResourceView* cursorSRV_;
-    ID3D11BlendState* blendState_;
+    ID3D11BlendState* blendState_;    
     std::vector<BYTE> cursorShapeBuffer_;
-    DXGI_OUTDUPL_POINTER_SHAPE_INFO cursorShapeInfo_;
-    POINT cursorPosition_;
+    mutable DXGI_OUTDUPL_POINTER_SHAPE_INFO cursorShapeInfo_;
+    POINT cursorPosition_;    
     bool cursorVisible_;
 };

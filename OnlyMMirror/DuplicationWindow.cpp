@@ -54,17 +54,119 @@ float4 main(PS_INPUT input) : SV_TARGET {
     };
 }
 
-const TCHAR* DuplicationWindow::GetWindowClassName() { 
+bool DuplicationWindow::LoadDefaultCursor()
+{
+    // Load the default arrow cursor
+    const HCURSOR cursor = LoadCursor(nullptr, IDC_ARROW);
+    if (!cursor)
+    {
+        return false;
+    }
+
+    ICONINFO iconInfo;
+    if (!GetIconInfo(cursor, &iconInfo))
+    {
+        return false;
+    }
+
+    // Get the dimensions of the cursor
+    BITMAP bmpColor = {};
+    GetObject(iconInfo.hbmColor, sizeof(bmpColor), &bmpColor);
+
+    const int width = bmpColor.bmWidth;
+    const int height = bmpColor.bmHeight;
+
+    cursorShapeInfo_.Width = width;
+    cursorShapeInfo_.Height = height;
+    cursorShapeInfo_.HotSpot.x = iconInfo.xHotspot;
+    cursorShapeInfo_.HotSpot.y = iconInfo.yHotspot;
+
+    std::vector<BYTE> cursorPixels(width * height * 4);
+
+    HDC hdcScreen = GetDC(nullptr);
+    HDC hdcMem = CreateCompatibleDC(hdcScreen);
+
+    // Create a 32-bpp bitmap and select it into the memory DC
+    BITMAPINFO bmi = {};
+    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biWidth = width;
+    bmi.bmiHeader.biHeight = -height; // Top-down DIB
+    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biBitCount = 32;
+    bmi.bmiHeader.biCompression = BI_RGB;
+
+    void* pPixels = nullptr;
+    HBITMAP hbm32 = CreateDIBSection(hdcScreen, &bmi, DIB_RGB_COLORS, &pPixels, nullptr, 0);
+    HBITMAP hbmOld = static_cast<HBITMAP>(SelectObject(hdcMem, hbm32));
+
+    // Draw the icon into the 32-bpp bitmap. This correctly handles the alpha channel.
+    DrawIconEx(hdcMem, 0, 0, cursor, width, height, 0, nullptr, DI_NORMAL);
+
+    // Copy the pixel data
+    memcpy(cursorPixels.data(), pPixels, cursorPixels.size());
+
+    // Clean up GDI objects
+    SelectObject(hdcMem, hbmOld);
+    DeleteObject(hbm32);
+    DeleteDC(hdcMem);
+    ReleaseDC(nullptr, hdcScreen);
+    DeleteObject(iconInfo.hbmColor);
+    DeleteObject(iconInfo.hbmMask);
+
+    // Create the texture
+    D3D11_TEXTURE2D_DESC desc = {};
+    desc.Width = width;
+    desc.Height = height;
+    desc.MipLevels = 1;
+    desc.ArraySize = 1;
+    desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+    desc.SampleDesc.Count = 1;
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+    D3D11_SUBRESOURCE_DATA subresourceData = {};
+    subresourceData.pSysMem = cursorPixels.data();
+    subresourceData.SysMemPitch = width * 4;
+
+    HRESULT hr = d3dDevice_->CreateTexture2D(&desc, &subresourceData, &cursorTexture_);
+    if (SUCCEEDED(hr))
+    {
+        hr = d3dDevice_->CreateShaderResourceView(cursorTexture_, nullptr, &cursorSRV_);
+    }
+
+    return SUCCEEDED(hr);
+}
+
+const TCHAR* DuplicationWindow::GetWindowClassName()
+{ 
     return TEXT("DuplicationWindow"); 
 }
 
-DuplicationWindow::DuplicationWindow() 
-    : windowHandle_(nullptr), hInstance_(nullptr), d3dDevice_(nullptr), 
-      d3dContext_(nullptr), swapChain_(nullptr), renderTargetView_(nullptr),
-      capturedTexture_(nullptr), capturedSRV_(nullptr), samplerState_(nullptr),
-      duplication_(nullptr), output_(nullptr), vertexShader_(nullptr), 
-      pixelShader_(nullptr), vertexBuffer_(nullptr), inputLayout_(nullptr),
-      zoomFactor_(1.0f), windowWidth_(0), windowHeight_(0)
+DuplicationWindow::DuplicationWindow()
+    : windowHandle_(nullptr)
+    , hInstance_(nullptr)
+    , d3dDevice_(nullptr)
+    , d3dContext_(nullptr)
+    , swapChain_(nullptr)
+    , renderTargetView_(nullptr)
+    , capturedTexture_(nullptr)
+    , capturedSRV_(nullptr)
+    , samplerState_(nullptr)
+    , duplication_(nullptr)
+    , output_(nullptr)
+    , vertexShader_(nullptr)
+    , pixelShader_(nullptr)
+    , vertexBuffer_(nullptr)
+    , inputLayout_(nullptr)
+    , zoomFactor_(1.0f)
+    , windowWidth_(0)
+    , windowHeight_(0)
+    , cursorTexture_(nullptr)
+    , cursorSRV_(nullptr)
+    , blendState_(nullptr)
+    , cursorShapeInfo_()
+    , cursorPosition_()
+    , cursorVisible_(false)
 {
     ZeroMemory(&sourceRect_, sizeof(sourceRect_));
     ZeroMemory(&targetMonitorRect_, sizeof(targetMonitorRect_));
@@ -183,7 +285,6 @@ bool DuplicationWindow::UpdateFrame()
     return false;
 }
 
-// ReSharper disable once CppInconsistentNaming
 // ReSharper disable once CppInconsistentNaming
 bool DuplicationWindow::InitializeDX()
 {
@@ -396,6 +497,18 @@ bool DuplicationWindow::InitializeDX()
         return false;
     }
 
+    hr = d3dDevice_->CreateBlendState(&blendDesc, &blendState_);
+    if (FAILED(hr))
+    {
+        return false;
+    }
+
+    // Load the default cursor texture
+    if (!LoadDefaultCursor())
+    {
+        return false;
+    }
+
     return true;
 }
 
@@ -564,61 +677,14 @@ bool DuplicationWindow::CaptureFrame()
         }
     }
 
-    // Handle cursor updates
+    // Handle cursor updates - ONLY position and visibility
     cursorVisible_ = frameInfo.PointerPosition.Visible;
     if (cursorVisible_)
     {
         cursorPosition_ = frameInfo.PointerPosition.Position;
     }
 
-    if (frameInfo.PointerShapeBufferSize > 0)
-    {
-        if (frameInfo.PointerShapeBufferSize > cursorShapeBuffer_.size())
-        {
-            cursorShapeBuffer_.resize(frameInfo.PointerShapeBufferSize);
-        }
-
-        UINT requiredSize;
-        hr = duplication_->GetFramePointerShape(
-            static_cast<UINT>(cursorShapeBuffer_.size()),
-            cursorShapeBuffer_.data(),
-            &requiredSize,
-            &cursorShapeInfo_);
-
-        if (SUCCEEDED(hr))
-        {
-            if (cursorTexture_)
-            {
-                cursorTexture_->Release();
-                cursorTexture_ = nullptr;
-            }
-            if (cursorSRV_)
-            {
-                cursorSRV_->Release();
-                cursorSRV_ = nullptr;
-            }
-
-            D3D11_TEXTURE2D_DESC desc = {};
-            desc.Width = cursorShapeInfo_.Width;
-            desc.Height = cursorShapeInfo_.Height;
-            desc.MipLevels = 1;
-            desc.ArraySize = 1;
-            desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-            desc.SampleDesc.Count = 1;
-            desc.Usage = D3D11_USAGE_DEFAULT;
-            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-
-            D3D11_SUBRESOURCE_DATA subresourceData = {};
-            subresourceData.pSysMem = cursorShapeBuffer_.data();
-            subresourceData.SysMemPitch = cursorShapeInfo_.Pitch;
-
-            hr = d3dDevice_->CreateTexture2D(&desc, &subresourceData, &cursorTexture_);
-            if (SUCCEEDED(hr))
-            {
-                hr = d3dDevice_->CreateShaderResourceView(cursorTexture_, nullptr, &cursorSRV_);
-            }
-        }
-    }
+    // We no longer process shape updates, so the rest of the old cursor logic is removed.
 
 
     // Get the desktop texture
@@ -758,11 +824,18 @@ bool DuplicationWindow::RenderFrame() const
         // Set up blend state for transparency
         d3dContext_->OMSetBlendState(blendState_, nullptr, 0xffffffff);
 
-        // Calculate cursor position in normalized device coordinates
-        const float cursorX = (static_cast<float>(cursorPosition_.x) / textureDesc.Width) * 2.0f - 1.0f;
-        const float cursorY = 1.0f - (static_cast<float>(cursorPosition_.y) / textureDesc.Height) * 2.0f;
-        const float cursorWidth = (static_cast<float>(cursorShapeInfo_.Width) / textureDesc.Width) * 2.0f;
-        const float cursorHeight = (static_cast<float>(cursorShapeInfo_.Height) / textureDesc.Height) * 2.0f;
+        // Calculate cursor position in normalized device coordinates, accounting for the hotspot
+        const float cursorX =
+            (static_cast<float>(cursorPosition_.x - cursorShapeInfo_.HotSpot.x) / textureDesc.Width) * 2.0f - 1.0f;
+
+        const float cursorY =
+            1.0f - (static_cast<float>(cursorPosition_.y - cursorShapeInfo_.HotSpot.y) / textureDesc.Height) * 2.0f;
+
+        const float cursorWidth =
+            (static_cast<float>(cursorShapeInfo_.Width) / textureDesc.Width) * 2.0f;
+
+        const float cursorHeight =
+            (static_cast<float>(cursorShapeInfo_.Height) / textureDesc.Height) * 2.0f;
 
         const Vertex cursorVertices[] =
         {

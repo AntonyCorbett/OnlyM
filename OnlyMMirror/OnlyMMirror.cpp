@@ -12,7 +12,6 @@
 
 // Global variables and strings.
 constexpr TCHAR WindowTitle[] = TEXT("OnlyM Mirror");
-constexpr UINT TimerInterval = 16; // ~60 FPS for smooth updates
 constexpr int MaxMonitorNameLength = 32;
 
 namespace
@@ -30,8 +29,7 @@ namespace
 // Forward declarations.
 namespace
 {
-    bool SetupMirror(HINSTANCE instance);
-    void CALLBACK UpdateMirrorWindow(HWND /*hostWindow*/, UINT /*message*/, UINT_PTR /*eventId*/, DWORD /*time*/);
+    bool SetupMirror(HINSTANCE instance);    
     BOOL CALLBACK OnlyMMonitorEnumProc(HMONITOR monitor, HDC monitorDeviceContext, LPRECT monitorRect, LPARAM data);
     bool InitMonitors();
     bool InitHotKey();
@@ -87,47 +85,34 @@ int APIENTRY WinMain(
 		(void)sprintf_s(caption, "%s (ALT+%c to close)", WindowTitle, hotKey);
 
 		hostWindow.SetCaption(caption);
-		const UINT_PTR timerId = SetTimer(hostWindow.GetWindowHandle(), 0, TimerInterval, UpdateMirrorWindow);
-
-		MSG msg;
-        while (true)
-        {
-            const int result = GetMessage(&msg, nullptr, 0, 0);
 		
-			if (result == 0)
-			{
-                // WM_QUIT received
-				break;
-			}
-
-            if (result > 0)
+        MSG msg = {};
+        while (msg.message != WM_QUIT)
+        {
+            if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
             {
                 if (msg.message == WM_HOTKEY)
                 {
-                    // we only register one hotkey
-                    // so its value doesn't matter
+                    // we only register one hotkey so its value doesn't matter
                     break;
                 }
-
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
             }
             else
             {
-                break; // An error occurred                
+                // When no messages are pending, update and render a frame.
+                hostWindow.UpdateMirror(targetMonitorRect);
             }
-		}
+        }
 
-		// Shut down.
-		KillTimer(nullptr, timerId);
-
-		// find OnlyM window and reposition cursor over it...
+        // find OnlyM window and reposition cursor over it...
         HostWindow::RepositionCursor();
 
-		rv = static_cast<int>(msg.wParam);
+        rv = static_cast<int>(msg.wParam);
 
-		CloseHandle(applicationMutex);
-	}
+        CloseHandle(applicationMutex);
+    }
 	else
 	{
 		rv = 10;
@@ -204,12 +189,6 @@ namespace
         }
 
         return true;
-    }
-
-    // Sets the source rectangle and updates the window. Called by a timer.
-    void CALLBACK UpdateMirrorWindow(HWND /*hostWindow*/, UINT /*message*/, UINT_PTR /*eventId*/, DWORD /*time*/)
-    {
-        hostWindow.UpdateMirror(targetMonitorRect);
     }
 
     bool SetupMirror(const HINSTANCE instance)
