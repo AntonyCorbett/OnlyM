@@ -1,2 +1,5 @@
 Update wiki. Describe limitations of browser (media, popups, etc)
+Mirror mouse cursor!
+
+"Page Size" controls should not be shown for PDFs
 

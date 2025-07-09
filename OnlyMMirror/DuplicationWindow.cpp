@@ -9,8 +9,10 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-// Simple vertex shader for rendering the captured texture
-const char* vertexShaderSource = R"(
+namespace
+{
+    // Simple vertex shader for rendering the captured texture
+    const char* vertexShaderSource = R"(
 struct VS_INPUT {
     float4 pos : POSITION;
     float2 tex : TEXCOORD0;
@@ -29,8 +31,8 @@ VS_OUTPUT main(VS_INPUT input) {
 }
 )";
 
-// Simple pixel shader for rendering with high-quality filtering
-const char* pixelShaderSource = R"(
+    // Simple pixel shader for rendering with high-quality filtering
+    const char* pixelShaderSource = R"(
 Texture2D shaderTexture : register(t0);
 SamplerState samplerType : register(s0);
 
@@ -44,11 +46,13 @@ float4 main(PS_INPUT input) : SV_TARGET {
 }
 )";
 
-// Vertex structure for rendering
-struct Vertex {
-    float x, y, z, w;  // Position
-    float u, v;        // Texture coordinates
-};
+    // Vertex structure for rendering
+    // ReSharper disable once CppInconsistentNaming
+    struct Vertex {        
+        float x, y, z, w;  // Position
+        float u, v;        // Texture coordinates
+    };
+}
 
 const TCHAR* DuplicationWindow::GetWindowClassName() { 
     return TEXT("DuplicationWindow"); 
@@ -66,26 +70,35 @@ DuplicationWindow::DuplicationWindow()
     ZeroMemory(&targetMonitorRect_, sizeof(targetMonitorRect_));
 }
 
-DuplicationWindow::~DuplicationWindow() { 
+DuplicationWindow::~DuplicationWindow()
+{ 
     Destroy(); 
 }
 
-bool DuplicationWindow::Create(HWND parent, HINSTANCE instance, int x, int y, int width, int height, const char* targetMonitorName)
+bool DuplicationWindow::Create(
+    const HWND parent, 
+    const HINSTANCE instance,
+    const int x, const int y, const int width, const int height, 
+    const char* targetMonitorName)
 {
     Destroy();
+
     hInstance_ = instance;
     windowWidth_ = width;
     windowHeight_ = height;
-    if (targetMonitorName) {
+
+    if (targetMonitorName) 
+    {
         targetMonitorName_ = targetMonitorName;
     }
+
     WNDCLASSEX wc = {};
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = instance;
     wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);  // NOLINT(performance-no-int-to-ptr)
     wc.lpszClassName = GetWindowClassName();
     RegisterClassEx(&wc);
     windowHandle_ = CreateWindowEx(
@@ -98,15 +111,22 @@ bool DuplicationWindow::Create(HWND parent, HINSTANCE instance, int x, int y, in
         nullptr,
         instance,
         this);
-    if (!windowHandle_) {
+
+    if (!windowHandle_) 
+    {
         return false;
     }
-    if (!InitializeDX()) {
+
+    if (!InitializeDX()) 
+    {
         return false;
     }
-    if (!InitializeDuplication()) {
+
+    if (!InitializeDuplication()) 
+    {
         return false;
     }
+
     return true;
 }
 
@@ -114,13 +134,16 @@ void DuplicationWindow::Destroy()
 {
     CleanupDuplication();
     CleanupDX();
-    if (windowHandle_) {
+
+    if (windowHandle_) 
+    {
         DestroyWindow(windowHandle_);
         windowHandle_ = nullptr;
     }
 }
 
-HWND DuplicationWindow::GetWindowHandle() const { 
+HWND DuplicationWindow::GetWindowHandle() const
+{ 
     return windowHandle_; 
 }
 
@@ -132,15 +155,16 @@ void DuplicationWindow::SetSourceRect(const RECT& rect)
     targetMonitorRect_ = rect;    
 }
 
-bool DuplicationWindow::SetTransform(float zoomFactor)
+bool DuplicationWindow::SetTransform(const float zoomFactor)
 {
     zoomFactor_ = zoomFactor;
     return true;
 }
 
-void DuplicationWindow::Resize(int x, int y, int width, int height) const
+void DuplicationWindow::Resize(const int x, const int y, const int width, const int height) const
 {
-    if (windowHandle_) {
+    if (windowHandle_) 
+    {
         SetWindowPos(windowHandle_, nullptr, x, y, width, height, SWP_NOZORDER);
     }
 }
@@ -148,21 +172,24 @@ void DuplicationWindow::Resize(int x, int y, int width, int height) const
 bool DuplicationWindow::UpdateFrame()
 {
     // Try to capture a new frame (may reuse existing if no new frame available)
-    bool hasCapturedContent = CaptureFrame();
+    const bool hasCapturedContent = CaptureFrame();
+
     // Always try to render if we have content, regardless of timing
-    if (hasCapturedContent) {
+    if (hasCapturedContent) 
+    {
         return RenderFrame();
     }
+
     return false;
 }
 
+// ReSharper disable once CppInconsistentNaming
 bool DuplicationWindow::InitializeDX()
 {
-    HRESULT hr;
-
     // Create D3D11 device and context
     D3D_FEATURE_LEVEL featureLevel;
-    hr = D3D11CreateDevice(
+
+    HRESULT hr = D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE_HARDWARE,
         nullptr,
@@ -174,7 +201,8 @@ bool DuplicationWindow::InitializeDX()
         &featureLevel,
         &d3dContext_);
 
-    if (FAILED(hr)) {
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
@@ -193,92 +221,125 @@ bool DuplicationWindow::InitializeDX()
     swapChainDesc.Windowed = TRUE;
 
     IDXGIDevice* dxgiDevice = nullptr;
-    hr = d3dDevice_->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
-    if (FAILED(hr)) {
+    hr = d3dDevice_->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&dxgiDevice));  // NOLINT(clang-diagnostic-language-extension-token)
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     IDXGIAdapter* dxgiAdapter = nullptr;
     hr = dxgiDevice->GetAdapter(&dxgiAdapter);
     dxgiDevice->Release();
-    if (FAILED(hr)) {
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     IDXGIFactory* dxgiFactory = nullptr;
-    hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory);
+    hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&dxgiFactory));  // NOLINT(clang-diagnostic-language-extension-token)
     dxgiAdapter->Release();
-    if (FAILED(hr)) {
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     hr = dxgiFactory->CreateSwapChain(d3dDevice_, &swapChainDesc, &swapChain_);
     dxgiFactory->Release();
-    if (FAILED(hr)) {
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     // Create render target view
     ID3D11Texture2D* backBuffer = nullptr;
-    hr = swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
-    if (FAILED(hr)) {
+    hr = swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));  // NOLINT(clang-diagnostic-language-extension-token)
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     hr = d3dDevice_->CreateRenderTargetView(backBuffer, nullptr, &renderTargetView_);
     backBuffer->Release();
-    if (FAILED(hr)) {
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     // Compile and create shaders
     ID3DBlob* vsBlob = nullptr;
     ID3DBlob* errorBlob = nullptr;
-    hr = D3DCompile(vertexShaderSource, strlen(vertexShaderSource), nullptr, nullptr, nullptr,
-                    "main", "vs_4_0", 0, 0, &vsBlob, &errorBlob);
-    if (FAILED(hr)) {
-        if (errorBlob) errorBlob->Release();
+    hr = D3DCompile(
+        vertexShaderSource, 
+        strlen(vertexShaderSource), 
+        nullptr, nullptr, nullptr,
+        "main", "vs_4_0", 0, 0, &vsBlob, &errorBlob);
+
+    if (FAILED(hr)) 
+    {
+        if (errorBlob)
+        {
+            errorBlob->Release();
+        }
+
         return false;
     }
 
-    hr = d3dDevice_->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(),
-                                       nullptr, &vertexShader_);
-    if (FAILED(hr)) {
+    hr = d3dDevice_->CreateVertexShader(
+        vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &vertexShader_);
+
+    if (FAILED(hr)) 
+    {
         vsBlob->Release();
         return false;
     }
 
     // Create input layout
-    D3D11_INPUT_ELEMENT_DESC layout[] = {
+    D3D11_INPUT_ELEMENT_DESC layout[] = 
+    {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
     };
 
-    hr = d3dDevice_->CreateInputLayout(layout, 2, vsBlob->GetBufferPointer(),
-                                      vsBlob->GetBufferSize(), &inputLayout_);
+    hr = d3dDevice_->CreateInputLayout(
+        layout, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout_);
+
     vsBlob->Release();
-    if (FAILED(hr)) {
+
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     // Compile pixel shader
     ID3DBlob* psBlob = nullptr;
-    hr = D3DCompile(pixelShaderSource, strlen(pixelShaderSource), nullptr, nullptr, nullptr,
-                    "main", "ps_4_0", 0, 0, &psBlob, &errorBlob);
-    if (FAILED(hr)) {
-        if (errorBlob) errorBlob->Release();
+    hr = D3DCompile(
+        pixelShaderSource, strlen(pixelShaderSource), 
+        nullptr, nullptr, nullptr,
+        "main", "ps_4_0", 0, 0, &psBlob, &errorBlob);
+
+    if (FAILED(hr)) 
+    {
+        if (errorBlob)
+        {
+            errorBlob->Release();
+        }
+
         return false;
     }
 
-    hr = d3dDevice_->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(),
-                                      nullptr, &pixelShader_);
+    hr = d3dDevice_->CreatePixelShader(
+        psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &pixelShader_);
+
     psBlob->Release();
-    if (FAILED(hr)) {
+
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     // Create vertex buffer
-    Vertex vertices[] = {
+    constexpr Vertex vertices[] = 
+    {
         { -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f },  // Bottom left
         { -1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f },  // Top left
         {  1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f },  // Bottom right
@@ -295,7 +356,8 @@ bool DuplicationWindow::InitializeDX()
     initData.pSysMem = vertices;
 
     hr = d3dDevice_->CreateBuffer(&bufferDesc, &initData, &vertexBuffer_);
-    if (FAILED(hr)) {
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
@@ -312,13 +374,15 @@ bool DuplicationWindow::InitializeDX()
     samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
     hr = d3dDevice_->CreateSamplerState(&samplerDesc, &samplerState_);
-    if (FAILED(hr)) {
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     return true;
 }
 
+// ReSharper disable once CppInconsistentNaming
 void DuplicationWindow::CleanupDX()
 {
     if (samplerState_) { samplerState_->Release(); samplerState_ = nullptr; }
@@ -336,24 +400,25 @@ void DuplicationWindow::CleanupDX()
 
 bool DuplicationWindow::InitializeDuplication()
 {
-    HRESULT hr;
-
     // Get DXGI adapter
     IDXGIDevice* dxgiDevice = nullptr;
-    hr = d3dDevice_->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
-    if (FAILED(hr)) {
+    HRESULT hr = d3dDevice_->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&dxgiDevice));  // NOLINT(clang-diagnostic-language-extension-token)
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     IDXGIAdapter* adapter = nullptr;
     hr = dxgiDevice->GetAdapter(&adapter);
     dxgiDevice->Release();
-    if (FAILED(hr)) {
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     // Find the target output instead of always using the primary
-    if (!FindTargetOutput()) {
+    if (!FindTargetOutput()) 
+    {
         adapter->Release();
         return false;
     }
@@ -362,7 +427,8 @@ bool DuplicationWindow::InitializeDuplication()
 
     // Create desktop duplication
     hr = output_->DuplicateOutput(d3dDevice_, &duplication_);
-    if (FAILED(hr)) {
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
@@ -370,20 +436,20 @@ bool DuplicationWindow::InitializeDuplication()
 }
 
 bool DuplicationWindow::FindTargetOutput()
-{
-    HRESULT hr;
-    
+{   
     // Get DXGI adapter
     IDXGIDevice* dxgiDevice = nullptr;
-    hr = d3dDevice_->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
-    if (FAILED(hr)) {
+    HRESULT hr = d3dDevice_->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&dxgiDevice));  // NOLINT(clang-diagnostic-language-extension-token)
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
     IDXGIAdapter* adapter = nullptr;
     hr = dxgiDevice->GetAdapter(&adapter);
     dxgiDevice->Release();
-    if (FAILED(hr)) {
+    if (FAILED(hr)) 
+    {
         return false;
     }
 
@@ -391,11 +457,13 @@ bool DuplicationWindow::FindTargetOutput()
     UINT outputIndex = 0;
     IDXGIOutput* output = nullptr;
     
-    while (adapter->EnumOutputs(outputIndex, &output) != DXGI_ERROR_NOT_FOUND) {
+    while (adapter->EnumOutputs(outputIndex, &output) != DXGI_ERROR_NOT_FOUND) 
+    {
         DXGI_OUTPUT_DESC outputDesc;
         hr = output->GetDesc(&outputDesc);
         
-        if (SUCCEEDED(hr)) {
+        if (SUCCEEDED(hr)) 
+        {
             // Convert wide string to narrow string for comparison
             char deviceName[32];
             WideCharToMultiByte(CP_ACP, 0, outputDesc.DeviceName, -1, deviceName, sizeof(deviceName), nullptr, nullptr);
@@ -403,7 +471,7 @@ bool DuplicationWindow::FindTargetOutput()
             // Check if this output matches our target monitor
             if (targetMonitorName_.empty() || targetMonitorName_ == deviceName) {
                 // Found the target output
-                hr = output->QueryInterface(__uuidof(IDXGIOutput1), (void**)&output_);
+                hr = output->QueryInterface(__uuidof(IDXGIOutput1), reinterpret_cast<void**>(&output_));  // NOLINT(clang-diagnostic-language-extension-token)
                 output->Release();
                 adapter->Release();
                 return SUCCEEDED(hr);
@@ -417,7 +485,8 @@ bool DuplicationWindow::FindTargetOutput()
     adapter->Release();
     
     // If we didn't find the target monitor, try to fall back to primary
-    if (!targetMonitorName_.empty()) {
+    if (!targetMonitorName_.empty()) 
+    {
         // Reset and try again without target monitor name (fallback to primary)
         targetMonitorName_.clear();
         return FindTargetOutput();
@@ -434,7 +503,8 @@ void DuplicationWindow::CleanupDuplication()
 
 bool DuplicationWindow::CaptureFrame()
 {
-    if (!duplication_) {
+    if (!duplication_) 
+    {
         return false;
     }
 
@@ -442,33 +512,45 @@ bool DuplicationWindow::CaptureFrame()
     IDXGIResource* desktopResource = nullptr;
     
     HRESULT hr = duplication_->AcquireNextFrame(0, &frameInfo, &desktopResource);
-    if (hr == DXGI_ERROR_WAIT_TIMEOUT) {
+    if (hr == DXGI_ERROR_WAIT_TIMEOUT) 
+    {
         // No new frame available - continue with existing captured texture if available
         return capturedTexture_ != nullptr;
     }
-    if (FAILED(hr)) {
+
+    if (FAILED(hr)) 
+    {
         // Handle DXGI_ERROR_INVALID_CALL and other errors by recreating duplication
-        if (hr == DXGI_ERROR_INVALID_CALL || hr == DXGI_ERROR_ACCESS_LOST) {
+        if (hr == DXGI_ERROR_INVALID_CALL || hr == DXGI_ERROR_ACCESS_LOST) 
+        {
             CleanupDuplication();
-            if (InitializeDuplication()) {
+            if (InitializeDuplication()) 
+            {
                 // Try again after reinitializing
                 hr = duplication_->AcquireNextFrame(0, &frameInfo, &desktopResource);
-                if (FAILED(hr)) {
+                if (FAILED(hr)) 
+                {
                     return capturedTexture_ != nullptr;
                 }
-            } else {
+            }
+            else 
+            {
                 return false;
             }
-        } else {
+        }
+        else 
+        {
             return false;
         }
     }
 
     // Get the desktop texture
     ID3D11Texture2D* desktopTexture = nullptr;
-    hr = desktopResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&desktopTexture);
+    hr = desktopResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&desktopTexture));  // NOLINT(clang-diagnostic-language-extension-token)
     desktopResource->Release();
-    if (FAILED(hr)) {
+    if (FAILED(hr)) 
+    {
+        // ReSharper disable once CppFunctionResultShouldBeUsed
         duplication_->ReleaseFrame();
         return false;
     }
@@ -478,23 +560,30 @@ bool DuplicationWindow::CaptureFrame()
     desktopTexture->GetDesc(&newDesc);
     
     bool needRecreate = false;
-    if (capturedTexture_) {
+    if (capturedTexture_) 
+    {
         D3D11_TEXTURE2D_DESC existingDesc;
         capturedTexture_->GetDesc(&existingDesc);
         needRecreate = (existingDesc.Width != newDesc.Width || 
                        existingDesc.Height != newDesc.Height ||
                        existingDesc.Format != newDesc.Format);
-    } else {
+    }
+    else 
+    {
         needRecreate = true;
     }
 
     // Recreate texture and SRV only if necessary
-    if (needRecreate) {
-        if (capturedTexture_) {
+    if (needRecreate) 
+    {
+        if (capturedTexture_) 
+        {
             capturedTexture_->Release();
             capturedTexture_ = nullptr;
         }
-        if (capturedSRV_) {
+
+        if (capturedSRV_) 
+        {
             capturedSRV_->Release();
             capturedSRV_ = nullptr;
         }
@@ -506,7 +595,8 @@ bool DuplicationWindow::CaptureFrame()
         desc.MiscFlags = 0;
 
         hr = d3dDevice_->CreateTexture2D(&desc, nullptr, &capturedTexture_);
-        if (SUCCEEDED(hr)) {
+        if (SUCCEEDED(hr)) 
+        {
             // Create shader resource view
             D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
             srvDesc.Format = desc.Format;
@@ -518,26 +608,30 @@ bool DuplicationWindow::CaptureFrame()
     }
 
     // Copy the desktop content to our texture
-    if (SUCCEEDED(hr) && capturedTexture_) {
+    if (SUCCEEDED(hr) && capturedTexture_) 
+    {
         d3dContext_->CopySubresourceRegion(capturedTexture_, 0, 0, 0, 0, desktopTexture, 0, nullptr);
     }
 
     desktopTexture->Release();
+
+    // ReSharper disable once CppFunctionResultShouldBeUsed
     duplication_->ReleaseFrame();
 
     return SUCCEEDED(hr) && capturedTexture_ != nullptr;
 }
 
-bool DuplicationWindow::RenderFrame()
+bool DuplicationWindow::RenderFrame() const
 {
-    if (!capturedSRV_ || !capturedTexture_) {
+    if (!capturedSRV_ || !capturedTexture_) 
+    {
         return false;
     }
 
     // Set up rendering pipeline
     d3dContext_->OMSetRenderTargets(1, &renderTargetView_, nullptr);
 
-    D3D11_VIEWPORT viewport = {};
+    D3D11_VIEWPORT viewport;
     viewport.TopLeftX = 0;
     viewport.TopLeftY = 0;
     viewport.Width = static_cast<FLOAT>(windowWidth_);
@@ -547,29 +641,34 @@ bool DuplicationWindow::RenderFrame()
     d3dContext_->RSSetViewports(1, &viewport);
 
     // Clear the render target
-    float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    constexpr float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
     d3dContext_->ClearRenderTargetView(renderTargetView_, clearColor);
 
     // Draw the captured desktop texture
     D3D11_TEXTURE2D_DESC textureDesc;
     capturedTexture_->GetDesc(&textureDesc);
-    Vertex vertices[] = {
+
+    constexpr Vertex vertices[] = 
+    {
         { -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f },   // Bottom left
         { -1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f },   // Top left
         {  1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f },   // Bottom right
         {  1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.0f }    // Top right
     };
+
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     HRESULT hr = d3dContext_->Map(vertexBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    if (SUCCEEDED(hr)) {
+    if (SUCCEEDED(hr)) 
+    {
         memcpy(mappedResource.pData, vertices, sizeof(vertices));
         d3dContext_->Unmap(vertexBuffer_, 0);
     }
+
     d3dContext_->VSSetShader(vertexShader_, nullptr, 0);
     d3dContext_->PSSetShader(pixelShader_, nullptr, 0);
     d3dContext_->IASetInputLayout(inputLayout_);
-    UINT stride = sizeof(Vertex);
-    UINT offset = 0;
+    constexpr UINT stride = sizeof(Vertex);
+    constexpr UINT offset = 0;
     d3dContext_->IASetVertexBuffers(0, 1, &vertexBuffer_, &stride, &offset);
     d3dContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
     d3dContext_->PSSetShaderResources(0, 1, &capturedSRV_);
@@ -578,67 +677,94 @@ bool DuplicationWindow::RenderFrame()
 
     // Present the DirectX content
     hr = swapChain_->Present(0, 0);
-    if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET) {
+    if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET) 
+    {
         // Device lost - we should reinitialize DirectX resources
         return false;
     }
+
     return SUCCEEDED(hr);
 }
 
-LRESULT CALLBACK DuplicationWindow::WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK DuplicationWindow::WindowProc(const HWND windowHandle, const UINT msg, const WPARAM wParam, const LPARAM lParam)
 {
-    DuplicationWindow* self = nullptr;
-    if (msg == WM_NCCREATE) {
-        CREATESTRUCT* cs = reinterpret_cast<CREATESTRUCT*>(lParam);
+    DuplicationWindow* self;
+
+    if (msg == WM_NCCREATE) 
+    {
+        const CREATESTRUCT* cs = reinterpret_cast<CREATESTRUCT*>(lParam);  // NOLINT(performance-no-int-to-ptr)
         self = static_cast<DuplicationWindow*>(cs->lpCreateParams);
-        SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(self));
-    } else {
-        self = reinterpret_cast<DuplicationWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+        SetWindowLongPtr(windowHandle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(self));
     }
-    if (!self) {
-        return DefWindowProc(hwnd, msg, wParam, lParam);
+    else 
+    {
+        self = reinterpret_cast<DuplicationWindow*>(GetWindowLongPtr(windowHandle, GWLP_USERDATA));  // NOLINT(performance-no-int-to-ptr)
     }
-    switch (msg) {
+
+    if (!self) 
+    {
+        return DefWindowProc(windowHandle, msg, wParam, lParam);
+    }
+
+    switch (msg)
+    {
         case WM_SIZE:
-            if (self->swapChain_) {
+            if (self->swapChain_) 
+            {
                 self->windowWidth_ = LOWORD(lParam);
                 self->windowHeight_ = HIWORD(lParam);
                 self->d3dContext_->OMSetRenderTargets(0, nullptr, nullptr);
-                if (self->renderTargetView_) {
+                if (self->renderTargetView_) 
+                {
                     self->renderTargetView_->Release();
                     self->renderTargetView_ = nullptr;
                 }
-                HRESULT hr = self->swapChain_->ResizeBuffers(0, self->windowWidth_, self->windowHeight_, DXGI_FORMAT_UNKNOWN, 0);
-                if (SUCCEEDED(hr)) {
+
+                HRESULT hr = self->swapChain_->ResizeBuffers(
+                    0, self->windowWidth_, self->windowHeight_, DXGI_FORMAT_UNKNOWN, 0);
+
+                if (SUCCEEDED(hr)) 
+                {
                     ID3D11Texture2D* backBuffer = nullptr;
-                    hr = self->swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
-                    if (SUCCEEDED(hr)) {
+                    hr = self->swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));  // NOLINT(clang-diagnostic-language-extension-token)
+                    if (SUCCEEDED(hr)) 
+                    {
+                        // ReSharper disable once CppFunctionResultShouldBeUsed
                         self->d3dDevice_->CreateRenderTargetView(backBuffer, nullptr, &self->renderTargetView_);
                         backBuffer->Release();
                     }
                 }
-                InvalidateRect(hwnd, nullptr, FALSE);
+
+                InvalidateRect(windowHandle, nullptr, FALSE);
             }
             break;
+
         case WM_PAINT:
             {
                 PAINTSTRUCT ps;
-                BeginPaint(hwnd, &ps);
-                if (self) {
+                BeginPaint(windowHandle, &ps);
+                if (self) 
+                {
                     self->UpdateFrame();
                 }
-                EndPaint(hwnd, &ps);
+                EndPaint(windowHandle, &ps);
                 return 0;
             }
+
         case WM_ERASEBKGND:
             return 1;
+
         case WM_DISPLAYCHANGE:
-            if (self) {
+            if (self) 
+            {
                 self->CleanupDuplication();
                 self->InitializeDuplication();
-                InvalidateRect(hwnd, nullptr, FALSE);
+                InvalidateRect(windowHandle, nullptr, FALSE);
             }
             break;
+
+        default:
+            break;
     }
-    return DefWindowProc(hwnd, msg, wParam, lParam);
+    return DefWindowProc(windowHandle, msg, wParam, lParam);
 }

@@ -122,7 +122,7 @@ int APIENTRY WinMain(
 		KillTimer(nullptr, timerId);
 
 		// find OnlyM window and reposition cursor over it...
-		hostWindow.RepositionCursor();
+        HostWindow::RepositionCursor();
 
 		rv = static_cast<int>(msg.wParam);
 

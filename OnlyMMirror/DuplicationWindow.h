@@ -20,14 +20,16 @@ public:
     bool UpdateFrame();
 
 private:
+    // ReSharper disable once CppInconsistentNaming
     bool InitializeDX();
+    // ReSharper disable once CppInconsistentNaming
     void CleanupDX();
     bool InitializeDuplication();
     void CleanupDuplication();
     bool CaptureFrame();
-    bool RenderFrame();
+    bool RenderFrame() const;
     bool FindTargetOutput();
-    static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    static LRESULT CALLBACK WindowProc(HWND windowHandle, UINT msg, WPARAM wParam, LPARAM lParam);
     static const TCHAR* GetWindowClassName();
 
     // Window handles

@@ -7,7 +7,11 @@
 #include "Resource.h"
 
 InstructionsWindow::InstructionsWindow()
-    : windowHandle_(nullptr), fontHandle_(nullptr), brushHandle_(nullptr), height_(0)
+    : windowHandle_(nullptr)
+    , fontHandle_(nullptr)
+    , boldFontHandle_(nullptr)
+    , brushHandle_(nullptr)
+    , height_(0)
 {
 }
 
