@@ -184,6 +184,7 @@ bool DuplicationWindow::UpdateFrame()
 }
 
 // ReSharper disable once CppInconsistentNaming
+// ReSharper disable once CppInconsistentNaming
 bool DuplicationWindow::InitializeDX()
 {
     // Create D3D11 device and context
@@ -201,7 +202,7 @@ bool DuplicationWindow::InitializeDX()
         &featureLevel,
         &d3dContext_);
 
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         return false;
     }
@@ -222,7 +223,7 @@ bool DuplicationWindow::InitializeDX()
 
     IDXGIDevice* dxgiDevice = nullptr;
     hr = d3dDevice_->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&dxgiDevice));  // NOLINT(clang-diagnostic-language-extension-token)
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         return false;
     }
@@ -230,7 +231,7 @@ bool DuplicationWindow::InitializeDX()
     IDXGIAdapter* dxgiAdapter = nullptr;
     hr = dxgiDevice->GetAdapter(&dxgiAdapter);
     dxgiDevice->Release();
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         return false;
     }
@@ -238,14 +239,14 @@ bool DuplicationWindow::InitializeDX()
     IDXGIFactory* dxgiFactory = nullptr;
     hr = dxgiAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&dxgiFactory));  // NOLINT(clang-diagnostic-language-extension-token)
     dxgiAdapter->Release();
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         return false;
     }
 
     hr = dxgiFactory->CreateSwapChain(d3dDevice_, &swapChainDesc, &swapChain_);
     dxgiFactory->Release();
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         return false;
     }
@@ -253,14 +254,14 @@ bool DuplicationWindow::InitializeDX()
     // Create render target view
     ID3D11Texture2D* backBuffer = nullptr;
     hr = swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));  // NOLINT(clang-diagnostic-language-extension-token)
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         return false;
     }
 
     hr = d3dDevice_->CreateRenderTargetView(backBuffer, nullptr, &renderTargetView_);
     backBuffer->Release();
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         return false;
     }
@@ -269,12 +270,12 @@ bool DuplicationWindow::InitializeDX()
     ID3DBlob* vsBlob = nullptr;
     ID3DBlob* errorBlob = nullptr;
     hr = D3DCompile(
-        vertexShaderSource, 
-        strlen(vertexShaderSource), 
+        vertexShaderSource,
+        strlen(vertexShaderSource),
         nullptr, nullptr, nullptr,
         "main", "vs_4_0", 0, 0, &vsBlob, &errorBlob);
 
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         if (errorBlob)
         {
@@ -287,14 +288,14 @@ bool DuplicationWindow::InitializeDX()
     hr = d3dDevice_->CreateVertexShader(
         vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &vertexShader_);
 
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         vsBlob->Release();
         return false;
     }
 
     // Create input layout
-    D3D11_INPUT_ELEMENT_DESC layout[] = 
+    D3D11_INPUT_ELEMENT_DESC layout[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 }
@@ -305,7 +306,7 @@ bool DuplicationWindow::InitializeDX()
 
     vsBlob->Release();
 
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         return false;
     }
@@ -313,11 +314,11 @@ bool DuplicationWindow::InitializeDX()
     // Compile pixel shader
     ID3DBlob* psBlob = nullptr;
     hr = D3DCompile(
-        pixelShaderSource, strlen(pixelShaderSource), 
+        pixelShaderSource, strlen(pixelShaderSource),
         nullptr, nullptr, nullptr,
         "main", "ps_4_0", 0, 0, &psBlob, &errorBlob);
 
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         if (errorBlob)
         {
@@ -332,13 +333,13 @@ bool DuplicationWindow::InitializeDX()
 
     psBlob->Release();
 
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         return false;
     }
 
     // Create vertex buffer
-    constexpr Vertex vertices[] = 
+    constexpr Vertex vertices[] =
     {
         { -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f },  // Bottom left
         { -1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f },  // Top left
@@ -356,7 +357,7 @@ bool DuplicationWindow::InitializeDX()
     initData.pSysMem = vertices;
 
     hr = d3dDevice_->CreateBuffer(&bufferDesc, &initData, &vertexBuffer_);
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         return false;
     }
@@ -374,7 +375,23 @@ bool DuplicationWindow::InitializeDX()
     samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
     hr = d3dDevice_->CreateSamplerState(&samplerDesc, &samplerState_);
-    if (FAILED(hr)) 
+    if (FAILED(hr))
+    {
+        return false;
+    }
+
+    // Create blend state for cursor
+    D3D11_BLEND_DESC blendDesc = {};
+    blendDesc.RenderTarget[0].BlendEnable = TRUE;
+    blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+    hr = d3dDevice_->CreateBlendState(&blendDesc, &blendState_);
+    if (FAILED(hr))
     {
         return false;
     }
@@ -385,6 +402,9 @@ bool DuplicationWindow::InitializeDX()
 // ReSharper disable once CppInconsistentNaming
 void DuplicationWindow::CleanupDX()
 {
+    if (blendState_) { blendState_->Release(); blendState_ = nullptr; }
+    if (cursorSRV_) { cursorSRV_->Release(); cursorSRV_ = nullptr; }
+    if (cursorTexture_) { cursorTexture_->Release(); cursorTexture_ = nullptr; }
     if (samplerState_) { samplerState_->Release(); samplerState_ = nullptr; }
     if (vertexBuffer_) { vertexBuffer_->Release(); vertexBuffer_ = nullptr; }
     if (inputLayout_) { inputLayout_->Release(); inputLayout_ = nullptr; }
@@ -503,52 +523,109 @@ void DuplicationWindow::CleanupDuplication()
 
 bool DuplicationWindow::CaptureFrame()
 {
-    if (!duplication_) 
+    if (!duplication_)
     {
         return false;
     }
 
     DXGI_OUTDUPL_FRAME_INFO frameInfo;
     IDXGIResource* desktopResource = nullptr;
-    
+
     HRESULT hr = duplication_->AcquireNextFrame(0, &frameInfo, &desktopResource);
-    if (hr == DXGI_ERROR_WAIT_TIMEOUT) 
+    if (hr == DXGI_ERROR_WAIT_TIMEOUT)
     {
         // No new frame available - continue with existing captured texture if available
         return capturedTexture_ != nullptr;
     }
 
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         // Handle DXGI_ERROR_INVALID_CALL and other errors by recreating duplication
-        if (hr == DXGI_ERROR_INVALID_CALL || hr == DXGI_ERROR_ACCESS_LOST) 
+        if (hr == DXGI_ERROR_INVALID_CALL || hr == DXGI_ERROR_ACCESS_LOST)
         {
             CleanupDuplication();
-            if (InitializeDuplication()) 
+            if (InitializeDuplication())
             {
                 // Try again after reinitializing
                 hr = duplication_->AcquireNextFrame(0, &frameInfo, &desktopResource);
-                if (FAILED(hr)) 
+                if (FAILED(hr))
                 {
                     return capturedTexture_ != nullptr;
                 }
             }
-            else 
+            else
             {
                 return false;
             }
         }
-        else 
+        else
         {
             return false;
         }
     }
 
+    // Handle cursor updates
+    cursorVisible_ = frameInfo.PointerPosition.Visible;
+    if (cursorVisible_)
+    {
+        cursorPosition_ = frameInfo.PointerPosition.Position;
+    }
+
+    if (frameInfo.PointerShapeBufferSize > 0)
+    {
+        if (frameInfo.PointerShapeBufferSize > cursorShapeBuffer_.size())
+        {
+            cursorShapeBuffer_.resize(frameInfo.PointerShapeBufferSize);
+        }
+
+        UINT requiredSize;
+        hr = duplication_->GetFramePointerShape(
+            static_cast<UINT>(cursorShapeBuffer_.size()),
+            cursorShapeBuffer_.data(),
+            &requiredSize,
+            &cursorShapeInfo_);
+
+        if (SUCCEEDED(hr))
+        {
+            if (cursorTexture_)
+            {
+                cursorTexture_->Release();
+                cursorTexture_ = nullptr;
+            }
+            if (cursorSRV_)
+            {
+                cursorSRV_->Release();
+                cursorSRV_ = nullptr;
+            }
+
+            D3D11_TEXTURE2D_DESC desc = {};
+            desc.Width = cursorShapeInfo_.Width;
+            desc.Height = cursorShapeInfo_.Height;
+            desc.MipLevels = 1;
+            desc.ArraySize = 1;
+            desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+            desc.SampleDesc.Count = 1;
+            desc.Usage = D3D11_USAGE_DEFAULT;
+            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+            D3D11_SUBRESOURCE_DATA subresourceData = {};
+            subresourceData.pSysMem = cursorShapeBuffer_.data();
+            subresourceData.SysMemPitch = cursorShapeInfo_.Pitch;
+
+            hr = d3dDevice_->CreateTexture2D(&desc, &subresourceData, &cursorTexture_);
+            if (SUCCEEDED(hr))
+            {
+                hr = d3dDevice_->CreateShaderResourceView(cursorTexture_, nullptr, &cursorSRV_);
+            }
+        }
+    }
+
+
     // Get the desktop texture
     ID3D11Texture2D* desktopTexture = nullptr;
     hr = desktopResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&desktopTexture));  // NOLINT(clang-diagnostic-language-extension-token)
     desktopResource->Release();
-    if (FAILED(hr)) 
+    if (FAILED(hr))
     {
         // ReSharper disable once CppFunctionResultShouldBeUsed
         duplication_->ReleaseFrame();
@@ -558,31 +635,31 @@ bool DuplicationWindow::CaptureFrame()
     // Get texture description to check if we need to recreate our resources
     D3D11_TEXTURE2D_DESC newDesc;
     desktopTexture->GetDesc(&newDesc);
-    
+
     bool needRecreate = false;
-    if (capturedTexture_) 
+    if (capturedTexture_)
     {
         D3D11_TEXTURE2D_DESC existingDesc;
         capturedTexture_->GetDesc(&existingDesc);
-        needRecreate = (existingDesc.Width != newDesc.Width || 
-                       existingDesc.Height != newDesc.Height ||
-                       existingDesc.Format != newDesc.Format);
+        needRecreate = (existingDesc.Width != newDesc.Width ||
+            existingDesc.Height != newDesc.Height ||
+            existingDesc.Format != newDesc.Format);
     }
-    else 
+    else
     {
         needRecreate = true;
     }
 
     // Recreate texture and SRV only if necessary
-    if (needRecreate) 
+    if (needRecreate)
     {
-        if (capturedTexture_) 
+        if (capturedTexture_)
         {
             capturedTexture_->Release();
             capturedTexture_ = nullptr;
         }
 
-        if (capturedSRV_) 
+        if (capturedSRV_)
         {
             capturedSRV_->Release();
             capturedSRV_ = nullptr;
@@ -595,20 +672,20 @@ bool DuplicationWindow::CaptureFrame()
         desc.MiscFlags = 0;
 
         hr = d3dDevice_->CreateTexture2D(&desc, nullptr, &capturedTexture_);
-        if (SUCCEEDED(hr)) 
+        if (SUCCEEDED(hr))
         {
             // Create shader resource view
             D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
             srvDesc.Format = desc.Format;
             srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
             srvDesc.Texture2D.MipLevels = 1;
-            
+
             hr = d3dDevice_->CreateShaderResourceView(capturedTexture_, &srvDesc, &capturedSRV_);
         }
     }
 
     // Copy the desktop content to our texture
-    if (SUCCEEDED(hr) && capturedTexture_) 
+    if (SUCCEEDED(hr) && capturedTexture_)
     {
         d3dContext_->CopySubresourceRegion(capturedTexture_, 0, 0, 0, 0, desktopTexture, 0, nullptr);
     }
@@ -623,7 +700,7 @@ bool DuplicationWindow::CaptureFrame()
 
 bool DuplicationWindow::RenderFrame() const
 {
-    if (!capturedSRV_ || !capturedTexture_) 
+    if (!capturedSRV_ || !capturedTexture_)
     {
         return false;
     }
@@ -648,7 +725,7 @@ bool DuplicationWindow::RenderFrame() const
     D3D11_TEXTURE2D_DESC textureDesc;
     capturedTexture_->GetDesc(&textureDesc);
 
-    constexpr Vertex vertices[] = 
+    constexpr Vertex vertices[] =
     {
         { -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f },   // Bottom left
         { -1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f },   // Top left
@@ -658,7 +735,7 @@ bool DuplicationWindow::RenderFrame() const
 
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     HRESULT hr = d3dContext_->Map(vertexBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    if (SUCCEEDED(hr)) 
+    if (SUCCEEDED(hr))
     {
         memcpy(mappedResource.pData, vertices, sizeof(vertices));
         d3dContext_->Unmap(vertexBuffer_, 0);
@@ -675,9 +752,44 @@ bool DuplicationWindow::RenderFrame() const
     d3dContext_->PSSetSamplers(0, 1, &samplerState_);
     d3dContext_->Draw(4, 0);
 
+    // Draw the cursor
+    if (cursorVisible_ && cursorSRV_)
+    {
+        // Set up blend state for transparency
+        d3dContext_->OMSetBlendState(blendState_, nullptr, 0xffffffff);
+
+        // Calculate cursor position in normalized device coordinates
+        const float cursorX = (static_cast<float>(cursorPosition_.x) / textureDesc.Width) * 2.0f - 1.0f;
+        const float cursorY = 1.0f - (static_cast<float>(cursorPosition_.y) / textureDesc.Height) * 2.0f;
+        const float cursorWidth = (static_cast<float>(cursorShapeInfo_.Width) / textureDesc.Width) * 2.0f;
+        const float cursorHeight = (static_cast<float>(cursorShapeInfo_.Height) / textureDesc.Height) * 2.0f;
+
+        const Vertex cursorVertices[] =
+        {
+            { cursorX,               cursorY - cursorHeight, 0.0f, 1.0f, 0.0f, 1.0f }, // Bottom-left
+            { cursorX,               cursorY,                0.0f, 1.0f, 0.0f, 0.0f }, // Top-left
+            { cursorX + cursorWidth, cursorY - cursorHeight, 0.0f, 1.0f, 1.0f, 1.0f }, // Bottom-right
+            { cursorX + cursorWidth, cursorY,                0.0f, 1.0f, 1.0f, 0.0f }  // Top-right
+        };
+
+        hr = d3dContext_->Map(vertexBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+        if (SUCCEEDED(hr))
+        {
+            memcpy(mappedResource.pData, cursorVertices, sizeof(cursorVertices));
+            d3dContext_->Unmap(vertexBuffer_, 0);
+        }
+
+        d3dContext_->PSSetShaderResources(0, 1, &cursorSRV_);
+        d3dContext_->Draw(4, 0);
+
+        // Reset blend state
+        d3dContext_->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+    }
+
+
     // Present the DirectX content
     hr = swapChain_->Present(0, 0);
-    if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET) 
+    if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
     {
         // Device lost - we should reinitialize DirectX resources
         return false;

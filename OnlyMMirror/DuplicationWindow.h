@@ -4,6 +4,7 @@
 #include <dxgi1_2.h>
 #include <memory>
 #include <string>
+#include <vector>
 
 class DuplicationWindow  // NOLINT(cppcoreguidelines-special-member-functions)
 {
@@ -64,4 +65,13 @@ private:
     
     // Monitor selection
     std::string targetMonitorName_;
+
+    // Cursor-related resources
+    ID3D11Texture2D* cursorTexture_;
+    ID3D11ShaderResourceView* cursorSRV_;
+    ID3D11BlendState* blendState_;
+    std::vector<BYTE> cursorShapeBuffer_;
+    DXGI_OUTDUPL_POINTER_SHAPE_INFO cursorShapeInfo_;
+    POINT cursorPosition_;
+    bool cursorVisible_;
 };
