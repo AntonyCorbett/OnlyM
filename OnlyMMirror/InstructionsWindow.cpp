@@ -66,13 +66,31 @@ bool InstructionsWindow::Create(
             DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Segoe UI"));        
     }
 
+    if (!boldFontHandle_) 
+    {
+        constexpr int fontPointSize = 12;
+        const HDC hdcScreen = GetDC(nullptr);
+        const int fontHeight = -MulDiv(fontPointSize, GetDeviceCaps(hdcScreen, LOGPIXELSY), 72);
+        ReleaseDC(nullptr, hdcScreen);
+        boldFontHandle_ = CreateFont(
+            fontHeight, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
+            ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+            DEFAULT_QUALITY, DEFAULT_PITCH, TEXT("Segoe UI"));
+    }
+
     SendMessage(windowHandle_, WM_SETFONT, reinterpret_cast<WPARAM>(fontHandle_), TRUE);
 
-    TCHAR altZ[64];
+    TCHAR altZ[128];
     _stprintf_s(altZ, TEXT("Press ALT+%c to close Mirror Window"), hotKey);
 
+    TCHAR magnifierText[128];
+    _stprintf_s(magnifierText, TEXT("Magnifier: F1 - on/off, F2 - square/circle, F3 - reduce, F4 - enlarge"));
+
+    TCHAR pageZoomText[128];
+    _stprintf_s(pageZoomText, TEXT("Page: Ctrl+Plus - zoom in, Ctrl+Minus - zoom out, Ctrl+0 - reset zoom"));
+
     TCHAR multiLineText[256];
-    _stprintf_s(multiLineText, TEXT("%s\r\nHello\r\nWorld"), altZ);
+    _stprintf_s(multiLineText, TEXT("%s\r\n%s\r\n%s"), altZ, magnifierText, pageZoomText);
         
     SetWindowText(windowHandle_, multiLineText);
 
@@ -110,11 +128,33 @@ LRESULT CALLBACK InstructionsWindow::StaticWndProc(
 
         SetBkColor(hdc, RGB(255, 255, 192));
         SetTextColor(hdc, RGB(0, 0, 0));
-        const HFONT oldFont = static_cast<HFONT>(SelectObject(hdc, self->fontHandle_));
+
         TCHAR buffer[256];
         GetWindowText(windowHandle, buffer, _countof(buffer));
-        DrawText(hdc, buffer, -1, &rc, DT_LEFT | DT_TOP | DT_NOPREFIX | DT_WORDBREAK);  // NOLINT(misc-redundant-expression)
-        SelectObject(hdc, oldFont);
+
+        // Split into lines
+        TCHAR* context = nullptr;
+        const TCHAR* line = _tcstok_s(buffer, TEXT("\r\n"), &context);
+        RECT lineRect = rc;        
+        bool firstLine = true;
+
+        while (line)
+        {
+            const HFONT font = firstLine ? self->boldFontHandle_ : self->fontHandle_;
+            const HFONT oldFont = static_cast<HFONT>(SelectObject(hdc, font));
+
+            SIZE sz;
+            GetTextExtentPoint32(hdc, line, static_cast<int>(_tcslen(line)), &sz);
+            const int lineHeight = sz.cy;
+
+            DrawText(hdc, line, -1, &lineRect, DT_LEFT | DT_TOP | DT_NOPREFIX | DT_SINGLELINE);  // NOLINT(misc-redundant-expression)
+
+            SelectObject(hdc, oldFont);
+
+            lineRect.top += lineHeight;
+            firstLine = false;
+            line = _tcstok_s(nullptr, TEXT("\r\n"), &context);
+        }
 
         EndPaint(windowHandle, &ps);
         return 0;
@@ -138,6 +178,12 @@ void InstructionsWindow::Destroy()
     {
         DeleteObject(fontHandle_);
         fontHandle_ = nullptr;
+    }
+
+    if (boldFontHandle_)
+    {
+        DeleteObject(boldFontHandle_);
+        boldFontHandle_ = nullptr;
     }
 
     if (brushHandle_)

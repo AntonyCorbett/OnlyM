@@ -22,6 +22,7 @@ private:
     WNDPROC originalProc_ = nullptr;
     HWND windowHandle_;
     HFONT fontHandle_;
+    HFONT boldFontHandle_;
     HBRUSH brushHandle_;
     int height_;
 };
