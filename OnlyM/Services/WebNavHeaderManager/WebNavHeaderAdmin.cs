@@ -9,7 +9,7 @@ namespace OnlyM.Services.WebNavHeaderManager;
 
 internal sealed class WebNavHeaderAdmin
 {
-    private const int WebHeaderHeight = 76;
+    private const int WebHeaderHeight = 90;
     private const int WebHeaderActionPixels = 15;
     private readonly Grid _webNavHeader;
     private WebNavHeaderStatus _webHeaderStatus;

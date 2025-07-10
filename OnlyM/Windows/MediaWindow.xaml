@@ -172,7 +172,7 @@
             </Grid.InputBindings>
 
             <!--  Actual web browser  -->
-            <Grid Grid.Row="0" Background="White">
+            <Grid Background="White">
                 <wpf:ChromiumWebBrowser
                     x:Name="Browser"
                     WebBrowser="{Binding WebBrowser, Mode=OneWayToSource}"
@@ -192,10 +192,8 @@
             <!--  Row 0 = Web header panel with navigation and command buttons  -->
             <Grid
                 Name="WebNavHeader"
-                Grid.Row="0"
-                Height="0"
                 VerticalAlignment="Top"
-                Background="Black">
+                Background="{StaticResource MaterialDesignDarkBackground}">
                 <Grid.Effect>
                     <DropShadowEffect
                         BlurRadius="10"
@@ -345,7 +343,8 @@
                     <Grid
                         Margin="20,0,0,0"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
+                        VerticalAlignment="Center"
+                        Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="20" />
                             <RowDefinition Height="*" />
