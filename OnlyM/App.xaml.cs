@@ -1,8 +1,4 @@
-﻿#if !DEBUG
-#define USE_APP_CENTER
-#endif
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -31,6 +27,7 @@ using OnlyM.Services.PdfOptions;
 using OnlyM.Services.StartOffsetStorage;
 using OnlyM.Services.WebBrowser;
 using OnlyM.ViewModel;
+using Sentry;
 using Serilog;
 
 namespace OnlyM;
@@ -49,6 +46,9 @@ public partial class App
     {
         try
         {
+            InitSentry(); // Sentry docs require it to be in the ctor rather than in OnStartup
+            Current.DispatcherUnhandledException += CurrentDispatcherUnhandledException;
+
             Unosquare.FFME.Library.FFmpegDirectory = FMpegFolderName;
 
             // preload the CefSharp assemblies otherwise 1st instantiation is too long.
@@ -67,14 +67,13 @@ public partial class App
 
     protected override void OnExit(ExitEventArgs e)
     {
+        SentrySdk.Close();
         _appMutex?.Dispose();
         Log.Logger.Information("==== Exit ====");
     }
 
     protected override void OnStartup(StartupEventArgs e)
     {
-        ConfigureAppCenter();
-
         if (AnotherInstanceRunning())
         {
             Shutdown();
@@ -83,8 +82,6 @@ public partial class App
         {
             ConfigureLogger();
             ConfigureServices();
-
-            Current.DispatcherUnhandledException += CurrentDispatcherUnhandledException;
         }
 
         if (!_successCefSharp)
@@ -94,6 +91,8 @@ public partial class App
 
         Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
     }
+
+    private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e) => throw new NotImplementedException();
 
     private static void ConfigureServices()
     {
@@ -193,7 +192,7 @@ public partial class App
     private void CurrentDispatcherUnhandledException(object? sender, DispatcherUnhandledExceptionEventArgs e)
     {
         // unhandled exceptions thrown from UI thread
-
+        
         EventTracker.Error(e.Exception, "Unhandled exception");
 
         e.Handled = true;
@@ -208,7 +207,21 @@ public partial class App
         eventLog.WriteEntry(msg, EventLogEntryType.Error);
     }
 
-    [Conditional("USE_APP_CENTER")]
-    private static void ConfigureAppCenter() =>
-        AppCenterInit.Execute();
+    private static void InitSentry()
+    {
+        // https://soundbox.sentry.io/
+        // https://docs.sentry.io/platforms/dotnet/guides/wpf/
+        SentrySdk.Init(o =>
+        {
+            // Tells which project in Sentry to send events to:
+            o.Dsn = "https://6d45f5f70505b84644af759aa19921cc@o4509644339281920.ingest.de.sentry.io/4509644341117008";
+
+#if DEBUG
+            o.Debug = true;
+#endif
+            o.IsGlobalModeEnabled = true;
+
+            // o.TracesSampleRate = 1.0; // Adjust for performance monitoring
+        });
+    }
 }

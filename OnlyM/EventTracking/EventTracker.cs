@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
 using OnlyM.Core.Models;
+using Sentry;
 
 namespace OnlyM.EventTracking;
 
 internal static class EventTracker
 {
-    public static void Track(EventName eventName, Dictionary<string, string>? properties = null) =>
-        Analytics.TrackEvent(eventName.ToString(), properties);
+    public static void Track(EventName eventName, Dictionary<string, string>? properties = null)
+    {
+        SentrySdk.CaptureMessage(eventName.ToString(), SentryLevel.Info);
+            
+        SentrySdk.AddBreadcrumb(
+            message: eventName.ToString(),
+            category: "event",
+            data: properties);
+    }
 
     public static void TrackStartMedia(SupportedMediaType? mediaType)
     {
@@ -25,12 +31,14 @@ internal static class EventTracker
     {
         if (string.IsNullOrEmpty(context))
         {
-            Crashes.TrackError(ex);
+            SentrySdk.CaptureException(ex);
         }
         else
         {
-            var properties = new Dictionary<string, string> { { "context", context } };
-            Crashes.TrackError(ex, properties);
+            SentrySdk.CaptureException(ex, scope =>
+            {
+                scope.SetTag("context", context);
+            });
         }
     }
 }
