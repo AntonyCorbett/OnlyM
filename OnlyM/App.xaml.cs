@@ -58,6 +58,7 @@ public partial class App
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "App constructor");
             AddEventLogEntry(ex.Message);
             Current.Shutdown();
         }
@@ -221,7 +222,7 @@ public partial class App
 #endif
             o.IsGlobalModeEnabled = true;
 
-            // o.TracesSampleRate = 1.0; // Adjust for performance monitoring
+            // o.TracesSampleRate = 1.0; // Adjust for performance monitoring. 1.0 means 100% of messages are sent.
         });
     }
 }

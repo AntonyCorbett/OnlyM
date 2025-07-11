@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Subtitles;
+using OnlyM.EventTracking;
 using OnlyM.MediaElementAdaption;
 using OnlyM.Models;
 using OnlyM.PubSubMessages;
@@ -152,6 +153,7 @@ internal sealed class VideoDisplayManager : IDisposable
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Opening media");
             Log.Logger.Error(ex, "Error opening media");
         }
     }
@@ -179,6 +181,7 @@ internal sealed class VideoDisplayManager : IDisposable
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Handling media ended");
             Log.Logger.Error(ex, "Error handling media ended");
         }
     }

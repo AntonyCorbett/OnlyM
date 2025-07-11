@@ -178,8 +178,6 @@ internal sealed class PageService : IDisposable, IPageService
 
             CheckMediaWindow();
 
-            EventTracker.TrackStartMedia(mediaItemToStart.MediaType);
-
             await _mediaWindow!.StartMedia(
                 mediaItemToStart,
                 currentMediaItems,
@@ -187,6 +185,7 @@ internal sealed class PageService : IDisposable, IPageService
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Starting media");
             Log.Error(ex, "Could not start media: {Path}", mediaItemToStart.FilePath);
         }
     }
@@ -223,6 +222,7 @@ internal sealed class PageService : IDisposable, IPageService
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Stopping playback");
             Log.Logger.Error(ex, "Could not stop playback!");
         }
     }
@@ -451,6 +451,7 @@ internal sealed class PageService : IDisposable, IPageService
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Changing monitor");
             Log.Logger.Error(ex, "Could not change monitor");
         }
     }
@@ -574,6 +575,7 @@ internal sealed class PageService : IDisposable, IPageService
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Opening media window");
             Log.Logger.Error(ex, "Could not open media window");
         }
     }

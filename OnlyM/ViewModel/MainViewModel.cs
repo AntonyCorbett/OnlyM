@@ -17,6 +17,7 @@ using OnlyM.Core.Services.Monitors;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Utils;
 using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.EventTracking;
 using OnlyM.Models;
 using OnlyM.PubSubMessages;
 using OnlyM.Services.DragAndDrop;
@@ -258,13 +259,15 @@ internal sealed class MainViewModel : ObservableObject
 
             return true;
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException ex)
         {
+            EventTracker.Error(ex, "Checking access rights to database folder");
             Log.Logger.Warning("OnlyM cannot write to its database folder. Perhaps controlled folder access is enabled");
             _snackbarService.EnqueueWithOk(Properties.Resources.ALLOW_DB_ACCESS, Properties.Resources.OK);
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Checking access rights to database folder");
             Log.Logger.Error(ex, "Checking controlled folder access");
         }
 

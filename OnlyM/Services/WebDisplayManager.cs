@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
 using CefSharp;
@@ -16,9 +17,11 @@ using OnlyM.Core.Services.Monitors;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Services.WebShortcuts;
 using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.EventTracking;
 using OnlyM.Models;
 using OnlyM.Services.WebBrowser;
 using Serilog;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OnlyM.Services;
 
@@ -210,11 +213,13 @@ internal sealed class WebDisplayManager : IDisposable
 
             if (!_mirrorProcess.Start())
             {
+                EventTracker.Error("Could not launch mirror executable");
                 Log.Logger.Error("Could not launch mirror");
             }
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Launching mirror");
             Log.Logger.Error(ex, "Could not launch mirror");
         }
         finally
@@ -246,6 +251,7 @@ internal sealed class WebDisplayManager : IDisposable
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Closing mirror");
             Log.Logger.Error(ex, "Could not close mirror");
         }
     }
@@ -267,6 +273,7 @@ internal sealed class WebDisplayManager : IDisposable
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Getting browser data from database");
             Log.Logger.Error(ex, "Could not get browser data from database");
         }
     }
@@ -291,6 +298,7 @@ internal sealed class WebDisplayManager : IDisposable
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Updating browser data in database");
             Log.Logger.Error(ex, "Could not update browser data in database");
         }
     }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using OnlyM.CoreSys;
+using OnlyM.EventTracking;
 using Serilog;
 
 namespace OnlyM.Services.ImagesCache;
@@ -56,6 +57,7 @@ internal sealed class ImageCache
             }
             catch (Exception ex)
             {
+                EventTracker.Error(ex, "Caching image");
                 Log.Logger.Error(ex, "Could not cache image {Path}", fullPath);
             }
         }

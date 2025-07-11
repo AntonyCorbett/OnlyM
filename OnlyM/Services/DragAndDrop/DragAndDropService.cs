@@ -9,6 +9,7 @@ using OnlyM.Core.Services.Options;
 using OnlyM.Core.Services.WebShortcuts;
 using OnlyM.Core.Utils;
 using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.EventTracking;
 using OnlyM.Models;
 using OnlyM.Slides;
 using Serilog;
@@ -148,6 +149,7 @@ internal sealed class DragAndDropService : IDragAndDropService
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Copying media files");
             Log.Logger.Error(ex, "Could not copy media files");
             someError = true;
         }
@@ -179,6 +181,7 @@ internal sealed class DragAndDropService : IDragAndDropService
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Copying URIs");
             Log.Logger.Error(ex, "Could not copy Uris");
             someError = true;
         }

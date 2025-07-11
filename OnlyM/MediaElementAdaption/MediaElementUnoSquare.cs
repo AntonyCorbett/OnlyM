@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using OnlyM.Core.Models;
 using OnlyM.Core.Utils;
+using OnlyM.EventTracking;
 using Serilog.Events;
 using Unosquare.FFME.Common;
 
@@ -105,6 +106,7 @@ internal sealed class MediaElementUnoSquare : IMediaElement
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Opening media");
             Serilog.Log.Logger.Error(ex, "HandleMediaOpen");
         }
     }

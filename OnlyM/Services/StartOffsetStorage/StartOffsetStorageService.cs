@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using OnlyM.Core.Services.Database;
+using OnlyM.EventTracking;
 using Serilog;
 
 namespace OnlyM.Services.StartOffsetStorage;
@@ -24,6 +25,7 @@ internal sealed class StartOffsetStorageService : IStartOffsetStorageService
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Getting start offset data");
             Log.Logger.Error(ex, "Could not get start offset data from database");
         }
 
@@ -67,6 +69,7 @@ internal sealed class StartOffsetStorageService : IStartOffsetStorageService
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Storing start offset data");
             Log.Logger.Error(ex, "Could not get store offset data in database");
         }
     }

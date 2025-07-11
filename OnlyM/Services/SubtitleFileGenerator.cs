@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using OnlyM.CoreSys;
+using OnlyM.EventTracking;
 using OnlyM.Models;
 using Serilog;
 
@@ -54,6 +55,7 @@ internal static class SubtitleFileGenerator
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Creating srt file");
             Log.Logger.Error(ex, "Could not create srt file for media: {Path}", mediaItemFilePath);
             return null;
         }

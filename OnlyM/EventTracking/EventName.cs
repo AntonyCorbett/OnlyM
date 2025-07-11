@@ -4,4 +4,5 @@ internal enum EventName
 {
     Unknown,
     StartMedia,
+    StopMedia,
 }

@@ -17,6 +17,7 @@ using OnlyM.Core.Services.Options;
 using OnlyM.Core.Utils;
 using OnlyM.CoreSys;
 using OnlyM.CoreSys.Services.Snackbar;
+using OnlyM.EventTracking;
 using OnlyM.MediaElementAdaption;
 using OnlyM.Models;
 using OnlyM.PubSubMessages;
@@ -125,9 +126,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public ObservableCollectionEx<MediaItem> MediaItems { get; } = [];
 
-    public RelayCommand<Guid?> MediaControlCommand1 { get; private set; } = null!;
+    public AsyncRelayCommand<Guid?> MediaControlCommand1 { get; private set; } = null!;
 
-    public RelayCommand<Guid?> MediaControlPauseCommand { get; private set; } = null!;
+    public AsyncRelayCommand<Guid?> MediaControlPauseCommand { get; private set; } = null!;
 
     public RelayCommand<Guid?> HideMediaItemCommand { get; private set; } = null!;
 
@@ -474,11 +475,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private void InitCommands()
     {
-        // ReSharper disable once AsyncVoidLambda
-        MediaControlCommand1 = new RelayCommand<Guid?>(async (mediaItemId) => await MediaControl1(mediaItemId));
-
-        // ReSharper disable once AsyncVoidLambda
-        MediaControlPauseCommand = new RelayCommand<Guid?>(async (mediaItemId) => await MediaPauseControl(mediaItemId));
+        MediaControlCommand1 = new AsyncRelayCommand<Guid?>(MediaControl1);
+        
+        MediaControlPauseCommand = new AsyncRelayCommand<Guid?>(MediaPauseControl);
 
         HideMediaItemCommand = new RelayCommand<Guid?>(HideMediaItem);
 
@@ -506,6 +505,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Editing start offset");
             Log.Logger.Error(ex, "Could not enter StartOffset mode");
         }
     }
@@ -718,6 +718,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Pausing media");
             Log.Error(ex, "Pause control");
         }
     }
@@ -769,6 +770,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Media control 1");
             Log.Error(ex, "Media control1");
         }
     }
@@ -1108,6 +1110,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Saving blank screen image");
             Log.Logger.Error(ex, "Could not save blank screen image");
         }
 
@@ -1173,6 +1176,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             }
             catch (Exception ex)
             {
+                EventTracker.Error(ex, "Rotating image");
                 Log.Logger.Error(ex, "Auto rotation of images");
             }
         });

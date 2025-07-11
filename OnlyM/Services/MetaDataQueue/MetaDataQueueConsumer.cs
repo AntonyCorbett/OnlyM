@@ -8,6 +8,7 @@ using OnlyM.Core.Models;
 using OnlyM.Core.Services.Media;
 using OnlyM.Core.Services.Options;
 using OnlyM.CoreSys;
+using OnlyM.EventTracking;
 using OnlyM.Models;
 using OnlyM.Slides;
 using Serilog;
@@ -95,6 +96,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Running MetaDataQueueConsumer");
             Log.Logger.Error(ex, "Running MetaDataQueueConsumer");
         }
     }

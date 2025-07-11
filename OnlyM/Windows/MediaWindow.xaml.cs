@@ -13,6 +13,7 @@ using OnlyM.Core.Services.Monitors;
 using OnlyM.Core.Services.Options;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.CoreSys.WindowsPositioning;
+using OnlyM.EventTracking;
 using OnlyM.MediaElementAdaption;
 using OnlyM.Models;
 using OnlyM.Services;
@@ -119,6 +120,7 @@ public sealed partial class MediaWindow : IDisposable
         bool startFromPaused)
     {
         Log.Logger.Information("Starting media {Path}", mediaItemToStart.FilePath);
+        EventTracker.AddStartMediaBreadcrumb(mediaItemToStart.MediaType);
 
         var vm = (MediaViewModel)DataContext;
         vm.VideoRotation = 0;
@@ -169,6 +171,7 @@ public sealed partial class MediaWindow : IDisposable
         }
 
         Log.Logger.Information("Stopping media {Path}", mediaItem.FilePath);
+        EventTracker.AddStopMediaBreadcrumb(mediaItem.MediaType);
 
         switch (mediaItem.MediaType?.Classification)
         {
@@ -336,6 +339,7 @@ public sealed partial class MediaWindow : IDisposable
         }
         catch (Exception ex)
         {
+            EventTracker.Error(ex, "Setting video playback position");
             Log.Logger.Error(ex, "Error setting video playback position");
         }
     }
