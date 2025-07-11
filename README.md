@@ -6,8 +6,7 @@ A Windows Media player using C# and WPF. Designed for media playback. The emphas
 
 ### System Requirements
 
-* Windows 10
-* .NET 5 x86 or later
+* Windows 10 or greater
 * 4GB RAM
 * 250MB Hard disk space
 
