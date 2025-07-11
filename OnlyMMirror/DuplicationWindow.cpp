@@ -4,6 +4,7 @@
 #include <string>
 #include <wingdi.h>
 #include <iostream>
+#include <vector>
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -47,11 +48,24 @@ float4 main(PS_INPUT input) : SV_TARGET {
 )";
 
     // Vertex structure for rendering
+
+    // ReSharper disable CppDeclaratorNeverUsed
     // ReSharper disable once CppInconsistentNaming
-    struct Vertex {        
-        float x, y, z, w;  // Position
-        float u, v;        // Texture coordinates
+    struct Vertex {
+        // Position
+        
+        float x;
+        float y;
+        float z;
+        float w;
+
+        // Texture coordinates
+
+        float u;
+        float v;        
     };
+
+    // ReSharper enable CppDeclaratorNeverUsed
 }
 
 bool DuplicationWindow::LoadDefaultCursor()
@@ -83,8 +97,8 @@ bool DuplicationWindow::LoadDefaultCursor()
 
     std::vector<BYTE> cursorPixels(width * height * 4);
 
-    HDC hdcScreen = GetDC(nullptr);
-    HDC hdcMem = CreateCompatibleDC(hdcScreen);
+    const HDC hdcScreen = GetDC(nullptr);
+    const HDC hdcMem = CreateCompatibleDC(hdcScreen);
 
     // Create a 32-bpp bitmap and select it into the memory DC
     BITMAPINFO bmi = {};
@@ -96,8 +110,18 @@ bool DuplicationWindow::LoadDefaultCursor()
     bmi.bmiHeader.biCompression = BI_RGB;
 
     void* pPixels = nullptr;
-    HBITMAP hbm32 = CreateDIBSection(hdcScreen, &bmi, DIB_RGB_COLORS, &pPixels, nullptr, 0);
-    HBITMAP hbmOld = static_cast<HBITMAP>(SelectObject(hdcMem, hbm32));
+    const HBITMAP hbm32 = CreateDIBSection(hdcScreen, &bmi, DIB_RGB_COLORS, &pPixels, nullptr, 0);
+    if (hbm32 == nullptr) 
+    {
+        // error! clean up and return false
+        DeleteDC(hdcMem);
+        ReleaseDC(nullptr, hdcScreen);
+        DeleteObject(iconInfo.hbmColor);
+        DeleteObject(iconInfo.hbmMask);
+        return false;
+    }
+
+    const HBITMAP hbmOld = static_cast<HBITMAP>(SelectObject(hdcMem, hbm32));
 
     // Draw the icon into the 32-bpp bitmap. This correctly handles the alpha channel.
     DrawIconEx(hdcMem, 0, 0, cursor, width, height, 0, nullptr, DI_NORMAL);
@@ -491,11 +515,6 @@ bool DuplicationWindow::InitializeDX()
     blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
     blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
     blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    hr = d3dDevice_->CreateBlendState(&blendDesc, &blendState_);
-    if (FAILED(hr))
-    {
-        return false;
-    }
 
     hr = d3dDevice_->CreateBlendState(&blendDesc, &blendState_);
     if (FAILED(hr))
@@ -512,23 +531,29 @@ bool DuplicationWindow::InitializeDX()
     return true;
 }
 
+template<typename T>
+static void SafeRelease(T*& ptr)  // NOLINT(misc-use-anonymous-namespace)
+{
+    if (ptr) { ptr->Release(); ptr = nullptr; }
+}
+
 // ReSharper disable once CppInconsistentNaming
 void DuplicationWindow::CleanupDX()
 {
-    if (blendState_) { blendState_->Release(); blendState_ = nullptr; }
-    if (cursorSRV_) { cursorSRV_->Release(); cursorSRV_ = nullptr; }
-    if (cursorTexture_) { cursorTexture_->Release(); cursorTexture_ = nullptr; }
-    if (samplerState_) { samplerState_->Release(); samplerState_ = nullptr; }
-    if (vertexBuffer_) { vertexBuffer_->Release(); vertexBuffer_ = nullptr; }
-    if (inputLayout_) { inputLayout_->Release(); inputLayout_ = nullptr; }
-    if (pixelShader_) { pixelShader_->Release(); pixelShader_ = nullptr; }
-    if (vertexShader_) { vertexShader_->Release(); vertexShader_ = nullptr; }
-    if (capturedSRV_) { capturedSRV_->Release(); capturedSRV_ = nullptr; }
-    if (capturedTexture_) { capturedTexture_->Release(); capturedTexture_ = nullptr; }
-    if (renderTargetView_) { renderTargetView_->Release(); renderTargetView_ = nullptr; }
-    if (swapChain_) { swapChain_->Release(); swapChain_ = nullptr; }
-    if (d3dContext_) { d3dContext_->Release(); d3dContext_ = nullptr; }
-    if (d3dDevice_) { d3dDevice_->Release(); d3dDevice_ = nullptr; }
+    SafeRelease(blendState_);
+    SafeRelease(cursorSRV_);
+    SafeRelease(cursorTexture_);
+    SafeRelease(samplerState_);
+    SafeRelease(vertexBuffer_);
+    SafeRelease(inputLayout_);
+    SafeRelease(pixelShader_);
+    SafeRelease(vertexShader_);
+    SafeRelease(capturedSRV_);
+    SafeRelease(capturedTexture_);
+    SafeRelease(renderTargetView_);
+    SafeRelease(swapChain_);
+    SafeRelease(d3dContext_);
+    SafeRelease(d3dDevice_);
 }
 
 bool DuplicationWindow::InitializeDuplication()
@@ -730,7 +755,9 @@ bool DuplicationWindow::RenderFrame() const
     // Set up rendering pipeline
     d3dContext_->OMSetRenderTargets(1, &renderTargetView_, nullptr);
 
-    D3D11_VIEWPORT viewport;
+    // ReSharper disable once CppInitializedValueIsAlwaysRewritten
+    D3D11_VIEWPORT viewport{}; // no need to initialise really, but good practice
+
     viewport.TopLeftX = 0;
     viewport.TopLeftY = 0;
     viewport.Width = static_cast<FLOAT>(windowWidth_);

@@ -476,7 +476,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private void InitCommands()
     {
         MediaControlCommand1 = new AsyncRelayCommand<Guid?>(MediaControl1);
-        
+
         MediaControlPauseCommand = new AsyncRelayCommand<Guid?>(MediaPauseControl);
 
         HideMediaItemCommand = new RelayCommand<Guid?>(HideMediaItem);

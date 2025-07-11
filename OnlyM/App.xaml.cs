@@ -93,8 +93,6 @@ public partial class App
         Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
     }
 
-    private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e) => throw new NotImplementedException();
-
     private static void ConfigureServices()
     {
         var serviceCollection = new ServiceCollection();
@@ -193,7 +191,7 @@ public partial class App
     private void CurrentDispatcherUnhandledException(object? sender, DispatcherUnhandledExceptionEventArgs e)
     {
         // unhandled exceptions thrown from UI thread
-        
+
         EventTracker.Error(e.Exception, "Unhandled exception");
 
         e.Handled = true;
