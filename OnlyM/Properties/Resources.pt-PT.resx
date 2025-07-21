@@ -573,46 +573,46 @@
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="WEB_MAGNIFIER" xml:space="preserve">
-    <value>Lupa</value>
+    <value>Magnifier</value>
     <comment>The web display feature that overlays a magnifying panel on the web page</comment>
   </data>
   <data name="WEB_MAGNIFIER_LARGER" xml:space="preserve">
-    <value>Maior (F4)</value>
+    <value>Larger (F4)</value>
   </data>
   <data name="WEB_MAGNIFIER_OFF" xml:space="preserve">
-    <value>DESLIGADO</value>
+    <value>OFF</value>
   </data>
   <data name="WEB_MAGNIFIER_ON" xml:space="preserve">
-    <value>LIGADO</value>
+    <value>ON</value>
   </data>
   <data name="WEB_MAGNIFIER_ON_OFF_TOGGLE" xml:space="preserve">
-    <value>Ligar/Desligar (F1)</value>
+    <value>On/Off (F1)</value>
   </data>
   <data name="WEB_MAGNIFIER_SHAPE_SWITCH" xml:space="preserve">
-    <value>Formato (F2)</value>
+    <value>Shape (F2)</value>
   </data>
   <data name="WEB_MAGNIFIER_SMALLER" xml:space="preserve">
-    <value>Menor (F3)</value>
+    <value>Smaller (F3)</value>
   </data>
   <data name="WEB_NAV_BACK" xml:space="preserve">
-    <value>Voltar (Alt-Esquerdo)</value>
+    <value>Back (Alt-Left)</value>
   </data>
   <data name="WEB_NAV_FORWARD" xml:space="preserve">
-    <value>Avançar (Alt-Direito)</value>
+    <value>Forward (Alt-Right)</value>
   </data>
   <data name="WEB_PAGE_LARGER" xml:space="preserve">
-    <value>Maior (Ctrl+(+))</value>
+    <value>Larger (Ctrl+Plus)</value>
   </data>
   <data name="WEB_PAGE_RELOAD" xml:space="preserve">
-    <value>Recarregar Página (Ctrl+F5)</value>
+    <value>Reload Page (Ctrl+F5)</value>
   </data>
   <data name="WEB_PAGE_RESET" xml:space="preserve">
-    <value>Redefinir Tamanho (Ctrl+0)</value>
+    <value>Reset Size (Ctrl+0)</value>
   </data>
   <data name="WEB_PAGE_SIZE" xml:space="preserve">
-    <value>Tamanho da Página</value>
+    <value>Page Size</value>
   </data>
   <data name="WEB_PAGE_SMALLER" xml:space="preserve">
-    <value>Menor (Ctrl+(-))</value>
+    <value>Smaller (Ctrl+Minus)</value>
   </data>
 </root>
