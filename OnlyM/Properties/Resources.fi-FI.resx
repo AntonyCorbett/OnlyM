@@ -573,46 +573,46 @@
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="WEB_MAGNIFIER" xml:space="preserve">
-    <value>Magnifier</value>
+    <value>Suurentaja</value>
     <comment>The web display feature that overlays a magnifying panel on the web page</comment>
   </data>
   <data name="WEB_MAGNIFIER_LARGER" xml:space="preserve">
-    <value>Larger (F4)</value>
+    <value>Suurempi (F4)</value>
   </data>
   <data name="WEB_MAGNIFIER_OFF" xml:space="preserve">
-    <value>OFF</value>
+    <value>POIS</value>
   </data>
   <data name="WEB_MAGNIFIER_ON" xml:space="preserve">
-    <value>ON</value>
+    <value>PÄÄLLÄ</value>
   </data>
   <data name="WEB_MAGNIFIER_ON_OFF_TOGGLE" xml:space="preserve">
-    <value>On/Off (F1)</value>
+    <value>Päällä/Pois (F1)</value>
   </data>
   <data name="WEB_MAGNIFIER_SHAPE_SWITCH" xml:space="preserve">
-    <value>Shape (F2)</value>
+    <value>Muoto (F2)</value>
   </data>
   <data name="WEB_MAGNIFIER_SMALLER" xml:space="preserve">
-    <value>Smaller (F3)</value>
+    <value>Pienempi (F3)</value>
   </data>
   <data name="WEB_NAV_BACK" xml:space="preserve">
-    <value>Back (Alt-Left)</value>
+    <value>Takaisin (Alt-vasen)</value>
   </data>
   <data name="WEB_NAV_FORWARD" xml:space="preserve">
-    <value>Forward (Alt-Right)</value>
+    <value>Eteenpäin (Alt-Oikea)</value>
   </data>
   <data name="WEB_PAGE_LARGER" xml:space="preserve">
-    <value>Larger (Ctrl+Plus)</value>
+    <value>Suurempi (Ctrl+Plus)</value>
   </data>
   <data name="WEB_PAGE_RELOAD" xml:space="preserve">
-    <value>Reload Page (Ctrl+F5)</value>
+    <value>Lataa Sivu (Ctrl+F5)</value>
   </data>
   <data name="WEB_PAGE_RESET" xml:space="preserve">
-    <value>Reset Size (Ctrl+0)</value>
+    <value>Nollaa Koko (Ctrl+0)</value>
   </data>
   <data name="WEB_PAGE_SIZE" xml:space="preserve">
-    <value>Page Size</value>
+    <value>Sivun koko</value>
   </data>
   <data name="WEB_PAGE_SMALLER" xml:space="preserve">
-    <value>Smaller (Ctrl+Minus)</value>
+    <value>Pienempi (Ctrl+Minus)</value>
   </data>
 </root>
