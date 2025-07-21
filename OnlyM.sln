@@ -13,7 +13,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{4BF3D9AD-4DD8-4676-81A2-E099BC2D10AD}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		Net6PortNotes.txt = Net6PortNotes.txt
 		SolutionInfo.cs = SolutionInfo.cs
 		ToDo.txt = ToDo.txt
 	EndProjectSection

@@ -1,3 +1,0 @@
-Update wiki. Describe limitations of browser (media, popups, etc)
-
-
