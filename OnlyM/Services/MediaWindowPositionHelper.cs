@@ -9,6 +9,7 @@ using OnlyM.Core.Services.CommandLine;
 using OnlyM.Core.Services.Options;
 using OnlyM.Windows;
 using Serilog;
+using Serilog.Events;
 
 namespace OnlyM.Services;
 
@@ -40,7 +41,10 @@ internal static class MediaWindowPositionHelper
         var width = (area.Width * 96) / systemDpi.dpiX;
         var height = (area.Height * 96) / systemDpi.dpiY;
 
-        Log.Logger.Verbose("Monitor = {DeviceName} Left = {Left}, top = {Top}", monitor.DeviceName, left, top);
+        if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
+        {
+            Log.Logger.Verbose("Monitor = {DeviceName} Left = {Left}, top = {Top}", monitor.DeviceName, left, top);
+        }
 
         PrepareForFullScreenMonitorDisplay(mediaWindow);
 
@@ -112,7 +116,10 @@ internal static class MediaWindowPositionHelper
             return;
         }
 
-        Log.Logger.Verbose("Positioning media window according to WPF Media Foundation hack");
+        if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
+        {
+            Log.Logger.Verbose("Positioning media window according to WPF Media Foundation hack");
+        }
 
         if (MonitorToRightOf(monitor, primaryMonitor))
         {

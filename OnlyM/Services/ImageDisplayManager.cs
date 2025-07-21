@@ -18,6 +18,7 @@ using OnlyM.Services.ImagesCache;
 using OnlyM.Slides;
 using OnlyM.Slides.Models;
 using Serilog;
+using Serilog.Events;
 
 namespace OnlyM.Services;
 
@@ -250,7 +251,10 @@ internal sealed class ImageDisplayManager
     {
         if (e != null)
         {
-            Log.Logger.Verbose("Media change: {Type}, {Id}", e.Change, e.MediaItemId);
+            if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
+            {
+                Log.Logger.Verbose("Media change: {Type}, {Id}", e.Change, e.MediaItemId);
+            }
 
             MediaChangeEvent?.Invoke(this, e);
         }
@@ -258,7 +262,10 @@ internal sealed class ImageDisplayManager
 
     private void OnSlideTransitionEvent(SlideTransitionEventArgs e)
     {
-        Log.Logger.Verbose("Slide change: {Type}, {Id}", e.Transition, e.MediaItemId);
+        if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
+        {
+            Log.Logger.Verbose("Slide change: {Type}, {Id}", e.Transition, e.MediaItemId);
+        }
 
         SlideTransitionEvent?.Invoke(this, e);
     }

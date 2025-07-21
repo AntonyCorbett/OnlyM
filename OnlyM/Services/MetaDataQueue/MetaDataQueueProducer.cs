@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using OnlyM.Models;
 using Serilog;
+using Serilog.Events;
 
 namespace OnlyM.Services.MetaDataQueue;
 
@@ -17,7 +18,10 @@ internal sealed class MetaDataQueueProducer : IDisposable
         {
             Queue.TryAdd(mediaItem);
 
-            Log.Logger.Verbose("Metadata queue size = {QueueSize}", Queue.Count);
+            if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
+            {
+                Log.Logger.Verbose("Metadata queue size = {QueueSize}", Queue.Count);
+            }
         }
     }
 

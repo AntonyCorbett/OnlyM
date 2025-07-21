@@ -7,6 +7,9 @@ namespace OnlyM.EventTracking;
 
 internal static class EventTracker
 {
+    // https://soundbox.sentry.io/
+    // https://docs.sentry.io/platforms/dotnet/guides/wpf/
+
     public static void AddBreadcrumb(
         EventName eventName, string category, Dictionary<string, string>? properties = null)
     {

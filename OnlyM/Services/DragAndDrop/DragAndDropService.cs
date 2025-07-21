@@ -13,6 +13,7 @@ using OnlyM.EventTracking;
 using OnlyM.Models;
 using OnlyM.Slides;
 using Serilog;
+using Serilog.Events;
 
 namespace OnlyM.Services.DragAndDrop;
 
@@ -487,7 +488,10 @@ internal sealed class DragAndDropService : IDragAndDropService
             }
         }
 
-        Log.Logger.Verbose("Found {Count} supported files in drag-and-drop operation", result.Count);
+        if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
+        {
+            Log.Logger.Verbose("Found {Count} supported files in drag-and-drop operation", result.Count);
+        }
 
         result.Sort();
 

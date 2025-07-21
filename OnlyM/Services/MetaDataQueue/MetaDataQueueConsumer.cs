@@ -12,6 +12,7 @@ using OnlyM.EventTracking;
 using OnlyM.Models;
 using OnlyM.Slides;
 using Serilog;
+using Serilog.Events;
 
 namespace OnlyM.Services.MetaDataQueue;
 
@@ -77,7 +78,10 @@ internal sealed class MetaDataQueueConsumer : IDisposable
                         ItemCompleted(nextItem);
                     }
 
-                    Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _collection.Count);
+                    if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
+                    {
+                        Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _collection.Count);
+                    }
 
                     if (_collection.Count == 0)
                     {
