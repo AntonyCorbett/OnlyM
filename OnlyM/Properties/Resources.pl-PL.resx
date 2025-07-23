@@ -158,7 +158,7 @@
     <comment>Notification displayed if you drag and drop a file (or files) of a type that is not supported.</comment>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>OK</value>
+    <value></value>
   </data>
   <data name="VIEW" xml:space="preserve">
     <value>WIDOK</value>
