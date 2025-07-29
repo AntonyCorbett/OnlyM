@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -121,7 +121,7 @@
     <value>Versão do programa: {0}</value>
     <comment>See Settings =&gt; Images. Please retain the "{0}" - it's a placeholder for the version number</comment>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
   <data name="blank" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\blank.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -571,5 +571,48 @@
   <data name="MEDIA_WINDOW_RESIZABLE" xml:space="preserve">
     <value>Redimensionável</value>
     <comment>See Settings =&gt; Display</comment>
+  </data>
+  <data name="WEB_MAGNIFIER" xml:space="preserve">
+    <value>Magnifier</value>
+    <comment>The web display feature that overlays a magnifying panel on the web page</comment>
+  </data>
+  <data name="WEB_MAGNIFIER_LARGER" xml:space="preserve">
+    <value>Larger (F4)</value>
+  </data>
+  <data name="WEB_MAGNIFIER_OFF" xml:space="preserve">
+    <value>OFF</value>
+  </data>
+  <data name="WEB_MAGNIFIER_ON" xml:space="preserve">
+    <value>ON</value>
+  </data>
+  <data name="WEB_MAGNIFIER_ON_OFF_TOGGLE" xml:space="preserve">
+    <value>On/Off (F1)</value>
+  </data>
+  <data name="WEB_MAGNIFIER_SHAPE_SWITCH" xml:space="preserve">
+    <value>Shape (F2)</value>
+  </data>
+  <data name="WEB_MAGNIFIER_SMALLER" xml:space="preserve">
+    <value>Smaller (F3)</value>
+  </data>
+  <data name="WEB_NAV_BACK" xml:space="preserve">
+    <value>Back (Alt-Left)</value>
+  </data>
+  <data name="WEB_NAV_FORWARD" xml:space="preserve">
+    <value>Forward (Alt-Right)</value>
+  </data>
+  <data name="WEB_PAGE_LARGER" xml:space="preserve">
+    <value>Larger (Ctrl+Plus)</value>
+  </data>
+  <data name="WEB_PAGE_RELOAD" xml:space="preserve">
+    <value>Reload Page (Ctrl+F5)</value>
+  </data>
+  <data name="WEB_PAGE_RESET" xml:space="preserve">
+    <value>Reset Size (Ctrl+0)</value>
+  </data>
+  <data name="WEB_PAGE_SIZE" xml:space="preserve">
+    <value>Page Size</value>
+  </data>
+  <data name="WEB_PAGE_SMALLER" xml:space="preserve">
+    <value>Smaller (Ctrl+Minus)</value>
   </data>
 </root>
