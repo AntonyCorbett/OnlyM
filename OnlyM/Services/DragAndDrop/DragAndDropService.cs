@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
@@ -65,6 +66,10 @@ internal sealed class DragAndDropService : IDragAndDropService
         {
             CopyMediaFiles(data);
         }
+        else if (CanPasteImageData(data))
+        {
+            CopyImageData(data);
+        }
         else if (CanDropOrPasteUris(data))
         {
             CopyUris(data);
@@ -82,7 +87,7 @@ internal sealed class DragAndDropService : IDragAndDropService
     private void HandleDragEnter(object? sender, DragEventArgs e)
     {
         // do we allow drop of drag object?
-        _canDrop = CanDropOrPasteFiles(e.Data) || CanDropOrPasteUris(e.Data);
+        _canDrop = CanDropOrPasteFiles(e.Data) || CanPasteImageData(e.Data) || CanDropOrPasteUris(e.Data);
         SetEffects(e);
         e.Handled = true;
     }
@@ -94,6 +99,13 @@ internal sealed class DragAndDropService : IDragAndDropService
         Task.Run(() =>
         {
             var count = InternalCopyMediaFiles(data, out var someError);
+            DisplaySnackbar(count, someError);
+        });
+
+    private void CopyImageData(IDataObject data) =>
+        Task.Run(() =>
+        {
+            var count = InternalCopyImageData(data, out var someError);
             DisplaySnackbar(count, someError);
         });
 
@@ -160,6 +172,111 @@ internal sealed class DragAndDropService : IDragAndDropService
         }
 
         return count;
+    }
+
+    private int InternalCopyImageData(IDataObject data, out bool someError)
+    {
+        var count = 0;
+        someError = false;
+
+        OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs { Status = FileCopyStatus.StartingCopy });
+        try
+        {
+            var mediaFolder = _optionsService.MediaFolder;
+
+            var bmpObj = data.GetData(DataFormats.Bitmap);
+            if (bmpObj is System.Windows.Media.Imaging.BitmapSource bmpSource)
+            {
+                using var bitmap = BitmapSourceToBitmap(bmpSource);
+                count = CopyFromImageData(mediaFolder, bitmap);
+            }
+            else if (data.GetDataPresent(DataFormats.Dib))
+            {
+                var dibObj = data.GetData(DataFormats.Dib);
+                if (dibObj is MemoryStream dibStream)
+                {
+                    using var bmp = DibToBitmap(dibStream);
+                    if (bmp != null)
+                    {
+                        count = CopyFromImageData(mediaFolder, bmp);
+                    }
+                }
+                else if (dibObj is byte[] dibBytes)
+                {
+                    using var ms = new MemoryStream(dibBytes);
+                    using var bmp = DibToBitmap(ms);
+                    if (bmp != null)
+                    {
+                        count = CopyFromImageData(mediaFolder, bmp);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            EventTracker.Error(ex, "Copying image data");
+            Log.Logger.Error(ex, "Could not copy image data");
+            someError = true;
+        }
+        finally
+        {
+            OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs { Status = FileCopyStatus.FinishedCopy });
+        }
+
+        return count;
+    }
+
+    // Converts WPF BitmapSource to System.Drawing.Bitmap
+    private static Bitmap BitmapSourceToBitmap(System.Windows.Media.Imaging.BitmapSource source)
+    {
+        using var ms = new MemoryStream();
+        var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+        encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(source));
+        encoder.Save(ms);
+        ms.Position = 0;
+        return new Bitmap(ms);
+    }
+
+    // Converts a DIB stream to a Bitmap
+    private static Bitmap? DibToBitmap(Stream dibStream)
+    {
+        // DIB does not include a BITMAPFILEHEADER, so we need to add it
+        // See: https://stackoverflow.com/a/1468847/1768303
+        const int bitmapFileHeaderSize = 14;
+
+        dibStream.Position = 0;
+        var dibLength = (int)dibStream.Length;
+        var dibBytes = new byte[dibLength];
+        dibStream.ReadExactly(dibBytes, 0, dibLength);
+
+        // Get the size of the DIB header
+        var headerSize = BitConverter.ToInt32(dibBytes, 0);
+
+        // Calculate the file size
+        var fileSize = bitmapFileHeaderSize + dibLength;
+
+        using var ms = new MemoryStream();
+        using var bw = new BinaryWriter(ms);
+
+        // BITMAPFILEHEADER
+        bw.Write((ushort)0x4D42); // 'BM'
+        bw.Write(fileSize);
+        bw.Write((ushort)0); // reserved1
+        bw.Write((ushort)0); // reserved2
+        bw.Write(bitmapFileHeaderSize + headerSize); // offset to pixel data
+
+        // DIB data
+        bw.Write(dibBytes);
+
+        ms.Position = 0;
+        try
+        {
+            return new Bitmap(ms);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private int InternalCopyUris(IDataObject data, out bool someError)
@@ -238,6 +355,19 @@ internal sealed class DragAndDropService : IDragAndDropService
         }
 
         return count;
+    }
+
+    private static int CopyFromImageData(string mediaFolder, Image image)
+    {
+        // this is better for ths folder watcher which triggers as soon as a file write 
+        // begins. A large file would not be completely written before the folder watcher
+        // triggers an attempt to analyse the file, extract thumbnail etc.
+        var tempFileName = Path.Combine(mediaFolder, Path.GetRandomFileName());
+        image.Save(tempFileName, System.Drawing.Imaging.ImageFormat.Png);
+        var destFilePath = Path.Combine(mediaFolder, $"OnlyM_Clipboard_{Guid.NewGuid()}.png");
+        File.Move(tempFileName, destFilePath);
+
+        return 1;
     }
 
     private int CopyAsIndividualUris(string mediaFolder, string[] uriList)
@@ -400,6 +530,8 @@ internal sealed class DragAndDropService : IDragAndDropService
 
     private bool CanDropOrPasteFiles(IDataObject data) => GetSupportedFiles(data).Count > 0;
 
+    private static bool CanPasteImageData(IDataObject data) => IsSupportedImageData(data);
+
     private static bool CanDropOrPasteUris(IDataObject data) => GetSupportedUrls(data).Count > 0;
 
     private static bool DataIsFromOnlyV(IDataObject data)
@@ -496,6 +628,31 @@ internal sealed class DragAndDropService : IDragAndDropService
         result.Sort();
 
         return result;
+    }
+
+    private static bool IsSupportedImageData(IDataObject data)
+    {
+        // Try Bitmap first
+        if (data.GetDataPresent(DataFormats.Bitmap))
+        {
+            var d = data.GetData(DataFormats.Bitmap);
+            if (d is not null)
+            {
+                return true;
+            }
+        }
+
+        // Try DIB (Device Independent Bitmap) as fallback
+        if (data.GetDataPresent(DataFormats.Dib))
+        {
+            var dib = data.GetData(DataFormats.Dib);
+            if (dib is not null)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private string? GetSupportedFile(string file)
