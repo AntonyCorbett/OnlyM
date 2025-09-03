@@ -22,15 +22,15 @@ namespace OnlyM.Services.DragAndDrop;
 // ReSharper disable once ClassNeverInstantiated.Global
 internal sealed class DragAndDropService : IDragAndDropService
 {
-    const string ClipboardImageDataFileNameStart = "OnlyM_Clipboard_";
+    private const string ClipboardImageDataFileNameStart = "OnlyM_Clipboard_";
 
     private readonly IMediaProviderService _mediaProviderService;
     private readonly IOptionsService _optionsService;
     private readonly ISnackbarService _snackbarService;
+    private readonly object _imageDataPasteLock = new();
     private bool _canDrop;
     private int _currentClipboardImageIndex = -1; // -1 = uninitialized
-    private readonly object _imageDataPasteLock = new();
-    
+
     public DragAndDropService(
         IMediaProviderService mediaProviderService,
         IOptionsService optionsService,
