@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using OnlyM.Core.Services.Media;
@@ -21,11 +22,15 @@ namespace OnlyM.Services.DragAndDrop;
 // ReSharper disable once ClassNeverInstantiated.Global
 internal sealed class DragAndDropService : IDragAndDropService
 {
+    const string ClipboardImageDataFileNameStart = "OnlyM_Clipboard_";
+
     private readonly IMediaProviderService _mediaProviderService;
     private readonly IOptionsService _optionsService;
     private readonly ISnackbarService _snackbarService;
     private bool _canDrop;
-
+    private int _currentClipboardImageIndex = -1; // -1 = uninitialized
+    private readonly object _imageDataPasteLock = new();
+    
     public DragAndDropService(
         IMediaProviderService mediaProviderService,
         IOptionsService optionsService,
@@ -238,7 +243,7 @@ internal sealed class DragAndDropService : IDragAndDropService
     }
 
     // Converts a DIB stream to a Bitmap
-    private static Bitmap? DibToBitmap(Stream dibStream)
+    private static Bitmap? DibToBitmap(MemoryStream dibStream)
     {
         // DIB does not include a BITMAPFILEHEADER, so we need to add it
         // See: https://stackoverflow.com/a/1468847/1768303
@@ -357,17 +362,45 @@ internal sealed class DragAndDropService : IDragAndDropService
         return count;
     }
 
-    private static int CopyFromImageData(string mediaFolder, Image image)
+    private int CopyFromImageData(string mediaFolder, Bitmap image)
     {
-        // this is better for ths folder watcher which triggers as soon as a file write 
-        // begins. A large file would not be completely written before the folder watcher
-        // triggers an attempt to analyse the file, extract thumbnail etc.
-        var tempFileName = Path.Combine(mediaFolder, Path.GetRandomFileName());
-        image.Save(tempFileName, System.Drawing.Imaging.ImageFormat.Png);
-        var destFilePath = Path.Combine(mediaFolder, $"OnlyM_Clipboard_{Guid.NewGuid()}.png");
-        File.Move(tempFileName, destFilePath);
+        lock (_imageDataPasteLock)
+        {
+            if (_currentClipboardImageIndex == -1)
+            {
+                InitialiseCurrentClipboardImageIndex();
+            }
+            
+            // this is better for ths folder watcher which triggers as soon as a file write 
+            // begins. A large file would not be completely written before the folder watcher
+            // triggers an attempt to analyse the file, extract thumbnail etc.
+            var tempFileName = Path.Combine(mediaFolder, Path.GetRandomFileName());
+            image.Save(tempFileName, System.Drawing.Imaging.ImageFormat.Png);
+            var destFilePath = Path.Combine(mediaFolder, $"{ClipboardImageDataFileNameStart}{++_currentClipboardImageIndex:D3}.png");
+            File.Move(tempFileName, destFilePath);
+            return 1;
+        }
+    }
 
-        return 1;
+    private void InitialiseCurrentClipboardImageIndex()
+    {
+        _currentClipboardImageIndex = 1;
+
+        var files = _mediaProviderService.GetMediaFiles()
+            .Select(x => Path.GetFileNameWithoutExtension(x.FullPath))
+            .Where(x => x?.StartsWith(ClipboardImageDataFileNameStart, StringComparison.OrdinalIgnoreCase) == true);
+
+        foreach (var file in files)
+        {
+            var suffix = file![ClipboardImageDataFileNameStart.Length..];
+            if (int.TryParse(suffix, NumberStyles.Integer, CultureInfo.InvariantCulture, out var index))
+            {
+                if (index > _currentClipboardImageIndex)
+                {
+                    _currentClipboardImageIndex = index;
+                }
+            }
+        }
     }
 
     private int CopyAsIndividualUris(string mediaFolder, string[] uriList)
