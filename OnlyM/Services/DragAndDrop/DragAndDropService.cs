@@ -370,7 +370,7 @@ internal sealed class DragAndDropService : IDragAndDropService
             {
                 InitialiseCurrentClipboardImageIndex();
             }
-            
+
             // this is better for ths folder watcher which triggers as soon as a file write 
             // begins. A large file would not be completely written before the folder watcher
             // triggers an attempt to analyse the file, extract thumbnail etc.

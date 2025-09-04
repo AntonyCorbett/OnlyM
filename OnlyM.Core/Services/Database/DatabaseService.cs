@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -17,6 +18,7 @@ public class DatabaseService : IDatabaseService
     public DatabaseService()
     {
         EnsureDatabaseExists();
+        InitialiseWal();
     }
 
     public void ClearThumbCache()
@@ -192,9 +194,18 @@ public class DatabaseService : IDatabaseService
 
     private static SQLiteConnection CreateConnection()
     {
-        var c = new SQLiteConnection($"Data source={GetDatabasePath()};Version=3;", true);
+        var c = new SQLiteConnection($"Data source={GetDatabasePath()};Version=3;BusyTimeout=5000;", true);
         c.Open();
         return c;
+    }
+
+    private static void InitialiseWal()
+    {
+        using var c = new SQLiteConnection($"Data source={GetDatabasePath()};Version=3;BusyTimeout=5000;", true);
+        c.Open();
+        using var cmd = c.CreateCommand();
+        cmd.CommandText = "PRAGMA journal_mode=WAL;";
+        cmd.ExecuteNonQuery();
     }
 
     private static void DeleteDatabase()

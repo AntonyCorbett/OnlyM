@@ -21,8 +21,6 @@ internal sealed class WebNavHeaderAdmin
 
     public void MouseMove(Point pos)
     {
-        Debug.WriteLine(pos);
-
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
         switch (_webHeaderStatus)
         {

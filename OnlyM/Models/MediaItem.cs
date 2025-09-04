@@ -524,7 +524,7 @@ public class MediaItem : ObservableObject
                 case MediaClassification.Web:
                     if (MediaType.FileExtension != null && MediaType.FileExtension.Equals(".pdf", StringComparison.OrdinalIgnoreCase))
                     {
-                        return "FilePdf";
+                        return "FilePdfBox";
                     }
 
                     return "Web";
