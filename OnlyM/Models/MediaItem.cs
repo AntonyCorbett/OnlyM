@@ -61,6 +61,8 @@ public class MediaItem : ObservableObject
 
     public bool IsBlankScreen { get; init; }
 
+    public int MetaDataRetryCount { get; set; }
+
     public bool UseMirror
     {
         get => _useMirror;

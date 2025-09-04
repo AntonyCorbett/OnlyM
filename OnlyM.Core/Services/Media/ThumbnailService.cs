@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
@@ -13,65 +14,53 @@ using OnlyM.Core.Utils;
 using OnlyM.CoreSys;
 using OnlyM.Slides;
 using Serilog;
+using Serilog.Events;
 
 namespace OnlyM.Core.Services.Media;
 
 public sealed class ThumbnailService : IThumbnailService
 {
-    // note that MaxPixelDimension should match the 
-    // image tooltip width in OperatorPage.xaml
     private const int MaxPixelDimension = 320;
 
     private readonly IDatabaseService _databaseService;
     private readonly IOptionsService _optionsService;
 
-    private readonly Lazy<byte[]?> _standardAudioThumbnail = new(() =>
+    // Helper centralizes conversion + disposal.
+    private static byte[]? ToBytesAndDispose(Bitmap? bmp, ImageFormat? format = null)
     {
-        var bmp = Properties.Resources.Audio;
         if (bmp == null)
         {
             return null;
         }
 
-        var converter = new ImageConverter();
-        return (byte[]?)converter.ConvertTo(bmp, typeof(byte[]));
-    });
-
-    private readonly Lazy<byte[]?> _standardPdfThumbnail = new(() =>
-    {
-        var bmp = Properties.Resources.PDF;
-        if (bmp == null)
+        try
         {
+            using (bmp)
+            {
+                using var ms = new MemoryStream();
+                // Default to PNG for lossless UI assets (smaller & preserves transparency if any).
+                bmp.Save(ms, format ?? ImageFormat.Png);
+                return ms.ToArray();
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Warning(ex, "Could not convert resource bitmap");
             return null;
         }
+    }
 
-        var converter = new ImageConverter();
-        return (byte[]?)converter.ConvertTo(bmp, typeof(byte[]));
-    });
+    private readonly Lazy<byte[]?> _standardAudioThumbnail =
+        new(() => ToBytesAndDispose(Properties.Resources.Audio));
 
-    private readonly Lazy<byte[]?> _standardWebThumbnail = new(() =>
-    {
-        var bmp = Properties.Resources.Web;
-        if (bmp == null)
-        {
-            return null;
-        }
+    private readonly Lazy<byte[]?> _standardPdfThumbnail =
+        new(() => ToBytesAndDispose(Properties.Resources.PDF));
 
-        var converter = new ImageConverter();
-        return (byte[]?)converter.ConvertTo(bmp, typeof(byte[]));
-    });
+    private readonly Lazy<byte[]?> _standardWebThumbnail =
+        new(() => ToBytesAndDispose(Properties.Resources.Web));
 
-    private readonly Lazy<byte[]?> _standardUnknownThumbnail = new(() =>
-    {
-        var bmp = Properties.Resources.Unknown;
-        if (bmp == null)
-        {
-            return null;
-        }
-
-        var converter = new ImageConverter();
-        return (byte[]?)converter.ConvertTo(bmp, typeof(byte[]));
-    });
+    private readonly Lazy<byte[]?> _standardUnknownThumbnail =
+        new(() => ToBytesAndDispose(Properties.Resources.Unknown));
 
     public ThumbnailService(IDatabaseService databaseService, IOptionsService optionsService)
     {
@@ -88,12 +77,19 @@ public sealed class ThumbnailService : IThumbnailService
         long originalLastChanged,
         out bool foundInCache)
     {
-        Log.Logger.Debug("Getting thumbnail: {Path}", originalPath);
+        if (Log.Logger.IsEnabled(LogEventLevel.Debug))
+        {
+            Log.Logger.Debug("Getting thumbnail: {Path}", originalPath);
+        }
 
         var result = _databaseService.GetThumbnailFromCache(originalPath, originalLastChanged);
         if (result != null)
         {
-            Log.Logger.Verbose("Found thumbnail in cache");
+            if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
+            {
+                Log.Logger.Verbose("Found thumbnail in cache");
+            }
+
             foundInCache = true;
             return result;
         }
@@ -127,7 +123,10 @@ public sealed class ThumbnailService : IThumbnailService
         string ffmpegFolder,
         MediaClassification mediaClassification)
     {
-        Log.Logger.Debug("Generating thumbnail");
+        if (Log.Logger.IsEnabled(LogEventLevel.Debug))
+        {
+            Log.Logger.Debug("Generating thumbnail");
+        }
 
         var tempThumbnailFolder = Path.Combine(FileUtils.GetUsersTempFolder(), "OnlyM", "TempThumbs");
         FileUtils.CreateDirectory(tempThumbnailFolder);
@@ -138,15 +137,31 @@ public sealed class ThumbnailService : IThumbnailService
                 return GraphicsUtils.CreateThumbnailOfImage(originalPath, MaxPixelDimension);
 
             case MediaClassification.Video:
-                var tempFile = GraphicsUtils.CreateThumbnailForVideo(
-                    originalPath,
-                    ffmpegFolder,
-                    tempThumbnailFolder,
-                    _optionsService.EmbeddedThumbnails);
+                {
+                    var tempFile = GraphicsUtils.CreateThumbnailForVideo(
+                        originalPath,
+                        ffmpegFolder,
+                        tempThumbnailFolder,
+                        _optionsService.EmbeddedThumbnails);
 
-                return string.IsNullOrEmpty(tempFile)
-                    ? null
-                    : File.ReadAllBytes(tempFile);
+                    if (string.IsNullOrEmpty(tempFile) || !File.Exists(tempFile))
+                    {
+                        return null;
+                    }
+
+                    try
+                    {
+                        var bytes = File.ReadAllBytes(tempFile);
+                        TryDeleteTempFile(tempFile);
+                        return bytes;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Logger.Warning(ex, "Could not read/delete temp video thumbnail {File}", tempFile);
+                        TryDeleteTempFile(tempFile);
+                        return null;
+                    }
+                }
 
             case MediaClassification.Audio:
                 return _standardAudioThumbnail.Value;
@@ -159,6 +174,23 @@ public sealed class ThumbnailService : IThumbnailService
 
             default:
                 return null;
+        }
+    }
+
+    private static void TryDeleteTempFile(string? path)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return;
+        }
+
+        try
+        {
+            File.Delete(path);
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Debug(ex, "Could not delete temp thumbnail file {File}", path);
         }
     }
 
@@ -186,7 +218,7 @@ public sealed class ThumbnailService : IThumbnailService
     {
         try
         {
-            var o = ShellObject.FromParsingName(originalPath);
+            using var o = ShellObject.FromParsingName(originalPath);
             if (o?.Thumbnail?.BitmapSource == null)
             {
                 return _standardPdfThumbnail.Value;

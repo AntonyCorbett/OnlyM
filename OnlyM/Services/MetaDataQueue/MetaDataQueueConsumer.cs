@@ -18,6 +18,8 @@ namespace OnlyM.Services.MetaDataQueue;
 
 internal sealed class MetaDataQueueConsumer : IDisposable
 {
+    private const int MaxMetaDataRetries = 3;
+
     private readonly IThumbnailService _thumbnailService;
     private readonly IMediaMetaDataService _metaDataService;
     private readonly IOptionsService _optionsService;
@@ -111,7 +113,15 @@ internal sealed class MetaDataQueueConsumer : IDisposable
         ItemCompletedEvent?.Invoke(this, new ItemMetaDataPopulatedEventArgs { MediaItem = nextItem });
     }
 
-    private void ReplaceInQueue(MediaItem mediaItem) =>
+    private void ReplaceInQueue(MediaItem mediaItem)
+    {
+        mediaItem.MetaDataRetryCount++;
+        if (mediaItem.MetaDataRetryCount > MaxMetaDataRetries)
+        {
+            Log.Logger.Warning("Max metadata retries exceeded for {Path}. Dropping from queue.", mediaItem.FilePath);
+            return;
+        }
+
         Task.Delay(2000, _cancellationToken)
             .ContinueWith(
                 _ =>
@@ -120,14 +130,16 @@ internal sealed class MetaDataQueueConsumer : IDisposable
                     _collection.Add(mediaItem, _cancellationToken);
                 },
                 _cancellationToken);
+    }
 
-    private async Task PopulateThumbnailAndMetaDataAsync(MediaItem mediaItem) =>
-        await Application.Current.Dispatcher.InvokeAsync(async () =>
-        {
-            await PopulateSlideDataAsync(mediaItem);
-            await PopulateThumbnailAsync(mediaItem);
-            await PopulateDurationAndTitleAsync(mediaItem);
-        });
+    private async Task PopulateThumbnailAndMetaDataAsync(MediaItem mediaItem)
+    {
+        // Run logical steps sequentially. Each method internally does its own Task.Run
+        // for CPU/IO work. We only dispatch the minimal UI mutations.
+        await PopulateSlideDataAsync(mediaItem);
+        await PopulateThumbnailAsync(mediaItem);
+        await PopulateDurationAndTitleAsync(mediaItem);
+    }
 
     private async Task PopulateSlideDataAsync(MediaItem mediaItem)
     {
@@ -146,10 +158,22 @@ internal sealed class MetaDataQueueConsumer : IDisposable
         }
     }
 
-    private static bool IsPopulated(MediaItem mediaItem) =>
-        IsThumbnailPopulated(mediaItem) &&
-        IsDurationAndTitlePopulated(mediaItem) &&
-        IsSlideDataPopulated(mediaItem);
+    private static bool IsPopulated(MediaItem mediaItem)
+    {
+        if (Log.Logger.IsEnabled(LogEventLevel.Debug))
+        {
+            Log.Logger.Debug(
+                "Thumb: {IsThumbnailPopulated} Duration and Title: {IsDurationAndTitlePopulated} Slide: {IsSlideDataPopulated}",
+                IsThumbnailPopulated(mediaItem),
+                IsDurationAndTitlePopulated(mediaItem),
+                IsSlideDataPopulated(mediaItem));
+        }
+
+        return
+            IsThumbnailPopulated(mediaItem) &&
+            IsDurationAndTitlePopulated(mediaItem) &&
+            IsSlideDataPopulated(mediaItem);
+    }
 
     private static bool IsThumbnailPopulated(MediaItem mediaItem) => mediaItem.ThumbnailImageSource != null;
 
@@ -186,21 +210,48 @@ internal sealed class MetaDataQueueConsumer : IDisposable
         if (mediaItem.FilePath != null && mediaItem.MediaType != null && !IsThumbnailPopulated(mediaItem))
         {
             byte[]? thumb = null;
-
-            await Task.Run(
-                () =>
-                {
-                    thumb = _thumbnailService.GetThumbnail(
-                        mediaItem.FilePath,
-                        Unosquare.FFME.Library.FFmpegDirectory,
-                        mediaItem.MediaType.Classification,
-                        mediaItem.LastChanged,
-                        out var _);
-                }, _cancellationToken);
-
-            if (thumb != null && !IsThumbnailPopulated(mediaItem) && !_cancellationToken.IsCancellationRequested)
+            try
             {
-                mediaItem.ThumbnailImageSource = GraphicsUtils.ByteArrayToImage(thumb);
+                // Generate / fetch thumbnail bytes off the UI thread.
+                await Task.Run(
+                    () =>
+                    {
+                        thumb = _thumbnailService.GetThumbnail(
+                            mediaItem.FilePath,
+                            Unosquare.FFME.Library.FFmpegDirectory,
+                            mediaItem.MediaType.Classification,
+                            mediaItem.LastChanged,
+                            out var _);
+                    }, _cancellationToken);
+
+                Log.Logger.Debug(
+                    "PopulateThumbnailAsync: thumb={Thumb} IsThumbnailPopulated={IsPopulated} Cancelled={Cancelled}",
+                    thumb != null,
+                    IsThumbnailPopulated(mediaItem),
+                    _cancellationToken.IsCancellationRequested);
+
+                if (thumb != null && !_cancellationToken.IsCancellationRequested && !IsThumbnailPopulated(mediaItem))
+                {
+                    // Create (and freeze) the BitmapImage off UI thread
+                    var bmp = GraphicsUtils.ByteArrayToImage(thumb);
+
+                    if (bmp != null)
+                    {
+                        // Assign on UI thread (safer for bindings / PropertyChanged sequencing)
+                        await Application.Current.Dispatcher.InvokeAsync(() =>
+                        {
+                            if (!IsThumbnailPopulated(mediaItem))
+                            {
+                                mediaItem.ThumbnailImageSource = bmp;
+                            }
+                        });
+                        Log.Logger.Debug("After assignment: ThumbnailImageSource now set = {Value}", mediaItem.ThumbnailImageSource != null);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not get a thumbnail for {Path}", mediaItem.FilePath);
             }
         }
     }

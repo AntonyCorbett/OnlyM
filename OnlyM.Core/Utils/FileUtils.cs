@@ -200,4 +200,12 @@ public static class FileUtils
 
         return sanitisedNamePart;
     }
+
+    public static bool IsWebPFormat(string mediaItemFilePath) =>
+        !string.IsNullOrWhiteSpace(mediaItemFilePath) &&
+        mediaItemFilePath.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
+
+    public static bool IsSvgFormat(string mediaItemFilePath) =>
+        !string.IsNullOrWhiteSpace(mediaItemFilePath) &&
+        mediaItemFilePath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase);
 }

@@ -227,11 +227,13 @@ public static class GraphicsUtils
         }
 
         var img = new BitmapImage();
-        var ms = new MemoryStream(imageData);
+        using var ms = new MemoryStream(imageData);
 
         img.BeginInit();
+        img.CacheOption = BitmapCacheOption.OnLoad; // force full load now
         img.StreamSource = ms;
         img.EndInit();
+        img.Freeze(); // make it cross-thread safe
 
         return img;
     }

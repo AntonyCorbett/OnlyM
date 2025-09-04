@@ -121,7 +121,7 @@ public class MediaMetaDataService : IMediaMetaDataService
 
     private static MediaMetaData? GetNonVideoMetaData(string mediaItemFilePath)
     {
-        if (IsWebPFormat(mediaItemFilePath) || IsSvgFormat(mediaItemFilePath))
+        if (FileUtils.IsWebPFormat(mediaItemFilePath) || FileUtils.IsSvgFormat(mediaItemFilePath))
         {
             return null;
         }
@@ -135,12 +135,4 @@ public class MediaMetaDataService : IMediaMetaDataService
             Duration = tf.Properties?.Duration ?? TimeSpan.Zero,
         };
     }
-
-    private static bool IsWebPFormat(string mediaItemFilePath) =>
-        !string.IsNullOrWhiteSpace(mediaItemFilePath) &&
-        mediaItemFilePath.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
-
-    private static bool IsSvgFormat(string mediaItemFilePath) =>
-        !string.IsNullOrWhiteSpace(mediaItemFilePath) &&
-        mediaItemFilePath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase);
 }
