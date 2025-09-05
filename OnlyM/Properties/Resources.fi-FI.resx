@@ -616,10 +616,10 @@
     <value>Pienempi (Ctrl+Minus)</value>
   </data>
   <data name="INSTALL_HEIF_CODEC" xml:space="preserve">
-    <value>Install HEIC/HEIF Image extensions!</value>
+    <value>Asenna HEIC/HEIF kuvalaajennukset!</value>
     <comment>Error shown when heic/heif support is not installed</comment>
   </data>
   <data name="PRIMARY_MONITOR" xml:space="preserve">
-    <value>primary</value>
+    <value>ensisijainen</value>
   </data>
 </root>
