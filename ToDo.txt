@@ -1,1 +1,0 @@
-Large svg files produce an out of memory condition
