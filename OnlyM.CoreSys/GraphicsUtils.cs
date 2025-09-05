@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -23,7 +24,14 @@ namespace OnlyM.CoreSys;
 
 public static class GraphicsUtils
 {
+    private const int WinCodecErrorComponentNotFound = unchecked((int)0x88982F50);
+    private const int WinCodecErrorComponentInitFail = unchecked((int)0x88982F51);
+
+    // One-time HEIC codec missing detection.
+    public static event EventHandler? HeicCodecMissingDetected;
+
     private static readonly object TagLibLocker = new();
+    private static bool _heicCodecMissingRaised;
 
     public static bool AutoRotateIfRequired(string? itemFilePath)
     {
@@ -159,9 +167,9 @@ public static class GraphicsUtils
 
         if (IsHeicFormat(path))
         {
-            // Use MagicScaler (WIC) directly. System.Drawing cannot decode HEIC.
             try
             {
+                // Use MagicScaler/WIC path (covers scaling + orientation with extensions installed).
                 var settings = new ProcessImageSettings
                 {
                     Width = maxPixelDimension,
@@ -177,14 +185,15 @@ public static class GraphicsUtils
             }
             catch (Exception ex)
             {
-                Log.Logger.Warning(ex, "HEIC/HEIF decode failed {Path}", path);
-                return null; // Do NOT fall back to GDI+ path.
+                RaiseHeicCodecMissingIfNeeded(ex);
+                Log.Logger.Warning(ex, "Could not decode HEIC/HEIF image {Path}", path);
+                return null; // Do not fall through to GDI+ (unsupported).
             }
         }
 
         return CreateThumbnailOfNativeImage(path, maxPixelDimension);
     }
-    
+
     public static byte[]? ImageSourceToJpegBytes(ImageSource? imageSource) => ImageSourceToBytes(new JpegBitmapEncoder(), imageSource);
 
     public static byte[]? ImageSourceToBytes(BitmapEncoder encoder, ImageSource? imageSource)
@@ -448,7 +457,7 @@ public static class GraphicsUtils
 
     private static bool ImageRequiresRotation(string imageFilePath)
     {
-        if (IsWebPFormat(imageFilePath) || IsSvgFormat(imageFilePath))
+        if (IsWebPFormat(imageFilePath) || IsSvgFormat(imageFilePath) || IsHeicFormat(imageFilePath))
         {
             // can't retrieve this metadata
             return false;
@@ -636,6 +645,22 @@ public static class GraphicsUtils
         {
             Log.Logger.Error(ex, "Could not load SVG image {FileName}", imageFile);
             return null;
+        }
+    }
+
+    private static void RaiseHeicCodecMissingIfNeeded(Exception ex)
+    {
+        if (_heicCodecMissingRaised)
+        {
+            return;
+        }
+
+        if (ex is COMException ce &&
+            (ce.HResult == WinCodecErrorComponentNotFound || ce.HResult == WinCodecErrorComponentInitFail))
+        {
+            _heicCodecMissingRaised = true;
+            Log.Logger.Warning("HEIC/HEIF Windows codec not installed. Prompting user once this session.");
+            HeicCodecMissingDetected?.Invoke(null, EventArgs.Empty);
         }
     }
 }

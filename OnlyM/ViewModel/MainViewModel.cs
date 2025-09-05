@@ -16,6 +16,7 @@ using OnlyM.Core.Services.CommandLine;
 using OnlyM.Core.Services.Monitors;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Utils;
+using OnlyM.CoreSys;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.EventTracking;
 using OnlyM.Models;
@@ -88,6 +89,8 @@ internal sealed class MainViewModel : ObservableObject
             _optionsService.Save();
             FileUtils.DeleteBrowserCacheFolder();
         }
+
+        GraphicsUtils.HeicCodecMissingDetected += HandleMissingCodec;
 
         _pageService.GotoOperatorPage();
 
@@ -401,5 +404,10 @@ internal sealed class MainViewModel : ObservableObject
 #else
             return false;
 #endif
+    }
+
+    private void HandleMissingCodec(object? sender, EventArgs e)
+    {
+        _snackbarService.EnqueueWithOk(Properties.Resources.INSTALL_HEIF_CODEC, Properties.Resources.OK);
     }
 }

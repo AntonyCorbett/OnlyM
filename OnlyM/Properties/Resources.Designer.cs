@@ -413,6 +413,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install HEIC/HEIF Image extensions!.
+        /// </summary>
+        public static string INSTALL_HEIF_CODEC {
+            get {
+                return ResourceManager.GetString("INSTALL_HEIF_CODEC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string LANGUAGE {
