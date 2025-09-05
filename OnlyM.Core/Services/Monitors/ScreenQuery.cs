@@ -6,15 +6,13 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Serilog;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable IdentifierTypo
+// ReSharper disable InconsistentNaming
+
 #pragma warning disable U2U1004
 
 namespace OnlyM.Core.Services.Monitors;
-// ReSharper disable FieldCanBeMadeReadOnly.Local
-// ReSharper disable FieldCanBeMadeReadOnly.Global
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedMember.Global
-// ReSharper disable InconsistentNaming
-// ReSharper disable IdentifierTypo
 
 //// see https://stackoverflow.com/a/28257839/8576725
 
@@ -27,6 +25,8 @@ public static partial class ScreenQuery
 #pragma warning disable CA1707 // Identifiers should not contain underscores
 #pragma warning disable CA1712 // Do not prefix enum values with type name
     private const int ErrorSuccess = 0;
+    private const int ErrorInvalidParameter = 87;
+    private const int ErrorInsufficientBuffer = 122;
 
     public enum QUERY_DEVICE_CONFIG_FLAGS : uint
     {
@@ -144,8 +144,12 @@ public static partial class ScreenQuery
         private DISPLAYCONFIG_SCALING scaling;
         private DISPLAYCONFIG_RATIONAL refreshRate;
         private DISPLAYCONFIG_SCANLINE_ORDERING scanLineOrdering;
-        public bool targetAvailable;
+
+        // IMPORTANT: BOOL in Win32 is 4 bytes. Was 'bool' previously (incorrect layout).
+        private int targetAvailable; // marshals Win32 BOOL
         public uint statusFlags;
+
+        public bool TargetAvailable => targetAvailable != 0;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -297,35 +301,109 @@ public static partial class ScreenQuery
         return deviceName.monitorFriendlyDeviceName;
     }
 
+    // Attempts to acquire current display configuration with limited retries to
+    // tolerate topology changes between buffer size and query calls.
+    private static bool TryAcquireDisplayConfig(out DISPLAYCONFIG_MODE_INFO[] modes)
+    {
+        modes = [];
+
+        const int maxAttempts = 5;
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            var err = GetDisplayConfigBufferSizes(QUERY_DEVICE_CONFIG_FLAGS.QDC_ONLY_ACTIVE_PATHS, out var pathCount, out var modeCount);
+            if (err != ErrorSuccess)
+            {
+                if (err == ErrorInvalidParameter || err == ErrorInsufficientBuffer)
+                {
+                    continue;
+                }
+
+                throw new Win32Exception(err);
+            }
+
+            if (pathCount == 0 && modeCount == 0)
+            {
+                return true;
+            }
+
+            var localPaths = new DISPLAYCONFIG_PATH_INFO[pathCount];
+            var localModes = new DISPLAYCONFIG_MODE_INFO[modeCount];
+
+            var pc = pathCount;
+            var mc = modeCount;
+            err = QueryDisplayConfig(
+                QUERY_DEVICE_CONFIG_FLAGS.QDC_ONLY_ACTIVE_PATHS,
+                ref pc,
+                localPaths,
+                ref mc,
+                localModes,
+                IntPtr.Zero);
+
+            if (err == ErrorSuccess)
+            {
+                // Trim if API returned fewer than allocated.
+                if (pc != pathCount)
+                {
+                    Array.Resize(ref localPaths, (int)pc);
+                }
+
+                if (mc != modeCount)
+                {
+                    Array.Resize(ref localModes, (int)mc);
+                }
+
+                modes = localModes;
+                return true;
+            }
+
+            if (err == ErrorInsufficientBuffer || err == ErrorInvalidParameter)
+            {
+                // Topology likely changed in-between; retry.
+                continue;
+            }
+
+            // Unexpected error.
+            throw new Win32Exception(err);
+        }
+
+        return false;
+    }
+
     private static IEnumerable<string> GetAllMonitorsFriendlyNames()
     {
-        var error = GetDisplayConfigBufferSizes(QUERY_DEVICE_CONFIG_FLAGS.QDC_ONLY_ACTIVE_PATHS, out var pathCount, out var modeCount);
-        if (error != ErrorSuccess)
+        DISPLAYCONFIG_MODE_INFO[] displayModes;
+
+        try
         {
-            throw new Win32Exception(error);
+            if (!TryAcquireDisplayConfig(out displayModes))
+            {
+                yield break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Debug(ex, "Failed to acquire display configuration");
+            yield break;
         }
 
-        var displayPaths = new DISPLAYCONFIG_PATH_INFO[pathCount];
-        var displayModes = new DISPLAYCONFIG_MODE_INFO[modeCount];
-        error = QueryDisplayConfig(
-            QUERY_DEVICE_CONFIG_FLAGS.QDC_ONLY_ACTIVE_PATHS,
-            ref pathCount,
-            displayPaths,
-            ref modeCount,
-            displayModes,
-            IntPtr.Zero);
-
-        if (error != ErrorSuccess)
+        foreach (var displayMode in displayModes)
         {
-            throw new Win32Exception(error);
-        }
-
-        for (var i = 0; i < modeCount; i++)
-        {
-            var displayMode = displayModes[i];
             if (displayMode.infoType == DISPLAYCONFIG_MODE_INFO_TYPE.DISPLAYCONFIG_MODE_INFO_TYPE_TARGET)
             {
-                yield return MonitorFriendlyName(displayMode.adapterId, displayMode.id);
+                string? name = null;
+                try
+                {
+                    name = MonitorFriendlyName(displayMode.adapterId, displayMode.id);
+                }
+                catch (Exception ex)
+                {
+                    Log.Logger.Debug(ex, "Failed to get friendly name for display target {Id}", displayMode.id);
+                }
+
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    yield return name;
+                }
             }
         }
     }
@@ -335,12 +413,16 @@ public static partial class ScreenQuery
         try
         {
             var allFriendlyNames = GetAllMonitorsFriendlyNames().ToArray();
-
             for (var index = 0; index < Screen.AllScreens.Length; index++)
             {
                 if (Equals(screen, Screen.AllScreens[index]))
                 {
-                    return allFriendlyNames[index];
+                    if (index < allFriendlyNames.Length)
+                    {
+                        return allFriendlyNames[index];
+                    }
+
+                    break;
                 }
             }
         }
