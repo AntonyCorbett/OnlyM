@@ -39,6 +39,17 @@ internal sealed class ImageCache
                 var image = GraphicsUtils.Downsize(
                     fullPath, MaxImageWidth, MaxImageHeight, ignoreInternalCache: true);
 
+                if (image == null)
+                {
+                    return null;
+                }
+
+                // Ensure cross-thread safety when produced off the UI thread.
+                if (image.CanFreeze && !image.IsFrozen)
+                {
+                    image.Freeze();
+                }
+
                 result = new ImageAndLastUsed { BitmapImage = image, LastUsedUtc = DateTime.UtcNow };
 
                 _cache.AddOrUpdate(

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -800,11 +801,35 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 {
                     await _pageService.StartMedia(mediaItem, GetCurrentMediaItems(), false);
 
-                    // when displaying an item we ensure that the next image item is cached.
-                    _pageService.CacheImageItem(GetNextImageItem(mediaItem));
+                    // Defer caching of next image so the just-started image can render first.
+                    CacheNextImageItem(mediaItem);
                 }
             }
         }
+    }
+
+    private void CacheNextImageItem(MediaItem current)
+    {
+        var nextItem = GetNextImageItem(current);
+        if (nextItem == null)
+        {
+            return;
+        }
+
+        // Schedule after current UI work (image render) completes.
+        Application.Current?.Dispatcher.BeginInvoke(
+            DispatcherPriority.ApplicationIdle,
+            new Action(() =>
+            {
+                try
+                {
+                    _pageService.CacheImageItem(nextItem);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error caching next image item (id={Id})", nextItem.Id);
+                }
+            }));
     }
 
     private bool CanStartMedia(MediaItem item)

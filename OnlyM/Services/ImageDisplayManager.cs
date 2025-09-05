@@ -241,10 +241,25 @@ internal sealed class ImageDisplayManager
 
     public void CacheImageItem(string mediaFilePath)
     {
-        if (_optionsService.CacheImages)
+        if (!_optionsService.CacheImages || string.IsNullOrEmpty(mediaFilePath))
         {
-            ImageCache.GetImage(mediaFilePath);
+            return;
         }
+
+        // Run caching off the UI thread so large image decoding does not block
+        // the initial render of the currently displayed image.
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                ImageCache.GetImage(mediaFilePath);
+            }
+            catch (Exception ex)
+            {
+                // Swallow – caching is opportunistic.
+                Log.Logger.Debug(ex, "Background image cache failed {Path}", mediaFilePath);
+            }
+        });
     }
 
     private void OnMediaChangeEvent(MediaEventArgs? e)
