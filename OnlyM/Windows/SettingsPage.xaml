@@ -190,7 +190,7 @@
                 <ComboBox
                     materialDesign:HintAssist.Hint="{x:Static resx:Resources.MEDIA_MONITOR}"
                     materialDesign:HintAssist.IsFloating="True"
-                    DisplayMemberPath="FriendlyName"
+                    DisplayMemberPath="NameForDisplayInUI"
                     IsEnabled="{Binding CanChangeMonitor}"
                     ItemsSource="{Binding Monitors}"
                     SelectedValue="{Binding MonitorId, Mode=TwoWay}"

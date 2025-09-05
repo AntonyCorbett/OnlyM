@@ -746,6 +746,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to primary.
+        /// </summary>
+        public static string PRIMARY_MONITOR {
+            get {
+                return ResourceManager.GetString("PRIMARY_MONITOR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PURGE THUMBNAIL CACHE.
         /// </summary>
         public static string PURGE_THUMBS {
