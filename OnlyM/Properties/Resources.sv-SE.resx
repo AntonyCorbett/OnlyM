@@ -616,7 +616,7 @@
     <value>Mindre (Ctrl+Minus)</value>
   </data>
   <data name="INSTALL_HEIF_CODEC" xml:space="preserve">
-    <value>Install HEIC/HEIF Image extensions!</value>
+    <value>Installera HEIC/HEIF bildtillägg!</value>
     <comment>Error shown when heic/heif support is not installed</comment>
   </data>
   <data name="PRIMARY_MONITOR" xml:space="preserve">
