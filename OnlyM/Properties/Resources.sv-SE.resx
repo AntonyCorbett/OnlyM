@@ -615,4 +615,8 @@
   <data name="WEB_PAGE_SMALLER" xml:space="preserve">
     <value>Mindre (Ctrl+Minus)</value>
   </data>
+  <data name="INSTALL_HEIF_CODEC" xml:space="preserve">
+    <value>Install HEIC/HEIF Image extensions!</value>
+    <comment>Error shown when heic/heif support is not installed</comment>
+  </data>
 </root>
