@@ -89,6 +89,7 @@ public static class GraphicsUtils
                 return memoryStream.ToArray();
             }
 
+            // HEIC/HEIF: rely on WIC via MagicScaler (no special case needed). If codec absent this will throw and be logged.
             var settings = new ProcessImageSettings
             {
                 Width = width,
@@ -156,9 +157,34 @@ public static class GraphicsUtils
             return CreateThumbnailOfSvgImage(path, maxPixelDimension);
         }
 
+        if (IsHeicFormat(path))
+        {
+            // Use MagicScaler (WIC) directly. System.Drawing cannot decode HEIC.
+            try
+            {
+                var settings = new ProcessImageSettings
+                {
+                    Width = maxPixelDimension,
+                    Height = maxPixelDimension,
+                    ResizeMode = CropScaleMode.Max,
+                    MatteColor = System.Drawing.Color.Black
+                };
+
+                using var ms = new MemoryStream();
+                MagicImageProcessor.ProcessImage(path, ms, settings);
+                ms.Position = 0;
+                return ms.ToArray();
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Warning(ex, "HEIC/HEIF decode failed {Path}", path);
+                return null; // Do NOT fall back to GDI+ path.
+            }
+        }
+
         return CreateThumbnailOfNativeImage(path, maxPixelDimension);
     }
-
+    
     public static byte[]? ImageSourceToJpegBytes(ImageSource? imageSource) => ImageSourceToBytes(new JpegBitmapEncoder(), imageSource);
 
     public static byte[]? ImageSourceToBytes(BitmapEncoder encoder, ImageSource? imageSource)
@@ -500,6 +526,10 @@ public static class GraphicsUtils
 
     private static bool IsSvgFormat(string path) =>
         !string.IsNullOrWhiteSpace(path) && path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsHeicFormat(string path) =>
+        !string.IsNullOrWhiteSpace(path) &&
+        (path.EndsWith(".heic", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".heif", StringComparison.OrdinalIgnoreCase));
 
     private static byte[] CreateThumbnailOfWebPImage(string path, int maxPixelDimension)
     {
