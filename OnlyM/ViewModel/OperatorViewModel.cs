@@ -314,6 +314,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             _optionsService,
             _metaDataProducer.Queue,
             App.FMpegFolderName,
+            _optionsService.MetaDataParallelism,
             _metaDataCancellationTokenSource.Token);
 
         _metaDataConsumer.ItemCompletedEvent += HandleItemCompletedEvent;

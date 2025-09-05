@@ -28,12 +28,18 @@ internal sealed class MetaDataQueueConsumer : IDisposable
     private readonly CancellationToken _cancellationToken;
     private readonly string _ffmpegFolder;
 
+    private readonly int _maxDegreeOfParallelism;
+    private readonly object _allItemsEventLock = new();
+    private int _inProgressCount;
+    private bool _allItemsEventRaisedForCurrentBatch;
+
     public MetaDataQueueConsumer(
         IThumbnailService thumbnailService,
         IMediaMetaDataService metaDataService,
         IOptionsService optionsService,
         BlockingCollection<MediaItem> metaDataProducerCollection,
         string ffmpegFolder,
+        int maxDegreeOfParallelism,
         CancellationToken cancellationToken)
     {
         _thumbnailService = thumbnailService;
@@ -44,17 +50,25 @@ internal sealed class MetaDataQueueConsumer : IDisposable
 
         _collection = metaDataProducerCollection;
         _cancellationToken = cancellationToken;
+
+        _maxDegreeOfParallelism = Math.Max(1, maxDegreeOfParallelism);
     }
 
     public event EventHandler<ItemMetaDataPopulatedEventArgs>? ItemCompletedEvent;
 
     public event EventHandler? AllItemsCompletedEvent;
 
-    public void Execute() => RunConsumer();
+    public void Execute() => RunConsumers();
 
     public void Dispose() => _collection.Dispose();
 
-    private void RunConsumer() => Task.Run(RunConsumerTaskAsync, _cancellationToken);
+    private void RunConsumers()
+    {
+        for (var i = 0; i < _maxDegreeOfParallelism; i++)
+        {
+            Task.Run(RunConsumerTaskAsync, _cancellationToken);
+        }
+    }
 
     private async Task RunConsumerTaskAsync()
     {
@@ -62,43 +76,68 @@ internal sealed class MetaDataQueueConsumer : IDisposable
         {
             while (!_cancellationToken.IsCancellationRequested)
             {
-                var nextItem = _collection.Take(_cancellationToken);
-
-                Log.Logger.Debug("Consuming item {Path}", nextItem.FilePath);
-
-                if (!IsPopulated(nextItem))
+                MediaItem nextItem;
+                try
                 {
-                    await PopulateThumbnailAndMetaDataAsync(nextItem);
+                    nextItem = _collection.Take(_cancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+
+                ResetAllItemsCompletedFlag();
+
+                Interlocked.Increment(ref _inProgressCount);
+                try
+                {
+                    if (Log.IsEnabled(LogEventLevel.Debug))
+                    {
+                        Log.Logger.Debug("Consuming item {Path}", nextItem.FilePath);
+                    }
 
                     if (!IsPopulated(nextItem))
                     {
-                        // put it back in the queue!
-                        ReplaceInQueue(nextItem);
+                        // Synchronous now
+                        PopulateThumbnailAndMetaData(nextItem);
+
+                        if (!IsPopulated(nextItem))
+                        {
+                            ReplaceInQueue(nextItem);
+                        }
+                        else
+                        {
+                            ItemCompleted(nextItem);
+                        }
+
+                        if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
+                        {
+                            Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _collection.Count);
+                        }
                     }
                     else
                     {
                         ItemCompleted(nextItem);
                     }
-
-                    if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
-                    {
-                        Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _collection.Count);
-                    }
-
-                    if (_collection.Count == 0)
-                    {
-                        AllItemsCompletedEvent?.Invoke(this, EventArgs.Empty);
-                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    ItemCompleted(nextItem);
+                    EventTracker.Error(ex, "Error processing metadata item");
+                    Log.Logger.Error(ex, "Error processing metadata item {Path}", nextItem.FilePath);
                 }
+                finally
+                {
+                    Interlocked.Decrement(ref _inProgressCount);
+                    TryRaiseAllItemsCompleted();
+                }
+
+                // yield occasionally to avoid monopolizing threads if cancellation requested late
+                await Task.Yield();
             }
         }
         catch (OperationCanceledException)
         {
-            Log.Logger.Debug("Metadata consumer closed");
+            Log.Logger.Debug("Metadata consumer cancelled");
         }
         catch (Exception ex)
         {
@@ -109,12 +148,17 @@ internal sealed class MetaDataQueueConsumer : IDisposable
 
     private void ItemCompleted(MediaItem nextItem)
     {
-        Log.Logger.Debug("Done item {Path}", nextItem.FilePath);
+        if (Log.IsEnabled(LogEventLevel.Debug))
+        {
+            Log.Logger.Debug("Done item {Path}", nextItem.FilePath);
+        }
+
         ItemCompletedEvent?.Invoke(this, new ItemMetaDataPopulatedEventArgs { MediaItem = nextItem });
     }
 
     private void ReplaceInQueue(MediaItem mediaItem)
     {
+        // this is a retry mechanism for cases where metadata extraction fails (e.g. file locked)
         mediaItem.MetaDataRetryCount++;
         if (mediaItem.MetaDataRetryCount > MaxMetaDataRetries)
         {
@@ -126,49 +170,94 @@ internal sealed class MetaDataQueueConsumer : IDisposable
             .ContinueWith(
                 _ =>
                 {
+                    if (_cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
                     Log.Logger.Debug("Replaced in queue {Path}", mediaItem.FilePath);
+                    ResetAllItemsCompletedFlag();
                     _collection.Add(mediaItem, _cancellationToken);
                 },
                 _cancellationToken);
     }
 
-    private async Task PopulateThumbnailAndMetaDataAsync(MediaItem mediaItem)
+    private void TryRaiseAllItemsCompleted()
     {
-        // Run logical steps sequentially. Each method internally does its own Task.Run
-        // for CPU/IO work. We only dispatch the minimal UI mutations.
-        await PopulateSlideDataAsync(mediaItem);
-        await PopulateThumbnailAsync(mediaItem);
-        await PopulateDurationAndTitleAsync(mediaItem);
+        if (_collection.Count == 0 && Volatile.Read(ref _inProgressCount) == 0)
+        {
+            lock (_allItemsEventLock)
+            {
+                if (_collection.Count == 0 && _inProgressCount == 0 && !_allItemsEventRaisedForCurrentBatch)
+                {
+                    _allItemsEventRaisedForCurrentBatch = true;
+                    AllItemsCompletedEvent?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
     }
 
-    private async Task PopulateSlideDataAsync(MediaItem mediaItem)
+    private void ResetAllItemsCompletedFlag()
     {
-        if (!IsSlideDataPopulated(mediaItem) && mediaItem.FilePath != null)
+        lock (_allItemsEventLock)
         {
-            SlideFile? sf = null;
+            _allItemsEventRaisedForCurrentBatch = false;
+        }
+    }
 
-            await Task.Run(() => sf = new SlideFile(mediaItem.FilePath), _cancellationToken);
+    private void PopulateThumbnailAndMetaData(MediaItem mediaItem)
+    {
+        if (_cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
 
-            if (sf != null && !_cancellationToken.IsCancellationRequested)
+        PopulateSlideData(mediaItem);
+
+        if (_cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        PopulateThumbnail(mediaItem);
+
+        if (_cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        PopulateDurationAndTitle(mediaItem);
+    }
+
+    private void PopulateSlideData(MediaItem mediaItem)
+    {
+        if (_cancellationToken.IsCancellationRequested ||
+            IsSlideDataPopulated(mediaItem) ||
+            mediaItem.FilePath == null)
+        {
+            return;
+        }
+
+        try
+        {
+            var sf = new SlideFile(mediaItem.FilePath);
+            if (_cancellationToken.IsCancellationRequested)
             {
-                mediaItem.SlideshowCount = sf.SlideCount;
-                mediaItem.SlideshowLoop = sf.Loop;
-                mediaItem.IsRollingSlideshow = sf.AutoPlay;
+                return;
             }
+
+            mediaItem.SlideshowCount = sf.SlideCount;
+            mediaItem.SlideshowLoop = sf.Loop;
+            mediaItem.IsRollingSlideshow = sf.AutoPlay;
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not parse slideshow file {Path}", mediaItem.FilePath);
         }
     }
 
     private static bool IsPopulated(MediaItem mediaItem)
     {
-        if (Log.Logger.IsEnabled(LogEventLevel.Debug))
-        {
-            Log.Logger.Debug(
-                "Thumb: {IsThumbnailPopulated} Duration and Title: {IsDurationAndTitlePopulated} Slide: {IsSlideDataPopulated}",
-                IsThumbnailPopulated(mediaItem),
-                IsDurationAndTitlePopulated(mediaItem),
-                IsSlideDataPopulated(mediaItem));
-        }
-
         return
             IsThumbnailPopulated(mediaItem) &&
             IsDurationAndTitlePopulated(mediaItem) &&
@@ -183,82 +272,92 @@ internal sealed class MetaDataQueueConsumer : IDisposable
 
     private static bool IsSlideDataPopulated(MediaItem mediaItem) => !mediaItem.IsSlideshow || mediaItem.SlideshowCount > 0;
 
-    private async Task PopulateDurationAndTitleAsync(MediaItem mediaItem)
+    private void PopulateDurationAndTitle(MediaItem mediaItem)
     {
-        if (mediaItem.FilePath != null &&
-            mediaItem.MediaType != null &&
-            !IsDurationAndTitlePopulated(mediaItem))
+        if (_cancellationToken.IsCancellationRequested ||
+            mediaItem.FilePath == null ||
+            mediaItem.MediaType == null ||
+            IsDurationAndTitlePopulated(mediaItem))
         {
-            MediaMetaData? metaData = null;
-
-            await Task.Run(() => metaData = _metaDataService.GetMetaData(mediaItem.FilePath, mediaItem.MediaType, _ffmpegFolder), _cancellationToken);
-
-            if (!IsDurationAndTitlePopulated(mediaItem) && !_cancellationToken.IsCancellationRequested)
-            {
-                mediaItem.DurationDeciseconds = metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
-                mediaItem.Title = GetMediaTitle(mediaItem.FilePath, metaData);
-                mediaItem.FileNameAsSubTitle = _optionsService.UseInternalMediaTitles
-                    ? Path.GetFileName(mediaItem.FilePath)
-                    : null;
-                mediaItem.VideoRotation = metaData?.VideoRotation ?? 0;
-            }
+            return;
         }
+
+        MediaMetaData? metaData = null;
+
+        try
+        {
+            metaData = _metaDataService.GetMetaData(
+                mediaItem.FilePath,
+                mediaItem.MediaType,
+                _ffmpegFolder);
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Metadata extraction failed for {Path}", mediaItem.FilePath);
+        }
+
+        if (IsDurationAndTitlePopulated(mediaItem) || _cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        mediaItem.DurationDeciseconds = metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
+        mediaItem.Title = GetMediaTitle(mediaItem.FilePath, metaData);
+        mediaItem.FileNameAsSubTitle = _optionsService.UseInternalMediaTitles
+            ? Path.GetFileName(mediaItem.FilePath)
+            : null;
+        mediaItem.VideoRotation = metaData?.VideoRotation ?? 0;
     }
 
-    private async Task PopulateThumbnailAsync(MediaItem mediaItem)
+    private void PopulateThumbnail(MediaItem mediaItem)
     {
-        if (mediaItem.FilePath != null && mediaItem.MediaType != null && !IsThumbnailPopulated(mediaItem))
+        if (_cancellationToken.IsCancellationRequested ||
+            mediaItem.FilePath == null ||
+            mediaItem.MediaType == null ||
+            IsThumbnailPopulated(mediaItem))
         {
-            byte[]? thumb = null;
-            try
+            return;
+        }
+
+        try
+        {
+            var thumb = _thumbnailService.GetThumbnail(
+                mediaItem.FilePath,
+                Unosquare.FFME.Library.FFmpegDirectory,
+                mediaItem.MediaType.Classification,
+                mediaItem.LastChanged,
+                out var _);
+
+            if (thumb == null || _cancellationToken.IsCancellationRequested || IsThumbnailPopulated(mediaItem))
             {
-                // Generate / fetch thumbnail bytes off the UI thread.
-                await Task.Run(
-                    () =>
-                    {
-                        thumb = _thumbnailService.GetThumbnail(
-                            mediaItem.FilePath,
-                            Unosquare.FFME.Library.FFmpegDirectory,
-                            mediaItem.MediaType.Classification,
-                            mediaItem.LastChanged,
-                            out var _);
-                    }, _cancellationToken);
+                return;
+            }
 
-                Log.Logger.Debug(
-                    "PopulateThumbnailAsync: thumb={Thumb} IsThumbnailPopulated={IsPopulated} Cancelled={Cancelled}",
-                    thumb != null,
-                    IsThumbnailPopulated(mediaItem),
-                    _cancellationToken.IsCancellationRequested);
+            var bmp = GraphicsUtils.ByteArrayToImage(thumb);
+            if (bmp == null)
+            {
+                return;
+            }
 
-                if (thumb != null && !_cancellationToken.IsCancellationRequested && !IsThumbnailPopulated(mediaItem))
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (!IsThumbnailPopulated(mediaItem))
                 {
-                    // Create (and freeze) the BitmapImage off UI thread
-                    var bmp = GraphicsUtils.ByteArrayToImage(thumb);
-
-                    if (bmp != null)
-                    {
-                        // Assign on UI thread (safer for bindings / PropertyChanged sequencing)
-                        await Application.Current.Dispatcher.InvokeAsync(() =>
-                        {
-                            if (!IsThumbnailPopulated(mediaItem))
-                            {
-                                mediaItem.ThumbnailImageSource = bmp;
-                            }
-                        });
-                        Log.Logger.Debug("After assignment: ThumbnailImageSource now set = {Value}", mediaItem.ThumbnailImageSource != null);
-                    }
+                    mediaItem.ThumbnailImageSource = bmp;
                 }
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Could not get a thumbnail for {Path}", mediaItem.FilePath);
-            }
+            });
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not get a thumbnail for {Path}", mediaItem.FilePath);
         }
     }
 
     private string GetMediaTitle(string filePath, MediaMetaData? metaData)
     {
-        if (_optionsService.UseInternalMediaTitles && metaData != null && !string.IsNullOrEmpty(metaData.Title))
+        if (_optionsService.UseInternalMediaTitles &&
+            metaData != null &&
+            !string.IsNullOrEmpty(metaData.Title))
         {
             return metaData.Title;
         }

@@ -64,6 +64,8 @@ public sealed class Options
 
     public bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 
+    public int MetaDataParallelism { get; set; } = 3;
+
     public bool ShowMediaItemCommandPanel { get; set; }
 
     public bool ShowFreezeCommand { get; set; }

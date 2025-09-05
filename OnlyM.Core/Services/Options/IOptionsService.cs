@@ -58,6 +58,8 @@ public interface IOptionsService
 
     bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 
+    int MetaDataParallelism { get; set; }
+
     string? AppWindowPlacement { get; set; }
 
     string? MediaWindowPlacement { get; set; }

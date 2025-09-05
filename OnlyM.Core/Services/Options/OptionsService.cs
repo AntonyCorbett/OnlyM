@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
@@ -92,6 +93,12 @@ public sealed class OptionsService : IOptionsService
     {
         get => _options.Value.ShouldPurgeBrowserCacheOnStartup;
         set => _options.Value.ShouldPurgeBrowserCacheOnStartup = value;
+    }
+
+    public int MetaDataParallelism
+    {
+        get => _options.Value.MetaDataParallelism;
+        set => _options.Value.MetaDataParallelism = value;
     }
 
     public string? AppWindowPlacement
