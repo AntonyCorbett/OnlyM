@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
@@ -18,35 +19,67 @@ namespace OnlyM.Windows;
 // ReSharper disable once UnusedMember.Global
 public partial class MainWindow
 {
+    private readonly IActiveMediaItemsService? _activeMediaItemsService;
+    private readonly ISnackbarService? _snackbarService;
+    private static readonly bool IsDesignMode = DesignerProperties.GetIsInDesignMode(new DependencyObject());
+
     public MainWindow()
     {
         InitializeComponent();
+
+        // Safely resolve and cache services (avoids repeated Ioc access during Closing).
+        if (!IsDesignMode)
+        {
+            try
+            {
+                _activeMediaItemsService = Ioc.Default.GetService<IActiveMediaItemsService>();
+                _snackbarService = Ioc.Default.GetService<ISnackbarService>();
+            }
+            catch (System.InvalidOperationException)
+            {
+                // IOC not configured (design time, early shutdown, or failed startup). Leave fields null.
+            }
+        }
     }
 
     protected override void OnSourceInitialized(System.EventArgs e)
     {
         AdjustMainWindowPositionAndSize();
 
-        var pageService = Ioc.Default.GetService<IPageService>();
-        if (pageService != null)
+        if (!IsDesignMode)
         {
-            pageService.ScrollViewer = MainScrollViewer;
+            try
+            {
+                var pageService = Ioc.Default.GetService<IPageService>();
+                if (pageService != null)
+                {
+                    pageService.ScrollViewer = MainScrollViewer;
+                }
+            }
+            catch (System.InvalidOperationException)
+            {
+                // Ignore if IOC not ready (rare).
+            }
         }
     }
 
-    private void WindowClosing(object? sender, System.ComponentModel.CancelEventArgs e)
+    private void WindowClosing(object? sender, CancelEventArgs e)
     {
-        var activeMediaService = Ioc.Default.GetService<IActiveMediaItemsService>();
-        if (activeMediaService == null)
+        if (IsDesignMode)
         {
             return;
         }
 
-        if (activeMediaService.Any())
+        // If IOC failed to configure, allow normal close.
+        if (_activeMediaItemsService == null)
         {
-            // prevent app closing when media is active.
-            var snackbarService = Ioc.Default.GetService<ISnackbarService>();
-            snackbarService?.EnqueueWithOk(Properties.Resources.MEDIA_ACTIVE, Properties.Resources.OK);
+            return;
+        }
+
+        if (_activeMediaItemsService.Any())
+        {
+            // Prevent app closing when media is active.
+            _snackbarService?.EnqueueWithOk(Properties.Resources.MEDIA_ACTIVE, Properties.Resources.OK);
             e.Cancel = true;
         }
         else
@@ -58,34 +91,70 @@ public partial class MainWindow
 
     private void AdjustMainWindowPositionAndSize()
     {
-        var optionsService = Ioc.Default.GetService<IOptionsService>();
-        if (!string.IsNullOrEmpty(optionsService?.AppWindowPlacement))
+        if (IsDesignMode)
         {
-            ResizeMode = WindowState == WindowState.Maximized
-                ? ResizeMode.NoResize
-                : ResizeMode.CanResizeWithGrip;
+            return;
+        }
 
-            this.SetPlacement(optionsService.AppWindowPlacement);
+        try
+        {
+            var optionsService = Ioc.Default.GetService<IOptionsService>();
+            if (!string.IsNullOrEmpty(optionsService?.AppWindowPlacement))
+            {
+                ResizeMode = WindowState == WindowState.Maximized
+                    ? ResizeMode.NoResize
+                    : ResizeMode.CanResizeWithGrip;
+
+                this.SetPlacement(optionsService.AppWindowPlacement);
+            }
+        }
+        catch (System.InvalidOperationException)
+        {
+            // Ignore if not configured.
         }
     }
 
     private void SaveWindowPos()
     {
-        var optionsService = Ioc.Default.GetService<IOptionsService>();
-        if (optionsService != null)
+        if (IsDesignMode)
         {
-            optionsService.AppWindowPlacement = this.GetPlacement();
-            optionsService.Save();
+            return;
+        }
+
+        try
+        {
+            var optionsService = Ioc.Default.GetService<IOptionsService>();
+            if (optionsService != null)
+            {
+                optionsService.AppWindowPlacement = this.GetPlacement();
+                optionsService.Save();
+            }
+        }
+        catch (System.InvalidOperationException)
+        {
+            // Ignore if not configured.
         }
     }
 
     private void OnPaste(object? sender, ExecutedRoutedEventArgs e)
     {
-        var dragAndDropService = Ioc.Default.GetService<IDragAndDropService>();
-        if (dragAndDropService != null)
+        if (IsDesignMode)
         {
-            dragAndDropService.Paste();
-            e.Handled = true;
+            return;
+        }
+
+        try
+        {
+            var dragAndDropService = Ioc.Default.GetService<IDragAndDropService>();
+            if (dragAndDropService != null)
+            {
+                dragAndDropService.Paste();
+                e.Handled = true;
+            }
+        }
+        catch (System.InvalidOperationException)
+        {
+            // Ignore if not configured.
         }
     }
 }
