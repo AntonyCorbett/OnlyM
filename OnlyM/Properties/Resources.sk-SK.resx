@@ -610,13 +610,13 @@
     <value>Reset Size (Ctrl+0)</value>
   </data>
   <data name="WEB_PAGE_SIZE" xml:space="preserve">
-    <value>Page Size</value>
+    <value>Veľkosť stránky</value>
   </data>
   <data name="WEB_PAGE_SMALLER" xml:space="preserve">
     <value>Smaller (Ctrl+Minus)</value>
   </data>
   <data name="INSTALL_HEIF_CODEC" xml:space="preserve">
-    <value>Install HEIC/HEIF Image extensions!</value>
+    <value>Nainštalujte rozšírenia obrázkov HEIC/HEIF!</value>
     <comment>Error shown when heic/heif support is not installed</comment>
   </data>
 </root>
