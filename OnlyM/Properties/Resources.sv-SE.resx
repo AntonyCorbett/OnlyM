@@ -619,4 +619,7 @@
     <value>Install HEIC/HEIF Image extensions!</value>
     <comment>Error shown when heic/heif support is not installed</comment>
   </data>
+  <data name="PRIMARY_MONITOR" xml:space="preserve">
+    <value>primär</value>
+  </data>
 </root>
