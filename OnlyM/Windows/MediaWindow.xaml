@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
+    xmlns:local="clr-namespace:OnlyM.Windows"
     xmlns:magnifierControl="clr-namespace:OnlyM.CustomControls.MagnifierControl;assembly=OnlyM.CustomControls"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -21,6 +22,45 @@
     MouseDown="Window_MouseDown"
     SizeChanged="WindowSizeChanged"
     mc:Ignorable="d">
+
+    <!--  Add command + key bindings at Window level  -->
+    <Window.CommandBindings>
+        <CommandBinding
+            CanExecute="ZoomImage_CanExecute"
+            Command="{x:Static local:MediaWindow.ZoomInImageCommand}"
+            Executed="ZoomInImage_Executed" />
+        <CommandBinding
+            CanExecute="ZoomImage_CanExecute"
+            Command="{x:Static local:MediaWindow.ZoomOutImageCommand}"
+            Executed="ZoomOutImage_Executed" />
+        <CommandBinding
+            CanExecute="ResetImageZoom_CanExecute"
+            Command="{x:Static local:MediaWindow.ResetImageZoomCommand}"
+            Executed="ResetImageZoom_Executed" />
+    </Window.CommandBindings>
+
+    <Window.InputBindings>
+        <KeyBinding
+            Key="Add"
+            Command="{x:Static local:MediaWindow.ZoomInImageCommand}"
+            Modifiers="Control" />
+        <KeyBinding
+            Key="OemPlus"
+            Command="{x:Static local:MediaWindow.ZoomInImageCommand}"
+            Modifiers="Control" />
+        <KeyBinding
+            Key="Subtract"
+            Command="{x:Static local:MediaWindow.ZoomOutImageCommand}"
+            Modifiers="Control" />
+        <KeyBinding
+            Key="OemMinus"
+            Command="{x:Static local:MediaWindow.ZoomOutImageCommand}"
+            Modifiers="Control" />
+        <KeyBinding
+            Key="D0"
+            Command="{x:Static local:MediaWindow.ResetImageZoomCommand}"
+            Modifiers="Control" />
+    </Window.InputBindings>
 
     <!--  prevent resize border at top because it interferes with dropdown nav bar in web  -->
     <WindowChrome.WindowChrome>
@@ -130,39 +170,39 @@
             <Grid.InputBindings>
                 <KeyBinding
                     Key="Add"
-                    Command="{Binding WebBrowser.ZoomInCommand}"
+                    Command="{Binding Path=ZoomInCommand, Source={x:Reference Browser}}"
                     Modifiers="Control" />
                 <KeyBinding
                     Key="OemPlus"
-                    Command="{Binding WebBrowser.ZoomInCommand}"
+                    Command="{Binding Path=ZoomInCommand, Source={x:Reference Browser}}"
                     Modifiers="Control" />
                 <KeyBinding
                     Key="Subtract"
-                    Command="{Binding WebBrowser.ZoomOutCommand}"
+                    Command="{Binding Path=ZoomOutCommand, Source={x:Reference Browser}}"
                     Modifiers="Control" />
                 <KeyBinding
                     Key="OemMinus"
-                    Command="{Binding WebBrowser.ZoomOutCommand}"
+                    Command="{Binding Path=ZoomOutCommand, Source={x:Reference Browser}}"
                     Modifiers="Control" />
                 <KeyBinding
                     Key="D0"
-                    Command="{Binding WebBrowser.ZoomResetCommand}"
+                    Command="{Binding Path=ZoomResetCommand, Source={x:Reference Browser}}"
                     Modifiers="Control" />
 
                 <!--  Special keyboard keys  -->
-                <KeyBinding Key="BrowserBack" Command="{Binding WebBrowser.BackCommand}" />
-                <KeyBinding Key="BrowserForward" Command="{Binding WebBrowser.ForwardCommand}" />
-                <KeyBinding Key="BrowserRefresh" Command="{Binding WebBrowser.ReloadCommand}" />
-                <KeyBinding Key="BrowserStop" Command="{Binding WebBrowser.StopCommand}" />
+                <KeyBinding Key="BrowserBack" Command="{Binding Path=BackCommand, Source={x:Reference Browser}}" />
+                <KeyBinding Key="BrowserForward" Command="{Binding Path=ForwardCommand, Source={x:Reference Browser}}" />
+                <KeyBinding Key="BrowserRefresh" Command="{Binding Path=ReloadCommand, Source={x:Reference Browser}}" />
+                <KeyBinding Key="BrowserStop" Command="{Binding Path=StopCommand, Source={x:Reference Browser}}" />
 
                 <!--  Note that any Alt key combinations, e.g. Alt+LEFT and Alt+RIGHT are handled in OnPreviewKeyDown in code behind  -->
 
                 <KeyBinding
                     Key="F5"
-                    Command="{Binding WebBrowser.ReloadCommand}"
+                    Command="{Binding Path=ReloadCommand, Source={x:Reference Browser}}"
                     Modifiers="Control" />
 
-                <KeyBinding Key="Escape" Command="{Binding WebBrowser.StopCommand}" />
+                <KeyBinding Key="Escape" Command="{Binding Path=StopCommand, Source={x:Reference Browser}}" />
 
                 <KeyBinding Key="F1" Command="{Binding ToggleMagnifier}" />
                 <KeyBinding Key="F2" Command="{Binding ToggleMagnifierFrame}" />
@@ -214,7 +254,7 @@
                     Orientation="Horizontal"
                     Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Button
-                        Command="{Binding WebBrowser.BackCommand}"
+                        Command="{Binding Path=BackCommand, Source={x:Reference Browser}}"
                         Style="{StaticResource NavButtonStyle}"
                         ToolTip="{x:Static resx:Resources.WEB_NAV_BACK}">
                         <materialDesign:PackIcon
@@ -224,7 +264,7 @@
                     </Button>
 
                     <Button
-                        Command="{Binding WebBrowser.ForwardCommand}"
+                        Command="{Binding Path=ForwardCommand, Source={x:Reference Browser}}"
                         Style="{StaticResource NavButtonStyle}"
                         ToolTip="{x:Static resx:Resources.WEB_NAV_FORWARD}">
                         <materialDesign:PackIcon
@@ -234,7 +274,7 @@
                     </Button>
 
                     <Button
-                        Command="{Binding WebBrowser.ReloadCommand}"
+                        Command="{Binding Path=ReloadCommand, Source={x:Reference Browser}}"
                         Style="{StaticResource RefreshButtonStyle}"
                         ToolTip="{x:Static resx:Resources.WEB_PAGE_RELOAD}">
                         <materialDesign:PackIcon
@@ -364,7 +404,7 @@
                             <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
 
                                 <Button
-                                    Command="{Binding WebBrowser.ZoomOutCommand}"
+                                    Command="{Binding Path=ZoomOutCommand, Source={x:Reference Browser}}"
                                     Style="{StaticResource ZoomButtonStyle}"
                                     ToolTip="{x:Static resx:Resources.WEB_PAGE_SMALLER}"
                                     Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -375,7 +415,7 @@
                                 </Button>
 
                                 <Button
-                                    Command="{Binding WebBrowser.ZoomInCommand}"
+                                    Command="{Binding Path=ZoomInCommand, Source={x:Reference Browser}}"
                                     Style="{StaticResource ZoomButtonStyle}"
                                     ToolTip="{x:Static resx:Resources.WEB_PAGE_LARGER}"
                                     Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -386,7 +426,7 @@
                                 </Button>
 
                                 <Button
-                                    Command="{Binding WebBrowser.ZoomResetCommand}"
+                                    Command="{Binding Path=ZoomResetCommand, Source={x:Reference Browser}}"
                                     Style="{StaticResource ZoomButtonStyle}"
                                     ToolTip="{x:Static resx:Resources.WEB_PAGE_RESET}"
                                     Visibility="{Binding Path=IsWebPage, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -411,8 +451,31 @@
         </Grid>
         <!--  End of page grid  -->
 
-        <Image x:Name="Image1Element" />
+        <!--  Ensure images have transforms for animated zoom/pan  -->
+        <Image
+            x:Name="Image1Element"
+            Focusable="True"
+            MouseDown="ImageElement_MouseDown"
+            RenderTransformOrigin="0,0">
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                    <TranslateTransform X="0" Y="0" />
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
 
-        <Image x:Name="Image2Element" />
+        <Image
+            x:Name="Image2Element"
+            Focusable="True"
+            MouseDown="ImageElement_MouseDown"
+            RenderTransformOrigin="0,0">
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                    <TranslateTransform X="0" Y="0" />
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
     </Grid>
 </Window>
