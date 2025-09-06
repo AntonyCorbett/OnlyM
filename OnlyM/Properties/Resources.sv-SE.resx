@@ -615,4 +615,11 @@
   <data name="WEB_PAGE_SMALLER" xml:space="preserve">
     <value>Mindre (Ctrl+Minus)</value>
   </data>
+  <data name="INSTALL_HEIF_CODEC" xml:space="preserve">
+    <value>Installera HEIC/HEIF bildtillägg!</value>
+    <comment>Error shown when heic/heif support is not installed</comment>
+  </data>
+  <data name="PRIMARY_MONITOR" xml:space="preserve">
+    <value>primär</value>
+  </data>
 </root>

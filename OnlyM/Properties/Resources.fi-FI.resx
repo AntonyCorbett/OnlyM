@@ -615,4 +615,11 @@
   <data name="WEB_PAGE_SMALLER" xml:space="preserve">
     <value>Pienempi (Ctrl+Minus)</value>
   </data>
+  <data name="INSTALL_HEIF_CODEC" xml:space="preserve">
+    <value>Asenna HEIC/HEIF kuvalaajennukset!</value>
+    <comment>Error shown when heic/heif support is not installed</comment>
+  </data>
+  <data name="PRIMARY_MONITOR" xml:space="preserve">
+    <value>ensisijainen</value>
+  </data>
 </root>
