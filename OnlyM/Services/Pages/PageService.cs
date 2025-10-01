@@ -176,8 +176,12 @@ internal sealed class PageService : IDisposable, IPageService
             var requiresVisibleWindow = mediaItemToStart.MediaType?.Classification != MediaClassification.Audio;
             OpenMediaWindow(requiresVisibleWindow, mediaItemToStart.IsVideo);
 
-            CheckMediaWindow();
-
+            if (_mediaWindow == null)
+            {
+                Log.Error("Media window failed to initialize for {Path}", mediaItemToStart.FilePath);
+                return;
+            }
+            
             await _mediaWindow!.StartMedia(
                 mediaItemToStart,
                 currentMediaItems,
