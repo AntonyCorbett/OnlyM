@@ -545,12 +545,21 @@ internal sealed class DragAndDropService : IDragAndDropService
             return false;
         }
 
-        // this is better for ths folder watcher which triggers as soon as a file write 
+        // this is better for the folder watcher which triggers as soon as a file write 
         // begins. A large file would not be completely written before the folder watcher
         // triggers an attempt to analyse the file, extract thumbnail etc.
         var tempFileName = Path.Combine(destFolder, Path.GetRandomFileName());
         File.Copy(sourceFile, tempFileName, true);
-        File.Move(tempFileName, destFile);
+
+        try
+        {
+            File.Move(tempFileName, destFile);
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not copy media file");
+            return false;
+        }
 
         return true;
     }
