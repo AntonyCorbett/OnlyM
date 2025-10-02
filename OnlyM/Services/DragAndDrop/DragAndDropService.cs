@@ -219,7 +219,6 @@ internal sealed class DragAndDropService : IDragAndDropService
         }
         catch (Exception ex)
         {
-            EventTracker.Error(ex, "Copying image data");
             Log.Logger.Error(ex, "Could not copy image data");
             someError = true;
         }
@@ -371,7 +370,7 @@ internal sealed class DragAndDropService : IDragAndDropService
                 InitialiseCurrentClipboardImageIndex();
             }
 
-            // this is better for ths folder watcher which triggers as soon as a file write 
+            // this is better for the folder watcher which triggers as soon as a file write 
             // begins. A large file would not be completely written before the folder watcher
             // triggers an attempt to analyse the file, extract thumbnail etc.
             var tempFileName = Path.Combine(mediaFolder, Path.GetRandomFileName());

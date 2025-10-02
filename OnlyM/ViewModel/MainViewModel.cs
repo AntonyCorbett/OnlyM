@@ -248,30 +248,63 @@ internal sealed class MainViewModel : ObservableObject
 
     private bool CheckControlledFolderAccess()
     {
-        // Windows 10 Controlled folder access may be enabled preventing
-        // OnlyM from writing to its database.
-        var databaseFolder = FileUtils.GetOnlyMDatabaseFolder();
-
-        var tempFileName = Guid.NewGuid().ToString("N");
-        var fullPath = Path.Combine(databaseFolder, tempFileName);
-
         try
         {
-            File.Create(fullPath).Close();
-            File.Delete(fullPath);
+            var databaseFolder = FileUtils.GetOnlyMDatabaseFolder();
+
+            if (string.IsNullOrWhiteSpace(databaseFolder))
+            {
+                Log.Logger.Error("Database folder path is null or empty");
+                return false;
+            }
+
+            // Re-ensure it exists in case it was deleted between earlier setup and now
+            Directory.CreateDirectory(databaseFolder);
+
+            // Compose a temp file name (random)
+            var tempFileName = Path.GetRandomFileName();
+            var fullPath = Path.Combine(databaseFolder, tempFileName);
+
+            // Extra diagnostics (debug builds or verbose logging)
+            if (Log.Logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))
+            {
+                Log.Logger.Debug("Testing DB folder access at {Path}. Exists={Exists}", fullPath, Directory.Exists(databaseFolder));
+            }
+
+            // Create & auto-delete on close -> no separate Delete call
+            using (File.Create(fullPath, 1, FileOptions.DeleteOnClose))
+            {
+                // If we get here, write permission succeeded
+            }
 
             return true;
         }
         catch (UnauthorizedAccessException ex)
         {
             EventTracker.Error(ex, "Checking access rights to database folder");
-            Log.Logger.Warning("OnlyM cannot write to its database folder. Perhaps controlled folder access is enabled");
+            Log.Logger.Warning("OnlyM cannot write to its database folder. Possible Controlled Folder Access or permissions issue");
             _snackbarService.EnqueueWithOk(Properties.Resources.ALLOW_DB_ACCESS, Properties.Resources.OK);
+        }
+        catch (FileNotFoundException ex)
+        {
+            // Most likely network / redirected / cloud Documents folder temporarily unavailable
+            EventTracker.Error(ex, "FileNotFound during DB folder access test");
+            Log.Logger.Error(ex, "FileNotFound creating temp file in database folder (path or redirected location unavailable)");
+        }
+        catch (DirectoryNotFoundException ex)
+        {
+            EventTracker.Error(ex, "DirectoryNotFound during DB folder access test");
+            Log.Logger.Error(ex, "Database directory missing during access test");
+        }
+        catch (IOException ex)
+        {
+            EventTracker.Error(ex, "IO exception during DB folder access test");
+            Log.Logger.Error(ex, "IO error while checking controlled folder access");
         }
         catch (Exception ex)
         {
-            EventTracker.Error(ex, "Checking access rights to database folder");
-            Log.Logger.Error(ex, "Checking controlled folder access");
+            EventTracker.Error(ex, "Unexpected error during DB folder access test");
+            Log.Logger.Error(ex, "Unexpected error while checking controlled folder access");
         }
 
         return false;
