@@ -191,7 +191,7 @@ public partial class App
     private void CurrentDispatcherUnhandledException(object? sender, DispatcherUnhandledExceptionEventArgs e)
     {
         // unhandled exceptions thrown from UI thread
-        
+
         EventTracker.Error(e.Exception, "Unhandled exception");
 
         e.Handled = true;

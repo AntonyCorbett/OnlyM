@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,7 +30,7 @@ internal sealed class ImageDisplayManager
 
     private readonly string _slideshowStagingFolder;
     private readonly DispatcherTimer _slideshowTimer = new();
-    private readonly object _slideshowLock = new();
+    private readonly Lock _slideshowLock = new();
 
     private readonly Image _image1;
     private readonly Image _image2;

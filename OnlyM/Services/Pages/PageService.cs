@@ -181,7 +181,7 @@ internal sealed class PageService : IDisposable, IPageService
                 Log.Error("Media window failed to initialize for {Path}", mediaItemToStart.FilePath);
                 return;
             }
-            
+
             await _mediaWindow!.StartMedia(
                 mediaItemToStart,
                 currentMediaItems,

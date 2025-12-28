@@ -29,7 +29,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
     private readonly string _ffmpegFolder;
 
     private readonly int _maxDegreeOfParallelism;
-    private readonly object _allItemsEventLock = new();
+    private readonly Lock _allItemsEventLock = new();
     private int _inProgressCount;
     private bool _allItemsEventRaisedForCurrentBatch;
 

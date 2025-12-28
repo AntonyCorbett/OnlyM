@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using OnlyM.Core.Services.Media;
@@ -27,7 +28,7 @@ internal sealed class DragAndDropService : IDragAndDropService
     private readonly IMediaProviderService _mediaProviderService;
     private readonly IOptionsService _optionsService;
     private readonly ISnackbarService _snackbarService;
-    private readonly object _imageDataPasteLock = new();
+    private readonly Lock _imageDataPasteLock = new();
     private bool _canDrop;
     private int _currentClipboardImageIndex = -1; // -1 = uninitialized
 

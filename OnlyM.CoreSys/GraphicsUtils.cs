@@ -8,6 +8,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using PhotoSauce.MagicScaler;
@@ -30,7 +31,7 @@ public static class GraphicsUtils
     // One-time HEIC codec missing detection.
     public static event EventHandler? HeicCodecMissingDetected;
 
-    private static readonly object TagLibLocker = new();
+    private static readonly Lock TagLibLocker = new();
     private static bool _heicCodecMissingRaised;
 
     public static bool AutoRotateIfRequired(string? itemFilePath)

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace OnlyM.Services.MediaChanging;
 
 internal sealed class MediaStatusChangingService : IMediaStatusChangingService
 {
     private readonly HashSet<Guid> _changingMediaItems = [];
-    private readonly object _locker = new();
+    private readonly Lock _locker = new();
 
     public void AddChangingItem(Guid mediaItemId)
     {
