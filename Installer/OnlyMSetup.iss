@@ -7,7 +7,7 @@
 #define SlideManagerAppExeName "OnlyMSlideManager.exe"
 #define SlideManagerAppName "OnlyM Slide Manager"
 
-#define MyAppVersion GetFileVersion('..\OnlyM\bin\Release\net8.0-windows\publish\OnlyM.exe');
+#define MyAppVersion GetFileVersion('..\OnlyM\bin\Release\net9.0-windows\publish\OnlyM.exe');
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -46,7 +46,7 @@ Type: filesandordirs; Name: "{app}\*.*"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
-Source: "..\OnlyM\bin\Release\net8.0-windows\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+Source: "..\OnlyM\bin\Release\net9.0-windows\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 
 ; web shortcuts...
 Source: "..\UrlLinkFiles\JW Broadcasting.url"; DestDir: "{commonappdata}\OnlyM\Websites"

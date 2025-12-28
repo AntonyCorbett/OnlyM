@@ -29,51 +29,51 @@ IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
 ECHO Copying OnlyMMirror items into delivery
-copy OnlyMMirror\OnlyM\bin\x86\Release\OnlyMMirror.exe OnlyM\bin\Release\net8.0-windows\publish
+copy OnlyMMirror\OnlyM\bin\x86\Release\OnlyMMirror.exe OnlyM\bin\Release\net9.0-windows\publish
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
 ECHO Copying OnlyMSlideManager items into delivery
-xcopy OnlyMSlideManager\bin\Release\net8.0-windows\publish\*.* OnlyM\bin\Release\net8.0-windows\publish /q /s /y /d
+xcopy OnlyMSlideManager\bin\Release\net9.0-windows\publish\*.* OnlyM\bin\Release\net9.0-windows\publish /q /s /y /d
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
 ECHO Copying VCRTL items into delivery
-xcopy VCRTL\*.* OnlyM\bin\Release\net8.0-windows\publish /q
+xcopy VCRTL\*.* OnlyM\bin\Release\net9.0-windows\publish /q
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
 ECHO Removing unwanted language files
-rd OnlyM\bin\Release\net8.0-windows\publish\no-NO /q /s
-rd OnlyM\bin\Release\net8.0-windows\publish\pap-PAP /q /s
+rd OnlyM\bin\Release\net9.0-windows\publish\no-NO /q /s
+rd OnlyM\bin\Release\net9.0-windows\publish\pap-PAP /q /s
 
 ECHO.
 ECHO Copying Satellite assemblies for language files
 ECHO Czech
-xcopy OnlyM\bin\Release\net8.0-windows\publish\cs\*.*  OnlyM\bin\Release\net8.0-windows\publish\cs-CZ /q
-rd OnlyM\bin\Release\net8.0-windows\publish\cs /q /s
+xcopy OnlyM\bin\Release\net9.0-windows\publish\cs\*.*  OnlyM\bin\Release\net9.0-windows\publish\cs-CZ /q
+rd OnlyM\bin\Release\net9.0-windows\publish\cs /q /s
 ECHO German
-xcopy OnlyM\bin\Release\net8.0-windows\publish\de\*.*  OnlyM\bin\Release\net8.0-windows\publish\de-DE /q
-rd OnlyM\bin\Release\net8.0-windows\publish\de /q /s
+xcopy OnlyM\bin\Release\net9.0-windows\publish\de\*.*  OnlyM\bin\Release\net9.0-windows\publish\de-DE /q
+rd OnlyM\bin\Release\net9.0-windows\publish\de /q /s
 ECHO French
-xcopy OnlyM\bin\Release\net8.0-windows\publish\fr\*.*  OnlyM\bin\Release\net8.0-windows\publish\fr-FR /q
-rd OnlyM\bin\Release\net8.0-windows\publish\fr /q /s
+xcopy OnlyM\bin\Release\net9.0-windows\publish\fr\*.*  OnlyM\bin\Release\net9.0-windows\publish\fr-FR /q
+rd OnlyM\bin\Release\net9.0-windows\publish\fr /q /s
 ECHO Italian
-xcopy OnlyM\bin\Release\net8.0-windows\publish\it\*.*  OnlyM\bin\Release\net8.0-windows\publish\it-IT /q
-rd OnlyM\bin\Release\net8.0-windows\publish\it /q /s
+xcopy OnlyM\bin\Release\net9.0-windows\publish\it\*.*  OnlyM\bin\Release\net9.0-windows\publish\it-IT /q
+rd OnlyM\bin\Release\net9.0-windows\publish\it /q /s
 ECHO Polish
-xcopy OnlyM\bin\Release\net8.0-windows\publish\pl\*.*  OnlyM\bin\Release\net8.0-windows\publish\pl-PL /q
-rd OnlyM\bin\Release\net8.0-windows\publish\pl /q /s
+xcopy OnlyM\bin\Release\net9.0-windows\publish\pl\*.*  OnlyM\bin\Release\net9.0-windows\publish\pl-PL /q
+rd OnlyM\bin\Release\net9.0-windows\publish\pl /q /s
 ECHO Russian
-xcopy OnlyM\bin\Release\net8.0-windows\publish\ru\*.*  OnlyM\bin\Release\net8.0-windows\publish\ru-RU /q
-rd OnlyM\bin\Release\net8.0-windows\publish\ru /q /s
+xcopy OnlyM\bin\Release\net9.0-windows\publish\ru\*.*  OnlyM\bin\Release\net9.0-windows\publish\ru-RU /q
+rd OnlyM\bin\Release\net9.0-windows\publish\ru /q /s
 ECHO Spanish
-xcopy OnlyM\bin\Release\net8.0-windows\publish\es\*.*  OnlyM\bin\Release\net8.0-windows\publish\es-ES /q
-xcopy OnlyM\bin\Release\net8.0-windows\publish\es\*.*  OnlyM\bin\Release\net8.0-windows\publish\es-MX /q
-rd OnlyM\bin\Release\net8.0-windows\publish\es /q /s
+xcopy OnlyM\bin\Release\net9.0-windows\publish\es\*.*  OnlyM\bin\Release\net9.0-windows\publish\es-ES /q
+xcopy OnlyM\bin\Release\net9.0-windows\publish\es\*.*  OnlyM\bin\Release\net9.0-windows\publish\es-MX /q
+rd OnlyM\bin\Release\net9.0-windows\publish\es /q /s
 ECHO Turkish
-xcopy OnlyM\bin\Release\net8.0-windows\publish\tr\*.*  OnlyM\bin\Release\net8.0-windows\publish\tr-TR /q
-rd OnlyM\bin\Release\net8.0-windows\publish\tr /q /s
+xcopy OnlyM\bin\Release\net9.0-windows\publish\tr\*.*  OnlyM\bin\Release\net9.0-windows\publish\tr-TR /q
+rd OnlyM\bin\Release\net9.0-windows\publish\tr /q /s
 
 ECHO.
 ECHO Creating installer
@@ -83,7 +83,7 @@ IF %ERRORLEVEL% NEQ 0 goto ERROR
 ECHO.
 ECHO Creating portable zip
 md Installer\Output
-powershell Compress-Archive -Path OnlyM\bin\Release\net8.0-windows\publish\* -DestinationPath Installer\Output\OnlyMPortable.zip 
+powershell Compress-Archive -Path OnlyM\bin\Release\net9.0-windows\publish\* -DestinationPath Installer\Output\OnlyMPortable.zip 
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 goto SUCCESS
