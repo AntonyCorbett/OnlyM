@@ -119,7 +119,7 @@
     <PackageReference Include="FFME.Windows" Version="4.4.350" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
     <PackageReference Include="NAudio" Version="2.2.1" />
-    <PackageReference Include="Sentry" Version="5.11.2" />
+    <PackageReference Include="Sentry" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
