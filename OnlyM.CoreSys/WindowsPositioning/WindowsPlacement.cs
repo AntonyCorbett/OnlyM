@@ -33,8 +33,7 @@ public static class WindowsPlacement
 
     private static readonly XmlSerializer Serializer = new(typeof(WINDOWPLACEMENT));
 
-    public static void SetPlacement(this Window window, string placementJson) =>
-        SetPlacement(window, placementJson, Size.Empty);
+    public static void SetPlacement(this Window window, string placementJson) => window.SetPlacement(placementJson, Size.Empty);
 
     public static void SetPlacement(this Window window, string placementJson, Size sizeOverride)
     {
