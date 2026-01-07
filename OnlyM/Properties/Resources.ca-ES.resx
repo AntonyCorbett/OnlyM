@@ -573,7 +573,7 @@
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="WEB_MAGNIFIER" xml:space="preserve">
-    <value>Magnifier</value>
+    <value>Lupa</value>
     <comment>The web display feature that overlays a magnifying panel on the web page</comment>
   </data>
   <data name="WEB_MAGNIFIER_LARGER" xml:space="preserve">
@@ -610,7 +610,7 @@
     <value>Reset Size (Ctrl+0)</value>
   </data>
   <data name="WEB_PAGE_SIZE" xml:space="preserve">
-    <value>Page Size</value>
+    <value>Mida de la pàgina</value>
   </data>
   <data name="WEB_PAGE_SMALLER" xml:space="preserve">
     <value>Smaller (Ctrl+Minus)</value>
@@ -620,6 +620,6 @@
     <comment>Error shown when heic/heif support is not installed</comment>
   </data>
   <data name="PRIMARY_MONITOR" xml:space="preserve">
-    <value>primary</value>
+    <value>principal</value>
   </data>
 </root>
