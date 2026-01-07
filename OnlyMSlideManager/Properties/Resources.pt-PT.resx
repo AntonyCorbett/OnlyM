@@ -118,19 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NEW_SLIDESHOW" xml:space="preserve">
-    <value>Nova apresentação de slides</value>
+    <value>Nova apresentação de diapositivos</value>
     <comment>File command</comment>
   </data>
   <data name="OPEN_SLIDESHOW" xml:space="preserve">
-    <value>Abrir apresentação de slides</value>
+    <value>Abrir apresentação de diapositivos</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW" xml:space="preserve">
-    <value>Guardar apresentação de slides</value>
+    <value>Guardar apresentação de diapositivos</value>
     <comment>File command</comment>
   </data>
   <data name="SAVE_SLIDESHOW_AS" xml:space="preserve">
-    <value>Guardar apresentação de slides como...</value>
+    <value>Guardar apresentação de diapositivos como...</value>
     <comment>File command</comment>
   </data>
   <data name="CREATE_FOLDER_ERROR" xml:space="preserve">
@@ -138,11 +138,11 @@
     <comment>Error shown when a folder cannot be created</comment>
   </data>
   <data name="OPEN_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Abrir apresentação de slides</value>
+    <value>Abrir apresentação de diapositivos</value>
     <comment>File Open dialog caption</comment>
   </data>
   <data name="SLIDESHOW_FILE" xml:space="preserve">
-    <value>Ficheiro de apresentação de slides</value>
+    <value>Ficheiro de apresentação de diapositivos</value>
     <comment>Used in File Open dialog</comment>
   </data>
   <data name="ANSWER_CANCEL" xml:space="preserve">
@@ -162,7 +162,7 @@
     <comment>Question used in dialog prompt</comment>
   </data>
   <data name="SAVE_SLIDESHOW_TITLE" xml:space="preserve">
-    <value>Guardar apresentação de slides</value>
+    <value>Guardar apresentação de diapositivos</value>
     <comment>Caption of File Save dialog</comment>
   </data>
   <data name="AUTO_PLAY" xml:space="preserve">
@@ -215,11 +215,11 @@
     <comment>Instruction on empty window</comment>
   </data>
   <data name="DELETE_SLIDE" xml:space="preserve">
-    <value>Eliminar slide</value>
+    <value>Eliminar diapositivo</value>
     <comment>Tooltip for delete button on slide edit page</comment>
   </data>
   <data name="EDIT_SLIDE" xml:space="preserve">
-    <value>Editar slide</value>
+    <value>Editar diapositivo</value>
     <comment>Tooltip for edit button on slides</comment>
   </data>
   <data name="RETURN_TO_SLIDE" xml:space="preserve">
@@ -227,15 +227,15 @@
     <comment>Tooltip for 'back' button on slide edit page</comment>
   </data>
   <data name="NO_SLIDES_CREATED" xml:space="preserve">
-    <value>Não há slides criados!</value>
+    <value>Não há diapositivos criados!</value>
     <comment>Message displayed following an unsuccessful drag and drop</comment>
   </data>
   <data name="SLIDE_CREATED" xml:space="preserve">
-    <value>Slide criado</value>
+    <value>Diapositivo criado</value>
     <comment>Message displayed when a slide is created following drag and drop</comment>
   </data>
   <data name="X_SLIDES_CREATED" xml:space="preserve">
-    <value>{0} slides criados</value>
+    <value>{0} diapositivos criados</value>
     <comment>Message displayed when slides are created following drag and drop. The value is awlays &gt; 1</comment>
   </data>
   <data name="ERROR_ADDING_IMAGES" xml:space="preserve">
@@ -275,7 +275,7 @@
     <comment>Displayed in the status bar when saving a file</comment>
   </data>
   <data name="SLIDE_COUNT_X" xml:space="preserve">
-    <value>Número de slides: {0}</value>
+    <value>Número de diapositivos: {0}</value>
     <comment>Displayed in the status bar</comment>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
