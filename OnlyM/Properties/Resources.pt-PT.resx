@@ -429,7 +429,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>LIMPAR O CACHE DO NAVEGADOR</value>
+    <value>LIMPAR A CACHE DO NAVEGADOR</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
@@ -485,11 +485,11 @@
     <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
   </data>
   <data name="CONTAINS_1_ROLLING_SLIDE" xml:space="preserve">
-    <value>(contém 1 imagem)</value>
+    <value>(contém 1 diapositivo)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="CONTAINS_1_SLIDE" xml:space="preserve">
-    <value>(contém 1 imagem)</value>
+    <value>(contém 1 diapositivo)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="DLG_CANCEL" xml:space="preserve">
