@@ -1,4 +1,4 @@
-# OnlyM <img src="https://ci.appveyor.com/api/projects/status/0yvavr01rax9cus9?svg=true">
+# OnlyM
 
 A Windows Media player using C# and WPF. Designed for media playback. The emphasis is on ease-of-use above advanced function. Please report any problems in the Project Issues section.
 
