@@ -1,0 +1,17 @@
+{
+  "scenarioId": "dotnet-version-upgrade",
+  "operationId": "becf8836-2e68-440c-9950-415a0e940b4d",
+  "description": "Upgrade .NET projects to newer .NET versions",
+  "startTime": "2026-05-06T14:18:22.1108915Z",
+  "lastUpdateTime": "2026-05-06T14:40:09.1905899Z",
+  "stage": "Assessment",
+  "properties": {
+    "task:03-upgrade-main-app-and-core-tests:startedAt": "2026-05-06T14:35:59.5419035Z",
+    "currentTask": "04-upgrade-remaining-test-projects-and-validate",
+    "UpgradeTargetFramework": "net10.0",
+    "task:04-upgrade-remaining-test-projects-and-validate:startedAt": "2026-05-06T14:40:09.1905899Z",
+    "task:02-upgrade-shared-and-dependent-libraries:startedAt": "2026-05-06T14:30:24.7667776Z",
+    "task:01-upgrade-foundation-projects:startedAt": "2026-05-06T14:26:15.2954986Z"
+  },
+  "folderPath": ""
+}
