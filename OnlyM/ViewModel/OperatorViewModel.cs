@@ -155,9 +155,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public void Dispose()
     {
-        _metaDataProducer.Dispose();
         _metaDataCancellationTokenSource.Dispose();
-        _metaDataConsumer?.Dispose();
     }
 
     private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e) =>
@@ -313,7 +311,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             _thumbnailService,
             _metaDataService,
             _optionsService,
-            _metaDataProducer.Queue,
+            _metaDataProducer,
             App.FMpegFolderName,
             _optionsService.MetaDataParallelism,
             _metaDataCancellationTokenSource.Token);

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 using OnlyM.Core.Models;
@@ -16,7 +16,7 @@ using Serilog.Events;
 
 namespace OnlyM.Services.MetaDataQueue;
 
-internal sealed class MetaDataQueueConsumer : IDisposable
+internal sealed class MetaDataQueueConsumer
 {
     private const int MaxMetaDataRetries = 3;
 
@@ -24,7 +24,8 @@ internal sealed class MetaDataQueueConsumer : IDisposable
     private readonly IMediaMetaDataService _metaDataService;
     private readonly IOptionsService _optionsService;
 
-    private readonly BlockingCollection<MediaItem> _collection;
+    private readonly MetaDataQueueProducer _producer;
+    private readonly ChannelReader<MediaItem> _reader;
     private readonly CancellationToken _cancellationToken;
     private readonly string _ffmpegFolder;
 
@@ -37,7 +38,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
         IThumbnailService thumbnailService,
         IMediaMetaDataService metaDataService,
         IOptionsService optionsService,
-        BlockingCollection<MediaItem> metaDataProducerCollection,
+        MetaDataQueueProducer producer,
         string ffmpegFolder,
         int maxDegreeOfParallelism,
         CancellationToken cancellationToken)
@@ -48,7 +49,8 @@ internal sealed class MetaDataQueueConsumer : IDisposable
 
         _ffmpegFolder = ffmpegFolder;
 
-        _collection = metaDataProducerCollection;
+        _producer = producer;
+        _reader = producer.Reader;
         _cancellationToken = cancellationToken;
 
         _maxDegreeOfParallelism = Math.Max(1, maxDegreeOfParallelism);
@@ -59,8 +61,6 @@ internal sealed class MetaDataQueueConsumer : IDisposable
     public event EventHandler? AllItemsCompletedEvent;
 
     public void Execute() => RunConsumers();
-
-    public void Dispose() => _collection.Dispose();
 
     private void RunConsumers()
     {
@@ -79,13 +79,14 @@ internal sealed class MetaDataQueueConsumer : IDisposable
                 MediaItem nextItem;
                 try
                 {
-                    nextItem = _collection.Take(_cancellationToken);
+                    nextItem = await _reader.ReadAsync(_cancellationToken);
                 }
                 catch (OperationCanceledException)
                 {
                     break;
                 }
 
+                _producer.ItemDequeued(nextItem);
                 ResetAllItemsCompletedFlag();
 
                 Interlocked.Increment(ref _inProgressCount);
@@ -98,8 +99,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
 
                     if (!IsPopulated(nextItem))
                     {
-                        // Synchronous now
-                        PopulateThumbnailAndMetaData(nextItem);
+                        await PopulateThumbnailAndMetaDataAsync(nextItem);
 
                         if (!IsPopulated(nextItem))
                         {
@@ -112,7 +112,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
 
                         if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
                         {
-                            Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _collection.Count);
+                            Log.Logger.Verbose("Metadata queue size (consumer) = {QueueSize}", _reader.Count);
                         }
                     }
                     else
@@ -177,18 +177,18 @@ internal sealed class MetaDataQueueConsumer : IDisposable
 
                     Log.Logger.Debug("Replaced in queue {Path}", mediaItem.FilePath);
                     ResetAllItemsCompletedFlag();
-                    _collection.Add(mediaItem, _cancellationToken);
+                    _producer.Add(mediaItem);
                 },
                 _cancellationToken);
     }
 
     private void TryRaiseAllItemsCompleted()
     {
-        if (_collection.Count == 0 && Volatile.Read(ref _inProgressCount) == 0)
+        if (_reader.Count == 0 && Volatile.Read(ref _inProgressCount) == 0)
         {
             lock (_allItemsEventLock)
             {
-                if (_collection.Count == 0 && _inProgressCount == 0 && !_allItemsEventRaisedForCurrentBatch)
+                if (_reader.Count == 0 && _inProgressCount == 0 && !_allItemsEventRaisedForCurrentBatch)
                 {
                     _allItemsEventRaisedForCurrentBatch = true;
                     AllItemsCompletedEvent?.Invoke(this, EventArgs.Empty);
@@ -205,7 +205,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
         }
     }
 
-    private void PopulateThumbnailAndMetaData(MediaItem mediaItem)
+    private async Task PopulateThumbnailAndMetaDataAsync(MediaItem mediaItem)
     {
         if (_cancellationToken.IsCancellationRequested)
         {
@@ -219,7 +219,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
             return;
         }
 
-        PopulateThumbnail(mediaItem);
+        await PopulateThumbnailAsync(mediaItem);
 
         if (_cancellationToken.IsCancellationRequested)
         {
@@ -309,7 +309,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
         mediaItem.VideoRotation = metaData?.VideoRotation ?? 0;
     }
 
-    private void PopulateThumbnail(MediaItem mediaItem)
+    private async Task PopulateThumbnailAsync(MediaItem mediaItem)
     {
         if (_cancellationToken.IsCancellationRequested ||
             mediaItem.FilePath == null ||
@@ -339,7 +339,7 @@ internal sealed class MetaDataQueueConsumer : IDisposable
                 return;
             }
 
-            Application.Current.Dispatcher.Invoke(() =>
+            await Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 if (!IsThumbnailPopulated(mediaItem))
                 {

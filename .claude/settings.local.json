@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"D:\\\\ProjectsPersonal\\\\OnlyM\" -Recurse -Filter \"*.sln\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Get-ChildItem -Path \"D:\\\\ProjectsPersonal\\\\OnlyM\" -Recurse -Directory)",
+      "Bash(Select-Object -First 20)",
+      "Bash(Format-List FullName)",
+      "Bash(dotnet build *)"
+    ]
+  }
+}
