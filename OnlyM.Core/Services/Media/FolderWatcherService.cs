@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +13,11 @@ public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
 {
     private readonly IOptionsService _optionsService;
     private readonly IMediaProviderService _mediaProviderService;
-    private readonly ManualResetEventSlim _signalFolderChange = new(false);
+
+    // SemaphoreSlim(0,1) acts as a one-slot async signal: Release() sets it, WaitAsync() clears it.
+    private readonly SemaphoreSlim _signal = new(0, 1);
+    private readonly CancellationTokenSource _collationCts = new();
+
     private FileSystemWatcher? _watcher;
     private int _changeVersion;
     private MediaFolders? _foldersToWatch;
@@ -26,7 +30,7 @@ public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
         _optionsService.MediaFolderChangedEvent += HandleMediaFolderChangedEvent;
         _optionsService.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
 
-        Task.Run(CollationFunction);
+        Task.Run(CollationFunctionAsync);
 
         InitWatcher();
     }
@@ -54,24 +58,45 @@ public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
 
     public void Dispose()
     {
-        _signalFolderChange.Dispose();
+        if (_watcher != null)
+        {
+            _watcher.EnableRaisingEvents = false;
+        }
+
+        _collationCts.Cancel();
+        _collationCts.Dispose();
+        _signal.Dispose();
         _watcher?.Dispose();
     }
 
-    private Task CollationFunction()
+    private async Task CollationFunctionAsync()
     {
         var currentChangeVersion = _changeVersion;
+        var token = _collationCts.Token;
 
-        while (true)
+        while (!token.IsCancellationRequested)
         {
-            _signalFolderChange.Wait();
+            try
+            {
+                await _signal.WaitAsync(token);
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
 
-            // some change activity.
+            // Debounce: keep waiting until no further changes for at least 500ms.
             while (_changeVersion > currentChangeVersion)
             {
-                // delay until no further changes for at least 500ms.
                 currentChangeVersion = _changeVersion;
-                Thread.Sleep(500);
+                try
+                {
+                    await Task.Delay(500, token);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
             }
 
             try
@@ -82,11 +107,25 @@ public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
             {
                 Log.Logger.Error(ex, "Folder watcher collation");
             }
-
-            _signalFolderChange.Reset();
         }
+    }
 
-        // ReSharper disable once FunctionNeverReturns
+    private void NotifyChange()
+    {
+        Interlocked.Increment(ref _changeVersion);
+
+        // SemaphoreSlim(0,1): Release() throws SemaphoreFullException if already signaled.
+        // Swallow it — the collation task will wake on the existing signal.
+        try
+        {
+            _signal.Release();
+        }
+        catch (SemaphoreFullException)
+        {
+        }
+        catch (ObjectDisposedException)
+        {
+        }
     }
 
     private void InitWatcher(MediaFolders mediaFolders)
@@ -117,7 +156,6 @@ public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
         if (!_mediaProviderService.IsFileExtensionSupported(Path.GetExtension(e.OldFullPath)) &&
             !_mediaProviderService.IsFileExtensionSupported(Path.GetExtension(e.FullPath)))
         {
-            // not a relevant file.
             return;
         }
 
@@ -126,8 +164,7 @@ public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
             return;
         }
 
-        Interlocked.Increment(ref _changeVersion);
-        _signalFolderChange.Set();
+        NotifyChange();
     }
 
     private bool IsWatchingFilesFolder(string path)
@@ -158,7 +195,6 @@ public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
             case WatcherChangeTypes.Deleted:
                 if (!_mediaProviderService.IsFileExtensionSupported(Path.GetExtension(e.FullPath)))
                 {
-                    // not a relevant file.
                     return;
                 }
 
@@ -170,17 +206,13 @@ public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
             return;
         }
 
-        Interlocked.Increment(ref _changeVersion);
-        _signalFolderChange.Set();
+        NotifyChange();
     }
 
     private void HandleMediaFolderChangedEvent(object? sender, EventArgs e) =>
-        // Main Media Folder has changed.
         InitWatcher();
 
     private void HandleOperatingDateChangedEvent(object? sender, EventArgs e) =>
-        // Operating date has changed (so we may need to watch
-        // a different Calendar folder).
         InitWatcher();
 
     private void OnChangesFoundEvent()

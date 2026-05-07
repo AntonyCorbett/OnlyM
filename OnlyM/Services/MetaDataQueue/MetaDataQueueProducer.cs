@@ -1,29 +1,42 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Channels;
 using OnlyM.Models;
 using Serilog;
 using Serilog.Events;
 
 namespace OnlyM.Services.MetaDataQueue;
 
-internal sealed class MetaDataQueueProducer : IDisposable
+internal sealed class MetaDataQueueProducer
 {
-    public BlockingCollection<MediaItem> Queue { get; } = [];
+    private readonly Lock _lock = new();
+    private readonly HashSet<MediaItem> _pending = [];
+    private readonly Channel<MediaItem> _channel = Channel.CreateUnbounded<MediaItem>(
+        new UnboundedChannelOptions { SingleReader = false, SingleWriter = false });
+
+    public ChannelReader<MediaItem> Reader => _channel.Reader;
 
     public void Add(MediaItem mediaItem)
     {
-        // limit any duplication...
-        if (!Queue.Contains(mediaItem))
+        lock (_lock)
         {
-            Queue.TryAdd(mediaItem);
-
-            if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
+            if (_pending.Add(mediaItem))
             {
-                Log.Logger.Verbose("Metadata queue size = {QueueSize}", Queue.Count);
+                _channel.Writer.TryWrite(mediaItem);
+
+                if (Log.Logger.IsEnabled(LogEventLevel.Verbose))
+                {
+                    Log.Logger.Verbose("Metadata queue size = {QueueSize}", _pending.Count);
+                }
             }
         }
     }
 
-    public void Dispose() => Queue?.Dispose();
+    public void ItemDequeued(MediaItem mediaItem)
+    {
+        lock (_lock)
+        {
+            _pending.Remove(mediaItem);
+        }
+    }
 }
