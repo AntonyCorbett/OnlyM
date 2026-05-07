@@ -321,7 +321,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _metaDataConsumer.Execute();
     }
 
-    private void HandleItemCompletedEvent(object? sender, ItemMetaDataPopulatedEventArgs e)
+    private async void HandleItemCompletedEvent(object? sender, ItemMetaDataPopulatedEventArgs e)
     {
         var item = e.MediaItem;
         if (item == null)
@@ -331,7 +331,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
         if (_optionsService.AutoRotateImages)
         {
-            AutoRotateImageIfRequired(item);
+            await AutoRotateImageIfRequiredAsync(item);
         }
     }
 
@@ -1165,45 +1165,49 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
-    private void AutoRotateImageIfRequired(MediaItem item)
+    private async Task AutoRotateImageIfRequiredAsync(MediaItem item)
     {
         if (item.MediaType?.Classification != MediaClassification.Image)
         {
             return;
         }
 
-        if (!GraphicsUtils.AutoRotateIfRequired(item.FilePath))
+        var rotated = await Task.Run(() => GraphicsUtils.AutoRotateIfRequired(item.FilePath));
+
+        if (!rotated)
         {
             return;
         }
 
-        // auto-rotated so refresh the thumbnail...
-        item.ThumbnailImageSource = null;
-        item.LastChanged = DateTime.UtcNow.Ticks;
-        _metaDataProducer.Add(item);
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            item.ThumbnailImageSource = null;
+            item.LastChanged = DateTime.UtcNow.Ticks;
+            _metaDataProducer.Add(item);
+        });
     }
 
-    private void HandleAutoRotateChangedEvent(object? sender, EventArgs e) =>
-        Task.Run(() =>
+    private async void HandleAutoRotateChangedEvent(object? sender, EventArgs e)
+    {
+        try
         {
-            try
+            if (_optionsService.AutoRotateImages)
             {
-                if (_optionsService.AutoRotateImages)
+                var items = MediaItems.ToList();
+                foreach (var item in items)
                 {
-                    foreach (var item in MediaItems)
-                    {
-                        AutoRotateImageIfRequired(item);
-                    }
+                    await AutoRotateImageIfRequiredAsync(item);
                 }
+            }
 
-                _pendingLoadMediaItems = true;
-            }
-            catch (Exception ex)
-            {
-                EventTracker.Error(ex, "Rotating image");
-                Log.Logger.Error(ex, "Auto rotation of images");
-            }
-        });
+            _pendingLoadMediaItems = true;
+        }
+        catch (Exception ex)
+        {
+            EventTracker.Error(ex, "Rotating image");
+            Log.Logger.Error(ex, "Auto rotation of images");
+        }
+    }
 
     private void OnSubtitleFileActivity(object? sender, SubtitleFileMessage message)
     {
