@@ -1,0 +1,1 @@
+Reduce Sentry activity to only the most critical errors. This will help us focus on the most important issues and reduce noise in our error tracking.
