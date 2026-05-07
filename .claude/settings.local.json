@@ -6,7 +6,9 @@
       "Bash(Get-ChildItem -Path \"D:\\\\ProjectsPersonal\\\\OnlyM\" -Recurse -Directory)",
       "Bash(Select-Object -First 20)",
       "Bash(Format-List FullName)",
-      "Bash(dotnet build *)"
+      "Bash(dotnet build *)",
+      "Bash(cd /d \"D:\\\\ProjectsPersonal\\\\OnlyM\")",
+      "PowerShell(dotnet build *)"
     ]
   }
 }

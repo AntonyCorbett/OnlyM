@@ -212,7 +212,7 @@ internal sealed class MetaDataQueueConsumer
             return;
         }
 
-        PopulateSlideData(mediaItem);
+        await PopulateSlideDataAsync(mediaItem);
 
         if (_cancellationToken.IsCancellationRequested)
         {
@@ -226,10 +226,10 @@ internal sealed class MetaDataQueueConsumer
             return;
         }
 
-        PopulateDurationAndTitle(mediaItem);
+        await PopulateDurationAndTitleAsync(mediaItem);
     }
 
-    private void PopulateSlideData(MediaItem mediaItem)
+    private async Task PopulateSlideDataAsync(MediaItem mediaItem)
     {
         if (_cancellationToken.IsCancellationRequested ||
             IsSlideDataPopulated(mediaItem) ||
@@ -246,9 +246,12 @@ internal sealed class MetaDataQueueConsumer
                 return;
             }
 
-            mediaItem.SlideshowCount = sf.SlideCount;
-            mediaItem.SlideshowLoop = sf.Loop;
-            mediaItem.IsRollingSlideshow = sf.AutoPlay;
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                mediaItem.SlideshowCount = sf.SlideCount;
+                mediaItem.SlideshowLoop = sf.Loop;
+                mediaItem.IsRollingSlideshow = sf.AutoPlay;
+            });
         }
         catch (Exception ex)
         {
@@ -272,7 +275,7 @@ internal sealed class MetaDataQueueConsumer
 
     private static bool IsSlideDataPopulated(MediaItem mediaItem) => !mediaItem.IsSlideshow || mediaItem.SlideshowCount > 0;
 
-    private void PopulateDurationAndTitle(MediaItem mediaItem)
+    private async Task PopulateDurationAndTitleAsync(MediaItem mediaItem)
     {
         if (_cancellationToken.IsCancellationRequested ||
             mediaItem.FilePath == null ||
@@ -301,12 +304,23 @@ internal sealed class MetaDataQueueConsumer
             return;
         }
 
-        mediaItem.DurationDeciseconds = metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
-        mediaItem.Title = GetMediaTitle(mediaItem.FilePath, metaData);
-        mediaItem.FileNameAsSubTitle = _optionsService.UseInternalMediaTitles
+        var durationDeciseconds = metaData == null ? 0 : (int)(metaData.Duration.TotalSeconds * 10);
+        var title = GetMediaTitle(mediaItem.FilePath, metaData);
+        var fileNameAsSubTitle = _optionsService.UseInternalMediaTitles
             ? Path.GetFileName(mediaItem.FilePath)
             : null;
-        mediaItem.VideoRotation = metaData?.VideoRotation ?? 0;
+        var videoRotation = metaData?.VideoRotation ?? 0;
+
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            if (!IsDurationAndTitlePopulated(mediaItem) && !_cancellationToken.IsCancellationRequested)
+            {
+                mediaItem.DurationDeciseconds = durationDeciseconds;
+                mediaItem.Title = title;
+                mediaItem.FileNameAsSubTitle = fileNameAsSubTitle;
+                mediaItem.VideoRotation = videoRotation;
+            }
+        });
     }
 
     private async Task PopulateThumbnailAsync(MediaItem mediaItem)
