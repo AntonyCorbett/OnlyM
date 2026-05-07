@@ -24,7 +24,9 @@ IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
 ECHO Building OnlyMMirror
-"C:\Program Files\Microsoft Visual Studio\2022\Professional\Msbuild\Current\Bin\MsBuild.exe" OnlyMMirror\OnlyMMirror.vcxproj -t:Rebuild -p:Configuration=Release
+CALL :FindMSBuild
+IF %ERRORLEVEL% NEQ 0 goto ERROR
+"%MSBUILD_EXE%" OnlyMMirror\OnlyMMirror.vcxproj -t:Rebuild -p:Configuration=Release
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
@@ -87,6 +89,38 @@ powershell Compress-Archive -Path OnlyM\bin\Release\net9.0-windows\publish\* -De
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 goto SUCCESS
+
+:FindMSBuild
+SET "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
+IF NOT EXIST "%VSWHERE%" (
+    ECHO Could not find vswhere.exe at "%VSWHERE%"
+    EXIT /B 1
+)
+
+SET "MSBUILD_EXE="
+SET "MSBUILD_PATH_FILE=%TEMP%\onlym_msbuild_path.txt"
+
+"%VSWHERE%" -latest -products * -requires Microsoft.Component.MSBuild -find "MSBuild\Current\Bin\MSBuild.exe" > "%MSBUILD_PATH_FILE%"
+IF %ERRORLEVEL% NEQ 0 (
+    ECHO vswhere.exe failed while searching for MSBuild.exe.
+    EXIT /B 1
+)
+
+SET /P MSBUILD_EXE=<"%MSBUILD_PATH_FILE%"
+DEL "%MSBUILD_PATH_FILE%" >NUL 2>NUL
+
+IF NOT DEFINED MSBUILD_EXE (
+    ECHO Could not find MSBuild.exe. Check that the Visual Studio MSBuild component is installed.
+    EXIT /B 1
+)
+
+IF NOT EXIST "%MSBUILD_EXE%" (
+    ECHO MSBuild.exe was reported as "%MSBUILD_EXE%", but that file does not exist.
+    EXIT /B 1
+)
+
+ECHO Using MSBuild: "%MSBUILD_EXE%"
+EXIT /B 0
 
 :ERROR
 ECHO.
