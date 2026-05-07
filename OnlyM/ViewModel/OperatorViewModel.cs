@@ -336,7 +336,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     }
 
     private void HandleFileChangesFoundEvent(object? sender, EventArgs e) =>
-        Application.Current.Dispatcher.Invoke(LoadMediaItems);
+        Application.Current.Dispatcher.BeginInvoke(LoadMediaItems);
 
     private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e) =>
         ChangePlayButtonEnabledStatus();
