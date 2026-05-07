@@ -118,6 +118,13 @@ public class MediaProviderService : IMediaProviderService
             x.FileExtension.Equals(extension, StringComparison.OrdinalIgnoreCase));
 
         if (result != null &&
+            extension.Equals(".webm", StringComparison.OrdinalIgnoreCase) &&
+            _optionsService.RenderingMethod == RenderingMethod.MediaFoundation)
+        {
+            return null;
+        }
+
+        if (result != null &&
             result.Classification == MediaClassification.Web &&
             IsPdf(fileName) &&
             fileName.Contains('#'))

@@ -102,6 +102,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.ShowFreezeCommandChangedEvent += HandleShowFreezeCommandChangedEvent;
         _optionsService.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
         _optionsService.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
+        _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
         _optionsService.PermanentBackdropChangedEvent += async (_, _) => await HandlePermanentBackdropChangedEvent();
         _optionsService.IncludeBlankScreenItemChangedEvent += async (_, _) => await HandleIncludeBlankScreenItemChangedEvent();
 
@@ -910,6 +911,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         MediaItems.SingleOrDefault(x => x.Id == mediaItemId);
 
     private void HandleMediaFolderChangedEvent(object? sender, EventArgs e) =>
+        _pendingLoadMediaItems = true;
+
+    private void HandleRenderingMethodChangedEvent(object? sender, EventArgs e) =>
         _pendingLoadMediaItems = true;
 
     private void HandleThumbnailsPurgedEvent(object? sender, EventArgs e)
