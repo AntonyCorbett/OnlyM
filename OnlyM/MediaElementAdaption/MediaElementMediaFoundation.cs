@@ -159,6 +159,11 @@ internal sealed class MediaElementMediaFoundation : IMediaElement
         else
         {
             _mediaElement.Close();
+
+            // WPF's MediaElement does not clear Source on Close(), so the next Play() call with the
+            // same URI would skip the Source assignment and MediaOpened would never fire, leaving
+            // MediaChange.Started unfired and IsMediaStatusChanging permanently stuck.
+            _mediaElement.Source = null;
         }
 
         IsPaused = false;

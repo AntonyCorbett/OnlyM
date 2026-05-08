@@ -349,6 +349,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         var videoIsActive = VideoIsActive();
         var rollingSlideshowIsActive = RollingSlideshowIsActive();
         var webIsActive = WebIsActive();
+        var anyChanging = _mediaStatusChangingService.IsMediaStatusChanging();
 
         foreach (var item in MediaItems)
         {
@@ -357,6 +358,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 case MediaClassification.Image:
                     // cannot show an image if video or rolling slideshow or web page is playing.
                     item.IsPlayButtonEnabled =
+                        !anyChanging &&
                         monitorSpecified &&
                         !videoIsActive &&
                         !rollingSlideshowIsActive &&
@@ -365,12 +367,13 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
                 case MediaClassification.Audio:
                     // cannot start audio if another video or audio is playing.
-                    item.IsPlayButtonEnabled = !videoOrAudioIsActive;
+                    item.IsPlayButtonEnabled = !anyChanging && !videoOrAudioIsActive;
                     break;
 
                 case MediaClassification.Video:
                     // cannot play a video if another video or audio or rolling slideshow or web page is playing.
                     item.IsPlayButtonEnabled =
+                        !anyChanging &&
                         monitorSpecified &&
                         !videoOrAudioIsActive &&
                         !rollingSlideshowIsActive &&
@@ -380,6 +383,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 case MediaClassification.Slideshow:
                     // cannot play a slideshow if video or rolling slideshow or web page is playing.
                     item.IsPlayButtonEnabled =
+                        !anyChanging &&
                         monitorSpecified &&
                         !videoIsActive &&
                         !rollingSlideshowIsActive &&
@@ -389,6 +393,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 case MediaClassification.Web:
                     // cannot launch a web page if video or rolling slideshow or web page is playing.
                     item.IsPlayButtonEnabled =
+                        !anyChanging &&
                         monitorSpecified &&
                         !videoIsActive &&
                         !rollingSlideshowIsActive &&

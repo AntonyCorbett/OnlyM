@@ -86,12 +86,10 @@ internal sealed class VideoDisplayManager : IDisposable
         }
         else
         {
-            Log.Debug("Firing Started - Media Id = {MediaItemId}", _mediaItemId);
-
             await CreateSubtitleFile(mediaItemFilePath);
 
-            await _mediaElement.Play(new Uri(mediaItemFilePath), MediaClassification.Video);
             OnMediaChangeEvent(CreateMediaEventArgs(_mediaItemId, MediaChange.Starting));
+            await _mediaElement.Play(new Uri(mediaItemFilePath), MediaClassification.Video);
         }
     }
 
