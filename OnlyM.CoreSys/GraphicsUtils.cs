@@ -122,7 +122,11 @@ public static class GraphicsUtils
 
     public static BitmapSource? Downsize(string imageFilePath, int maxImageWidth, int maxImageHeight, bool ignoreInternalCache)
     {
-        var image = GetBitmapImage(imageFilePath, ignoreInternalCache);
+        // Pass the target width as a decode hint so WIC decodes at display resolution
+        // rather than full source resolution. Without this, a 20MP image decoded via
+        // BitmapImage allocates ~80 MB of WIC unmanaged memory even when the caller
+        // only needs a 1920-wide rendition.
+        var image = GetBitmapImage(imageFilePath, ignoreInternalCache, decodePixelWidth: maxImageWidth);
         return Downsize(image, maxImageWidth, maxImageHeight);
     }
 
@@ -192,6 +196,29 @@ public static class GraphicsUtils
             }
         }
 
+        // MagicScaler streams JPEG/PNG/TIFF/BMP in tiles without loading the full
+        // source into memory — critical for x86 where a single large Bitmap(path)
+        // can exhaust the 2 GB virtual address space. GDI+ is the fallback only.
+        try
+        {
+            var settings = new ProcessImageSettings
+            {
+                Width = maxPixelDimension,
+                Height = maxPixelDimension,
+                ResizeMode = CropScaleMode.Max,
+                MatteColor = System.Drawing.Color.Black
+            };
+
+            using var ms = new MemoryStream();
+            MagicImageProcessor.ProcessImage(path, ms, settings);
+            ms.Position = 0;
+            return ms.ToArray();
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Warning(ex, "MagicScaler failed for {Path}, falling back to GDI+", path);
+        }
+
         return CreateThumbnailOfNativeImage(path, maxPixelDimension);
     }
 
@@ -244,13 +271,16 @@ public static class GraphicsUtils
 
     public static BitmapImage BitmapToBitmapImage(Bitmap src)
     {
-        var ms = new MemoryStream();
+        using var ms = new MemoryStream();
         src.Save(ms, ImageFormat.Bmp);
+        ms.Seek(0, SeekOrigin.Begin);
+
         var image = new BitmapImage();
         image.BeginInit();
-        ms.Seek(0, SeekOrigin.Begin);
+        image.CacheOption = BitmapCacheOption.OnLoad;
         image.StreamSource = ms;
         image.EndInit();
+        image.Freeze();
 
         return image;
     }
@@ -274,18 +304,18 @@ public static class GraphicsUtils
         return img;
     }
 
-    public static BitmapImage? GetBitmapImage(string imageFile, bool ignoreInternalCache)
+    public static BitmapImage? GetBitmapImage(string imageFile, bool ignoreInternalCache, int decodePixelWidth = 0)
     {
         BitmapImage? bmp;
 
         try
         {
-            bmp = InternalGetBitmapImage(imageFile, ignoreColorProfile: false, ignoreInternalCache);
+            bmp = InternalGetBitmapImage(imageFile, ignoreColorProfile: false, ignoreInternalCache, decodePixelWidth);
         }
         catch (ArgumentException)
         {
             // probably colour profile corruption
-            bmp = InternalGetBitmapImage(imageFile, ignoreColorProfile: true, ignoreInternalCache);
+            bmp = InternalGetBitmapImage(imageFile, ignoreColorProfile: true, ignoreInternalCache, decodePixelWidth);
         }
 
         return bmp;
@@ -494,7 +524,7 @@ public static class GraphicsUtils
     }
 
     private static BitmapImage? InternalGetBitmapImage(
-        string imageFile, bool ignoreColorProfile, bool ignoreInternalCache = false)
+        string imageFile, bool ignoreColorProfile, bool ignoreInternalCache = false, int decodePixelWidth = 0)
     {
         if (IsSvgFormat(imageFile))
         {
@@ -518,6 +548,14 @@ public static class GraphicsUtils
         if (ignoreInternalCache)
         {
             bmp.CreateOptions |= BitmapCreateOptions.IgnoreImageCache;
+        }
+
+        if (decodePixelWidth > 0)
+        {
+            // Tell WIC to decode at this width (aspect ratio is preserved).
+            // Avoids decoding a full-resolution source image — e.g. a 20 MP photo
+            // that would otherwise occupy ~80 MB of WIC unmanaged memory.
+            bmp.DecodePixelWidth = decodePixelWidth;
         }
 
         // BitmapCacheOption.OnLoad prevents the source image file remaining
