@@ -167,7 +167,14 @@ internal sealed class ImageDisplayManager
 
             if (mediaId != Guid.Empty)
             {
-                DisplaySlide(newSlide, mediaId, oldSlide, oldIndex, _currentSlideshowImageIndex);
+                _slideshowTransitioning = true;
+                DisplaySlide(
+                    newSlide,
+                    mediaId,
+                    oldSlide,
+                    oldIndex,
+                    _currentSlideshowImageIndex,
+                    onTransitionFinished: () => _slideshowTransitioning = false);
             }
         }
 
@@ -197,7 +204,18 @@ internal sealed class ImageDisplayManager
 
             if (mediaId != Guid.Empty)
             {
-                DisplaySlide(newSlide, mediaId, oldSlide, oldIndex, _currentSlideshowImageIndex, onTransitionFinished);
+                _slideshowTransitioning = true;
+                DisplaySlide(
+                    newSlide,
+                    mediaId,
+                    oldSlide,
+                    oldIndex,
+                    _currentSlideshowImageIndex,
+                    onTransitionFinished: () =>
+                    {
+                        _slideshowTransitioning = false;
+                        onTransitionFinished?.Invoke();
+                    });
             }
             else
             {

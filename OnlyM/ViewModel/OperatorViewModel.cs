@@ -421,13 +421,17 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         {
             case SlideTransition.Started:
                 mediaItem.IsMediaChanging = true;
+                _mediaStatusChangingService.AddChangingItem(e.MediaItemId);
                 break;
 
             case SlideTransition.Finished:
                 mediaItem.IsMediaChanging = false;
                 mediaItem.CurrentSlideshowIndex = e.NewSlideIndex;
+                _mediaStatusChangingService.RemoveChangingItem(e.MediaItemId);
                 break;
         }
+
+        ChangePlayButtonEnabledStatus();
     }
 
     private void HandleMediaChangeEvent(object? sender, MediaEventArgs e)
