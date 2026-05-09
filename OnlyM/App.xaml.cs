@@ -29,6 +29,7 @@ using OnlyM.Services.WebBrowser;
 using OnlyM.ViewModel;
 using Sentry;
 using Serilog;
+using static System.Windows.Forms.Design.AxImporter;
 
 namespace OnlyM;
 
@@ -213,7 +214,9 @@ public partial class App
         SentrySdk.Init(o =>
         {
             // Tells which project in Sentry to send events to:
-            o.Dsn = "https://6d45f5f70505b84644af759aa19921cc@o4509644339281920.ingest.de.sentry.io/4509644341117008";
+            o.Dsn = "https://4efb7baa59f8968332aec8c5ca7a29b5@o4509644339281920.ingest.de.sentry.io/4509644341117008";
+
+            o.DeduplicateMode = DeduplicateMode.All;
 
 #if DEBUG
             o.Debug = true;
