@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Messaging;
 using MaterialDesignThemes.Wpf;
@@ -12,6 +14,12 @@ namespace OnlyM.Services.DarkMode;
 
 internal sealed class DarkModeService : IDarkModeService
 {
+    // DWMWA_USE_IMMERSIVE_DARK_MODE (attribute 20) is available from Windows 10 20H1 onward.
+    private const int DwmwaUseImmersiveDarkMode = 20;
+
+    [DllImport("dwmapi.dll")]
+    private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attribute, ref int pvAttribute, int cbAttribute);
+
     private readonly IOptionsService _optionsService;
 
     // Captured once from the palette resource dictionaries before we ever touch them.
@@ -28,6 +36,15 @@ internal sealed class DarkModeService : IDarkModeService
     }
 
     public void SystemThemeChanged() => ApplyTheme();
+
+    public void ApplyTitleBarTheme(Window window)
+    {
+        var handle = new WindowInteropHelper(window).Handle;
+        if (handle != IntPtr.Zero)
+        {
+            SetTitleBarDarkMode(handle, ThemeState.IsDark);
+        }
+    }
 
     private void CacheOriginalPrimaryBrushes()
     {
@@ -81,11 +98,29 @@ internal sealed class DarkModeService : IDarkModeService
                     ? Color.FromRgb(0x37, 0x30, 0x4A) // dark desaturated purple
                     : Color.FromRgb(0xB3, 0x9D, 0xDB)); // DeepPurple 200
 
+            // Apply dark/light title bar to every open window via the DWM API.
+            foreach (Window window in Application.Current.Windows)
+            {
+                var handle = new WindowInteropHelper(window).Handle;
+                if (handle != IntPtr.Zero)
+                {
+                    SetTitleBarDarkMode(handle, isDark);
+                }
+            }
+
             // Set shared state before broadcasting so any newly constructed consumer
             // reads the correct value immediately without waiting for the message.
             ThemeState.IsDark = isDark;
             WeakReferenceMessenger.Default.Send(new ThemeChangedMessage { IsDark = isDark });
         });
+    }
+
+    private static void SetTitleBarDarkMode(IntPtr hwnd, bool isDark)
+    {
+        int value = isDark ? 1 : 0;
+
+        // Discard the HRESULT — failure just means the title bar stays its default colour.
+        _ = DwmSetWindowAttribute(hwnd, DwmwaUseImmersiveDarkMode, ref value, Marshal.SizeOf(value));
     }
 
     private static bool IsSystemDarkMode()

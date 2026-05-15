@@ -7,6 +7,7 @@ using OnlyM.Core.Services.Options;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.CoreSys.WindowsPositioning;
 using OnlyM.PubSubMessages;
+using OnlyM.Services.DarkMode;
 using OnlyM.Services.DragAndDrop;
 using OnlyM.Services.MediaChanging;
 using OnlyM.Services.Pages;
@@ -45,6 +46,7 @@ public partial class MainWindow
     protected override void OnSourceInitialized(System.EventArgs e)
     {
         AdjustMainWindowPositionAndSize();
+        Ioc.Default.GetService<IDarkModeService>()?.ApplyTitleBarTheme(this);
 
         if (!IsDesignMode)
         {
