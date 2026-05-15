@@ -8,6 +8,7 @@ using CefSharp;
 using CefSharp.Wpf;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 using OnlyM.AutoUpdates;
 using OnlyM.Core.Services.CommandLine;
 using OnlyM.Core.Services.Database;
@@ -93,7 +94,16 @@ public partial class App
             Log.Logger.Error("Could not initialise CefSharp");
         }
 
+        SystemEvents.UserPreferenceChanged += OnSystemThemeChanged;
         Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.AboveNormal;
+    }
+
+    private void OnSystemThemeChanged(object sender, UserPreferenceChangedEventArgs e)
+    {
+        if (e.Category == UserPreferenceCategory.General)
+        {
+            Ioc.Default.GetRequiredService<IDarkModeService>().SystemThemeChanged();
+        }
     }
 
     private static void ConfigureServices()

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Messaging;
@@ -24,9 +24,10 @@ internal sealed class DarkModeService : IDarkModeService
         _optionsService = optionsService;
         CacheOriginalPrimaryBrushes();
         _optionsService.DarkModeChangedEvent += OnDarkModeChangedEvent;
-        SystemEvents.UserPreferenceChanged += OnUserPreferenceChanged;
         ApplyTheme();
     }
+
+    public void SystemThemeChanged() => ApplyTheme();
 
     private void CacheOriginalPrimaryBrushes()
     {
@@ -36,14 +37,6 @@ internal sealed class DarkModeService : IDarkModeService
     }
 
     private void OnDarkModeChangedEvent(object? sender, EventArgs e) => ApplyTheme();
-
-    private void OnUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
-    {
-        if (e.Category == UserPreferenceCategory.General)
-        {
-            ApplyTheme();
-        }
-    }
 
     private void ApplyTheme()
     {
