@@ -202,15 +202,15 @@
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
-
+                                    
                                     <Ellipse
                                         Width="33"
                                         Height="33"
                                         Margin="3"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
-                                        Fill="{StaticResource MaterialDesignPaper}"
-                                        Stroke="{StaticResource MaterialDesignDarkBackground}" />
+                                        Fill="{StaticResource OnlyMMediaTypeEllipseFill}"
+                                        Stroke="{StaticResource OnlyMMediaTypeEllipseStroke}" />
 
                                     <materialDesign:PackIcon
                                         Width="24"

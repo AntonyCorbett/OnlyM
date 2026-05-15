@@ -8,7 +8,11 @@
       "Bash(Format-List FullName)",
       "Bash(dotnet build *)",
       "Bash(cd /d \"D:\\\\ProjectsPersonal\\\\OnlyM\")",
-      "PowerShell(dotnet build *)"
+      "PowerShell(dotnet build *)",
+      "Bash(dotnet test *)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Test-Path *)",
+      "PowerShell([System.IO.Directory]::GetDirectories\\(\"$env:USERPROFILE\\\\.nuget\\\\packages\\\\materialdesignthemes\"\\))"
     ]
   }
 }

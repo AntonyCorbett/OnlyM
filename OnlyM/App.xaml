@@ -13,6 +13,9 @@
                 xmlns:vm="clr-namespace:OnlyM.ViewModel"
                 x:Key="Locator"
                 d:IsDataSource="True" />
+            <SolidColorBrush x:Key="OnlyMNavBarBackground" Color="#FFB39DDB" />
+            <SolidColorBrush x:Key="OnlyMMediaTypeEllipseStroke" Color="#FF512DA8" />
+            <SolidColorBrush x:Key="OnlyMMediaTypeEllipseFill" Color="#FAFAFA" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />

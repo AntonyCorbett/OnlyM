@@ -6,6 +6,7 @@ using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using OnlyM.Core.Extensions;
 using OnlyM.Core.Models;
+using OnlyM.Services.DarkMode;
 
 namespace OnlyM.Models;
 
@@ -20,6 +21,11 @@ public class MediaItem : ObservableObject
     private static readonly SolidColorBrush GreenBrush = new(Colors.DarkGreen);
     private static readonly SolidColorBrush BlackBrush = new(Colors.Black);
     private static readonly SolidColorBrush GrayBrush = new(Colors.DarkGray);
+
+    // Dark-mode variants: DarkGreen and Black are near-invisible on a dark surface.
+    private static readonly SolidColorBrush DarkModeGreenBrush = new(Color.FromRgb(0x4C, 0xAF, 0x50)); // Material Green 500
+    private static readonly SolidColorBrush DarkModeWhiteBrush = new(Color.FromRgb(0xEE, 0xEE, 0xEE)); // near-white
+    private static readonly SolidColorBrush DarkModeGrayBrush = new(Color.FromRgb(0xBD, 0xBD, 0xBD));  // Gray 400
 
     private bool _isMediaChanging;
     private bool _commandPanelVisible;
@@ -470,13 +476,19 @@ public class MediaItem : ObservableObject
 
     public Brush PlaybackTimeColorBrush =>
         IsMediaActive
-            ? GreenBrush
-            : GrayBrush;
+            ? (ThemeState.IsDark ? DarkModeGreenBrush : GreenBrush)
+            : (ThemeState.IsDark ? DarkModeGrayBrush : GrayBrush);
 
     public Brush DurationColorBrush =>
         IsMediaActive
-            ? BlackBrush
-            : GrayBrush;
+            ? (ThemeState.IsDark ? DarkModeWhiteBrush : BlackBrush)
+            : (ThemeState.IsDark ? DarkModeGrayBrush : GrayBrush);
+
+    internal void RefreshThemeDependentProperties()
+    {
+        OnPropertyChanged(nameof(PlaybackTimeColorBrush));
+        OnPropertyChanged(nameof(DurationColorBrush));
+    }
 
     public Brush IconBrush
     {

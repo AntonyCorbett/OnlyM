@@ -28,7 +28,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="MiscNotesStyle" TargetType="{x:Type TextBlock}">
-                <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryHueDarkBrush}" />
                 <Setter Property="FontSize" Value="11" />
                 <Setter Property="Margin" Value="0,10,0,10" />
             </Style>
@@ -648,7 +648,7 @@
                 <TextBlock
                     Margin="0,0,0,15"
                     FontSize="12"
-                    Foreground="{StaticResource MaterialDesignDarkBackground}"
+                    Style="{StaticResource MiscNotesStyle}"
                     Text="{Binding AppVersionStr}" />
 
                 <DatePicker
@@ -674,6 +674,15 @@
                     ItemsSource="{Binding LoggingLevels}"
                     SelectedValue="{Binding LogEventLevel, Mode=TwoWay}"
                     SelectedValuePath="Level"
+                    Style="{StaticResource SettingsComboBoxStyle}" />
+
+                <ComboBox
+                    materialDesign:HintAssist.Hint="{x:Static resx:Resources.APP_MODE}"
+                    materialDesign:HintAssist.IsFloating="True"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding AppModes}"
+                    SelectedValue="{Binding AppMode, Mode=TwoWay}"
+                    SelectedValuePath="Mode"
                     Style="{StaticResource SettingsComboBoxStyle}" />
 
                 <DockPanel>

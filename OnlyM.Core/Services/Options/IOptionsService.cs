@@ -56,6 +56,8 @@ public interface IOptionsService
 
     event EventHandler BrowserChangedEvent;
 
+    event EventHandler DarkModeChangedEvent;
+
     bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 
     int MetaDataParallelism { get; set; }
@@ -143,6 +145,8 @@ public interface IOptionsService
     double MirrorZoom { get; set; }
 
     char MirrorHotKey { get; set; }
+
+    DarkModeOption DarkModeOption { get; set; }
 
     void SetCommandLineMediaFolder(string folder);
 

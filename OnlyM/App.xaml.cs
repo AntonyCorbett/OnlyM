@@ -17,6 +17,7 @@ using OnlyM.Core.Services.Options;
 using OnlyM.Core.Utils;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.EventTracking;
+using OnlyM.Services.DarkMode;
 using OnlyM.Services.Dialogs;
 using OnlyM.Services.DragAndDrop;
 using OnlyM.Services.FrozenVideoItems;
@@ -84,6 +85,7 @@ public partial class App
         {
             ConfigureLogger();
             ConfigureServices();
+            Ioc.Default.GetRequiredService<IDarkModeService>();
         }
 
         if (!_successCefSharp)
@@ -118,6 +120,7 @@ public partial class App
         serviceCollection.AddSingleton<IActiveMediaItemsService, ActiveMediaItemsService>();
         serviceCollection.AddSingleton<IDialogService, DialogService>();
         serviceCollection.AddSingleton<IStartOffsetStorageService, StartOffsetStorageService>();
+        serviceCollection.AddSingleton<IDarkModeService, DarkModeService>();
 
         // view models.
         serviceCollection.AddSingleton<StartOffsetViewModel>();

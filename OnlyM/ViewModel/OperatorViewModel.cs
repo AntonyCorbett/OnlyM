@@ -124,6 +124,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
         WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         WeakReferenceMessenger.Default.Register<SubtitleFileMessage>(this, OnSubtitleFileActivity);
+        WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, OnThemeChanged);
     }
 
     public ObservableCollectionEx<MediaItem> MediaItems { get; } = [];
@@ -305,6 +306,14 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private void OnShutDown(object? sender, ShutDownMessage message) =>
         // cancel the thumbnail consumer thread.
         _metaDataCancellationTokenSource.Cancel();
+
+    private void OnThemeChanged(object? sender, ThemeChangedMessage message)
+    {
+        foreach (var item in MediaItems)
+        {
+            item.RefreshThemeDependentProperties();
+        }
+    }
 
     private void LaunchThumbnailQueueConsumer()
     {

@@ -149,6 +149,8 @@ public sealed class Options
 
     public char MirrorHotKey { get; set; }
 
+    public DarkModeOption DarkModeOption { get; set; }
+
     /// <summary>
     /// Validates the data, correcting automatically as required
     /// </summary>

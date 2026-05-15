@@ -4,9 +4,12 @@ using System.Linq;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using MaterialDesignThemes.Wpf;
 using OnlyM.Core.Extensions;
 using OnlyM.Models;
+using OnlyM.PubSubMessages;
+using OnlyM.Services.DarkMode;
 using OnlyM.Services.StartOffsetStorage;
 
 namespace OnlyM.ViewModel;
@@ -17,6 +20,8 @@ internal sealed class StartOffsetViewModel : ObservableObject
 
     private static readonly SolidColorBrush RedBrush = new(Colors.DarkRed);
     private static readonly SolidColorBrush GreenBrush = new(Colors.DarkGreen);
+    private static readonly SolidColorBrush DarkModeRedBrush = new(Color.FromRgb(0xEF, 0x53, 0x50));  // Material Red 400
+    private static readonly SolidColorBrush DarkModeGreenBrush = new(Color.FromRgb(0x4C, 0xAF, 0x50)); // Material Green 500
 
     private readonly IStartOffsetStorageService _startOffsetStorageService;
     private List<int>? _recentTimes;
@@ -36,7 +41,12 @@ internal sealed class StartOffsetViewModel : ObservableObject
         OkCommand = new RelayCommand(Ok);
         CancelCommand = new RelayCommand(Cancel);
         RemoveRecentTimeCommand = new RelayCommand<int?>(RemoveRecentTime);
+
+        WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, OnThemeChanged);
     }
+
+    private void OnThemeChanged(object recipient, ThemeChangedMessage message) =>
+        OnPropertyChanged(nameof(ChosenTimeBrush));
 
     public TimeSpan? Result { get; private set; }
 
@@ -105,7 +115,10 @@ internal sealed class StartOffsetViewModel : ObservableObject
 
     public string ChosenTimeAsString => GenerateTimeString();
 
-    public Brush ChosenTimeBrush => IsTimeValid ? GreenBrush : RedBrush;
+    public Brush ChosenTimeBrush =>
+        IsTimeValid
+            ? (ThemeState.IsDark ? DarkModeGreenBrush : GreenBrush)
+            : (ThemeState.IsDark ? DarkModeRedBrush : RedBrush);
 
     public bool HasRecentTimes => _recentTimes != null && _recentTimes.Count > 0;
 

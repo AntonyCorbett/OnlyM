@@ -100,10 +100,10 @@
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger SourceName="Thumb" Property="IsMouseOver" Value="true">
-                                    <Setter TargetName="Thumb" Property="Background" Value="{StaticResource PrimaryHueLightBrush}" />
+                                    <Setter TargetName="Thumb" Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" />
                                 </Trigger>
                                 <Trigger SourceName="Thumb" Property="IsDragging" Value="true">
-                                    <Setter TargetName="Thumb" Property="Background" Value="{StaticResource PrimaryHueMidBrush}" />
+                                    <Setter TargetName="Thumb" Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" />
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="false">
                                     <Setter TargetName="Thumb" Property="Visibility" Value="Collapsed" />
@@ -148,7 +148,7 @@
                     <Rectangle.Fill>
                         <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                             <GradientStop Offset="0" Color="#72000000" />
-                            <GradientStop Offset="1" Color="#00FAFAFA" />
+                            <GradientStop Offset="1" Color="#00000000" />
                         </LinearGradientBrush>
                     </Rectangle.Fill>
                 </Rectangle>
@@ -156,14 +156,14 @@
                 <Rectangle Height="4" VerticalAlignment="Bottom">
                     <Rectangle.Fill>
                         <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                            <GradientStop Offset="0" Color="#00FAFAFA" />
+                            <GradientStop Offset="0" Color="#00000000" />
                             <GradientStop Offset="1" Color="#72000000" />
                         </LinearGradientBrush>
                     </Rectangle.Fill>
                 </Rectangle>
             </Grid>
 
-            <Border Grid.Row="1" Background="#FFB39DDB">
+            <Border Grid.Row="1" Background="{DynamicResource OnlyMNavBarBackground}">
                 <ContentControl Padding="10" VerticalAlignment="Stretch">
                     <Grid Margin="10,0,10,0">
                         <Grid.ColumnDefinitions>

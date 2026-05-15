@@ -422,6 +422,42 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mode.
+        /// </summary>
+        public static string APP_MODE {
+            get {
+                return ResourceManager.GetString("APP_MODE", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dark.
+        /// </summary>
+        public static string APP_MODE_DARK {
+            get {
+                return ResourceManager.GetString("APP_MODE_DARK", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Light.
+        /// </summary>
+        public static string APP_MODE_LIGHT {
+            get {
+                return ResourceManager.GetString("APP_MODE_LIGHT", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to System.
+        /// </summary>
+        public static string APP_MODE_SYSTEM {
+            get {
+                return ResourceManager.GetString("APP_MODE_SYSTEM", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string LANGUAGE {
@@ -429,7 +465,7 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("LANGUAGE", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Launching mirror....
         /// </summary>

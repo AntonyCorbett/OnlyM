@@ -53,6 +53,7 @@ internal sealed class SettingsViewModel : ObservableObject
     private readonly RecentlyUsedFolders _recentlyUsedMediaFolders;
     private readonly MagnifierShapeItem[] _magnifierShapes;
     private readonly MagnifierSizeItem[] _magnifierSizes;
+    private readonly AppModeItem[] _appModes;
 
     private bool _isMediaActive;
 
@@ -83,6 +84,7 @@ internal sealed class SettingsViewModel : ObservableObject
         _magnifierShapes = GetMagnifierShapes();
         _magnifierSizes = GetMagnifierSizes();
         _mirrorHotKeys = GetMirrorHotKeys();
+        _appModes = GetAppModes();
 
         _pageService.NavigationEvent += HandleNavigationEvent;
 
@@ -790,6 +792,21 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
+    public IEnumerable<AppModeItem> AppModes => _appModes;
+
+    public DarkModeOption AppMode
+    {
+        get => _optionsService.DarkModeOption;
+        set
+        {
+            if (_optionsService.DarkModeOption != value)
+            {
+                _optionsService.DarkModeOption = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public IEnumerable<LanguageItem> Languages => _languages;
 
     public string? LanguageId
@@ -1081,6 +1098,13 @@ internal sealed class SettingsViewModel : ObservableObject
         [
         new() { Method = RenderingMethod.MediaFoundation, Name = "Media Foundation" },
         new() { Method = RenderingMethod.Ffmpeg, Name = "Ffmpeg" }
+        ];
+
+    private static AppModeItem[] GetAppModes() =>
+        [
+        new() { Mode = DarkModeOption.System, Name = Properties.Resources.APP_MODE_SYSTEM },
+        new() { Mode = DarkModeOption.Dark, Name = Properties.Resources.APP_MODE_DARK },
+        new() { Mode = DarkModeOption.Light, Name = Properties.Resources.APP_MODE_LIGHT },
         ];
 
     private MonitorItem[] GetSystemMonitors()

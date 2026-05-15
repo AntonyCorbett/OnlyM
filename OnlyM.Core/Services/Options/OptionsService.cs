@@ -89,6 +89,8 @@ public sealed class OptionsService : IOptionsService
 
     public event EventHandler? BrowserChangedEvent;
 
+    public event EventHandler? DarkModeChangedEvent;
+
     public bool ShouldPurgeBrowserCacheOnStartup
     {
         get => _options.Value.ShouldPurgeBrowserCacheOnStartup;
@@ -315,6 +317,19 @@ public sealed class OptionsService : IOptionsService
             if (_options.Value.MirrorHotKey != value)
             {
                 _options.Value.MirrorHotKey = value;
+            }
+        }
+    }
+
+    public DarkModeOption DarkModeOption
+    {
+        get => _options.Value.DarkModeOption;
+        set
+        {
+            if (_options.Value.DarkModeOption != value)
+            {
+                _options.Value.DarkModeOption = value;
+                DarkModeChangedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }
