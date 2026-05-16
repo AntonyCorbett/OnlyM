@@ -380,6 +380,22 @@
     <value>Irá pausar no frame final</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
+  <data name="APP_MODE" xml:space="preserve">
+    <value>Modo</value>
+    <comment>See Settings =&gt; Miscellaneous. Theme mode selection.</comment>
+  </data>
+  <data name="APP_MODE_SYSTEM" xml:space="preserve">
+    <value>Sistema</value>
+    <comment>See Settings =&gt; Miscellaneous. Follow system theme.</comment>
+  </data>
+  <data name="APP_MODE_DARK" xml:space="preserve">
+    <value>Escuro</value>
+    <comment>See Settings =&gt; Miscellaneous. Force dark theme.</comment>
+  </data>
+  <data name="APP_MODE_LIGHT" xml:space="preserve">
+    <value>Claro</value>
+    <comment>See Settings =&gt; Miscellaneous. Force light theme.</comment>
+  </data>
   <data name="LANGUAGE" xml:space="preserve">
     <value>Língua</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
