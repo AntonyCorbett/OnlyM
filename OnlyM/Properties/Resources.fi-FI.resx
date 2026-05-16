@@ -381,19 +381,19 @@
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="APP_MODE" xml:space="preserve">
-    <value>Mode</value>
+    <value>Tila</value>
     <comment>See Settings =&gt; Miscellaneous. Theme mode selection.</comment>
   </data>
   <data name="APP_MODE_SYSTEM" xml:space="preserve">
-    <value>System</value>
+    <value>Järjestelmä</value>
     <comment>See Settings =&gt; Miscellaneous. Follow system theme.</comment>
   </data>
   <data name="APP_MODE_DARK" xml:space="preserve">
-    <value>Dark</value>
+    <value>Tumma</value>
     <comment>See Settings =&gt; Miscellaneous. Force dark theme.</comment>
   </data>
   <data name="APP_MODE_LIGHT" xml:space="preserve">
-    <value>Light</value>
+    <value>Vaalea</value>
     <comment>See Settings =&gt; Miscellaneous. Force light theme.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
