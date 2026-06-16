@@ -61,7 +61,7 @@ public partial class App
         }
         catch (Exception ex)
         {
-            EventTracker.Error(ex, "App constructor");
+            EventTracker.Fatal(ex, "App constructor");
             AddEventLogEntry(ex.Message);
             Current.Shutdown();
         }
@@ -206,7 +206,7 @@ public partial class App
     {
         // unhandled exceptions thrown from UI thread
 
-        EventTracker.Error(e.Exception, "Unhandled exception");
+        EventTracker.Fatal(e.Exception, "Unhandled exception");
 
         e.Handled = true;
         Log.Logger.Fatal(e.Exception, "Unhandled exception");
@@ -230,6 +230,8 @@ public partial class App
             o.Dsn = "https://4efb7baa59f8968332aec8c5ca7a29b5@o4509644339281920.ingest.de.sentry.io/4509644341117008";
 
             o.DeduplicateMode = DeduplicateMode.All;
+            o.SetBeforeSend((sentryEvent, _) =>
+                sentryEvent.Level >= SentryLevel.Fatal ? sentryEvent : null);
 
 #if DEBUG
             o.Debug = true;

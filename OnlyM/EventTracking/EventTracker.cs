@@ -53,6 +53,22 @@ internal static class EventTracker
         }
     }
 
+    public static void Fatal(Exception ex, string? context = null)
+    {
+        if (string.IsNullOrEmpty(context))
+        {
+            SentrySdk.CaptureException(ex, scope => { scope.Level = SentryLevel.Fatal; });
+        }
+        else
+        {
+            SentrySdk.CaptureException(ex, scope =>
+            {
+                scope.Level = SentryLevel.Fatal;
+                scope.SetTag("context", context);
+            });
+        }
+    }
+
     private static void AddStartOrStopMediaBreadcrumb(SupportedMediaType? mediaType, bool start)
     {
         var properties = new Dictionary<string, string>
