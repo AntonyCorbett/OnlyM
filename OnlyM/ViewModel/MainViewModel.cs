@@ -140,7 +140,7 @@ internal sealed class MainViewModel : ObservableObject
         _currentPageName != null &&
         _currentPageName.Equals(_pageService.OperatorPageName, StringComparison.Ordinal);
 
-    public bool IsSettingsEnabled => !_commandLineService.NoSettings;
+    public bool IsSettingsEnabled => !_commandLineService.NoSettings && !ShowProgressBar;
 
     public bool IsFolderEnabled => !_commandLineService.NoFolder;
 
@@ -185,6 +185,7 @@ internal sealed class MainViewModel : ObservableObject
             {
                 OnPropertyChanged(nameof(ShowProgressBar));
                 OnPropertyChanged(nameof(ShowDragAndDropHint));
+                OnPropertyChanged(nameof(IsSettingsEnabled));
             }
         }
     }
@@ -210,6 +211,7 @@ internal sealed class MainViewModel : ObservableObject
             {
                 OnPropertyChanged(nameof(IsUnhideButtonVisible));
                 OnPropertyChanged(nameof(ShowProgressBar));
+                OnPropertyChanged(nameof(IsSettingsEnabled));
             }
         }
     }

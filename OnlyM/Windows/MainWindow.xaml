@@ -159,7 +159,19 @@
             </Grid>
 
             <Border Grid.Row="1" Background="{DynamicResource OnlyMNavBarBackground}">
-                <ContentControl Padding="10" VerticalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <ProgressBar
+                        Grid.Row="0"
+                        Height="3"
+                        IsIndeterminate="True"
+                        Visibility="{Binding Path=ShowProgressBar, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                    <ContentControl Grid.Row="1" Padding="10" VerticalAlignment="Stretch">
                     <Grid Margin="10,0,10,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -189,19 +201,6 @@
                             Content="{x:Static resx:Resources.UNHIDE}"
                             Style="{StaticResource MaterialDesignRaisedAccentButton}"
                             Visibility="{Binding Path=IsUnhideButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                        <materialDesign:Card
-                            Grid.Column="0"
-                            Padding="4"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            UniformCornerRadius="14"
-                            Visibility="{Binding Path=ShowProgressBar, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <ProgressBar
-                                IsIndeterminate="True"
-                                Style="{StaticResource MaterialDesignCircularProgressBar}"
-                                Value="0" />
-                        </materialDesign:Card>
 
                         <Button
                             Grid.Column="1"
@@ -256,7 +255,8 @@
                         </Button>
                     </Grid>
 
-                </ContentControl>
+                    </ContentControl>
+                </Grid>
             </Border>
 
         </Grid>

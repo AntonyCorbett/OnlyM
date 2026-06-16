@@ -980,7 +980,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
             // File I/O and diff computation on a background thread.
             var changes = await Task.Run(() => ComputeMediaChanges(existingSnapshot));
-
+            
             // Apply changes to the collection back on the UI thread.
             using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
             {
