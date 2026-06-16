@@ -15,6 +15,7 @@
     Background="{DynamicResource MaterialDesignPaper}"
     DataContext="{Binding Operator, Mode=OneWay, Source={StaticResource Locator}}"
     FontFamily="{DynamicResource MaterialDesignFont}"
+    Loaded="OnLoaded"
     SizeChanged="OnlyMOperatorPage_SizeChanged"
     TextElement.FontSize="18"
     TextElement.FontWeight="Regular"

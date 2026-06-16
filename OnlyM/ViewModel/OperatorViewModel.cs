@@ -56,6 +56,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private MetaDataQueueConsumer? _metaDataConsumer;
     private string? _blankScreenImagePath;
     private bool _pendingLoadMediaItems;
+    private bool _startupLoadDone;
     private int _thumbnailColWidth = 180;
 
     public OperatorViewModel(
@@ -117,10 +118,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _pageService.NavigationEvent += HandleNavigationEvent;
         _pageService.WebStatusEvent += HandleWebStatusEvent;
 
-        Application.Current.Dispatcher.InvokeAsync(
-            () => _ = LoadMediaItemsAsync(),
-            DispatcherPriority.Background);
-
         InitCommands();
 
         LaunchThumbnailQueueConsumer();
@@ -156,6 +153,17 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     {
         get => _thumbnailColWidth;
         set => SetProperty(ref _thumbnailColWidth, value);
+    }
+
+    public void TriggerStartupLoad()
+    {
+        if (_startupLoadDone)
+        {
+            return;
+        }
+
+        _startupLoadDone = true;
+        _ = LoadMediaItemsAsync();
     }
 
     public void Dispose()
@@ -961,25 +969,79 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
         WeakReferenceMessenger.Default.Send(new MediaListUpdatingMessage());
 
-        var files = await Task.Run(() => _mediaProviderService.GetMediaFiles()).ConfigureAwait(true);
+        // Snapshot UI-thread state before going to background
+        var existingItems = MediaItems.ToList();
+        var allowFreeze = _optionsService.ShowFreezeCommand;
+        var commandPanelVisible = _optionsService.ShowMediaItemCommandPanel;
+        var allowPause = _optionsService.AllowVideoPause;
+        var allowPositionSeeking = _optionsService.AllowVideoPositionSeeking;
+        var allowMirror = _optionsService.AllowMirror;
+        var useMirrorByDefault = _optionsService.UseMirrorByDefault;
 
-        using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
-        {
-            LoadMediaItemsInternal(files);
-        }
+        // File I/O + diff computation + MediaItem construction all on thread pool
+        var (itemsToRemove, itemsToAdd) = await Task.Run(
+            () => ComputeMediaChanges(
+                existingItems,
+                allowFreeze,
+                commandPanelVisible,
+                allowPause,
+                allowPositionSeeking,
+                allowMirror,
+                useMirrorByDefault)).ConfigureAwait(false);
 
-        ChangePlayButtonEnabledStatus();
+        // UI thread work is now minimal: just apply pre-built changes
+        await Application.Current.Dispatcher.InvokeAsync(
+            () =>
+            {
+                var currentItems = GetCurrentMediaItems();
+                var deletedCurrentItems = currentItems?.Intersect(itemsToRemove).ToArray();
+                if (deletedCurrentItems?.Length > 0)
+                {
+                    Log.Logger.Warning("User deleted {Count} active items", deletedCurrentItems.Length);
+                    ForciblyStopAllPlayback(currentItems);
+                    _snackbarService.EnqueueWithOk(Properties.Resources.ACTIVE_ITEM_DELETED, Properties.Resources.OK);
+                }
 
-        WeakReferenceMessenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
+                using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
+                {
+                    foreach (var item in itemsToRemove)
+                    {
+                        MediaItems.Remove(item);
+                    }
 
-        Log.Logger.Debug("Completed loading media items");
+                    foreach (var item in itemsToAdd)
+                    {
+                        MediaItems.Add(item);
+                        _metaDataProducer.Add(item);
+                    }
+
+                    TruncateMediaItemsToMaxCount();
+                    _hiddenMediaItemsService.Init(MediaItems);
+                    _frozenVideosService.Init(MediaItems);
+                    _pdfOptionsService.Init(MediaItems);
+                    SortMediaItems();
+                    InsertBlankMediaItem();
+                }
+
+                ChangePlayButtonEnabledStatus();
+                WeakReferenceMessenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
+                Log.Logger.Debug("Completed loading media items");
+            },
+            DispatcherPriority.Background);
     }
 
-    private void LoadMediaItemsInternal(IReadOnlyCollection<MediaFile> files)
+    private (List<MediaItem> itemsToRemove, List<MediaItem> itemsToAdd) ComputeMediaChanges(
+        IList<MediaItem> existingItems,
+        bool allowFreeze,
+        bool commandPanelVisible,
+        bool allowPause,
+        bool allowPositionSeeking,
+        bool allowMirror,
+        bool useMirrorByDefault)
     {
-        var sourceFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var destFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var files = _mediaProviderService.GetMediaFiles();
 
+        var sourceFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var file in files)
         {
             if (file.FullPath != null)
@@ -988,12 +1050,12 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             }
         }
 
+        var destFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var itemsToRemove = new List<MediaItem>();
 
-        foreach (var item in MediaItems)
+        foreach (var item in existingItems)
         {
             var filePath = item.FilePath;
-
             if (filePath == null)
             {
                 continue;
@@ -1001,16 +1063,13 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
             if (!sourceFilePaths.Contains(filePath))
             {
-                // remove this item.
                 itemsToRemove.Add(item);
             }
             else
             {
-                // perhaps the item has been changed or swapped for another media file of the same name!
                 var file = files.SingleOrDefault(x => x.FullPath == filePath);
                 if (file != null && file.LastChanged != item.LastChanged)
                 {
-                    // remove this item.
                     itemsToRemove.Add(item);
                 }
                 else
@@ -1020,47 +1079,29 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             }
         }
 
-        var currentItems = GetCurrentMediaItems(); // currently playing
-        var deletedCurrentItems = currentItems?.Intersect(itemsToRemove).ToArray();
-        var count = deletedCurrentItems?.Length ?? 0;
-        if (count > 0)
-        {
-            // we have deleted one or more items that are currently being displayed!
-            Log.Logger.Warning("User deleted {Count} active items", count);
-
-            ForciblyStopAllPlayback(currentItems);
-
-            _snackbarService.EnqueueWithOk(Properties.Resources.ACTIVE_ITEM_DELETED, Properties.Resources.OK);
-        }
-
-        // remove old items.
-        foreach (var item in itemsToRemove)
-        {
-            MediaItems.Remove(item);
-        }
-
-        // add new items.
+        var itemsToAdd = new List<MediaItem>();
         foreach (var file in files)
         {
             if (file.FullPath != null && !destFilePaths.Contains(file.FullPath))
             {
-                var item = CreateNewMediaItem(file);
-
-                MediaItems.Add(item);
-
-                _metaDataProducer.Add(item);
+                itemsToAdd.Add(new MediaItem
+                {
+                    MediaType = file.MediaType,
+                    Id = Guid.NewGuid(),
+                    AllowFreezeCommand = allowFreeze,
+                    CommandPanelVisible = commandPanelVisible,
+                    FilePath = file.FullPath,
+                    IsVisible = true,
+                    LastChanged = file.LastChanged,
+                    AllowPause = allowPause,
+                    AllowPositionSeeking = allowPositionSeeking,
+                    AllowUseMirror = allowMirror,
+                    UseMirror = useMirrorByDefault,
+                });
             }
         }
 
-        TruncateMediaItemsToMaxCount();
-
-        _hiddenMediaItemsService.Init(MediaItems);
-        _frozenVideosService.Init(MediaItems);
-        _pdfOptionsService.Init(MediaItems);
-
-        SortMediaItems();
-
-        InsertBlankMediaItem();
+        return (itemsToRemove, itemsToAdd);
     }
 
     private void ForciblyStopAllPlayback(List<MediaItem>? activeItems)
@@ -1085,26 +1126,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         {
             MediaItems.RemoveAt(MediaItems.Count - 1);
         }
-    }
-
-    private MediaItem CreateNewMediaItem(MediaFile file)
-    {
-        var result = new MediaItem
-        {
-            MediaType = file.MediaType,
-            Id = Guid.NewGuid(),
-            AllowFreezeCommand = _optionsService.ShowFreezeCommand,
-            CommandPanelVisible = _optionsService.ShowMediaItemCommandPanel,
-            FilePath = file.FullPath,
-            IsVisible = true,
-            LastChanged = file.LastChanged,
-            AllowPause = _optionsService.AllowVideoPause,
-            AllowPositionSeeking = _optionsService.AllowVideoPositionSeeking,
-            AllowUseMirror = _optionsService.AllowMirror,
-            UseMirror = _optionsService.UseMirrorByDefault,
-        };
-
-        return result;
     }
 
     private void InsertBlankMediaItem()
@@ -1220,7 +1241,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             if (_optionsService.AutoRotateImages)
             {
                 var items = MediaItems.ToList();
+#pragma warning disable U2U1203
                 foreach (var item in items)
+#pragma warning restore U2U1203
                 {
                     await AutoRotateImageIfRequiredAsync(item);
                 }
