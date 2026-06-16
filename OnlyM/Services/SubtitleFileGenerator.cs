@@ -43,6 +43,9 @@ internal static class SubtitleFileGenerator
                         mediaItemFilePath,
                         srtFile))
                 {
+                    // Write an empty sentinel so ShouldCreate skips future attempts for this video
+                    File.WriteAllText(srtFile, string.Empty);
+                    File.SetCreationTimeUtc(srtFile, videoFileInfo.CreationTimeUtc);
                     return null;
                 }
 
