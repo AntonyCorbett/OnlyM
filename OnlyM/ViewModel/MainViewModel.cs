@@ -275,7 +275,7 @@ internal sealed class MainViewModel : ObservableObject
             var fullPath = Path.Combine(databaseFolder, tempFileName);
 
             // Extra diagnostics (debug builds or verbose logging)
-            if (Log.Logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))
+            if (Log.Logger.IsEnabled(LogEventLevel.Debug))
             {
                 Log.Logger.Debug("Testing DB folder access at {Path}. Exists={Exists}", fullPath, Directory.Exists(databaseFolder));
             }

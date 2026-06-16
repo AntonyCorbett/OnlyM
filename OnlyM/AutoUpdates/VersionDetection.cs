@@ -55,6 +55,7 @@ internal static class VersionDetection
         try
         {
 #pragma warning disable U2U1025
+            // ReSharper disable once ShortLivedHttpClient
             using var client = new HttpClient();
 #pragma warning restore U2U1025
 

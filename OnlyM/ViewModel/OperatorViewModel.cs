@@ -58,6 +58,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private bool _pendingLoadMediaItems;
     private bool _startupLoadDone;
     private bool _isLoadingMediaItems;
+    private bool _reloadRequestedFromFileChanges;
     private int _thumbnailColWidth = 180;
 
     public OperatorViewModel(
@@ -357,8 +358,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
-    private void HandleFileChangesFoundEvent(object? sender, EventArgs e) =>
+    private void HandleFileChangesFoundEvent(object? sender, EventArgs e)
+    {
+        _reloadRequestedFromFileChanges = true;
         Application.Current.Dispatcher.BeginInvoke(LoadMediaItems);
+    }
 
     private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e) =>
         ChangePlayButtonEnabledStatus();
@@ -958,12 +962,20 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private async void LoadMediaItems()
     {
-        if (IsInDesignMode() || _isLoadingMediaItems)
+        if (IsInDesignMode())
         {
             return;
         }
 
+        if (_isLoadingMediaItems)
+        {
+            _reloadRequestedFromFileChanges = true;
+            return;
+        }
+
         _isLoadingMediaItems = true;
+        _reloadRequestedFromFileChanges = false;
+
         try
         {
             Log.Logger.Debug("Loading media items");
@@ -1027,6 +1039,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         {
             _isLoadingMediaItems = false;
             WeakReferenceMessenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
+
+            if (_reloadRequestedFromFileChanges)
+            {
+                Application.Current.Dispatcher.BeginInvoke(LoadMediaItems);
+            }
         }
     }
 
@@ -1038,13 +1055,13 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         GetBlankScreenPath();
 
         var files = _mediaProviderService.GetMediaFiles();
-        var sourceFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var filesByPath = new Dictionary<string, MediaFile>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var file in files)
         {
             if (file.FullPath != null)
             {
-                sourceFilePaths.Add(file.FullPath);
+                filesByPath.TryAdd(file.FullPath, file);
             }
         }
 
@@ -1053,27 +1070,25 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
         foreach (var (filePath, lastChanged) in existingSnapshot)
         {
-            if (!sourceFilePaths.Contains(filePath))
+            if (!filesByPath.TryGetValue(filePath, out var file))
+            {
+                pathsToRemove.Add(filePath);
+                continue;
+            }
+
+            if (file.LastChanged != lastChanged)
             {
                 pathsToRemove.Add(filePath);
             }
             else
             {
-                var file = files.SingleOrDefault(x => x.FullPath == filePath);
-                if (file != null && file.LastChanged != lastChanged)
-                {
-                    pathsToRemove.Add(filePath);
-                }
-                else
-                {
-                    keptFilePaths.Add(filePath);
-                }
+                keptFilePaths.Add(filePath);
             }
         }
 
-        var itemsToAdd = files
-            .Where(f => f.FullPath != null && !keptFilePaths.Contains(f.FullPath!))
-            .Select(CreateNewMediaItem)
+        var itemsToAdd = filesByPath
+            .Where(kvp => !keptFilePaths.Contains(kvp.Key))
+            .Select(kvp => CreateNewMediaItem(kvp.Value))
             .ToList();
 
         return (pathsToRemove, itemsToAdd);
