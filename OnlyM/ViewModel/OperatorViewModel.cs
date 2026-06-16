@@ -117,7 +117,10 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _pageService.NavigationEvent += HandleNavigationEvent;
         _pageService.WebStatusEvent += HandleWebStatusEvent;
 
-        LoadMediaItems();
+        Application.Current.Dispatcher.InvokeAsync(
+            () => _ = LoadMediaItemsAsync(),
+            DispatcherPriority.Background);
+
         InitCommands();
 
         LaunchThumbnailQueueConsumer();
@@ -176,7 +179,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
 
         _pendingLoadMediaItems = false;
-        LoadMediaItems();
+        _ = LoadMediaItemsAsync();
     }
 
     private void HandleOperatingDateChangedEvent(object? sender, EventArgs e) =>
@@ -346,7 +349,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     }
 
     private void HandleFileChangesFoundEvent(object? sender, EventArgs e) =>
-        Application.Current.Dispatcher.BeginInvoke(LoadMediaItems);
+        Application.Current.Dispatcher.InvokeAsync(LoadMediaItemsAsync);
 
     private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e) =>
         ChangePlayButtonEnabledStatus();
@@ -947,7 +950,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
-    private void LoadMediaItems()
+    private async Task LoadMediaItemsAsync()
     {
         if (IsInDesignMode())
         {
@@ -958,9 +961,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
         WeakReferenceMessenger.Default.Send(new MediaListUpdatingMessage());
 
+        var files = await Task.Run(() => _mediaProviderService.GetMediaFiles()).ConfigureAwait(true);
+
         using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
         {
-            LoadMediaItemsInternal();
+            LoadMediaItemsInternal(files);
         }
 
         ChangePlayButtonEnabledStatus();
@@ -970,9 +975,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         Log.Logger.Debug("Completed loading media items");
     }
 
-    private void LoadMediaItemsInternal()
+    private void LoadMediaItemsInternal(IReadOnlyCollection<MediaFile> files)
     {
-        var files = _mediaProviderService.GetMediaFiles();
         var sourceFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var destFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 

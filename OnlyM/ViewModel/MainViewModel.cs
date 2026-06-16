@@ -157,9 +157,9 @@ internal sealed class MainViewModel : ObservableObject
     public bool IsUnhideButtonVisible =>
         IsInDesignMode() || (IsOperatorPageActive && !ShowProgressBar && _hiddenMediaItemsService.SomeHiddenMediaItems());
 
-    public bool ShowProgressBar => IsBusy;
+    public bool ShowProgressBar => IsBusy || IsMediaListLoading;
 
-    public bool ShowDragAndDropHint => IsMediaListEmpty && IsOperatorPageActive;
+    public bool ShowDragAndDropHint => IsMediaListEmpty && IsOperatorPageActive && !IsMediaListLoading;
 
     public FrameworkElement? CurrentPage
     {
@@ -207,12 +207,22 @@ internal sealed class MainViewModel : ObservableObject
         }
     }
 
-    private void OnMediaListUpdating(object? sender, MediaListUpdatingMessage message) =>
+    private void OnMediaListUpdating(object? sender, MediaListUpdatingMessage message)
+    {
         IsMediaListLoading = true;
+        OnPropertyChanged(nameof(ShowProgressBar));
+        OnPropertyChanged(nameof(ShowDragAndDropHint));
+        OnPropertyChanged(nameof(IsUnhideButtonVisible));
+        GotoSettingsCommand?.NotifyCanExecuteChanged();
+    }
 
     private void OnMediaListUpdated(object? sender, MediaListUpdatedMessage message)
     {
         IsMediaListLoading = false;
+        OnPropertyChanged(nameof(ShowProgressBar));
+        OnPropertyChanged(nameof(ShowDragAndDropHint));
+        OnPropertyChanged(nameof(IsUnhideButtonVisible));
+        GotoSettingsCommand?.NotifyCanExecuteChanged();
         IsMediaListEmpty = message.Count == 0;
     }
 
@@ -345,7 +355,7 @@ internal sealed class MainViewModel : ObservableObject
 
     private void InitCommands()
     {
-        GotoSettingsCommand = new RelayCommand(NavigateSettings);
+        GotoSettingsCommand = new RelayCommand(NavigateSettings, () => !IsMediaListLoading);
         GotoOperatorCommand = new RelayCommand(NavigateOperator);
         LaunchMediaFolderCommand = new RelayCommand(LaunchMediaFolder);
         LaunchHelpPageCommand = new RelayCommand(LaunchHelpPage);
