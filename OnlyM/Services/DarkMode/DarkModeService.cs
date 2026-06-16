@@ -17,9 +17,17 @@ internal sealed class DarkModeService : IDarkModeService
     // DWMWA_USE_IMMERSIVE_DARK_MODE (attribute 20) is available from Windows 10 20H1 onward.
     private const int DwmwaUseImmersiveDarkMode = 20;
 
+    // DWMWA_CAPTION_COLOR (attribute 35) is available from Windows 11 (build 22000) onward.
+    // Set to DwmcwaColorDefault to revert to the system-chosen caption colour.
+    private const int DwmwaCaptionColor = 35;
+    private const uint DwmcwaColorDefault = 0xFFFFFFFF;
+
     [DllImport("dwmapi.dll")]
 #pragma warning disable SYSLIB1054
     private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attribute, ref int pvAttribute, int cbAttribute);
+
+    [DllImport("dwmapi.dll", EntryPoint = "DwmSetWindowAttribute")]
+    private static extern int DwmSetWindowAttributeUInt(IntPtr hwnd, int attribute, ref uint pvAttribute, int cbAttribute);
 #pragma warning restore SYSLIB1054
 
     private readonly IOptionsService _optionsService;
@@ -45,6 +53,8 @@ internal sealed class DarkModeService : IDarkModeService
         if (handle != IntPtr.Zero)
         {
             SetTitleBarDarkMode(handle, ThemeState.IsDark);
+            var captionColor = ThemeState.IsDark ? (Color?)Color.FromRgb(0x37, 0x30, 0x4A) : null;
+            SetCaptionBarColor(handle, captionColor);
         }
     }
 
@@ -101,12 +111,14 @@ internal sealed class DarkModeService : IDarkModeService
                     : Color.FromRgb(0xB3, 0x9D, 0xDB)); // DeepPurple 200
 
             // Apply dark/light title bar to every open window via the DWM API.
+            var captionColor = isDark ? (Color?)Color.FromRgb(0x37, 0x30, 0x4A) : null;
             foreach (Window window in Application.Current.Windows)
             {
                 var handle = new WindowInteropHelper(window).Handle;
                 if (handle != IntPtr.Zero)
                 {
                     SetTitleBarDarkMode(handle, isDark);
+                    SetCaptionBarColor(handle, captionColor);
                 }
             }
 
@@ -123,6 +135,17 @@ internal sealed class DarkModeService : IDarkModeService
 
         // Discard the HRESULT — failure just means the title bar stays its default colour.
         _ = DwmSetWindowAttribute(hwnd, DwmwaUseImmersiveDarkMode, ref value, Marshal.SizeOf(value));
+    }
+
+    private static void SetCaptionBarColor(IntPtr hwnd, Color? color)
+    {
+        // DWMWA_CAPTION_COLOR is only supported on Windows 11 (build 22000+).
+        // Failure is silently ignored so Windows 10 falls back gracefully.
+        uint colorref = color.HasValue
+            ? (uint)((color.Value.B << 16) | (color.Value.G << 8) | color.Value.R)
+            : DwmcwaColorDefault;
+
+        _ = DwmSetWindowAttributeUInt(hwnd, DwmwaCaptionColor, ref colorref, Marshal.SizeOf(colorref));
     }
 
     private static bool IsSystemDarkMode()
