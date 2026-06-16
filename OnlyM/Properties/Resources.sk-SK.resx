@@ -380,6 +380,22 @@
     <value>Pozastaviť na poslednom snímku</value>
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
+  <data name="APP_MODE" xml:space="preserve">
+    <value>Mode</value>
+    <comment>See Settings =&gt; Miscellaneous. Theme mode selection.</comment>
+  </data>
+  <data name="APP_MODE_SYSTEM" xml:space="preserve">
+    <value>System</value>
+    <comment>See Settings =&gt; Miscellaneous. Follow system theme.</comment>
+  </data>
+  <data name="APP_MODE_DARK" xml:space="preserve">
+    <value>Dark</value>
+    <comment>See Settings =&gt; Miscellaneous. Force dark theme.</comment>
+  </data>
+  <data name="APP_MODE_LIGHT" xml:space="preserve">
+    <value>Light</value>
+    <comment>See Settings =&gt; Miscellaneous. Force light theme.</comment>
+  </data>
   <data name="LANGUAGE" xml:space="preserve">
     <value>Jazyk</value>
     <comment>See Settings =&gt; Miscellaneous</comment>
