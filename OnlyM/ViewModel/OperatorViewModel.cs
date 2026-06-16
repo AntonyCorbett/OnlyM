@@ -361,7 +361,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private void HandleFileChangesFoundEvent(object? sender, EventArgs e)
     {
         _reloadRequestedFromFileChanges = true;
-        Application.Current.Dispatcher.BeginInvoke(LoadMediaItems);
+        _ = Application.Current.Dispatcher.BeginInvoke(new Action(LoadMediaItems));
     }
 
     private void HandleMediaMonitorChangedEvent(object? sender, MonitorChangedEventArgs e) =>
@@ -1042,7 +1042,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
             if (_reloadRequestedFromFileChanges)
             {
-                Application.Current.Dispatcher.BeginInvoke(LoadMediaItems);
+                _ = Application.Current.Dispatcher.BeginInvoke(new Action(LoadMediaItems));
             }
         }
     }
