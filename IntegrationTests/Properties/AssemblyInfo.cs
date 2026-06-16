@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [assembly: AssemblyTitle("IntegrationTests")]
 [assembly: AssemblyDescription("")]
@@ -21,3 +22,5 @@ using System.Runtime.InteropServices;
 
 
 [assembly: NeutralResourcesLanguage("en-GB")]
+
+[assembly: DoNotParallelize]

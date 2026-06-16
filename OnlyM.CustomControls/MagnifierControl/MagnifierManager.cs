@@ -102,10 +102,7 @@ public class MagnifierManager : DependencyObject
     private void ShowAdorner()
     {
         VerifyAdornerLayer();
-        if (_adorner != null)
-        {
-            _adorner.Visibility = Visibility.Visible;
-        }
+        _adorner?.Visibility = Visibility.Visible;
     }
 
     private void VerifyAdornerLayer()

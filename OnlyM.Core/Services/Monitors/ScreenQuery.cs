@@ -149,7 +149,7 @@ public static partial class ScreenQuery
         private int targetAvailable; // marshals Win32 BOOL
         public uint statusFlags;
 
-        public bool TargetAvailable => targetAvailable != 0;
+        public readonly bool TargetAvailable => targetAvailable != 0;
     }
 
     [StructLayout(LayoutKind.Sequential)]

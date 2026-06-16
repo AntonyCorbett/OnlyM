@@ -1,6 +1,7 @@
 ﻿using OnlyM.Core.Extensions;
 
 namespace OnlyM.Core.Tests;
+
 public class StringExtensionsTests
 {
     [Theory]

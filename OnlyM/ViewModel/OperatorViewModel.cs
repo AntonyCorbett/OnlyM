@@ -634,10 +634,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
 
         var mediaItem = GetMediaItem(mediaItemId.Value);
-        if (mediaItem != null)
-        {
-            mediaItem.IsCommandPanelOpen = true;
-        }
+        mediaItem?.IsCommandPanelOpen = true;
     }
 
     private void GotoPreviousSlide(Guid? mediaItemId)
@@ -975,17 +972,17 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             // Snapshot current items for diff computation — must happen on the UI thread.
             var existingSnapshot = MediaItems
                 .Where(x => x.FilePath != null)
-                .Select(x => (FilePath: x.FilePath!, LastChanged: x.LastChanged))
+                .Select(x => (FilePath: x.FilePath!, x.LastChanged))
                 .ToList();
 
             // File I/O and diff computation on a background thread.
-            var changes = await Task.Run(() => ComputeMediaChanges(existingSnapshot));
-            
+            var (pathsToRemove, itemsToAdd) = await Task.Run(() => ComputeMediaChanges(existingSnapshot));
+
             // Apply changes to the collection back on the UI thread.
             using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
             {
                 var itemsToRemove = MediaItems
-                    .Where(x => x.FilePath != null && changes.PathsToRemove.Contains(x.FilePath))
+                    .Where(x => x.FilePath != null && pathsToRemove.Contains(x.FilePath))
                     .ToList();
 
                 var currentItems = GetCurrentMediaItems();
@@ -1002,7 +999,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                     MediaItems.Remove(item);
                 }
 
-                foreach (var item in changes.ItemsToAdd)
+                foreach (var item in itemsToAdd)
                 {
                     MediaItems.Add(item);
                     _metaDataProducer.Add(item);
@@ -1239,7 +1236,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             if (_optionsService.AutoRotateImages)
             {
                 var items = MediaItems.ToList();
+#pragma warning disable U2U1203
                 foreach (var item in items)
+#pragma warning restore U2U1203
                 {
                     await AutoRotateImageIfRequiredAsync(item);
                 }
@@ -1266,10 +1265,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         Application.Current.Dispatcher.Invoke(() =>
         {
             var item = GetActiveWebItem();
-            if (item != null)
-            {
-                item.MiscText = e.Description;
-            }
+            item?.MiscText = e.Description;
         });
 
     private void HandleAllowMirrorChangedEvent(object? sender, EventArgs e)

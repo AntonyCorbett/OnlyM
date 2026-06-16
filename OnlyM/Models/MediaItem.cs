@@ -18,7 +18,7 @@ public class MediaItem : ObservableObject
     private static readonly SolidColorBrush SlideshowIconBrush = new(Colors.BlueViolet);
     private static readonly SolidColorBrush WebIconBrush = new(Colors.Firebrick);
     private static readonly SolidColorBrush UnknownIconBrush = new(Colors.Crimson);
-    
+
     private static readonly SolidColorBrush GreenBrush = new(Colors.DarkGreen);
     private static readonly SolidColorBrush BlackBrush = new(Colors.Black);
     private static readonly SolidColorBrush GrayBrush = new(Colors.DarkGray);

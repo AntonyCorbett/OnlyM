@@ -267,11 +267,8 @@ internal sealed class VideoDisplayManager : IDisposable
 
     private async Task CreateSubtitleProvider(string? mediaItemFilePath, TimeSpan videoHeadPosition)
     {
-        if (_subTitleProvider != null)
-        {
-            _subTitleProvider.SubtitleEvent -= HandleSubtitleEvent;
-            _subTitleProvider = null;
-        }
+        _subTitleProvider?.SubtitleEvent -= HandleSubtitleEvent;
+        _subTitleProvider = null;
 
         if (_mediaElement is MediaElementMediaFoundation &&
             mediaItemFilePath != null &&

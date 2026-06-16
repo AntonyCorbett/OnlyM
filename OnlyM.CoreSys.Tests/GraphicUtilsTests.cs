@@ -415,5 +415,7 @@ public class GraphicsUtilsTests : IDisposable
         {
             // Ignore cleanup errors
         }
+
+        GC.SuppressFinalize(this);
     }
 }

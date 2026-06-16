@@ -722,10 +722,7 @@ public class MainViewModel : ObservableObject
             await LoadShow(optionalPathToExistingSlideshow, builder);
         }
 
-        if (CurrentSlideFileBuilder != null)
-        {
-            CurrentSlideFileBuilder.BuildProgressEvent -= HandleBuildProgressEvent;
-        }
+        CurrentSlideFileBuilder?.BuildProgressEvent -= HandleBuildProgressEvent;
 
         CurrentSlideFileBuilder = builder;
         CurrentSlideFileBuilder.BuildProgressEvent += HandleBuildProgressEvent;

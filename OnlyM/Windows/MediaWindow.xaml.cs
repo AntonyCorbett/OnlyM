@@ -270,7 +270,7 @@ public sealed partial class MediaWindow : IDisposable
         base.OnActivated(e);
 
         // If we're not showing a web page, keep focus on the image area so Ctrl+Zoom works
-        if ((DataContext as MediaViewModel)?.IsWebPage == false)
+        if (DataContext is MediaViewModel { IsWebPage: false })
         {
             // Slightly defer to ensure layout is ready
             _ = Dispatcher.BeginInvoke(EnsureMediaWindowKeyboardFocus, System.Windows.Threading.DispatcherPriority.Input);

@@ -18,7 +18,9 @@ internal sealed class DarkModeService : IDarkModeService
     private const int DwmwaUseImmersiveDarkMode = 20;
 
     [DllImport("dwmapi.dll")]
+#pragma warning disable SYSLIB1054
     private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attribute, ref int pvAttribute, int cbAttribute);
+#pragma warning restore SYSLIB1054
 
     private readonly IOptionsService _optionsService;
 
@@ -117,7 +119,7 @@ internal sealed class DarkModeService : IDarkModeService
 
     private static void SetTitleBarDarkMode(IntPtr hwnd, bool isDark)
     {
-        int value = isDark ? 1 : 0;
+        var value = isDark ? 1 : 0;
 
         // Discard the HRESULT — failure just means the title bar stays its default colour.
         _ = DwmSetWindowAttribute(hwnd, DwmwaUseImmersiveDarkMode, ref value, Marshal.SizeOf(value));

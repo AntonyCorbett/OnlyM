@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,10 +58,7 @@ public sealed class FolderWatcherService : IFolderWatcherService, IDisposable
 
     public void Dispose()
     {
-        if (_watcher != null)
-        {
-            _watcher.EnableRaisingEvents = false;
-        }
+        _watcher?.EnableRaisingEvents = false;
 
         _collationCts.Cancel();
         _collationCts.Dispose();

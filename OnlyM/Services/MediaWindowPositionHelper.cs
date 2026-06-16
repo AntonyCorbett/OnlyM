@@ -61,10 +61,7 @@ internal static class MediaWindowPositionHelper
             mediaWindow.Width = width;
             mediaWindow.Height = height;
 
-            if (mainGrid != null)
-            {
-                mainGrid.Margin = new Thickness(0);
-            }
+            mainGrid?.Margin = new Thickness(0);
         }
     }
 
@@ -128,10 +125,7 @@ internal static class MediaWindowPositionHelper
             mediaWindow.Width = width + 1;
             mediaWindow.Height = height;
 
-            if (mainGrid != null)
-            {
-                mainGrid.Margin = new Thickness(1, 0, 0, 0);
-            }
+            mainGrid?.Margin = new Thickness(1, 0, 0, 0);
         }
         else if (MonitorToLeftOf(monitor, primaryMonitor))
         {
@@ -140,10 +134,7 @@ internal static class MediaWindowPositionHelper
             mediaWindow.Width = width + 1;
             mediaWindow.Height = height;
 
-            if (mainGrid != null)
-            {
-                mainGrid.Margin = new Thickness(0, 0, 1, 0);
-            }
+            mainGrid?.Margin = new Thickness(0, 0, 1, 0);
         }
         else if (MonitorIsAbove(monitor, primaryMonitor))
         {
@@ -152,10 +143,7 @@ internal static class MediaWindowPositionHelper
             mediaWindow.Width = width;
             mediaWindow.Height = height + 1;
 
-            if (mainGrid != null)
-            {
-                mainGrid.Margin = new Thickness(0, 0, 0, 1);
-            }
+            mainGrid?.Margin = new Thickness(0, 0, 0, 1);
         }
         else if (MonitorIsBelow(monitor, primaryMonitor))
         {
@@ -164,10 +152,7 @@ internal static class MediaWindowPositionHelper
             mediaWindow.Width = width;
             mediaWindow.Height = height + 1;
 
-            if (mainGrid != null)
-            {
-                mainGrid.Margin = new Thickness(0, 1, 0, 0);
-            }
+            mainGrid?.Margin = new Thickness(0, 1, 0, 0);
         }
         else
         {
@@ -178,10 +163,7 @@ internal static class MediaWindowPositionHelper
             mediaWindow.Width = width;
             mediaWindow.Height = height;
 
-            if (mainGrid != null)
-            {
-                mainGrid.Margin = new Thickness(0);
-            }
+            mainGrid?.Margin = new Thickness(0);
         }
     }
 
