@@ -129,12 +129,7 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
-                <ScrollViewer
-                    x:Name="MainScrollViewer"
-                    PanningMode="VerticalOnly"
-                    VerticalScrollBarVisibility="Auto">
-                    <ContentControl Content="{Binding CurrentPage}" />
-                </ScrollViewer>
+                <ContentControl Content="{Binding CurrentPage}" />
                 <TextBlock
                     Height="20"
                     Margin="20,20,20,0"

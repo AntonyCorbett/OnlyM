@@ -22,6 +22,12 @@ public partial class OperatorPage
         dragAndDropService?.Init(this);
     }
 
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        var vm = (OperatorViewModel?)DataContext;
+        vm?.TriggerStartupLoad();
+    }
+
     private void MirrorCheckBoxChecked(object? sender, RoutedEventArgs e) =>
         HandleMirrorCheckBoxChanged(sender, true);
 

@@ -183,7 +183,8 @@
         </EventTrigger>
     </UserControl.Triggers>
 
-    <WrapPanel Orientation="Horizontal">
+    <ScrollViewer PanningMode="VerticalOnly" VerticalScrollBarVisibility="Auto">
+        <WrapPanel Orientation="Horizontal">
         <GroupBox Header="{x:Static resx:Resources.SECTION_DISPLAY}" Style="{StaticResource SettingsGroupBoxStyle}">
             <StackPanel Orientation="Vertical">
 
@@ -711,6 +712,7 @@
             </StackPanel>
         </GroupBox>
 
-    </WrapPanel>
+        </WrapPanel>
+    </ScrollViewer>
 
 </UserControl>

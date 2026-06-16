@@ -56,6 +56,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private MetaDataQueueConsumer? _metaDataConsumer;
     private string? _blankScreenImagePath;
     private bool _pendingLoadMediaItems;
+    private bool _startupLoadDone;
+    private bool _isLoadingMediaItems;
     private int _thumbnailColWidth = 180;
 
     public OperatorViewModel(
@@ -117,7 +119,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _pageService.NavigationEvent += HandleNavigationEvent;
         _pageService.WebStatusEvent += HandleWebStatusEvent;
 
-        LoadMediaItems();
         InitCommands();
 
         LaunchThumbnailQueueConsumer();
@@ -158,6 +159,17 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     public void Dispose()
     {
         _metaDataCancellationTokenSource.Dispose();
+    }
+
+    public void TriggerStartupLoad()
+    {
+        if (_startupLoadDone)
+        {
+            return;
+        }
+
+        _startupLoadDone = true;
+        LoadMediaItems();
     }
 
     private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e) =>
@@ -947,34 +959,89 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
-    private void LoadMediaItems()
+    private async void LoadMediaItems()
     {
-        if (IsInDesignMode())
+        if (IsInDesignMode() || _isLoadingMediaItems)
         {
             return;
         }
 
-        Log.Logger.Debug("Loading media items");
-
-        WeakReferenceMessenger.Default.Send(new MediaListUpdatingMessage());
-
-        using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
+        _isLoadingMediaItems = true;
+        try
         {
-            LoadMediaItemsInternal();
+            Log.Logger.Debug("Loading media items");
+            WeakReferenceMessenger.Default.Send(new MediaListUpdatingMessage());
+
+            // Snapshot current items for diff computation — must happen on the UI thread.
+            var existingSnapshot = MediaItems
+                .Where(x => x.FilePath != null)
+                .Select(x => (FilePath: x.FilePath!, LastChanged: x.LastChanged))
+                .ToList();
+
+            // File I/O and diff computation on a background thread.
+            var changes = await Task.Run(() => ComputeMediaChanges(existingSnapshot));
+
+            // Apply changes to the collection back on the UI thread.
+            using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
+            {
+                var itemsToRemove = MediaItems
+                    .Where(x => x.FilePath != null && changes.PathsToRemove.Contains(x.FilePath))
+                    .ToList();
+
+                var currentItems = GetCurrentMediaItems();
+                var deletedCurrentItems = currentItems?.Intersect(itemsToRemove).ToArray();
+                if (deletedCurrentItems?.Length > 0)
+                {
+                    Log.Logger.Warning("User deleted {Count} active items", deletedCurrentItems.Length);
+                    ForciblyStopAllPlayback(currentItems);
+                    _snackbarService.EnqueueWithOk(Properties.Resources.ACTIVE_ITEM_DELETED, Properties.Resources.OK);
+                }
+
+                foreach (var item in itemsToRemove)
+                {
+                    MediaItems.Remove(item);
+                }
+
+                foreach (var item in changes.ItemsToAdd)
+                {
+                    MediaItems.Add(item);
+                    _metaDataProducer.Add(item);
+                }
+
+                TruncateMediaItemsToMaxCount();
+
+                _hiddenMediaItemsService.Init(MediaItems);
+                _frozenVideosService.Init(MediaItems);
+                _pdfOptionsService.Init(MediaItems);
+
+                SortMediaItems();
+                InsertBlankMediaItem();
+            }
+
+            ChangePlayButtonEnabledStatus();
+            Log.Logger.Debug("Completed loading media items");
         }
-
-        ChangePlayButtonEnabledStatus();
-
-        WeakReferenceMessenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
-
-        Log.Logger.Debug("Completed loading media items");
+        catch (Exception ex)
+        {
+            EventTracker.Error(ex, "Loading media items");
+            Log.Logger.Error(ex, "Error loading media items");
+        }
+        finally
+        {
+            _isLoadingMediaItems = false;
+            WeakReferenceMessenger.Default.Send(new MediaListUpdatedMessage { Count = MediaItems.Count });
+        }
     }
 
-    private void LoadMediaItemsInternal()
+    private (HashSet<string> PathsToRemove, List<MediaItem> ItemsToAdd) ComputeMediaChanges(
+        List<(string FilePath, long LastChanged)> existingSnapshot)
     {
+        // Write BlankScreen.png on first call here on the background thread so that
+        // InsertBlankMediaItem() on the UI thread gets a cached path with no disk I/O.
+        GetBlankScreenPath();
+
         var files = _mediaProviderService.GetMediaFiles();
         var sourceFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var destFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var file in files)
         {
@@ -984,79 +1051,35 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             }
         }
 
-        var itemsToRemove = new List<MediaItem>();
+        var pathsToRemove = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var keptFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var item in MediaItems)
+        foreach (var (filePath, lastChanged) in existingSnapshot)
         {
-            var filePath = item.FilePath;
-
-            if (filePath == null)
-            {
-                continue;
-            }
-
             if (!sourceFilePaths.Contains(filePath))
             {
-                // remove this item.
-                itemsToRemove.Add(item);
+                pathsToRemove.Add(filePath);
             }
             else
             {
-                // perhaps the item has been changed or swapped for another media file of the same name!
                 var file = files.SingleOrDefault(x => x.FullPath == filePath);
-                if (file != null && file.LastChanged != item.LastChanged)
+                if (file != null && file.LastChanged != lastChanged)
                 {
-                    // remove this item.
-                    itemsToRemove.Add(item);
+                    pathsToRemove.Add(filePath);
                 }
                 else
                 {
-                    destFilePaths.Add(filePath);
+                    keptFilePaths.Add(filePath);
                 }
             }
         }
 
-        var currentItems = GetCurrentMediaItems(); // currently playing
-        var deletedCurrentItems = currentItems?.Intersect(itemsToRemove).ToArray();
-        var count = deletedCurrentItems?.Length ?? 0;
-        if (count > 0)
-        {
-            // we have deleted one or more items that are currently being displayed!
-            Log.Logger.Warning("User deleted {Count} active items", count);
+        var itemsToAdd = files
+            .Where(f => f.FullPath != null && !keptFilePaths.Contains(f.FullPath!))
+            .Select(CreateNewMediaItem)
+            .ToList();
 
-            ForciblyStopAllPlayback(currentItems);
-
-            _snackbarService.EnqueueWithOk(Properties.Resources.ACTIVE_ITEM_DELETED, Properties.Resources.OK);
-        }
-
-        // remove old items.
-        foreach (var item in itemsToRemove)
-        {
-            MediaItems.Remove(item);
-        }
-
-        // add new items.
-        foreach (var file in files)
-        {
-            if (file.FullPath != null && !destFilePaths.Contains(file.FullPath))
-            {
-                var item = CreateNewMediaItem(file);
-
-                MediaItems.Add(item);
-
-                _metaDataProducer.Add(item);
-            }
-        }
-
-        TruncateMediaItemsToMaxCount();
-
-        _hiddenMediaItemsService.Init(MediaItems);
-        _frozenVideosService.Init(MediaItems);
-        _pdfOptionsService.Init(MediaItems);
-
-        SortMediaItems();
-
-        InsertBlankMediaItem();
+        return (pathsToRemove, itemsToAdd);
     }
 
     private void ForciblyStopAllPlayback(List<MediaItem>? activeItems)

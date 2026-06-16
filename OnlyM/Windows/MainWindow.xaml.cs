@@ -10,7 +10,6 @@ using OnlyM.PubSubMessages;
 using OnlyM.Services.DarkMode;
 using OnlyM.Services.DragAndDrop;
 using OnlyM.Services.MediaChanging;
-using OnlyM.Services.Pages;
 
 namespace OnlyM.Windows;
 
@@ -47,22 +46,6 @@ public partial class MainWindow
     {
         AdjustMainWindowPositionAndSize();
         Ioc.Default.GetService<IDarkModeService>()?.ApplyTitleBarTheme(this);
-
-        if (!IsDesignMode)
-        {
-            try
-            {
-                var pageService = Ioc.Default.GetService<IPageService>();
-                if (pageService != null)
-                {
-                    pageService.ScrollViewer = MainScrollViewer;
-                }
-            }
-            catch (System.InvalidOperationException)
-            {
-                // Ignore if IOC not ready (rare).
-            }
-        }
     }
 
     private void WindowClosing(object? sender, CancelEventArgs e)

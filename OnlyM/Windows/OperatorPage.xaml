@@ -15,6 +15,7 @@
     Background="{DynamicResource MaterialDesignPaper}"
     DataContext="{Binding Operator, Mode=OneWay, Source={StaticResource Locator}}"
     FontFamily="{DynamicResource MaterialDesignFont}"
+    Loaded="OnLoaded"
     SizeChanged="OnlyMOperatorPage_SizeChanged"
     TextElement.FontSize="18"
     TextElement.FontWeight="Regular"
@@ -477,13 +478,26 @@
         </EventTrigger>
     </UserControl.Triggers>
 
-    <ItemsControl ItemsSource="{Binding MediaItems}">
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <StackPanel Orientation="Vertical" />
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-    </ItemsControl>
+    <ListBox
+        Background="Transparent"
+        BorderThickness="0"
+        ItemsSource="{Binding MediaItems}"
+        VirtualizingPanel.VirtualizationMode="Recycling">
+        <ListBox.ItemContainerStyle>
+            <Style TargetType="{x:Type ListBoxItem}">
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <ContentPresenter />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ListBox.ItemContainerStyle>
+    </ListBox>
 
 </UserControl>
 

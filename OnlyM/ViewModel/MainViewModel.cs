@@ -157,9 +157,9 @@ internal sealed class MainViewModel : ObservableObject
     public bool IsUnhideButtonVisible =>
         IsInDesignMode() || (IsOperatorPageActive && !ShowProgressBar && _hiddenMediaItemsService.SomeHiddenMediaItems());
 
-    public bool ShowProgressBar => IsBusy;
+    public bool ShowProgressBar => IsBusy || IsMediaListLoading;
 
-    public bool ShowDragAndDropHint => IsMediaListEmpty && IsOperatorPageActive;
+    public bool ShowDragAndDropHint => IsMediaListEmpty && IsOperatorPageActive && !IsMediaListLoading;
 
     public FrameworkElement? CurrentPage
     {
@@ -179,7 +179,14 @@ internal sealed class MainViewModel : ObservableObject
     public bool IsMediaListLoading
     {
         get => _isMediaListLoading;
-        set => SetProperty(ref _isMediaListLoading, value);
+        set
+        {
+            if (SetProperty(ref _isMediaListLoading, value))
+            {
+                OnPropertyChanged(nameof(ShowProgressBar));
+                OnPropertyChanged(nameof(ShowDragAndDropHint));
+            }
+        }
     }
 
     private bool IsMediaListEmpty
