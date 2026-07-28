@@ -491,6 +491,34 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
+    public bool IsAutoSortMode
+    {
+        get => _optionsService.SortMode == MediaSortMode.Auto;
+        set
+        {
+            if (value && _optionsService.SortMode != MediaSortMode.Auto)
+            {
+                _optionsService.SortMode = MediaSortMode.Auto;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsManualSortMode));
+            }
+        }
+    }
+
+    public bool IsManualSortMode
+    {
+        get => _optionsService.SortMode == MediaSortMode.Manual;
+        set
+        {
+            if (value && _optionsService.SortMode != MediaSortMode.Manual)
+            {
+                _optionsService.SortMode = MediaSortMode.Manual;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsAutoSortMode));
+            }
+        }
+    }
+
     public bool UseInternalMediaTitles
     {
         get => _optionsService.UseInternalMediaTitles;

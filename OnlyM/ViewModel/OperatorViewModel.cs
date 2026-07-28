@@ -13,6 +13,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using OnlyM.Core.Models;
+using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Media;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Utils;
@@ -40,6 +41,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private readonly IMediaProviderService _mediaProviderService;
     private readonly IThumbnailService _thumbnailService;
     private readonly IMediaMetaDataService _metaDataService;
+    private readonly IDatabaseService _databaseService;
     private readonly IOptionsService _optionsService;
     private readonly IPageService _pageService;
     private readonly IMediaStatusChangingService _mediaStatusChangingService;
@@ -59,12 +61,15 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private bool _startupLoadDone;
     private bool _isLoadingMediaItems;
     private bool _reloadRequestedFromFileChanges;
+    private int? _pendingManualInsertIndex;
+    private long _pendingManualInsertToken;
     private int _thumbnailColWidth = 180;
 
     public OperatorViewModel(
         IMediaProviderService mediaProviderService,
         IThumbnailService thumbnailService,
         IMediaMetaDataService metaDataService,
+        IDatabaseService databaseService,
         IOptionsService optionsService,
         IPageService pageService,
         IFolderWatcherService folderWatcherService,
@@ -93,6 +98,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _thumbnailService.ThumbnailsPurgedEvent += HandleThumbnailsPurgedEvent;
 
         _metaDataService = metaDataService;
+        _databaseService = databaseService;
 
         _optionsService = optionsService;
         _optionsService.MediaFolderChangedEvent += HandleMediaFolderChangedEvent;
@@ -106,6 +112,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
         _optionsService.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
         _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
+        _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
         _optionsService.PermanentBackdropChangedEvent += async (_, _) => await HandlePermanentBackdropChangedEvent();
         _optionsService.IncludeBlankScreenItemChangedEvent += async (_, _) => await HandleIncludeBlankScreenItemChangedEvent();
 
@@ -127,6 +134,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         WeakReferenceMessenger.Default.Register<SubtitleFileMessage>(this, OnSubtitleFileActivity);
         WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, OnThemeChanged);
+        WeakReferenceMessenger.Default.Register<ExternalDropTargetMessage>(this, OnExternalDropTarget);
     }
 
     public ObservableCollectionEx<MediaItem> MediaItems { get; } = [];
@@ -150,6 +158,38 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     public RelayCommand<Guid?> NextSlideCommand { get; private set; } = null!;
 
     public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; private set; } = null!;
+
+    public void MoveMediaItem(MediaItem sourceItem, MediaItem targetItem)
+    {
+        if (sourceItem.IsBlankScreen || targetItem.IsBlankScreen)
+        {
+            return;
+        }
+
+        var sourceIndex = MediaItems.IndexOf(sourceItem);
+        var targetIndex = MediaItems.IndexOf(targetItem);
+
+        if (sourceIndex < 0 || targetIndex < 0 || sourceIndex == targetIndex)
+        {
+            return;
+        }
+
+        var blankIndex = GetBlankScreenIndex();
+        if (blankIndex == 0 && targetIndex == 0)
+        {
+            targetIndex = 1;
+        }
+
+        if (sourceIndex == targetIndex)
+        {
+            return;
+        }
+
+        MediaItems.Move(sourceIndex, targetIndex);
+
+        EnsureBlankScreenIsFirst();
+        PersistManualOrderForCurrentFolder();
+    }
 
     public int ThumbnailColWidth
     {
@@ -194,6 +234,12 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private void HandleOperatingDateChangedEvent(object? sender, EventArgs e) =>
         _pendingLoadMediaItems = true;
+
+    private void HandleSortModeChangedEvent(object? sender, EventArgs e)
+    {
+        _pendingLoadMediaItems = true;
+        _ = Application.Current.Dispatcher.BeginInvoke(new Action(LoadMediaItems));
+    }
 
     private void HandleUnhideAllEvent(object? sender, EventArgs e)
     {
@@ -326,6 +372,18 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         {
             item.RefreshThemeDependentProperties();
         }
+    }
+
+    private void OnExternalDropTarget(object? sender, ExternalDropTargetMessage message)
+    {
+        if (_optionsService.SortMode != MediaSortMode.Manual)
+        {
+            _pendingManualInsertIndex = null;
+            return;
+        }
+
+        _pendingManualInsertIndex = message.TargetIndex;
+        ++_pendingManualInsertToken;
     }
 
     private void LaunchThumbnailQueueConsumer()
@@ -1011,6 +1069,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                     MediaItems.Remove(item);
                 }
 
+                var manualInsertTokenSnapshot = _pendingManualInsertToken;
+
                 foreach (var item in itemsToAdd)
                 {
                     MediaItems.Add(item);
@@ -1025,6 +1085,16 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
                 SortMediaItems();
                 InsertBlankMediaItem();
+
+                if (_optionsService.SortMode == MediaSortMode.Manual &&
+                    _pendingManualInsertIndex.HasValue &&
+                    itemsToAdd.Count > 0 &&
+                    manualInsertTokenSnapshot == _pendingManualInsertToken)
+                {
+                    InsertNewItemsAtPendingManualIndex(itemsToAdd);
+                    PersistManualOrderForCurrentFolder();
+                    _pendingManualInsertIndex = null;
+                }
             }
 
             ChangePlayButtonEnabledStatus();
@@ -1118,6 +1188,54 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
+    private void InsertNewItemsAtPendingManualIndex(IReadOnlyCollection<MediaItem> newItems)
+    {
+        if (!_pendingManualInsertIndex.HasValue)
+        {
+            return;
+        }
+
+        var insertIndex = _pendingManualInsertIndex.Value;
+
+        var blankIndex = GetBlankScreenIndex();
+        if (blankIndex == 0 && insertIndex <= 0)
+        {
+            insertIndex = 1;
+        }
+
+        if (insertIndex < 0)
+        {
+            insertIndex = 0;
+        }
+
+        if (insertIndex > MediaItems.Count)
+        {
+            insertIndex = MediaItems.Count;
+        }
+
+        var orderedNewItems = newItems
+            .Where(x => !x.IsBlankScreen)
+            .ToList();
+
+        for (var n = 0; n < orderedNewItems.Count; ++n)
+        {
+            var item = orderedNewItems[n];
+            var currentIndex = MediaItems.IndexOf(item);
+            if (currentIndex < 0)
+            {
+                continue;
+            }
+
+            var targetIndex = Math.Min(insertIndex + n, MediaItems.Count - 1);
+            if (currentIndex != targetIndex)
+            {
+                MediaItems.Move(currentIndex, targetIndex);
+            }
+        }
+
+        EnsureBlankScreenIsFirst();
+    }
+
     private MediaItem CreateNewMediaItem(MediaFile file)
     {
         var result = new MediaItem
@@ -1200,11 +1318,86 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private void SortMediaItems()
     {
+        if (_optionsService.SortMode == MediaSortMode.Manual)
+        {
+            SortMediaItemsManual();
+            return;
+        }
+
+        SortMediaItemsAuto();
+    }
+
+    private void SortMediaItemsAuto()
+    {
         var sorted = MediaItems.OrderBy(x => x.SortKey).ToList();
         var blank = sorted.SingleOrDefault(x => x.IsBlankScreen);
         if (blank != null && blank != sorted.First())
         {
             sorted.Remove(blank);
+            sorted.Insert(0, blank);
+        }
+
+        for (var n = 0; n < sorted.Count; ++n)
+        {
+            MediaItems.Move(MediaItems.IndexOf(sorted[n]), n);
+        }
+    }
+
+    private void SortMediaItemsManual()
+    {
+        var mediaFolder = _optionsService.MediaFolder;
+        if (string.IsNullOrWhiteSpace(mediaFolder) || !Directory.Exists(mediaFolder))
+        {
+            SortMediaItemsAuto();
+            return;
+        }
+
+        var scopeKey = mediaFolder.Trim();
+
+        var keyedItems = MediaItems
+            .Where(x => !x.IsBlankScreen && !string.IsNullOrWhiteSpace(x.FilePath))
+            .Select(x => new
+            {
+                Item = x,
+                Key = CreateMediaOrderItemKey(mediaFolder, x.FilePath!),
+            })
+            .ToList();
+
+        var existingKeys = keyedItems
+            .Select(x => x.Key)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        _databaseService.RemoveMissingMediaOrderItems(scopeKey, existingKeys);
+
+        var storedOrderKeys = _databaseService.GetMediaOrderItemKeys(scopeKey);
+
+        var itemByKey = keyedItems
+            .GroupBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First().Item, StringComparer.OrdinalIgnoreCase);
+
+        var sorted = new List<MediaItem>();
+        var usedKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var key in storedOrderKeys)
+        {
+            if (itemByKey.TryGetValue(key, out var item) && usedKeys.Add(key))
+            {
+                sorted.Add(item);
+            }
+        }
+
+        var newItems = keyedItems
+            .Where(x => !usedKeys.Contains(x.Key))
+            .Select(x => x.Item)
+            .OrderBy(x => x.SortKey)
+            .ToList();
+
+        sorted.AddRange(newItems);
+
+        var blank = MediaItems.SingleOrDefault(x => x.IsBlankScreen);
+        if (blank != null)
+        {
             sorted.Insert(0, blank);
         }
 
@@ -1220,6 +1413,56 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         {
             _metaDataProducer.Add(item);
         }
+    }
+
+    private static string CreateMediaOrderItemKey(string mediaFolder, string fullPath)
+    {
+        var relativePath = Path.GetRelativePath(mediaFolder, fullPath);
+        return relativePath.Replace('\\', '/').Trim();
+    }
+
+    private int GetBlankScreenIndex()
+    {
+        for (var i = 0; i < MediaItems.Count; ++i)
+        {
+            if (MediaItems[i].IsBlankScreen)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private void EnsureBlankScreenIsFirst()
+    {
+        var blankIndex = GetBlankScreenIndex();
+        if (blankIndex > 0)
+        {
+            MediaItems.Move(blankIndex, 0);
+        }
+    }
+
+    private void PersistManualOrderForCurrentFolder()
+    {
+        var mediaFolder = _optionsService.MediaFolder;
+        if (string.IsNullOrWhiteSpace(mediaFolder) || !Directory.Exists(mediaFolder))
+        {
+            return;
+        }
+
+        _optionsService.SortMode = MediaSortMode.Manual;
+        _optionsService.Save();
+
+        var scopeKey = mediaFolder.Trim();
+
+        var orderedItemKeys = MediaItems
+            .Where(x => !x.IsBlankScreen && !string.IsNullOrWhiteSpace(x.FilePath))
+            .Select(x => CreateMediaOrderItemKey(mediaFolder, x.FilePath!))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        _databaseService.UpsertMediaOrder(scopeKey, orderedItemKeys);
     }
 
     private async Task AutoRotateImageIfRequiredAsync(MediaItem item)
