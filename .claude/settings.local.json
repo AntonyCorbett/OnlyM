@@ -19,7 +19,8 @@
       "WebFetch(domain:api.github.com)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:patch-diff.githubusercontent.com)",
-      "PowerShell(Out-File *)"
+      "PowerShell(Out-File *)",
+      "PowerShell(Get-Process *)"
     ]
   }
 }

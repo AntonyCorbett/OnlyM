@@ -236,6 +236,10 @@
     <value>Media folder specified on command-line</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
+  <data name="MEDIA_ITEM_COUNT" xml:space="preserve">
+    <value>{0} of {1}</value>
+    <comment>Small badge on the Operator page showing the current number of media items and the configured maximum. Please retain the placeholders.</comment>
+  </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
     <value>Allow pause</value>
     <comment>See Settings =&gt; Videos and Audio. Allow the media to be paused.</comment>

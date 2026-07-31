@@ -478,26 +478,61 @@
         </EventTrigger>
     </UserControl.Triggers>
 
-    <ListBox
-        Background="Transparent"
-        BorderThickness="0"
-        ItemsSource="{Binding MediaItems}"
-        VirtualizingPanel.VirtualizationMode="Recycling">
-        <ListBox.ItemContainerStyle>
-            <Style TargetType="{x:Type ListBoxItem}">
-                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                            <ContentPresenter />
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </ListBox.ItemContainerStyle>
-    </ListBox>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  Media item count badge - shown once the list is non-empty; highlighted when the configured maximum is reached  -->
+        <!--  Right margin (22) = scrollbar width (18, see MainWindow's ScrollBar style) + card margin (4) so the badge's right edge lines up with the cards' right edge  -->
+        <Border
+            Grid.Row="0"
+            Margin="0,6,22,2"
+            Padding="8,1"
+            HorizontalAlignment="Right"
+            Background="{DynamicResource MaterialDesignDivider}"
+            CornerRadius="8"
+            Visibility="{Binding Path=IsMediaItemCountVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsMediaItemCountAtMax}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock
+                FontSize="11"
+                Foreground="{DynamicResource MaterialDesignBody}"
+                Text="{Binding MediaItemCountText}"
+                ToolTip="{x:Static resx:Resources.MAX_ITEMS}" />
+        </Border>
+
+        <ListBox
+            Grid.Row="1"
+            Background="Transparent"
+            BorderThickness="0"
+            ItemsSource="{Binding MediaItems}"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            VirtualizingPanel.VirtualizationMode="Recycling">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+    </Grid>
 
 </UserControl>
 

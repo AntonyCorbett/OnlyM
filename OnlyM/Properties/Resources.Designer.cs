@@ -546,7 +546,16 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("MEDIA_FOLDER_CMDLINE", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1}.
+        /// </summary>
+        public static string MEDIA_ITEM_COUNT {
+            get {
+                return ResourceManager.GetString("MEDIA_ITEM_COUNT", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Monitor.
         /// </summary>

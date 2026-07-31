@@ -127,9 +127,28 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         WeakReferenceMessenger.Default.Register<SubtitleFileMessage>(this, OnSubtitleFileActivity);
         WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, OnThemeChanged);
+
+        MediaItems.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(MediaItemCountText));
+            OnPropertyChanged(nameof(IsMediaItemCountAtMax));
+            OnPropertyChanged(nameof(IsMediaItemCountVisible));
+        };
     }
 
     public ObservableCollectionEx<MediaItem> MediaItems { get; } = [];
+
+#pragma warning disable CA1863
+    public string MediaItemCountText => string.Format(
+        CultureInfo.CurrentCulture,
+        Properties.Resources.MEDIA_ITEM_COUNT,
+        MediaItems.Count,
+        _optionsService.MaxItemCount);
+#pragma warning restore CA1863
+
+    public bool IsMediaItemCountAtMax => MediaItems.Count >= _optionsService.MaxItemCount;
+
+    public bool IsMediaItemCountVisible => MediaItems.Count > 0;
 
     public AsyncRelayCommand<Guid?> MediaControlCommand1 { get; private set; } = null!;
 
@@ -173,8 +192,12 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         LoadMediaItems();
     }
 
-    private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e) =>
+    private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e)
+    {
         _pendingLoadMediaItems = true;
+        OnPropertyChanged(nameof(MediaItemCountText));
+        OnPropertyChanged(nameof(IsMediaItemCountAtMax));
+    }
 
     private void HandleNavigationEvent(object? sender, NavigationEventArgs e)
     {
