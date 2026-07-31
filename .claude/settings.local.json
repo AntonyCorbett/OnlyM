@@ -12,7 +12,14 @@
       "Bash(dotnet test *)",
       "PowerShell(Get-ChildItem *)",
       "PowerShell(Test-Path *)",
-      "PowerShell([System.IO.Directory]::GetDirectories\\(\"$env:USERPROFILE\\\\.nuget\\\\packages\\\\materialdesignthemes\"\\))"
+      "PowerShell([System.IO.Directory]::GetDirectories\\(\"$env:USERPROFILE\\\\.nuget\\\\packages\\\\materialdesignthemes\"\\))",
+      "Bash(gh pr *)",
+      "PowerShell(gh pr view https://github.com/AntonyCorbett/OnlyM/pull/516 --json title,body,author,baseRefName,headRefName,state,additions,deletions,changedFiles,labels)",
+      "PowerShell(gh pr *)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:patch-diff.githubusercontent.com)",
+      "PowerShell(Out-File *)"
     ]
   }
 }
