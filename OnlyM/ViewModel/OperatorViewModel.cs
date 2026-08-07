@@ -375,15 +375,23 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private async void HandleItemCompletedEvent(object? sender, ItemMetaDataPopulatedEventArgs e)
     {
-        var item = e.MediaItem;
-        if (item == null)
+        try
         {
-            return;
-        }
+            var item = e.MediaItem;
+            if (item == null)
+            {
+                return;
+            }
 
-        if (_optionsService.AutoRotateImages)
+            if (_optionsService.AutoRotateImages)
+            {
+                await AutoRotateImageIfRequiredAsync(item);
+            }
+        }
+        catch (Exception ex)
         {
-            await AutoRotateImageIfRequiredAsync(item);
+            EventTracker.Error(ex, "Rotating image");
+            Log.Logger.Error(ex, "Auto rotation of images");
         }
     }
 
@@ -989,6 +997,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
+    // ReSharper disable once AsyncVoidMethod
     private async void LoadMediaItems()
     {
         if (IsInDesignMode())
