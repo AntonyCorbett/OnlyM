@@ -158,7 +158,7 @@
     <comment>Notification displayed if you drag and drop a file (or files) of a type that is not supported.</comment>
   </data>
   <data name="OK" xml:space="preserve">
-    <value></value>
+    <value>OK</value>
   </data>
   <data name="VIEW" xml:space="preserve">
     <value>WIDOK</value>
@@ -232,9 +232,17 @@
     <value>Maksymalna liczba elementów</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
+  <data name="SHOW_MEDIA_ITEM_COUNT_BADGE" xml:space="preserve">
+    <value>Show media item count badge</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
     <value>Folder mediów określony w wierszu polecenia</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
+  </data>
+  <data name="MEDIA_ITEM_COUNT" xml:space="preserve">
+    <value>{0} of {1}</value>
+    <comment>Small badge on the Operator page showing the current number of media items and the configured maximum. Please retain the placeholders.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
     <value>Zezwalaj na pauzę</value>
@@ -589,47 +597,47 @@
     <comment>See Settings =&gt; Display</comment>
   </data>
   <data name="WEB_MAGNIFIER" xml:space="preserve">
-    <value>Magnifier</value>
+    <value>Szkło powiększające</value>
     <comment>The web display feature that overlays a magnifying panel on the web page</comment>
   </data>
   <data name="WEB_MAGNIFIER_LARGER" xml:space="preserve">
-    <value>Larger (F4)</value>
+    <value>Większy (F4)</value>
   </data>
   <data name="WEB_MAGNIFIER_OFF" xml:space="preserve">
-    <value>OFF</value>
+    <value>WYŁĄCZONE</value>
   </data>
   <data name="WEB_MAGNIFIER_ON" xml:space="preserve">
-    <value>ON</value>
+    <value>WŁĄCZONE</value>
   </data>
   <data name="WEB_MAGNIFIER_ON_OFF_TOGGLE" xml:space="preserve">
-    <value>On/Off (F1)</value>
+    <value>Włącz/Wyłącz (F1)</value>
   </data>
   <data name="WEB_MAGNIFIER_SHAPE_SWITCH" xml:space="preserve">
-    <value>Shape (F2)</value>
+    <value>Kształt</value>
   </data>
   <data name="WEB_MAGNIFIER_SMALLER" xml:space="preserve">
-    <value>Smaller (F3)</value>
+    <value>Mniejszy (F3)</value>
   </data>
   <data name="WEB_NAV_BACK" xml:space="preserve">
-    <value>Back (Alt-Left)</value>
+    <value>Cofnij (Alt-Lewo)</value>
   </data>
   <data name="WEB_NAV_FORWARD" xml:space="preserve">
-    <value>Forward (Alt-Right)</value>
+    <value>Dalej (Alt-right)</value>
   </data>
   <data name="WEB_PAGE_LARGER" xml:space="preserve">
-    <value>Larger (Ctrl+Plus)</value>
+    <value>Większy (Ctrl+Plus)</value>
   </data>
   <data name="WEB_PAGE_RELOAD" xml:space="preserve">
-    <value>Reload Page (Ctrl+F5)</value>
+    <value>Odśwież stronę (Ctrl+F5)</value>
   </data>
   <data name="WEB_PAGE_RESET" xml:space="preserve">
-    <value>Reset Size (Ctrl+0)</value>
+    <value>Resetuj rozmiar (Ctrl+0)</value>
   </data>
   <data name="WEB_PAGE_SIZE" xml:space="preserve">
-    <value>Page Size</value>
+    <value>Rozmiar strony</value>
   </data>
   <data name="WEB_PAGE_SMALLER" xml:space="preserve">
-    <value>Smaller (Ctrl+Minus)</value>
+    <value>Mniejszy (Ctrl + Minus)</value>
   </data>
   <data name="INSTALL_HEIF_CODEC" xml:space="preserve">
     <value>Install HEIC/HEIF Image extensions!</value>
