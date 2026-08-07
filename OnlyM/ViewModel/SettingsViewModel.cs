@@ -55,8 +55,6 @@ internal sealed class SettingsViewModel : ObservableObject
     private readonly MagnifierSizeItem[] _magnifierSizes;
     private readonly AppModeItem[] _appModes;
 
-    private bool _isMediaActive;
-
     public SettingsViewModel(
         IPageService pageService,
         IMonitorsService monitorsService,
@@ -611,6 +609,19 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
+    public bool ShowMediaItemCountBadge
+    {
+        get => _optionsService.ShowMediaItemCountBadge;
+        set
+        {
+            if (_optionsService.ShowMediaItemCountBadge != value)
+            {
+                _optionsService.ShowMediaItemCountBadge = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public bool IsMediaFolderOverriden => _optionsService.IsCommandLineMediaFolderSpecified();
 
     public bool IsMediaInactive => !IsMediaActive;
@@ -966,12 +977,12 @@ internal sealed class SettingsViewModel : ObservableObject
 
     private bool IsMediaActive
     {
-        get => _isMediaActive;
+        get;
         set
         {
-            if (_isMediaActive != value)
+            if (field != value)
             {
-                SetProperty(ref _isMediaActive, value);
+                SetProperty(ref field, value);
                 OnPropertyChanged(nameof(IsMediaInactive));
             }
         }

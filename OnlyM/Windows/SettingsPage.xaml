@@ -340,6 +340,11 @@
                     Style="{StaticResource SettingsTextBoxStyle}"
                     Text="{Binding MaxItemCount, Mode=TwoWay}" />
 
+                <CheckBox
+                    Content="{x:Static resx:Resources.SHOW_MEDIA_ITEM_COUNT_BADGE}"
+                    IsChecked="{Binding ShowMediaItemCountBadge, Mode=TwoWay}"
+                    Style="{StaticResource SettingsCheckBoxStyle}" />
+
                 <Button
                     Margin="0,10,0,0"
                     Command="{Binding PurgeThumbnailCacheCommand}"

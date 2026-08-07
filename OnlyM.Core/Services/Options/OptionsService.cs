@@ -85,6 +85,8 @@ public sealed class OptionsService : IOptionsService
 
     public event EventHandler? ShowFreezeCommandChangedEvent;
 
+    public event EventHandler? ShowMediaItemCountBadgeChangedEvent;
+
     public event EventHandler? MagnifierChangedEvent;
 
     public event EventHandler? BrowserChangedEvent;
@@ -202,6 +204,19 @@ public sealed class OptionsService : IOptionsService
             {
                 _options.Value.ShowFreezeCommand = value;
                 ShowFreezeCommandChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public bool ShowMediaItemCountBadge
+    {
+        get => _options.Value.ShowMediaItemCountBadge;
+        set
+        {
+            if (_options.Value.ShowMediaItemCountBadge != value)
+            {
+                _options.Value.ShowMediaItemCountBadge = value;
+                ShowMediaItemCountBadgeChangedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }

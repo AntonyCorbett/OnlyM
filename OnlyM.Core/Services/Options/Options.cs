@@ -70,6 +70,8 @@ public sealed class Options
 
     public bool ShowFreezeCommand { get; set; }
 
+    public bool ShowMediaItemCountBadge { get; set; }
+
     public string? MediaMonitorId { get; set; }
 
     public bool MediaWindowed { get; set; }

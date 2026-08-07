@@ -52,6 +52,8 @@ public interface IOptionsService
 
     event EventHandler ShowFreezeCommandChangedEvent;
 
+    event EventHandler ShowMediaItemCountBadgeChangedEvent;
+
     event EventHandler MagnifierChangedEvent;
 
     event EventHandler BrowserChangedEvent;
@@ -79,6 +81,8 @@ public interface IOptionsService
     bool AllowVideoScrubbing { get; set; }
 
     bool ShowFreezeCommand { get; set; }
+
+    bool ShowMediaItemCountBadge { get; set; }
 
     int MaxItemCount { get; set; }
 

@@ -21,6 +21,9 @@ charset = utf-8-bom
 # .NET Coding Conventions     #
 ###############################
 
+
+dotnet_diagnostic.IDE0028.severity = none
+
 [*.{cs,vb}]
 # Organize usings
 #----------------

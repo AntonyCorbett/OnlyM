@@ -103,6 +103,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.ShowMediaItemCommandPanelChangedEvent += HandleShowMediaItemCommandPanelChangedEvent;
         _optionsService.AllowMirrorChangedEvent += HandleAllowMirrorChangedEvent;
         _optionsService.ShowFreezeCommandChangedEvent += HandleShowFreezeCommandChangedEvent;
+        _optionsService.ShowMediaItemCountBadgeChangedEvent += HandleShowMediaItemCountBadgeChangedEvent;
         _optionsService.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
         _optionsService.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
         _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
@@ -148,7 +149,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public bool IsMediaItemCountAtMax => MediaItems.Count >= _optionsService.MaxItemCount;
 
-    public bool IsMediaItemCountVisible => MediaItems.Count > 0;
+    public bool IsMediaItemCountVisible => _optionsService.ShowMediaItemCountBadge && MediaItems.Count > 0;
 
     public AsyncRelayCommand<Guid?> MediaControlCommand1 { get; private set; } = null!;
 
@@ -197,6 +198,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _pendingLoadMediaItems = true;
         OnPropertyChanged(nameof(MediaItemCountText));
         OnPropertyChanged(nameof(IsMediaItemCountAtMax));
+    }
+
+    private void HandleShowMediaItemCountBadgeChangedEvent(object? sender, EventArgs e)
+    {
+        OnPropertyChanged(nameof(IsMediaItemCountVisible));
     }
 
     private void HandleNavigationEvent(object? sender, NavigationEventArgs e)
