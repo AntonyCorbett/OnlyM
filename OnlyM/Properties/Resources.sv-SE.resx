@@ -232,9 +232,17 @@
     <value>Max antal tillåtna mediafiler</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
+  <data name="SHOW_MEDIA_ITEM_COUNT_BADGE" xml:space="preserve">
+    <value>Show media item count badge</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
     <value>Mediamapp vald i kommandorad</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
+  </data>
+  <data name="MEDIA_ITEM_COUNT" xml:space="preserve">
+    <value>{0} of {1}</value>
+    <comment>Small badge on the Operator page showing the current number of media items and the configured maximum. Please retain the placeholders.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
     <value>Tillåt paus</value>
@@ -341,7 +349,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="DROP_HERE" xml:space="preserve">
-    <value>Dra och släpp media här!</value>
+    <value>Drag och släpp media här!</value>
     <comment>Text displayed in the "drop zone" - the dotted area where you drag and drop media files to.</comment>
   </data>
   <data name="MEDIA_PAGE" xml:space="preserve">
@@ -381,7 +389,7 @@
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="APP_MODE" xml:space="preserve">
-    <value>Läge</value>
+    <value>Mode</value>
     <comment>See Settings =&gt; Miscellaneous. Theme mode selection.</comment>
   </data>
   <data name="APP_MODE_SYSTEM" xml:space="preserve">
@@ -389,11 +397,11 @@
     <comment>See Settings =&gt; Miscellaneous. Follow system theme.</comment>
   </data>
   <data name="APP_MODE_DARK" xml:space="preserve">
-    <value>Mörk</value>
+    <value>Dark</value>
     <comment>See Settings =&gt; Miscellaneous. Force dark theme.</comment>
   </data>
   <data name="APP_MODE_LIGHT" xml:space="preserve">
-    <value>Ljus</value>
+    <value>Light</value>
     <comment>See Settings =&gt; Miscellaneous. Force light theme.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
@@ -405,7 +413,7 @@
     <comment>See Settings =&gt; Miscellaneous</comment>
   </data>
   <data name="GENERATING_SUBTITLES" xml:space="preserve">
-    <value>Skapar undertexter</value>
+    <value>Genererar undertexter</value>
     <comment>Displayed in the notification bar when a subtitle file is generated for a video.</comment>
   </data>
   <data name="WEB_LOAD_FAIL" xml:space="preserve">
@@ -425,15 +433,15 @@
     <comment>Section title for Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHOW" xml:space="preserve">
-    <value>Visa förstoring</value>
+    <value>Visa förstoringsglas</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SHAPE" xml:space="preserve">
-    <value>Förstoringsform</value>
+    <value>Förstoringsglasets form</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_SIZE" xml:space="preserve">
-    <value>Förstoringens storlek</value>
+    <value>Förstoringsglasets storlek</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="WEB_MAGNIFIER_ZOOM" xml:space="preserve">
@@ -632,10 +640,10 @@
     <value>Mindre (Ctrl+Minus)</value>
   </data>
   <data name="INSTALL_HEIF_CODEC" xml:space="preserve">
-    <value>Installera HEIC/HEIF bildtillägg!</value>
+    <value>Install HEIC/HEIF Image extensions!</value>
     <comment>Error shown when heic/heif support is not installed</comment>
   </data>
   <data name="PRIMARY_MONITOR" xml:space="preserve">
-    <value>primär</value>
+    <value>primary</value>
   </data>
 </root>
