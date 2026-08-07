@@ -232,9 +232,17 @@
     <value>Número máximo de itens</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
+  <data name="SHOW_MEDIA_ITEM_COUNT_BADGE" xml:space="preserve">
+    <value>Show media item count badge</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
     <value>Pasta de multimédias especificada na linha de comando</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
+  </data>
+  <data name="MEDIA_ITEM_COUNT" xml:space="preserve">
+    <value>{0} of {1}</value>
+    <comment>Small badge on the Operator page showing the current number of media items and the configured maximum. Please retain the placeholders.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
     <value>Permitir pausar</value>
@@ -381,19 +389,19 @@
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="APP_MODE" xml:space="preserve">
-    <value>Modo</value>
+    <value>Mode</value>
     <comment>See Settings =&gt; Miscellaneous. Theme mode selection.</comment>
   </data>
   <data name="APP_MODE_SYSTEM" xml:space="preserve">
-    <value>Sistema</value>
+    <value>System</value>
     <comment>See Settings =&gt; Miscellaneous. Follow system theme.</comment>
   </data>
   <data name="APP_MODE_DARK" xml:space="preserve">
-    <value>Escuro</value>
+    <value>Dark</value>
     <comment>See Settings =&gt; Miscellaneous. Force dark theme.</comment>
   </data>
   <data name="APP_MODE_LIGHT" xml:space="preserve">
-    <value>Claro</value>
+    <value>Light</value>
     <comment>See Settings =&gt; Miscellaneous. Force light theme.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
@@ -445,7 +453,7 @@
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE" xml:space="preserve">
-    <value>LIMPAR A CACHE DO NAVEGADOR</value>
+    <value>LIMPAR O CACHE DO NAVEGADOR</value>
     <comment>See Settings =&gt; Web</comment>
   </data>
   <data name="PURGE_WEB_CACHE_RESTART" xml:space="preserve">
@@ -501,11 +509,11 @@
     <comment>Warning displayed as notification when user deletes the media item that is currently being shown.</comment>
   </data>
   <data name="CONTAINS_1_ROLLING_SLIDE" xml:space="preserve">
-    <value>(contém 1 diapositivo)</value>
+    <value>(contém 1 imagem)</value>
     <comment>Used in slideshow media items to show the number of "rolling" slide, i.e. slides that are automatically played one after another</comment>
   </data>
   <data name="CONTAINS_1_SLIDE" xml:space="preserve">
-    <value>(contém 1 diapositivo)</value>
+    <value>(contém 1 imagem)</value>
     <comment>Used in slideshow media items to show the number of slides in the slidehow.</comment>
   </data>
   <data name="DLG_CANCEL" xml:space="preserve">
@@ -632,10 +640,10 @@
     <value>Menor (Ctrl+(-))</value>
   </data>
   <data name="INSTALL_HEIF_CODEC" xml:space="preserve">
-    <value>Instalar extensões de imagem HEIC/HEIF!</value>
+    <value>Install HEIC/HEIF Image extensions!</value>
     <comment>Error shown when heic/heif support is not installed</comment>
   </data>
   <data name="PRIMARY_MONITOR" xml:space="preserve">
-    <value>principal</value>
+    <value>primary</value>
   </data>
 </root>
