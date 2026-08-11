@@ -64,6 +64,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private int? _pendingManualInsertIndex;
     private long _pendingManualInsertToken;
     private int _thumbnailColWidth = 180;
+    private bool _suppressSortModeReload;
 
     public OperatorViewModel(
         IMediaProviderService mediaProviderService,
@@ -159,6 +160,42 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; private set; } = null!;
 
+    public bool IsManualSortMode => _optionsService.SortMode == MediaSortMode.Manual;
+
+    public void PrepareManualSortForDrag()
+    {
+        if (IsManualSortMode)
+        {
+            return;
+        }
+
+        var mediaFolder = _optionsService.MediaFolder;
+        if (!string.IsNullOrWhiteSpace(mediaFolder) && Directory.Exists(mediaFolder))
+        {
+            var scopeKey = mediaFolder.Trim();
+
+            var orderedItemKeys = MediaItems
+                .Where(x => !x.IsBlankScreen && !string.IsNullOrWhiteSpace(x.FilePath))
+                .Select(x => CreateMediaOrderItemKey(mediaFolder, x.FilePath!))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            _databaseService.RemoveMissingMediaOrderItems(scopeKey, orderedItemKeys);
+            _databaseService.UpsertMediaOrder(scopeKey, orderedItemKeys);
+        }
+
+        _suppressSortModeReload = true;
+        try
+        {
+            _optionsService.SortMode = MediaSortMode.Manual;
+            _optionsService.Save();
+        }
+        finally
+        {
+            _suppressSortModeReload = false;
+        }
+    }
+
     public void MoveMediaItem(MediaItem sourceItem, MediaItem targetItem)
     {
         if (sourceItem.IsBlankScreen || targetItem.IsBlankScreen)
@@ -237,6 +274,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private void HandleSortModeChangedEvent(object? sender, EventArgs e)
     {
+        if (_suppressSortModeReload)
+        {
+            return;
+        }
+
         _pendingLoadMediaItems = true;
         _ = Application.Current.Dispatcher.BeginInvoke(new Action(LoadMediaItems));
     }
@@ -1390,8 +1432,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         var newItems = keyedItems
             .Where(x => !usedKeys.Contains(x.Key))
             .Select(x => x.Item)
-            .OrderBy(x => x.SortKey)
-            .ToList();
+            .OrderBy(x => x.SortKey);
 
         sorted.AddRange(newItems);
 
@@ -1451,8 +1492,16 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             return;
         }
 
-        _optionsService.SortMode = MediaSortMode.Manual;
-        _optionsService.Save();
+        _suppressSortModeReload = true;
+        try
+        {
+            _optionsService.SortMode = MediaSortMode.Manual;
+            _optionsService.Save();
+        }
+        finally
+        {
+            _suppressSortModeReload = false;
+        }
 
         var scopeKey = mediaFolder.Trim();
 

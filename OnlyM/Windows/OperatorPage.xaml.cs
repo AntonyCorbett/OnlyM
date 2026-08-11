@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -19,11 +20,21 @@ namespace OnlyM.Windows;
 /// </summary>
 public partial class OperatorPage
 {
+    private const double AutoScrollHotZoneHeight = 40;
+    private const double AutoScrollMinStep = 0.04;
+    private const double AutoScrollMaxStep = 5.0;
+    private const double AutoScrollAccelerationDistance = 600;
+
     private Point _dragStartPoint;
+    private MediaItem? _dragStartItem;
+    private bool _dragStartOnInteractiveControl;
+    private bool _isMediaItemDragInProgress;
     private MediaItem? _draggedItem;
-    private Popup? _dragPopup;
-    private TextBlock? _dragPopupText;
-    private DispatcherTimer? _dragPopupSafetyTimer;
+    private DispatcherTimer? _autoScrollTimer;
+    private ScrollViewer? _mediaListScrollViewer;
+    private ListBoxItem? _insertionAdornerItem;
+    private AdornerLayer? _insertionAdornerLayer;
+    private InsertionAdorner? _insertionAdorner;
 
     public OperatorPage()
     {
@@ -35,13 +46,16 @@ public partial class OperatorPage
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        _mediaListScrollViewer = FindDescendant<ScrollViewer>(OperatorMediaList);
+
         var vm = (OperatorViewModel?)DataContext;
         vm?.TriggerStartupLoad();
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        HideDragPopup();
+        StopAutoScroll();
+        HideInsertionAdorner();
 
         if (_draggedItem != null)
         {
@@ -84,8 +98,13 @@ public partial class OperatorPage
         };
     }
 
-    private void OperatorMediaList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) =>
+    private void OperatorMediaList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        var source = e.OriginalSource as DependencyObject;
         _dragStartPoint = e.GetPosition(null);
+        _dragStartItem = GetMediaItemFromOriginalSource(source);
+        _dragStartOnInteractiveControl = IsDragBlockedSource(source);
+    }
 
     private void OperatorMediaList_PreviewMouseMove(object sender, MouseEventArgs e)
     {
@@ -102,7 +121,12 @@ public partial class OperatorPage
             return;
         }
 
-        _draggedItem = GetMediaItemFromOriginalSource(e.OriginalSource as DependencyObject);
+        if (_dragStartOnInteractiveControl)
+        {
+            return;
+        }
+
+        _draggedItem = _dragStartItem;
 
         if (_draggedItem == null || _draggedItem.IsBlankScreen)
         {
@@ -112,20 +136,27 @@ public partial class OperatorPage
         try
         {
             _draggedItem.IsBeingDragged = true;
-            ShowDragPopup(_draggedItem);
+            _isMediaItemDragInProgress = true;
+            StartAutoScroll();
             Dispatcher.Invoke(() => { }, DispatcherPriority.Render);
             Mouse.OverrideCursor = Cursors.SizeAll;
             DragDrop.DoDragDrop((DependencyObject)sender, _draggedItem, DragDropEffects.Move);
         }
         finally
         {
+            _isMediaItemDragInProgress = false;
+            StopAutoScroll();
+            HideInsertionAdorner();
             Mouse.OverrideCursor = null;
-            HideDragPopup();
 
             if (_draggedItem != null)
             {
                 _draggedItem.IsBeingDragged = false;
             }
+
+            _draggedItem = null;
+            _dragStartItem = null;
+            _dragStartOnInteractiveControl = false;
         }
     }
 
@@ -133,24 +164,41 @@ public partial class OperatorPage
     {
         if (e.Data.GetDataPresent(typeof(MediaItem)))
         {
+            var sourceItem = e.Data.GetData(typeof(MediaItem)) as MediaItem;
+            var targetItem = GetMediaItemFromOriginalSource(e.OriginalSource as DependencyObject);
+
+            if (sourceItem == null || sourceItem.IsBlankScreen || targetItem == null || targetItem.IsBlankScreen)
+            {
+                HideInsertionAdorner();
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+                return;
+            }
+
+            UpdateInsertionAdorner(sourceItem, targetItem);
             e.Effects = DragDropEffects.Move;
             e.Handled = true;
             return;
         }
 
+        HideInsertionAdorner();
         e.Effects = DragDropEffects.None;
     }
 
     private void OperatorMediaList_GiveFeedback(object sender, GiveFeedbackEventArgs e)
     {
-        UpdateDragPopupPosition();
         e.UseDefaultCursors = false;
         Mouse.SetCursor(Cursors.SizeAll);
         e.Handled = true;
     }
 
+    private void OperatorMediaList_DragLeave(object sender, DragEventArgs e) =>
+        HideInsertionAdorner();
+
     private void OperatorMediaList_Drop(object sender, DragEventArgs e)
     {
+        HideInsertionAdorner();
+
         var vm = DataContext as OperatorViewModel;
         if (vm == null)
         {
@@ -166,6 +214,22 @@ public partial class OperatorPage
             if (sourceItem == null || targetItem == null || sourceItem == targetItem || sourceItem.IsBlankScreen || targetItem.IsBlankScreen)
             {
                 return;
+            }
+
+            if (!vm.IsManualSortMode)
+            {
+                var result = MessageBox.Show(
+                    "Switch to manual sort?",
+                    "Sort mode",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+
+                vm.PrepareManualSortForDrag();
             }
 
             vm.MoveMediaItem(sourceItem, targetItem);
@@ -199,68 +263,174 @@ public partial class OperatorPage
         return null;
     }
 
-    private void ShowDragPopup(MediaItem item)
+    private static bool IsDragBlockedSource(DependencyObject? source)
     {
-        HideDragPopup();
-
-        _dragPopupText = new TextBlock
+        while (source != null)
         {
-            Text = string.IsNullOrWhiteSpace(item.Title) ? "Moving item" : $"Moving: {item.Title}",
-            Foreground = Brushes.White,
-            Background = Brushes.Black,
-            Opacity = 0.88,
-            Padding = new Thickness(10, 6, 10, 6),
-            FontWeight = FontWeights.SemiBold,
-            TextTrimming = TextTrimming.CharacterEllipsis,
-            MaxWidth = 320,
-        };
+            if (source is Slider || source is Thumb)
+            {
+                return true;
+            }
 
-        _dragPopup = new Popup
-        {
-            AllowsTransparency = true,
-            Placement = PlacementMode.Absolute,
-            StaysOpen = true,
-            IsHitTestVisible = false,
-            Child = _dragPopupText,
-            IsOpen = true,
-        };
+            source = VisualTreeHelper.GetParent(source);
+        }
 
-        _dragPopupSafetyTimer?.Stop();
-        _dragPopupSafetyTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
-        _dragPopupSafetyTimer.Tick += (_, _) =>
-        {
-            _dragPopupSafetyTimer?.Stop();
-            _dragPopupSafetyTimer = null;
-            HideDragPopup();
-        };
-        _dragPopupSafetyTimer.Start();
-
-        UpdateDragPopupPosition();
+        return false;
     }
 
-    private void UpdateDragPopupPosition()
+    private void UpdateInsertionAdorner(MediaItem sourceItem, MediaItem targetItem)
     {
-        if (_dragPopup == null || !_dragPopup.IsOpen)
+        var sourceIndex = OperatorMediaList.Items.IndexOf(sourceItem);
+        var targetIndex = OperatorMediaList.Items.IndexOf(targetItem);
+
+        if (sourceIndex < 0 || targetIndex < 0 || sourceIndex == targetIndex)
+        {
+            HideInsertionAdorner();
+            return;
+        }
+
+        var targetContainer = OperatorMediaList.ItemContainerGenerator.ContainerFromItem(targetItem) as ListBoxItem;
+        if (targetContainer == null)
+        {
+            HideInsertionAdorner();
+            return;
+        }
+
+        var isAfter = sourceIndex < targetIndex;
+
+        if (_insertionAdorner == null || _insertionAdornerItem != targetContainer || _insertionAdorner.IsAfter != isAfter)
+        {
+            HideInsertionAdorner();
+
+            _insertionAdornerLayer = AdornerLayer.GetAdornerLayer(targetContainer);
+            if (_insertionAdornerLayer == null)
+            {
+                return;
+            }
+
+            _insertionAdornerItem = targetContainer;
+            _insertionAdorner = new InsertionAdorner(targetContainer, isAfter);
+            _insertionAdornerLayer.Add(_insertionAdorner);
+        }
+    }
+
+    private void HideInsertionAdorner()
+    {
+        if (_insertionAdorner != null && _insertionAdornerLayer != null)
+        {
+            _insertionAdornerLayer.Remove(_insertionAdorner);
+        }
+
+        _insertionAdorner = null;
+        _insertionAdornerLayer = null;
+        _insertionAdornerItem = null;
+    }
+
+    private void StartAutoScroll()
+    {
+        _mediaListScrollViewer ??= FindDescendant<ScrollViewer>(OperatorMediaList);
+
+        if (_mediaListScrollViewer == null)
         {
             return;
         }
 
-        var p = System.Windows.Forms.Cursor.Position;
-        _dragPopup.HorizontalOffset = p.X + 16;
-        _dragPopup.VerticalOffset = p.Y + 20;
+        _autoScrollTimer ??= new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(35) };
+        _autoScrollTimer.Tick -= AutoScrollTimerTick;
+        _autoScrollTimer.Tick += AutoScrollTimerTick;
+        _autoScrollTimer.Start();
     }
 
-    private void HideDragPopup()
+    private void StopAutoScroll()
     {
-        _dragPopupSafetyTimer?.Stop();
-        _dragPopupSafetyTimer = null;
-
-        if (_dragPopup != null)
+        if (_autoScrollTimer != null)
         {
-            _dragPopup.IsOpen = false;
-            _dragPopup.Child = null;
-            _dragPopup = null;
-            _dragPopupText = null;
+            _autoScrollTimer.Stop();
+            _autoScrollTimer.Tick -= AutoScrollTimerTick;
+            _autoScrollTimer = null;
+        }
+    }
+
+    private void AutoScrollTimerTick(object? sender, EventArgs e)
+    {
+        if (!_isMediaItemDragInProgress || _mediaListScrollViewer == null)
+        {
+            return;
+        }
+
+        var height = OperatorMediaList.ActualHeight;
+        if (height <= 0)
+        {
+            return;
+        }
+
+        var cursorScreenPos = System.Windows.Forms.Cursor.Position;
+        var cursorPos = OperatorMediaList.PointFromScreen(new Point(cursorScreenPos.X, cursorScreenPos.Y));
+
+        var delta = 0d;
+
+        if (cursorPos.Y < AutoScrollHotZoneHeight)
+        {
+            delta = -GetAutoScrollStep(AutoScrollHotZoneHeight - cursorPos.Y);
+        }
+        else if (cursorPos.Y > height - AutoScrollHotZoneHeight)
+        {
+            delta = GetAutoScrollStep(cursorPos.Y - (height - AutoScrollHotZoneHeight));
+        }
+
+        if (Math.Abs(delta) < double.Epsilon)
+        {
+            return;
+        }
+
+        var offset = _mediaListScrollViewer.VerticalOffset + delta;
+        offset = Math.Max(0, Math.Min(_mediaListScrollViewer.ScrollableHeight, offset));
+        _mediaListScrollViewer.ScrollToVerticalOffset(offset);
+    }
+
+    private static double GetAutoScrollStep(double edgeDistance)
+    {
+        var ratio = Math.Clamp(edgeDistance / AutoScrollAccelerationDistance, 0, 1);
+        return AutoScrollMinStep + ((AutoScrollMaxStep - AutoScrollMinStep) * ratio);
+    }
+
+    private static T? FindDescendant<T>(DependencyObject parent)
+        where T : DependencyObject
+    {
+        var childCount = VisualTreeHelper.GetChildrenCount(parent);
+
+        for (var n = 0; n < childCount; ++n)
+        {
+            var child = VisualTreeHelper.GetChild(parent, n);
+            if (child is T typedChild)
+            {
+                return typedChild;
+            }
+
+            var descendant = FindDescendant<T>(child);
+            if (descendant != null)
+            {
+                return descendant;
+            }
+        }
+
+        return null;
+    }
+
+    private sealed class InsertionAdorner(UIElement adornedElement, bool isAfter) : Adorner(adornedElement)
+    {
+        private static readonly Pen InsertionPen = new(Brushes.OrangeRed, 2);
+
+        public bool IsAfter { get; } = isAfter;
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+
+            var y = IsAfter ? AdornedElement.RenderSize.Height : 0;
+            var start = new Point(0, y);
+            var end = new Point(AdornedElement.RenderSize.Width, y);
+            drawingContext.DrawLine(InsertionPen, start, end);
         }
     }
 }
