@@ -110,6 +110,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.ShowMediaItemCommandPanelChangedEvent += HandleShowMediaItemCommandPanelChangedEvent;
         _optionsService.AllowMirrorChangedEvent += HandleAllowMirrorChangedEvent;
         _optionsService.ShowFreezeCommandChangedEvent += HandleShowFreezeCommandChangedEvent;
+        _optionsService.ShowMediaItemCountBadgeChangedEvent += HandleShowMediaItemCountBadgeChangedEvent;
         _optionsService.OperatingDateChangedEvent += HandleOperatingDateChangedEvent;
         _optionsService.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
         _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
@@ -136,9 +137,28 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         WeakReferenceMessenger.Default.Register<SubtitleFileMessage>(this, OnSubtitleFileActivity);
         WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, OnThemeChanged);
         WeakReferenceMessenger.Default.Register<ExternalDropTargetMessage>(this, OnExternalDropTarget);
+
+        MediaItems.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(MediaItemCountText));
+            OnPropertyChanged(nameof(IsMediaItemCountAtMax));
+            OnPropertyChanged(nameof(IsMediaItemCountVisible));
+        };
     }
 
     public ObservableCollectionEx<MediaItem> MediaItems { get; } = [];
+
+#pragma warning disable CA1863
+    public string MediaItemCountText => string.Format(
+        CultureInfo.CurrentCulture,
+        Properties.Resources.MEDIA_ITEM_COUNT,
+        MediaItems.Count,
+        _optionsService.MaxItemCount);
+#pragma warning restore CA1863
+
+    public bool IsMediaItemCountAtMax => MediaItems.Count >= _optionsService.MaxItemCount;
+
+    public bool IsMediaItemCountVisible => _optionsService.ShowMediaItemCountBadge && MediaItems.Count > 0;
 
     public AsyncRelayCommand<Guid?> MediaControlCommand1 { get; private set; } = null!;
 
@@ -250,8 +270,17 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         LoadMediaItems();
     }
 
-    private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e) =>
+    private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e)
+    {
         _pendingLoadMediaItems = true;
+        OnPropertyChanged(nameof(MediaItemCountText));
+        OnPropertyChanged(nameof(IsMediaItemCountAtMax));
+    }
+
+    private void HandleShowMediaItemCountBadgeChangedEvent(object? sender, EventArgs e)
+    {
+        OnPropertyChanged(nameof(IsMediaItemCountVisible));
+    }
 
     private void HandleNavigationEvent(object? sender, NavigationEventArgs e)
     {
@@ -446,15 +475,23 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private async void HandleItemCompletedEvent(object? sender, ItemMetaDataPopulatedEventArgs e)
     {
-        var item = e.MediaItem;
-        if (item == null)
+        try
         {
-            return;
-        }
+            var item = e.MediaItem;
+            if (item == null)
+            {
+                return;
+            }
 
-        if (_optionsService.AutoRotateImages)
+            if (_optionsService.AutoRotateImages)
+            {
+                await AutoRotateImageIfRequiredAsync(item);
+            }
+        }
+        catch (Exception ex)
         {
-            await AutoRotateImageIfRequiredAsync(item);
+            EventTracker.Error(ex, "Rotating image");
+            Log.Logger.Error(ex, "Auto rotation of images");
         }
     }
 
@@ -1060,6 +1097,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
+    // ReSharper disable once AsyncVoidMethod
     private async void LoadMediaItems()
     {
         if (IsInDesignMode())

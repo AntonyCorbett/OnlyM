@@ -1,0 +1,3 @@
+The drag operation is no good when the snackbar is showing.
+In manual sort mode, the cursor should show a hand when over the background of a card.
+If we delete an item in the UI, when we drop it back in again it isn't shown.

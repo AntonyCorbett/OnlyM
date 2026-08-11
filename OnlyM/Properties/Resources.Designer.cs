@@ -546,7 +546,16 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("MEDIA_FOLDER_CMDLINE", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1}.
+        /// </summary>
+        public static string MEDIA_ITEM_COUNT {
+            get {
+                return ResourceManager.GetString("MEDIA_ITEM_COUNT", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Monitor.
         /// </summary>
@@ -960,7 +969,16 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("SHOW_FREEZE", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show media item count badge.
+        /// </summary>
+        public static string SHOW_MEDIA_ITEM_COUNT_BADGE {
+            get {
+                return ResourceManager.GetString("SHOW_MEDIA_ITEM_COUNT_BADGE", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Adjust start time.
         /// </summary>

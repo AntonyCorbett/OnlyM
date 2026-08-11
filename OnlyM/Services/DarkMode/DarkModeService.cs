@@ -141,7 +141,7 @@ internal sealed class DarkModeService : IDarkModeService
     {
         // DWMWA_CAPTION_COLOR is only supported on Windows 11 (build 22000+).
         // Failure is silently ignored so Windows 10 falls back gracefully.
-        uint colorref = color.HasValue
+        var colorref = color.HasValue
             ? (uint)((color.Value.B << 16) | (color.Value.G << 8) | color.Value.R)
             : DwmcwaColorDefault;
 

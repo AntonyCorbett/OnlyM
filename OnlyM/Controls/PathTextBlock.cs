@@ -11,7 +11,7 @@ namespace OnlyM.Controls;
 public sealed class PathTextBlock : UserControl
 {
     public static readonly DependencyProperty PathProperty = DependencyProperty.Register(
-        "Path",
+        nameof(Path),
         typeof(string),
         typeof(PathTextBlock),
         new UIPropertyMetadata(string.Empty, OnPathChanged));

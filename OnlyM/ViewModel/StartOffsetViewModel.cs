@@ -26,10 +26,6 @@ internal sealed class StartOffsetViewModel : ObservableObject
     private readonly IStartOffsetStorageService _startOffsetStorageService;
     private List<int>? _recentTimes;
 
-    private int _chosenHours;
-    private int _chosenMinutes;
-    private int _chosenSeconds;
-
     private TimeSpan _maxStartTime;
     private string? _mediaFileName;
     private int _mediaDurationSeconds;
@@ -73,10 +69,10 @@ internal sealed class StartOffsetViewModel : ObservableObject
 
     public int ChosenHours
     {
-        get => _chosenHours;
+        get;
         set
         {
-            if (SetProperty(ref _chosenHours, value))
+            if (SetProperty(ref field, value))
             {
                 OnPropertyChanged(nameof(ChosenTimeAsString));
                 OnPropertyChanged(nameof(ChosenTimeBrush));
@@ -87,10 +83,10 @@ internal sealed class StartOffsetViewModel : ObservableObject
 
     public int ChosenMinutes
     {
-        get => _chosenMinutes;
+        get;
         set
         {
-            if (SetProperty(ref _chosenMinutes, value))
+            if (SetProperty(ref field, value))
             {
                 OnPropertyChanged(nameof(ChosenTimeAsString));
                 OnPropertyChanged(nameof(ChosenTimeBrush));
@@ -101,10 +97,10 @@ internal sealed class StartOffsetViewModel : ObservableObject
 
     public int ChosenSeconds
     {
-        get => _chosenSeconds;
+        get;
         set
         {
-            if (SetProperty(ref _chosenSeconds, value))
+            if (SetProperty(ref field, value))
             {
                 OnPropertyChanged(nameof(ChosenTimeAsString));
                 OnPropertyChanged(nameof(ChosenTimeBrush));
