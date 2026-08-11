@@ -85,6 +85,7 @@ internal sealed class SettingsViewModel : ObservableObject
         _appModes = GetAppModes();
 
         _pageService.NavigationEvent += HandleNavigationEvent;
+        _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
 
         InitCommands();
         WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
@@ -1178,7 +1179,15 @@ internal sealed class SettingsViewModel : ObservableObject
         {
             // when Settings page is shown.
             IsMediaActive = _activeMediaItemsService.Any();
+            OnPropertyChanged(nameof(IsAutoSortMode));
+            OnPropertyChanged(nameof(IsManualSortMode));
         }
+    }
+
+    private void HandleSortModeChangedEvent(object? sender, EventArgs e)
+    {
+        OnPropertyChanged(nameof(IsAutoSortMode));
+        OnPropertyChanged(nameof(IsManualSortMode));
     }
 
     private void InitCommands()

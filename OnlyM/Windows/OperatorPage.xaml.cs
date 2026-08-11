@@ -211,7 +211,7 @@ public partial class OperatorPage
         {
             var sourceItem = e.Data.GetData(typeof(MediaItem)) as MediaItem;
 
-            if (sourceItem == null || targetItem == null || sourceItem == targetItem || sourceItem.IsBlankScreen || targetItem.IsBlankScreen)
+            if (sourceItem == null || sourceItem.IsBlankScreen)
             {
                 return;
             }
@@ -230,6 +230,11 @@ public partial class OperatorPage
                 }
 
                 vm.PrepareManualSortForDrag();
+            }
+
+            if (targetItem == null || sourceItem == targetItem || targetItem.IsBlankScreen)
+            {
+                return;
             }
 
             vm.MoveMediaItem(sourceItem, targetItem);
