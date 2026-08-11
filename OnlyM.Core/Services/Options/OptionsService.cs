@@ -93,6 +93,8 @@ public sealed class OptionsService : IOptionsService
 
     public event EventHandler? DarkModeChangedEvent;
 
+    public event EventHandler? SortModeChangedEvent;
+
     public bool ShouldPurgeBrowserCacheOnStartup
     {
         get => _options.Value.ShouldPurgeBrowserCacheOnStartup;
@@ -358,6 +360,19 @@ public sealed class OptionsService : IOptionsService
             if (_options.Value.MirrorZoom != value)
             {
                 _options.Value.MirrorZoom = Options.GetNormalisedMirrorZoom(value);
+            }
+        }
+    }
+
+    public MediaSortMode SortMode
+    {
+        get => _options.Value.SortMode;
+        set
+        {
+            if (_options.Value.SortMode != value)
+            {
+                _options.Value.SortMode = value;
+                SortModeChangedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }

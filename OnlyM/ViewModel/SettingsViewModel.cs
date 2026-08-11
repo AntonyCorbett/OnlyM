@@ -85,6 +85,7 @@ internal sealed class SettingsViewModel : ObservableObject
         _appModes = GetAppModes();
 
         _pageService.NavigationEvent += HandleNavigationEvent;
+        _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
 
         InitCommands();
         WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
@@ -485,6 +486,34 @@ internal sealed class SettingsViewModel : ObservableObject
             {
                 _optionsService.ShowMediaItemCommandPanel = value;
                 OnPropertyChanged();
+            }
+        }
+    }
+
+    public bool IsAutoSortMode
+    {
+        get => _optionsService.SortMode == MediaSortMode.Auto;
+        set
+        {
+            if (value && _optionsService.SortMode != MediaSortMode.Auto)
+            {
+                _optionsService.SortMode = MediaSortMode.Auto;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsManualSortMode));
+            }
+        }
+    }
+
+    public bool IsManualSortMode
+    {
+        get => _optionsService.SortMode == MediaSortMode.Manual;
+        set
+        {
+            if (value && _optionsService.SortMode != MediaSortMode.Manual)
+            {
+                _optionsService.SortMode = MediaSortMode.Manual;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsAutoSortMode));
             }
         }
     }
@@ -1150,7 +1179,15 @@ internal sealed class SettingsViewModel : ObservableObject
         {
             // when Settings page is shown.
             IsMediaActive = _activeMediaItemsService.Any();
+            OnPropertyChanged(nameof(IsAutoSortMode));
+            OnPropertyChanged(nameof(IsManualSortMode));
         }
+    }
+
+    private void HandleSortModeChangedEvent(object? sender, EventArgs e)
+    {
+        OnPropertyChanged(nameof(IsAutoSortMode));
+        OnPropertyChanged(nameof(IsManualSortMode));
     }
 
     private void InitCommands()

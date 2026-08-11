@@ -335,6 +335,21 @@
                     IsChecked="{Binding ShowCommandPanel, Mode=TwoWay}"
                     Style="{StaticResource SettingsCheckBoxStyle}" />
 
+                <StackPanel Margin="0,4,0,2" Orientation="Horizontal">
+                    <TextBlock Margin="0,0,14,0" VerticalAlignment="Center" Text="Sort mode:" />
+                    <RadioButton
+                        Content="Auto"
+                        GroupName="MediaSortMode"
+                        IsChecked="{Binding IsAutoSortMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource SettingsRadioButtonStyle}" />
+                    <RadioButton
+                        Margin="12,5,0,5"
+                        Content="Manual"
+                        GroupName="MediaSortMode"
+                        IsChecked="{Binding IsManualSortMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource SettingsRadioButtonStyle}" />
+                </StackPanel>
+
                 <TextBox
                     materialDesign:HintAssist.Hint="{x:Static resx:Resources.MAX_ITEMS}"
                     Style="{StaticResource SettingsTextBoxStyle}"

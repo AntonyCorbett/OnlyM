@@ -1,4 +1,6 @@
-﻿namespace OnlyM.Core.Services.Database;
+﻿using System.Collections.Generic;
+
+namespace OnlyM.Core.Services.Database;
 
 public interface IDatabaseService
 {
@@ -18,4 +20,11 @@ public interface IDatabaseService
     void AddMediaStartOffsetData(string fileName, string startOffsets, int lengthSeconds);
 
     MediaStartOffsetData? GetMediaStartOffsetData(string fileName);
+
+    // manual media ordering...
+    IReadOnlyList<string> GetMediaOrderItemKeys(string scopeKey);
+
+    void UpsertMediaOrder(string scopeKey, IReadOnlyList<string> orderedItemKeys);
+
+    void RemoveMissingMediaOrderItems(string scopeKey, IReadOnlyCollection<string> existingItemKeys);
 }

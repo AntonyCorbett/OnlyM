@@ -16,6 +16,7 @@ using System.Windows;
 [assembly: ComVisible(false)]
 
 [assembly: InternalsVisibleTo("OnlyM.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.None,

@@ -16,6 +16,7 @@
     DataContext="{Binding Operator, Mode=OneWay, Source={StaticResource Locator}}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     Loaded="OnLoaded"
+    Unloaded="OnUnloaded"
     SizeChanged="OnlyMOperatorPage_SizeChanged"
     TextElement.FontSize="18"
     TextElement.FontWeight="Regular"
@@ -49,6 +50,21 @@
                     materialDesign:ElevationAssist.Elevation="Dp1"
                     materialDesign:ShadowAssist.ShadowEdges="All"
                     Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                    <materialDesign:Card.Style>
+                        <Style TargetType="materialDesign:Card">
+                            <Setter Property="Opacity" Value="1" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBeingDragged}" Value="True">
+                                    <Setter Property="Opacity" Value="0.45" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ValidationErrorBrush}" />
+                                    <Setter Property="BorderThickness" Value="4" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </materialDesign:Card.Style>
 
                     <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding IsCommandPanelOpen, Mode=TwoWay}">
 
@@ -511,10 +527,18 @@
         </Border>
 
         <ListBox
+            x:Name="OperatorMediaList"
             Grid.Row="1"
+            AllowDrop="True"
             Background="Transparent"
             BorderThickness="0"
+            DragLeave="OperatorMediaList_DragLeave"
+            DragOver="OperatorMediaList_DragOver"
+            Drop="OperatorMediaList_Drop"
+            GiveFeedback="OperatorMediaList_GiveFeedback"
             ItemsSource="{Binding MediaItems}"
+            PreviewMouseLeftButtonDown="OperatorMediaList_PreviewMouseLeftButtonDown"
+            PreviewMouseMove="OperatorMediaList_PreviewMouseMove"
             ScrollViewer.VerticalScrollBarVisibility="Visible"
             VirtualizingPanel.VirtualizationMode="Recycling">
             <ListBox.ItemContainerStyle>
@@ -535,6 +559,3 @@
     </Grid>
 
 </UserControl>
-
-
-
