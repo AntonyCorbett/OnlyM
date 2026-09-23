@@ -491,6 +491,16 @@ public partial class OperatorPage
             }
 
             var y = _isAfter ? bounds.Bottom : bounds.Top;
+            var height = AdornedElement.RenderSize.Height;
+            if (y < 0 || y > height || height < InsertionPen.Thickness)
+            {
+                return;
+            }
+
+            // The stroke is centered on y. Keep its full thickness inside the
+            // list when the insertion boundary is at the top or bottom edge.
+            var halfThickness = InsertionPen.Thickness / 2;
+            y = Math.Clamp(y, halfThickness, height - halfThickness);
             drawingContext.DrawLine(InsertionPen, new Point(bounds.Left, y), new Point(bounds.Right, y));
         }
     }
