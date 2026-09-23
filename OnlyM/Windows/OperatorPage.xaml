@@ -535,7 +535,6 @@
             DragLeave="OperatorMediaList_DragLeave"
             DragOver="OperatorMediaList_DragOver"
             Drop="OperatorMediaList_Drop"
-            GiveFeedback="OperatorMediaList_GiveFeedback"
             ItemsSource="{Binding MediaItems}"
             PreviewMouseLeftButtonDown="OperatorMediaList_PreviewMouseLeftButtonDown"
             PreviewMouseMove="OperatorMediaList_PreviewMouseMove"

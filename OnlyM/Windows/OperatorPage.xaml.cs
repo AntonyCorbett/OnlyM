@@ -62,8 +62,6 @@ public partial class OperatorPage
             _draggedItem.IsBeingDragged = false;
             _draggedItem = null;
         }
-
-        Mouse.OverrideCursor = null;
     }
 
     private void MirrorCheckBoxChecked(object? sender, RoutedEventArgs e) =>
@@ -145,7 +143,6 @@ public partial class OperatorPage
             _isMediaItemDragInProgress = true;
             StartAutoScroll();
             Dispatcher.Invoke(() => { }, DispatcherPriority.Render);
-            Mouse.OverrideCursor = Cursors.SizeAll;
             DragDrop.DoDragDrop((DependencyObject)sender, _draggedItem, DragDropEffects.Move);
         }
         finally
@@ -153,7 +150,6 @@ public partial class OperatorPage
             _isMediaItemDragInProgress = false;
             StopAutoScroll();
             HideInsertionAdorner();
-            Mouse.OverrideCursor = null;
 
             if (_draggedItem != null)
             {
@@ -189,13 +185,6 @@ public partial class OperatorPage
 
         HideInsertionAdorner();
         e.Effects = DragDropEffects.None;
-    }
-
-    private void OperatorMediaList_GiveFeedback(object sender, GiveFeedbackEventArgs e)
-    {
-        e.UseDefaultCursors = false;
-        Mouse.SetCursor(Cursors.SizeAll);
-        e.Handled = true;
     }
 
     private void OperatorMediaList_DragLeave(object sender, DragEventArgs e) =>
