@@ -295,7 +295,7 @@ public partial class OperatorPage
             }
 
             _insertionAdornerItem = targetContainer;
-            _insertionAdorner = new InsertionAdorner(targetContainer, isAfter);
+            _insertionAdorner = new InsertionAdorner(targetContainer, isAfter) { IsHitTestVisible = false };
             _insertionAdornerLayer.Add(_insertionAdorner);
         }
     }
