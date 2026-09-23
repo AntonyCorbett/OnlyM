@@ -21,9 +21,8 @@ namespace OnlyM.Windows;
 public partial class OperatorPage
 {
     private const double AutoScrollHotZoneHeight = 40;
-    private const double AutoScrollMinStep = 0.04;
-    private const double AutoScrollMaxStep = 5.0;
-    private const double AutoScrollAccelerationDistance = 600;
+    private const double AutoScrollMinStep = 2;
+    private const double AutoScrollMaxStep = 20;
 
     private Point _dragStartPoint;
     private MediaItem? _dragStartItem;
@@ -400,16 +399,21 @@ public partial class OperatorPage
 
         var cursorScreenPos = System.Windows.Forms.Cursor.Position;
         var cursorPos = OperatorMediaList.PointFromScreen(new Point(cursorScreenPos.X, cursorScreenPos.Y));
+        if (cursorPos.X < 0 || cursorPos.X > OperatorMediaList.ActualWidth)
+        {
+            return;
+        }
 
         var delta = 0d;
+        var hotZoneHeight = Math.Min(AutoScrollHotZoneHeight, height / 2);
 
-        if (cursorPos.Y < AutoScrollHotZoneHeight)
+        if (cursorPos.Y < hotZoneHeight)
         {
-            delta = -GetAutoScrollStep(AutoScrollHotZoneHeight - cursorPos.Y);
+            delta = -GetAutoScrollStep(hotZoneHeight - cursorPos.Y, hotZoneHeight);
         }
-        else if (cursorPos.Y > height - AutoScrollHotZoneHeight)
+        else if (cursorPos.Y > height - hotZoneHeight)
         {
-            delta = GetAutoScrollStep(cursorPos.Y - (height - AutoScrollHotZoneHeight));
+            delta = GetAutoScrollStep(cursorPos.Y - (height - hotZoneHeight), hotZoneHeight);
         }
 
         if (Math.Abs(delta) < double.Epsilon)
@@ -422,9 +426,9 @@ public partial class OperatorPage
         _mediaListScrollViewer.ScrollToVerticalOffset(offset);
     }
 
-    private static double GetAutoScrollStep(double edgeDistance)
+    private static double GetAutoScrollStep(double edgeDistance, double hotZoneHeight)
     {
-        var ratio = Math.Clamp(edgeDistance / AutoScrollAccelerationDistance, 0, 1);
+        var ratio = Math.Clamp(edgeDistance / hotZoneHeight, 0, 1);
         return AutoScrollMinStep + ((AutoScrollMaxStep - AutoScrollMinStep) * ratio);
     }
 

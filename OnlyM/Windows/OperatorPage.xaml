@@ -540,6 +540,7 @@
             PreviewMouseLeftButtonDown="OperatorMediaList_PreviewMouseLeftButtonDown"
             PreviewMouseMove="OperatorMediaList_PreviewMouseMove"
             ScrollViewer.VerticalScrollBarVisibility="Visible"
+            VirtualizingPanel.ScrollUnit="Pixel"
             VirtualizingPanel.VirtualizationMode="Recycling">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
