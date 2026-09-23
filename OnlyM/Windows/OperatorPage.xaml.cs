@@ -126,6 +126,12 @@ public partial class OperatorPage
             return;
         }
 
+        var vm = DataContext as OperatorViewModel;
+        if (vm == null || !vm.IsManualSortMode)
+        {
+            return;
+        }
+
         _draggedItem = _dragStartItem;
 
         if (_draggedItem == null || _draggedItem.IsBlankScreen)
@@ -218,16 +224,6 @@ public partial class OperatorPage
                 return;
             }
 
-            if (!vm.IsManualSortMode)
-            {
-                // Deferred: showing a modal dialog while still inside DragDrop.DoDragDrop's
-                // message pump can leave drag state (cursor override, adorners) inconsistent.
-                Dispatcher.BeginInvoke(
-                    new Action(() => ConfirmAndMoveMediaItem(vm, sourceItem, targetItem)),
-                    DispatcherPriority.Background);
-                return;
-            }
-
             if (targetItem == null || sourceItem == targetItem || targetItem.IsBlankScreen)
             {
                 return;
@@ -247,29 +243,6 @@ public partial class OperatorPage
         }
 
         WeakReferenceMessenger.Default.Send(new ExternalDropTargetMessage { TargetIndex = targetIndex });
-    }
-
-    private static void ConfirmAndMoveMediaItem(OperatorViewModel vm, MediaItem sourceItem, MediaItem? targetItem)
-    {
-        var result = MessageBox.Show(
-            "Switch to manual sort?",
-            "Sort mode",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
-
-        if (result != MessageBoxResult.Yes)
-        {
-            return;
-        }
-
-        vm.PrepareManualSortForDrag();
-
-        if (targetItem == null || sourceItem == targetItem || targetItem.IsBlankScreen)
-        {
-            return;
-        }
-
-        vm.MoveMediaItem(sourceItem, targetItem);
     }
 
     private static MediaItem? GetMediaItemFromOriginalSource(DependencyObject? source)

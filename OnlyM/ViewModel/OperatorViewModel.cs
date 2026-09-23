@@ -54,6 +54,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private readonly MetaDataQueueProducer _metaDataProducer = new();
     private readonly CancellationTokenSource _metaDataCancellationTokenSource = new();
+    private readonly object _orderPersistLock = new();
 
     private MetaDataQueueConsumer? _metaDataConsumer;
     private string? _blankScreenImagePath;
@@ -66,7 +67,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private int _thumbnailColWidth = 180;
     private bool _suppressSortModeReload;
     private Task _pendingOrderPersistTask = Task.CompletedTask;
-    private readonly object _orderPersistLock = new();
 
     public OperatorViewModel(
         IMediaProviderService mediaProviderService,
@@ -184,43 +184,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public bool IsManualSortMode => _optionsService.SortMode == MediaSortMode.Manual;
 
-    public void PrepareManualSortForDrag()
-    {
-        if (IsManualSortMode)
-        {
-            return;
-        }
-
-        var mediaFolder = _optionsService.MediaFolder;
-        if (!string.IsNullOrWhiteSpace(mediaFolder) && Directory.Exists(mediaFolder))
-        {
-            var scopeKey = mediaFolder.Trim();
-
-            var orderedItemKeys = MediaItems
-                .Where(x => !x.IsBlankScreen && !string.IsNullOrWhiteSpace(x.FilePath))
-                .Select(x => CreateMediaOrderItemKey(mediaFolder, x.FilePath!))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            _databaseService.RemoveMissingMediaOrderItems(scopeKey, orderedItemKeys);
-            _databaseService.UpsertMediaOrder(scopeKey, orderedItemKeys);
-        }
-
-        _suppressSortModeReload = true;
-        try
-        {
-            _optionsService.SortMode = MediaSortMode.Manual;
-            _optionsService.Save();
-        }
-        finally
-        {
-            _suppressSortModeReload = false;
-        }
-    }
-
     public void MoveMediaItem(MediaItem sourceItem, MediaItem targetItem)
     {
-        if (sourceItem.IsBlankScreen || targetItem.IsBlankScreen)
+        if (!IsManualSortMode || sourceItem.IsBlankScreen || targetItem.IsBlankScreen)
         {
             return;
         }

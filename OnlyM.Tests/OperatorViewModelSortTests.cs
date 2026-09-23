@@ -18,7 +18,6 @@ namespace OnlyM.Tests;
 /// <summary>
 /// Unit tests covering the manual sort mode helpers added to OperatorViewModel:
 ///   - IsManualSortMode
-///   - PrepareManualSortForDrag (including the _suppressSortModeReload guard)
 ///   - MoveMediaItem
 /// </summary>
 public sealed class OperatorViewModelSortTests : IDisposable
@@ -107,70 +106,25 @@ public sealed class OperatorViewModelSortTests : IDisposable
         Assert.True(_vm.IsManualSortMode);
     }
 
-    // ── PrepareManualSortForDrag ───────────────────────────────────────────
+    // ── MoveMediaItem ──────────────────────────────────────────────────────
 
     [Fact]
-    public void PrepareManualSortForDrag_DoesNothing_WhenAlreadyManual()
-    {
-        _currentSortMode = MediaSortMode.Manual;
-
-        _vm.PrepareManualSortForDrag();
-
-        // SortMode setter should never have been called.
-        _optionsMock.VerifySet(x => x.SortMode = It.IsAny<MediaSortMode>(), Times.Never);
-        _dbMock.Verify(x => x.UpsertMediaOrder(It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>()), Times.Never);
-    }
-
-    [Fact]
-    public void PrepareManualSortForDrag_SetsSortModeToManual_WhenAutoMode()
+    public void MoveMediaItem_DoesNothing_WhenSortModeIsAuto()
     {
         _currentSortMode = MediaSortMode.Auto;
 
-        _vm.PrepareManualSortForDrag();
-
-        Assert.Equal(MediaSortMode.Manual, _currentSortMode);
-    }
-
-    [Fact]
-    public void PrepareManualSortForDrag_CallsUpsertWithCurrentScreenOrder_WhenAutoMode()
-    {
-        _currentSortMode = MediaSortMode.Auto;
-
-        var item1 = MakeItem("a.jpg");
-        var item2 = MakeItem("b.jpg");
-        var item3 = MakeItem("c.jpg");
+        var item1 = MakeItem("1.jpg");
+        var item2 = MakeItem("2.jpg");
         _vm.MediaItems.Add(item1);
         _vm.MediaItems.Add(item2);
-        _vm.MediaItems.Add(item3);
 
-        _vm.PrepareManualSortForDrag();
+        _vm.MoveMediaItem(item2, item1);
 
-        // UpsertMediaOrder must have been called once with the screen-order keys.
-        _dbMock.Verify(x => x.UpsertMediaOrder(
-            It.IsAny<string>(),
-            It.Is<IReadOnlyList<string>>(keys =>
-                keys.Count == 3 &&
-                keys[0].Contains("a.jpg") &&
-                keys[1].Contains("b.jpg") &&
-                keys[2].Contains("c.jpg"))),
-            Times.Once);
+        // Order must be unchanged, and nothing persisted.
+        Assert.Equal(item1, _vm.MediaItems[0]);
+        Assert.Equal(item2, _vm.MediaItems[1]);
+        _dbMock.Verify(x => x.UpsertMediaOrder(It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>()), Times.Never);
     }
-
-    [Fact]
-    public void PrepareManualSortForDrag_SuppressionPreventsLoadReload()
-    {
-        // The IOptionsService mock raises SortModeChangedEvent when SortMode is set.
-        // If _suppressSortModeReload were missing, the handler would call
-        // Application.Current.Dispatcher.BeginInvoke(...), which throws NRE in tests.
-        // A clean execution here proves the guard works.
-        _currentSortMode = MediaSortMode.Auto;
-
-        var ex = Record.Exception(() => _vm.PrepareManualSortForDrag());
-
-        Assert.Null(ex);
-    }
-
-    // ── MoveMediaItem ──────────────────────────────────────────────────────
 
     [Fact]
     public void MoveMediaItem_MovesSourceToTargetPosition()
