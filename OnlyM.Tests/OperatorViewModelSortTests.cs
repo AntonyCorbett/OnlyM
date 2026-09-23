@@ -39,16 +39,6 @@ public sealed class OperatorViewModelSortTests : IDisposable
     {
         // ── IOptionsService setup ──────────────────────────────────────────
         _optionsMock.SetupGet(x => x.SortMode).Returns(() => _currentSortMode);
-
-        // When SortMode is set, update the backing field AND raise the event.
-        // This lets the suppression guard test exercise the real code path.
-        _optionsMock.SetupSet(x => x.SortMode = It.IsAny<MediaSortMode>())
-            .Callback<MediaSortMode>(value =>
-            {
-                _currentSortMode = value;
-                _optionsMock.Raise(x => x.SortModeChangedEvent += null, EventArgs.Empty);
-            });
-
         _optionsMock.Setup(x => x.MediaFolder).Returns(_mediaFolder);
         _optionsMock.Setup(x => x.IncludeBlankScreenItem).Returns(false);
         _optionsMock.Setup(x => x.PermanentBackdrop).Returns(true);

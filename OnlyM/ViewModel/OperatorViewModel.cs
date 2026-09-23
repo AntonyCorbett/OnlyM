@@ -65,7 +65,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private int? _pendingManualInsertIndex;
     private long _pendingManualInsertToken;
     private int _thumbnailColWidth = 180;
-    private bool _suppressSortModeReload;
     private Task _pendingOrderPersistTask = Task.CompletedTask;
 
     public OperatorViewModel(
@@ -266,15 +265,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private void HandleOperatingDateChangedEvent(object? sender, EventArgs e) =>
         _pendingLoadMediaItems = true;
 
-    private void HandleSortModeChangedEvent(object? sender, EventArgs e)
-    {
-        if (_suppressSortModeReload)
-        {
-            return;
-        }
-
+    private void HandleSortModeChangedEvent(object? sender, EventArgs e) =>
         _ = Application.Current.Dispatcher.BeginInvoke(new Action(LoadMediaItems));
-    }
 
     private void HandleUnhideAllEvent(object? sender, EventArgs e)
     {
@@ -1486,17 +1478,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         if (string.IsNullOrWhiteSpace(mediaFolder) || !Directory.Exists(mediaFolder))
         {
             return;
-        }
-
-        _suppressSortModeReload = true;
-        try
-        {
-            _optionsService.SortMode = MediaSortMode.Manual;
-            _optionsService.Save();
-        }
-        finally
-        {
-            _suppressSortModeReload = false;
         }
 
         var scopeKey = mediaFolder.Trim();
