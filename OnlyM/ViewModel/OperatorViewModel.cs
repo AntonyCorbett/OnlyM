@@ -65,6 +65,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private long _pendingManualInsertToken;
     private int _thumbnailColWidth = 180;
     private bool _suppressSortModeReload;
+    private Task _pendingOrderPersistTask = Task.CompletedTask;
+    private readonly object _orderPersistLock = new();
 
     public OperatorViewModel(
         IMediaProviderService mediaProviderService,
@@ -232,10 +234,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
 
         var blankIndex = GetBlankScreenIndex();
-        if (blankIndex == 0 && targetIndex == 0)
-        {
-            targetIndex = 1;
-        }
+        targetIndex = AdjustIndexForLeadingBlankScreen(targetIndex, blankIndex);
 
         if (sourceIndex == targetIndex)
         {
@@ -308,7 +307,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             return;
         }
 
-        _pendingLoadMediaItems = true;
         _ = Application.Current.Dispatcher.BeginInvoke(new Action(LoadMediaItems));
     }
 
@@ -1166,13 +1164,16 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 SortMediaItems();
                 InsertBlankMediaItem();
 
-                if (_optionsService.SortMode == MediaSortMode.Manual &&
-                    _pendingManualInsertIndex.HasValue &&
-                    itemsToAdd.Count > 0 &&
-                    manualInsertTokenSnapshot == _pendingManualInsertToken)
+                if (manualInsertTokenSnapshot == _pendingManualInsertToken)
                 {
-                    InsertNewItemsAtPendingManualIndex(itemsToAdd);
-                    PersistManualOrderForCurrentFolder();
+                    if (_optionsService.SortMode == MediaSortMode.Manual &&
+                        _pendingManualInsertIndex.HasValue &&
+                        itemsToAdd.Count > 0)
+                    {
+                        InsertNewItemsAtPendingManualIndex(itemsToAdd);
+                        PersistManualOrderForCurrentFolder();
+                    }
+
                     _pendingManualInsertIndex = null;
                 }
             }
@@ -1278,20 +1279,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         var insertIndex = _pendingManualInsertIndex.Value;
 
         var blankIndex = GetBlankScreenIndex();
-        if (blankIndex == 0 && insertIndex <= 0)
-        {
-            insertIndex = 1;
-        }
-
-        if (insertIndex < 0)
-        {
-            insertIndex = 0;
-        }
-
-        if (insertIndex > MediaItems.Count)
-        {
-            insertIndex = MediaItems.Count;
-        }
+        insertIndex = AdjustIndexForLeadingBlankScreen(insertIndex, blankIndex);
+        insertIndex = Math.Clamp(insertIndex, 0, MediaItems.Count);
 
         var orderedNewItems = newItems
             .Where(x => !x.IsBlankScreen)
@@ -1513,6 +1502,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         return -1;
     }
 
+    private static int AdjustIndexForLeadingBlankScreen(int index, int blankIndex) =>
+        blankIndex == 0 && index <= 0 ? 1 : index;
+
     private void EnsureBlankScreenIsFirst()
     {
         var blankIndex = GetBlankScreenIndex();
@@ -1549,7 +1541,25 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        _databaseService.UpsertMediaOrder(scopeKey, orderedItemKeys);
+        // Persisted off the UI thread — the drag-reorder call site runs this on every
+        // move. Writes are chained (not fired independently) so a burst of rapid
+        // reorders still persists in the order they happened.
+        lock (_orderPersistLock)
+        {
+            _pendingOrderPersistTask = _pendingOrderPersistTask.ContinueWith(
+                _ =>
+                {
+                    try
+                    {
+                        _databaseService.UpsertMediaOrder(scopeKey, orderedItemKeys);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Logger.Error(ex, "Could not persist manual media order");
+                    }
+                },
+                TaskScheduler.Default);
+        }
     }
 
     private async Task AutoRotateImageIfRequiredAsync(MediaItem item)

@@ -209,6 +209,8 @@ public partial class OperatorPage
 
         if (e.Data.GetDataPresent(typeof(MediaItem)))
         {
+            e.Handled = true;
+
             var sourceItem = e.Data.GetData(typeof(MediaItem)) as MediaItem;
 
             if (sourceItem == null || sourceItem.IsBlankScreen)
@@ -218,18 +220,12 @@ public partial class OperatorPage
 
             if (!vm.IsManualSortMode)
             {
-                var result = MessageBox.Show(
-                    "Switch to manual sort?",
-                    "Sort mode",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-
-                if (result != MessageBoxResult.Yes)
-                {
-                    return;
-                }
-
-                vm.PrepareManualSortForDrag();
+                // Deferred: showing a modal dialog while still inside DragDrop.DoDragDrop's
+                // message pump can leave drag state (cursor override, adorners) inconsistent.
+                Dispatcher.BeginInvoke(
+                    new Action(() => ConfirmAndMoveMediaItem(vm, sourceItem, targetItem)),
+                    DispatcherPriority.Background);
+                return;
             }
 
             if (targetItem == null || sourceItem == targetItem || targetItem.IsBlankScreen)
@@ -253,6 +249,29 @@ public partial class OperatorPage
         WeakReferenceMessenger.Default.Send(new ExternalDropTargetMessage { TargetIndex = targetIndex });
     }
 
+    private static void ConfirmAndMoveMediaItem(OperatorViewModel vm, MediaItem sourceItem, MediaItem? targetItem)
+    {
+        var result = MessageBox.Show(
+            "Switch to manual sort?",
+            "Sort mode",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (result != MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        vm.PrepareManualSortForDrag();
+
+        if (targetItem == null || sourceItem == targetItem || targetItem.IsBlankScreen)
+        {
+            return;
+        }
+
+        vm.MoveMediaItem(sourceItem, targetItem);
+    }
+
     private static MediaItem? GetMediaItemFromOriginalSource(DependencyObject? source)
     {
         while (source != null)
@@ -272,7 +291,7 @@ public partial class OperatorPage
     {
         while (source != null)
         {
-            if (source is Slider || source is Thumb)
+            if (source is Slider || source is Thumb || source is ButtonBase || source is ComboBox || source is TextBoxBase)
             {
                 return true;
             }
