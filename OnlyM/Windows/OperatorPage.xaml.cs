@@ -32,7 +32,6 @@ public partial class OperatorPage
     private MediaItem? _draggedItem;
     private DispatcherTimer? _autoScrollTimer;
     private ScrollViewer? _mediaListScrollViewer;
-    private ListBoxItem? _insertionAdornerItem;
     private AdornerLayer? _insertionAdornerLayer;
     private InsertionAdorner? _insertionAdorner;
 
@@ -55,7 +54,7 @@ public partial class OperatorPage
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         StopAutoScroll();
-        HideInsertionAdorner();
+        RemoveInsertionAdorner();
 
         if (_draggedItem != null)
         {
@@ -149,7 +148,7 @@ public partial class OperatorPage
         {
             _isMediaItemDragInProgress = false;
             StopAutoScroll();
-            HideInsertionAdorner();
+            RemoveInsertionAdorner();
 
             if (_draggedItem != null)
             {
@@ -171,7 +170,7 @@ public partial class OperatorPage
 
             if (sourceItem == null || sourceItem.IsBlankScreen || targetItem == null || targetItem.IsBlankScreen)
             {
-                HideInsertionAdorner();
+                HideInsertionAdornerLine();
                 e.Effects = DragDropEffects.None;
                 e.Handled = true;
                 return;
@@ -183,16 +182,16 @@ public partial class OperatorPage
             return;
         }
 
-        HideInsertionAdorner();
+        HideInsertionAdornerLine();
         e.Effects = DragDropEffects.None;
     }
 
     private void OperatorMediaList_DragLeave(object sender, DragEventArgs e) =>
-        HideInsertionAdorner();
+        HideInsertionAdornerLine();
 
     private void OperatorMediaList_Drop(object sender, DragEventArgs e)
     {
-        HideInsertionAdorner();
+        HideInsertionAdornerLine();
 
         var vm = DataContext as OperatorViewModel;
         if (vm == null)
@@ -281,36 +280,48 @@ public partial class OperatorPage
 
         if (sourceIndex < 0 || targetIndex < 0 || sourceIndex == targetIndex)
         {
-            HideInsertionAdorner();
+            HideInsertionAdornerLine();
             return;
         }
 
-        var targetContainer = OperatorMediaList.ItemContainerGenerator.ContainerFromItem(targetItem) as ListBoxItem;
-        if (targetContainer == null)
+        if (OperatorMediaList.ItemContainerGenerator.ContainerFromItem(targetItem) is not UIElement targetContainer)
         {
-            HideInsertionAdorner();
+            HideInsertionAdornerLine();
             return;
         }
 
+        // The adorner is attached once to the whole list (see EnsureInsertionAdorner) and just
+        // repositioned from here on. Adding/removing a new Adorner to the AdornerLayer on every
+        // DragOver call - which fires very frequently during a drag - caused visible flicker.
+        var bounds = targetContainer
+            .TransformToAncestor(OperatorMediaList)
+            .TransformBounds(new Rect(targetContainer.RenderSize));
         var isAfter = sourceIndex < targetIndex;
 
-        if (_insertionAdorner == null || _insertionAdornerItem != targetContainer || _insertionAdorner.IsAfter != isAfter)
-        {
-            HideInsertionAdorner();
-
-            _insertionAdornerLayer = AdornerLayer.GetAdornerLayer(targetContainer);
-            if (_insertionAdornerLayer == null)
-            {
-                return;
-            }
-
-            _insertionAdornerItem = targetContainer;
-            _insertionAdorner = new InsertionAdorner(targetContainer, isAfter) { IsHitTestVisible = false };
-            _insertionAdornerLayer.Add(_insertionAdorner);
-        }
+        EnsureInsertionAdorner();
+        _insertionAdorner?.Show(bounds, isAfter);
     }
 
-    private void HideInsertionAdorner()
+    private void EnsureInsertionAdorner()
+    {
+        if (_insertionAdorner != null)
+        {
+            return;
+        }
+
+        _insertionAdornerLayer = AdornerLayer.GetAdornerLayer(OperatorMediaList);
+        if (_insertionAdornerLayer == null)
+        {
+            return;
+        }
+
+        _insertionAdorner = new InsertionAdorner(OperatorMediaList) { IsHitTestVisible = false };
+        _insertionAdornerLayer.Add(_insertionAdorner);
+    }
+
+    private void HideInsertionAdornerLine() => _insertionAdorner?.Hide();
+
+    private void RemoveInsertionAdorner()
     {
         if (_insertionAdorner != null && _insertionAdornerLayer != null)
         {
@@ -319,7 +330,6 @@ public partial class OperatorPage
 
         _insertionAdorner = null;
         _insertionAdornerLayer = null;
-        _insertionAdornerItem = null;
     }
 
     private void StartAutoScroll()
@@ -413,20 +423,47 @@ public partial class OperatorPage
         return null;
     }
 
-    private sealed class InsertionAdorner(UIElement adornedElement, bool isAfter) : Adorner(adornedElement)
+    private sealed class InsertionAdorner(UIElement adornedElement) : Adorner(adornedElement)
     {
         private static readonly Pen InsertionPen = new(Brushes.OrangeRed, 2);
 
-        public bool IsAfter { get; } = isAfter;
+        private Rect? _lineBounds;
+        private bool _isAfter;
+
+        public void Show(Rect targetBounds, bool isAfter)
+        {
+            if (_lineBounds == targetBounds && _isAfter == isAfter)
+            {
+                return;
+            }
+
+            _lineBounds = targetBounds;
+            _isAfter = isAfter;
+            InvalidateVisual();
+        }
+
+        public void Hide()
+        {
+            if (_lineBounds == null)
+            {
+                return;
+            }
+
+            _lineBounds = null;
+            InvalidateVisual();
+        }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
 
-            var y = IsAfter ? AdornedElement.RenderSize.Height : 0;
-            var start = new Point(0, y);
-            var end = new Point(AdornedElement.RenderSize.Width, y);
-            drawingContext.DrawLine(InsertionPen, start, end);
+            if (_lineBounds is not { } bounds)
+            {
+                return;
+            }
+
+            var y = _isAfter ? bounds.Bottom : bounds.Top;
+            drawingContext.DrawLine(InsertionPen, new Point(bounds.Left, y), new Point(bounds.Right, y));
         }
     }
 }
