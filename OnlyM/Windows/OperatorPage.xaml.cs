@@ -310,6 +310,20 @@ public partial class OperatorPage
         var bounds = targetContainer
             .TransformToAncestor(OperatorMediaList)
             .TransformBounds(new Rect(targetContainer.RenderSize));
+
+        // Match the card's rendered horizontal edges, excluding its outer margin,
+        // while keeping the insertion line in the gap between item containers.
+        var card = FindDescendant<MaterialDesignThemes.Wpf.Card>(targetContainer);
+        if (card == null)
+        {
+            HideInsertionAdornerLine();
+            return;
+        }
+
+        var cardBounds = card
+            .TransformToAncestor(OperatorMediaList)
+            .TransformBounds(new Rect(card.RenderSize));
+        bounds = new Rect(cardBounds.Left, bounds.Top, cardBounds.Width, bounds.Height);
         var isAfter = sourceIndex < targetIndex;
 
         EnsureInsertionAdorner();
