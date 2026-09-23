@@ -548,7 +548,13 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                <ContentPresenter />
+                                <!--  Background="Transparent" makes the whole item hit-testable, including the
+                                margin around the card content - without it, that margin band is invisible to hit
+                                testing (nothing is painted there), so the pointer briefly "misses" the item during
+                                a drag whenever it lands in that band, flickering the insertion line and cursor.  -->
+                                <Border Background="Transparent">
+                                    <ContentPresenter />
+                                </Border>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
