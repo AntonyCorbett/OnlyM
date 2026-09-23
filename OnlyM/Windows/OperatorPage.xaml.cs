@@ -167,7 +167,7 @@ public partial class OperatorPage
         if (e.Data.GetDataPresent(typeof(MediaItem)))
         {
             var sourceItem = e.Data.GetData(typeof(MediaItem)) as MediaItem;
-            var targetItem = GetMediaItemFromOriginalSource(e.OriginalSource as DependencyObject);
+            var targetItem = GetMediaItemUnderPointer(e);
 
             if (sourceItem == null || sourceItem.IsBlankScreen || targetItem == null || targetItem.IsBlankScreen)
             {
@@ -200,7 +200,7 @@ public partial class OperatorPage
             return;
         }
 
-        var targetItem = GetMediaItemFromOriginalSource(e.OriginalSource as DependencyObject);
+        var targetItem = GetMediaItemUnderPointer(e);
 
         if (e.Data.GetDataPresent(typeof(MediaItem)))
         {
@@ -232,6 +232,16 @@ public partial class OperatorPage
         }
 
         WeakReferenceMessenger.Default.Send(new ExternalDropTargetMessage { TargetIndex = targetIndex });
+    }
+
+    private MediaItem? GetMediaItemUnderPointer(DragEventArgs e)
+    {
+        // e.OriginalSource is unreliable during a native OS drag (it can intermittently
+        // fail to resolve to the hovered element even without the pointer moving), which
+        // caused the insertion adorner and drop-cursor to flicker. An explicit hit test
+        // against the current pointer position is deterministic.
+        var hit = VisualTreeHelper.HitTest(OperatorMediaList, e.GetPosition(OperatorMediaList))?.VisualHit;
+        return GetMediaItemFromOriginalSource(hit);
     }
 
     private static MediaItem? GetMediaItemFromOriginalSource(DependencyObject? source)
