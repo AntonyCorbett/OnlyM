@@ -170,7 +170,11 @@ public partial class OperatorPage
             var sourceItem = e.Data.GetData(typeof(MediaItem)) as MediaItem;
             var targetItem = GetMediaItemUnderPointer(e);
 
-            if (sourceItem == null || sourceItem.IsBlankScreen || targetItem == null || targetItem.IsBlankScreen)
+            if (DataContext is not OperatorViewModel { IsManualSortMode: true } ||
+                sourceItem == null || sourceItem.IsBlankScreen ||
+                targetItem == null || targetItem.IsBlankScreen ||
+                sourceItem == targetItem ||
+                !OperatorMediaList.Items.Contains(sourceItem) || !OperatorMediaList.Items.Contains(targetItem))
             {
                 HideInsertionAdornerLine();
                 e.Effects = DragDropEffects.None;
