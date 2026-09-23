@@ -163,6 +163,8 @@ public partial class OperatorPage
 
     private void OperatorMediaList_DragOver(object sender, DragEventArgs e)
     {
+        // Handle both PreviewDragEnter and PreviewDragOver so child transitions
+        // cannot route an internal move to the page's external file-drop handler.
         if (e.Data.GetDataPresent(typeof(MediaItem)))
         {
             var sourceItem = e.Data.GetData(typeof(MediaItem)) as MediaItem;
@@ -186,8 +188,16 @@ public partial class OperatorPage
         e.Effects = DragDropEffects.None;
     }
 
-    private void OperatorMediaList_DragLeave(object sender, DragEventArgs e) =>
-        HideInsertionAdornerLine();
+    private void OperatorMediaList_DragLeave(object sender, DragEventArgs e)
+    {
+        // DragLeave also fires when the hit-tested child changes within the list.
+        // Keep the insertion line until the pointer actually leaves the list;
+        // DragEnter/DragOver will update it for the next child.
+        if (!new Rect(OperatorMediaList.RenderSize).Contains(e.GetPosition(OperatorMediaList)))
+        {
+            HideInsertionAdornerLine();
+        }
+    }
 
     private void OperatorMediaList_Drop(object sender, DragEventArgs e)
     {
