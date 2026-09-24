@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using CommunityToolkit.Mvvm.Messaging;
 using OnlyM.Core.Services.Media;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Services.WebShortcuts;
@@ -14,6 +15,7 @@ using OnlyM.Core.Utils;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.EventTracking;
 using OnlyM.Models;
+using OnlyM.PubSubMessages;
 using OnlyM.Slides;
 using Serilog;
 using Serilog.Events;
@@ -28,6 +30,7 @@ internal sealed class DragAndDropService : IDragAndDropService
     private readonly IMediaProviderService _mediaProviderService;
     private readonly IOptionsService _optionsService;
     private readonly ISnackbarService _snackbarService;
+    private readonly IMessenger _messenger;
     private readonly Lock _imageDataPasteLock = new();
     private bool _canDrop;
     private int _currentClipboardImageIndex = -1; // -1 = uninitialized
@@ -36,10 +39,20 @@ internal sealed class DragAndDropService : IDragAndDropService
         IMediaProviderService mediaProviderService,
         IOptionsService optionsService,
         ISnackbarService snackbarService)
+        : this(mediaProviderService, optionsService, snackbarService, WeakReferenceMessenger.Default)
+    {
+    }
+
+    internal DragAndDropService(
+        IMediaProviderService mediaProviderService,
+        IOptionsService optionsService,
+        ISnackbarService snackbarService,
+        IMessenger messenger)
     {
         _mediaProviderService = mediaProviderService;
         _optionsService = optionsService;
         _snackbarService = snackbarService;
+        _messenger = messenger;
     }
 
     public event EventHandler<FilesCopyProgressEventArgs>? CopyingFilesProgressEvent;
@@ -56,8 +69,52 @@ internal sealed class DragAndDropService : IDragAndDropService
         var data = Clipboard.GetDataObject();
         if (data != null)
         {
-            DoCopy(data);
+            _ = CopyAsync(data);
         }
+    }
+
+    public void Drop(IDataObject data, int targetIndex, string? targetFilePath) =>
+        _ = CopyAsync(data, targetIndex, targetFilePath);
+
+    internal Task CopyAsync(IDataObject data, int? targetIndex = null, string? targetFilePath = null)
+    {
+        var copyFiles = CanDropOrPasteFiles(data);
+        var copyImage = !copyFiles && CanPasteImageData(data);
+        if (!copyFiles && !copyImage && !CanDropOrPasteUris(data))
+        {
+            return Task.CompletedTask;
+        }
+
+        // Snapshot the destination and insertion target for this operation. Other
+        // drops, pastes and folder changes must not overwrite this context.
+        var mediaFolder = _optionsService.MediaFolder;
+        return Task.Run(() =>
+        {
+            var copiedFiles = new List<string>();
+            try
+            {
+                bool someError;
+                var count = copyFiles
+                    ? InternalCopyMediaFiles(data, mediaFolder, copiedFiles, out someError)
+                    : copyImage
+                        ? InternalCopyImageData(data, mediaFolder, copiedFiles, out someError)
+                        : InternalCopyUris(data, mediaFolder, copiedFiles, out someError);
+                DisplaySnackbar(count, someError);
+            }
+            finally
+            {
+                if (targetIndex.HasValue && copiedFiles.Count > 0)
+                {
+                    _messenger.Send(new ExternalDropCompletedMessage
+                    {
+                        MediaFolder = mediaFolder,
+                        TargetIndex = targetIndex.Value,
+                        TargetFilePath = targetFilePath,
+                        CopiedFilePaths = copiedFiles.ToArray(),
+                    });
+                }
+            }
+        });
     }
 
     private void HandleDragOver(object? sender, DragEventArgs e)
@@ -66,27 +123,11 @@ internal sealed class DragAndDropService : IDragAndDropService
         e.Handled = true;
     }
 
-    private void DoCopy(IDataObject data)
-    {
-        if (CanDropOrPasteFiles(data))
-        {
-            CopyMediaFiles(data);
-        }
-        else if (CanPasteImageData(data))
-        {
-            CopyImageData(data);
-        }
-        else if (CanDropOrPasteUris(data))
-        {
-            CopyUris(data);
-        }
-    }
-
     private void HandleDrop(object? sender, DragEventArgs e)
     {
         if (e.Data != null)
         {
-            DoCopy(e.Data);
+            _ = CopyAsync(e.Data);
         }
     }
 
@@ -100,27 +141,6 @@ internal sealed class DragAndDropService : IDragAndDropService
 
     private void SetEffects(DragEventArgs e) =>
         e.Effects = _canDrop ? DragDropEffects.Copy : DragDropEffects.None;
-
-    private void CopyMediaFiles(IDataObject data) =>
-        Task.Run(() =>
-        {
-            var count = InternalCopyMediaFiles(data, out var someError);
-            DisplaySnackbar(count, someError);
-        });
-
-    private void CopyImageData(IDataObject data) =>
-        Task.Run(() =>
-        {
-            var count = InternalCopyImageData(data, out var someError);
-            DisplaySnackbar(count, someError);
-        });
-
-    private void CopyUris(IDataObject data) =>
-        Task.Run(() =>
-        {
-            var count = InternalCopyUris(data, out var someError);
-            DisplaySnackbar(count, someError);
-        });
 
     private void DisplaySnackbar(int count, bool someError)
     {
@@ -144,7 +164,7 @@ internal sealed class DragAndDropService : IDragAndDropService
         }
     }
 
-    private int InternalCopyMediaFiles(IDataObject data, out bool someError)
+    private int InternalCopyMediaFiles(IDataObject data, string mediaFolder, List<string> copiedFiles, out bool someError)
     {
         var count = 0;
         someError = false;
@@ -152,8 +172,6 @@ internal sealed class DragAndDropService : IDragAndDropService
         OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs { Status = FileCopyStatus.StartingCopy });
         try
         {
-            var mediaFolder = _optionsService.MediaFolder;
-
             var files = GetSupportedFiles(data).ToArray();
             if (files.Length == 0)
             {
@@ -163,8 +181,8 @@ internal sealed class DragAndDropService : IDragAndDropService
             var shouldCreateSlideshow = DataIsFromOnlyV(data) && files.Length > 1;
 
             count = shouldCreateSlideshow
-                ? CopyAsSlideshow(mediaFolder, data, files)
-                : CopyAsIndividualFiles(mediaFolder, files);
+                ? CopyAsSlideshow(mediaFolder, data, files, copiedFiles)
+                : CopyAsIndividualFiles(mediaFolder, files, copiedFiles);
         }
         catch (Exception ex)
         {
@@ -180,7 +198,7 @@ internal sealed class DragAndDropService : IDragAndDropService
         return count;
     }
 
-    private int InternalCopyImageData(IDataObject data, out bool someError)
+    private int InternalCopyImageData(IDataObject data, string mediaFolder, List<string> copiedFiles, out bool someError)
     {
         var count = 0;
         someError = false;
@@ -188,13 +206,11 @@ internal sealed class DragAndDropService : IDragAndDropService
         OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs { Status = FileCopyStatus.StartingCopy });
         try
         {
-            var mediaFolder = _optionsService.MediaFolder;
-
             var bmpObj = data.GetData(DataFormats.Bitmap);
             if (bmpObj is System.Windows.Media.Imaging.BitmapSource bmpSource)
             {
                 using var bitmap = BitmapSourceToBitmap(bmpSource);
-                count = CopyFromImageData(mediaFolder, bitmap);
+                count = CopyFromImageData(mediaFolder, bitmap, copiedFiles);
             }
             else if (data.GetDataPresent(DataFormats.Dib))
             {
@@ -204,7 +220,7 @@ internal sealed class DragAndDropService : IDragAndDropService
                     using var bmp = DibToBitmap(dibStream);
                     if (bmp != null)
                     {
-                        count = CopyFromImageData(mediaFolder, bmp);
+                        count = CopyFromImageData(mediaFolder, bmp, copiedFiles);
                     }
                 }
                 else if (dibObj is byte[] dibBytes)
@@ -213,7 +229,7 @@ internal sealed class DragAndDropService : IDragAndDropService
                     using var bmp = DibToBitmap(ms);
                     if (bmp != null)
                     {
-                        count = CopyFromImageData(mediaFolder, bmp);
+                        count = CopyFromImageData(mediaFolder, bmp, copiedFiles);
                     }
                 }
             }
@@ -284,7 +300,7 @@ internal sealed class DragAndDropService : IDragAndDropService
         }
     }
 
-    private int InternalCopyUris(IDataObject data, out bool someError)
+    private int InternalCopyUris(IDataObject data, string mediaFolder, List<string> copiedFiles, out bool someError)
     {
         var count = 0;
         someError = false;
@@ -292,15 +308,13 @@ internal sealed class DragAndDropService : IDragAndDropService
         OnCopyingFilesProgressEvent(new FilesCopyProgressEventArgs { Status = FileCopyStatus.StartingCopy });
         try
         {
-            var mediaFolder = _optionsService.MediaFolder;
-
             var uriList = GetSupportedUrls(data).ToArray();
             if (uriList.Length == 0)
             {
                 return 0;
             }
 
-            count = CopyAsIndividualUris(mediaFolder, uriList);
+            count = CopyAsIndividualUris(mediaFolder, uriList, copiedFiles);
         }
         catch (Exception ex)
         {
@@ -316,7 +330,7 @@ internal sealed class DragAndDropService : IDragAndDropService
         return count;
     }
 
-    private static int CopyAsSlideshow(string mediaFolder, IDataObject data, string[] files)
+    private static int CopyAsSlideshow(string mediaFolder, IDataObject data, string[] files, List<string> copiedFiles)
     {
         var title = GetOnlyVTitle(data);
         if (string.IsNullOrEmpty(title))
@@ -337,11 +351,12 @@ internal sealed class DragAndDropService : IDragAndDropService
 
         var destFilename = Path.Combine(mediaFolder, title + SlideFile.FileExtension);
         sfb.Build(destFilename, overwrite: true);
+        copiedFiles.Add(destFilename);
 
         return 1;
     }
 
-    private static int CopyAsIndividualFiles(string mediaFolder, string[] files)
+    private static int CopyAsIndividualFiles(string mediaFolder, string[] files, List<string> copiedFiles)
     {
         var count = 0;
 
@@ -354,6 +369,7 @@ internal sealed class DragAndDropService : IDragAndDropService
                 var destFile = Path.Combine(mediaFolder, filename);
                 if (CopyFileInternal(file, destFile))
                 {
+                    copiedFiles.Add(destFile);
                     ++count;
                 }
             }
@@ -362,7 +378,7 @@ internal sealed class DragAndDropService : IDragAndDropService
         return count;
     }
 
-    private int CopyFromImageData(string mediaFolder, Bitmap image)
+    private int CopyFromImageData(string mediaFolder, Bitmap image, List<string> copiedFiles)
     {
         lock (_imageDataPasteLock)
         {
@@ -378,6 +394,7 @@ internal sealed class DragAndDropService : IDragAndDropService
             image.Save(tempFileName, System.Drawing.Imaging.ImageFormat.Png);
             var destFilePath = Path.Combine(mediaFolder, $"{ClipboardImageDataFileNameStart}{++_currentClipboardImageIndex:D3}.png");
             File.Move(tempFileName, destFilePath);
+            copiedFiles.Add(destFilePath);
             return 1;
         }
     }
@@ -403,7 +420,7 @@ internal sealed class DragAndDropService : IDragAndDropService
         }
     }
 
-    private int CopyAsIndividualUris(string mediaFolder, string[] uriList)
+    private int CopyAsIndividualUris(string mediaFolder, string[] uriList, List<string> copiedFiles)
     {
         var count = 0;
 
@@ -417,7 +434,7 @@ internal sealed class DragAndDropService : IDragAndDropService
             if (IsMediaFileUrl(uri))
             {
                 // uri points to a media item.
-                if (CopyAsMediaFileFromUri(mediaFolder, uri))
+                if (CopyAsMediaFileFromUri(mediaFolder, uri, copiedFiles))
                 {
                     ++count;
                 }
@@ -425,7 +442,7 @@ internal sealed class DragAndDropService : IDragAndDropService
             else
             {
                 // uri should be treated as a web shortcut.
-                if (CreateShortcutFromUri(mediaFolder, uri))
+                if (CreateShortcutFromUri(mediaFolder, uri, copiedFiles))
                 {
                     ++count;
                 }
@@ -435,7 +452,7 @@ internal sealed class DragAndDropService : IDragAndDropService
         return count;
     }
 
-    private static bool CreateShortcutFromUri(string mediaFolder, string uri)
+    private static bool CreateShortcutFromUri(string mediaFolder, string uri, List<string> copiedFiles)
     {
         var url = new Uri(uri);
 
@@ -466,12 +483,13 @@ internal sealed class DragAndDropService : IDragAndDropService
             return false;
         }
 
+        copiedFiles.Add(destFile);
         FileUtils.SafeDeleteFile(sourceFile);
 
         return true;
     }
 
-    private static bool CopyAsMediaFileFromUri(string mediaFolder, string uri)
+    private static bool CopyAsMediaFileFromUri(string mediaFolder, string uri, List<string> copiedFiles)
     {
         var filename = Path.GetFileName(uri);
         if (string.IsNullOrEmpty(filename))
@@ -509,6 +527,7 @@ internal sealed class DragAndDropService : IDragAndDropService
             return false;
         }
 
+        copiedFiles.Add(destFile);
         FileUtils.SafeDeleteFile(sourceFile);
 
         return true;

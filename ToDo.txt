@@ -1,3 +1,9 @@
 The drag operation is no good when the snackbar is showing.
-In manual sort mode, the cursor should show a hand when over the background of a card.
-If we delete an item in the UI, when we drop it back in again it isn't shown.
+
+ - A visible Manual-mode indicator and drag handle with a short tooltip.
+  - Move up/down and move to beginning/end commands for keyboard access and long lists.
+  - Drop placement based on the pointer’s position above/below a card, with the same insertion indicator for external
+    files. Currently internal placement depends on the direction of travel, and empty space below the list is not an
+    internal drop target.
+
+  - Localized resources for the new hard-coded settings labels.

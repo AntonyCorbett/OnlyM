@@ -53,6 +53,7 @@ public class MediaItem : ObservableObject
     private string? _fileNameAsSubTitle;
     private PdfViewStyle _pdfViewStyle = PdfViewStyle.Default;
     private string _chosenPdfPage = "1";
+    private bool _isBeingDragged;
 
     public event EventHandler? PlaybackPositionChangedEvent;
 
@@ -109,6 +110,12 @@ public class MediaItem : ObservableObject
     {
         get => _pauseOnLastFrame;
         set => SetProperty(ref _pauseOnLastFrame, value);
+    }
+
+    public bool IsBeingDragged
+    {
+        get => _isBeingDragged;
+        set => SetProperty(ref _isBeingDragged, value);
     }
 
     public bool AllowFreezeCommand

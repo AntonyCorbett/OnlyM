@@ -52,11 +52,15 @@ public interface IOptionsService
 
     event EventHandler ShowFreezeCommandChangedEvent;
 
+    event EventHandler ShowMediaItemCountBadgeChangedEvent;
+
     event EventHandler MagnifierChangedEvent;
 
     event EventHandler BrowserChangedEvent;
 
     event EventHandler DarkModeChangedEvent;
+
+    event EventHandler SortModeChangedEvent;
 
     bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 
@@ -79,6 +83,8 @@ public interface IOptionsService
     bool AllowVideoScrubbing { get; set; }
 
     bool ShowFreezeCommand { get; set; }
+
+    bool ShowMediaItemCountBadge { get; set; }
 
     int MaxItemCount { get; set; }
 
@@ -147,6 +153,8 @@ public interface IOptionsService
     char MirrorHotKey { get; set; }
 
     DarkModeOption DarkModeOption { get; set; }
+
+    MediaSortMode SortMode { get; set; }
 
     void SetCommandLineMediaFolder(string folder);
 

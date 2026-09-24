@@ -19,7 +19,7 @@ namespace OnlyM.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -111,6 +111,42 @@ namespace OnlyM.Properties {
         public static string ALLOW_SEEK {
             get {
                 return ResourceManager.GetString("ALLOW_SEEK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mode.
+        /// </summary>
+        public static string APP_MODE {
+            get {
+                return ResourceManager.GetString("APP_MODE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dark.
+        /// </summary>
+        public static string APP_MODE_DARK {
+            get {
+                return ResourceManager.GetString("APP_MODE_DARK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light.
+        /// </summary>
+        public static string APP_MODE_LIGHT {
+            get {
+                return ResourceManager.GetString("APP_MODE_LIGHT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System.
+        /// </summary>
+        public static string APP_MODE_SYSTEM {
+            get {
+                return ResourceManager.GetString("APP_MODE_SYSTEM", resourceCulture);
             }
         }
         
@@ -422,42 +458,6 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mode.
-        /// </summary>
-        public static string APP_MODE {
-            get {
-                return ResourceManager.GetString("APP_MODE", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Dark.
-        /// </summary>
-        public static string APP_MODE_DARK {
-            get {
-                return ResourceManager.GetString("APP_MODE_DARK", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Light.
-        /// </summary>
-        public static string APP_MODE_LIGHT {
-            get {
-                return ResourceManager.GetString("APP_MODE_LIGHT", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to System.
-        /// </summary>
-        public static string APP_MODE_SYSTEM {
-            get {
-                return ResourceManager.GetString("APP_MODE_SYSTEM", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string LANGUAGE {
@@ -465,7 +465,7 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("LANGUAGE", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Launching mirror....
         /// </summary>
@@ -544,6 +544,15 @@ namespace OnlyM.Properties {
         public static string MEDIA_FOLDER_CMDLINE {
             get {
                 return ResourceManager.GetString("MEDIA_FOLDER_CMDLINE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1}.
+        /// </summary>
+        public static string MEDIA_ITEM_COUNT {
+            get {
+                return ResourceManager.GetString("MEDIA_ITEM_COUNT", resourceCulture);
             }
         }
         
@@ -836,6 +845,33 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RESET MANUAL ORDER.
+        /// </summary>
+        public static string RESET_MANUAL_ORDER {
+            get {
+                return ResourceManager.GetString("RESET_MANUAL_ORDER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not reset the manual order. Please try again..
+        /// </summary>
+        public static string RESET_MANUAL_ORDER_ERROR {
+            get {
+                return ResourceManager.GetString("RESET_MANUAL_ORDER_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forget the saved order for this media folder, including all dates, and restore automatic ordering. Manual mode stays selected. Media files are not changed..
+        /// </summary>
+        public static string RESET_MANUAL_ORDER_TOOLTIP {
+            get {
+                return ResourceManager.GetString("RESET_MANUAL_ORDER_TOOLTIP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please restart OnlyM after changing the language..
         /// </summary>
         public static string RESTART_LANGUAGE {
@@ -962,6 +998,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show media item count badge.
+        /// </summary>
+        public static string SHOW_MEDIA_ITEM_COUNT_BADGE {
+            get {
+                return ResourceManager.GetString("SHOW_MEDIA_ITEM_COUNT_BADGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjust start time.
         /// </summary>
         public static string SHOW_START_OFFSET_DLG {
@@ -985,6 +1030,33 @@ namespace OnlyM.Properties {
         public static string SLIDE_X_OF_Y {
             get {
                 return ResourceManager.GetString("SLIDE_X_OF_Y", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort mode.
+        /// </summary>
+        public static string SORT_MODE {
+            get {
+                return ResourceManager.GetString("SORT_MODE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto.
+        /// </summary>
+        public static string SORT_MODE_AUTO {
+            get {
+                return ResourceManager.GetString("SORT_MODE_AUTO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manual.
+        /// </summary>
+        public static string SORT_MODE_MANUAL {
+            get {
+                return ResourceManager.GetString("SORT_MODE_MANUAL", resourceCulture);
             }
         }
         

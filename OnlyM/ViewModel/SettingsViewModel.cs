@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -55,8 +56,6 @@ internal sealed class SettingsViewModel : ObservableObject
     private readonly MagnifierSizeItem[] _magnifierSizes;
     private readonly AppModeItem[] _appModes;
 
-    private bool _isMediaActive;
-
     public SettingsViewModel(
         IPageService pageService,
         IMonitorsService monitorsService,
@@ -87,6 +86,8 @@ internal sealed class SettingsViewModel : ObservableObject
         _appModes = GetAppModes();
 
         _pageService.NavigationEvent += HandleNavigationEvent;
+        _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
+        _optionsService.MediaFolderChangedEvent += (_, _) => ResetManualOrderCommand.NotifyCanExecuteChanged();
 
         InitCommands();
         WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
@@ -103,6 +104,8 @@ internal sealed class SettingsViewModel : ObservableObject
     public RelayCommand PurgeThumbnailCacheCommand { get; private set; } = null!;
 
     public RelayCommand PurgeWebCacheCommand { get; private set; } = null!;
+
+    public AsyncRelayCommand ResetManualOrderCommand { get; private set; } = null!;
 
     public RelayCommand OpenMediaFolderCommand { get; private set; } = null!;
 
@@ -491,6 +494,34 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
+    public bool IsAutoSortMode
+    {
+        get => _optionsService.SortMode == MediaSortMode.Auto;
+        set
+        {
+            if (value && _optionsService.SortMode != MediaSortMode.Auto)
+            {
+                _optionsService.SortMode = MediaSortMode.Auto;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsManualSortMode));
+            }
+        }
+    }
+
+    public bool IsManualSortMode
+    {
+        get => _optionsService.SortMode == MediaSortMode.Manual;
+        set
+        {
+            if (value && _optionsService.SortMode != MediaSortMode.Manual)
+            {
+                _optionsService.SortMode = MediaSortMode.Manual;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsAutoSortMode));
+            }
+        }
+    }
+
     public bool UseInternalMediaTitles
     {
         get => _optionsService.UseInternalMediaTitles;
@@ -606,6 +637,19 @@ internal sealed class SettingsViewModel : ObservableObject
             if (_optionsService.ShowFreezeCommand != value)
             {
                 _optionsService.ShowFreezeCommand = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public bool ShowMediaItemCountBadge
+    {
+        get => _optionsService.ShowMediaItemCountBadge;
+        set
+        {
+            if (_optionsService.ShowMediaItemCountBadge != value)
+            {
+                _optionsService.ShowMediaItemCountBadge = value;
                 OnPropertyChanged();
             }
         }
@@ -966,12 +1010,12 @@ internal sealed class SettingsViewModel : ObservableObject
 
     private bool IsMediaActive
     {
-        get => _isMediaActive;
+        get;
         set
         {
-            if (_isMediaActive != value)
+            if (field != value)
             {
-                SetProperty(ref _isMediaActive, value);
+                SetProperty(ref field, value);
                 OnPropertyChanged(nameof(IsMediaInactive));
             }
         }
@@ -1139,11 +1183,27 @@ internal sealed class SettingsViewModel : ObservableObject
         {
             // when Settings page is shown.
             IsMediaActive = _activeMediaItemsService.Any();
+            OnPropertyChanged(nameof(IsAutoSortMode));
+            OnPropertyChanged(nameof(IsManualSortMode));
         }
     }
 
+    private void HandleSortModeChangedEvent(object? sender, EventArgs e)
+    {
+        ResetManualOrderCommand.NotifyCanExecuteChanged();
+        OnPropertyChanged(nameof(IsAutoSortMode));
+        OnPropertyChanged(nameof(IsManualSortMode));
+    }
+
+    private bool CanResetManualOrder() => IsManualSortMode && !string.IsNullOrWhiteSpace(MediaFolder);
+
+    private Task ResetManualOrderAsync() => CanResetManualOrder()
+        ? WeakReferenceMessenger.Default.Send(new ResetManualOrderMessage()).Response
+        : Task.CompletedTask;
+
     private void InitCommands()
     {
+        ResetManualOrderCommand = new AsyncRelayCommand(ResetManualOrderAsync, CanResetManualOrder);
         PurgeThumbnailCacheCommand = new RelayCommand(PurgeThumbnailCache);
         PurgeWebCacheCommand = new RelayCommand(PurgeWebCache);
         OpenMediaFolderCommand = new RelayCommand(OpenMediaFolder);

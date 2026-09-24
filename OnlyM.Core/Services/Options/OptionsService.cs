@@ -85,11 +85,15 @@ public sealed class OptionsService : IOptionsService
 
     public event EventHandler? ShowFreezeCommandChangedEvent;
 
+    public event EventHandler? ShowMediaItemCountBadgeChangedEvent;
+
     public event EventHandler? MagnifierChangedEvent;
 
     public event EventHandler? BrowserChangedEvent;
 
     public event EventHandler? DarkModeChangedEvent;
+
+    public event EventHandler? SortModeChangedEvent;
 
     public bool ShouldPurgeBrowserCacheOnStartup
     {
@@ -202,6 +206,19 @@ public sealed class OptionsService : IOptionsService
             {
                 _options.Value.ShowFreezeCommand = value;
                 ShowFreezeCommandChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public bool ShowMediaItemCountBadge
+    {
+        get => _options.Value.ShowMediaItemCountBadge;
+        set
+        {
+            if (_options.Value.ShowMediaItemCountBadge != value)
+            {
+                _options.Value.ShowMediaItemCountBadge = value;
+                ShowMediaItemCountBadgeChangedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }
@@ -343,6 +360,19 @@ public sealed class OptionsService : IOptionsService
             if (_options.Value.MirrorZoom != value)
             {
                 _options.Value.MirrorZoom = Options.GetNormalisedMirrorZoom(value);
+            }
+        }
+    }
+
+    public MediaSortMode SortMode
+    {
+        get => _options.Value.SortMode;
+        set
+        {
+            if (_options.Value.SortMode != value)
+            {
+                _options.Value.SortMode = value;
+                SortModeChangedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }
