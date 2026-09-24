@@ -15,9 +15,16 @@ namespace OnlyM.Core.Services.Database;
 public class DatabaseService : IDatabaseService
 {
     private const int CurrentSchemaVersion = 5;
+    private readonly string _databasePath;
 
     public DatabaseService()
+        : this(Path.Combine(FileUtils.GetOnlyMDatabaseFolder(), "OnlyMDatabase.db"))
     {
+    }
+
+    internal DatabaseService(string databasePath)
+    {
+        _databasePath = databasePath;
         EnsureDatabaseExists();
         InitialiseWal();
     }
@@ -256,12 +263,20 @@ public class DatabaseService : IDatabaseService
         return null;
     }
 
-    private static void EnsureDatabaseExists()
+    private void EnsureDatabaseExists()
     {
         var path = GetDatabasePath();
-        if (File.Exists(path) && IsUnsupportedVersion())
+        if (File.Exists(path))
         {
-            DeleteDatabase();
+            var version = GetDatabaseSchemaVersion();
+            if (version == 4)
+            {
+                UpgradeVersion4();
+            }
+            else if (version != CurrentSchemaVersion)
+            {
+                DeleteDatabase();
+            }
         }
 
         if (!File.Exists(path))
@@ -275,16 +290,16 @@ public class DatabaseService : IDatabaseService
         }
     }
 
-    private static string GetDatabasePath() => Path.Combine(FileUtils.GetOnlyMDatabaseFolder(), "OnlyMDatabase.db");
+    private string GetDatabasePath() => _databasePath;
 
-    private static SQLiteConnection CreateConnection()
+    private SQLiteConnection CreateConnection()
     {
         var c = new SQLiteConnection($"Data source={GetDatabasePath()};Version=3;BusyTimeout=5000;", true);
         c.Open();
         return c;
     }
 
-    private static void InitialiseWal()
+    private void InitialiseWal()
     {
         using var c = new SQLiteConnection($"Data source={GetDatabasePath()};Version=3;BusyTimeout=5000;", true);
         c.Open();
@@ -293,7 +308,7 @@ public class DatabaseService : IDatabaseService
         cmd.ExecuteNonQuery();
     }
 
-    private static void DeleteDatabase()
+    private void DeleteDatabase()
     {
         Log.Logger.Verbose("Deleting database");
 
@@ -309,7 +324,7 @@ public class DatabaseService : IDatabaseService
         }
     }
 
-    private static int GetDatabaseSchemaVersion()
+    private int GetDatabaseSchemaVersion()
     {
         try
         {
@@ -332,9 +347,20 @@ public class DatabaseService : IDatabaseService
         cmd.ExecuteNonQuery();
     }
 
-    private static bool IsUnsupportedVersion() => GetDatabaseSchemaVersion() != CurrentSchemaVersion;
+    private void UpgradeVersion4()
+    {
+        using var c = CreateConnection();
+        using var transaction = c.BeginTransaction();
+        Log.Logger.Information("Upgrading database schema from version 4 to 5");
 
-    private static void CreateDatabase()
+        // Keep the existing cache, browser settings and playback offsets. If any
+        // step fails, roll back both the new schema and its version for a retry.
+        CreateMediaOrderTable(c);
+        SetDatabaseSchemaVersion(c, CurrentSchemaVersion);
+        transaction.Commit();
+    }
+
+    private void CreateDatabase()
     {
         using var c = CreateConnection();
         Log.Logger.Verbose("Creating database");
