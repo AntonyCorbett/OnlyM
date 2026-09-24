@@ -234,6 +234,11 @@ public partial class OperatorPage
             return;
         }
 
+        if (!vm.IsManualSortMode)
+        {
+            return;
+        }
+
         var targetIndex = targetItem == null
             ? vm.MediaItems.Count
             : vm.MediaItems.IndexOf(targetItem);
@@ -243,7 +248,12 @@ public partial class OperatorPage
             targetIndex = vm.MediaItems.Count;
         }
 
-        WeakReferenceMessenger.Default.Send(new ExternalDropTargetMessage { TargetIndex = targetIndex });
+        var dragAndDropService = Ioc.Default.GetService<IDragAndDropService>();
+        if (dragAndDropService != null)
+        {
+            e.Handled = true;
+            dragAndDropService.Drop(e.Data, targetIndex, targetItem?.FilePath);
+        }
     }
 
     private MediaItem? GetMediaItemUnderPointer(DragEventArgs e)

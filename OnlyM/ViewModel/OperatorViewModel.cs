@@ -55,6 +55,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private readonly MetaDataQueueProducer _metaDataProducer = new();
     private readonly CancellationTokenSource _metaDataCancellationTokenSource = new();
     private readonly object _orderPersistLock = new();
+    private readonly List<ExternalDropCompletedMessage> _pendingExternalDrops = [];
 
     private MetaDataQueueConsumer? _metaDataConsumer;
     private string? _blankScreenImagePath;
@@ -62,8 +63,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private bool _startupLoadDone;
     private bool _isLoadingMediaItems;
     private bool _reloadRequestedFromFileChanges;
-    private int? _pendingManualInsertIndex;
-    private long _pendingManualInsertToken;
     private int _thumbnailColWidth = 180;
     private Task _pendingOrderPersistTask = Task.CompletedTask;
 
@@ -137,7 +136,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
         WeakReferenceMessenger.Default.Register<SubtitleFileMessage>(this, OnSubtitleFileActivity);
         WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, OnThemeChanged);
-        WeakReferenceMessenger.Default.Register<ExternalDropTargetMessage>(this, OnExternalDropTarget);
+        WeakReferenceMessenger.Default.Register<ExternalDropCompletedMessage>(this, OnExternalDropCompleted);
 
         MediaItems.CollectionChanged += (_, _) =>
         {
@@ -243,6 +242,33 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
 
         SortMediaItemsAuto();
+    }
+
+    internal void QueueExternalDrop(ExternalDropCompletedMessage message) =>
+        _pendingExternalDrops.Add(message);
+
+    internal ExternalDropCompletedMessage[] SnapshotExternalDrops() => _pendingExternalDrops.ToArray();
+
+    internal void ApplyExternalDrops(IReadOnlyList<ExternalDropCompletedMessage> completedDrops)
+    {
+        var movedItems = false;
+        foreach (var drop in completedDrops)
+        {
+            if (IsManualSortMode &&
+                string.Equals(drop.MediaFolder, _optionsService.MediaFolder, StringComparison.OrdinalIgnoreCase))
+            {
+                movedItems |= InsertExternalDropItems(drop);
+            }
+
+            // Only consume operations known to be complete before this refresh
+            // began. Any completion during enumeration needs the next refresh.
+            _pendingExternalDrops.Remove(drop);
+        }
+
+        if (movedItems)
+        {
+            PersistManualOrderForCurrentFolder();
+        }
     }
 
     private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e)
@@ -412,16 +438,14 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
-    private void OnExternalDropTarget(object? sender, ExternalDropTargetMessage message)
+    private void OnExternalDropCompleted(object? sender, ExternalDropCompletedMessage message)
     {
-        if (_optionsService.SortMode != MediaSortMode.Manual)
+        // Copy completion is reported from a worker thread.
+        _ = Application.Current.Dispatcher.BeginInvoke(new Action(() =>
         {
-            _pendingManualInsertIndex = null;
-            return;
-        }
-
-        _pendingManualInsertIndex = message.TargetIndex;
-        ++_pendingManualInsertToken;
+            QueueExternalDrop(message);
+            LoadMediaItems();
+        }));
     }
 
     private void LaunchThumbnailQueueConsumer()
@@ -1092,6 +1116,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 .Select(x => (FilePath: x.FilePath!, x.LastChanged))
                 .ToList();
 
+            var completedDrops = SnapshotExternalDrops();
+
             // File I/O and diff computation on a background thread.
             var (pathsToRemove, itemsToAdd) = await Task.Run(() => ComputeMediaChanges(existingSnapshot));
 
@@ -1116,8 +1142,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                     MediaItems.Remove(item);
                 }
 
-                var manualInsertTokenSnapshot = _pendingManualInsertToken;
-
                 foreach (var item in itemsToAdd)
                 {
                     MediaItems.Add(item);
@@ -1133,18 +1157,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 SortMediaItems();
                 InsertBlankMediaItem();
 
-                if (manualInsertTokenSnapshot == _pendingManualInsertToken)
-                {
-                    if (_optionsService.SortMode == MediaSortMode.Manual &&
-                        _pendingManualInsertIndex.HasValue &&
-                        itemsToAdd.Count > 0)
-                    {
-                        InsertNewItemsAtPendingManualIndex(itemsToAdd);
-                        PersistManualOrderForCurrentFolder();
-                    }
-
-                    _pendingManualInsertIndex = null;
-                }
+                ApplyExternalDrops(completedDrops);
             }
 
             ChangePlayButtonEnabledStatus();
@@ -1238,40 +1251,45 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
-    private void InsertNewItemsAtPendingManualIndex(IReadOnlyCollection<MediaItem> newItems)
+    private bool InsertExternalDropItems(ExternalDropCompletedMessage drop)
     {
-        if (!_pendingManualInsertIndex.HasValue)
+        var itemsByPath = MediaItems
+            .Where(x => !x.IsBlankScreen && x.FilePath != null)
+            .ToDictionary(x => x.FilePath!, StringComparer.OrdinalIgnoreCase);
+        var copiedItems = drop.CopiedFilePaths
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Where(itemsByPath.ContainsKey)
+            .Select(path => itemsByPath[path])
+            .ToList();
+        if (copiedItems.Count == 0)
         {
-            return;
+            return false;
         }
 
-        var insertIndex = _pendingManualInsertIndex.Value;
-
-        var blankIndex = GetBlankScreenIndex();
-        insertIndex = AdjustIndexForLeadingBlankScreen(insertIndex, blankIndex);
-        insertIndex = Math.Clamp(insertIndex, 0, MediaItems.Count);
-
-        var orderedNewItems = newItems
-            .Where(x => !x.IsBlankScreen)
-            .ToList();
-
-        for (var n = 0; n < orderedNewItems.Count; ++n)
+        var sorted = MediaItems.Except(copiedItems).ToList();
+        var targetIndex = drop.TargetFilePath == null
+            ? sorted.Count
+            : sorted.FindIndex(x => string.Equals(x.FilePath, drop.TargetFilePath, StringComparison.OrdinalIgnoreCase));
+        if (targetIndex < 0)
         {
-            var item = orderedNewItems[n];
-            var currentIndex = MediaItems.IndexOf(item);
-            if (currentIndex < 0)
-            {
-                continue;
-            }
+            targetIndex = drop.TargetIndex;
+        }
 
-            var targetIndex = Math.Min(insertIndex + n, MediaItems.Count - 1);
-            if (currentIndex != targetIndex)
+        targetIndex = AdjustIndexForLeadingBlankScreen(targetIndex, sorted.FindIndex(x => x.IsBlankScreen));
+        targetIndex = Math.Clamp(targetIndex, 0, sorted.Count);
+        sorted.InsertRange(targetIndex, copiedItems);
+
+        for (var n = 0; n < sorted.Count; ++n)
+        {
+            var currentIndex = MediaItems.IndexOf(sorted[n]);
+            if (currentIndex != n)
             {
-                MediaItems.Move(currentIndex, targetIndex);
+                MediaItems.Move(currentIndex, n);
             }
         }
 
         EnsureBlankScreenIsFirst();
+        return true;
     }
 
     private MediaItem CreateNewMediaItem(MediaFile file)

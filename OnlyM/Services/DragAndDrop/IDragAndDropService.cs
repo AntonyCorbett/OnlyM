@@ -11,4 +11,6 @@ internal interface IDragAndDropService
     void Init(FrameworkElement targetElement);
 
     void Paste();
+
+    void Drop(IDataObject data, int targetIndex, string? targetFilePath);
 }

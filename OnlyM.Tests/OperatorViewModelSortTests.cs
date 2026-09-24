@@ -4,6 +4,7 @@ using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Media;
 using OnlyM.Core.Services.Options;
 using OnlyM.Models;
+using OnlyM.PubSubMessages;
 using OnlyM.Services.Dialogs;
 using OnlyM.Services.FrozenVideoItems;
 using OnlyM.Services.HiddenMediaItems;
@@ -326,4 +327,141 @@ public sealed class OperatorViewModelSortTests : IDisposable
         Assert.Equal([first, second], _vm.MediaItems);
         _dbMock.VerifyNoOtherCalls();
     }
+
+    [Fact]
+    public void ExternalDrop_CompletionDuringRefreshWaitsForNextRefresh()
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        var target = MakeItem("target.jpg");
+        var unrelated = MakeItem("unrelated.jpg");
+        _vm.MediaItems.Add(target);
+        var oldRefresh = _vm.SnapshotExternalDrops();
+
+        _vm.QueueExternalDrop(MakeDrop(0, target, "dropped.jpg"));
+        _vm.MediaItems.Add(unrelated);
+        _vm.ApplyExternalDrops(oldRefresh);
+
+        Assert.Equal([target, unrelated], _vm.MediaItems);
+        Assert.Single(_vm.SnapshotExternalDrops());
+        _dbMock.Verify(x => x.UpsertMediaOrder(It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>()), Times.Never);
+
+        var nextRefresh = _vm.SnapshotExternalDrops();
+        var dropped = MakeItem("dropped.jpg");
+        _vm.MediaItems.Add(dropped);
+        _vm.ApplyExternalDrops(nextRefresh);
+
+        Assert.Equal([dropped, target, unrelated], _vm.MediaItems);
+        Assert.Empty(_vm.SnapshotExternalDrops());
+    }
+
+    [Fact]
+    public void ExternalDrop_RepositionsWholeBatchIncludingPreviouslyLoadedFiles()
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        var target = MakeItem("target.jpg");
+        var first = MakeItem("first.jpg");
+        var second = MakeItem("second.jpg");
+        var unrelated = MakeItem("unrelated.jpg");
+        _vm.MediaItems.Add(target);
+        _vm.MediaItems.Add(first);
+        _vm.ApplyExternalDrops(_vm.SnapshotExternalDrops());
+        _vm.MediaItems.Add(unrelated);
+        _vm.MediaItems.Add(second);
+
+        // Copy completion arrives after both files have already been loaded.
+        _vm.QueueExternalDrop(MakeDrop(0, target, "first.jpg", "second.jpg"));
+        _vm.ApplyExternalDrops(_vm.SnapshotExternalDrops());
+
+        Assert.Equal([first, second, target, unrelated], _vm.MediaItems);
+        Assert.Empty(_vm.SnapshotExternalDrops());
+    }
+
+    [Fact]
+    public void ExternalDrop_OverlappingDropsKeepTheirOwnFilesAndTargets()
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        var firstTarget = MakeItem("target1.jpg");
+        var secondTarget = MakeItem("target2.jpg");
+        var firstDrop = MakeItem("drop1.jpg");
+        var secondDrop = MakeItem("drop2.jpg");
+        _vm.MediaItems.Add(firstTarget);
+        _vm.MediaItems.Add(secondTarget);
+        _vm.MediaItems.Add(firstDrop);
+        _vm.MediaItems.Add(secondDrop);
+        _vm.QueueExternalDrop(MakeDrop(0, firstTarget, "drop1.jpg"));
+        _vm.QueueExternalDrop(MakeDrop(1, secondTarget, "drop2.jpg"));
+
+        _vm.ApplyExternalDrops(_vm.SnapshotExternalDrops());
+
+        Assert.Equal([firstDrop, firstTarget, secondDrop, secondTarget], _vm.MediaItems);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ExternalDrop_IgnoresCompletionAfterChangingModeOrFolder(bool changeMode)
+    {
+        _currentSortMode = changeMode ? MediaSortMode.Auto : MediaSortMode.Manual;
+        var target = MakeItem("target.jpg");
+        var dropped = MakeItem("dropped.jpg");
+        _vm.MediaItems.Add(target);
+        _vm.MediaItems.Add(dropped);
+        _vm.QueueExternalDrop(MakeDrop(0, target, "dropped.jpg"));
+        if (!changeMode)
+        {
+            _optionsMock.SetupGet(x => x.MediaFolder).Returns(Path.Combine(_mediaFolder, "other-folder"));
+        }
+
+        _vm.ApplyExternalDrops(_vm.SnapshotExternalDrops());
+
+        Assert.Equal([target, dropped], _vm.MediaItems);
+        Assert.Empty(_vm.SnapshotExternalDrops());
+        _dbMock.VerifyNoOtherCalls();
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ExternalDrop_PreservesBlankScreenAndBatchOrder(bool atEnd)
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        var blank = new MediaItem { FilePath = Path.Combine(_mediaFolder, "blank.png"), IsBlankScreen = true };
+        var target = MakeItem("target.jpg");
+        var first = MakeItem("first.jpg");
+        var second = MakeItem("second.jpg");
+        _vm.MediaItems.Add(blank);
+        _vm.MediaItems.Add(second);
+        _vm.MediaItems.Add(target);
+        _vm.MediaItems.Add(first);
+        _vm.QueueExternalDrop(MakeDrop(atEnd ? 2 : 0, atEnd ? null : blank, "first.jpg", "second.jpg"));
+
+        _vm.ApplyExternalDrops(_vm.SnapshotExternalDrops());
+
+        Assert.Equal(atEnd ? [blank, target, first, second] : new[] { blank, first, second, target }, _vm.MediaItems);
+    }
+
+    [Fact]
+    public void ExternalDrop_UnavailableFilesDoNotAffectLaterUnrelatedItems()
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        var target = MakeItem("target.jpg");
+        _vm.MediaItems.Add(target);
+        _vm.QueueExternalDrop(MakeDrop(0, target, "excluded-by-limit.jpg"));
+        _vm.ApplyExternalDrops(_vm.SnapshotExternalDrops());
+        var unrelated = MakeItem("unrelated.jpg");
+        _vm.MediaItems.Add(unrelated);
+        _vm.ApplyExternalDrops(_vm.SnapshotExternalDrops());
+
+        Assert.Equal([target, unrelated], _vm.MediaItems);
+        Assert.Empty(_vm.SnapshotExternalDrops());
+        _dbMock.VerifyNoOtherCalls();
+    }
+
+    private ExternalDropCompletedMessage MakeDrop(int index, MediaItem? target, params string[] fileNames) => new()
+    {
+        MediaFolder = _mediaFolder,
+        TargetIndex = index,
+        TargetFilePath = target?.FilePath,
+        CopiedFilePaths = fileNames.Select(name => Path.Combine(_mediaFolder, name)).ToArray(),
+    };
 }
