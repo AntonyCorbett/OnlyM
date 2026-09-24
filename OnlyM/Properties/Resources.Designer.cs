@@ -143,6 +143,24 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not reset the manual order. Please try again..
+        /// </summary>
+        public static string RESET_MANUAL_ORDER_ERROR {
+            get {
+                return ResourceManager.GetString("RESET_MANUAL_ORDER_ERROR", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized description of resetting the current folder's manual order.
+        /// </summary>
+        public static string RESET_MANUAL_ORDER_TOOLTIP {
+            get {
+                return ResourceManager.GetString("RESET_MANUAL_ORDER_TOOLTIP", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Blank Screen.
         /// </summary>
         public static string BLANK_SCREEN {

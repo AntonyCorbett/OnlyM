@@ -65,6 +65,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private bool _reloadRequestedFromFileChanges;
     private int _thumbnailColWidth = 180;
     private Task _pendingOrderPersistTask = Task.CompletedTask;
+    private string? _manualOrderResetScope;
 
     public OperatorViewModel(
         IMediaProviderService mediaProviderService,
@@ -180,11 +181,13 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; private set; } = null!;
 
+    public AsyncRelayCommand ResetManualOrderCommand { get; private set; } = null!;
+
     public bool IsManualSortMode => _optionsService.SortMode == MediaSortMode.Manual;
 
     public void MoveMediaItem(MediaItem sourceItem, MediaItem targetItem)
     {
-        if (!IsManualSortMode || sourceItem.IsBlankScreen || targetItem.IsBlankScreen)
+        if (!IsManualSortMode || IsResettingCurrentManualOrder() || sourceItem.IsBlankScreen || targetItem.IsBlankScreen)
         {
             return;
         }
@@ -235,6 +238,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     internal void SortMediaItems()
     {
+        if (IsResettingCurrentManualOrder())
+        {
+            return;
+        }
+
         if (_optionsService.SortMode == MediaSortMode.Manual)
         {
             SortMediaItemsManual();
@@ -254,7 +262,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         var movedItems = false;
         foreach (var drop in completedDrops)
         {
-            if (IsManualSortMode &&
+            if (_pendingExternalDrops.Contains(drop) && IsManualSortMode && !IsResettingCurrentManualOrder() &&
                 string.Equals(drop.MediaFolder, _optionsService.MediaFolder, StringComparison.OrdinalIgnoreCase))
             {
                 movedItems |= InsertExternalDropItems(drop);
@@ -302,8 +310,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private void HandleOperatingDateChangedEvent(object? sender, EventArgs e) =>
         _pendingLoadMediaItems = true;
 
-    private void HandleSortModeChangedEvent(object? sender, EventArgs e) =>
+    private void HandleSortModeChangedEvent(object? sender, EventArgs e)
+    {
+        ResetManualOrderCommand.NotifyCanExecuteChanged();
         _ = Application.Current.Dispatcher.BeginInvoke(new Action(LoadMediaItems));
+    }
 
     private void HandleUnhideAllEvent(object? sender, EventArgs e)
     {
@@ -657,6 +668,49 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         NextSlideCommand = new RelayCommand<Guid?>(GotoNextSlide);
 
         EnterStartOffsetEditModeCommand = new RelayCommand<Guid?>(EnterStartOffsetEditMode);
+
+        ResetManualOrderCommand = new AsyncRelayCommand(ResetManualOrderAsync, CanResetManualOrder);
+    }
+
+    private bool CanResetManualOrder() => IsManualSortMode && !string.IsNullOrWhiteSpace(_optionsService.MediaFolder);
+
+    private bool IsResettingCurrentManualOrder() => _manualOrderResetScope != null &&
+        string.Equals(_manualOrderResetScope, _optionsService.MediaFolder.Trim(), StringComparison.OrdinalIgnoreCase);
+
+    private async Task ResetManualOrderAsync()
+    {
+        if (!CanResetManualOrder())
+        {
+            return;
+        }
+
+        var scopeKey = _optionsService.MediaFolder.Trim();
+        _manualOrderResetScope = scopeKey;
+        // Invalidate drop snapshots from refreshes already in progress too.
+        _pendingExternalDrops.RemoveAll(drop => string.Equals(drop.MediaFolder.Trim(), scopeKey, StringComparison.OrdinalIgnoreCase));
+        try
+        {
+            // Queue the deletion after earlier saves, and before any later saves.
+            // An empty set clears this folder's entire order, including other dates.
+            await QueueManualOrderChange(() => _databaseService.RemoveMissingMediaOrderItems(scopeKey, []));
+
+            if (IsResettingCurrentManualOrder())
+            {
+                using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
+                {
+                    SortMediaItemsAuto();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not reset manual media order");
+            _snackbarService.EnqueueWithOk(Properties.Resources.RESET_MANUAL_ORDER_ERROR, Properties.Resources.OK);
+        }
+        finally
+        {
+            _manualOrderResetScope = null;
+        }
     }
 
     // Exceptions handled
@@ -1069,8 +1123,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private MediaItem? GetMediaItem(Guid mediaItemId) =>
         MediaItems.SingleOrDefault(x => x.Id == mediaItemId);
 
-    private void HandleMediaFolderChangedEvent(object? sender, EventArgs e) =>
+    private void HandleMediaFolderChangedEvent(object? sender, EventArgs e)
+    {
         _pendingLoadMediaItems = true;
+        ResetManualOrderCommand.NotifyCanExecuteChanged();
+    }
 
     private void HandleRenderingMethodChangedEvent(object? sender, EventArgs e) =>
         _pendingLoadMediaItems = true;
@@ -1488,7 +1545,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private void PersistManualOrderForCurrentFolder()
     {
         var mediaFolder = _optionsService.MediaFolder;
-        if (string.IsNullOrWhiteSpace(mediaFolder) || !Directory.Exists(mediaFolder))
+        if (IsResettingCurrentManualOrder() || string.IsNullOrWhiteSpace(mediaFolder) || !Directory.Exists(mediaFolder))
         {
             return;
         }
@@ -1501,28 +1558,30 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        // Persisted off the UI thread — the drag-reorder call site runs this on every
-        // move. Writes are chained (not fired independently) so a burst of rapid
-        // reorders still persists in the order they happened.
+        _ = QueueManualOrderChange(() =>
+        {
+            try
+            {
+                // Read inside the queued operation so each merge includes
+                // changes saved by earlier reorders, including other dates.
+                var storedOrderKeys = _databaseService.GetMediaOrderItemKeys(scopeKey);
+                var mergedOrder = MergeManualOrder(storedOrderKeys, orderedItemKeys);
+                _databaseService.UpsertMediaOrder(scopeKey, mergedOrder);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Could not persist manual media order");
+            }
+        });
+    }
+
+    private Task QueueManualOrderChange(Action change)
+    {
+        // Saves and resets share one queue so an older save cannot undo a reset.
         lock (_orderPersistLock)
         {
-            _pendingOrderPersistTask = _pendingOrderPersistTask.ContinueWith(
-                _ =>
-                {
-                    try
-                    {
-                        // Read inside the queued operation so each merge includes
-                        // changes saved by earlier reorders, including other dates.
-                        var storedOrderKeys = _databaseService.GetMediaOrderItemKeys(scopeKey);
-                        var mergedOrder = MergeManualOrder(storedOrderKeys, orderedItemKeys);
-                        _databaseService.UpsertMediaOrder(scopeKey, mergedOrder);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Logger.Error(ex, "Could not persist manual media order");
-                    }
-                },
-                TaskScheduler.Default);
+            _pendingOrderPersistTask = _pendingOrderPersistTask.ContinueWith(_ => change(), TaskScheduler.Default);
+            return _pendingOrderPersistTask;
         }
     }
 

@@ -61,6 +61,22 @@ public sealed class DatabaseServiceMigrationTests : IDisposable
         Assert.Equal(["a.mp4"], service.GetMediaOrderItemKeys("folder"));
     }
 
+    [Fact]
+    public void ResetOrder_PreservesMigratedDataAndOtherFolders()
+    {
+        CreateVersion4Database();
+        var service = new DatabaseService(_databasePath);
+        service.UpsertMediaOrder("folder", ["b.mp4", "dated-subfolder/a.mp4"]);
+        service.UpsertMediaOrder("other-folder", ["c.mp4", "a.mp4"]);
+
+        service.RemoveMissingMediaOrderItems("folder", []);
+
+        var reopened = new DatabaseService(_databasePath);
+        Assert.Empty(reopened.GetMediaOrderItemKeys("folder"));
+        Assert.Equal(["c.mp4", "a.mp4"], reopened.GetMediaOrderItemKeys("other-folder"));
+        AssertExistingData(reopened);
+    }
+
     private static void AssertExistingData(DatabaseService service)
     {
         Assert.Equal(new byte[] { 1, 2, 3 }, service.GetThumbnailFromCache("image.jpg", 123));

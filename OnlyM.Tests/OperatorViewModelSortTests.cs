@@ -464,4 +464,175 @@ public sealed class OperatorViewModelSortTests : IDisposable
         TargetFilePath = target?.FilePath,
         CopiedFilePaths = fileNames.Select(name => Path.Combine(_mediaFolder, name)).ToArray(),
     };
+
+    [Fact]
+    public async Task ResetManualOrder_RestoresAutoOrderAndKeepsManualModeAndBlankScreen()
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        var first = MakeItem("1.jpg");
+        var second = MakeItem("2.jpg");
+        var blank = new MediaItem { IsBlankScreen = true };
+        _vm.MediaItems.Add(second);
+        _vm.MediaItems.Add(blank);
+        _vm.MediaItems.Add(first);
+
+        Assert.True(_vm.ResetManualOrderCommand.CanExecute(null));
+        await _vm.ResetManualOrderCommand.ExecuteAsync(null);
+
+        Assert.Equal([blank, first, second], _vm.MediaItems);
+        Assert.True(_vm.IsManualSortMode);
+        _optionsMock.VerifySet(x => x.SortMode = It.IsAny<MediaSortMode>(), Times.Never);
+        _dbMock.Verify(x => x.RemoveMissingMediaOrderItems(_mediaFolder,
+            It.Is<IReadOnlyCollection<string>>(keys => keys.Count == 0)), Times.Once);
+        _dbMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task ResetManualOrder_RunsAfterAllQueuedSavesAndAllowsNewReorders()
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        string[] savedOrder = ["3.jpg", "excluded/hidden.jpg", "1.jpg", "2.jpg"];
+        var firstSaveStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var laterSaveCompleted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var releaseFirstSave = new ManualResetEventSlim();
+        var saveCount = 0;
+        var operations = new List<string>();
+        _dbMock.Setup(x => x.GetMediaOrderItemKeys(_mediaFolder)).Returns(() => savedOrder);
+        _dbMock.Setup(x => x.UpsertMediaOrder(_mediaFolder, It.IsAny<IReadOnlyList<string>>()))
+            .Callback<string, IReadOnlyList<string>>((_, keys) =>
+            {
+                if (++saveCount == 1)
+                {
+                    firstSaveStarted.TrySetResult();
+                    Assert.True(releaseFirstSave.Wait(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken));
+                }
+
+                savedOrder = keys.ToArray();
+                operations.Add("save");
+                if (saveCount == 3)
+                {
+                    laterSaveCompleted.TrySetResult();
+                }
+            });
+        _dbMock.Setup(x => x.RemoveMissingMediaOrderItems(_mediaFolder, It.IsAny<IReadOnlyCollection<string>>()))
+            .Callback(() =>
+            {
+                savedOrder = [];
+                operations.Add("reset");
+            });
+        var first = MakeItem("1.jpg");
+        var second = MakeItem("2.jpg");
+        var third = MakeItem("3.jpg");
+        _vm.MediaItems.Add(first);
+        _vm.MediaItems.Add(second);
+        _vm.MediaItems.Add(third);
+        Task reset;
+        try
+        {
+            _vm.MoveMediaItem(third, first);
+            await firstSaveStarted.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+            _vm.MoveMediaItem(second, third);
+            reset = _vm.ResetManualOrderCommand.ExecuteAsync(null);
+
+            Assert.False(reset.IsCompleted);
+            Assert.False(_vm.ResetManualOrderCommand.CanExecute(null));
+            _vm.MoveMediaItem(first, second);
+            _vm.SortMediaItems();
+            Assert.Equal([second, third, first], _vm.MediaItems);
+        }
+        finally
+        {
+            releaseFirstSave.Set();
+        }
+
+        await reset.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+        Assert.Equal(["save", "save", "reset"], operations);
+        Assert.Empty(savedOrder);
+        Assert.Equal([first, second, third], _vm.MediaItems);
+        Assert.True(_vm.ResetManualOrderCommand.CanExecute(null));
+
+        _vm.MoveMediaItem(third, first);
+        await laterSaveCompleted.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+        Assert.Equal(["3.jpg", "1.jpg", "2.jpg"], savedOrder);
+    }
+
+    [Fact]
+    public async Task ResetManualOrder_InvalidatesDropFromRefreshAlreadyInProgress()
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        var first = MakeItem("1.jpg");
+        var second = MakeItem("2.jpg");
+        _vm.MediaItems.Add(second);
+        _vm.MediaItems.Add(first);
+        _vm.QueueExternalDrop(MakeDrop(0, first, "2.jpg"));
+        var oldRefresh = _vm.SnapshotExternalDrops();
+
+        await _vm.ResetManualOrderCommand.ExecuteAsync(null);
+        _vm.ApplyExternalDrops(oldRefresh);
+
+        Assert.Equal([first, second], _vm.MediaItems);
+        Assert.Empty(_vm.SnapshotExternalDrops());
+        _dbMock.Verify(x => x.UpsertMediaOrder(It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task ResetManualOrder_FailureDoesNotChangeDisplayedOrder()
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        _dbMock.Setup(x => x.RemoveMissingMediaOrderItems(_mediaFolder, It.IsAny<IReadOnlyCollection<string>>()))
+            .Throws(new IOException("Database unavailable"));
+        var first = MakeItem("1.jpg");
+        var second = MakeItem("2.jpg");
+        _vm.MediaItems.Add(second);
+        _vm.MediaItems.Add(first);
+
+        await _vm.ResetManualOrderCommand.ExecuteAsync(null);
+
+        Assert.Equal([second, first], _vm.MediaItems);
+        Assert.True(_vm.IsManualSortMode);
+        Assert.True(_vm.ResetManualOrderCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task ResetManualOrder_IsDisabledInAutoMode()
+    {
+        Assert.False(_vm.ResetManualOrderCommand.CanExecute(null));
+        await _vm.ResetManualOrderCommand.ExecuteAsync(null);
+        _dbMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task ResetManualOrder_FolderChangeDoesNotResetTheNewFolder()
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        var resetStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var releaseReset = new ManualResetEventSlim();
+        _dbMock.Setup(x => x.RemoveMissingMediaOrderItems(_mediaFolder, It.IsAny<IReadOnlyCollection<string>>()))
+            .Callback(() =>
+            {
+                resetStarted.TrySetResult();
+                Assert.True(releaseReset.Wait(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken));
+            });
+
+        var reset = _vm.ResetManualOrderCommand.ExecuteAsync(null);
+        var first = MakeItem("1.jpg");
+        var second = MakeItem("2.jpg");
+        try
+        {
+            await resetStarted.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+            _optionsMock.SetupGet(x => x.MediaFolder).Returns(Path.Combine(_mediaFolder, "other-folder"));
+            _vm.MediaItems.Add(second);
+            _vm.MediaItems.Add(first);
+        }
+        finally
+        {
+            releaseReset.Set();
+        }
+
+        await reset.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+        Assert.Equal([second, first], _vm.MediaItems);
+        _dbMock.Verify(x => x.RemoveMissingMediaOrderItems(_mediaFolder,
+            It.Is<IReadOnlyCollection<string>>(keys => keys.Count == 0)), Times.Once);
+        _dbMock.VerifyNoOtherCalls();
+    }
 }

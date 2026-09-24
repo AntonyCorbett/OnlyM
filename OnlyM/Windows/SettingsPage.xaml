@@ -358,8 +358,9 @@
 
                         <Button
                             Margin="0,10,0,0"
-                            Command="{Binding PurgeThumbnailCacheCommand}"
+                            Command="{Binding ResetManualOrderCommand, Mode=OneWay, Source={StaticResource Locator}}"
                             Content="RESET MANUAL ORDER"
+                            ToolTip="{x:Static resx:Resources.RESET_MANUAL_ORDER_TOOLTIP}"
                             Style="{StaticResource SettingsButtonStyle}" />
                         </StackPanel>
 
