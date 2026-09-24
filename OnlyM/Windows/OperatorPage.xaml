@@ -16,6 +16,7 @@
     DataContext="{Binding Operator, Mode=OneWay, Source={StaticResource Locator}}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     Loaded="OnLoaded"
+    Unloaded="OnUnloaded"
     SizeChanged="OnlyMOperatorPage_SizeChanged"
     TextElement.FontSize="18"
     TextElement.FontWeight="Regular"
@@ -49,6 +50,21 @@
                     materialDesign:ElevationAssist.Elevation="Dp1"
                     materialDesign:ShadowAssist.ShadowEdges="All"
                     Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                    <materialDesign:Card.Style>
+                        <Style TargetType="materialDesign:Card">
+                            <Setter Property="Opacity" Value="1" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBeingDragged}" Value="True">
+                                    <Setter Property="Opacity" Value="0.45" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ValidationErrorBrush}" />
+                                    <Setter Property="BorderThickness" Value="4" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </materialDesign:Card.Style>
 
                     <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding IsCommandPanelOpen, Mode=TwoWay}">
 
@@ -511,11 +527,20 @@
         </Border>
 
         <ListBox
+            x:Name="OperatorMediaList"
             Grid.Row="1"
+            AllowDrop="True"
             Background="Transparent"
             BorderThickness="0"
+            Drop="OperatorMediaList_Drop"
             ItemsSource="{Binding MediaItems}"
+            PreviewDragEnter="OperatorMediaList_DragOver"
+            PreviewDragLeave="OperatorMediaList_DragLeave"
+            PreviewDragOver="OperatorMediaList_DragOver"
+            PreviewMouseLeftButtonDown="OperatorMediaList_PreviewMouseLeftButtonDown"
+            PreviewMouseMove="OperatorMediaList_PreviewMouseMove"
             ScrollViewer.VerticalScrollBarVisibility="Visible"
+            VirtualizingPanel.ScrollUnit="Pixel"
             VirtualizingPanel.VirtualizationMode="Recycling">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
@@ -525,7 +550,13 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                <ContentPresenter />
+                                <!--  Background="Transparent" makes the whole item hit-testable, including the
+                                margin around the card content - without it, that margin band is invisible to hit
+                                testing (nothing is painted there), so the pointer briefly "misses" the item during
+                                a drag whenever it lands in that band, flickering the insertion line and cursor.  -->
+                                <Border Background="Transparent">
+                                    <ContentPresenter />
+                                </Border>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
@@ -535,6 +566,3 @@
     </Grid>
 
 </UserControl>
-
-
-

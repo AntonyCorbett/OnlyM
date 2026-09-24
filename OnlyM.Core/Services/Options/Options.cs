@@ -58,6 +58,7 @@ public sealed class Options
 
         AllowMirror = true;
         MirrorZoom = DefaultMirrorZoom;
+        SortMode = MediaSortMode.Auto;
 
         Sanitize();
     }
@@ -153,6 +154,8 @@ public sealed class Options
 
     public DarkModeOption DarkModeOption { get; set; }
 
+    public MediaSortMode SortMode { get; set; }
+
     /// <summary>
     /// Validates the data, correcting automatically as required
     /// </summary>
@@ -218,6 +221,11 @@ public sealed class Options
         if (MirrorHotKey < 'A' || MirrorHotKey > 'Z')
         {
             MirrorHotKey = DefaultMirrorHotKey;
+        }
+
+        if (!Enum.IsDefined(SortMode))
+        {
+            SortMode = MediaSortMode.Auto;
         }
     }
 
