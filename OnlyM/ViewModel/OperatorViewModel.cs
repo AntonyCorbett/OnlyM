@@ -234,6 +234,17 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         LoadMediaItems();
     }
 
+    internal void SortMediaItems()
+    {
+        if (_optionsService.SortMode == MediaSortMode.Manual)
+        {
+            SortMediaItemsManual();
+            return;
+        }
+
+        SortMediaItemsAuto();
+    }
+
     private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e)
     {
         _pendingLoadMediaItems = true;
@@ -1343,17 +1354,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         return _blankScreenImagePath;
     }
 
-    private void SortMediaItems()
-    {
-        if (_optionsService.SortMode == MediaSortMode.Manual)
-        {
-            SortMediaItemsManual();
-            return;
-        }
-
-        SortMediaItemsAuto();
-    }
-
     private void SortMediaItemsAuto()
     {
         var sorted = MediaItems.OrderBy(x => x.SortKey).ToList();
@@ -1390,13 +1390,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             })
             .ToList();
 
-        var existingKeys = keyedItems
-            .Select(x => x.Key)
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        _databaseService.RemoveMissingMediaOrderItems(scopeKey, existingKeys);
-
+        // The current list can exclude dated-folder items or exceed the display
+        // limit. Keep their saved positions so they are restored on returning.
         var storedOrderKeys = _databaseService.GetMediaOrderItemKeys(scopeKey);
 
         var itemByKey = keyedItems
@@ -1498,7 +1493,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 {
                     try
                     {
-                        _databaseService.UpsertMediaOrder(scopeKey, orderedItemKeys);
+                        // Read inside the queued operation so each merge includes
+                        // changes saved by earlier reorders, including other dates.
+                        var storedOrderKeys = _databaseService.GetMediaOrderItemKeys(scopeKey);
+                        var mergedOrder = MergeManualOrder(storedOrderKeys, orderedItemKeys);
+                        _databaseService.UpsertMediaOrder(scopeKey, mergedOrder);
                     }
                     catch (Exception ex)
                     {
@@ -1507,6 +1506,23 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 },
                 TaskScheduler.Default);
         }
+    }
+
+    private static List<string> MergeManualOrder(IReadOnlyList<string> storedOrder, IReadOnlyList<string> currentOrder)
+    {
+        var currentKeys = new HashSet<string>(currentOrder, StringComparer.OrdinalIgnoreCase);
+        var remainingKeys = new Queue<string>(currentOrder);
+        var mergedOrder = new List<string>();
+
+        // Replace only the slots occupied by current items. Excluded items keep
+        // their slots, and any extra (new) items use slots at the end.
+        foreach (var key in storedOrder)
+        {
+            mergedOrder.Add(currentKeys.Contains(key) ? remainingKeys.Dequeue() : key);
+        }
+
+        mergedOrder.AddRange(remainingKeys);
+        return mergedOrder;
     }
 
     private async Task AutoRotateImageIfRequiredAsync(MediaItem item)

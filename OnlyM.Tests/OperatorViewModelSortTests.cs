@@ -205,4 +205,125 @@ public sealed class OperatorViewModelSortTests : IDisposable
         Assert.Equal(blank, _vm.MediaItems[0]);
         Assert.Equal(normal, _vm.MediaItems[1]);
     }
+
+    [Theory]
+    [InlineData("dated-folder/second.jpg")]
+    [InlineData("beyond-item-limit.jpg")]
+    public void SortMediaItems_RestoresSavedPositionsWhenExcludedItemsReturn(string excludedKey)
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        string[] savedOrder = ["third.jpg", excludedKey, "first.jpg"];
+        _dbMock.Setup(x => x.GetMediaOrderItemKeys(_mediaFolder)).Returns(savedOrder);
+
+        var first = MakeItem("first.jpg");
+        var third = MakeItem("third.jpg");
+        _vm.MediaItems.Add(first);
+        _vm.MediaItems.Add(third);
+        _vm.SortMediaItems();
+        Assert.Equal([third, first], _vm.MediaItems);
+
+        // A different date may even have no current items.
+        _vm.MediaItems.Clear();
+        _vm.SortMediaItems();
+
+        var returning = MakeItem(excludedKey);
+        _vm.MediaItems.Add(first);
+        _vm.MediaItems.Add(third);
+        _vm.MediaItems.Add(returning);
+        _vm.SortMediaItems();
+
+        Assert.Equal([third, returning, first], _vm.MediaItems);
+        _dbMock.Verify(x => x.RemoveMissingMediaOrderItems(
+            It.IsAny<string>(), It.IsAny<IReadOnlyCollection<string>>()), Times.Never);
+        _dbMock.Verify(x => x.UpsertMediaOrder(
+            It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>()), Times.Never);
+    }
+
+    [Theory]
+    [InlineData("first.jpg,dated/hidden.jpg,second.jpg", "first.jpg,second.jpg", "second.jpg,dated/hidden.jpg,first.jpg")]
+    [InlineData("hidden.jpg,first.jpg,other-hidden.jpg,second.jpg,tail.jpg", "first.jpg,second.jpg", "hidden.jpg,second.jpg,other-hidden.jpg,first.jpg,tail.jpg")]
+    [InlineData("FIRST.JPG,hidden.jpg,SECOND.JPG", "first.jpg,second.jpg", "second.jpg,hidden.jpg,first.jpg")]
+    [InlineData("first.jpg,hidden.jpg,second.jpg", "first.jpg,second.jpg,new.jpg", "new.jpg,hidden.jpg,first.jpg,second.jpg")]
+    [InlineData("hidden.jpg", "first.jpg,second.jpg", "hidden.jpg,second.jpg,first.jpg")]
+    public async Task MoveMediaItem_PreservesExcludedSlotsWhenSavingSubset(
+        string storedKeys, string currentKeys, string expectedKeys)
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        var savedOrder = storedKeys.Split(',');
+        var persisted = new TaskCompletionSource<string[]>(TaskCreationOptions.RunContinuationsAsynchronously);
+        _dbMock.Setup(x => x.GetMediaOrderItemKeys(_mediaFolder)).Returns(() => savedOrder);
+        _dbMock.Setup(x => x.UpsertMediaOrder(_mediaFolder, It.IsAny<IReadOnlyList<string>>()))
+            .Callback<string, IReadOnlyList<string>>((_, keys) =>
+            {
+                savedOrder = keys.ToArray();
+                persisted.TrySetResult(savedOrder);
+            });
+
+        foreach (var key in currentKeys.Split(','))
+        {
+            _vm.MediaItems.Add(MakeItem(key));
+        }
+
+        _vm.MoveMediaItem(_vm.MediaItems[^1], _vm.MediaItems[0]);
+
+        var result = await persisted.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+        Assert.Equal(expectedKeys.Split(','), result);
+
+        // Reload the full list in a different order and check the persisted result.
+        _vm.MediaItems.Clear();
+        foreach (var key in result.Reverse())
+        {
+            _vm.MediaItems.Add(MakeItem(key));
+        }
+
+        _vm.SortMediaItems();
+        Assert.Equal(result.Select(key => Path.Combine(_mediaFolder, key)), _vm.MediaItems.Select(x => x.FilePath));
+    }
+
+    [Fact]
+    public async Task MoveMediaItem_ConsecutiveSavesPreserveBothSubsets()
+    {
+        _currentSortMode = MediaSortMode.Manual;
+        string[] savedOrder = ["first.jpg", "other-date/a.jpg", "second.jpg", "other-date/b.jpg"];
+        var savedOrders = new List<string[]>();
+        var persisted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _dbMock.Setup(x => x.GetMediaOrderItemKeys(_mediaFolder)).Returns(() => savedOrder);
+        _dbMock.Setup(x => x.UpsertMediaOrder(_mediaFolder, It.IsAny<IReadOnlyList<string>>()))
+            .Callback<string, IReadOnlyList<string>>((_, keys) =>
+            {
+                savedOrder = keys.ToArray();
+                savedOrders.Add(savedOrder);
+                if (savedOrders.Count == 2)
+                {
+                    persisted.TrySetResult();
+                }
+            });
+
+        _vm.MediaItems.Add(MakeItem("first.jpg"));
+        _vm.MediaItems.Add(MakeItem("second.jpg"));
+        _vm.MoveMediaItem(_vm.MediaItems[1], _vm.MediaItems[0]);
+
+        _vm.MediaItems.Clear();
+        _vm.MediaItems.Add(MakeItem("other-date/a.jpg"));
+        _vm.MediaItems.Add(MakeItem("other-date/b.jpg"));
+        _vm.MoveMediaItem(_vm.MediaItems[1], _vm.MediaItems[0]);
+
+        await persisted.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+        Assert.Equal(["second.jpg", "other-date/a.jpg", "first.jpg", "other-date/b.jpg"], savedOrders[0]);
+        Assert.Equal(["second.jpg", "other-date/b.jpg", "first.jpg", "other-date/a.jpg"], savedOrders[1]);
+    }
+
+    [Fact]
+    public void SortMediaItems_AutoModeDoesNotReadOrModifyManualOrder()
+    {
+        var second = MakeItem("second.jpg");
+        var first = MakeItem("first.jpg");
+        _vm.MediaItems.Add(second);
+        _vm.MediaItems.Add(first);
+
+        _vm.SortMediaItems();
+
+        Assert.Equal([first, second], _vm.MediaItems);
+        _dbMock.VerifyNoOtherCalls();
+    }
 }
