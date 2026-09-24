@@ -22,6 +22,10 @@ See the [wiki](https://github.com/AntonyCorbett/OnlyM/wiki) for basic instructio
 
 Use the [Discussions](https://github.com/AntonyCorbett/OnlyM/discussions) area to ask for help, etc. Please limit discussions to those of a technical nature.
 
+### Contributors
+
+* Robert Koernke ([@robertkjr3d](https://github.com/robertkjr3d)) - manual sorting of media items (drag-and-drop reordering)
+
 ### License, etc
 
 OnlyM is Copyright &copy; 2018, 2025 Antony Corbett and other contributors under the [MIT license](LICENSE). The FFMpeg libraries are used under the GNU General Public License version 3 (a copy of which is in the FFMpeg folder). AutoMapper (Jimmy Bogard et al) is used under the MIT License. Unosquare FFME is used under the Microsoft public license. MaterialDesign themes (James Willock, Mulholland Software and Contributors) is used under the MIT license. TagLib.Sharp (Brian Nickel, Gabriel Burt, et al) is used under the GNU Lesser General Public License version 2.1. Serilog is used under the Apache License Version 2.0, January 2004. WPF Extended Toolkit Community Edition (Xceed) is used under the Micrsoft Public Licence. NAudio (Mark Heath) is used under the Microsoft Public License.
