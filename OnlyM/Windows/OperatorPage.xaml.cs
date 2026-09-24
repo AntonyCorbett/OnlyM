@@ -42,6 +42,43 @@ public partial class OperatorPage
         dragAndDropService?.Init(this);
     }
 
+    internal static MediaItem? GetMediaItemFromOriginalSource(DependencyObject? source)
+    {
+        while (source != null)
+        {
+            if (source is FrameworkElement { DataContext: MediaItem mediaItem })
+            {
+                return mediaItem;
+            }
+
+            source = GetInputParent(source);
+        }
+
+        return null;
+    }
+
+    internal static bool IsDragBlockedSource(DependencyObject? source)
+    {
+        while (source != null)
+        {
+            if (source is Slider || source is Thumb || source is ButtonBase || source is ComboBox || source is TextBoxBase)
+            {
+                return true;
+            }
+
+            source = GetInputParent(source);
+        }
+
+        return false;
+    }
+
+    private static DependencyObject? GetInputParent(DependencyObject source) => source switch
+    {
+        FrameworkContentElement content => content.Parent,
+        Visual or System.Windows.Media.Media3D.Visual3D => VisualTreeHelper.GetParent(source),
+        _ => LogicalTreeHelper.GetParent(source),
+    };
+
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         _mediaListScrollViewer = FindDescendant<ScrollViewer>(OperatorMediaList);
@@ -96,6 +133,13 @@ public partial class OperatorPage
 
     private void OperatorMediaList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        _dragStartItem = null;
+        _dragStartOnInteractiveControl = false;
+        if (DataContext is not OperatorViewModel { IsManualSortMode: true })
+        {
+            return;
+        }
+
         var source = e.OriginalSource as DependencyObject;
         _dragStartPoint = e.GetPosition(null);
         _dragStartItem = GetMediaItemFromOriginalSource(source);
@@ -104,7 +148,8 @@ public partial class OperatorPage
 
     private void OperatorMediaList_PreviewMouseMove(object sender, MouseEventArgs e)
     {
-        if (e.LeftButton != MouseButtonState.Pressed)
+        if (DataContext is not OperatorViewModel { IsManualSortMode: true } ||
+            e.LeftButton != MouseButtonState.Pressed)
         {
             return;
         }
@@ -118,12 +163,6 @@ public partial class OperatorPage
         }
 
         if (_dragStartOnInteractiveControl)
-        {
-            return;
-        }
-
-        var vm = DataContext as OperatorViewModel;
-        if (vm == null || !vm.IsManualSortMode)
         {
             return;
         }
@@ -264,36 +303,6 @@ public partial class OperatorPage
         // against the current pointer position is deterministic.
         var hit = VisualTreeHelper.HitTest(OperatorMediaList, e.GetPosition(OperatorMediaList))?.VisualHit;
         return GetMediaItemFromOriginalSource(hit);
-    }
-
-    private static MediaItem? GetMediaItemFromOriginalSource(DependencyObject? source)
-    {
-        while (source != null)
-        {
-            if (source is FrameworkElement { DataContext: MediaItem mediaItem })
-            {
-                return mediaItem;
-            }
-
-            source = VisualTreeHelper.GetParent(source);
-        }
-
-        return null;
-    }
-
-    private static bool IsDragBlockedSource(DependencyObject? source)
-    {
-        while (source != null)
-        {
-            if (source is Slider || source is Thumb || source is ButtonBase || source is ComboBox || source is TextBoxBase)
-            {
-                return true;
-            }
-
-            source = VisualTreeHelper.GetParent(source);
-        }
-
-        return false;
     }
 
     private void UpdateInsertionAdorner(MediaItem sourceItem, MediaItem targetItem)
