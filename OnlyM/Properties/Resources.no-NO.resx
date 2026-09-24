@@ -232,9 +232,17 @@
     <value>Maksimalt antall filer</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
+  <data name="SHOW_MEDIA_ITEM_COUNT_BADGE" xml:space="preserve">
+    <value>Show media item count badge</value>
+    <comment>See Settings =&gt; Media Files</comment>
+  </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
     <value>Media-mappen som er angitt på kommandolinjen</value>
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
+  </data>
+  <data name="MEDIA_ITEM_COUNT" xml:space="preserve">
+    <value>{0} of {1}</value>
+    <comment>Small badge on the Operator page showing the current number of media items and the configured maximum. Please retain the placeholders.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
     <value>Tillat pause</value>
@@ -637,5 +645,24 @@
   </data>
   <data name="PRIMARY_MONITOR" xml:space="preserve">
     <value>primary</value>
+  </data>
+  <data name="RESET_MANUAL_ORDER_ERROR" xml:space="preserve">
+    <value>Could not reset the manual order. Please try again.</value>
+  </data>
+  <data name="RESET_MANUAL_ORDER_TOOLTIP" xml:space="preserve">
+    <value>Forget the saved order for this media folder, including all dates, and restore automatic ordering. Manual mode stays selected. Media files are not changed.</value>
+  </data>
+  <data name="SORT_MODE" xml:space="preserve">
+    <value>Sort mode</value>
+    <comment>See Settings</comment>
+  </data>
+  <data name="SORT_MODE_AUTO" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="SORT_MODE_MANUAL" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="RESET_MANUAL_ORDER" xml:space="preserve">
+    <value>RESET MANUAL ORDER</value>
   </data>
 </root>
