@@ -137,9 +137,15 @@ public sealed class OperatorViewModelSortTests : IDisposable
     }
 
     [Fact]
-    public void MoveMediaItem_PersistsNewOrderToDatabase()
+    public async Task MoveMediaItem_PersistsNewOrderToDatabase()
     {
         _currentSortMode = MediaSortMode.Manual;
+
+        var persisted = new TaskCompletionSource<(string ScopeKey, string[] ItemKeys)>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        _dbMock.Setup(x => x.UpsertMediaOrder(It.IsAny<string>(), It.IsAny<IReadOnlyList<string>>()))
+            .Callback<string, IReadOnlyList<string>>((scopeKey, itemKeys) =>
+                persisted.TrySetResult((scopeKey, itemKeys.ToArray())));
 
         var item1 = MakeItem("first.jpg");
         var item2 = MakeItem("second.jpg");
@@ -148,10 +154,10 @@ public sealed class OperatorViewModelSortTests : IDisposable
 
         _vm.MoveMediaItem(item2, item1);
 
-        _dbMock.Verify(x => x.UpsertMediaOrder(
-            It.IsAny<string>(),
-            It.IsAny<IReadOnlyList<string>>()),
-            Times.AtLeastOnce);
+        var savedOrder = await persisted.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+
+        Assert.Equal(_mediaFolder, savedOrder.ScopeKey);
+        Assert.Equal(["second.jpg", "first.jpg"], savedOrder.ItemKeys);
     }
 
     [Fact]
