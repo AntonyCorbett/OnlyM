@@ -652,4 +652,17 @@
   <data name="RESET_MANUAL_ORDER_TOOLTIP" xml:space="preserve">
     <value>Forget the saved order for this media folder, including all dates, and restore automatic ordering. Manual mode stays selected. Media files are not changed.</value>
   </data>
+  <data name="SORT_MODE" xml:space="preserve">
+    <value>Sort mode</value>
+    <comment>See Settings</comment>
+  </data>
+  <data name="SORT_MODE_AUTO" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="SORT_MODE_MANUAL" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="RESET_MANUAL_ORDER" xml:space="preserve">
+    <value>RESET MANUAL ORDER</value>
+  </data>
 </root>
