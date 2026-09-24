@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -86,6 +87,7 @@ internal sealed class SettingsViewModel : ObservableObject
 
         _pageService.NavigationEvent += HandleNavigationEvent;
         _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
+        _optionsService.MediaFolderChangedEvent += (_, _) => ResetManualOrderCommand.NotifyCanExecuteChanged();
 
         InitCommands();
         WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
@@ -102,6 +104,8 @@ internal sealed class SettingsViewModel : ObservableObject
     public RelayCommand PurgeThumbnailCacheCommand { get; private set; } = null!;
 
     public RelayCommand PurgeWebCacheCommand { get; private set; } = null!;
+
+    public AsyncRelayCommand ResetManualOrderCommand { get; private set; } = null!;
 
     public RelayCommand OpenMediaFolderCommand { get; private set; } = null!;
 
@@ -1186,12 +1190,20 @@ internal sealed class SettingsViewModel : ObservableObject
 
     private void HandleSortModeChangedEvent(object? sender, EventArgs e)
     {
+        ResetManualOrderCommand.NotifyCanExecuteChanged();
         OnPropertyChanged(nameof(IsAutoSortMode));
         OnPropertyChanged(nameof(IsManualSortMode));
     }
 
+    private bool CanResetManualOrder() => IsManualSortMode && !string.IsNullOrWhiteSpace(MediaFolder);
+
+    private Task ResetManualOrderAsync() => CanResetManualOrder()
+        ? WeakReferenceMessenger.Default.Send(new ResetManualOrderMessage()).Response
+        : Task.CompletedTask;
+
     private void InitCommands()
     {
+        ResetManualOrderCommand = new AsyncRelayCommand(ResetManualOrderAsync, CanResetManualOrder);
         PurgeThumbnailCacheCommand = new RelayCommand(PurgeThumbnailCache);
         PurgeWebCacheCommand = new RelayCommand(PurgeWebCache);
         OpenMediaFolderCommand = new RelayCommand(OpenMediaFolder);

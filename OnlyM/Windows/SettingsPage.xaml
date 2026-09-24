@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="OnlyM.Windows.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -358,10 +358,16 @@
 
                         <Button
                             Margin="0,10,0,0"
-                            Command="{Binding ResetManualOrderCommand, Mode=OneWay, Source={StaticResource Locator}}"
+                            Command="{Binding ResetManualOrderCommand, Mode=OneWay}"
                             Content="RESET MANUAL ORDER"
-                            ToolTip="{x:Static resx:Resources.RESET_MANUAL_ORDER_TOOLTIP}"
-                            Style="{StaticResource SettingsButtonStyle}" />
+                            Style="{StaticResource SettingsButtonStyle}">
+                            <Button.ToolTip>
+                                <TextBlock
+                                    MaxWidth="320"
+                                    Text="{x:Static resx:Resources.RESET_MANUAL_ORDER_TOOLTIP}"
+                                    TextWrapping="Wrap" />
+                            </Button.ToolTip>
+                        </Button>
                         </StackPanel>
 
                     </Border>

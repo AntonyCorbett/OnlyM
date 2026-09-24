@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Media;
@@ -32,6 +32,7 @@ public sealed class OperatorViewModelSortTests : IDisposable
 
     // The system under test.
     private readonly OperatorViewModel _vm;
+    private readonly SettingsViewModel _settings;
 
     // Temp folder used as the mock MediaFolder (always exists).
     private readonly string _mediaFolder = Path.GetTempPath().TrimEnd(Path.DirectorySeparatorChar);
@@ -66,6 +67,15 @@ public sealed class OperatorViewModelSortTests : IDisposable
             new Mock<IPdfOptionsService>().Object,
             new Mock<ISnackbarService>().Object,
             new Mock<IDialogService>().Object);
+
+        _optionsMock.SetupGet(x => x.RecentlyUsedMediaFolders).Returns([]);
+        _settings = new SettingsViewModel(
+            new Mock<IPageService>().Object,
+            new Mock<OnlyM.Core.Services.Monitors.IMonitorsService>().Object,
+            _optionsMock.Object,
+            new Mock<IActiveMediaItemsService>().Object,
+            new Mock<IThumbnailService>().Object,
+            new Mock<ISnackbarService>().Object);
     }
 
     public void Dispose() => _vm.Dispose();
@@ -476,8 +486,8 @@ public sealed class OperatorViewModelSortTests : IDisposable
         _vm.MediaItems.Add(blank);
         _vm.MediaItems.Add(first);
 
-        Assert.True(_vm.ResetManualOrderCommand.CanExecute(null));
-        await _vm.ResetManualOrderCommand.ExecuteAsync(null);
+        Assert.True(_settings.ResetManualOrderCommand.CanExecute(null));
+        await _settings.ResetManualOrderCommand.ExecuteAsync(null);
 
         Assert.Equal([blank, first, second], _vm.MediaItems);
         Assert.True(_vm.IsManualSortMode);
@@ -532,10 +542,10 @@ public sealed class OperatorViewModelSortTests : IDisposable
             _vm.MoveMediaItem(third, first);
             await firstSaveStarted.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
             _vm.MoveMediaItem(second, third);
-            reset = _vm.ResetManualOrderCommand.ExecuteAsync(null);
+            reset = _settings.ResetManualOrderCommand.ExecuteAsync(null);
 
             Assert.False(reset.IsCompleted);
-            Assert.False(_vm.ResetManualOrderCommand.CanExecute(null));
+            Assert.False(_settings.ResetManualOrderCommand.CanExecute(null));
             _vm.MoveMediaItem(first, second);
             _vm.SortMediaItems();
             Assert.Equal([second, third, first], _vm.MediaItems);
@@ -549,7 +559,7 @@ public sealed class OperatorViewModelSortTests : IDisposable
         Assert.Equal(["save", "save", "reset"], operations);
         Assert.Empty(savedOrder);
         Assert.Equal([first, second, third], _vm.MediaItems);
-        Assert.True(_vm.ResetManualOrderCommand.CanExecute(null));
+        Assert.True(_settings.ResetManualOrderCommand.CanExecute(null));
 
         _vm.MoveMediaItem(third, first);
         await laterSaveCompleted.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
@@ -567,7 +577,7 @@ public sealed class OperatorViewModelSortTests : IDisposable
         _vm.QueueExternalDrop(MakeDrop(0, first, "2.jpg"));
         var oldRefresh = _vm.SnapshotExternalDrops();
 
-        await _vm.ResetManualOrderCommand.ExecuteAsync(null);
+        await _settings.ResetManualOrderCommand.ExecuteAsync(null);
         _vm.ApplyExternalDrops(oldRefresh);
 
         Assert.Equal([first, second], _vm.MediaItems);
@@ -586,18 +596,18 @@ public sealed class OperatorViewModelSortTests : IDisposable
         _vm.MediaItems.Add(second);
         _vm.MediaItems.Add(first);
 
-        await _vm.ResetManualOrderCommand.ExecuteAsync(null);
+        await _settings.ResetManualOrderCommand.ExecuteAsync(null);
 
         Assert.Equal([second, first], _vm.MediaItems);
         Assert.True(_vm.IsManualSortMode);
-        Assert.True(_vm.ResetManualOrderCommand.CanExecute(null));
+        Assert.True(_settings.ResetManualOrderCommand.CanExecute(null));
     }
 
     [Fact]
     public async Task ResetManualOrder_IsDisabledInAutoMode()
     {
-        Assert.False(_vm.ResetManualOrderCommand.CanExecute(null));
-        await _vm.ResetManualOrderCommand.ExecuteAsync(null);
+        Assert.False(_settings.ResetManualOrderCommand.CanExecute(null));
+        await _settings.ResetManualOrderCommand.ExecuteAsync(null);
         _dbMock.VerifyNoOtherCalls();
     }
 
@@ -614,7 +624,7 @@ public sealed class OperatorViewModelSortTests : IDisposable
                 Assert.True(releaseReset.Wait(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken));
             });
 
-        var reset = _vm.ResetManualOrderCommand.ExecuteAsync(null);
+        var reset = _settings.ResetManualOrderCommand.ExecuteAsync(null);
         var first = MakeItem("1.jpg");
         var second = MakeItem("2.jpg");
         try

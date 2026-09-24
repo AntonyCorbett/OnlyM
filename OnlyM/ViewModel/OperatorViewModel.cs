@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -138,6 +138,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         WeakReferenceMessenger.Default.Register<SubtitleFileMessage>(this, OnSubtitleFileActivity);
         WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, OnThemeChanged);
         WeakReferenceMessenger.Default.Register<ExternalDropCompletedMessage>(this, OnExternalDropCompleted);
+        WeakReferenceMessenger.Default.Register<ResetManualOrderMessage>(this, (recipient, message) =>
+            message.Reply(((OperatorViewModel)recipient).ResetManualOrderAsync()));
 
         MediaItems.CollectionChanged += (_, _) =>
         {
@@ -181,8 +183,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; private set; } = null!;
 
-    public AsyncRelayCommand ResetManualOrderCommand { get; private set; } = null!;
-
     public bool IsManualSortMode => _optionsService.SortMode == MediaSortMode.Manual;
 
     public void MoveMediaItem(MediaItem sourceItem, MediaItem targetItem)
@@ -222,6 +222,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public void Dispose()
     {
+        WeakReferenceMessenger.Default.Unregister<ResetManualOrderMessage>(this);
         _metaDataCancellationTokenSource.Dispose();
     }
 
@@ -312,7 +313,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private void HandleSortModeChangedEvent(object? sender, EventArgs e)
     {
-        ResetManualOrderCommand.NotifyCanExecuteChanged();
         _ = Application.Current.Dispatcher.BeginInvoke(new Action(LoadMediaItems));
     }
 
@@ -668,18 +668,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         NextSlideCommand = new RelayCommand<Guid?>(GotoNextSlide);
 
         EnterStartOffsetEditModeCommand = new RelayCommand<Guid?>(EnterStartOffsetEditMode);
-
-        ResetManualOrderCommand = new AsyncRelayCommand(ResetManualOrderAsync, CanResetManualOrder);
     }
-
-    private bool CanResetManualOrder() => IsManualSortMode && !string.IsNullOrWhiteSpace(_optionsService.MediaFolder);
-
-    private bool IsResettingCurrentManualOrder() => _manualOrderResetScope != null &&
-        string.Equals(_manualOrderResetScope, _optionsService.MediaFolder.Trim(), StringComparison.OrdinalIgnoreCase);
 
     private async Task ResetManualOrderAsync()
     {
-        if (!CanResetManualOrder())
+        if (!IsManualSortMode || string.IsNullOrWhiteSpace(_optionsService.MediaFolder) || _manualOrderResetScope != null)
         {
             return;
         }
@@ -712,6 +705,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             _manualOrderResetScope = null;
         }
     }
+
+    private bool IsResettingCurrentManualOrder() => _manualOrderResetScope != null &&
+        string.Equals(_manualOrderResetScope, _optionsService.MediaFolder.Trim(), StringComparison.OrdinalIgnoreCase);
 
     // Exceptions handled
     private async void EnterStartOffsetEditMode(Guid? mediaItemId)
@@ -1126,7 +1122,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private void HandleMediaFolderChangedEvent(object? sender, EventArgs e)
     {
         _pendingLoadMediaItems = true;
-        ResetManualOrderCommand.NotifyCanExecuteChanged();
     }
 
     private void HandleRenderingMethodChangedEvent(object? sender, EventArgs e) =>
