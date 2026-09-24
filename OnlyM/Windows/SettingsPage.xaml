@@ -335,20 +335,37 @@
                     IsChecked="{Binding ShowCommandPanel, Mode=TwoWay}"
                     Style="{StaticResource SettingsCheckBoxStyle}" />
 
-                <StackPanel Margin="0,4,0,2" Orientation="Horizontal">
-                    <TextBlock Margin="0,0,14,0" VerticalAlignment="Center" Text="Sort mode:" />
-                    <RadioButton
-                        Content="Auto"
-                        GroupName="MediaSortMode"
-                        IsChecked="{Binding IsAutoSortMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource SettingsRadioButtonStyle}" />
-                    <RadioButton
-                        Margin="12,5,0,5"
-                        Content="Manual"
-                        GroupName="MediaSortMode"
-                        IsChecked="{Binding IsManualSortMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource SettingsRadioButtonStyle}" />
-                </StackPanel>
+               
+                <Border BorderThickness="1" 
+                        Margin="0,10,0,0"
+                        CornerRadius="4" 
+                        Padding="10,10" BorderBrush="LightGray">
+                    <StackPanel Orientation="Vertical">
+                            <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}">Sort mode</TextBlock>
+                    <StackPanel Margin="0,4,0,2" Orientation="Horizontal">
+                        <RadioButton
+                            Content="Auto"
+                            GroupName="MediaSortMode"
+                            IsChecked="{Binding IsAutoSortMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource SettingsRadioButtonStyle}" />
+                        <RadioButton
+                            Margin="12,5,0,5"
+                            Content="Manual"
+                            GroupName="MediaSortMode"
+                            IsChecked="{Binding IsManualSortMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource SettingsRadioButtonStyle}" />
+                    </StackPanel>
+
+                        <Button
+                            Margin="0,10,0,0"
+                            Command="{Binding PurgeThumbnailCacheCommand}"
+                            Content="RESET MANUAL ORDER"
+                            Style="{StaticResource SettingsButtonStyle}" />
+                        </StackPanel>
+
+                    </Border>
+
+
 
                 <TextBox
                     materialDesign:HintAssist.Hint="{x:Static resx:Resources.MAX_ITEMS}"
