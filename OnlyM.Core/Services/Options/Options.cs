@@ -156,6 +156,8 @@ public sealed class Options
 
     public MediaSortMode SortMode { get; set; }
 
+    public bool ShowSortModeToggleButton { get; set; }
+
     /// <summary>
     /// Validates the data, correcting automatically as required
     /// </summary>

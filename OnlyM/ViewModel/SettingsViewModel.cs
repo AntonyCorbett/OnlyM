@@ -494,6 +494,19 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
+    public bool ShowSortModeToggleButton
+    {
+        get => _optionsService.ShowSortModeToggleButton;
+        set
+        {
+            if (_optionsService.ShowSortModeToggleButton != value)
+            {
+                _optionsService.ShowSortModeToggleButton = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public bool IsAutoSortMode
     {
         get => _optionsService.SortMode == MediaSortMode.Auto;

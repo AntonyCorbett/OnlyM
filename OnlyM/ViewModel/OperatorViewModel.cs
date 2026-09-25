@@ -66,6 +66,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private int _thumbnailColWidth = 180;
     private Task _pendingOrderPersistTask = Task.CompletedTask;
     private string? _manualOrderResetScope;
+    private DispatcherTimer? _sortModeTimer;
 
     public OperatorViewModel(
         IMediaProviderService mediaProviderService,
@@ -116,6 +117,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.MaxItemCountChangedEvent += HandleMaxItemCountChangedEvent;
         _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
         _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
+        _optionsService.ShowSortModeToggleButtonChangedEvent += HandleShowSortModeToggleButtonChangedEvent;
         _optionsService.PermanentBackdropChangedEvent += async (_, _) => await HandlePermanentBackdropChangedEvent();
         _optionsService.IncludeBlankScreenItemChangedEvent += async (_, _) => await HandleIncludeBlankScreenItemChangedEvent();
 
@@ -183,7 +185,22 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; private set; } = null!;
 
-    public bool IsManualSortMode => _optionsService.SortMode == MediaSortMode.Manual;
+    public bool ShowSortModeToggleButton => _optionsService.ShowSortModeToggleButton;
+
+    public bool IsManualSortMode
+    {
+        get => _optionsService.SortMode == MediaSortMode.Manual;
+        set
+        {
+            if (value != IsManualSortMode)
+            {
+                _optionsService.SortMode = value ? MediaSortMode.Manual : MediaSortMode.Auto;
+                _snackbarService.EnqueueReplacingCurrent(value
+                    ? Properties.Resources.SORT_MODE_MANUAL_MESSAGE
+                    : Properties.Resources.SORT_MODE_AUTO_MESSAGE);
+            }
+        }
+    }
 
     public void MoveMediaItem(MediaItem sourceItem, MediaItem targetItem)
     {
@@ -222,6 +239,14 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public void Dispose()
     {
+        _optionsService.SortModeChangedEvent -= HandleSortModeChangedEvent;
+        _optionsService.ShowSortModeToggleButtonChangedEvent -= HandleShowSortModeToggleButtonChangedEvent;
+        if (_sortModeTimer != null)
+        {
+            _sortModeTimer.Stop();
+            _sortModeTimer.Tick -= HandleSortModeTimerTick;
+        }
+
         WeakReferenceMessenger.Default.Unregister<ResetManualOrderMessage>(this);
         _metaDataCancellationTokenSource.Dispose();
     }
@@ -311,9 +336,44 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private void HandleOperatingDateChangedEvent(object? sender, EventArgs e) =>
         _pendingLoadMediaItems = true;
 
+    private void HandleShowSortModeToggleButtonChangedEvent(object? sender, EventArgs e) =>
+        OnPropertyChanged(nameof(ShowSortModeToggleButton));
+
     private void HandleSortModeChangedEvent(object? sender, EventArgs e)
     {
-        _ = Application.Current.Dispatcher.BeginInvoke(new Action(LoadMediaItems));
+        OnPropertyChanged(nameof(IsManualSortMode));
+        if (_sortModeTimer == null)
+        {
+            // The action toggle flips for 200 ms. Allow it to finish before
+            // collection changes and layout work, and coalesce rapid toggles.
+            _sortModeTimer = new DispatcherTimer(DispatcherPriority.Background)
+            {
+                Interval = TimeSpan.FromMilliseconds(250),
+            };
+            _sortModeTimer.Tick += HandleSortModeTimerTick;
+        }
+
+        _sortModeTimer.Stop();
+        _sortModeTimer.Start();
+    }
+
+    private void HandleSortModeTimerTick(object? sender, EventArgs e)
+    {
+        _sortModeTimer?.Stop();
+        try
+        {
+            // Changing sort mode only changes order; it does not require a
+            // folder scan or reinitialization of the media items.
+            using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
+            {
+                SortMediaItems();
+            }
+        }
+        catch (Exception ex)
+        {
+            EventTracker.Error(ex, "Sorting media items");
+            Log.Logger.Error(ex, "Error sorting media items");
+        }
     }
 
     private void HandleUnhideAllEvent(object? sender, EventArgs e)

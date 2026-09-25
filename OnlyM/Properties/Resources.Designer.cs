@@ -1007,6 +1007,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show toggle button.
+        /// </summary>
+        public static string SHOW_SORT_MODE_TOGGLE_BUTTON {
+            get {
+                return ResourceManager.GetString("SHOW_SORT_MODE_TOGGLE_BUTTON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjust start time.
         /// </summary>
         public static string SHOW_START_OFFSET_DLG {
@@ -1052,11 +1061,47 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to sorted alphabetically.
+        /// </summary>
+        public static string SORT_MODE_AUTO_MESSAGE {
+            get {
+                return ResourceManager.GetString("SORT_MODE_AUTO_MESSAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort mode - currently auto.
+        /// </summary>
+        public static string SORT_MODE_AUTO_TOOLTIP {
+            get {
+                return ResourceManager.GetString("SORT_MODE_AUTO_TOOLTIP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Manual.
         /// </summary>
         public static string SORT_MODE_MANUAL {
             get {
                 return ResourceManager.GetString("SORT_MODE_MANUAL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to drag and drop to sort.
+        /// </summary>
+        public static string SORT_MODE_MANUAL_MESSAGE {
+            get {
+                return ResourceManager.GetString("SORT_MODE_MANUAL_MESSAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort mode - currently manual.
+        /// </summary>
+        public static string SORT_MODE_MANUAL_TOOLTIP {
+            get {
+                return ResourceManager.GetString("SORT_MODE_MANUAL_TOOLTIP", resourceCulture);
             }
         }
         

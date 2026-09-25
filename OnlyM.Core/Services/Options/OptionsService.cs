@@ -95,6 +95,8 @@ public sealed class OptionsService : IOptionsService
 
     public event EventHandler? SortModeChangedEvent;
 
+    public event EventHandler? ShowSortModeToggleButtonChangedEvent;
+
     public bool ShouldPurgeBrowserCacheOnStartup
     {
         get => _options.Value.ShouldPurgeBrowserCacheOnStartup;
@@ -373,6 +375,19 @@ public sealed class OptionsService : IOptionsService
             {
                 _options.Value.SortMode = value;
                 SortModeChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public bool ShowSortModeToggleButton
+    {
+        get => _options.Value.ShowSortModeToggleButton;
+        set
+        {
+            if (_options.Value.ShowSortModeToggleButton != value)
+            {
+                _options.Value.ShowSortModeToggleButton = value;
+                ShowSortModeToggleButtonChangedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }

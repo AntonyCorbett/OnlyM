@@ -21,5 +21,7 @@ public interface ISnackbarService
 
     void Enqueue(object content);
 
+    void EnqueueReplacingCurrent(object content);
+
     void EnqueueWithOk(object content, string okText);
 }

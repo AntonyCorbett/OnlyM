@@ -1,7 +1,3 @@
-The drag operation is no good when the snackbar is showing.
-
-Add a sort-mode toggle button to the operator page.
-
 Add keyboard support for moving media items in manual-sort mode (u, down, first, last)
 
 Support drag-and-drop of external files into the media list when in manual-sort mode, with the same insertion indicator as for internal items, and with multiple items ordered accordingly

@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Windows.Threading;
 using Moq;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.Database;
@@ -26,6 +28,7 @@ public sealed class OperatorViewModelSortTests : IDisposable
     // ── Mocks ──────────────────────────────────────────────────────────────
     private readonly Mock<IDatabaseService> _dbMock = new();
     private readonly Mock<IOptionsService> _optionsMock = new();
+    private readonly Mock<ISnackbarService> _snackbarMock = new();
 
     // Backing field so SortMode getter returns whatever was last set.
     private MediaSortMode _currentSortMode = MediaSortMode.Auto;
@@ -41,6 +44,12 @@ public sealed class OperatorViewModelSortTests : IDisposable
     {
         // ── IOptionsService setup ──────────────────────────────────────────
         _optionsMock.SetupGet(x => x.SortMode).Returns(() => _currentSortMode);
+        _optionsMock.SetupSet(x => x.SortMode = It.IsAny<MediaSortMode>())
+            .Callback<MediaSortMode>(mode =>
+            {
+                _currentSortMode = mode;
+                _optionsMock.Raise(x => x.SortModeChangedEvent += null, EventArgs.Empty);
+            });
         _optionsMock.Setup(x => x.MediaFolder).Returns(_mediaFolder);
         _optionsMock.Setup(x => x.IncludeBlankScreenItem).Returns(false);
         _optionsMock.Setup(x => x.PermanentBackdrop).Returns(true);
@@ -65,7 +74,7 @@ public sealed class OperatorViewModelSortTests : IDisposable
             new Mock<IActiveMediaItemsService>().Object,
             new Mock<IFrozenVideosService>().Object,
             new Mock<IPdfOptionsService>().Object,
-            new Mock<ISnackbarService>().Object,
+            _snackbarMock.Object,
             new Mock<IDialogService>().Object);
 
         _optionsMock.SetupGet(x => x.RecentlyUsedMediaFolders).Returns([]);
@@ -79,6 +88,117 @@ public sealed class OperatorViewModelSortTests : IDisposable
     }
 
     public void Dispose() => _vm.Dispose();
+
+    [Theory]
+    [InlineData(true, "drag and drop to sort")]
+    [InlineData(false, "sorted alphabetically")]
+    public void OperatorSortToggle_UpdatesSettingsAndShowsMessage(bool manual, string message)
+    {
+        _currentSortMode = manual ? MediaSortMode.Auto : MediaSortMode.Manual;
+        var notifications = new List<string?>();
+        _settings.PropertyChanged += (_, e) => notifications.Add(e.PropertyName);
+
+        _vm.IsManualSortMode = manual;
+
+        Assert.Equal(manual, _settings.IsManualSortMode);
+        Assert.Equal(!manual, _settings.IsAutoSortMode);
+        Assert.Contains(nameof(SettingsViewModel.IsManualSortMode), notifications);
+        Assert.Contains(nameof(SettingsViewModel.IsAutoSortMode), notifications);
+        _snackbarMock.Verify(x => x.EnqueueReplacingCurrent(message), Times.Once);
+        _vm.IsManualSortMode = manual;
+        _snackbarMock.Verify(x => x.EnqueueReplacingCurrent(It.IsAny<object>()), Times.Once);
+    }
+
+    [Fact]
+    public void RapidSortToggles_ReplaceSnackbarOnEveryChange()
+    {
+        var messages = new List<object>();
+        _snackbarMock.Setup(x => x.EnqueueReplacingCurrent(It.IsAny<object>()))
+            .Callback<object>(messages.Add);
+
+        _vm.IsManualSortMode = true;
+        _vm.IsManualSortMode = false;
+        _vm.IsManualSortMode = true;
+
+        Assert.Equal(new object[]
+        {
+            "drag and drop to sort",
+            "sorted alphabetically",
+            "drag and drop to sort",
+        }, messages);
+        _snackbarMock.Verify(x => x.Enqueue(It.IsAny<object>()), Times.Never);
+    }
+
+    [Fact]
+    public void SettingsSortSelection_NotifiesOperatorWithoutSnackbar()
+    {
+        var notifications = new List<string?>();
+        _vm.PropertyChanged += (_, e) => notifications.Add(e.PropertyName);
+
+        _settings.IsManualSortMode = true;
+
+        Assert.True(_vm.IsManualSortMode);
+        Assert.Contains(nameof(OperatorViewModel.IsManualSortMode), notifications);
+        notifications.Clear();
+
+        _settings.IsAutoSortMode = true;
+
+        Assert.False(_vm.IsManualSortMode);
+        Assert.Contains(nameof(OperatorViewModel.IsManualSortMode), notifications);
+        _snackbarMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task SortModeChanges_AllowAnimationThenApplyLatestModeOnce()
+    {
+        var completed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var thread = new Thread(() =>
+        {
+            try
+            {
+                using var fixture = new OperatorViewModelSortTests();
+                var first = fixture.MakeItem("1.jpg");
+                var second = fixture.MakeItem("2.jpg");
+                fixture._vm.MediaItems.Add(first);
+                fixture._vm.MediaItems.Add(second);
+                fixture._dbMock.Setup(x => x.GetMediaOrderItemKeys(fixture._mediaFolder))
+                    .Returns(["2.jpg", "1.jpg"]);
+                var frame = new DispatcherFrame();
+                var timeout = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+                timeout.Tick += (_, _) => frame.Continue = false;
+                var elapsed = Stopwatch.StartNew();
+                fixture._vm.MediaItems.CollectionChanged += (_, _) => frame.Continue = false;
+
+                fixture._vm.IsManualSortMode = true;
+                fixture._vm.IsManualSortMode = false;
+                fixture._vm.IsManualSortMode = true;
+
+                Assert.Equal([first, second], fixture._vm.MediaItems);
+                fixture._dbMock.Verify(x => x.GetMediaOrderItemKeys(It.IsAny<string>()), Times.Never);
+                timeout.Start();
+                try
+                {
+                    Dispatcher.PushFrame(frame);
+                }
+                finally
+                {
+                    timeout.Stop();
+                }
+
+                Assert.True(elapsed.Elapsed >= TimeSpan.FromMilliseconds(200));
+                Assert.Equal([second, first], fixture._vm.MediaItems);
+                fixture._dbMock.Verify(x => x.GetMediaOrderItemKeys(fixture._mediaFolder), Times.Once);
+                completed.SetResult();
+            }
+            catch (Exception ex)
+            {
+                completed.SetException(ex);
+            }
+        }) { IsBackground = true };
+        thread.SetApartmentState(ApartmentState.STA);
+        thread.Start();
+        await completed.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+    }
 
     // ── Helpers ────────────────────────────────────────────────────────────
 

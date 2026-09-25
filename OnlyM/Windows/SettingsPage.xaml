@@ -358,6 +358,11 @@
                                     Style="{StaticResource SettingsRadioButtonStyle}" />
                             </StackPanel>
 
+                            <CheckBox
+                                Content="{x:Static resx:Resources.SHOW_SORT_MODE_TOGGLE_BUTTON}"
+                                IsChecked="{Binding ShowSortModeToggleButton, Mode=TwoWay}"
+                                Style="{StaticResource SettingsCheckBoxStyle}" />
+
                             <Button
                                 Margin="0,10,0,0"
                                 Command="{Binding ResetManualOrderCommand, Mode=OneWay}"

@@ -62,6 +62,8 @@ public interface IOptionsService
 
     event EventHandler SortModeChangedEvent;
 
+    event EventHandler ShowSortModeToggleButtonChangedEvent;
+
     bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 
     int MetaDataParallelism { get; set; }
@@ -155,6 +157,8 @@ public interface IOptionsService
     DarkModeOption DarkModeOption { get; set; }
 
     MediaSortMode SortMode { get; set; }
+
+    bool ShowSortModeToggleButton { get; set; }
 
     void SetCommandLineMediaFolder(string folder);
 

@@ -27,6 +27,12 @@ public sealed class SnackbarService : ISnackbarService, IDisposable
 
     public void Enqueue(object content) => TheSnackbarMessageQueue.Enqueue(content);
 
+    public void EnqueueReplacingCurrent(object content)
+    {
+        ((SnackbarMessageQueue)TheSnackbarMessageQueue).Clear();
+        TheSnackbarMessageQueue.Enqueue(content, neverConsiderToBeDuplicate: true);
+    }
+
     public void EnqueueWithOk(object content, string okText) => TheSnackbarMessageQueue.Enqueue(content, okText, () => { });
 
     public void Dispose() => ((SnackbarMessageQueue)TheSnackbarMessageQueue)?.Dispose();

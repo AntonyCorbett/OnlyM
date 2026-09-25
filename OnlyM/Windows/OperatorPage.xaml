@@ -16,13 +16,13 @@
     DataContext="{Binding Operator, Mode=OneWay, Source={StaticResource Locator}}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     Loaded="OnLoaded"
-    Unloaded="OnUnloaded"
     SizeChanged="OnlyMOperatorPage_SizeChanged"
     TextElement.FontSize="18"
     TextElement.FontWeight="Regular"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
+    Unloaded="OnUnloaded"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -219,7 +219,7 @@
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
-                                    
+
                                     <Ellipse
                                         Width="33"
                                         Height="33"
@@ -500,6 +500,39 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <ToggleButton
+            Grid.Row="0"
+            Width="32"
+            Height="32"
+            Margin="8,6,0,2"
+            HorizontalAlignment="Left"
+            AutomationProperties.Name="{x:Static resx:Resources.SORT_MODE}"
+            IsChecked="{Binding IsManualSortMode, Mode=TwoWay}"
+            Visibility="{Binding ShowSortModeToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ToggleButton.Style>
+                <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                    <Setter Property="ToolTip" Value="{x:Static resx:Resources.SORT_MODE_AUTO_TOOLTIP}" />
+                    <Style.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="ToolTip" Value="{x:Static resx:Resources.SORT_MODE_MANUAL_TOOLTIP}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ToggleButton.Style>
+            <ToggleButton.Content>
+                <materialDesign:PackIcon
+                    Width="24"
+                    Height="24"
+                    Kind="SortAlphabeticalAscending" />
+            </ToggleButton.Content>
+            <materialDesign:ToggleButtonAssist.OnContent>
+                <materialDesign:PackIcon
+                    Width="24"
+                    Height="24"
+                    Kind="Drag" />
+            </materialDesign:ToggleButtonAssist.OnContent>
+        </ToggleButton>
+
         <!--  Media item count badge - shown once the list is non-empty; highlighted when the configured maximum is reached  -->
         <!--  Right margin (22) = scrollbar width (18, see MainWindow's ScrollBar style) + card margin (4) so the badge's right edge lines up with the cards' right edge  -->
         <Border
@@ -507,6 +540,7 @@
             Margin="0,6,22,2"
             Padding="8,1"
             HorizontalAlignment="Right"
+            VerticalAlignment="Center"
             Background="{DynamicResource MaterialDesignDivider}"
             CornerRadius="8"
             Visibility="{Binding Path=IsMediaItemCountVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -550,10 +584,12 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                <!--  Background="Transparent" makes the whole item hit-testable, including the
-                                margin around the card content - without it, that margin band is invisible to hit
-                                testing (nothing is painted there), so the pointer briefly "misses" the item during
-                                a drag whenever it lands in that band, flickering the insertion line and cursor.  -->
+                                <!--
+                                    Background="Transparent" makes the whole item hit-testable, including the
+                                    margin around the card content - without it, that margin band is invisible to hit
+                                    testing (nothing is painted there), so the pointer briefly "misses" the item during
+                                    a drag whenever it lands in that band, flickering the insertion line and cursor.
+                                -->
                                 <Border Background="Transparent">
                                     <ContentPresenter />
                                 </Border>
