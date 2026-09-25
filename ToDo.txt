@@ -1,6 +1,8 @@
 The drag operation is no good when the snackbar is showing.
 
- - A visible Manual-mode indicator and drag handle with a short tooltip.
-  - Move up/down and move to beginning/end commands for keyboard access and long lists.
-  - Drop placement based on the pointer’s position above/below a card, with the same insertion indicator for external files.
+Add a sort-mode toggle button to the operator page.
+
+Add keyboard support for moving media items in manual-sort mode (u, down, first, last)
+
+Support drag-and-drop of external files into the media list when in manual-sort mode, with the same insertion indicator as for internal items, and with multiple items ordered accordingly
 
