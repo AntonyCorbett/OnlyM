@@ -28,6 +28,7 @@ public partial class OperatorPage
     private MediaItem? _dragStartItem;
     private bool _dragStartOnInteractiveControl;
     private bool _isMediaItemDragInProgress;
+    private bool _isExternalFileDragInProgress;
     private MediaItem? _draggedItem;
     private DispatcherTimer? _autoScrollTimer;
     private ScrollViewer? _mediaListScrollViewer;
@@ -226,7 +227,20 @@ public partial class OperatorPage
             return;
         }
 
-        HideInsertionAdornerLine();
+        if (DataContext is OperatorViewModel { IsManualSortMode: true } &&
+            e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            _isExternalFileDragInProgress = true;
+            StartAutoScroll();
+            UpdateExternalInsertionAdorner(e.GetPosition(OperatorMediaList));
+        }
+        else
+        {
+            StopAutoScroll();
+            HideInsertionAdornerLine();
+        }
+
+        // Leave external drag effects and acceptance to the page's file-drop handler.
         e.Effects = DragDropEffects.None;
     }
 
@@ -237,12 +251,18 @@ public partial class OperatorPage
         // DragEnter/DragOver will update it for the next child.
         if (!new Rect(OperatorMediaList.RenderSize).Contains(e.GetPosition(OperatorMediaList)))
         {
+            if (_isExternalFileDragInProgress)
+            {
+                StopAutoScroll();
+            }
+
             HideInsertionAdornerLine();
         }
     }
 
     private void OperatorMediaList_Drop(object sender, DragEventArgs e)
     {
+        StopAutoScroll();
         HideInsertionAdornerLine();
 
         var vm = DataContext as OperatorViewModel;
@@ -287,11 +307,61 @@ public partial class OperatorPage
             targetIndex = vm.MediaItems.Count;
         }
 
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            var target = GetExternalDropTarget(e.GetPosition(OperatorMediaList));
+            targetIndex = target.Item == null ? vm.MediaItems.Count : vm.MediaItems.IndexOf(target.Item);
+            if (target.Item != null && target.IsAfter)
+            {
+                ++targetIndex;
+            }
+
+            // The copy operation anchors insertion before the next item; null appends.
+            targetItem = targetIndex >= 0 && targetIndex < vm.MediaItems.Count
+                ? vm.MediaItems[targetIndex]
+                : null;
+        }
+
         var dragAndDropService = Ioc.Default.GetService<IDragAndDropService>();
         if (dragAndDropService != null)
         {
             e.Handled = true;
             dragAndDropService.Drop(e.Data, targetIndex, targetItem?.FilePath);
+        }
+    }
+
+    private (MediaItem? Item, bool IsAfter) GetExternalDropTarget(Point position)
+    {
+        var hit = VisualTreeHelper.HitTest(OperatorMediaList, position)?.VisualHit;
+        var item = GetMediaItemFromOriginalSource(hit);
+        if (item == null)
+        {
+            return (OperatorMediaList.Items.Count > 0
+                ? OperatorMediaList.Items[OperatorMediaList.Items.Count - 1] as MediaItem
+                : null, true);
+        }
+
+        var isAfter = item.IsBlankScreen;
+        if (OperatorMediaList.ItemContainerGenerator.ContainerFromItem(item) is UIElement container)
+        {
+            var bounds = container.TransformToAncestor(OperatorMediaList)
+                .TransformBounds(new Rect(container.RenderSize));
+            isAfter |= position.Y >= bounds.Top + (bounds.Height / 2);
+        }
+
+        return (item, isAfter);
+    }
+
+    private void UpdateExternalInsertionAdorner(Point position)
+    {
+        var target = GetExternalDropTarget(position);
+        if (target.Item != null)
+        {
+            UpdateInsertionAdorner(target.Item, target.IsAfter);
+        }
+        else
+        {
+            HideInsertionAdornerLine();
         }
     }
 
@@ -316,6 +386,11 @@ public partial class OperatorPage
             return;
         }
 
+        UpdateInsertionAdorner(targetItem, sourceIndex < targetIndex);
+    }
+
+    private void UpdateInsertionAdorner(MediaItem targetItem, bool isAfter)
+    {
         if (OperatorMediaList.ItemContainerGenerator.ContainerFromItem(targetItem) is not UIElement targetContainer)
         {
             HideInsertionAdornerLine();
@@ -342,7 +417,6 @@ public partial class OperatorPage
             .TransformToAncestor(OperatorMediaList)
             .TransformBounds(new Rect(card.RenderSize));
         bounds = new Rect(cardBounds.Left, bounds.Top, cardBounds.Width, bounds.Height);
-        var isAfter = sourceIndex < targetIndex;
 
         EnsureInsertionAdorner();
         _insertionAdorner?.Show(bounds, isAfter);
@@ -395,6 +469,7 @@ public partial class OperatorPage
 
     private void StopAutoScroll()
     {
+        _isExternalFileDragInProgress = false;
         if (_autoScrollTimer != null)
         {
             _autoScrollTimer.Stop();
@@ -405,7 +480,7 @@ public partial class OperatorPage
 
     private void AutoScrollTimerTick(object? sender, EventArgs e)
     {
-        if (!_isMediaItemDragInProgress || _mediaListScrollViewer == null)
+        if ((!_isMediaItemDragInProgress && !_isExternalFileDragInProgress) || _mediaListScrollViewer == null)
         {
             return;
         }
@@ -418,6 +493,18 @@ public partial class OperatorPage
 
         var cursorScreenPos = System.Windows.Forms.Cursor.Position;
         var cursorPos = OperatorMediaList.PointFromScreen(new Point(cursorScreenPos.X, cursorScreenPos.Y));
+        if (_isExternalFileDragInProgress)
+        {
+            if (!new Rect(OperatorMediaList.RenderSize).Contains(cursorPos))
+            {
+                StopAutoScroll();
+                HideInsertionAdornerLine();
+                return;
+            }
+
+            UpdateExternalInsertionAdorner(cursorPos);
+        }
+
         if (cursorPos.X < 0 || cursorPos.X > OperatorMediaList.ActualWidth)
         {
             return;
