@@ -8,7 +8,7 @@ A Windows Media player using C# and WPF. Designed for media playback. The emphas
 
 * Windows 10 or greater
 * 8GB RAM
-* 250MB Hard disk space
+* 500MB Hard disk space
 
 ### Download
 
@@ -21,16 +21,6 @@ See the [wiki](https://github.com/AntonyCorbett/OnlyM/wiki) for basic instructio
 ### Discussions
 
 Use the [Discussions](https://github.com/AntonyCorbett/OnlyM/discussions) area to ask for help, etc. Please limit discussions to those of a technical nature.
-
-### Contributors
-
-* Robert Koernke ([@robertkjr3d](https://github.com/robertkjr3d)) - manual sorting of media items (drag-and-drop reordering)
-
-* https://github.com/drothmaler Reworked the Fixed Window Size Implementation.
-
-* https://github.com/TizianoNoto Setup configuration.
-
-* Many volunteers on the Crowdin translation platform.
 
 ### License, etc
 
