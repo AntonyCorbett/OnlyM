@@ -2,8 +2,5 @@ The drag operation is no good when the snackbar is showing.
 
  - A visible Manual-mode indicator and drag handle with a short tooltip.
   - Move up/down and move to beginning/end commands for keyboard access and long lists.
-  - Drop placement based on the pointer’s position above/below a card, with the same insertion indicator for external
-    files. Currently internal placement depends on the direction of travel, and empty space below the list is not an
-    internal drop target.
+  - Drop placement based on the pointer’s position above/below a card, with the same insertion indicator for external files.
 
-  - Localized resources for the new hard-coded settings labels.
