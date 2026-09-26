@@ -665,4 +665,19 @@
   <data name="RESET_MANUAL_ORDER" xml:space="preserve">
     <value>RESET MANUAL ORDER</value>
   </data>
+  <data name="SORT_MODE_AUTO_MESSAGE" xml:space="preserve">
+    <value>sorted alphabetically</value>
+  </data>
+  <data name="SORT_MODE_MANUAL_MESSAGE" xml:space="preserve">
+    <value>drag and drop to sort</value>
+  </data>
+  <data name="SORT_MODE_AUTO_TOOLTIP" xml:space="preserve">
+    <value>Sort mode - currently auto</value>
+  </data>
+  <data name="SORT_MODE_MANUAL_TOOLTIP" xml:space="preserve">
+    <value>Sort mode - currently manual</value>
+  </data>
+  <data name="SHOW_SORT_MODE_TOGGLE_BUTTON" xml:space="preserve">
+    <value>Show toggle button</value>
+  </data>
 </root>
