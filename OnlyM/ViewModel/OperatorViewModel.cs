@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -54,7 +54,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private readonly MetaDataQueueProducer _metaDataProducer = new();
     private readonly CancellationTokenSource _metaDataCancellationTokenSource = new();
-    private readonly object _orderPersistLock = new();
+    private readonly Lock _orderPersistLock = new();
     private readonly List<ExternalDropCompletedMessage> _pendingExternalDrops = [];
 
     private MetaDataQueueConsumer? _metaDataConsumer;
@@ -1640,7 +1640,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         }
     }
 
-    private static List<string> MergeManualOrder(IReadOnlyList<string> storedOrder, IReadOnlyList<string> currentOrder)
+    private static List<string> MergeManualOrder(IReadOnlyList<string> storedOrder, List<string> currentOrder)
     {
         var currentKeys = new HashSet<string>(currentOrder, StringComparer.OrdinalIgnoreCase);
         var remainingKeys = new Queue<string>(currentOrder);

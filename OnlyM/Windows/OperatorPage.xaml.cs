@@ -84,8 +84,10 @@ public partial class OperatorPage
     {
         _mediaListScrollViewer = FindDescendant<ScrollViewer>(OperatorMediaList);
 
-        var vm = (OperatorViewModel?)DataContext;
-        vm?.TriggerStartupLoad();
+        if (DataContext is OperatorViewModel vm)
+        {
+            vm.TriggerStartupLoad();
+        }
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -93,11 +95,8 @@ public partial class OperatorPage
         StopAutoScroll();
         RemoveInsertionAdorner();
 
-        if (_draggedItem != null)
-        {
-            _draggedItem.IsBeingDragged = false;
-            _draggedItem = null;
-        }
+        _draggedItem?.IsBeingDragged = false;
+        _draggedItem = null;
     }
 
     private void MirrorCheckBoxChecked(object? sender, RoutedEventArgs e) =>
@@ -189,11 +188,7 @@ public partial class OperatorPage
             StopAutoScroll();
             RemoveInsertionAdorner();
 
-            if (_draggedItem != null)
-            {
-                _draggedItem.IsBeingDragged = false;
-            }
-
+            _draggedItem?.IsBeingDragged = false;
             _draggedItem = null;
             _dragStartItem = null;
             _dragStartOnInteractiveControl = false;
@@ -206,11 +201,10 @@ public partial class OperatorPage
         // cannot route an internal move to the page's external file-drop handler.
         if (e.Data.GetDataPresent(typeof(MediaItem)))
         {
-            var sourceItem = e.Data.GetData(typeof(MediaItem)) as MediaItem;
             var targetItem = GetMediaItemUnderPointer(e);
 
             if (DataContext is not OperatorViewModel { IsManualSortMode: true } ||
-                sourceItem == null || sourceItem.IsBlankScreen ||
+                e.Data.GetData(typeof(MediaItem)) is not MediaItem sourceItem || sourceItem.IsBlankScreen ||
                 targetItem == null || targetItem.IsBlankScreen ||
                 sourceItem == targetItem ||
                 !OperatorMediaList.Items.Contains(sourceItem) || !OperatorMediaList.Items.Contains(targetItem))
@@ -265,8 +259,7 @@ public partial class OperatorPage
         StopAutoScroll();
         HideInsertionAdornerLine();
 
-        var vm = DataContext as OperatorViewModel;
-        if (vm == null)
+        if (DataContext is not OperatorViewModel vm)
         {
             return;
         }
@@ -276,10 +269,7 @@ public partial class OperatorPage
         if (e.Data.GetDataPresent(typeof(MediaItem)))
         {
             e.Handled = true;
-
-            var sourceItem = e.Data.GetData(typeof(MediaItem)) as MediaItem;
-
-            if (sourceItem == null || sourceItem.IsBlankScreen)
+            if (e.Data.GetData(typeof(MediaItem)) is not MediaItem sourceItem || sourceItem.IsBlankScreen)
             {
                 return;
             }
@@ -309,9 +299,9 @@ public partial class OperatorPage
 
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
-            var target = GetExternalDropTarget(e.GetPosition(OperatorMediaList));
-            targetIndex = target.Item == null ? vm.MediaItems.Count : vm.MediaItems.IndexOf(target.Item);
-            if (target.Item != null && target.IsAfter)
+            var (item, isAfter) = GetExternalDropTarget(e.GetPosition(OperatorMediaList));
+            targetIndex = item == null ? vm.MediaItems.Count : vm.MediaItems.IndexOf(item);
+            if (item != null && isAfter)
             {
                 ++targetIndex;
             }
@@ -322,8 +312,7 @@ public partial class OperatorPage
                 : null;
         }
 
-        var dragAndDropService = Ioc.Default.GetService<IDragAndDropService>();
-        if (dragAndDropService != null)
+        if (Ioc.Default.GetService<IDragAndDropService>() is IDragAndDropService dragAndDropService)
         {
             e.Handled = true;
             dragAndDropService.Drop(e.Data, targetIndex, targetItem?.FilePath);
@@ -336,8 +325,8 @@ public partial class OperatorPage
         var item = GetMediaItemFromOriginalSource(hit);
         if (item == null)
         {
-            return (OperatorMediaList.Items.Count > 0
-                ? OperatorMediaList.Items[OperatorMediaList.Items.Count - 1] as MediaItem
+            return (OperatorMediaList.Items.Count > 0 && OperatorMediaList.Items[^1] is MediaItem last
+                ? last
                 : null, true);
         }
 
@@ -354,10 +343,10 @@ public partial class OperatorPage
 
     private void UpdateExternalInsertionAdorner(Point position)
     {
-        var target = GetExternalDropTarget(position);
-        if (target.Item != null)
+        var (item, isAfter) = GetExternalDropTarget(position);
+        if (item != null)
         {
-            UpdateInsertionAdorner(target.Item, target.IsAfter);
+            UpdateInsertionAdorner(item, isAfter);
         }
         else
         {

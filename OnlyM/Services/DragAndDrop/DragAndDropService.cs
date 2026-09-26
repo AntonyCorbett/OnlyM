@@ -93,9 +93,8 @@ internal sealed class DragAndDropService : IDragAndDropService
             var copiedFiles = new List<string>();
             try
             {
-                bool someError;
                 var count = copyFiles
-                    ? InternalCopyMediaFiles(data, mediaFolder, copiedFiles, out someError)
+                    ? InternalCopyMediaFiles(data, mediaFolder, copiedFiles, out var someError)
                     : copyImage
                         ? InternalCopyImageData(data, mediaFolder, copiedFiles, out someError)
                         : InternalCopyUris(data, mediaFolder, copiedFiles, out someError);

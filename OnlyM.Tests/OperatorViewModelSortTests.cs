@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows.Threading;
 using Moq;
 using OnlyM.Core.Models;
@@ -194,7 +194,11 @@ public sealed class OperatorViewModelSortTests : IDisposable
             {
                 completed.SetException(ex);
             }
-        }) { IsBackground = true };
+        })
+        {
+            IsBackground = true,
+        };
+
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
         await completed.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
@@ -285,10 +289,10 @@ public sealed class OperatorViewModelSortTests : IDisposable
 
         _vm.MoveMediaItem(item2, item1);
 
-        var savedOrder = await persisted.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+        var (s, strings) = await persisted.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
 
-        Assert.Equal(_mediaFolder, savedOrder.ScopeKey);
-        Assert.Equal(["second.jpg", "first.jpg"], savedOrder.ItemKeys);
+        Assert.Equal(_mediaFolder, s);
+        Assert.Equal(["second.jpg", "first.jpg"], strings);
     }
 
     [Fact]

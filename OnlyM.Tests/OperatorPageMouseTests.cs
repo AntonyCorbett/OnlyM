@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using OnlyM.Models;
@@ -64,7 +64,11 @@ public sealed class OperatorPageMouseTests
             {
                 completed.SetException(ex);
             }
-        }) { IsBackground = true };
+        })
+        {
+            IsBackground = true,
+        };
+
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
         await completed.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
