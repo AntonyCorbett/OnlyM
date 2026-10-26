@@ -84,7 +84,8 @@ public sealed class OperatorViewModelSortTests : IDisposable
             _optionsMock.Object,
             new Mock<IActiveMediaItemsService>().Object,
             new Mock<IThumbnailService>().Object,
-            new Mock<ISnackbarService>().Object);
+            new Mock<ISnackbarService>().Object,
+            new Mock<OnlyM.Services.RemoteControl.IRemoteControlService>().Object);
     }
 
     public void Dispose() => _vm.Dispose();

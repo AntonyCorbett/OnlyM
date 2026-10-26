@@ -16,6 +16,7 @@ internal sealed class AudioManager : IDisposable
     private WaveOutEvent? _outputDevice;
     private AudioFileReader? _audioFileReader;
     private bool _manuallySettingPlaybackPosition;
+    private float _volume = 1.0f;
 
     public AudioManager()
     {
@@ -25,6 +26,22 @@ internal sealed class AudioManager : IDisposable
     public event EventHandler<MediaEventArgs>? MediaChangeEvent;
 
     public event EventHandler<OnlyMPositionChangedEventArgs>? MediaPositionChangedEvent;
+
+    /// <summary>
+    /// Gets or sets the volume (0.0 - 1.0). Applies immediately to any playing audio.
+    /// </summary>
+    public float Volume
+    {
+        get => _volume;
+        set
+        {
+            _volume = Math.Clamp(value, 0f, 1f);
+            if (_audioFileReader != null)
+            {
+                _audioFileReader.Volume = _volume;
+            }
+        }
+    }
 
     public bool IsPaused => _outputDevice?.PlaybackState == PlaybackState.Paused;
 
@@ -53,7 +70,7 @@ internal sealed class AudioManager : IDisposable
         {
             _audioFileReader = new AudioFileReader(mediaItemFilePath)
             {
-                Volume = 1.0f // can be increased!
+                Volume = _volume,
             };
 
             _outputDevice.Init(_audioFileReader);

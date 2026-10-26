@@ -763,6 +763,103 @@
                 </StackPanel>
             </GroupBox>
 
+            <GroupBox Header="{x:Static resx:Resources.SECTION_REMOTE_CONTROL}" Style="{StaticResource SettingsGroupBoxStyle}">
+                <StackPanel Orientation="Vertical">
+
+                    <CheckBox
+                        Content="{x:Static resx:Resources.REMOTE_CONTROL_ENABLED}"
+                        IsChecked="{Binding RemoteControlEnabled, Mode=TwoWay}"
+                        Style="{StaticResource SettingsCheckBoxStyle}" />
+
+                    <ComboBox
+                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.REMOTE_CONTROL_MODE}"
+                        materialDesign:HintAssist.IsFloating="True"
+                        DisplayMemberPath="Name"
+                        IsEnabled="{Binding RemoteControlModeEnabled, Mode=OneWay}"
+                        ItemsSource="{Binding RemoteControlModes}"
+                        SelectedValue="{Binding RemoteControlMode, Mode=TwoWay}"
+                        SelectedValuePath="Mode"
+                        Style="{StaticResource SettingsComboBoxStyle}" />
+
+                    <TextBox
+                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.REMOTE_CONTROL_PORT}"
+                        Style="{StaticResource SettingsTextBoxStyle}"
+                        Text="{Binding RemoteControlPort, Mode=TwoWay}" />
+
+                    <TextBlock
+                        Style="{StaticResource MiscNotesStyle}"
+                        Text="{x:Static resx:Resources.RESTART_REMOTE_CONTROL}"
+                        TextWrapping="Wrap" />
+
+                    <TextBlock
+                        Margin="0,10,0,0"
+                        Style="{StaticResource MiscNotesStyle}"
+                        Text="{Binding RemoteControlStatus, Mode=OneWay}"
+                        TextWrapping="Wrap" />
+
+                    <TextBlock
+                        Style="{StaticResource MiscNotesStyle}"
+                        Text="{Binding CloudflaredPathText, Mode=OneWay}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding CloudflaredPathVisibility, Mode=OneWay}" />
+
+                    <ProgressBar
+                        Width="390"
+                        Margin="0,6,0,0"
+                        HorizontalAlignment="Left"
+                        IsIndeterminate="True"
+                        Visibility="{Binding RemoteControlProgressVisibility, Mode=OneWay}" />
+
+                    <Button
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Left"
+                        Command="{Binding RetryTunnelCommand}"
+                        Content="{x:Static resx:Resources.REMOTE_CONTROL_RETRY}"
+                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Visibility="{Binding RetryTunnelVisibility, Mode=OneWay}" />
+
+                    <Button
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Left"
+                        Command="{Binding CreateFirewallExceptionCommand}"
+                        Content="Create firewall exception"
+                        ToolTip="Creates a Windows Firewall rule and a URL reservation for the current port so other devices on your network can connect, then restarts the remote. You will be asked for administrator permission once. If you change the port later, run this again (the old port's rule and reservation are removed)."
+                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}" />
+
+                    <Button
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Left"
+                        Command="{Binding InstallCloudflaredCommand}"
+                        Content="{Binding InstallCloudflaredButtonText, Mode=OneWay}"
+                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Visibility="{Binding InstallCloudflaredVisibility, Mode=OneWay}" />
+
+                    <TextBox
+                        BorderThickness="0"
+                        FontWeight="Bold"
+                        IsReadOnly="True"
+                        Background="Transparent"
+                        TextWrapping="Wrap"
+                        Text="{Binding RemoteControlActiveUrl, Mode=OneWay}" />
+
+                    <Image
+                        Width="180"
+                        Height="180"
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Left"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        Source="{Binding RemoteControlQrCode, Mode=OneWay}" />
+
+                    <TextBox
+                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.REMOTE_CONTROL_PIN}"
+                        MaxLength="4"
+                        Style="{StaticResource SettingsTextBoxStyle}"
+                        Text="{Binding RemoteControlPin, Mode=TwoWay, ValidatesOnExceptions=True}" />
+
+                </StackPanel>
+            </GroupBox>
+
         </WrapPanel>
     </ScrollViewer>
 

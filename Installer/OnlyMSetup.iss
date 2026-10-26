@@ -48,6 +48,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "..\OnlyM\bin\Release\net10.0-windows\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 
+
 ; web shortcuts...
 Source: "..\UrlLinkFiles\JW Broadcasting.url"; DestDir: "{commonappdata}\OnlyM\Websites"
 Source: "..\UrlLinkFiles\JW.org website.url"; DestDir: "{commonappdata}\OnlyM\Websites"

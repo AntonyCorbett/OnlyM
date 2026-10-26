@@ -21,6 +21,7 @@ using OnlyM.PubSubMessages;
 using OnlyM.Services;
 using OnlyM.Services.MediaChanging;
 using OnlyM.Services.Pages;
+using OnlyM.Services.RemoteControl;
 using Serilog.Events;
 
 using Size = System.Windows.Size;
@@ -55,6 +56,18 @@ internal sealed class SettingsViewModel : ObservableObject
     private readonly MagnifierShapeItem[] _magnifierShapes;
     private readonly MagnifierSizeItem[] _magnifierSizes;
     private readonly AppModeItem[] _appModes;
+    private readonly IRemoteControlService _remoteControlService;
+    private readonly RemoteControlModeItem[] _remoteControlModes =
+    [
+        new(RemoteControlMode.Local, Properties.Resources.REMOTE_CONTROL_MODE_LOCAL),
+        new(RemoteControlMode.Cloudflare, Properties.Resources.REMOTE_CONTROL_MODE_CLOUDFLARE),
+    ];
+
+    private bool _installingCloudflared;
+    private bool _cloudflaredInstallFailed;
+    private string? _qrCodeUrl;
+    private System.Windows.Media.Imaging.BitmapImage? _remoteControlQrCode;
+    private int? _previousRemoteControlPort;
 
     public SettingsViewModel(
         IPageService pageService,
@@ -62,14 +75,19 @@ internal sealed class SettingsViewModel : ObservableObject
         IOptionsService optionsService,
         IActiveMediaItemsService activeMediaItemsService,
         IThumbnailService thumbnailService,
-        ISnackbarService snackbarService)
+        ISnackbarService snackbarService,
+        IRemoteControlService remoteControlService)
     {
+        _remoteControlService = remoteControlService;
+        _remoteControlService.StateChanged += HandleRemoteControlStateChanged;
         _pageService = pageService;
         _monitorsService = monitorsService;
         _optionsService = optionsService;
         _thumbnailService = thumbnailService;
         _activeMediaItemsService = activeMediaItemsService;
         _snackbarService = snackbarService;
+        _optionsService.RemoteControlPinChangedEvent += (_, _) =>
+            System.Windows.Application.Current?.Dispatcher.BeginInvoke(() => OnPropertyChanged(nameof(RemoteControlPin)));
 
         _recentlyUsedMediaFolders = new RecentlyUsedFolders();
         InitRecentlyUsedFolders();
@@ -106,6 +124,72 @@ internal sealed class SettingsViewModel : ObservableObject
     public RelayCommand PurgeWebCacheCommand { get; private set; } = null!;
 
     public AsyncRelayCommand ResetManualOrderCommand { get; private set; } = null!;
+
+    public AsyncRelayCommand InstallCloudflaredCommand { get; private set; } = null!;
+
+    public AsyncRelayCommand CreateFirewallExceptionCommand { get; private set; } = null!;
+
+    public System.Windows.Visibility CreateFirewallExceptionVisibility =>
+        _optionsService.RemoteControlEnabled &&
+        _optionsService.RemoteControlMode == RemoteControlMode.Local
+            ? System.Windows.Visibility.Visible
+            : System.Windows.Visibility.Collapsed;
+
+    public System.Windows.Visibility InstallCloudflaredVisibility =>
+        _optionsService.RemoteControlEnabled &&
+        _optionsService.RemoteControlMode == RemoteControlMode.Cloudflare &&
+        (_installingCloudflared || CloudflareTunnel.LocateCloudflared() == null)
+            ? System.Windows.Visibility.Visible
+            : System.Windows.Visibility.Collapsed;
+
+    public RelayCommand RetryTunnelCommand { get; private set; } = null!;
+
+    /// <summary>
+    /// Gets a value indicating whether cloudflared is being installed or the tunnel is starting.
+    /// </summary>
+    public bool IsRemoteControlBusy =>
+        _installingCloudflared ||
+        (_optionsService.RemoteControlEnabled &&
+         _optionsService.RemoteControlMode == RemoteControlMode.Cloudflare &&
+         _remoteControlService.TunnelState is TunnelState.Starting or TunnelState.WaitingForUrl);
+
+    public System.Windows.Visibility RemoteControlProgressVisibility =>
+        IsRemoteControlBusy ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+
+    public bool RemoteControlModeEnabled => _optionsService.RemoteControlEnabled && !IsRemoteControlBusy;
+
+    public System.Windows.Visibility RetryTunnelVisibility =>
+        _optionsService.RemoteControlEnabled &&
+        _optionsService.RemoteControlMode == RemoteControlMode.Cloudflare &&
+        !_installingCloudflared &&
+        _remoteControlService.TunnelState == TunnelState.Failed &&
+        CloudflareTunnel.LocateCloudflared() != null
+            ? System.Windows.Visibility.Visible
+            : System.Windows.Visibility.Collapsed;
+
+    /// <summary>
+    /// Gets "Using cloudflared: path" in Cloudflare mode when cloudflared is found, otherwise null.
+    /// </summary>
+    public string? CloudflaredPathText
+    {
+        get
+        {
+            if (!_optionsService.RemoteControlEnabled || _optionsService.RemoteControlMode != RemoteControlMode.Cloudflare)
+            {
+                return null;
+            }
+
+            var path = CloudflareTunnel.LocateCloudflared();
+            return path == null ? null : string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_USING_CLOUDFLARED, path);
+        }
+    }
+
+    public System.Windows.Visibility CloudflaredPathVisibility =>
+        CloudflaredPathText == null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+
+    public string InstallCloudflaredButtonText => _cloudflaredInstallFailed
+        ? Properties.Resources.REMOTE_CONTROL_RETRY
+        : Properties.Resources.REMOTE_CONTROL_INSTALL_CLOUDFLARED;
 
     public RelayCommand OpenMediaFolderCommand { get; private set; } = null!;
 
@@ -146,6 +230,212 @@ internal sealed class SettingsViewModel : ObservableObject
             {
                 _optionsService.MaxItemCount = count;
                 OnPropertyChanged();
+            }
+        }
+    }
+
+    public string RemoteControlPort
+    {
+        get => _optionsService.RemoteControlPort.ToString(CultureInfo.InvariantCulture);
+        set
+        {
+            if (int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var port) &&
+                port is >= 1 and <= 65535 &&
+                port != _optionsService.RemoteControlPort)
+            {
+                _previousRemoteControlPort ??= _optionsService.RemoteControlPort;
+                _optionsService.RemoteControlPort = port;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(RemoteControlAddresses));
+                RaiseRemoteControlStateChanged();
+            }
+        }
+    }
+
+    public bool RemoteControlEnabled
+    {
+        get => _optionsService.RemoteControlEnabled;
+        set
+        {
+            if (_optionsService.RemoteControlEnabled != value)
+            {
+                _optionsService.RemoteControlEnabled = value; // service applies the change live
+                OnPropertyChanged();
+                RaiseRemoteControlStateChanged();
+            }
+        }
+    }
+
+    public IEnumerable<RemoteControlModeItem> RemoteControlModes => _remoteControlModes;
+
+    /// <summary>
+    /// Gets or sets the remote control PIN: 4 digits, or empty for none (a PIN is generated automatically in Cloudflare mode).
+    /// </summary>
+    public string RemoteControlPin
+    {
+        get => _optionsService.RemoteControlPin ?? string.Empty;
+        set
+        {
+            value = value?.Trim() ?? string.Empty;
+            if (value.Length > 0 && !Options.IsValidRemoteControlPin(value))
+            {
+                throw new ArgumentException(Properties.Resources.REMOTE_CONTROL_PIN_INVALID);
+            }
+
+            if (value.Length == 0 &&
+                _optionsService.RemoteControlEnabled &&
+                _optionsService.RemoteControlMode == RemoteControlMode.Cloudflare)
+            {
+                throw new ArgumentException(Properties.Resources.REMOTE_CONTROL_PIN_INVALID);
+            }
+
+            if (value != RemoteControlPin)
+            {
+                _optionsService.RemoteControlPin = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public RemoteControlMode RemoteControlMode
+    {
+        get => _optionsService.RemoteControlMode;
+        set
+        {
+            if (_optionsService.RemoteControlMode != value)
+            {
+                _optionsService.RemoteControlMode = value; // service applies the change live
+                OnPropertyChanged();
+                RaiseRemoteControlStateChanged();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the URL a phone should open: the Cloudflare URL in Cloudflare mode (once known), otherwise the first LAN address.
+    /// </summary>
+    public string? RemoteControlActiveUrl
+    {
+        get
+        {
+            if (!_optionsService.RemoteControlEnabled)
+            {
+                return null;
+            }
+
+            if (_optionsService.RemoteControlMode == RemoteControlMode.Cloudflare)
+            {
+                return _remoteControlService.TunnelUrl;
+            }
+
+            if (_remoteControlService.IsLocalhostOnly)
+            {
+                // a LAN address would not work, so do not advertise one (or a QR code)
+                return null;
+            }
+
+            var first = RemoteControlAddresses.Split(Environment.NewLine).FirstOrDefault();
+            return first is null or "-" ? null : first;
+        }
+    }
+
+    public string RemoteControlStatus
+    {
+        get
+        {
+            if (!_optionsService.RemoteControlEnabled)
+            {
+                return Properties.Resources.REMOTE_CONTROL_STATUS_OFF;
+            }
+
+            if (_optionsService.RemoteControlMode == RemoteControlMode.Cloudflare)
+            {
+                if (_installingCloudflared)
+                {
+                    return Properties.Resources.REMOTE_CONTROL_INSTALLING_CLOUDFLARED;
+                }
+
+                if (_cloudflaredInstallFailed && _remoteControlService.TunnelError == CloudflareTunnel.NotFoundMessage)
+                {
+                    return Properties.Resources.REMOTE_CONTROL_INSTALL_CLOUDFLARED_FAILED;
+                }
+
+                switch (_remoteControlService.TunnelState)
+                {
+                    case TunnelState.Starting:
+                        return Properties.Resources.REMOTE_CONTROL_STATUS_TUNNEL_STARTING;
+                    case TunnelState.WaitingForUrl:
+                        return Properties.Resources.REMOTE_CONTROL_TUNNEL_WAITING_URL;
+                    case TunnelState.Connected:
+                        return string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_TUNNEL_CONNECTED, _remoteControlService.TunnelUrl);
+                    case TunnelState.Failed:
+                        return _remoteControlService.TunnelError ?? Properties.Resources.REMOTE_CONTROL_STATUS_NOT_RUNNING;
+                    default:
+                        if (_remoteControlService.TunnelError != null)
+                        {
+                            return _remoteControlService.TunnelError;
+                        }
+
+                        if (_remoteControlService.TunnelUrl == null)
+                        {
+                            return Properties.Resources.REMOTE_CONTROL_STATUS_TUNNEL_STARTING;
+                        }
+
+                        break;
+                }
+            }
+
+            if (_remoteControlService.IsLocalhostOnly)
+            {
+                return $"Localhost only - other devices can't connect (http://localhost:{_optionsService.RemoteControlPort}/). Click 'Create firewall exception' to allow network access.";
+            }
+
+            return _remoteControlService.IsRunning
+                ? Properties.Resources.REMOTE_CONTROL_ADDRESS
+                : Properties.Resources.REMOTE_CONTROL_STATUS_NOT_RUNNING;
+        }
+    }
+
+    public System.Windows.Media.Imaging.BitmapImage? RemoteControlQrCode
+    {
+        get
+        {
+            var url = RemoteControlActiveUrl;
+            if (url != _qrCodeUrl)
+            {
+                _qrCodeUrl = url;
+                _remoteControlQrCode = url == null ? null : CreateQrCode(url);
+            }
+
+            return _remoteControlQrCode;
+        }
+    }
+
+    public string RemoteControlAddresses
+    {
+        get
+        {
+            try
+            {
+                var port = _optionsService.RemoteControlPort;
+                var addresses = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()
+                    .Where(n => n.OperationalStatus == System.Net.NetworkInformation.OperationalStatus.Up &&
+                                n.NetworkInterfaceType != System.Net.NetworkInformation.NetworkInterfaceType.Loopback)
+                    .Select(n => n.GetIPProperties())
+                    .Where(p => p.GatewayAddresses.Count > 0)
+                    .SelectMany(p => p.UnicastAddresses)
+                    .Select(a => a.Address)
+                    .Where(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork &&
+                                !a.ToString().StartsWith("169.254.", StringComparison.Ordinal))
+                    .Select(a => $"http://{a}:{port}/")
+                    .Distinct()
+                    .ToList();
+
+                return addresses.Count > 0 ? string.Join(Environment.NewLine, addresses) : "-";
+            }
+            catch (System.Net.NetworkInformation.NetworkInformationException)
+            {
+                return "-";
             }
         }
     }
@@ -1214,8 +1504,173 @@ internal sealed class SettingsViewModel : ObservableObject
         ? WeakReferenceMessenger.Default.Send(new ResetManualOrderMessage()).Response
         : Task.CompletedTask;
 
+    private static System.Windows.Media.Imaging.BitmapImage? CreateQrCode(string url)
+    {
+        try
+        {
+            var png = QRCoder.PngByteQRCodeHelper.GetQRCode(url, QRCoder.QRCodeGenerator.ECCLevel.M, 10);
+            var image = new System.Windows.Media.Imaging.BitmapImage();
+            using var stream = new MemoryStream(png);
+            image.BeginInit();
+            image.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+            image.StreamSource = stream;
+            image.EndInit();
+            image.Freeze();
+            return image;
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Logger.Error(ex, "Could not create QR code for {Url}", url);
+            return null;
+        }
+    }
+
+    private void HandleRemoteControlStateChanged(object? sender, EventArgs e)
+        => System.Windows.Application.Current?.Dispatcher.BeginInvoke(RaiseRemoteControlStateChanged);
+
+    private void RaiseRemoteControlStateChanged()
+    {
+        OnPropertyChanged(nameof(RemoteControlStatus));
+        OnPropertyChanged(nameof(InstallCloudflaredVisibility));
+        OnPropertyChanged(nameof(CreateFirewallExceptionVisibility));
+        OnPropertyChanged(nameof(RemoteControlActiveUrl));
+        OnPropertyChanged(nameof(RemoteControlQrCode));
+        OnPropertyChanged(nameof(IsRemoteControlBusy));
+        OnPropertyChanged(nameof(RemoteControlProgressVisibility));
+        OnPropertyChanged(nameof(RemoteControlModeEnabled));
+        OnPropertyChanged(nameof(RetryTunnelVisibility));
+        OnPropertyChanged(nameof(InstallCloudflaredButtonText));
+        OnPropertyChanged(nameof(CloudflaredPathText));
+        OnPropertyChanged(nameof(CloudflaredPathVisibility));
+    }
+
+    private async Task InstallCloudflaredAsync()
+    {
+        _installingCloudflared = true;
+        _cloudflaredInstallFailed = false;
+        InstallCloudflaredCommand.NotifyCanExecuteChanged();
+        RaiseRemoteControlStateChanged();
+
+        try
+        {
+            var script = Path.Combine(AppContext.BaseDirectory, "InstallCloudflared.ps1");
+            var appDir = CloudflareTunnel.UserInstallDir;
+            Directory.CreateDirectory(appDir);
+            Serilog.Log.Logger.Information("Installing cloudflared (user scope) using {Script} into {Dir}", script, appDir);
+
+            var psi = new System.Diagnostics.ProcessStartInfo("powershell.exe")
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+            };
+            foreach (var arg in new[] { "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script, "-AppDir", appDir, "-Scope", "user" })
+            {
+                psi.ArgumentList.Add(arg);
+            }
+
+            using var process = System.Diagnostics.Process.Start(psi)
+                ?? throw new InvalidOperationException("Could not start powershell.exe");
+            await process.WaitForExitAsync();
+            Serilog.Log.Logger.Information("cloudflared install script exited with code {Code}", process.ExitCode);
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Logger.Error(ex, "cloudflared install failed");
+        }
+        finally
+        {
+            _installingCloudflared = false;
+            InstallCloudflaredCommand.NotifyCanExecuteChanged();
+        }
+
+        var path = CloudflareTunnel.LocateCloudflared();
+        if (path != null)
+        {
+            // starts the tunnel (with progress) now that cloudflared exists
+            Serilog.Log.Logger.Information("cloudflared installed at {Path}; starting tunnel", path);
+            _remoteControlService.RetryTunnel();
+        }
+        else
+        {
+            _cloudflaredInstallFailed = true;
+            Serilog.Log.Logger.Error("cloudflared still not found after install; see %TEMP%\\OnlyM-cloudflared-install.log");
+        }
+
+        RaiseRemoteControlStateChanged();
+    }
+
+    private async Task CreateFirewallExceptionAsync()
+    {
+        var port = _optionsService.RemoteControlPort;
+        var oldPort = _previousRemoteControlPort is { } p && p != port ? p : (int?)null;
+
+        try
+        {
+            Serilog.Log.Logger.Information("Creating firewall exception and URL reservation for port {Port} (removing old port {OldPort})", port, oldPort);
+
+            // One elevated cmd (one UAC prompt): delete existing rule/reservation first so repeated clicks
+            // do not create duplicates, remove those of a previous port, then add the rule and the reservation.
+            // sddl=D:(A;;GX;;;WD) is "Everyone" in a language-neutral form.
+            var steps = new List<string>();
+            if (oldPort != null)
+            {
+                steps.AddRange(DeleteRemoteControlAccessCommands(oldPort.Value));
+            }
+
+            steps.AddRange(DeleteRemoteControlAccessCommands(port));
+            var add = $"netsh advfirewall firewall add rule name=\"{FirewallRuleName(port)}\" dir=in action=allow protocol=TCP localport={port} profile=private && " +
+                      $"netsh http add urlacl url=http://+:{port}/ sddl=\"D:(A;;GX;;;WD)\"";
+
+            var psi = new System.Diagnostics.ProcessStartInfo("cmd.exe")
+            {
+                UseShellExecute = true,
+                Verb = "runas",
+                Arguments = $"/s /c \"{string.Join(" & ", steps)} & {add}\"",
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+            };
+
+            using var process = System.Diagnostics.Process.Start(psi)
+                ?? throw new InvalidOperationException("Could not start elevated netsh");
+
+            await process.WaitForExitAsync();
+
+            if (process.ExitCode == 0)
+            {
+                _previousRemoteControlPort = null;
+                Serilog.Log.Logger.Information("Firewall exception and URL reservation created for port {Port}; restarting listener", port);
+                _remoteControlService.Restart();
+                RaiseRemoteControlStateChanged();
+                _snackbarService.EnqueueReplacingCurrent(_remoteControlService.IsLocalhostOnly
+                    ? $"Firewall exception created for port {port}, but the remote is still localhost only. See the log for details."
+                    : $"Network access enabled for port {port}.");
+            }
+            else
+            {
+                _snackbarService.EnqueueReplacingCurrent("Could not create the firewall exception. Make sure you approve the administrator prompt.");
+                Serilog.Log.Logger.Warning("netsh firewall rule exited with code {Code}", process.ExitCode);
+            }
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Logger.Error(ex, "Failed to create firewall exception");
+            _snackbarService.EnqueueReplacingCurrent("Could not create the firewall exception. Make sure you approve the administrator prompt, or create the rule manually.");
+        }
+    }
+
+    private static string FirewallRuleName(int port) => $"OnlyM Remote Control (port {port})";
+
+    private static IEnumerable<string> DeleteRemoteControlAccessCommands(int port)
+    {
+        yield return $"netsh advfirewall firewall delete rule name=\"{FirewallRuleName(port)}\" >nul 2>&1";
+        yield return $"netsh http delete urlacl url=http://+:{port}/ >nul 2>&1";
+    }
+
     private void InitCommands()
     {
+        InstallCloudflaredCommand = new AsyncRelayCommand(InstallCloudflaredAsync, () => !_installingCloudflared);
+        CreateFirewallExceptionCommand = new AsyncRelayCommand(CreateFirewallExceptionAsync);
+        RetryTunnelCommand = new RelayCommand(() => System.Threading.Tasks.Task.Run(_remoteControlService.RetryTunnel));
         ResetManualOrderCommand = new AsyncRelayCommand(ResetManualOrderAsync, CanResetManualOrder);
         PurgeThumbnailCacheCommand = new RelayCommand(PurgeThumbnailCache);
         PurgeWebCacheCommand = new RelayCommand(PurgeWebCache);

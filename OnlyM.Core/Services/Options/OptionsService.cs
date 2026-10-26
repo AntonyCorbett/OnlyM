@@ -85,6 +85,12 @@ public sealed class OptionsService : IOptionsService
 
     public event EventHandler? ShowFreezeCommandChangedEvent;
 
+    public event EventHandler? VolumeChangedEvent;
+
+    public event EventHandler? RemoteControlChangedEvent;
+
+    public event EventHandler? RemoteControlPinChangedEvent;
+
     public event EventHandler? ShowMediaItemCountBadgeChangedEvent;
 
     public event EventHandler? MagnifierChangedEvent;
@@ -107,6 +113,71 @@ public sealed class OptionsService : IOptionsService
     {
         get => _options.Value.MetaDataParallelism;
         set => _options.Value.MetaDataParallelism = value;
+    }
+
+    public int RemoteControlPort
+    {
+        get => _options.Value.RemoteControlPort;
+        set => _options.Value.RemoteControlPort = value;
+    }
+
+    public bool RemoteControlEnabled
+    {
+        get => _options.Value.RemoteControlEnabled;
+        set
+        {
+            if (_options.Value.RemoteControlEnabled != value)
+            {
+                _options.Value.RemoteControlEnabled = value;
+                RemoteControlChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public RemoteControlMode RemoteControlMode
+    {
+        get => _options.Value.RemoteControlMode;
+        set
+        {
+            if (_options.Value.RemoteControlMode != value)
+            {
+                _options.Value.RemoteControlMode = value;
+                RemoteControlChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public string? RemoteControlPin
+    {
+        get => _options.Value.RemoteControlPin;
+        set
+        {
+            var pin = string.IsNullOrEmpty(value) ? null : value;
+            if (pin != null && !Options.IsValidRemoteControlPin(pin))
+            {
+                return;
+            }
+
+            if (_options.Value.RemoteControlPin != pin)
+            {
+                _options.Value.RemoteControlPin = pin;
+                RemoteControlPinChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public int Volume
+    {
+        get => _options.Value.Volume;
+        set
+        {
+            var volume = Math.Clamp(value, 0, 100);
+            if (_options.Value.Volume != volume)
+            {
+                _options.Value.Volume = volume;
+                VolumeChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
     }
 
     public string? AppWindowPlacement

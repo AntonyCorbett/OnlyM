@@ -32,7 +32,7 @@ internal sealed class MediaElementMediaFoundation : IMediaElement
         _audioPlayer = new Lazy<MediaPlayer>(MediaPlayerFactory);
 
         _mediaElement = mediaElement;
-        _mediaElement.Volume = 1.0; // max = 1.0
+        _mediaElement.Volume = optionsService.Volume / 100.0; // max = 1.0
 
         _mediaElement.ScrubbingEnabled = optionsService.AllowVideoScrubbing;
 
@@ -201,11 +201,24 @@ internal sealed class MediaElementMediaFoundation : IMediaElement
     private void TimerFire(object? sender, EventArgs e) =>
         PositionChanged?.Invoke(this, new OnlyMPositionChangedEventArgs(MediaItemId, Position));
 
+    public double Volume
+    {
+        get => _mediaElement.Volume;
+        set
+        {
+            _mediaElement.Volume = value;
+            if (_audioPlayer.IsValueCreated)
+            {
+                _audioPlayer.Value.Volume = value;
+            }
+        }
+    }
+
     private MediaPlayer MediaPlayerFactory()
     {
         var result = new MediaPlayer
         {
-            Volume = 1.0,
+            Volume = _optionsService.Volume / 100.0,
             ScrubbingEnabled = _optionsService.AllowVideoScrubbing,
         };
 

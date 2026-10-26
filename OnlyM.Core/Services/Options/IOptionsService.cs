@@ -52,6 +52,12 @@ public interface IOptionsService
 
     event EventHandler ShowFreezeCommandChangedEvent;
 
+    event EventHandler VolumeChangedEvent;
+
+    event EventHandler RemoteControlChangedEvent;
+
+    event EventHandler RemoteControlPinChangedEvent;
+
     event EventHandler ShowMediaItemCountBadgeChangedEvent;
 
     event EventHandler MagnifierChangedEvent;
@@ -67,6 +73,16 @@ public interface IOptionsService
     bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 
     int MetaDataParallelism { get; set; }
+
+    int RemoteControlPort { get; set; }
+
+    bool RemoteControlEnabled { get; set; }
+
+    RemoteControlMode RemoteControlMode { get; set; }
+
+    string? RemoteControlPin { get; set; }
+
+    int Volume { get; set; }
 
     string? AppWindowPlacement { get; set; }
 

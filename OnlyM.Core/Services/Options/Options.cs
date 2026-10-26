@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using Newtonsoft.Json;
 using OnlyM.Core.Models;
@@ -67,7 +68,26 @@ public sealed class Options
 
     public int MetaDataParallelism { get; set; } = 3;
 
+    public int RemoteControlPort { get; set; } = 8088;
+
+    public bool RemoteControlEnabled { get; set; }
+
+    public RemoteControlMode RemoteControlMode { get; set; } = RemoteControlMode.Local;
+
+    /// <summary>
+    /// Gets or sets the remote control PIN (exactly 4 digits, or empty for no PIN).
+    /// </summary>
+    public string? RemoteControlPin { get; set; }
+
+    /// <summary>
+    /// Gets or sets the playback volume for video and audio (0 - 100).
+    /// </summary>
+    public int Volume { get; set; } = 100;
+
     public bool ShowMediaItemCommandPanel { get; set; }
+
+    public static bool IsValidRemoteControlPin(string? pin)
+        => pin is { Length: 4 } && pin.All(char.IsAsciiDigit);
 
     public bool ShowFreezeCommand { get; set; }
 
@@ -166,6 +186,23 @@ public sealed class Options
         if (!Directory.Exists(MediaFolder))
         {
             MediaFolder = FileUtils.GetOnlyMDefaultMediaFolder();
+        }
+
+        Volume = Math.Clamp(Volume, 0, 100);
+
+        if (!string.IsNullOrEmpty(RemoteControlPin) && !IsValidRemoteControlPin(RemoteControlPin))
+        {
+            RemoteControlPin = null;
+        }
+
+        if (!System.Enum.IsDefined(RemoteControlMode))
+        {
+            RemoteControlMode = RemoteControlMode.Local;
+        }
+
+        if (RemoteControlPort is < 1 or > 65535)
+        {
+            RemoteControlPort = 8088;
         }
 
         VideoScreenPosition.Sanitize();

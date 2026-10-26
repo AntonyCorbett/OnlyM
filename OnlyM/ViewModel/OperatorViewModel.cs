@@ -118,6 +118,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
         _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
         _optionsService.ShowSortModeToggleButtonChangedEvent += HandleShowSortModeToggleButtonChangedEvent;
+        _optionsService.VolumeChangedEvent += (_, _) => OnPropertyChanged(nameof(Volume));
+        _optionsService.RemoteControlChangedEvent += (_, _) => OnPropertyChanged(nameof(RemoteControlEnabled));
         _optionsService.PermanentBackdropChangedEvent += async (_, _) => await HandlePermanentBackdropChangedEvent();
         _optionsService.IncludeBlankScreenItemChangedEvent += async (_, _) => await HandleIncludeBlankScreenItemChangedEvent();
 
@@ -184,6 +186,14 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     public RelayCommand<Guid?> NextSlideCommand { get; private set; } = null!;
 
     public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; private set; } = null!;
+
+    public int Volume
+    {
+        get => _optionsService.Volume;
+        set => _optionsService.Volume = value;
+    }
+
+    public bool RemoteControlEnabled => _optionsService.RemoteControlEnabled;
 
     public bool ShowSortModeToggleButton => _optionsService.ShowSortModeToggleButton;
 

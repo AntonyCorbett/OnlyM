@@ -572,6 +572,19 @@ public sealed partial class MediaWindow : IDisposable
         _optionsService.ImageScreenPositionChangedEvent += HandleImageScreenPositionChangedEvent;
         _optionsService.VideoScreenPositionChangedEvent += HandleVideoScreenPositionChangedEvent;
         _optionsService.WebScreenPositionChangedEvent += HandleWebScreenPositionChangedEvent;
+        _optionsService.VolumeChangedEvent += HandleVolumeChangedEvent;
+        HandleVolumeChangedEvent(this, EventArgs.Empty);
+    }
+
+    private void HandleVolumeChangedEvent(object? sender, EventArgs e)
+    {
+        var volume = _optionsService.Volume / 100.0;
+        if (_videoElement != null)
+        {
+            _videoElement.Volume = volume;
+        }
+
+        _audioManager.Volume = (float)volume;
     }
 
     private void SubscribeImageEvents()
@@ -731,6 +744,7 @@ public sealed partial class MediaWindow : IDisposable
                 throw new NotSupportedException();
         }
 
+        _videoElement.Volume = _optionsService.Volume / 100.0;
         _currentRenderingMethod = _optionsService.RenderingMethod;
 
         if (_videoDisplayManager != null)
