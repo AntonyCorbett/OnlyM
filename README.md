@@ -18,6 +18,10 @@ If you just want to install the application, please download the [OnlyMSetup.exe
 
 See the [wiki](https://github.com/AntonyCorbett/OnlyM/wiki) for basic instructions and for information on where to get further help.
 
+### Remote Control (optional)
+
+OnlyM can optionally provide a simple HTTP remote (Local LAN or Cloudflare Quick Tunnel) with a browser page, QR code, and optional PIN. See [docs/RemoteControl.md](docs/RemoteControl.md) for details. The feature is off by default.
+
 ### Discussions
 
 Use the [Discussions](https://github.com/AntonyCorbett/OnlyM/discussions) area to ask for help, etc. Please limit discussions to those of a technical nature.
