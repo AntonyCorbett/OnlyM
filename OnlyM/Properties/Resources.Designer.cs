@@ -1025,11 +1025,11 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a Windows Firewall rule and a URL reservation for the current port so other devices on your network can connect, then restarts the remote. You will be asked for administrator permission once. If you change the port later, run this again (the old port&apos;s rule and reservation are removed)..
+        ///   Looks up a localized string similar to To let other devices on your network connect, OnlyM needs a Windows Firewall exception for this port. You will be asked for administrator permission. If you change the port later, do this again..
         /// </summary>
-        public static string REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP {
+        public static string REMOTE_CONTROL_CREATE_FIREWALL_NOTE {
             get {
-                return ResourceManager.GetString("REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP", resourceCulture);
+                return ResourceManager.GetString("REMOTE_CONTROL_CREATE_FIREWALL_NOTE", resourceCulture);
             }
         }
         

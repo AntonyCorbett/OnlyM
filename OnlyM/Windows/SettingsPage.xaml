@@ -823,31 +823,6 @@
                         IsIndeterminate="True"
                         Visibility="{Binding RemoteControlProgressVisibility, Mode=OneWay}" />
 
-                    <Button
-                        Margin="0,10,0,0"
-                        HorizontalAlignment="Left"
-                        Command="{Binding RetryTunnelCommand}"
-                        Content="{x:Static resx:Resources.REMOTE_CONTROL_RETRY}"
-                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                        Visibility="{Binding RetryTunnelVisibility, Mode=OneWay}" />
-
-                    <Button
-                        Margin="0,10,0,0"
-                        HorizontalAlignment="Left"
-                        Command="{Binding CreateFirewallExceptionCommand}"
-                        Content="{x:Static resx:Resources.REMOTE_CONTROL_CREATE_FIREWALL}"
-                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                        ToolTip="{x:Static resx:Resources.REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP}"
-                        Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}" />
-
-                    <Button
-                        Margin="0,10,0,0"
-                        HorizontalAlignment="Left"
-                        Command="{Binding InstallCloudflaredCommand}"
-                        Content="{Binding InstallCloudflaredButtonText, Mode=OneWay}"
-                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                        Visibility="{Binding InstallCloudflaredVisibility, Mode=OneWay}" />
-
                     <TextBox
                         BorderThickness="0"
                         FontWeight="Bold"
@@ -864,6 +839,37 @@
                         RenderOptions.BitmapScalingMode="NearestNeighbor"
                         Source="{Binding RemoteControlQrCode, Mode=OneWay}"
                         Visibility="{Binding RemoteControlQrVisibility, Mode=OneWay}" />
+
+                    <Button
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Left"
+                        Command="{Binding RetryTunnelCommand}"
+                        Content="{x:Static resx:Resources.REMOTE_CONTROL_RETRY}"
+                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Visibility="{Binding RetryTunnelVisibility, Mode=OneWay}" />
+
+                    <TextBlock
+                        Margin="0,10,0,0"
+                        Style="{StaticResource MiscNotesStyle}"
+                        Text="{x:Static resx:Resources.REMOTE_CONTROL_CREATE_FIREWALL_NOTE}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}" />
+
+                    <Button
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Left"
+                        Command="{Binding CreateFirewallExceptionCommand}"
+                        Content="{x:Static resx:Resources.REMOTE_CONTROL_CREATE_FIREWALL}"
+                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}" />
+
+                    <Button
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Left"
+                        Command="{Binding InstallCloudflaredCommand}"
+                        Content="{Binding InstallCloudflaredButtonText, Mode=OneWay}"
+                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Visibility="{Binding InstallCloudflaredVisibility, Mode=OneWay}" />
 
                 </StackPanel>
             </GroupBox>
