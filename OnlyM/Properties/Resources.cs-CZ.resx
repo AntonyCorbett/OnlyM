@@ -770,11 +770,7 @@
   </data>
   <data name="VOLUME_PERCENT" xml:space="preserve">
     <value>Volume {0}%</value>
-    <comment>Volume tooltip at 100%; {0} is the percentage</comment>
-  </data>
-  <data name="VOLUME_PERCENT_REDUCED" xml:space="preserve">
-    <value>Volume {0}% - media will play quieter</value>
-    <comment>Volume tooltip below 100%; {0} is the percentage</comment>
+    <comment>Volume tooltip; {0} is the percentage</comment>
   </data>
   <data name="VOLUME_PERCENT_SHORT" xml:space="preserve">
     <value>{0}%</value>
@@ -816,9 +812,9 @@
     <value>CREATE FIREWALL EXCEPTION</value>
     <comment>See Settings =&gt; Remote Control (button)</comment>
   </data>
-  <data name="REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP" xml:space="preserve">
-    <value>Creates a Windows Firewall rule and a URL reservation for the current port so other devices on your network can connect, then restarts the remote. You will be asked for administrator permission once. If you change the port later, run this again (the old port's rule and reservation are removed).</value>
-    <comment>See Settings =&gt; Remote Control (tooltip of the firewall button)</comment>
+  <data name="REMOTE_CONTROL_CREATE_FIREWALL_NOTE" xml:space="preserve">
+    <value>To let other devices on your network connect, OnlyM needs a Windows Firewall exception for this port. You will be asked for administrator permission. If you change the port later, do this again.</value>
+    <comment>See Settings =&gt; Remote Control (note shown above the firewall button)</comment>
   </data>
   <data name="REMOTE_CONTROL_FIREWALL_DONE" xml:space="preserve">
     <value>Network access enabled for port {0}.</value>
@@ -834,6 +830,14 @@
   </data>
   <data name="REMOTE_CONTROL_FIREWALL_ERROR" xml:space="preserve">
     <value>Could not create the firewall exception. Make sure you approve the administrator prompt, or create the rule manually.</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_COPY_URL" xml:space="preserve">
+    <value>Copy link</value>
+    <comment>See Settings =&gt; Remote Control. Tooltip on the button that copies the remote control URL</comment>
+  </data>
+  <data name="REMOTE_CONTROL_URL_COPIED" xml:space="preserve">
+    <value>Link copied to clipboard</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_SHOW_VOLUME" xml:space="preserve">
