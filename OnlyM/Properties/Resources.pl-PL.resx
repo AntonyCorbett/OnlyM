@@ -233,7 +233,7 @@
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="SHOW_MEDIA_ITEM_COUNT_BADGE" xml:space="preserve">
-    <value>Show media item count badge</value>
+    <value>Wyświetl plakietkę z liczbą elementów multimedialnych</value>
     <comment>See Settings =&gt; Media Files</comment>
   </data>
   <data name="MEDIA_FOLDER_CMDLINE" xml:space="preserve">
@@ -241,7 +241,7 @@
     <comment>Displayed in Settings =&gt; Media Files when the media folder is set using a command-line option.</comment>
   </data>
   <data name="MEDIA_ITEM_COUNT" xml:space="preserve">
-    <value>{0} of {1}</value>
+    <value>{0} z {1}</value>
     <comment>Small badge on the Operator page showing the current number of media items and the configured maximum. Please retain the placeholders.</comment>
   </data>
   <data name="ALLOW_PAUSE" xml:space="preserve">
@@ -389,7 +389,7 @@
     <comment>Tooltip on thumbnail right margin when "Freeze" is enabled.</comment>
   </data>
   <data name="APP_MODE" xml:space="preserve">
-    <value>Mode</value>
+    <value>Tryb</value>
     <comment>See Settings =&gt; Miscellaneous. Theme mode selection.</comment>
   </data>
   <data name="APP_MODE_SYSTEM" xml:space="preserve">
@@ -397,11 +397,11 @@
     <comment>See Settings =&gt; Miscellaneous. Follow system theme.</comment>
   </data>
   <data name="APP_MODE_DARK" xml:space="preserve">
-    <value>Dark</value>
+    <value>Ciemny</value>
     <comment>See Settings =&gt; Miscellaneous. Force dark theme.</comment>
   </data>
   <data name="APP_MODE_LIGHT" xml:space="preserve">
-    <value>Light</value>
+    <value>Jasny</value>
     <comment>See Settings =&gt; Miscellaneous. Force light theme.</comment>
   </data>
   <data name="LANGUAGE" xml:space="preserve">
@@ -640,11 +640,11 @@
     <value>Mniejszy (Ctrl + Minus)</value>
   </data>
   <data name="INSTALL_HEIF_CODEC" xml:space="preserve">
-    <value>Install HEIC/HEIF Image extensions!</value>
+    <value>Zainstaluj rozszerzenia zdjęć HEIC/HEIF!</value>
     <comment>Error shown when heic/heif support is not installed</comment>
   </data>
   <data name="PRIMARY_MONITOR" xml:space="preserve">
-    <value>primary</value>
+    <value>podstawowy</value>
   </data>
   <data name="RESET_MANUAL_ORDER_ERROR" xml:space="preserve">
     <value>Could not reset the manual order. Please try again.</value>
@@ -770,11 +770,7 @@
   </data>
   <data name="VOLUME_PERCENT" xml:space="preserve">
     <value>Volume {0}%</value>
-    <comment>Volume tooltip at 100%; {0} is the percentage</comment>
-  </data>
-  <data name="VOLUME_PERCENT_REDUCED" xml:space="preserve">
-    <value>Volume {0}% - media will play quieter</value>
-    <comment>Volume tooltip below 100%; {0} is the percentage</comment>
+    <comment>Volume tooltip; {0} is the percentage</comment>
   </data>
   <data name="VOLUME_PERCENT_SHORT" xml:space="preserve">
     <value>{0}%</value>
@@ -816,9 +812,9 @@
     <value>CREATE FIREWALL EXCEPTION</value>
     <comment>See Settings =&gt; Remote Control (button)</comment>
   </data>
-  <data name="REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP" xml:space="preserve">
-    <value>Creates a Windows Firewall rule and a URL reservation for the current port so other devices on your network can connect, then restarts the remote. You will be asked for administrator permission once. If you change the port later, run this again (the old port's rule and reservation are removed).</value>
-    <comment>See Settings =&gt; Remote Control (tooltip of the firewall button)</comment>
+  <data name="REMOTE_CONTROL_CREATE_FIREWALL_NOTE" xml:space="preserve">
+    <value>To let other devices on your network connect, OnlyM needs a Windows Firewall exception for this port. You will be asked for administrator permission. If you change the port later, do this again.</value>
+    <comment>See Settings =&gt; Remote Control (note shown above the firewall button)</comment>
   </data>
   <data name="REMOTE_CONTROL_FIREWALL_DONE" xml:space="preserve">
     <value>Network access enabled for port {0}.</value>
@@ -834,6 +830,14 @@
   </data>
   <data name="REMOTE_CONTROL_FIREWALL_ERROR" xml:space="preserve">
     <value>Could not create the firewall exception. Make sure you approve the administrator prompt, or create the rule manually.</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_COPY_URL" xml:space="preserve">
+    <value>Copy link</value>
+    <comment>See Settings =&gt; Remote Control. Tooltip on the button that copies the remote control URL</comment>
+  </data>
+  <data name="REMOTE_CONTROL_URL_COPIED" xml:space="preserve">
+    <value>Link copied to clipboard</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_SHOW_VOLUME" xml:space="preserve">
