@@ -15,7 +15,7 @@ The feature is **off by default**.
 ## Local LAN mode
 
 - OnlyM listens on the port shown in Settings (default 8517, chosen because it is unassigned in the IANA registry and not used by common web servers or by OnlyT, so it rarely clashes; it is also below the Windows dynamic port range). If another program already uses the port, Settings shows "Port N is already in use, choose another port" and the remote stays off until you enter a free port.
-- The local URL and a QR code are displayed in Settings.
+- The local URL and a QR code are displayed in Settings. Click the URL to open it in a browser on this PC, or use the copy button next to it to copy it to the clipboard.
 - If Windows Firewall blocks the port, use the **Create firewall exception** button. This runs an elevated command to allow the selected port. You will be prompted for administrator permission. You can change the port first if needed.
 - Changing the port takes effect immediately (no restart of OnlyM needed): the listener (and the Cloudflare tunnel, if running) restarts on the new port when you leave the port box. Devices must then open the new URL. If you use the firewall exception, click the button again for the new port.
 

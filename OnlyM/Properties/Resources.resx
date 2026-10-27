@@ -832,6 +832,14 @@
     <value>Could not create the firewall exception. Make sure you approve the administrator prompt, or create the rule manually.</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
+  <data name="REMOTE_CONTROL_COPY_URL" xml:space="preserve">
+    <value>Copy link</value>
+    <comment>See Settings =&gt; Remote Control. Tooltip on the button that copies the remote control URL</comment>
+  </data>
+  <data name="REMOTE_CONTROL_URL_COPIED" xml:space="preserve">
+    <value>Link copied to clipboard</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
   <data name="REMOTE_CONTROL_SHOW_VOLUME" xml:space="preserve">
     <value>Allow volume control from the remote</value>
     <comment>See Settings =&gt; Remote Control</comment>

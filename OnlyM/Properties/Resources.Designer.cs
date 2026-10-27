@@ -1016,6 +1016,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy link.
+        /// </summary>
+        public static string REMOTE_CONTROL_COPY_URL {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_COPY_URL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CREATE FIREWALL EXCEPTION.
         /// </summary>
         public static string REMOTE_CONTROL_CREATE_FIREWALL {
@@ -1291,6 +1300,15 @@ namespace OnlyM.Properties {
         public static string REMOTE_CONTROL_TUNNEL_WAITING_URL {
             get {
                 return ResourceManager.GetString("REMOTE_CONTROL_TUNNEL_WAITING_URL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Link copied to clipboard.
+        /// </summary>
+        public static string REMOTE_CONTROL_URL_COPIED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_URL_COPIED", resourceCulture);
             }
         }
         

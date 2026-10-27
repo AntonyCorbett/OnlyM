@@ -823,13 +823,29 @@
                         IsIndeterminate="True"
                         Visibility="{Binding RemoteControlProgressVisibility, Mode=OneWay}" />
 
-                    <TextBox
-                        BorderThickness="0"
-                        FontWeight="Bold"
-                        IsReadOnly="True"
-                        Background="Transparent"
-                        TextWrapping="Wrap"
-                        Text="{Binding RemoteControlActiveUrl, Mode=OneWay}" />
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Visibility="{Binding RemoteControlUrlVisibility, Mode=OneWay}">
+                        <TextBlock
+                            MaxWidth="390"
+                            VerticalAlignment="Center"
+                            FontWeight="Bold"
+                            TextWrapping="Wrap">
+                            <Hyperlink Command="{Binding OpenRemoteControlUrlCommand}">
+                                <Run Text="{Binding RemoteControlActiveUrl, Mode=OneWay}" />
+                            </Hyperlink>
+                        </TextBlock>
+
+                        <Button
+                            Width="30"
+                            Height="30"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Command="{Binding CopyRemoteControlUrlCommand}"
+                            Content="{materialDesign:PackIcon Kind=ContentCopy, Size=16}"
+                            Style="{StaticResource MaterialDesignIconButton}"
+                            ToolTip="{x:Static resx:Resources.REMOTE_CONTROL_COPY_URL}" />
+                    </StackPanel>
 
                     <Image
                         Width="180"

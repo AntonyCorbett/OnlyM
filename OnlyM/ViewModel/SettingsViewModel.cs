@@ -144,6 +144,10 @@ internal sealed class SettingsViewModel : ObservableObject
 
     public RelayCommand RetryTunnelCommand { get; private set; } = null!;
 
+    public RelayCommand OpenRemoteControlUrlCommand { get; private set; } = null!;
+
+    public RelayCommand CopyRemoteControlUrlCommand { get; private set; } = null!;
+
     /// <summary>
     /// Gets a value indicating whether cloudflared is being installed or the tunnel is starting.
     /// </summary>
@@ -439,6 +443,9 @@ internal sealed class SettingsViewModel : ObservableObject
     /// </summary>
     public System.Windows.Visibility RemoteControlQrVisibility =>
         RemoteControlQrCode == null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+
+    public System.Windows.Visibility RemoteControlUrlVisibility =>
+        RemoteControlActiveUrl == null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
 
     public string RemoteControlAddresses
     {
@@ -1596,6 +1603,7 @@ internal sealed class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(InstallCloudflaredVisibility));
         OnPropertyChanged(nameof(CreateFirewallExceptionVisibility));
         OnPropertyChanged(nameof(RemoteControlActiveUrl));
+        OnPropertyChanged(nameof(RemoteControlUrlVisibility));
         OnPropertyChanged(nameof(RemoteControlQrCode));
         OnPropertyChanged(nameof(RemoteControlQrVisibility));
         OnPropertyChanged(nameof(IsRemoteControlBusy));
@@ -1729,6 +1737,8 @@ internal sealed class SettingsViewModel : ObservableObject
         InstallCloudflaredCommand = new AsyncRelayCommand(InstallCloudflaredAsync, () => !_installingCloudflared);
         CreateFirewallExceptionCommand = new AsyncRelayCommand(CreateFirewallExceptionAsync);
         RetryTunnelCommand = new RelayCommand(() => System.Threading.Tasks.Task.Run(_remoteControlService.RetryTunnel));
+        OpenRemoteControlUrlCommand = new RelayCommand(OpenRemoteControlUrl);
+        CopyRemoteControlUrlCommand = new RelayCommand(CopyRemoteControlUrl);
         ResetManualOrderCommand = new AsyncRelayCommand(ResetManualOrderAsync, CanResetManualOrder);
         PurgeThumbnailCacheCommand = new RelayCommand(PurgeThumbnailCache);
         PurgeWebCacheCommand = new RelayCommand(PurgeWebCache);
@@ -1743,6 +1753,44 @@ internal sealed class SettingsViewModel : ObservableObject
     {
         _optionsService.ShouldPurgeBrowserCacheOnStartup = true;
         OnPropertyChanged(nameof(IsBrowserCachePurgeQueued));
+    }
+
+    private void OpenRemoteControlUrl()
+    {
+        var url = RemoteControlActiveUrl;
+        if (url == null)
+        {
+            return;
+        }
+
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Logger.Error(ex, "Could not open remote control URL {Url}", url);
+        }
+    }
+
+    private void CopyRemoteControlUrl()
+    {
+        var url = RemoteControlActiveUrl;
+        if (url == null)
+        {
+            return;
+        }
+
+        try
+        {
+            System.Windows.Clipboard.SetText(url);
+            _snackbarService.EnqueueReplacingCurrent(Properties.Resources.REMOTE_CONTROL_URL_COPIED);
+        }
+        catch (System.Runtime.InteropServices.COMException ex)
+        {
+            // the clipboard can be locked by another process
+            Serilog.Log.Logger.Error(ex, "Could not copy remote control URL to clipboard");
+        }
     }
 
     private void OpenMediaFolder()
