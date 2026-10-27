@@ -22,16 +22,18 @@ namespace OnlyM.CustomControls.MagnifierControl;
 
 public class MagnifierManager : DependencyObject
 {
-    public static readonly DependencyProperty CurrentProperty = DependencyProperty.RegisterAttached(
+    public static readonly DependencyProperty MagnifierProperty = DependencyProperty.RegisterAttached(
         nameof(Magnifier),
         typeof(Magnifier),
-        typeof(UIElement),
+        typeof(MagnifierManager),
         new FrameworkPropertyMetadata(null, OnMagnifierChanged));
 
     private MagnifierAdorner? _adorner;
     private UIElement? _element;
 
-    public static void SetMagnifier(UIElement element, Magnifier value) => element.SetValue(CurrentProperty, value);
+    public static Magnifier? GetMagnifier(UIElement element) => (Magnifier?)element.GetValue(MagnifierProperty);
+
+    public static void SetMagnifier(UIElement element, Magnifier value) => element.SetValue(MagnifierProperty, value);
 
     private static void OnMagnifierChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -49,7 +51,7 @@ public class MagnifierManager : DependencyObject
 
     private void Element_MouseLeave(object sender, MouseEventArgs e)
     {
-        var magnifier = GetMagnifier(_element);
+        var magnifier = _element is null ? null : GetMagnifier(_element);
 
         if (magnifier is not null && magnifier.IsFrozen)
         {
@@ -63,7 +65,7 @@ public class MagnifierManager : DependencyObject
 
     private void Element_MouseWheel(object sender, MouseWheelEventArgs e)
     {
-        var magnifier = GetMagnifier(_element);
+        var magnifier = _element is null ? null : GetMagnifier(_element);
 
         if (magnifier is null || !magnifier.IsUsingZoomOnMouseWheel)
         {
@@ -125,15 +127,5 @@ public class MagnifierManager : DependencyObject
         {
             _adorner.Visibility = Visibility.Collapsed;
         }
-    }
-
-    private static Magnifier? GetMagnifier(UIElement? element)
-    {
-        if (element == null)
-        {
-            return null;
-        }
-
-        return (Magnifier)element.GetValue(CurrentProperty);
     }
 }
