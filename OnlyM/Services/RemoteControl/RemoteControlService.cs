@@ -186,6 +186,10 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     /// (currentSlideIndex is 0-based). canSeek follows the operator's position slider
     /// (<see cref="MediaItem.IsSliderVisible"/>): audio/video, scrubbing allowed in Settings, and paused.
     /// </summary>
+    /// <param name="active">The active media item, or null if nothing is playing.</param>
+    /// <param name="volume">The current volume.</param>
+    /// <param name="volumeEnabled">Whether the remote shows the volume control.</param>
+    /// <returns>The reply object, serialised as JSON.</returns>
     internal static object BuildStatus(MediaItem? active, int volume, bool volumeEnabled)
     {
         var isSlideshow = active?.IsSlideshow == true;
@@ -209,6 +213,9 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     /// Gets a value indicating whether Next/Previous should change slide rather than media item: the active item
     /// is a slideshow that can still move in that direction (the same rule as the operator's slide buttons).
     /// </summary>
+    /// <param name="active">The active media item, or null if nothing is playing.</param>
+    /// <param name="step">Positive for Next, negative for Previous.</param>
+    /// <returns>True to change slide, false to change media item.</returns>
     internal static bool ShouldChangeSlide(MediaItem? active, int step)
     {
         if (active is not { IsSlideshow: true })
@@ -223,6 +230,8 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     /// Builds one /api/media entry. Slideshows also get slideCount and the operator card's localised
     /// "(contains n slides)" text as subtitle (both null for other media, and subtitle null until the slides are counted).
     /// </summary>
+    /// <param name="m">The media item.</param>
+    /// <returns>The entry object, serialised as JSON.</returns>
     internal static object BuildMediaEntry(MediaItem m)
     {
         var slideCount = m.IsSlideshow ? m.SlideshowCount : (int?)null;

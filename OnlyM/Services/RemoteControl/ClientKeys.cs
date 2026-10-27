@@ -30,8 +30,12 @@ internal sealed class ClientKeys
     /// </summary>
     public string? Wide { get; }
 
+    /// <summary>
+    /// Gets the throttling keys for a client address.
+    /// </summary>
     /// <param name="address">Client address, or null when unknown.</param>
     /// <param name="source">Tag prefixed to the keys (e.g. "cf:" for tunnel clients), so tunnel and LAN clients never share a bucket.</param>
+    /// <returns>The keys for the client.</returns>
     public static ClientKeys For(IPAddress? address, string source = "")
     {
         if (address == null)

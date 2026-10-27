@@ -19,6 +19,9 @@ internal sealed class RemoteSessionStore
     private readonly Func<DateTime> _utcNow;
     private readonly int _maxSessions;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RemoteSessionStore"/> class.
+    /// </summary>
     /// <param name="utcNow">Clock (for tests); defaults to <see cref="DateTime.UtcNow"/>.</param>
     /// <param name="idleTimeout">Sliding idle timeout (default 30 min).</param>
     /// <param name="maxAge">Absolute session lifetime (default 12 h).</param>
@@ -54,6 +57,7 @@ internal sealed class RemoteSessionStore
     /// <summary>
     /// Creates a session and returns its (random, 256-bit) token.
     /// </summary>
+    /// <returns>The session token as a hex string.</returns>
     public string Create()
     {
         var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
@@ -76,6 +80,8 @@ internal sealed class RemoteSessionStore
     /// <summary>
     /// Returns true if the token belongs to a live session, and extends its idle timeout.
     /// </summary>
+    /// <param name="token">The session token, or null if the request has none.</param>
+    /// <returns>True if the session is live.</returns>
     public bool TryValidate(string? token)
     {
         if (string.IsNullOrEmpty(token))

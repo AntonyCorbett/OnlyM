@@ -33,6 +33,9 @@ internal sealed class LoginGuard
     /// <summary>
     /// Checks whether a login attempt from the client may go ahead (call before checking the PIN).
     /// </summary>
+    /// <param name="keys">The client's throttling keys.</param>
+    /// <param name="retryAfter">The suggested wait when blocked, otherwise zero.</param>
+    /// <returns>Which limit blocks the attempt, or <see cref="Block.None"/>.</returns>
     public Block Check(ClientKeys keys, out TimeSpan retryAfter)
     {
         var clientLocked = Clients.IsLockedOut(keys.Narrow, out var narrowWait);
@@ -50,6 +53,8 @@ internal sealed class LoginGuard
     /// <summary>
     /// Records a wrong PIN against the client's buckets and the global budget.
     /// </summary>
+    /// <param name="keys">The client's throttling keys.</param>
+    /// <returns>The combined result of the client's buckets.</returns>
     public LoginThrottle.FailureResult RegisterFailure(ClientKeys keys)
     {
         Global.RegisterFailure();
@@ -72,6 +77,7 @@ internal sealed class LoginGuard
     /// A correct PIN resets the client's own bucket. The /48 bucket and the global budget are left to
     /// age out, so a legitimate user cannot reset an attacker's count on a shared prefix.
     /// </summary>
+    /// <param name="keys">The client's throttling keys.</param>
     public void RegisterSuccess(ClientKeys keys) => Clients.RegisterSuccess(keys.Narrow);
 
     public void Clear()

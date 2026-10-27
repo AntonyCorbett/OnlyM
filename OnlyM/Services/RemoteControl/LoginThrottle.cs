@@ -23,6 +23,9 @@ internal sealed class LoginThrottle
     private readonly int _maxEntries;
     private DateTime _lastPruneUtc = DateTime.MinValue;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LoginThrottle"/> class.
+    /// </summary>
     /// <param name="utcNow">Clock (for tests); defaults to <see cref="DateTime.UtcNow"/>.</param>
     /// <param name="maxFailures">Wrong PINs allowed before a lockout.</param>
     /// <param name="lockout">Lockout duration (default 60 s).</param>

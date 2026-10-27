@@ -21,6 +21,9 @@ internal sealed class GlobalLoginBackstop
     private readonly Func<DateTime> _utcNow;
     private int _pressure;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GlobalLoginBackstop"/> class.
+    /// </summary>
     /// <param name="utcNow">Clock (for tests); defaults to <see cref="DateTime.UtcNow"/>.</param>
     /// <param name="budget">Failures allowed per window (default 20).</param>
     /// <param name="window">Rolling window (default 10 min).</param>
@@ -67,6 +70,8 @@ internal sealed class GlobalLoginBackstop
     /// Checks whether a login attempt may go ahead. When the budget is used up, returns true with the
     /// suggested wait; each such refusal raises the next suggested wait.
     /// </summary>
+    /// <param name="retryAfter">The suggested wait when throttled, otherwise zero.</param>
+    /// <returns>True if the attempt must be refused.</returns>
     public bool IsThrottled(out TimeSpan retryAfter)
     {
         lock (_lock)

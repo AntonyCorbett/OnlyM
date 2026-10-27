@@ -64,6 +64,7 @@ internal sealed partial class CloudflareTunnel : IDisposable
     /// <summary>
     /// Puts a stopped tunnel into the Failed state with the given message (e.g. the tunnel may not start yet).
     /// </summary>
+    /// <param name="message">The error to show.</param>
     public void SetFailed(string message)
     {
         lock (_lock)
@@ -103,6 +104,7 @@ internal sealed partial class CloudflareTunnel : IDisposable
     /// <summary>
     /// Returns the full path of cloudflared.exe if it can be found, otherwise null.
     /// </summary>
+    /// <returns>The full path, or null if not found.</returns>
     public static string? LocateCloudflared()
     {
         var found = FindCloudflared();

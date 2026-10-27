@@ -35,6 +35,8 @@ internal static class CloudflaredInstaller
     /// Gets the download URL and expected SHA-256 of the pinned cloudflared executable for this OS
     /// (the amd64 build also runs on Windows on Arm).
     /// </summary>
+    /// <param name="is64BitOperatingSystem">True to get the amd64 build, false for the x86 build.</param>
+    /// <returns>The download URL and the expected SHA-256 as a hex string.</returns>
     public static (Uri Url, string Sha256) GetDownload(bool is64BitOperatingSystem)
     {
         var asset = is64BitOperatingSystem ? "cloudflared-windows-amd64.exe" : "cloudflared-windows-386.exe";
@@ -44,6 +46,7 @@ internal static class CloudflaredInstaller
     /// <summary>
     /// Downloads, verifies and installs cloudflared.
     /// </summary>
+    /// <param name="cancellationToken">Cancels the download.</param>
     /// <returns>The full path of the installed cloudflared.exe.</returns>
     public static async Task<string> InstallAsync(CancellationToken cancellationToken = default)
     {
@@ -82,6 +85,10 @@ internal static class CloudflaredInstaller
     /// <summary>
     /// Gets a value indicating whether the file's SHA-256 equals the expected hex string (case-insensitive).
     /// </summary>
+    /// <param name="path">The file to hash.</param>
+    /// <param name="expectedSha256">The expected SHA-256 as a hex string.</param>
+    /// <param name="cancellationToken">Cancels the hashing.</param>
+    /// <returns>True if the hashes match.</returns>
     internal static async Task<bool> HasSha256Async(string path, string expectedSha256, CancellationToken cancellationToken = default)
     {
         await using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 81920, useAsync: true);
