@@ -752,6 +752,94 @@
     <value>Cloudflare tunnel not started: the PIN must be at least 6 digits. Enter a longer PIN in Settings.</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
+  <data name="REMOTE_CONTROL_API_BAD_POSITION" xml:space="preserve">
+    <value>Position must be a number of seconds (0 or more)</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_NOTHING_PLAYING" xml:space="preserve">
+    <value>Nothing is playing</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_CANT_SCRUB" xml:space="preserve">
+    <value>This item can't be scrubbed</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_SEEKING_OFF" xml:space="preserve">
+    <value>Position seeking is turned off in OnlyM's settings</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_PAUSE_TO_SCRUB" xml:space="preserve">
+    <value>Pause to scrub</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_FORBIDDEN" xml:space="preserve">
+    <value>Forbidden</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_PIN_REQUIRED" xml:space="preserve">
+    <value>PIN required</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_VOLUME_DISABLED" xml:space="preserve">
+    <value>Volume control is disabled</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_NOT_FOUND" xml:space="preserve">
+    <value>Not found</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_INVALID_ID" xml:space="preserve">
+    <value>Invalid id</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_ITEM_NOT_FOUND" xml:space="preserve">
+    <value>Media item not found</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_STOP_TIMEOUT" xml:space="preserve">
+    <value>The current item did not stop in time</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_COULD_NOT_START" xml:space="preserve">
+    <value>Could not start "{0}"</value>
+    <comment>Error shown on the remote control web page. {0} is the media item title</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_NO_MEDIA_ITEMS" xml:space="preserve">
+    <value>No media items</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_NEXT_SLIDE_FAILED" xml:space="preserve">
+    <value>Could not move to the next slide</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_PREVIOUS_SLIDE_FAILED" xml:space="preserve">
+    <value>Could not move to the previous slide</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_BAD_VOLUME" xml:space="preserve">
+    <value>Volume must be 0-100</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_THUMBNAIL_NOT_AVAILABLE" xml:space="preserve">
+    <value>Thumbnail not available</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_THUMBNAIL_NOT_FOUND" xml:space="preserve">
+    <value>Thumbnail not found</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_TUNNEL_CLOUDFLARED_NOT_FOUND" xml:space="preserve">
+    <value>cloudflared not found - click 'Install Cloudflare tunnel' below</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_TUNNEL_EXITED" xml:space="preserve">
+    <value>cloudflared exited unexpectedly (code {0})</value>
+    <comment>See Settings =&gt; Remote Control. {0} is the process exit code</comment>
+  </data>
+  <data name="REMOTE_CONTROL_TUNNEL_NO_URL" xml:space="preserve">
+    <value>No public URL from cloudflared after {0} seconds</value>
+    <comment>See Settings =&gt; Remote Control. {0} is the number of seconds</comment>
+  </data>
   <data name="REMOTE_CONTROL_INSTALL_CLOUDFLARED" xml:space="preserve">
     <value>INSTALL CLOUDFLARE TUNNEL</value>
     <comment>See Settings =&gt; Remote Control</comment>

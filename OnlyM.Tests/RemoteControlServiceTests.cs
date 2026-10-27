@@ -205,7 +205,7 @@ public sealed class RemoteControlServiceTests
         var (statusCode, error, _) = RemoteControlService.PlanSeek(video, "10");
 
         Assert.Equal(409, statusCode);
-        Assert.Contains("Pause", error, StringComparison.Ordinal);
+        Assert.Equal(OnlyM.Properties.Resources.REMOTE_CONTROL_API_PAUSE_TO_SCRUB, error);
     }
 
     [Fact]

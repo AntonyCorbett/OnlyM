@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Serilog;
@@ -18,8 +19,6 @@ namespace OnlyM.Services.RemoteControl;
 /// </summary>
 internal sealed partial class CloudflareTunnel : IDisposable
 {
-    public const string NotFoundMessage = "cloudflared not found - click 'Install Cloudflare tunnel' below";
-
     private static readonly TimeSpan UrlTimeout = TimeSpan.FromSeconds(30);
 
     private readonly object _lock = new();
@@ -230,7 +229,7 @@ internal sealed partial class CloudflareTunnel : IDisposable
             catch (Win32Exception ex)
             {
                 p.Dispose();
-                Error = NotFoundMessage;
+                Error = Properties.Resources.REMOTE_CONTROL_TUNNEL_CLOUDFLARED_NOT_FOUND;
                 State = TunnelState.Failed;
                 Log.Logger.Error(ex, "Could not start cloudflared. Is it installed (Settings => Install Cloudflare tunnel) or on PATH?");
                 RaiseStateChanged();
@@ -358,9 +357,8 @@ internal sealed partial class CloudflareTunnel : IDisposable
             _timeoutTimer?.Dispose();
             _timeoutTimer = null;
             State = TunnelState.Failed;
-            Error = string.IsNullOrEmpty(_lastLine)
-                ? $"cloudflared exited unexpectedly (code {code})"
-                : $"cloudflared exited unexpectedly (code {code}): {_lastLine}";
+            Error = string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_TUNNEL_EXITED, code) +
+                    (string.IsNullOrEmpty(_lastLine) ? string.Empty : $": {_lastLine}");
         }
 
         Log.Logger.Error("cloudflared exited unexpectedly with code {Code}; last output: {Line}", code, _lastLine);
@@ -380,7 +378,7 @@ internal sealed partial class CloudflareTunnel : IDisposable
             _timeoutTimer?.Dispose();
             _timeoutTimer = null;
             State = TunnelState.Failed;
-            Error = $"No public URL from cloudflared after {UrlTimeout.TotalSeconds:0} seconds" +
+            Error = string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_TUNNEL_NO_URL, UrlTimeout.TotalSeconds.ToString("0", CultureInfo.CurrentCulture)) +
                     (string.IsNullOrEmpty(_lastLine) ? string.Empty : $": {_lastLine}");
         }
 

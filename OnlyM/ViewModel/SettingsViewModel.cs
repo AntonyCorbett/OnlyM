@@ -371,7 +371,7 @@ internal sealed class SettingsViewModel : ObservableObject
                     return Properties.Resources.REMOTE_CONTROL_INSTALLING_CLOUDFLARED;
                 }
 
-                if (_cloudflaredInstallFailed && _remoteControlService.TunnelError == CloudflareTunnel.NotFoundMessage)
+                if (_cloudflaredInstallFailed && _remoteControlService.TunnelError == Properties.Resources.REMOTE_CONTROL_TUNNEL_CLOUDFLARED_NOT_FOUND)
                 {
                     return Properties.Resources.REMOTE_CONTROL_INSTALL_CLOUDFLARED_FAILED;
                 }

@@ -256,27 +256,27 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
         if (!double.TryParse(secondsText, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var seconds) ||
             !double.IsFinite(seconds))
         {
-            return (400, "Position must be a number of seconds (0 or more)", 0);
+            return (400, Properties.Resources.REMOTE_CONTROL_API_BAD_POSITION, 0);
         }
 
         if (active == null)
         {
-            return (409, "Nothing is playing", 0);
+            return (409, Properties.Resources.REMOTE_CONTROL_API_NOTHING_PLAYING, 0);
         }
 
         if (!active.HasDuration)
         {
-            return (409, "This item can't be scrubbed", 0);
+            return (409, Properties.Resources.REMOTE_CONTROL_API_CANT_SCRUB, 0);
         }
 
         if (!active.AllowPositionSeeking)
         {
-            return (409, "Position seeking is turned off in OnlyM's settings", 0);
+            return (409, Properties.Resources.REMOTE_CONTROL_API_SEEKING_OFF, 0);
         }
 
         if (!active.IsSliderVisible)
         {
-            return (409, "Pause to scrub", 0);
+            return (409, Properties.Resources.REMOTE_CONTROL_API_PAUSE_TO_SCRUB, 0);
         }
 
         var max = Math.Max(0, active.DurationDeciseconds);
@@ -710,7 +710,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
                     req.UserHostName,
                     req.Headers["Origin"]);
                 res.StatusCode = 403;
-                await Ok(res, new { error = "Forbidden" });
+                await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_FORBIDDEN });
                 return;
             }
 
@@ -723,7 +723,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
             if (!IsAuthorised(req))
             {
                 res.StatusCode = 401;
-                await Ok(res, new { error = "PIN required" });
+                await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_PIN_REQUIRED });
                 return;
             }
 
@@ -763,7 +763,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
                         {
                             // The remote volume control is turned off in Settings
                             res.StatusCode = 403;
-                            await Ok(res, new { error = "Volume control is disabled" });
+                            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_VOLUME_DISABLED });
                         }
                         else if (path == "/api/mute")
                         {
@@ -782,7 +782,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
                     else
                     {
                         res.StatusCode = 404;
-                        await Ok(res, new { error = "Not found" });
+                        await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_NOT_FOUND });
                     }
 
                     break;
@@ -1229,7 +1229,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         if (!Guid.TryParse(idStr, out var id))
         {
             res.StatusCode = 400;
-            await Ok(res, new { error = "Invalid id" });
+            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_INVALID_ID });
             return;
         }
 
@@ -1237,7 +1237,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         if (!exists)
         {
             res.StatusCode = 404;
-            await Ok(res, new { error = "Media item not found" });
+            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_ITEM_NOT_FOUND });
             return;
         }
 
@@ -1282,7 +1282,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             if (!stopped)
             {
                 res.StatusCode = 409;
-                await Ok(res, new { error = "The current item did not stop in time" });
+                await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_STOP_TIMEOUT });
                 return;
             }
         }
@@ -1294,7 +1294,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         if (!started)
         {
             res.StatusCode = 409;
-            await Ok(res, new { error = $"Could not start \"{name}\"" });
+            await Ok(res, new { error = string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_API_COULD_NOT_START, name) });
             return;
         }
 
@@ -1393,7 +1393,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         if (targetId == null)
         {
             res.StatusCode = 409;
-            await Ok(res, new { error = "No media items" });
+            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_NO_MEDIA_ITEMS });
             return;
         }
 
@@ -1413,7 +1413,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         {
             // e.g. a slide transition (or other media change) is still in progress
             res.StatusCode = 409;
-            await Ok(res, new { error = step > 0 ? "Could not move to the next slide" : "Could not move to the previous slide" });
+            await Ok(res, new { error = step > 0 ? Properties.Resources.REMOTE_CONTROL_API_NEXT_SLIDE_FAILED : Properties.Resources.REMOTE_CONTROL_API_PREVIOUS_SLIDE_FAILED });
             return;
         }
 
@@ -1426,7 +1426,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             volume is < 0 or > 100)
         {
             res.StatusCode = 400;
-            await Ok(res, new { error = "Volume must be 0-100" });
+            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_BAD_VOLUME });
             return;
         }
 
@@ -1478,7 +1478,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         if (!Guid.TryParse(idStr, out var id))
         {
             res.StatusCode = 400;
-            await Ok(res, new { error = "Invalid id" });
+            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_INVALID_ID });
             return;
         }
 
@@ -1491,7 +1491,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         if (filePath == null)
         {
             res.StatusCode = 404;
-            await Ok(res, new { error = "Thumbnail not available" });
+            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_THUMBNAIL_NOT_AVAILABLE });
             return;
         }
 
@@ -1509,7 +1509,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             if (bytes == null || bytes.Length == 0)
             {
                 res.StatusCode = 404;
-                await Ok(res, new { error = "Thumbnail not found" });
+                await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_THUMBNAIL_NOT_FOUND });
                 return;
             }
 
