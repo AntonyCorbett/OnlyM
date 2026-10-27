@@ -681,7 +681,7 @@
     <value>Show toggle button</value>
   </data>
   <data name="SECTION_REMOTE_CONTROL" xml:space="preserve">
-    <value>Remote Control</value>
+    <value>REMOTE CONTROL</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_PORT" xml:space="preserve">
@@ -733,11 +733,11 @@
     <comment>See Settings =&gt; Remote Control. {0} is the path of cloudflared.exe</comment>
   </data>
   <data name="REMOTE_CONTROL_RETRY" xml:space="preserve">
-    <value>Retry</value>
+    <value>RETRY</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_PIN" xml:space="preserve">
-    <value>Remote control PIN (4-8 digits; at least 6 in Cloudflare mode; blank for none in Local mode)</value>
+    <value>Remote control PIN</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_PIN_INVALID" xml:space="preserve">
@@ -753,15 +753,15 @@
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_INSTALL_CLOUDFLARED" xml:space="preserve">
-    <value>Install Cloudflare tunnel</value>
+    <value>INSTALL CLOUDFLARE TUNNEL</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_INSTALL_CLOUDFLARED_FAILED" xml:space="preserve">
-    <value>Install failed - see %TEMP%\OnlyM-cloudflared-install.log</value>
+    <value>Install failed - see the OnlyM log for details</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_INSTALLING_CLOUDFLARED" xml:space="preserve">
-    <value>Installing Cloudflare tunnel...</value>
+    <value>INSTALLING CLOUDFLARE TUNNEL...</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="VOLUME" xml:space="preserve">
@@ -799,5 +799,49 @@
   <data name="VOLUME_CLICK_TO_UNMUTE" xml:space="preserve">
     <value>Click to unmute (restores {0}%)</value>
     <comment>Second line of the volume button tooltip when muted; {0} is the restored percentage</comment>
+  </data>
+  <data name="REMOTE_CONTROL_PIN_HELP" xml:space="preserve">
+    <value>4-8 digits; at least 6 in Cloudflare mode; blank for none in Local mode</value>
+    <comment>See Settings =&gt; Remote Control (helper text under the PIN box)</comment>
+  </data>
+  <data name="REMOTE_CONTROL_LOCALHOST_ONLY" xml:space="preserve">
+    <value>Localhost only - other devices can't connect (http://localhost:{0}/). Click 'Create firewall exception' to allow network access.</value>
+    <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
+  </data>
+  <data name="REMOTE_CONTROL_PORT_IN_USE" xml:space="preserve">
+    <value>Port {0} is already in use, choose another port</value>
+    <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
+  </data>
+  <data name="REMOTE_CONTROL_CREATE_FIREWALL" xml:space="preserve">
+    <value>CREATE FIREWALL EXCEPTION</value>
+    <comment>See Settings =&gt; Remote Control (button)</comment>
+  </data>
+  <data name="REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP" xml:space="preserve">
+    <value>Creates a Windows Firewall rule and a URL reservation for the current port so other devices on your network can connect, then restarts the remote. You will be asked for administrator permission once. If you change the port later, run this again (the old port's rule and reservation are removed).</value>
+    <comment>See Settings =&gt; Remote Control (tooltip of the firewall button)</comment>
+  </data>
+  <data name="REMOTE_CONTROL_FIREWALL_DONE" xml:space="preserve">
+    <value>Network access enabled for port {0}.</value>
+    <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
+  </data>
+  <data name="REMOTE_CONTROL_FIREWALL_STILL_LOCALHOST" xml:space="preserve">
+    <value>Firewall exception created for port {0}, but the remote is still localhost only. See the log for details.</value>
+    <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
+  </data>
+  <data name="REMOTE_CONTROL_FIREWALL_FAILED" xml:space="preserve">
+    <value>Could not create the firewall exception. Make sure you approve the administrator prompt.</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_FIREWALL_ERROR" xml:space="preserve">
+    <value>Could not create the firewall exception. Make sure you approve the administrator prompt, or create the rule manually.</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_SHOW_VOLUME" xml:space="preserve">
+    <value>Allow volume control from the remote</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="SHOW_VOLUME_CONTROL" xml:space="preserve">
+    <value>Show volume control in toolbar</value>
+    <comment>See Settings =&gt; Video and Audio. When off, the volume is kept at 100%</comment>
   </data>
 </root>

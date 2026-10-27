@@ -133,6 +133,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
         _optionsService.ShowSortModeToggleButtonChangedEvent += HandleShowSortModeToggleButtonChangedEvent;
         _optionsService.VolumeChangedEvent += HandleVolumeChangedEvent;
+        _optionsService.ShowVolumeControlChangedEvent += HandleShowVolumeControlChangedEvent;
         _currentVolume = _optionsService.Volume;
         if (_currentVolume > 0)
         {
@@ -221,12 +222,12 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     public bool IsMuted => Volume <= 0;
 
     /// <summary>
-    /// Gets a value indicating whether the level label next to the slider is shown (any level below 100%, including muted).
+    /// Gets a value indicating whether the toolbar volume button is shown (option, default off).
     /// </summary>
-    public bool ShowVolumeLabel => Volume < 100;
+    public bool ShowVolumeControl => _optionsService.ShowVolumeControl;
 
     /// <summary>
-    /// Gets the text of the level label next to the slider: e.g. "65%" below 100%, "Muted" at 0, empty at 100%.
+    /// Gets the level shown next to the slider in the volume popup: e.g. "65%", "0%" when muted (the tooltip says "Muted").
     /// </summary>
     public string VolumeLabel => GetVolumeLabel(Volume);
 
@@ -308,6 +309,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.SortModeChangedEvent -= HandleSortModeChangedEvent;
         _optionsService.ShowSortModeToggleButtonChangedEvent -= HandleShowSortModeToggleButtonChangedEvent;
         _optionsService.VolumeChangedEvent -= HandleVolumeChangedEvent;
+        _optionsService.ShowVolumeControlChangedEvent -= HandleShowVolumeControlChangedEvent;
         if (_sortModeTimer != null)
         {
             _sortModeTimer.Stop();
@@ -337,17 +339,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _ => PackIconKind.VolumeHigh,
     };
 
-    internal static string GetVolumeLabel(int volume)
-    {
-        if (volume >= 100)
-        {
-            return string.Empty;
-        }
-
-        return volume <= 0
-            ? Properties.Resources.VOLUME_MUTED
-            : FormatPercent(Properties.Resources.VOLUME_PERCENT_SHORT, volume);
-    }
+    internal static string GetVolumeLabel(int volume) =>
+        FormatPercent(Properties.Resources.VOLUME_PERCENT_SHORT, Math.Clamp(volume, 0, 100));
 
     internal static string GetVolumeToolTip(int volume)
     {
@@ -431,7 +424,6 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
         OnPropertyChanged(nameof(Volume));
         OnPropertyChanged(nameof(IsMuted));
-        OnPropertyChanged(nameof(ShowVolumeLabel));
         OnPropertyChanged(nameof(VolumeLabel));
         OnPropertyChanged(nameof(VolumeIconKind));
         OnPropertyChanged(nameof(VolumeToolTip));
@@ -532,6 +524,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             }
         }
     }
+
+    private void HandleShowVolumeControlChangedEvent(object? sender, EventArgs e) =>
+        OnPropertyChanged(nameof(ShowVolumeControl));
 
     private void HandleShowFreezeCommandChangedEvent(object? sender, EventArgs e)
     {

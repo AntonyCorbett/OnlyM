@@ -419,17 +419,7 @@ public class MediaItem : ObservableObject
 
             if (!IsMediaActive)
             {
-                if (SlideshowCount == 1)
-                {
-                    return IsRollingSlideshow
-                        ? Properties.Resources.CONTAINS_1_ROLLING_SLIDE
-                        : Properties.Resources.CONTAINS_1_SLIDE;
-                }
-
-                return string.Format(
-                    CultureInfo.CurrentCulture,
-                    IsRollingSlideshow ? Properties.Resources.CONTAINS_X_ROLLING_SLIDES : Properties.Resources.CONTAINS_X_SLIDES,
-                    SlideshowCount);
+                return GetSlideCountText(SlideshowCount, IsRollingSlideshow);
             }
 
             return string.Format(
@@ -491,6 +481,27 @@ public class MediaItem : ObservableObject
         IsMediaActive
             ? (ThemeState.IsDark ? DarkModeWhiteBrush : BlackBrush)
             : (ThemeState.IsDark ? DarkModeGrayBrush : GrayBrush);
+
+    /// <summary>
+    /// Gets the localised slide count shown on a slideshow's card while it isn't playing, e.g. "(contains 6 slides)".
+    /// </summary>
+    /// <param name="slideCount">Number of slides.</param>
+    /// <param name="isRolling">Whether the slideshow advances automatically.</param>
+    /// <returns>The text, in the current UI culture.</returns>
+    public static string GetSlideCountText(int slideCount, bool isRolling)
+    {
+        if (slideCount == 1)
+        {
+            return isRolling
+                ? Properties.Resources.CONTAINS_1_ROLLING_SLIDE
+                : Properties.Resources.CONTAINS_1_SLIDE;
+        }
+
+        return string.Format(
+            CultureInfo.CurrentCulture,
+            isRolling ? Properties.Resources.CONTAINS_X_ROLLING_SLIDES : Properties.Resources.CONTAINS_X_SLIDES,
+            slideCount);
+    }
 
     internal void RefreshThemeDependentProperties()
     {

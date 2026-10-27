@@ -18,7 +18,7 @@ namespace OnlyM.Services.RemoteControl;
 /// </summary>
 internal sealed partial class CloudflareTunnel : IDisposable
 {
-    public const string NotFoundMessage = "cloudflared not found - install with: winget install Cloudflare.cloudflared";
+    public const string NotFoundMessage = "cloudflared not found - click 'Install Cloudflare tunnel' below";
 
     private static readonly TimeSpan UrlTimeout = TimeSpan.FromSeconds(30);
 
@@ -232,7 +232,7 @@ internal sealed partial class CloudflareTunnel : IDisposable
                 p.Dispose();
                 Error = NotFoundMessage;
                 State = TunnelState.Failed;
-                Log.Logger.Error(ex, "Could not start cloudflared. Is it installed and on PATH? (winget install Cloudflare.cloudflared)");
+                Log.Logger.Error(ex, "Could not start cloudflared. Is it installed (Settings => Install Cloudflare tunnel) or on PATH?");
                 RaiseStateChanged();
                 return;
             }

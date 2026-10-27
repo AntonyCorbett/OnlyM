@@ -54,6 +54,10 @@ public interface IOptionsService
 
     event EventHandler VolumeChangedEvent;
 
+    event EventHandler ShowVolumeControlChangedEvent;
+
+    event EventHandler ShowRemoteVolumeControlChangedEvent;
+
     event EventHandler RemoteControlChangedEvent;
 
     event EventHandler RemoteControlPinChangedEvent;
@@ -101,6 +105,17 @@ public interface IOptionsService
     bool AllowVideoScrubbing { get; set; }
 
     bool ShowFreezeCommand { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the operator toolbar shows the volume control. Turning it off resets
+    /// <see cref="Volume"/> to 100.
+    /// </summary>
+    bool ShowVolumeControl { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the remote control page offers volume control.
+    /// </summary>
+    bool ShowRemoteVolumeControl { get; set; }
 
     bool ShowMediaItemCountBadge { get; set; }
 

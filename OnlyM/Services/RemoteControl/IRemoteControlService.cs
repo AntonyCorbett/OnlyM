@@ -20,6 +20,12 @@ public interface IRemoteControlService
     bool IsLocalhostOnly { get; }
 
     /// <summary>
+    /// Gets the port that could not be used because another program already listens on it
+    /// (the listener is not running), or null.
+    /// </summary>
+    int? PortInUse { get; }
+
+    /// <summary>
     /// Gets the public Cloudflare Quick Tunnel URL, once known (Cloudflare mode only).
     /// </summary>
     string? TunnelUrl { get; }

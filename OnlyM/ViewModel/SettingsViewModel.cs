@@ -247,8 +247,10 @@ internal sealed class SettingsViewModel : ObservableObject
                 _optionsService.RemoteControlPort = port;
                 if (_optionsService.RemoteControlEnabled)
                 {
-                    // Apply the new port now: restarts the listener and, in Cloudflare mode, the tunnel
-                    _remoteControlService.Restart();
+                    // Apply the new port now: restarts the listener and, in Cloudflare mode, the tunnel. Stopping
+                    // cloudflared and rebinding can take a while, so do it off the UI thread; the service serialises
+                    // restarts with its lifecycle lock (rapid edits end on the latest port) and raises StateChanged.
+                    Task.Run(RestartRemoteControl);
                 }
 
                 OnPropertyChanged();
@@ -355,6 +357,13 @@ internal sealed class SettingsViewModel : ObservableObject
                 return Properties.Resources.REMOTE_CONTROL_STATUS_OFF;
             }
 
+            if (_remoteControlService.PortInUse is { } portInUse)
+            {
+#pragma warning disable CA1863
+                return string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_PORT_IN_USE, portInUse);
+#pragma warning restore CA1863
+            }
+
             if (_optionsService.RemoteControlMode == RemoteControlMode.Cloudflare)
             {
                 if (_installingCloudflared)
@@ -394,7 +403,9 @@ internal sealed class SettingsViewModel : ObservableObject
 
             if (_remoteControlService.IsLocalhostOnly)
             {
-                return $"Localhost only - other devices can't connect (http://localhost:{_optionsService.RemoteControlPort}/). Click 'Create firewall exception' to allow network access.";
+#pragma warning disable CA1863
+                return string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_LOCALHOST_ONLY, _optionsService.RemoteControlPort);
+#pragma warning restore CA1863
             }
 
             return _remoteControlService.IsRunning
@@ -417,6 +428,13 @@ internal sealed class SettingsViewModel : ObservableObject
             return _remoteControlQrCode;
         }
     }
+
+    /// <summary>
+    /// Gets the visibility of the QR code image: collapsed when there is no address to encode,
+    /// so the empty 180x180 placeholder does not take up space.
+    /// </summary>
+    public System.Windows.Visibility RemoteControlQrVisibility =>
+        RemoteControlQrCode == null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
 
     public string RemoteControlAddresses
     {
@@ -934,6 +952,39 @@ internal sealed class SettingsViewModel : ObservableObject
             if (_optionsService.AllowVideoPause != value)
             {
                 _optionsService.AllowVideoPause = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the volume button is shown in the toolbar (default off).
+    /// Turning it off resets the volume to 100%.
+    /// </summary>
+    public bool ShowVolumeControl
+    {
+        get => _optionsService.ShowVolumeControl;
+        set
+        {
+            if (_optionsService.ShowVolumeControl != value)
+            {
+                _optionsService.ShowVolumeControl = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the remote control page offers volume control (default off).
+    /// </summary>
+    public bool ShowRemoteVolumeControl
+    {
+        get => _optionsService.ShowRemoteVolumeControl;
+        set
+        {
+            if (_optionsService.ShowRemoteVolumeControl != value)
+            {
+                _optionsService.ShowRemoteVolumeControl = value;
                 OnPropertyChanged();
             }
         }
@@ -1542,6 +1593,7 @@ internal sealed class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(CreateFirewallExceptionVisibility));
         OnPropertyChanged(nameof(RemoteControlActiveUrl));
         OnPropertyChanged(nameof(RemoteControlQrCode));
+        OnPropertyChanged(nameof(RemoteControlQrVisibility));
         OnPropertyChanged(nameof(IsRemoteControlBusy));
         OnPropertyChanged(nameof(RemoteControlProgressVisibility));
         OnPropertyChanged(nameof(RemoteControlModeEnabled));
@@ -1560,26 +1612,8 @@ internal sealed class SettingsViewModel : ObservableObject
 
         try
         {
-            var script = Path.Combine(AppContext.BaseDirectory, "InstallCloudflared.ps1");
-            var appDir = CloudflareTunnel.UserInstallDir;
-            Directory.CreateDirectory(appDir);
-            Serilog.Log.Logger.Information("Installing cloudflared (user scope) using {Script} into {Dir}", script, appDir);
-
-            var psi = new System.Diagnostics.ProcessStartInfo("powershell.exe")
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
-            };
-            foreach (var arg in new[] { "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script, "-AppDir", appDir, "-Scope", "user" })
-            {
-                psi.ArgumentList.Add(arg);
-            }
-
-            using var process = System.Diagnostics.Process.Start(psi)
-                ?? throw new InvalidOperationException("Could not start powershell.exe");
-            await process.WaitForExitAsync();
-            Serilog.Log.Logger.Information("cloudflared install script exited with code {Code}", process.ExitCode);
+            // Downloads the pinned release, verifies its SHA-256 and moves it into the per-user folder
+            await CloudflaredInstaller.InstallAsync();
         }
         catch (Exception ex)
         {
@@ -1601,7 +1635,7 @@ internal sealed class SettingsViewModel : ObservableObject
         else
         {
             _cloudflaredInstallFailed = true;
-            Serilog.Log.Logger.Error("cloudflared still not found after install; see %TEMP%\\OnlyM-cloudflared-install.log");
+            Serilog.Log.Logger.Error("cloudflared still not found after install");
         }
 
         RaiseRemoteControlStateChanged();
@@ -1648,20 +1682,33 @@ internal sealed class SettingsViewModel : ObservableObject
                 Serilog.Log.Logger.Information("Firewall exception and URL reservation created for port {Port}; restarting listener", port);
                 _remoteControlService.Restart();
                 RaiseRemoteControlStateChanged();
-                _snackbarService.EnqueueReplacingCurrent(_remoteControlService.IsLocalhostOnly
-                    ? $"Firewall exception created for port {port}, but the remote is still localhost only. See the log for details."
-                    : $"Network access enabled for port {port}.");
+                var message = _remoteControlService.IsLocalhostOnly
+                    ? Properties.Resources.REMOTE_CONTROL_FIREWALL_STILL_LOCALHOST
+                    : Properties.Resources.REMOTE_CONTROL_FIREWALL_DONE;
+                _snackbarService.EnqueueReplacingCurrent(string.Format(CultureInfo.CurrentCulture, message, port));
             }
             else
             {
-                _snackbarService.EnqueueReplacingCurrent("Could not create the firewall exception. Make sure you approve the administrator prompt.");
+                _snackbarService.EnqueueReplacingCurrent(Properties.Resources.REMOTE_CONTROL_FIREWALL_FAILED);
                 Serilog.Log.Logger.Warning("netsh firewall rule exited with code {Code}", process.ExitCode);
             }
         }
         catch (Exception ex)
         {
             Serilog.Log.Logger.Error(ex, "Failed to create firewall exception");
-            _snackbarService.EnqueueReplacingCurrent("Could not create the firewall exception. Make sure you approve the administrator prompt, or create the rule manually.");
+            _snackbarService.EnqueueReplacingCurrent(Properties.Resources.REMOTE_CONTROL_FIREWALL_ERROR);
+        }
+    }
+
+    private void RestartRemoteControl()
+    {
+        try
+        {
+            _remoteControlService.Restart();
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Logger.Error(ex, "Could not restart remote control on the new port");
         }
     }
 

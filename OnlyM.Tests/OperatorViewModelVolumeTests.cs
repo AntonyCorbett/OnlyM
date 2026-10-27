@@ -70,17 +70,16 @@ public sealed class OperatorViewModelVolumeTests : IDisposable
     }
 
     [Theory]
-    [InlineData(100, "Volume 100%", false, "", false)]
-    [InlineData(99, "Volume 99% - media will play quieter", true, "99%", false)]
-    [InlineData(65, "Volume 65% - media will play quieter", true, "65%", false)]
-    [InlineData(1, "Volume 1% - media will play quieter", true, "1%", false)]
-    [InlineData(0, "Muted", true, "Muted", true)]
-    public void ToolTipAndLabel_ReflectVolume(int volume, string toolTip, bool showLabel, string label, bool muted)
+    [InlineData(100, "Volume 100%", "100%", false)]
+    [InlineData(99, "Volume 99% - media will play quieter", "99%", false)]
+    [InlineData(65, "Volume 65% - media will play quieter", "65%", false)]
+    [InlineData(1, "Volume 1% - media will play quieter", "1%", false)]
+    [InlineData(0, "Muted", "0%", true)]
+    public void ToolTipAndLabel_ReflectVolume(int volume, string toolTip, string label, bool muted)
     {
         var vm = CreateVm(volume);
 
         Assert.Equal(toolTip, vm.VolumeToolTip);
-        Assert.Equal(showLabel, vm.ShowVolumeLabel);
         Assert.Equal(label, vm.VolumeLabel);
         Assert.Equal(label, OperatorViewModel.GetVolumeLabel(volume));
         Assert.Equal(muted, vm.IsMuted);
@@ -176,13 +175,11 @@ public sealed class OperatorViewModelVolumeTests : IDisposable
         Assert.False(vm.IsMuted);
         Assert.Equal(30, vm.Volume);
         Assert.Equal(PackIconKind.VolumeLow, vm.VolumeIconKind);
-        Assert.True(vm.ShowVolumeLabel);
         Assert.Equal("30%", vm.VolumeLabel);
         foreach (var name in new[]
                  {
                      nameof(OperatorViewModel.Volume),
                      nameof(OperatorViewModel.IsMuted),
-                     nameof(OperatorViewModel.ShowVolumeLabel),
                      nameof(OperatorViewModel.VolumeLabel),
                      nameof(OperatorViewModel.VolumeIconKind),
                      nameof(OperatorViewModel.VolumeToolTip),
@@ -198,6 +195,24 @@ public sealed class OperatorViewModelVolumeTests : IDisposable
         vm.ToggleMuteCommand.Execute(null);
         vm.ToggleMuteCommand.Execute(null);
         Assert.Equal(30, _volume);
+    }
+
+    [Fact]
+    public void ShowVolumeControl_FollowsOptionAndNotifies()
+    {
+        var show = false;
+        _optionsMock.SetupGet(x => x.ShowVolumeControl).Returns(() => show);
+        var vm = CreateVm(100);
+        Assert.False(vm.ShowVolumeControl);
+
+        var notifications = new List<string?>();
+        vm.PropertyChanged += (_, e) => notifications.Add(e.PropertyName);
+
+        show = true;
+        _optionsMock.Raise(x => x.ShowVolumeControlChangedEvent += null, EventArgs.Empty);
+
+        Assert.True(vm.ShowVolumeControl);
+        Assert.Contains(nameof(OperatorViewModel.ShowVolumeControl), notifications);
     }
 
     [Fact]

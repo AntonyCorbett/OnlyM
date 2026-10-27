@@ -87,6 +87,10 @@ public sealed class OptionsService : IOptionsService
 
     public event EventHandler? VolumeChangedEvent;
 
+    public event EventHandler? ShowVolumeControlChangedEvent;
+
+    public event EventHandler? ShowRemoteVolumeControlChangedEvent;
+
     public event EventHandler? RemoteControlChangedEvent;
 
     public event EventHandler? RemoteControlPinChangedEvent;
@@ -266,6 +270,38 @@ public sealed class OptionsService : IOptionsService
             if (_options.Value.AllowVideoScrubbing != value)
             {
                 _options.Value.AllowVideoScrubbing = value;
+            }
+        }
+    }
+
+    public bool ShowVolumeControl
+    {
+        get => _options.Value.ShowVolumeControl;
+        set
+        {
+            if (_options.Value.ShowVolumeControl != value)
+            {
+                _options.Value.ShowVolumeControl = value;
+                ShowVolumeControlChangedEvent?.Invoke(this, EventArgs.Empty);
+
+                if (!value)
+                {
+                    // No hidden volume: with the control hidden, playback is always at 100%
+                    Volume = 100;
+                }
+            }
+        }
+    }
+
+    public bool ShowRemoteVolumeControl
+    {
+        get => _options.Value.ShowRemoteVolumeControl;
+        set
+        {
+            if (_options.Value.ShowRemoteVolumeControl != value)
+            {
+                _options.Value.ShowRemoteVolumeControl = value;
+                ShowRemoteVolumeControlChangedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }

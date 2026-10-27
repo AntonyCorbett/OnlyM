@@ -836,6 +836,96 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CREATE FIREWALL EXCEPTION.
+        /// </summary>
+        public static string REMOTE_CONTROL_CREATE_FIREWALL {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_CREATE_FIREWALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a Windows Firewall rule and a URL reservation for the current port so other devices on your network can connect, then restarts the remote. You will be asked for administrator permission once. If you change the port later, run this again (the old port&apos;s rule and reservation are removed)..
+        /// </summary>
+        public static string REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network access enabled for port {0}..
+        /// </summary>
+        public static string REMOTE_CONTROL_FIREWALL_DONE {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_FIREWALL_DONE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not create the firewall exception. Make sure you approve the administrator prompt, or create the rule manually..
+        /// </summary>
+        public static string REMOTE_CONTROL_FIREWALL_ERROR {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_FIREWALL_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not create the firewall exception. Make sure you approve the administrator prompt..
+        /// </summary>
+        public static string REMOTE_CONTROL_FIREWALL_FAILED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_FIREWALL_FAILED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firewall exception created for port {0}, but the remote is still localhost only. See the log for details..
+        /// </summary>
+        public static string REMOTE_CONTROL_FIREWALL_STILL_LOCALHOST {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_FIREWALL_STILL_LOCALHOST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Localhost only - other devices can&apos;t connect (http://localhost:{0}/). Click &apos;Create firewall exception&apos; to allow network access..
+        /// </summary>
+        public static string REMOTE_CONTROL_LOCALHOST_ONLY {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_LOCALHOST_ONLY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4-8 digits; at least 6 in Cloudflare mode; blank for none in Local mode.
+        /// </summary>
+        public static string REMOTE_CONTROL_PIN_HELP {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_PIN_HELP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port {0} is already in use, choose another port.
+        /// </summary>
+        public static string REMOTE_CONTROL_PORT_IN_USE {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_PORT_IN_USE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow volume control from the remote.
+        /// </summary>
+        public static string REMOTE_CONTROL_SHOW_VOLUME {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_SHOW_VOLUME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rendering engine.
         /// </summary>
         public static string RENDERING_ENGINE {
@@ -1030,6 +1120,15 @@ namespace OnlyM.Properties {
         public static string SHOW_SUBTITLES {
             get {
                 return ResourceManager.GetString("SHOW_SUBTITLES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show volume control in toolbar.
+        /// </summary>
+        public static string SHOW_VOLUME_CONTROL {
+            get {
+                return ResourceManager.GetString("SHOW_VOLUME_CONTROL", resourceCulture);
             }
         }
         
@@ -1384,7 +1483,7 @@ namespace OnlyM.Properties {
             }
         }
         /// <summary>
-        ///   Looks up a localized string similar to Remote Control.
+        ///   Looks up a localized string similar to REMOTE CONTROL.
         /// </summary>
         public static string SECTION_REMOTE_CONTROL {
             get {
@@ -1411,7 +1510,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install Cloudflare tunnel.
+        ///   Looks up a localized string similar to INSTALL CLOUDFLARE TUNNEL.
         /// </summary>
         public static string REMOTE_CONTROL_INSTALL_CLOUDFLARED {
             get {
@@ -1420,7 +1519,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install failed - see %TEMP%\OnlyM-cloudflared-install.log.
+        ///   Looks up a localized string similar to Install failed - see the OnlyM log for details.
         /// </summary>
         public static string REMOTE_CONTROL_INSTALL_CLOUDFLARED_FAILED {
             get {
@@ -1429,7 +1528,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installing Cloudflare tunnel....
+        ///   Looks up a localized string similar to INSTALLING CLOUDFLARE TUNNEL....
         /// </summary>
         public static string REMOTE_CONTROL_INSTALLING_CLOUDFLARED {
             get {
@@ -1438,7 +1537,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remote control PIN (4-8 digits; at least 6 in Cloudflare mode; blank for none in Local mode).
+        ///   Looks up a localized string similar to Remote control PIN.
         /// </summary>
         public static string REMOTE_CONTROL_PIN {
             get {
@@ -1564,7 +1663,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Retry.
+        ///   Looks up a localized string similar to RETRY.
         /// </summary>
         public static string REMOTE_CONTROL_RETRY {
             get {

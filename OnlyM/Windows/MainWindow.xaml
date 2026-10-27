@@ -114,7 +114,7 @@
                 </Setter>
             </Style>
 
-            <!--  Volume control in the bottom toolbar (operator page): flat mute button, slider and a small level label.  -->
+            <!--  Volume control (operator page toolbar): an icon button opening a popup with mute button, slider and level label.  -->
             <!--  OnlyMNavBarForeground is near-white on the dark-mode toolbar and deep purple on the light-mode toolbar (see DarkModeService)  -->
             <Style
                 x:Key="OnlyMVolumeButton"
@@ -130,7 +130,7 @@
                 <Setter Property="Width" Value="30" />
                 <Setter Property="Height" Value="30" />
                 <Style.Triggers>
-                    <!--  Muted: dimmed VolumeOff icon (the "Muted" label next to the slider carries the message)  -->
+                    <!--  Muted: dimmed VolumeOff icon (the tooltip says "Muted")  -->
                     <DataTrigger Binding="{Binding IsMuted}" Value="True">
                         <Setter Property="Opacity" Value="0.55" />
                     </DataTrigger>
@@ -143,15 +143,6 @@
                 <Setter Property="FontWeight" Value="Medium" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                <Style.Triggers>
-                    <!--  Hidden (not collapsed) at 100% so the slider width does not jump  -->
-                    <DataTrigger Binding="{Binding ShowVolumeLabel}" Value="False">
-                        <Setter Property="Visibility" Value="Hidden" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding IsMuted}" Value="True">
-                        <Setter Property="FontStyle" Value="Italic" />
-                    </DataTrigger>
-                </Style.Triggers>
             </Style>
 
             <Style x:Key="OnlyMVolumeSliderTrack" TargetType="{x:Type RepeatButton}">
@@ -329,6 +320,7 @@
                             <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="50" />
                         </Grid.ColumnDefinitions>
 
                         <Button
@@ -344,65 +336,13 @@
                                 Kind="Backburger" />
                         </Button>
 
-                        <!--  Operator page, left side: volume, then Unhide (folder, help and settings are on the right).  -->
-                        <!--  The slider takes whatever width is left (up to 130), so Unhide always keeps its full width  -->
-                        <Grid Grid.Column="0" VerticalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <!--  Volume for video and audio (also adjustable from the HTTP remote). Bound to the operator view model  -->
-                            <Grid
-                                Grid.Column="0"
-                                Margin="0,0,8,0"
-                                Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Grid DataContext="{Binding Operator, Source={StaticResource Locator}}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" MaxWidth="130" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <Button
-                                        Grid.Column="0"
-                                        AutomationProperties.HelpText="{Binding VolumeToolTip}"
-                                        AutomationProperties.Name="{Binding MuteButtonName}"
-                                        Command="{Binding ToggleMuteCommand}"
-                                        Style="{StaticResource OnlyMVolumeButton}"
-                                        ToolTip="{Binding MuteButtonToolTip}">
-                                        <materialDesign:PackIcon Kind="{Binding VolumeIconKind}" Style="{StaticResource OnlyMVolumeIcon}" />
-                                    </Button>
-
-                                    <Slider
-                                        Grid.Column="1"
-                                        Margin="4,0,0,0"
-                                        AutomationProperties.HelpText="{Binding VolumeToolTip}"
-                                        AutomationProperties.Name="{x:Static resx:Resources.VOLUME}"
-                                        Style="{StaticResource OnlyMVolumeSlider}"
-                                        ToolTip="{Binding VolumeToolTip}"
-                                        Value="{Binding Volume, Mode=TwoWay}" />
-
-                                    <!--  Fixed-width label: '65%' below 100%, 'Muted' at 0, hidden at 100%  -->
-                                    <TextBlock
-                                        Grid.Column="2"
-                                        Width="38"
-                                        Margin="6,0,0,0"
-                                        AutomationProperties.Name="{Binding VolumeToolTip}"
-                                        Style="{StaticResource OnlyMVolumeLabel}"
-                                        Text="{Binding VolumeLabel}"
-                                        ToolTip="{Binding VolumeToolTip}" />
-                                </Grid>
-                            </Grid>
-
-                            <Button
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Command="{Binding UnhideCommand}"
-                                Content="{x:Static resx:Resources.UNHIDE}"
-                                Style="{StaticResource MaterialDesignRaisedAccentButton}"
-                                Visibility="{Binding Path=IsUnhideButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        </Grid>
+                        <Button
+                            Grid.Column="0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding UnhideCommand}"
+                            Content="{x:Static resx:Resources.UNHIDE}"
+                            Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                            Visibility="{Binding Path=IsUnhideButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                         <Button
                             Grid.Column="1"
@@ -416,8 +356,60 @@
                                 Kind="Download" />
                         </Button>
 
+                        <!--  Volume for video and audio (also adjustable from the HTTP remote): one icon button that opens a popup  -->
+                        <!--  with mute, slider and level. Operator page only, and only when 'Show volume control' is on (Settings)  -->
+                        <Grid Grid.Column="2" Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <materialDesign:PopupBox
+                                Padding="0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                AutomationProperties.HelpText="{Binding VolumeToolTip}"
+                                AutomationProperties.Name="{x:Static resx:Resources.VOLUME}"
+                                DataContext="{Binding Operator, Source={StaticResource Locator}}"
+                                Foreground="{DynamicResource OnlyMNavBarForeground}"
+                                PlacementMode="TopAndAlignCentres"
+                                StaysOpen="True"
+                                ToolTip="{Binding VolumeToolTip}"
+                                Visibility="{Binding Path=ShowVolumeControl, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <materialDesign:PopupBox.ToggleContent>
+                                    <materialDesign:PackIcon Kind="{Binding VolumeIconKind}" Style="{StaticResource OnlyMVolumeIcon}" />
+                                </materialDesign:PopupBox.ToggleContent>
+
+                                <Border Padding="8,4" Background="{DynamicResource OnlyMNavBarBackground}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button
+                                            AutomationProperties.HelpText="{Binding VolumeToolTip}"
+                                            AutomationProperties.Name="{Binding MuteButtonName}"
+                                            Command="{Binding ToggleMuteCommand}"
+                                            Style="{StaticResource OnlyMVolumeButton}"
+                                            ToolTip="{Binding MuteButtonToolTip}">
+                                            <materialDesign:PackIcon Kind="{Binding VolumeIconKind}" Style="{StaticResource OnlyMVolumeIcon}" />
+                                        </Button>
+
+                                        <Slider
+                                            Width="150"
+                                            Margin="4,0,0,0"
+                                            AutomationProperties.HelpText="{Binding VolumeToolTip}"
+                                            AutomationProperties.Name="{x:Static resx:Resources.VOLUME}"
+                                            Style="{StaticResource OnlyMVolumeSlider}"
+                                            ToolTip="{Binding VolumeToolTip}"
+                                            Value="{Binding Volume, Mode=TwoWay}" />
+
+                                        <!--  Fixed width so the slider does not move: '65%', '0%' when muted (the tooltip says 'Muted')  -->
+                                        <TextBlock
+                                            Width="38"
+                                            Margin="6,0,0,0"
+                                            AutomationProperties.Name="{Binding VolumeToolTip}"
+                                            Style="{StaticResource OnlyMVolumeLabel}"
+                                            Text="{Binding VolumeLabel}"
+                                            ToolTip="{Binding VolumeToolTip}" />
+                                    </StackPanel>
+                                </Border>
+                            </materialDesign:PopupBox>
+                        </Grid>
+
                         <Button
-                            Grid.Column="2"
+                            Grid.Column="3"
                             Command="{Binding LaunchMediaFolderCommand}"
                             IsEnabled="{Binding Path=IsFolderEnabled}"
                             Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
@@ -431,7 +423,7 @@
                         </Button>
 
                         <Button
-                            Grid.Column="3"
+                            Grid.Column="4"
                             Command="{Binding LaunchHelpPageCommand}"
                             Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
                             ToolTip="{x:Static resx:Resources.DISPLAY_HELP}"
@@ -443,7 +435,7 @@
                         </Button>
 
                         <Button
-                            Grid.Column="4"
+                            Grid.Column="5"
                             Command="{Binding GotoSettingsCommand}"
                             IsEnabled="{Binding Path=IsSettingsEnabled}"
                             Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"

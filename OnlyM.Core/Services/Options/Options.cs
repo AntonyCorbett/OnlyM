@@ -68,7 +68,13 @@ public sealed class Options
 
     public int MetaDataParallelism { get; set; } = 3;
 
-    public int RemoteControlPort { get; set; } = 8088;
+    public int RemoteControlPort { get; set; } = DefaultRemoteControlPort;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the remote page shows a volume control (and the /api/volume
+    /// endpoints are allowed). Off by default.
+    /// </summary>
+    public bool ShowRemoteVolumeControl { get; set; }
 
     public bool RemoteControlEnabled { get; set; }
 
@@ -84,11 +90,23 @@ public sealed class Options
     /// </summary>
     public int Volume { get; set; } = 100;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the volume control is shown in the operator toolbar. Off by default;
+    /// while it is off the volume is kept at 100% so playback never uses a level the operator can't see.
+    /// </summary>
+    public bool ShowVolumeControl { get; set; }
+
     public bool ShowMediaItemCommandPanel { get; set; }
 
     public const int MinRemoteControlPinLength = 4;
 
     public const int MaxRemoteControlPinLength = 8;
+
+    /// <summary>
+    /// Default remote control port: unassigned in the IANA registry and not used by common software
+    /// (8088 is widely used by other web servers and 8096 is used by OnlyT).
+    /// </summary>
+    public const int DefaultRemoteControlPort = 8517;
 
     /// <summary>
     /// Minimum PIN length when the remote is reachable from the internet (Cloudflare mode).
@@ -200,7 +218,7 @@ public sealed class Options
             MediaFolder = FileUtils.GetOnlyMDefaultMediaFolder();
         }
 
-        Volume = Math.Clamp(Volume, 0, 100);
+        Volume = ShowVolumeControl ? Math.Clamp(Volume, 0, 100) : 100;
 
         if (!string.IsNullOrEmpty(RemoteControlPin) && !IsValidRemoteControlPin(RemoteControlPin))
         {
@@ -214,7 +232,7 @@ public sealed class Options
 
         if (RemoteControlPort is < 1 or > 65535)
         {
-            RemoteControlPort = 8088;
+            RemoteControlPort = DefaultRemoteControlPort;
         }
 
         VideoScreenPosition.Sanitize();

@@ -20,7 +20,7 @@ See the [wiki](https://github.com/AntonyCorbett/OnlyM/wiki) for basic instructio
 
 ### Remote Control (optional)
 
-OnlyM can optionally provide a simple HTTP remote (Local LAN or Cloudflare Quick Tunnel) with a browser page, QR code, and optional PIN. See [docs/RemoteControl.md](docs/RemoteControl.md) for details. The feature is off by default.
+OnlyM can optionally provide a simple HTTP remote (Local LAN or Cloudflare Quick Tunnel) with a browser page, QR code, and optional PIN (default port 8517). See [docs/RemoteControl.md](docs/RemoteControl.md) for details. The feature is off by default.
 
 ### Discussions
 

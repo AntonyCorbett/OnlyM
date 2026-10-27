@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -22,6 +23,13 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
 {
     private const string SessionCookieName = "onlym_session";
     private const string CfConnectingIpHeader = "CF-Connecting-IP";
+
+    // Win32 errors from HttpListener.Start when another program already uses the port:
+    // ERROR_SHARING_VIOLATION (a non-http.sys listener) and ERROR_ALREADY_EXISTS (another http.sys registration).
+    private const int ErrorSharingViolation = 32;
+    private const int ErrorAlreadyExists = 183;
+
+    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     private readonly CloudflareTunnel _tunnel = new();
     private readonly RemoteSessionStore _sessions = new();
@@ -72,6 +80,8 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
 
     public bool IsLocalhostOnly =>
         _running && ListenUrl != null && ListenUrl.Contains("://localhost:", StringComparison.OrdinalIgnoreCase);
+
+    public int? PortInUse { get; private set; }
 
     public void Restart()
     {
@@ -143,6 +153,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
         {
             _tunnel.Stop();
             _running = false;
+            PortInUse = null;
 
             var listener = _listener;
             var cts = _listenCts;
@@ -170,6 +181,113 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
         }
     }
 
+    /// <summary>
+    /// Builds the /api/status reply. The slide fields are null unless the active item is a slideshow
+    /// (currentSlideIndex is 0-based). canSeek follows the operator's position slider
+    /// (<see cref="MediaItem.IsSliderVisible"/>): audio/video, scrubbing allowed in Settings, and paused.
+    /// </summary>
+    internal static object BuildStatus(MediaItem? active, int volume, bool volumeEnabled)
+    {
+        var isSlideshow = active?.IsSlideshow == true;
+        return new
+        {
+            isPlaying = active != null && !active.IsPaused,
+            isPaused = active?.IsPaused ?? false,
+            currentItemId = active?.Id.ToString(),
+            positionSeconds = (active?.PlaybackPositionDeciseconds ?? 0) / 10.0,
+            durationSeconds = (active?.DurationDeciseconds ?? 0) / 10.0,
+            canSeek = active?.IsSliderVisible == true,
+            volume,
+            volumeEnabled,
+            currentSlideIndex = isSlideshow ? active!.CurrentSlideshowIndex : (int?)null,
+            slideCount = isSlideshow ? active!.SlideshowCount : (int?)null,
+            isRolling = isSlideshow ? active!.IsRollingSlideshow : (bool?)null,
+        };
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether Next/Previous should change slide rather than media item: the active item
+    /// is a slideshow that can still move in that direction (the same rule as the operator's slide buttons).
+    /// </summary>
+    internal static bool ShouldChangeSlide(MediaItem? active, int step)
+    {
+        if (active is not { IsSlideshow: true })
+        {
+            return false;
+        }
+
+        return step > 0 ? active.IsNextSlideButtonEnabled : active.IsPreviousSlideButtonEnabled;
+    }
+
+    /// <summary>
+    /// Builds one /api/media entry. Slideshows also get slideCount and the operator card's localised
+    /// "(contains n slides)" text as subtitle (both null for other media, and subtitle null until the slides are counted).
+    /// </summary>
+    internal static object BuildMediaEntry(MediaItem m)
+    {
+        var slideCount = m.IsSlideshow ? m.SlideshowCount : (int?)null;
+        return new
+        {
+            id = m.Id.ToString(),
+            name = m.Title ?? Path.GetFileNameWithoutExtension(m.FilePath ?? ""),
+            type = m.MediaType?.Classification.ToString() ?? "Unknown",
+            durationSeconds = m.DurationDeciseconds / 10.0,
+            isActive = m.IsMediaActive,
+            isPaused = m.IsPaused,
+            hasThumbnail = m.FilePath != null,
+            slideCount,
+            subtitle = slideCount > 0 ? MediaItem.GetSlideCountText(slideCount.Value, m.IsRollingSlideshow) : null,
+        };
+    }
+
+    /// <summary>
+    /// Decides whether /api/seek may move <paramref name="active"/> to <paramref name="secondsText"/>, using the
+    /// operator's rule for showing the position slider (<see cref="MediaItem.IsSliderVisible"/>).
+    /// </summary>
+    /// <param name="active">The active media item, or null when nothing is playing.</param>
+    /// <param name="secondsText">The requested position in seconds (invariant culture, e.g. "12.5").</param>
+    /// <returns>
+    /// 200 with the position in deciseconds (clamped to the item's duration), 400 for a malformed or negative
+    /// value, or 409 with the reason when the item can't be scrubbed now (e.g. it is playing).
+    /// </returns>
+    internal static (int StatusCode, string? Error, int Deciseconds) PlanSeek(MediaItem? active, string secondsText)
+    {
+        // No sign or exponent: "-5", "1e3", "NaN" and "Infinity" are all rejected.
+        if (!double.TryParse(secondsText, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var seconds) ||
+            !double.IsFinite(seconds))
+        {
+            return (400, "Position must be a number of seconds (0 or more)", 0);
+        }
+
+        if (active == null)
+        {
+            return (409, "Nothing is playing", 0);
+        }
+
+        if (!active.HasDuration)
+        {
+            return (409, "This item can't be scrubbed", 0);
+        }
+
+        if (!active.AllowPositionSeeking)
+        {
+            return (409, "Position seeking is turned off in OnlyM's settings", 0);
+        }
+
+        if (!active.IsSliderVisible)
+        {
+            return (409, "Pause to scrub", 0);
+        }
+
+        var max = Math.Max(0, active.DurationDeciseconds);
+        var deciseconds = (int)Math.Min(max, Math.Round(seconds * 10, MidpointRounding.AwayFromZero));
+        return (200, null, deciseconds);
+    }
+
+    internal static bool IsAddressInUse(int errorCode) => errorCode is ErrorSharingViolation or ErrorAlreadyExists;
+
+    internal static string SerializeJson(object data) => JsonSerializer.Serialize(data, JsonOptions);
+
     private void StartCore(string? prefix)
     {
         if (_running)
@@ -179,24 +297,37 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
 
         // Listen on all interfaces so devices on the LAN can reach the remote.
         // Requires a one-time URL reservation (as admin): netsh http add urlacl url=http://+:<port>/ user=Everyone
-        prefix ??= $"http://+:{_optionsService.RemoteControlPort}/";
+        var port = _optionsService.RemoteControlPort;
+        prefix ??= $"http://+:{port}/";
+        PortInUse = null;
         HttpListener listener;
         try
         {
-            listener = CreateAndStart(prefix);
+            try
+            {
+                listener = CreateAndStart(prefix);
+            }
+            catch (HttpListenerException ex) when (ex.ErrorCode == 5 && !prefix.Contains("://localhost:", StringComparison.OrdinalIgnoreCase))
+            {
+                // Access denied: listening on anything but localhost needs a URL reservation
+                // (netsh http add urlacl url=<prefix> user=Everyone). Fall back so the remote still works locally.
+                var fallback = $"http://localhost:{port}/";
+                Log.Logger.Warning(
+                    "Remote control could not listen on {Prefix} (access denied; run 'netsh http add urlacl url={Prefix} user=Everyone' as admin). Falling back to {Fallback}",
+                    prefix,
+                    prefix,
+                    fallback);
+                prefix = fallback;
+                listener = CreateAndStart(prefix);
+            }
         }
-        catch (HttpListenerException ex) when (ex.ErrorCode == 5 && !prefix.Contains("://localhost:", StringComparison.OrdinalIgnoreCase))
+        catch (HttpListenerException ex) when (IsAddressInUse(ex.ErrorCode))
         {
-            // Access denied: listening on anything but localhost needs a URL reservation
-            // (netsh http add urlacl url=<prefix> user=Everyone). Fall back so the remote still works locally.
-            var fallback = $"http://localhost:{_optionsService.RemoteControlPort}/";
-            Log.Logger.Warning(
-                "Remote control could not listen on {Prefix} (access denied; run 'netsh http add urlacl url={Prefix} user=Everyone' as admin). Falling back to {Fallback}",
-                prefix,
-                prefix,
-                fallback);
-            prefix = fallback;
-            listener = CreateAndStart(prefix);
+            // Another program (or another OnlyM) already uses the port; Settings asks the user to choose another one
+            PortInUse = port;
+            ListenUrl = null;
+            Log.Logger.Warning(ex, "Remote control could not listen on {Prefix}: port {Port} is already in use", prefix, port);
+            return;
         }
 
         // Each accept loop owns its listener and token, so a loop from a previous Start can never touch the new listener
@@ -228,6 +359,13 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
         }
 
         _tunnelBlockedByPin = false;
+        if (!_running)
+        {
+            // e.g. the port is in use (see PortInUse); without a listener there is nothing to tunnel to
+            _tunnel.Stop();
+            return;
+        }
+
         if (_optionsService.RemoteControlMode != RemoteControlMode.Cloudflare)
         {
             _tunnel.Stop();
@@ -615,9 +753,26 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
                         var idStr = path["/api/play/".Length..];
                         await PlayById(idStr, res);
                     }
-                    else if (path.StartsWith("/api/volume/", StringComparison.Ordinal) && req.HttpMethod == "POST")
+                    else if (path.StartsWith("/api/seek/", StringComparison.Ordinal) && req.HttpMethod == "POST")
                     {
-                        await SetVolume(path["/api/volume/".Length..], res);
+                        await Seek(path["/api/seek/".Length..], res);
+                    }
+                    else if ((path.StartsWith("/api/volume/", StringComparison.Ordinal) || path == "/api/mute") && req.HttpMethod == "POST")
+                    {
+                        if (!_optionsService.ShowRemoteVolumeControl)
+                        {
+                            // The remote volume control is turned off in Settings
+                            res.StatusCode = 403;
+                            await Ok(res, new { error = "Volume control is disabled" });
+                        }
+                        else if (path == "/api/mute")
+                        {
+                            await ToggleMute(res);
+                        }
+                        else
+                        {
+                            await SetVolume(path["/api/volume/".Length..], res);
+                        }
                     }
                     else if (path.StartsWith("/api/thumbnails/", StringComparison.Ordinal) && req.HttpMethod == "GET")
                     {
@@ -667,11 +822,16 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   .media-item { display: flex; align-items: center; gap: 10px; background: #222; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; }
   .media-item.active { border-color: #0a7; }
   .media-item img { flex: 0 0 auto; width: 120px; height: 68px; object-fit: cover; background: #000; }
-  .media-item .name { flex: 1 1 auto; min-width: 0; padding: 6px 8px; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .media-item .text { flex: 1 1 auto; min-width: 0; padding: 6px 8px; }
+  .media-item .name { font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .media-item .sub { font-size: 0.8rem; color: #aaa; margin-top: 2px; }
   button:disabled { opacity: 0.4; cursor: default; }
-  .volume { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-  .volume input { flex: 1 1 auto; accent-color: #0a7; height: 28px; }
-  .volume span { min-width: 3em; text-align: right; }
+  .controls { position: relative; }
+  .controls > button { flex: 1 1 0; min-width: 44px; max-width: 96px; padding-left: 0; padding-right: 0; }
+  .volpop { position: absolute; right: 0; top: 100%; margin-top: 6px; z-index: 6; display: flex; align-items: center; gap: 10px; width: min(340px, calc(100vw - 24px)); box-sizing: border-box; padding: 10px 12px; background: #222; border: 1px solid #444; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.6); }
+  .volpop input { flex: 1 1 auto; min-width: 0; accent-color: #0a7; height: 28px; }
+  .volpop span { min-width: 3em; text-align: right; }
+  .volpop button { min-width: 0; padding: 8px 10px; font-size: 0.95rem; }
   .now { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding: 10px; background: #222; border-radius: 8px; }
   .now img { width: 96px; height: 54px; object-fit: cover; background: #000; border-radius: 4px; }
   .now .info { flex: 1 1 auto; min-width: 0; }
@@ -680,12 +840,17 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   .now .bar { height: 4px; background: #444; border-radius: 2px; margin-top: 6px; overflow: hidden; }
   .now .bar div { height: 100%; width: 0; background: #0a7; }
   .now .time { font-size: 0.75rem; color: #aaa; margin-top: 3px; }
+  .now .seek { display: block; width: 100%; margin: 6px 0 0; height: 24px; accent-color: #0a7; }
   [hidden] { display: none !important; }
   #pinOverlay { display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10; align-items: center; justify-content: center; }
   #pinOverlay .box { background: #222; padding: 20px; border-radius: 10px; text-align: center; }
   #pinInput { font-size: 2rem; width: 7em; text-align: center; letter-spacing: 0.3em; margin: 10px 0; }
   #msg { color: #f66; min-height: 1.2em; margin: -8px 0 8px; font-size: 0.9rem; }
   #pinMsg { color: #f66; min-height: 1.2em; font-size: 0.9rem; }
+  /* Keep the now-playing panel and the buttons in view while scrolling a long list (not on very short screens) */
+  @media (min-height: 500px) {
+    header { position: sticky; top: 0; z-index: 5; background: #111; padding-top: 4px; }
+  }
 </style>
 </head>
 <body>
@@ -698,12 +863,14 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   </form>
 </div>
 <h1>OnlyM Remote</h1>
+<header>
 <div class="now">
   <img id="nowImg" alt="" style="visibility:hidden">
   <div class="info">
     <div class="label" id="nowLabel">Loading...</div>
     <div class="title" id="nowTitle"></div>
     <div class="bar" id="nowBarWrap" style="display:none"><div id="nowBar"></div></div>
+    <input class="seek" type="range" id="seek" min="0" max="0" step="0.1" value="0" aria-label="Position" hidden>
     <div class="time" id="nowTime"></div>
   </div>
 </div>
@@ -712,14 +879,24 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   <button class="primary" id="pauseBtn" onclick="api('/api/pause')" title="Pause" aria-label="Pause">&#x23F8;</button>
   <button class="primary" onclick="api('/api/stop')" title="Stop" aria-label="Stop">&#x23F9;</button>
   <button class="primary" onclick="api('/api/next')" title="Next" aria-label="Next">&#x23ED;</button>
+  <button id="volBtn" title="Volume" aria-label="Volume" aria-haspopup="true" aria-expanded="false" aria-controls="volPop" hidden>&#x1F50A;</button>
   <button onclick="refreshAll()" title="Refresh" aria-label="Refresh">&#x27F3;</button>
+  <div class="volpop" id="volPop" role="group" aria-label="Volume" hidden>
+    <button id="muteBtn" type="button">Mute</button>
+    <input type="range" id="vol" min="0" max="100" step="5" aria-label="Volume level">
+    <span id="volText"></span>
+  </div>
 </div>
 <div id="msg"></div>
-<div class="volume">&#x1F50A; <input type="range" id="vol" min="0" max="100" step="5"> <span id="volText"></span></div>
+</header>
 <div class="media-grid" id="grid"></div>
 <script>
 let media = [];
 let volDragging = false;
+let seekDragging = false;
+let seekDragEnd = null;
+let seekPending = null; // { value, until }: position sent on release, shown until the server reports it
+let lastDuration = 0;
 let lastActiveId = null;
 const $ = id => document.getElementById(id);
 let locked = false;
@@ -798,12 +975,68 @@ function fmt(sec) {
   const m = Math.floor(sec / 60), s = sec % 60;
   return m + ':' + String(s).padStart(2, '0');
 }
+function volIcon(level) {
+  // Same thresholds as the operator's volume button: muted, then low / medium / high
+  return level <= 0 ? '\u{1F507}' : level <= 33 ? '\u{1F508}' : level <= 66 ? '\u{1F509}' : '\u{1F50A}';
+}
+function showVolume(level) {
+  $('vol').value = level;
+  $('volText').textContent = level + '%';
+  $('volBtn').textContent = volIcon(level);
+  $('muteBtn').textContent = level <= 0 ? 'Unmute' : 'Mute';
+}
+function setVolPop(open) {
+  $('volPop').hidden = !open;
+  $('volBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (!open) {
+    volDragging = false;
+  }
+}
 function initVolume() {
   const v = $('vol');
   v.addEventListener('pointerdown', () => volDragging = true);
   v.addEventListener('pointerup', () => volDragging = false);
-  v.addEventListener('input', () => $('volText').textContent = v.value + '%');
-  v.addEventListener('change', async () => { volDragging = false; await call('/api/volume/' + v.value, { method: 'POST' }); });
+  v.addEventListener('input', () => { volDragging = true; showVolume(Number(v.value)); });
+  v.addEventListener('change', async () => { volDragging = false; await api('/api/volume/' + v.value); });
+  $('volBtn').addEventListener('click', () => setVolPop($('volPop').hidden));
+  $('muteBtn').addEventListener('click', () => api('/api/mute'));
+  // Close on a tap outside the pop-over (or its button) and on Escape
+  document.addEventListener('pointerdown', e => {
+    if (!$('volPop').hidden && !$('volPop').contains(e.target) && !$('volBtn').contains(e.target)) {
+      setVolPop(false);
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !$('volPop').hidden) {
+      setVolPop(false);
+      $('volBtn').focus();
+    }
+  });
+}
+function showSeekTime(pos) {
+  $('nowTime').textContent = fmt(pos) + ' / ' + fmt(lastDuration);
+}
+function initSeek() {
+  const s = $('seek');
+  const endDrag = () => {
+    // A tap that doesn't move the thumb fires no change event; stop ignoring the poll shortly after release
+    clearTimeout(seekDragEnd);
+    seekDragEnd = setTimeout(() => seekDragging = false, 300);
+  };
+  s.addEventListener('pointerdown', () => { clearTimeout(seekDragEnd); seekDragging = true; });
+  s.addEventListener('pointerup', endDrag);
+  s.addEventListener('pointercancel', endDrag);
+  // Readout follows the thumb; the position is only sent on release
+  s.addEventListener('input', () => { seekDragging = true; showSeekTime(Number(s.value)); });
+  s.addEventListener('change', async () => {
+    clearTimeout(seekDragEnd);
+    seekDragging = false;
+    const value = Number(s.value);
+    seekPending = { value: value, until: Date.now() + 3000 };
+    if (!await api('/api/seek/' + value.toFixed(1))) {
+      seekPending = null; // e.g. 409 because it started playing; the next poll shows the real position
+    }
+  });
 }
 let msgTimer = null;
 function showMsg(text) {
@@ -814,8 +1047,10 @@ function showMsg(text) {
   }
 }
 async function api(path) {
+  let ok = false;
   try {
     const r = await call(path, { method: 'POST' });
+    ok = r.ok;
     if (!r.ok) {
       let body = {};
       try { body = await r.json(); } catch (e) { }
@@ -827,15 +1062,19 @@ async function api(path) {
     if (!locked) {
       showMsg('Connection lost');
     }
-    return;
+    return false;
   }
   setTimeout(refreshAll, 200);
+  return ok;
 }
 function renderList(activeId) {
   $('grid').innerHTML = media.map(m => `
     <div class="media-item ${m.id === activeId ? 'active' : ''}" onclick="api('/api/play/${m.id}')">
       <img src="/api/thumbnails/${m.id}" alt="" onerror="this.style.visibility='hidden'">
-      <div class="name">${esc(m.name || m.id)}</div>
+      <div class="text">
+        <div class="name">${esc(m.name || m.id)}</div>
+        ${m.subtitle ? `<div class="sub">${esc(m.subtitle)}</div>` : ''}
+      </div>
     </div>
   `).join('');
 }
@@ -856,13 +1095,13 @@ function renderStatus(status) {
     if (img.dataset.src !== src) { img.dataset.src = src; img.src = src; }
     img.style.visibility = 'visible';
     img.onerror = () => img.style.visibility = 'hidden';
-    if (status.durationSeconds > 0) {
-      $('nowBarWrap').style.display = '';
-      $('nowBar').style.width = Math.min(100, 100 * status.positionSeconds / status.durationSeconds) + '%';
-      $('nowTime').textContent = fmt(status.positionSeconds) + ' / ' + fmt(status.durationSeconds);
-    } else {
-      $('nowBarWrap').style.display = 'none';
+    renderPosition(status);
+    if (!(status.durationSeconds > 0)) {
       $('nowTime').textContent = item?.type || '';
+    }
+    if (typeof status.slideCount === 'number' && status.slideCount > 0) {
+      // e.g. "Slide 3 of 8" (currentSlideIndex is 0-based)
+      $('nowTime').textContent = (status.isRolling ? 'Rolling slide ' : 'Slide ') + (status.currentSlideIndex + 1) + ' of ' + status.slideCount;
     }
   } else {
     $('nowLabel').textContent = 'Stopped';
@@ -870,18 +1109,61 @@ function renderStatus(status) {
     $('nowImg').style.visibility = 'hidden';
     $('nowImg').dataset.src = '';
     $('nowBarWrap').style.display = 'none';
+    $('seek').hidden = true;
+    seekDragging = false;
+    seekPending = null;
     $('nowTime').textContent = '';
   }
 
+  $('volBtn').hidden = !status.volumeEnabled;
+  if (!status.volumeEnabled) {
+    setVolPop(false);
+  }
   if (!volDragging && typeof status.volume === 'number') {
-    $('vol').value = status.volume;
-    $('volText').textContent = status.volume + '%';
+    showVolume(status.volume);
   }
 
   if (status.currentItemId !== lastActiveId) {
     lastActiveId = status.currentItemId;
     renderList(lastActiveId);
   }
+}
+function renderPosition(status) {
+  const duration = status.durationSeconds || 0;
+  lastDuration = duration;
+  const s = $('seek');
+  if (!(duration > 0)) {
+    $('nowBarWrap').style.display = 'none';
+    s.hidden = true;
+    return;
+  }
+  if (!status.canSeek) {
+    // Playing, or not seekable: plain progress bar (OnlyM only allows scrubbing while paused)
+    seekDragging = false;
+    seekPending = null;
+    s.hidden = true;
+    $('nowBarWrap').style.display = '';
+    $('nowBar').style.width = Math.min(100, 100 * status.positionSeconds / duration) + '%';
+    $('nowTime').textContent = fmt(status.positionSeconds) + ' / ' + fmt(duration);
+    return;
+  }
+  $('nowBarWrap').style.display = 'none';
+  s.hidden = false;
+  s.max = duration;
+  if (seekDragging) {
+    showSeekTime(Number(s.value)); // don't move the thumb under the user's finger
+    return;
+  }
+  if (seekPending) {
+    if (Math.abs(status.positionSeconds - seekPending.value) <= 0.5 || Date.now() > seekPending.until) {
+      seekPending = null; // confirmed (or given up waiting): follow the server again
+    } else {
+      showSeekTime(seekPending.value);
+      return;
+    }
+  }
+  s.value = status.positionSeconds;
+  showSeekTime(status.positionSeconds);
 }
 async function pollStatus() {
   try {
@@ -911,6 +1193,7 @@ async function refreshAll() {
   }
 }
 initVolume();
+initSeek();
 refreshAll();
 setInterval(pollStatus, 500);   // what's playing, position, volume
 setInterval(refreshAll, 10000);  // media list (rarely changes)
@@ -926,37 +1209,17 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
 
     private async Task ListMedia(HttpListenerResponse res)
     {
-        var items = await OnUi(() => _operatorViewModel.MediaItems
-            .Select(m => new
-            {
-                id = m.Id.ToString(),
-                name = m.Title ?? Path.GetFileNameWithoutExtension(m.FilePath ?? ""),
-                type = m.MediaType?.Classification.ToString() ?? "Unknown",
-                durationSeconds = m.DurationDeciseconds / 10.0,
-                isActive = m.IsMediaActive,
-                isPaused = m.IsPaused,
-                hasThumbnail = m.FilePath != null
-            })
-            .ToList());
+        var items = await OnUi(() => _operatorViewModel.MediaItems.Select(BuildMediaEntry).ToList());
 
         await Ok(res, items);
     }
 
     private async Task Status(HttpListenerResponse res)
     {
-        var status = await OnUi(() =>
-        {
-            var active = _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive);
-            return new
-            {
-                isPlaying = active != null && !active.IsPaused,
-                isPaused = active?.IsPaused ?? false,
-                currentItemId = active?.Id.ToString(),
-                positionSeconds = (active?.PlaybackPositionDeciseconds ?? 0) / 10.0,
-                durationSeconds = (active?.DurationDeciseconds ?? 0) / 10.0,
-                volume = _optionsService.Volume
-            };
-        });
+        var status = await OnUi(() => BuildStatus(
+            _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive),
+            _optionsService.Volume,
+            _optionsService.ShowRemoteVolumeControl));
 
         await Ok(res, status);
     }
@@ -995,9 +1258,11 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             var activeType = active?.MediaType?.Classification;
             var targetType = target?.MediaType?.Classification;
             var targetIsAv = targetType is Core.Models.MediaClassification.Video or Core.Models.MediaClassification.Audio;
+            // The operator window won't start anything but audio while a rolling slideshow runs, so stop that too
             var stop = active != null && active.Id != id &&
                        (activeType == Core.Models.MediaClassification.Video ||
-                        (activeType == Core.Models.MediaClassification.Audio && targetIsAv));
+                        (activeType == Core.Models.MediaClassification.Audio && targetIsAv) ||
+                        (active.IsRollingSlideshow && targetType != Core.Models.MediaClassification.Audio));
             return (active?.Id, stop, target?.Title ?? id.ToString());
         });
 
@@ -1089,6 +1354,20 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
 
     private async Task PlayRelative(HttpListenerResponse res, int step)
     {
+        // A slideshow works like a presentation clicker: Next/Previous change slide while it can move that way,
+        // then move on to the next/previous media item.
+        var slide = await OnUi(() =>
+        {
+            var active = _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive);
+            return ShouldChangeSlide(active, step) ? (Id: active!.Id, Index: active.CurrentSlideshowIndex) : ((Guid Id, int Index)?)null;
+        });
+
+        if (slide is { } s)
+        {
+            await ChangeSlide(res, s.Id, s.Index, step);
+            return;
+        }
+
         var targetId = await OnUi(() =>
         {
             var items = _operatorViewModel.MediaItems.ToList();
@@ -1121,6 +1400,26 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         await StartItem(targetId.Value, res);
     }
 
+    private async Task ChangeSlide(HttpListenerResponse res, Guid slideshowId, int oldIndex, int step)
+    {
+        var newIndex = await OnUi(() =>
+        {
+            var command = step > 0 ? _operatorViewModel.NextSlideCommand : _operatorViewModel.PreviousSlideCommand;
+            command.Execute(slideshowId);
+            return _operatorViewModel.MediaItems.FirstOrDefault(m => m.Id == slideshowId)?.CurrentSlideshowIndex;
+        });
+
+        if (newIndex == null || newIndex == oldIndex)
+        {
+            // e.g. a slide transition (or other media change) is still in progress
+            res.StatusCode = 409;
+            await Ok(res, new { error = step > 0 ? "Could not move to the next slide" : "Could not move to the previous slide" });
+            return;
+        }
+
+        await Ok(res, new { success = true, id = slideshowId, slideIndex = newIndex });
+    }
+
     private async Task SetVolume(string valueStr, HttpListenerResponse res)
     {
         if (!int.TryParse(valueStr, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var volume) ||
@@ -1133,6 +1432,45 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
 
         await OnUi(() => _optionsService.Volume = volume);
         await Ok(res, new { success = true, volume });
+    }
+
+    private async Task ToggleMute(HttpListenerResponse res)
+    {
+        // The operator's mute button: mutes, or restores the level that was in use before muting
+        var volume = await OnUi(() =>
+        {
+            _operatorViewModel.ToggleMuteCommand.Execute(null);
+            return _optionsService.Volume;
+        });
+
+        await Ok(res, new { success = true, volume });
+    }
+
+    private async Task Seek(string secondsText, HttpListenerResponse res)
+    {
+        // Checked and applied in one UI-thread step so the item can't start playing in between. Setting the
+        // position is exactly what the operator's slider does: the paused frame moves if "Allow scrubbing when
+        // paused" is on, and either way playback resumes from the new position.
+        var (statusCode, error, positionSeconds) = await OnUi(() =>
+        {
+            var active = _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive);
+            var plan = PlanSeek(active, secondsText);
+            if (plan.StatusCode == 200)
+            {
+                active!.PlaybackPositionDeciseconds = plan.Deciseconds;
+            }
+
+            return (plan.StatusCode, plan.Error, plan.Deciseconds / 10.0);
+        });
+
+        if (statusCode != 200)
+        {
+            res.StatusCode = statusCode;
+            await Ok(res, new { error });
+            return;
+        }
+
+        await Ok(res, new { success = true, positionSeconds });
     }
 
     private async Task ServeThumbnail(string idStr, HttpListenerResponse res)
@@ -1200,7 +1538,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
 
     private static async Task WriteJson(HttpListenerResponse res, object data)
     {
-        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        var json = SerializeJson(data);
         var buf = Encoding.UTF8.GetBytes(json);
         res.ContentLength64 = buf.Length;
         await res.OutputStream.WriteAsync(buf);

@@ -533,6 +533,143 @@ public class OptionsServiceTests
     }
 
     [Fact]
+    public void ShowVolumeControl_TurnedOff_ResetsVolumeTo100()
+    {
+        var originalShow = _service.ShowVolumeControl;
+        var originalVolume = _service.Volume;
+        try
+        {
+            _service.ShowVolumeControl = true;
+            _service.Volume = 40;
+
+            var showChanged = 0;
+            var volumeChanged = 0;
+            _service.ShowVolumeControlChangedEvent += (_, _) => showChanged++;
+            _service.VolumeChangedEvent += (_, _) => volumeChanged++;
+
+            _service.ShowVolumeControl = false;
+
+            Assert.False(_service.ShowVolumeControl);
+            Assert.Equal(100, _service.Volume);
+            Assert.Equal(1, showChanged);
+            Assert.Equal(1, volumeChanged);
+        }
+        finally
+        {
+            _service.ShowVolumeControl = true;
+            _service.Volume = originalVolume;
+            _service.ShowVolumeControl = originalShow;
+        }
+    }
+
+    [Fact]
+    public void ShowRemoteVolumeControl_GetSet_RaisesEvent()
+    {
+        var original = _service.ShowRemoteVolumeControl;
+        try
+        {
+            var changed = 0;
+            _service.ShowRemoteVolumeControlChangedEvent += (_, _) => changed++;
+
+            _service.ShowRemoteVolumeControl = !original;
+            _service.ShowRemoteVolumeControl = !original;
+
+            Assert.Equal(!original, _service.ShowRemoteVolumeControl);
+            Assert.Equal(1, changed);
+        }
+        finally
+        {
+            _service.ShowRemoteVolumeControl = original;
+        }
+    }
+
+    [Fact]
+    public void RemoteControlChangedEvent_OnlyForEnableAndMode()
+    {
+        // RemoteControlChangedEvent makes the remote service re-apply its settings (it is idempotent, but a
+        // spurious event must never come from display options such as the remote volume control).
+        var originalRemoteVolume = _service.ShowRemoteVolumeControl;
+        var originalShowVolume = _service.ShowVolumeControl;
+        var originalVolume = _service.Volume;
+        var originalPin = _service.RemoteControlPin;
+        var originalPort = _service.RemoteControlPort;
+        var originalScrub = _service.AllowVideoScrubbing;
+        var originalSeek = _service.AllowVideoPositionSeeking;
+        var originalEnabled = _service.RemoteControlEnabled;
+        var originalMode = _service.RemoteControlMode;
+        try
+        {
+            var changed = 0;
+            _service.RemoteControlChangedEvent += (_, _) => changed++;
+
+            _service.ShowRemoteVolumeControl = !originalRemoteVolume;
+            _service.ShowRemoteVolumeControl = originalRemoteVolume;
+            _service.ShowVolumeControl = !originalShowVolume;
+            _service.ShowVolumeControl = originalShowVolume;
+            _service.Volume = originalVolume == 40 ? 60 : 40;
+            _service.RemoteControlPin = originalPin == "135790" ? "246802" : "135790";
+            _service.RemoteControlPort = originalPort == 8091 ? 8092 : 8091; // applied by SettingsViewModel
+            _service.AllowVideoScrubbing = !originalScrub;
+            _service.AllowVideoPositionSeeking = !originalSeek;
+            Assert.Equal(0, changed);
+
+            _service.RemoteControlEnabled = !originalEnabled;
+            Assert.Equal(1, changed);
+            _service.RemoteControlMode = originalMode == RemoteControlMode.Local ? RemoteControlMode.Cloudflare : RemoteControlMode.Local;
+            Assert.Equal(2, changed);
+        }
+        finally
+        {
+            _service.ShowRemoteVolumeControl = originalRemoteVolume;
+            _service.ShowVolumeControl = originalShowVolume;
+            _service.Volume = originalVolume;
+            _service.RemoteControlPin = originalPin;
+            _service.RemoteControlPort = originalPort;
+            _service.AllowVideoScrubbing = originalScrub;
+            _service.AllowVideoPositionSeeking = originalSeek;
+            _service.RemoteControlEnabled = originalEnabled;
+            _service.RemoteControlMode = originalMode;
+        }
+    }
+
+    [Fact]
+    public void Options_VolumeControlsDefaultOff_AndPortIsUncommon()
+    {
+        var options = new Options();
+
+        Assert.False(options.ShowVolumeControl);
+        Assert.False(options.ShowRemoteVolumeControl);
+        Assert.Equal(Options.DefaultRemoteControlPort, options.RemoteControlPort);
+        Assert.NotEqual(8088, options.RemoteControlPort);
+        Assert.NotEqual(8096, options.RemoteControlPort);
+    }
+
+    [Theory]
+    [InlineData(false, 40, 100)]
+    [InlineData(false, 0, 100)]
+    [InlineData(true, 40, 40)]
+    [InlineData(true, 0, 0)]
+    [InlineData(true, 150, 100)]
+    public void Options_Sanitize_ResetsVolumeWhenControlHidden(bool showVolumeControl, int volume, int expected)
+    {
+        var options = new Options { ShowVolumeControl = showVolumeControl, Volume = volume };
+
+        options.Sanitize();
+
+        Assert.Equal(expected, options.Volume);
+    }
+
+    [Fact]
+    public void Options_Sanitize_InvalidPort_UsesDefault()
+    {
+        var options = new Options { RemoteControlPort = 0 };
+
+        options.Sanitize();
+
+        Assert.Equal(Options.DefaultRemoteControlPort, options.RemoteControlPort);
+    }
+
+    [Fact]
     public void Save_DoesNotThrow()
     {
         _service.Save();
