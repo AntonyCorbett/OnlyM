@@ -1,4 +1,4 @@
-namespace OnlyM.Core.Services.Options;
+﻿namespace OnlyM.Core.Services.Options;
 
 public enum RemoteControlMode
 {

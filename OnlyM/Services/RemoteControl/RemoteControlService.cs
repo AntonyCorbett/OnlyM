@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +7,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
 using OnlyM.Core.Services.Media;
@@ -20,19 +21,21 @@ namespace OnlyM.Services.RemoteControl;
 internal sealed class RemoteControlService : IRemoteControlService, IDisposable
 {
     private const string SessionCookieName = "onlym_session";
-    private const int MaxFailedLogins = 5;
-    private static readonly TimeSpan LoginLockout = TimeSpan.FromSeconds(60);
+    private const string CfConnectingIpHeader = "CF-Connecting-IP";
 
     private readonly CloudflareTunnel _tunnel = new();
-    private readonly ConcurrentDictionary<string, byte> _sessions = new(StringComparer.Ordinal);
-    private readonly object _loginLock = new();
-    private int _failedLogins;
-    private DateTime _loginLockedUntilUtc = DateTime.MinValue;
+    private readonly RemoteSessionStore _sessions = new();
+    private readonly LoginGuard _loginGuard = new();
+
+    // Serialises Start/Stop/Restart/ApplySettings/RetryTunnel (reentrant, so they can call each other)
+    private readonly object _lifecycleLock = new();
     private readonly OperatorViewModel _operatorViewModel;
     private readonly IThumbnailService _thumbnailService;
     private readonly IOptionsService _optionsService;
     private HttpListener? _listener;
-    private bool _running;
+    private CancellationTokenSource? _listenCts;
+    private volatile bool _running;
+    private volatile bool _tunnelBlockedByPin;
 
     public RemoteControlService(
         OperatorViewModel operatorViewModel,
@@ -48,7 +51,16 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
         {
             // PIN changed: everyone must log in again
             _sessions.Clear();
+            _loginGuard.Clear();
             Log.Logger.Information("Remote control PIN changed; remote sessions cleared");
+
+            if (_optionsService.RemoteControlEnabled &&
+                _optionsService.RemoteControlMode == RemoteControlMode.Cloudflare &&
+                _tunnelBlockedByPin)
+            {
+                // e.g. the tunnel was blocked by a too-short PIN; try again with the new one
+                Task.Run(RetryTunnel);
+            }
         };
     }
 
@@ -63,13 +75,16 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
 
     public void Restart()
     {
-        Log.Logger.Information("Restarting remote control listener");
-        if (_running || _tunnel.IsRunning)
+        lock (_lifecycleLock)
         {
-            Stop();
-        }
+            Log.Logger.Information("Restarting remote control listener");
+            if (_running || _tunnel.IsRunning)
+            {
+                Stop();
+            }
 
-        ApplySettings();
+            ApplySettings();
+        }
     }
 
     public string? TunnelUrl => _tunnel.PublicUrl;
@@ -80,42 +95,21 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
 
     public void RetryTunnel()
     {
-        Log.Logger.Information("Retrying Cloudflare tunnel");
-        _tunnel.Stop();
-        ApplySettings();
+        lock (_lifecycleLock)
+        {
+            Log.Logger.Information("Retrying Cloudflare tunnel");
+            _tunnel.Stop();
+            ApplySettings();
+        }
     }
 
     public void ApplySettings()
     {
         try
         {
-            if (!_optionsService.RemoteControlEnabled)
+            lock (_lifecycleLock)
             {
-                if (_running || _tunnel.IsRunning)
-                {
-                    Stop();
-                }
-
-                return;
-            }
-
-            if (!_running)
-            {
-                Start();
-            }
-
-            if (_optionsService.RemoteControlMode == RemoteControlMode.Cloudflare)
-            {
-                OnTunnelStarting();
-                var port = _optionsService.RemoteControlPort;
-                _tunnel.BeginStart();
-
-                // cloudflared can take a while to start; don't block the caller (often the UI thread)
-                _ = Task.Run(() => _tunnel.Start(port));
-            }
-            else
-            {
-                _tunnel.Stop();
+                ApplySettingsCore();
             }
         }
         catch (Exception ex)
@@ -124,6 +118,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
         }
         finally
         {
+            // raised outside the lock so handlers can't deadlock against it
             StateChanged?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -136,14 +131,59 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
 
     public void Start(string? prefix = null)
     {
-        if (_running) return;
+        lock (_lifecycleLock)
+        {
+            StartCore(prefix);
+        }
+    }
+
+    public void Stop()
+    {
+        lock (_lifecycleLock)
+        {
+            _tunnel.Stop();
+            _running = false;
+
+            var listener = _listener;
+            var cts = _listenCts;
+            _listener = null;
+            _listenCts = null;
+
+            // Cancel first so the accept loop treats the listener shutdown as expected
+            cts?.Cancel();
+            if (listener != null)
+            {
+                try
+                {
+                    listener.Stop();
+                }
+                catch (Exception ex) when (ex is HttpListenerException or ObjectDisposedException)
+                {
+                    // ignore
+                }
+
+                listener.Close();
+            }
+
+            cts?.Dispose();
+            Log.Logger.Information("Remote control stopped");
+        }
+    }
+
+    private void StartCore(string? prefix)
+    {
+        if (_running)
+        {
+            return;
+        }
 
         // Listen on all interfaces so devices on the LAN can reach the remote.
         // Requires a one-time URL reservation (as admin): netsh http add urlacl url=http://+:<port>/ user=Everyone
         prefix ??= $"http://+:{_optionsService.RemoteControlPort}/";
+        HttpListener listener;
         try
         {
-            _listener = CreateAndStart(prefix);
+            listener = CreateAndStart(prefix);
         }
         catch (HttpListenerException ex) when (ex.ErrorCode == 5 && !prefix.Contains("://localhost:", StringComparison.OrdinalIgnoreCase))
         {
@@ -156,24 +196,84 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
                 prefix,
                 fallback);
             prefix = fallback;
-            _listener = CreateAndStart(prefix);
+            listener = CreateAndStart(prefix);
         }
 
+        // Each accept loop owns its listener and token, so a loop from a previous Start can never touch the new listener
+        var cts = new CancellationTokenSource();
+        _listener = listener;
+        _listenCts = cts;
         ListenUrl = prefix;
         _running = true;
 
         Log.Logger.Information("Remote control listening on {Url}", prefix);
-        _ = Task.Run(ListenLoop);
+        _ = Task.Run(() => ListenLoop(listener, cts.Token));
     }
 
-    private void OnTunnelStarting()
+    private void ApplySettingsCore()
     {
-        // The tunnel makes the remote reachable from the internet, so a PIN is mandatory
-        if (string.IsNullOrEmpty(_optionsService.RemoteControlPin))
+        if (!_optionsService.RemoteControlEnabled)
         {
-            _optionsService.RemoteControlPin = RandomNumberGenerator.GetInt32(0, 10000).ToString("D4", System.Globalization.CultureInfo.InvariantCulture);
-            Log.Logger.Information("Cloudflare mode requires a remote control PIN; a random PIN was generated (see Settings)");
+            if (_running || _tunnel.IsRunning)
+            {
+                Stop();
+            }
+
+            return;
         }
+
+        if (!_running)
+        {
+            Start();
+        }
+
+        _tunnelBlockedByPin = false;
+        if (_optionsService.RemoteControlMode != RemoteControlMode.Cloudflare)
+        {
+            _tunnel.Stop();
+            return;
+        }
+
+        if (!EnsureCloudflarePin())
+        {
+            _tunnelBlockedByPin = true;
+            _tunnel.Stop();
+            _tunnel.SetFailed(Properties.Resources.REMOTE_CONTROL_TUNNEL_PIN_TOO_SHORT);
+            return;
+        }
+
+        var port = _optionsService.RemoteControlPort;
+        if (_tunnel.BeginStart())
+        {
+            // cloudflared can take a while to start; don't block the caller (often the UI thread)
+            _ = Task.Run(() => _tunnel.Start(port));
+        }
+    }
+
+    /// <summary>
+    /// The tunnel makes the remote reachable from the internet, so a PIN of at least
+    /// <see cref="Options.MinCloudflarePinLength"/> digits is mandatory. Generates one if none is set.
+    /// </summary>
+    /// <returns>False if the existing PIN is too short (the tunnel must not start).</returns>
+    private bool EnsureCloudflarePin()
+    {
+        var pin = _optionsService.RemoteControlPin;
+        if (string.IsNullOrEmpty(pin))
+        {
+            _optionsService.RemoteControlPin = RandomNumberGenerator.GetInt32(0, 1_000_000).ToString("D6", System.Globalization.CultureInfo.InvariantCulture);
+            Log.Logger.Information("Cloudflare mode requires a remote control PIN; a random 6-digit PIN was generated (see Settings)");
+            return true;
+        }
+
+        if (!Options.IsValidCloudflarePin(pin))
+        {
+            Log.Logger.Warning(
+                "Cloudflare tunnel not started: the remote control PIN must be at least {Length} digits",
+                Options.MinCloudflarePinLength);
+            return false;
+        }
+
+        return true;
     }
 
     private bool IsAuthorised(HttpListenerRequest req)
@@ -183,8 +283,48 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
             return true;
         }
 
-        var token = req.Cookies[SessionCookieName]?.Value;
-        return !string.IsNullOrEmpty(token) && _sessions.ContainsKey(token);
+        // Validating also slides the session's idle timeout; expired sessions get 401 and the page shows the PIN prompt
+        return _sessions.TryValidate(req.Cookies[SessionCookieName]?.Value);
+    }
+
+    /// <summary>
+    /// Identifies the client for login throttling. Requests relayed by cloudflared arrive from loopback,
+    /// so for those the real client address comes from Cloudflare's CF-Connecting-IP header. The header is
+    /// trusted only for loopback requests while the tunnel is running (and, if the browser sent an Origin,
+    /// only when it is the tunnel's), so a LAN client cannot spoof it to dodge the limit. The address is then
+    /// keyed by <see cref="ClientKeys"/> (full IPv4 address; IPv6 /64 and /48 prefixes).
+    /// </summary>
+    private ClientKeys GetClientKeys(HttpListenerRequest req)
+    {
+        var remote = req.RemoteEndPoint?.Address;
+        if (remote != null &&
+            IPAddress.IsLoopback(remote) &&
+            IsFromTunnel(req) &&
+            req.Headers[CfConnectingIpHeader] is { } header &&
+            IPAddress.TryParse(header.Trim(), out var clientIp))
+        {
+            return ClientKeys.For(clientIp, "cf:");
+        }
+
+        return ClientKeys.For(remote);
+    }
+
+    private bool IsFromTunnel(HttpListenerRequest req)
+    {
+        if (_optionsService.RemoteControlMode != RemoteControlMode.Cloudflare || !_tunnel.IsRunning)
+        {
+            return false;
+        }
+
+        var origin = req.Headers["Origin"];
+        if (string.IsNullOrEmpty(origin))
+        {
+            return true;
+        }
+
+        return TunnelAuthority() is { } tunnel &&
+               Uri.TryCreate(origin, UriKind.Absolute, out var originUri) &&
+               originUri.Authority.Equals(tunnel, StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task Login(HttpListenerRequest req, HttpListenerResponse res)
@@ -197,64 +337,58 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
 
         var pin = ParsePin(body, req.ContentType);
         var expected = _optionsService.RemoteControlPin;
-        var attemptsLeft = MaxFailedLogins;
-        var retryAfter = 0;
+        var client = GetClientKeys(req);
 
-        lock (_loginLock)
+        var block = _loginGuard.Check(client, out var wait);
+        if (block != LoginGuard.Block.None)
         {
-            if (DateTime.UtcNow < _loginLockedUntilUtc)
+            if (block == LoginGuard.Block.Global)
             {
-                res.StatusCode = 429;
-                retryAfter = (int)Math.Ceiling((_loginLockedUntilUtc - DateTime.UtcNow).TotalSeconds);
-                pin = null;
-                expected = null;
+                Log.Logger.Warning(
+                    "Remote control: global wrong-PIN budget used up ({Count} in {Minutes} minutes); login from {Client} refused, retry in {Seconds} s",
+                    _loginGuard.Global.Budget,
+                    _loginGuard.Global.Window.TotalMinutes,
+                    client,
+                    Math.Ceiling(wait.TotalSeconds));
             }
-            else if (string.IsNullOrEmpty(expected) ||
-                     (pin != null && CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(pin), Encoding.UTF8.GetBytes(expected))))
-            {
-                _failedLogins = 0;
-            }
-            else
-            {
-                res.StatusCode = 401;
-                if (++_failedLogins >= MaxFailedLogins)
-                {
-                    _failedLogins = 0;
-                    _loginLockedUntilUtc = DateTime.UtcNow + LoginLockout;
-                    res.StatusCode = 429;
-                    retryAfter = (int)LoginLockout.TotalSeconds;
-                    Log.Logger.Warning(
-                        "Remote control: {Count} wrong PIN attempts (last from {Address}); logins blocked for {Seconds} seconds",
-                        MaxFailedLogins,
-                        req.RemoteEndPoint?.Address,
-                        LoginLockout.TotalSeconds);
-                }
-                else
-                {
-                    attemptsLeft = MaxFailedLogins - _failedLogins;
-                }
-            }
-        }
 
-        if (res.StatusCode == 429)
-        {
-            retryAfter = Math.Max(1, retryAfter);
-            res.Headers.Add("Retry-After", retryAfter.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            await Ok(res, new { error = "locked", retryAfter });
+            await Locked(res, wait);
             return;
         }
 
-        if (res.StatusCode == 401)
+        var correct = string.IsNullOrEmpty(expected) ||
+                      (pin != null && CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(pin), Encoding.UTF8.GetBytes(expected)));
+        if (!correct)
         {
-            await Ok(res, new { error = "wrong", attemptsLeft });
+            var result = _loginGuard.RegisterFailure(client);
+            if (result.LockedOut)
+            {
+                Log.Logger.Warning(
+                    "Remote control: too many wrong PIN attempts from {Client}; logins from it blocked for {Seconds} seconds",
+                    client,
+                    Math.Ceiling(result.RetryAfter.TotalSeconds));
+                await Locked(res, result.RetryAfter);
+                return;
+            }
+
+            res.StatusCode = 401;
+            await Ok(res, new { error = "wrong", attemptsLeft = result.AttemptsLeft });
             return;
         }
 
-        var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
-        _sessions[token] = 0;
+        _loginGuard.RegisterSuccess(client);
+        var token = _sessions.Create();
         res.Headers.Add("Set-Cookie", $"{SessionCookieName}={token}; Path=/; HttpOnly; SameSite=Strict");
-        Log.Logger.Information("Remote control login from {Address}", req.RemoteEndPoint?.Address);
+        Log.Logger.Information("Remote control login from {Client}", client);
         await Ok(res);
+    }
+
+    private static async Task Locked(HttpListenerResponse res, TimeSpan wait)
+    {
+        var retryAfter = Math.Max(1, (int)Math.Ceiling(wait.TotalSeconds));
+        res.StatusCode = 429;
+        res.Headers.Add("Retry-After", retryAfter.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        await Ok(res, new { error = "locked", retryAfter });
     }
 
     private static string? ParsePin(string body, string? contentType)
@@ -289,6 +423,76 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
         return null;
     }
 
+    /// <summary>
+    /// Only accept Host names that can legitimately point at this PC: IP addresses, localhost,
+    /// the machine name (optionally with .local or the DNS domain) and the Cloudflare tunnel host.
+    /// Stops DNS-rebinding pages (evil.example resolving to this PC) from passing the Origin check.
+    /// </summary>
+    private bool IsAllowedHost(HttpListenerRequest req)
+    {
+        var host = req.Url?.Host;
+        if (string.IsNullOrEmpty(host))
+        {
+            return false;
+        }
+
+        host = host.Trim('[', ']').TrimEnd('.');
+        if (IPAddress.TryParse(host, out _) || host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        var machine = Environment.MachineName;
+        if (host.Equals(machine, StringComparison.OrdinalIgnoreCase) ||
+            host.Equals(machine + ".local", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        var domain = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
+        if (!string.IsNullOrEmpty(domain) && host.Equals($"{machine}.{domain}", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return TunnelAuthority() is { } tunnel &&
+               host.Equals(new Uri("https://" + tunnel).Host, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Browsers send Origin on cross-site requests (and on same-origin POSTs). If present it must match
+    /// the Host the request was sent to, or the public tunnel URL (cloudflared rewrites Host to localhost).
+    /// Requests without Origin (curl, scripts, plain navigation) are allowed; the PIN still applies.
+    /// </summary>
+    private bool IsSameOrigin(HttpListenerRequest req)
+    {
+        var origin = req.Headers["Origin"];
+        if (string.IsNullOrEmpty(origin))
+        {
+            return true;
+        }
+
+        if (!Uri.TryCreate(origin, UriKind.Absolute, out var originUri))
+        {
+            return false; // includes "null" (sandboxed iframes, file:// pages)
+        }
+
+        var originAuthority = originUri.Authority;
+        if (Uri.TryCreate("http://" + req.UserHostName, UriKind.Absolute, out var hostUri) &&
+            originUri.Scheme == Uri.UriSchemeHttp &&
+            originAuthority.Equals(hostUri.Authority, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return originUri.Scheme == Uri.UriSchemeHttps &&
+               TunnelAuthority() is { } tunnel &&
+               originAuthority.Equals(tunnel, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private string? TunnelAuthority() =>
+        _tunnel.PublicUrl is { } url && Uri.TryCreate(url, UriKind.Absolute, out var u) ? u.Authority : null;
+
     private static HttpListener CreateAndStart(string prefix)
     {
         var listener = new HttpListener();
@@ -305,33 +509,29 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
         }
     }
 
-    public void Stop()
+    private async Task ListenLoop(HttpListener listener, CancellationToken token)
     {
-        _tunnel.Stop();
-        _running = false;
-        try { _listener?.Stop(); } catch { /* ignore */ }
-        _listener?.Close();
-        _listener = null;
-        Log.Logger.Information("Remote control stopped");
-    }
-
-    private async Task ListenLoop()
-    {
-        while (_running && _listener is { IsListening: true })
+        while (!token.IsCancellationRequested && listener.IsListening)
         {
+            HttpListenerContext context;
             try
             {
-                var context = await _listener.GetContextAsync();
-                _ = Task.Run(() => HandleRequest(context));
+                context = await listener.GetContextAsync();
             }
-            catch (HttpListenerException) when (!_running)
+            catch (Exception ex) when (token.IsCancellationRequested || !listener.IsListening)
             {
+                // expected when the listener is stopped (Stop/Restart)
+                Log.Logger.Debug("Remote control accept loop ending ({Error})", ex.GetType().Name);
                 break;
             }
             catch (Exception ex)
             {
                 Log.Logger.Error(ex, "Accept error");
+                await Task.Delay(100, CancellationToken.None); // avoid a hot loop on a persistent error
+                continue;
             }
+
+            _ = Task.Run(() => HandleRequest(context), CancellationToken.None);
         }
     }
 
@@ -339,18 +539,10 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     {
         var req = context.Request;
         var res = context.Response;
-        res.Headers.Add("Access-Control-Allow-Origin", "*");
-        res.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-        res.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
 
+        // No CORS headers: the remote page is served from this listener, so all its calls are same-origin.
         try
         {
-            if (req.HttpMethod == "OPTIONS")
-            {
-                res.StatusCode = 204;
-                return;
-            }
-
             var path = req.Url?.AbsolutePath.TrimEnd('/') ?? "";
 
             // Serve HTML remote control page at root
@@ -368,6 +560,21 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
             }
 
             res.ContentType = "application/json; charset=utf-8";
+
+            if (!IsAllowedHost(req) || !IsSameOrigin(req))
+            {
+                // Blocks other web pages (cross-site POSTs, DNS rebinding) from driving the API through a browser.
+                Log.Logger.Warning(
+                    "Remote control: rejected {Method} {Path} from {Address} (Host {Host}, Origin {Origin})",
+                    req.HttpMethod,
+                    path,
+                    req.RemoteEndPoint?.Address,
+                    req.UserHostName,
+                    req.Headers["Origin"]);
+                res.StatusCode = 403;
+                await Ok(res, new { error = "Forbidden" });
+                return;
+            }
 
             if (path == "/api/login" && req.HttpMethod == "POST")
             {
@@ -403,7 +610,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
                     await PlayPrevious(res);
                     break;
                 default:
-                    if (path.StartsWith("/api/play/") && req.HttpMethod == "POST")
+                    if (path.StartsWith("/api/play/", StringComparison.Ordinal) && req.HttpMethod == "POST")
                     {
                         var idStr = path["/api/play/".Length..];
                         await PlayById(idStr, res);
@@ -412,7 +619,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
                     {
                         await SetVolume(path["/api/volume/".Length..], res);
                     }
-                    else if (path.StartsWith("/api/thumbnails/") && req.HttpMethod == "GET")
+                    else if (path.StartsWith("/api/thumbnails/", StringComparison.Ordinal) && req.HttpMethod == "GET")
                     {
                         var idStr = path["/api/thumbnails/".Length..];
                         await ServeThumbnail(idStr, res);
@@ -422,6 +629,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
                         res.StatusCode = 404;
                         await Ok(res, new { error = "Not found" });
                     }
+
                     break;
             }
         }
@@ -475,15 +683,16 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   [hidden] { display: none !important; }
   #pinOverlay { display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10; align-items: center; justify-content: center; }
   #pinOverlay .box { background: #222; padding: 20px; border-radius: 10px; text-align: center; }
-  #pinInput { font-size: 2rem; width: 5em; text-align: center; letter-spacing: 0.3em; margin: 10px 0; }
+  #pinInput { font-size: 2rem; width: 7em; text-align: center; letter-spacing: 0.3em; margin: 10px 0; }
+  #msg { color: #f66; min-height: 1.2em; margin: -8px 0 8px; font-size: 0.9rem; }
   #pinMsg { color: #f66; min-height: 1.2em; font-size: 0.9rem; }
 </style>
 </head>
 <body>
 <div id="pinOverlay" hidden>
   <form class="box" onsubmit="unlock(); return false;">
-    <div>Enter PIN</div>
-    <input id="pinInput" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off">
+    <div>Enter PIN (4-8 digits)</div>
+    <input id="pinInput" type="password" inputmode="numeric" pattern="[0-9]{4,8}" minlength="4" maxlength="8" autocomplete="off">
     <div><button class="primary" id="unlockBtn" type="submit">Unlock</button></div>
     <div id="pinMsg"></div>
   </form>
@@ -505,6 +714,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   <button class="primary" onclick="api('/api/next')" title="Next" aria-label="Next">&#x23ED;</button>
   <button onclick="refreshAll()" title="Refresh" aria-label="Refresh">&#x27F3;</button>
 </div>
+<div id="msg"></div>
 <div class="volume">&#x1F50A; <input type="range" id="vol" min="0" max="100" step="5"> <span id="volText"></span></div>
 <div class="media-grid" id="grid"></div>
 <script>
@@ -515,7 +725,9 @@ const $ = id => document.getElementById(id);
 let locked = false;
 
 function showPin() {
-  if (locked) return;
+  if (locked) {
+    return;
+  }
   locked = true;
   $('pinOverlay').hidden = false;
   $('pinInput').value = '';
@@ -558,7 +770,9 @@ function startLockout(seconds) {
   lockTimer = setInterval(tick, 1000);
 }
 async function unlock() {
-  if (lockTimer) return;
+  if (lockTimer) {
+    return;
+  }
   const r = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pin: $('pinInput').value }) });
   let body = {};
   try { body = await r.json(); } catch (e) { }
@@ -591,8 +805,30 @@ function initVolume() {
   v.addEventListener('input', () => $('volText').textContent = v.value + '%');
   v.addEventListener('change', async () => { volDragging = false; await call('/api/volume/' + v.value, { method: 'POST' }); });
 }
+let msgTimer = null;
+function showMsg(text) {
+  $('msg').textContent = text;
+  clearTimeout(msgTimer);
+  if (text) {
+    msgTimer = setTimeout(() => { $('msg').textContent = ''; }, 4000);
+  }
+}
 async function api(path) {
-  try { await call(path, { method: 'POST' }); } catch (e) { return; }
+  try {
+    const r = await call(path, { method: 'POST' });
+    if (!r.ok) {
+      let body = {};
+      try { body = await r.json(); } catch (e) { }
+      showMsg(body.error || ('Request failed (' + r.status + ')'));
+    } else {
+      showMsg('');
+    }
+  } catch (e) {
+    if (!locked) {
+      showMsg('Connection lost');
+    }
+    return;
+  }
   setTimeout(refreshAll, 200);
 }
 function renderList(activeId) {
@@ -649,7 +885,9 @@ function renderStatus(status) {
 }
 async function pollStatus() {
   try {
-    if (locked) return;
+    if (locked) {
+      return;
+    }
     const status = await (await call('/api/status')).json();
     renderStatus(status);
   } catch (e) {
@@ -660,7 +898,9 @@ async function pollStatus() {
 }
 async function refreshAll() {
   try {
-    if (locked) return;
+    if (locked) {
+      return;
+    }
     media = await (await call('/api/media')).json();
     lastActiveId = undefined; // force list redraw
     await pollStatus();
@@ -738,14 +978,81 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             return;
         }
 
-        // Playing the item that is already active would toggle it off, so ignore it.
-        var alreadyActive = await OnUi(() => _operatorViewModel.MediaItems.Any(m => m.Id == id && m.IsMediaActive));
-        if (!alreadyActive)
+        await StartItem(id, res);
+    }
+
+    /// <summary>
+    /// Starts an item the way an operator would: the operator window won't start video/audio while
+    /// video/audio is playing (or anything while a video plays), so the active item is stopped first.
+    /// Replies 409 with a message if the item could not be started.
+    /// </summary>
+    private async Task StartItem(Guid id, HttpListenerResponse res)
+    {
+        (Guid? activeId, bool mustStop, string name) = await OnUi(() =>
         {
-            await OnUiAsync(() => _operatorViewModel.MediaControlCommand1.ExecuteAsync(id));
+            var target = _operatorViewModel.MediaItems.FirstOrDefault(m => m.Id == id);
+            var active = _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive);
+            var activeType = active?.MediaType?.Classification;
+            var targetType = target?.MediaType?.Classification;
+            var targetIsAv = targetType is Core.Models.MediaClassification.Video or Core.Models.MediaClassification.Audio;
+            var stop = active != null && active.Id != id &&
+                       (activeType == Core.Models.MediaClassification.Video ||
+                        (activeType == Core.Models.MediaClassification.Audio && targetIsAv));
+            return (active?.Id, stop, target?.Title ?? id.ToString());
+        });
+
+        // Playing the item that is already active would toggle it off, so ignore it.
+        if (activeId == id)
+        {
+            await Ok(res, new { success = true, id, alreadyActive = true });
+            return;
         }
 
-        await Ok(res, new { success = true, id, alreadyActive });
+        if (mustStop && activeId is { } stopId)
+        {
+            await OnUiAsync(() => _operatorViewModel.MediaControlCommand1.ExecuteAsync(stopId));
+            var stopped = await WaitUntil(
+                () => !_operatorViewModel.MediaItems.Any(m => m.IsMediaChanging || (m.Id == stopId && m.IsMediaActive)),
+                TimeSpan.FromSeconds(5));
+            if (!stopped)
+            {
+                res.StatusCode = 409;
+                await Ok(res, new { error = "The current item did not stop in time" });
+                return;
+            }
+        }
+
+        await OnUiAsync(() => _operatorViewModel.MediaControlCommand1.ExecuteAsync(id));
+        var started = await WaitUntil(
+            () => _operatorViewModel.MediaItems.Any(m => m.Id == id && m.IsMediaActive),
+            TimeSpan.FromSeconds(3));
+        if (!started)
+        {
+            res.StatusCode = 409;
+            await Ok(res, new { error = $"Could not start \"{name}\"" });
+            return;
+        }
+
+        await Ok(res, new { success = true, id, alreadyActive = false });
+    }
+
+    private static async Task<bool> WaitUntil(Func<bool> condition, TimeSpan timeout)
+    {
+        var end = DateTime.UtcNow + timeout;
+        while (true)
+        {
+            if (await OnUi(condition))
+            {
+                return true;
+            }
+
+            if (DateTime.UtcNow >= end)
+            {
+                return false;
+            }
+
+            await Task.Delay(100);
+        }
     }
 
     private async Task StopCurrent(HttpListenerResponse res)
@@ -806,12 +1113,12 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
 
         if (targetId == null)
         {
-            await Ok(res, new { success = false });
+            res.StatusCode = 409;
+            await Ok(res, new { error = "No media items" });
             return;
         }
 
-        await OnUiAsync(() => _operatorViewModel.MediaControlCommand1.ExecuteAsync(targetId));
-        await Ok(res, new { id = targetId });
+        await StartItem(targetId.Value, res);
     }
 
     private async Task SetVolume(string valueStr, HttpListenerResponse res)

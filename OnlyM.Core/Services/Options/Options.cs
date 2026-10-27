@@ -75,7 +75,7 @@ public sealed class Options
     public RemoteControlMode RemoteControlMode { get; set; } = RemoteControlMode.Local;
 
     /// <summary>
-    /// Gets or sets the remote control PIN (exactly 4 digits, or empty for no PIN).
+    /// Gets or sets the remote control PIN (4-8 digits, at least 6 in Cloudflare mode; empty for no PIN in Local mode).
     /// </summary>
     public string? RemoteControlPin { get; set; }
 
@@ -86,8 +86,20 @@ public sealed class Options
 
     public bool ShowMediaItemCommandPanel { get; set; }
 
+    public const int MinRemoteControlPinLength = 4;
+
+    public const int MaxRemoteControlPinLength = 8;
+
+    /// <summary>
+    /// Minimum PIN length when the remote is reachable from the internet (Cloudflare mode).
+    /// </summary>
+    public const int MinCloudflarePinLength = 6;
+
     public static bool IsValidRemoteControlPin(string? pin)
-        => pin is { Length: 4 } && pin.All(char.IsAsciiDigit);
+        => pin is { Length: >= MinRemoteControlPinLength and <= MaxRemoteControlPinLength } && pin.All(char.IsAsciiDigit);
+
+    public static bool IsValidCloudflarePin(string? pin)
+        => IsValidRemoteControlPin(pin) && pin!.Length >= MinCloudflarePinLength;
 
     public bool ShowFreezeCommand { get; set; }
 

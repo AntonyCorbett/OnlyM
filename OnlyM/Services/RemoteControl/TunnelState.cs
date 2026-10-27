@@ -1,4 +1,4 @@
-namespace OnlyM.Services.RemoteControl;
+﻿namespace OnlyM.Services.RemoteControl;
 
 /// <summary>
 /// State of the Cloudflare Quick Tunnel process.

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,8 +11,9 @@ using Serilog;
 namespace OnlyM.Services.RemoteControl;
 
 /// <summary>
-/// Runs "cloudflared tunnel --url http://localhost:port" (a Cloudflare Quick Tunnel)
-/// as a child process and captures the public trycloudflare.com URL.
+/// Runs "cloudflared tunnel --url http://localhost:port --http-host-header localhost:port" (a Cloudflare Quick Tunnel)
+/// as a child process and captures the public trycloudflare.com URL. The Host header is rewritten to localhost so
+/// http.sys accepts the requests even when the listener fell back to http://localhost:port/.
 /// The process is assigned to a Job Object so it dies with OnlyM, even after a crash.
 /// </summary>
 internal sealed partial class CloudflareTunnel : IDisposable
@@ -22,6 +23,9 @@ internal sealed partial class CloudflareTunnel : IDisposable
     private static readonly TimeSpan UrlTimeout = TimeSpan.FromSeconds(30);
 
     private readonly object _lock = new();
+
+    // Serialises whole Start/Stop calls (process launch and kill), so they can't interleave
+    private readonly object _lifecycleLock = new();
     private Process? _process;
     private IntPtr _job;
     private System.Threading.Timer? _timeoutTimer;
@@ -39,18 +43,40 @@ internal sealed partial class CloudflareTunnel : IDisposable
     /// Marks the tunnel as starting (so the UI can show progress immediately);
     /// call <see cref="Start"/> afterwards, typically on a background thread.
     /// </summary>
-    public void BeginStart()
+    /// <returns>False if the tunnel is already running or starting (so no new start is needed).</returns>
+    public bool BeginStart()
     {
         lock (_lock)
         {
             if (_process != null || State == TunnelState.Starting)
             {
-                return;
+                return false;
             }
 
             PublicUrl = null;
             Error = null;
             State = TunnelState.Starting;
+        }
+
+        RaiseStateChanged();
+        return true;
+    }
+
+    /// <summary>
+    /// Puts a stopped tunnel into the Failed state with the given message (e.g. the tunnel may not start yet).
+    /// </summary>
+    public void SetFailed(string message)
+    {
+        lock (_lock)
+        {
+            if (_process != null)
+            {
+                return;
+            }
+
+            PublicUrl = null;
+            Error = message;
+            State = TunnelState.Failed;
         }
 
         RaiseStateChanged();
@@ -70,12 +96,6 @@ internal sealed partial class CloudflareTunnel : IDisposable
     }
 
     /// <summary>
-    /// Locates cloudflared.exe: OnlyM's own folder first (where the installer may
-    /// download it), then PATH (including the persisted machine/user PATH, which may
-    /// be newer than this process's copy), then common install locations.
-    /// Falls back to "cloudflared" so the OS does a normal PATH search.
-    /// </summary>
-    /// <summary>
     /// Gets the per-user folder used when cloudflared is installed from Settings (no admin needed).
     /// </summary>
     public static string UserInstallDir =>
@@ -90,6 +110,11 @@ internal sealed partial class CloudflareTunnel : IDisposable
         return found.Contains(Path.DirectorySeparatorChar, StringComparison.Ordinal) ? found : null;
     }
 
+    /// <summary>
+    /// Locates cloudflared.exe: the per-user install folder first, then PATH (including the persisted
+    /// machine/user PATH, which may be newer than this process's copy), then common install locations.
+    /// Falls back to "cloudflared" so the OS does a normal PATH search.
+    /// </summary>
     private static string FindCloudflared()
     {
         const string exe = "cloudflared.exe";
@@ -146,6 +171,33 @@ internal sealed partial class CloudflareTunnel : IDisposable
 
     public void Start(int port)
     {
+        lock (_lifecycleLock)
+        {
+            StartCore(port);
+        }
+    }
+
+    public void Stop()
+    {
+        lock (_lifecycleLock)
+        {
+            StopCore();
+        }
+    }
+
+    public void Dispose()
+    {
+        Stop();
+        _timeoutTimer?.Dispose();
+        if (_job != IntPtr.Zero)
+        {
+            CloseHandle(_job);
+            _job = IntPtr.Zero;
+        }
+    }
+
+    private void StartCore(int port)
+    {
         lock (_lock)
         {
             if (_process != null || State != TunnelState.Starting)
@@ -157,7 +209,7 @@ internal sealed partial class CloudflareTunnel : IDisposable
             Error = null;
             _lastLine = null;
 
-            var psi = new ProcessStartInfo(FindCloudflared(), $"tunnel --no-autoupdate --url http://localhost:{port}")
+            var psi = new ProcessStartInfo(FindCloudflared(), $"tunnel --no-autoupdate --url http://localhost:{port} --http-host-header localhost:{port}")
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
@@ -165,9 +217,10 @@ internal sealed partial class CloudflareTunnel : IDisposable
                 RedirectStandardError = true,
             };
 
+            // Handlers capture their own process: events from a previous (stopped) process are ignored
             var p = new Process { StartInfo = psi, EnableRaisingEvents = true };
-            p.OutputDataReceived += (_, e) => HandleLine(e.Data);
-            p.ErrorDataReceived += (_, e) => HandleLine(e.Data);
+            p.OutputDataReceived += (_, e) => HandleLine(p, e.Data);
+            p.ErrorDataReceived += (_, e) => HandleLine(p, e.Data);
             p.Exited += (_, _) => HandleExited(p);
 
             try
@@ -197,7 +250,7 @@ internal sealed partial class CloudflareTunnel : IDisposable
         RaiseStateChanged();
     }
 
-    public void Stop()
+    private void StopCore()
     {
         Process? p;
         lock (_lock)
@@ -242,21 +295,10 @@ internal sealed partial class CloudflareTunnel : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        Stop();
-        _timeoutTimer?.Dispose();
-        if (_job != IntPtr.Zero)
-        {
-            CloseHandle(_job);
-            _job = IntPtr.Zero;
-        }
-    }
-
     [GeneratedRegex(@"https://[a-z0-9-]+\.trycloudflare\.com", RegexOptions.IgnoreCase)]
     private static partial Regex UrlRegex();
 
-    private void HandleLine(string? line)
+    private void HandleLine(Process p, string? line)
     {
         if (line == null)
         {
@@ -264,25 +306,32 @@ internal sealed partial class CloudflareTunnel : IDisposable
         }
 
         Log.Logger.Debug("cloudflared: {Line}", line);
-        if (!string.IsNullOrWhiteSpace(line))
-        {
-            _lastLine = line.Trim();
-        }
-
         var url = ParseUrl(line);
-        if (url != null && PublicUrl == null && !url.StartsWith("https://api.", StringComparison.OrdinalIgnoreCase))
+        lock (_lock)
         {
-            lock (_lock)
+            if (!ReferenceEquals(p, _process))
             {
-                PublicUrl = url;
-                State = TunnelState.Connected;
-                _timeoutTimer?.Dispose();
-                _timeoutTimer = null;
+                return; // output from a process that has been stopped or replaced
             }
 
-            Log.Logger.Information("Cloudflare tunnel URL obtained: {Url}", url);
-            RaiseStateChanged();
+            if (!string.IsNullOrWhiteSpace(line))
+            {
+                _lastLine = line.Trim();
+            }
+
+            if (url == null || PublicUrl != null || url.StartsWith("https://api.", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            PublicUrl = url;
+            State = TunnelState.Connected;
+            _timeoutTimer?.Dispose();
+            _timeoutTimer = null;
         }
+
+        Log.Logger.Information("Cloudflare tunnel URL obtained: {Url}", url);
+        RaiseStateChanged();
     }
 
     private void HandleExited(Process p)
@@ -299,9 +348,9 @@ internal sealed partial class CloudflareTunnel : IDisposable
 
         lock (_lock)
         {
-            if (_process != p)
+            if (!ReferenceEquals(p, _process))
             {
-                return; // stopped deliberately
+                return; // stopped deliberately, or a stale exit from a previous process
             }
 
             _process = null;
@@ -322,7 +371,7 @@ internal sealed partial class CloudflareTunnel : IDisposable
     {
         lock (_lock)
         {
-            if (_process != p || PublicUrl != null)
+            if (!ReferenceEquals(p, _process) || PublicUrl != null)
             {
                 return;
             }

@@ -14,6 +14,8 @@
                 x:Key="Locator"
                 d:IsDataSource="True" />
             <SolidColorBrush x:Key="OnlyMNavBarBackground" Color="#FFB39DDB" />
+            <!--  Glyphs drawn directly on the nav bar (volume control); DarkModeService swaps it with the background  -->
+            <SolidColorBrush x:Key="OnlyMNavBarForeground" Color="#FF512DA8" />
             <SolidColorBrush x:Key="OnlyMMediaTypeEllipseStroke" Color="#FF512DA8" />
             <SolidColorBrush x:Key="OnlyMMediaTypeEllipseFill" Color="#FAFAFA" />
             <ResourceDictionary.MergedDictionaries>

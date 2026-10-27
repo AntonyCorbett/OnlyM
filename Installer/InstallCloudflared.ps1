@@ -1,4 +1,4 @@
-# Installs cloudflared (Cloudflare Quick Tunnel client) for OnlyM's internet remote control.
+﻿# Installs cloudflared (Cloudflare Quick Tunnel client) for OnlyM's internet remote control.
 # Tries winget first; if that is unavailable or fails, downloads the official binary into OnlyM's folder.
 # -Scope user installs without admin (winget per-user, or download into -AppDir).
 param([string]$AppDir, [ValidateSet('machine', 'user')][string]$Scope = 'machine')

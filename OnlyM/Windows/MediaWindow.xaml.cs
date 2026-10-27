@@ -638,6 +638,7 @@ public sealed partial class MediaWindow : IDisposable
         _optionsService.ImageScreenPositionChangedEvent -= HandleImageScreenPositionChangedEvent;
         _optionsService.VideoScreenPositionChangedEvent -= HandleVideoScreenPositionChangedEvent;
         _optionsService.WebScreenPositionChangedEvent -= HandleWebScreenPositionChangedEvent;
+        _optionsService.VolumeChangedEvent -= HandleVolumeChangedEvent;
     }
 
     private void UnsubscribeImageEvents()

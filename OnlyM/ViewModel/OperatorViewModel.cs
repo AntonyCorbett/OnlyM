@@ -12,6 +12,7 @@ using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using MaterialDesignThemes.Wpf;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Media;
@@ -38,6 +39,16 @@ namespace OnlyM.ViewModel;
 // ReSharper disable once ClassNeverInstantiated.Global
 internal sealed class OperatorViewModel : ObservableObject, IDisposable
 {
+    /// <summary>
+    /// Level that unmute restores when no earlier audible level is known (e.g. OnlyM was started while muted).
+    /// </summary>
+    public const int DefaultRestoreVolume = 100;
+
+    // A volume level held at least this long counts as "settled" and is what unmute restores,
+    // so dragging the slider (or pressing arrow keys) down to 0 restores the level before the
+    // drag rather than the last intermediate value (e.g. 1%).
+    private static readonly TimeSpan SettledVolumeTime = TimeSpan.FromSeconds(1);
+
     private readonly IMediaProviderService _mediaProviderService;
     private readonly IThumbnailService _thumbnailService;
     private readonly IMediaMetaDataService _metaDataService;
@@ -67,6 +78,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private Task _pendingOrderPersistTask = Task.CompletedTask;
     private string? _manualOrderResetScope;
     private DispatcherTimer? _sortModeTimer;
+    private int _currentVolume;
+    private int _restoreVolume = DefaultRestoreVolume;
+    private DateTime _volumeChangedUtc = DateTime.MinValue;
 
     public OperatorViewModel(
         IMediaProviderService mediaProviderService,
@@ -118,8 +132,13 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
         _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
         _optionsService.ShowSortModeToggleButtonChangedEvent += HandleShowSortModeToggleButtonChangedEvent;
-        _optionsService.VolumeChangedEvent += (_, _) => OnPropertyChanged(nameof(Volume));
-        _optionsService.RemoteControlChangedEvent += (_, _) => OnPropertyChanged(nameof(RemoteControlEnabled));
+        _optionsService.VolumeChangedEvent += HandleVolumeChangedEvent;
+        _currentVolume = _optionsService.Volume;
+        if (_currentVolume > 0)
+        {
+            _restoreVolume = _currentVolume;
+        }
+
         _optionsService.PermanentBackdropChangedEvent += async (_, _) => await HandlePermanentBackdropChangedEvent();
         _optionsService.IncludeBlankScreenItemChangedEvent += async (_, _) => await HandleIncludeBlankScreenItemChangedEvent();
 
@@ -187,13 +206,40 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; private set; } = null!;
 
+    public RelayCommand ToggleMuteCommand { get; private set; } = null!;
+
     public int Volume
     {
         get => _optionsService.Volume;
         set => _optionsService.Volume = value;
     }
 
-    public bool RemoteControlEnabled => _optionsService.RemoteControlEnabled;
+    /// <summary>
+    /// Gets a value indicating whether the volume is muted. Mute is simply Volume == 0, so it is
+    /// persisted in the options and reported as 0 by the remote API.
+    /// </summary>
+    public bool IsMuted => Volume <= 0;
+
+    /// <summary>
+    /// Gets a value indicating whether the level label next to the slider is shown (any level below 100%, including muted).
+    /// </summary>
+    public bool ShowVolumeLabel => Volume < 100;
+
+    /// <summary>
+    /// Gets the text of the level label next to the slider: e.g. "65%" below 100%, "Muted" at 0, empty at 100%.
+    /// </summary>
+    public string VolumeLabel => GetVolumeLabel(Volume);
+
+    public PackIconKind VolumeIconKind => GetVolumeIconKind(Volume);
+
+    public string VolumeToolTip => GetVolumeToolTip(Volume);
+
+    public string MuteButtonName => IsMuted ? Properties.Resources.VOLUME_UNMUTE : Properties.Resources.VOLUME_MUTE;
+
+    public string MuteButtonToolTip =>
+        VolumeToolTip + Environment.NewLine + (IsMuted
+            ? FormatPercent(Properties.Resources.VOLUME_CLICK_TO_UNMUTE, RestoreVolume)
+            : Properties.Resources.VOLUME_CLICK_TO_MUTE);
 
     public bool ShowSortModeToggleButton => _optionsService.ShowSortModeToggleButton;
 
@@ -247,10 +293,21 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         set => SetProperty(ref _thumbnailColWidth, value);
     }
 
+    /// <summary>
+    /// Gets the level that the mute button restores when unmuting (in memory only; not persisted).
+    /// </summary>
+    internal int RestoreVolume => _restoreVolume > 0 ? _restoreVolume : DefaultRestoreVolume;
+
+    /// <summary>
+    /// Gets or sets the clock used to decide when a volume level has settled (replaceable in tests).
+    /// </summary>
+    internal Func<DateTime> UtcNow { get; set; } = () => DateTime.UtcNow;
+
     public void Dispose()
     {
         _optionsService.SortModeChangedEvent -= HandleSortModeChangedEvent;
         _optionsService.ShowSortModeToggleButtonChangedEvent -= HandleShowSortModeToggleButtonChangedEvent;
+        _optionsService.VolumeChangedEvent -= HandleVolumeChangedEvent;
         if (_sortModeTimer != null)
         {
             _sortModeTimer.Stop();
@@ -270,6 +327,36 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
         _startupLoadDone = true;
         LoadMediaItems();
+    }
+
+    internal static PackIconKind GetVolumeIconKind(int volume) => volume switch
+    {
+        <= 0 => PackIconKind.VolumeOff,
+        < 34 => PackIconKind.VolumeLow,
+        < 67 => PackIconKind.VolumeMedium,
+        _ => PackIconKind.VolumeHigh,
+    };
+
+    internal static string GetVolumeLabel(int volume)
+    {
+        if (volume >= 100)
+        {
+            return string.Empty;
+        }
+
+        return volume <= 0
+            ? Properties.Resources.VOLUME_MUTED
+            : FormatPercent(Properties.Resources.VOLUME_PERCENT_SHORT, volume);
+    }
+
+    internal static string GetVolumeToolTip(int volume)
+    {
+        if (volume <= 0)
+        {
+            return Properties.Resources.VOLUME_MUTED;
+        }
+
+        return FormatPercent(volume < 100 ? Properties.Resources.VOLUME_PERCENT_REDUCED : Properties.Resources.VOLUME_PERCENT, volume);
     }
 
     internal void SortMediaItems()
@@ -313,6 +400,43 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         {
             PersistManualOrderForCurrentFolder();
         }
+    }
+
+    private void ToggleMute()
+    {
+        var volume = Volume;
+        if (volume > 0)
+        {
+            _restoreVolume = volume;
+            Volume = 0;
+        }
+        else
+        {
+            Volume = RestoreVolume;
+        }
+    }
+
+    private void HandleVolumeChangedEvent(object? sender, EventArgs e)
+    {
+        // Raised for every change (slider, mute button, remote API). The level before this change
+        // becomes the unmute level if it had been held long enough to be a deliberate setting.
+        var now = UtcNow();
+        if (_currentVolume > 0 && now - _volumeChangedUtc >= SettledVolumeTime)
+        {
+            _restoreVolume = _currentVolume;
+        }
+
+        _currentVolume = _optionsService.Volume;
+        _volumeChangedUtc = now;
+
+        OnPropertyChanged(nameof(Volume));
+        OnPropertyChanged(nameof(IsMuted));
+        OnPropertyChanged(nameof(ShowVolumeLabel));
+        OnPropertyChanged(nameof(VolumeLabel));
+        OnPropertyChanged(nameof(VolumeIconKind));
+        OnPropertyChanged(nameof(VolumeToolTip));
+        OnPropertyChanged(nameof(MuteButtonName));
+        OnPropertyChanged(nameof(MuteButtonToolTip));
     }
 
     private void HandleMaxItemCountChangedEvent(object? sender, EventArgs e)
@@ -738,6 +862,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         NextSlideCommand = new RelayCommand<Guid?>(GotoNextSlide);
 
         EnterStartOffsetEditModeCommand = new RelayCommand<Guid?>(EnterStartOffsetEditMode);
+
+        ToggleMuteCommand = new RelayCommand(ToggleMute);
     }
 
     private async Task ResetManualOrderAsync()
@@ -1575,6 +1701,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             _metaDataProducer.Add(item);
         }
     }
+
+    private static string FormatPercent(string format, int percent) => string.Format(CultureInfo.CurrentCulture, format, percent);
 
     private static string CreateMediaOrderItemKey(string mediaFolder, string fullPath)
     {

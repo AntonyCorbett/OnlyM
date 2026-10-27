@@ -1438,7 +1438,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remote control PIN (4 digits, blank for none).
+        ///   Looks up a localized string similar to Remote control PIN (4-8 digits; at least 6 in Cloudflare mode; blank for none in Local mode).
         /// </summary>
         public static string REMOTE_CONTROL_PIN {
             get {
@@ -1447,11 +1447,29 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The PIN must be exactly 4 digits (required in Cloudflare mode).
+        ///   Looks up a localized string similar to The PIN must be 4-8 digits.
         /// </summary>
         public static string REMOTE_CONTROL_PIN_INVALID {
             get {
                 return ResourceManager.GetString("REMOTE_CONTROL_PIN_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloudflare mode needs a PIN of 6-8 digits.
+        /// </summary>
+        public static string REMOTE_CONTROL_PIN_TOO_SHORT_CLOUDFLARE {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_PIN_TOO_SHORT_CLOUDFLARE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloudflare tunnel not started: the PIN must be at least 6 digits. Enter a longer PIN in Settings..
+        /// </summary>
+        public static string REMOTE_CONTROL_TUNNEL_PIN_TOO_SHORT {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_TUNNEL_PIN_TOO_SHORT", resourceCulture);
             }
         }
         
@@ -1555,20 +1573,83 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please restart OnlyM after changing the remote control port..
-        /// </summary>
-        public static string RESTART_REMOTE_CONTROL {
-            get {
-                return ResourceManager.GetString("RESTART_REMOTE_CONTROL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Volume.
         /// </summary>
         public static string VOLUME {
             get {
                 return ResourceManager.GetString("VOLUME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume {0}%.
+        /// </summary>
+        public static string VOLUME_PERCENT {
+            get {
+                return ResourceManager.GetString("VOLUME_PERCENT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume {0}% - media will play quieter.
+        /// </summary>
+        public static string VOLUME_PERCENT_REDUCED {
+            get {
+                return ResourceManager.GetString("VOLUME_PERCENT_REDUCED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}%.
+        /// </summary>
+        public static string VOLUME_PERCENT_SHORT {
+            get {
+                return ResourceManager.GetString("VOLUME_PERCENT_SHORT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Muted.
+        /// </summary>
+        public static string VOLUME_MUTED {
+            get {
+                return ResourceManager.GetString("VOLUME_MUTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mute.
+        /// </summary>
+        public static string VOLUME_MUTE {
+            get {
+                return ResourceManager.GetString("VOLUME_MUTE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmute.
+        /// </summary>
+        public static string VOLUME_UNMUTE {
+            get {
+                return ResourceManager.GetString("VOLUME_UNMUTE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to mute.
+        /// </summary>
+        public static string VOLUME_CLICK_TO_MUTE {
+            get {
+                return ResourceManager.GetString("VOLUME_CLICK_TO_MUTE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to unmute (restores {0}%).
+        /// </summary>
+        public static string VOLUME_CLICK_TO_UNMUTE {
+            get {
+                return ResourceManager.GetString("VOLUME_CLICK_TO_UNMUTE", resourceCulture);
             }
         }
     }

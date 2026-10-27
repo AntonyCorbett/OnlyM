@@ -110,6 +110,13 @@ internal sealed class DarkModeService : IDarkModeService
                     ? Color.FromRgb(0x37, 0x30, 0x4A) // dark desaturated purple
                     : Color.FromRgb(0xB3, 0x9D, 0xDB)); // DeepPurple 200
 
+            // Glyphs drawn directly on the nav bar (the volume control): near-white on the dark bar,
+            // DeepPurple 700 on the light bar (white on DeepPurple 200 is too low-contrast).
+            Application.Current.Resources["OnlyMNavBarForeground"] = new SolidColorBrush(
+                isDark
+                    ? Color.FromRgb(0xF5, 0xF3, 0xFA) // near-white
+                    : Color.FromRgb(0x51, 0x2D, 0xA8)); // DeepPurple 700
+
             // Apply dark/light title bar to every open window via the DWM API.
             var captionColor = isDark ? (Color?)Color.FromRgb(0x37, 0x30, 0x4A) : null;
             foreach (Window window in Application.Current.Windows)

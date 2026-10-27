@@ -1,4 +1,4 @@
-# OnlyM
+﻿# OnlyM
 
 A Windows Media player using C# and WPF. Designed for media playback. The emphasis is on ease-of-use above advanced function. Please report any problems in the Project Issues section.
 

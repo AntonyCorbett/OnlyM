@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -245,6 +245,12 @@ internal sealed class SettingsViewModel : ObservableObject
             {
                 _previousRemoteControlPort ??= _optionsService.RemoteControlPort;
                 _optionsService.RemoteControlPort = port;
+                if (_optionsService.RemoteControlEnabled)
+                {
+                    // Apply the new port now: restarts the listener and, in Cloudflare mode, the tunnel
+                    _remoteControlService.Restart();
+                }
+
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(RemoteControlAddresses));
                 RaiseRemoteControlStateChanged();
@@ -269,7 +275,8 @@ internal sealed class SettingsViewModel : ObservableObject
     public IEnumerable<RemoteControlModeItem> RemoteControlModes => _remoteControlModes;
 
     /// <summary>
-    /// Gets or sets the remote control PIN: 4 digits, or empty for none (a PIN is generated automatically in Cloudflare mode).
+    /// Gets or sets the remote control PIN: 4-8 digits, or empty for none in Local mode.
+    /// Cloudflare mode needs at least 6 digits (a 6-digit PIN is generated automatically if none is set).
     /// </summary>
     public string RemoteControlPin
     {
@@ -282,11 +289,11 @@ internal sealed class SettingsViewModel : ObservableObject
                 throw new ArgumentException(Properties.Resources.REMOTE_CONTROL_PIN_INVALID);
             }
 
-            if (value.Length == 0 &&
-                _optionsService.RemoteControlEnabled &&
-                _optionsService.RemoteControlMode == RemoteControlMode.Cloudflare)
+            if (_optionsService.RemoteControlEnabled &&
+                _optionsService.RemoteControlMode == RemoteControlMode.Cloudflare &&
+                !Options.IsValidCloudflarePin(value))
             {
-                throw new ArgumentException(Properties.Resources.REMOTE_CONTROL_PIN_INVALID);
+                throw new ArgumentException(Properties.Resources.REMOTE_CONTROL_PIN_TOO_SHORT_CLOUDFLARE);
             }
 
             if (value != RemoteControlPin)

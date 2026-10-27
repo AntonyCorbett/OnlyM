@@ -114,6 +114,156 @@
                 </Setter>
             </Style>
 
+            <!--  Volume control in the bottom toolbar (operator page): flat mute button, slider and a small level label.  -->
+            <!--  OnlyMNavBarForeground is near-white on the dark-mode toolbar and deep purple on the light-mode toolbar (see DarkModeService)  -->
+            <Style
+                x:Key="OnlyMVolumeButton"
+                BasedOn="{StaticResource MaterialDesignIconButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="Width" Value="40" />
+                <Setter Property="Height" Value="40" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Foreground" Value="{DynamicResource OnlyMNavBarForeground}" />
+            </Style>
+
+            <Style x:Key="OnlyMVolumeIcon" TargetType="{x:Type materialDesign:PackIcon}">
+                <Setter Property="Width" Value="30" />
+                <Setter Property="Height" Value="30" />
+                <Style.Triggers>
+                    <!--  Muted: dimmed VolumeOff icon (the "Muted" label next to the slider carries the message)  -->
+                    <DataTrigger Binding="{Binding IsMuted}" Value="True">
+                        <Setter Property="Opacity" Value="0.55" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="OnlyMVolumeLabel" TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="{DynamicResource OnlyMNavBarForeground}" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontWeight" Value="Medium" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                <Style.Triggers>
+                    <!--  Hidden (not collapsed) at 100% so the slider width does not jump  -->
+                    <DataTrigger Binding="{Binding ShowVolumeLabel}" Value="False">
+                        <Setter Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsMuted}" Value="True">
+                        <Setter Property="FontStyle" Value="Italic" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="OnlyMVolumeSliderTrack" TargetType="{x:Type RepeatButton}">
+                <Setter Property="OverridesDefaultStyle" Value="True" />
+                <Setter Property="Focusable" Value="False" />
+                <Setter Property="IsTabStop" Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <!--  Transparent hit area keeps the track easy to click  -->
+                            <Border Background="Transparent">
+                                <Border
+                                    Height="4"
+                                    VerticalAlignment="Center"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="2" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="OnlyMVolumeSliderThumb" TargetType="{x:Type Thumb}">
+                <Setter Property="OverridesDefaultStyle" Value="True" />
+                <Setter Property="Focusable" Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Grid
+                                Width="18"
+                                Height="18"
+                                Background="Transparent">
+                                <Ellipse
+                                    x:Name="Dot"
+                                    Width="15"
+                                    Height="15"
+                                    Fill="{DynamicResource OnlyMNavBarForeground}" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Dot" Property="Width" Value="17" />
+                                    <Setter TargetName="Dot" Property="Height" Value="17" />
+                                </Trigger>
+                                <Trigger Property="IsDragging" Value="True">
+                                    <Setter TargetName="Dot" Property="Width" Value="17" />
+                                    <Setter TargetName="Dot" Property="Height" Value="17" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="OnlyMVolumeSlider" TargetType="{x:Type Slider}">
+                <Setter Property="OverridesDefaultStyle" Value="True" />
+                <Setter Property="MinWidth" Value="48" />
+                <Setter Property="Height" Value="24" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Minimum" Value="0" />
+                <Setter Property="Maximum" Value="100" />
+                <Setter Property="SmallChange" Value="5" />
+                <Setter Property="LargeChange" Value="10" />
+                <Setter Property="IsMoveToPointEnabled" Value="True" />
+                <Setter Property="AutoToolTipPlacement" Value="TopLeft" />
+                <Setter Property="AutoToolTipPrecision" Value="0" />
+                <Setter Property="Focusable" Value="True" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Slider}">
+                            <Grid Background="Transparent">
+                                <!--  Keyboard focus indicator (replaces the default dashed focus rectangle)  -->
+                                <Border
+                                    x:Name="FocusRing"
+                                    Margin="-4,0"
+                                    BorderBrush="{DynamicResource OnlyMNavBarForeground}"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Opacity="0" />
+                                <Track x:Name="PART_Track">
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton
+                                            Background="{DynamicResource OnlyMNavBarForeground}"
+                                            Command="{x:Static Slider.DecreaseLarge}"
+                                            Style="{StaticResource OnlyMVolumeSliderTrack}" />
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.IncreaseRepeatButton>
+                                        <!--  Unfilled part: same colour at about a third opacity so the full range stays visible  -->
+                                        <RepeatButton
+                                            Background="{DynamicResource OnlyMNavBarForeground}"
+                                            Command="{x:Static Slider.IncreaseLarge}"
+                                            Opacity="0.33"
+                                            Style="{StaticResource OnlyMVolumeSliderTrack}" />
+                                    </Track.IncreaseRepeatButton>
+                                    <Track.Thumb>
+                                        <Thumb Style="{StaticResource OnlyMVolumeSliderThumb}" />
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                    <Setter TargetName="FocusRing" Property="Opacity" Value="1" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.4" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
         </ResourceDictionary>
     </Window.Resources>
 
@@ -194,13 +344,65 @@
                                 Kind="Backburger" />
                         </Button>
 
-                        <Button
-                            Grid.Column="0"
-                            HorizontalAlignment="Left"
-                            Command="{Binding UnhideCommand}"
-                            Content="{x:Static resx:Resources.UNHIDE}"
-                            Style="{StaticResource MaterialDesignRaisedAccentButton}"
-                            Visibility="{Binding Path=IsUnhideButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <!--  Operator page, left side: volume, then Unhide (folder, help and settings are on the right).  -->
+                        <!--  The slider takes whatever width is left (up to 130), so Unhide always keeps its full width  -->
+                        <Grid Grid.Column="0" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Volume for video and audio (also adjustable from the HTTP remote). Bound to the operator view model  -->
+                            <Grid
+                                Grid.Column="0"
+                                Margin="0,0,8,0"
+                                Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Grid DataContext="{Binding Operator, Source={StaticResource Locator}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" MaxWidth="130" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button
+                                        Grid.Column="0"
+                                        AutomationProperties.HelpText="{Binding VolumeToolTip}"
+                                        AutomationProperties.Name="{Binding MuteButtonName}"
+                                        Command="{Binding ToggleMuteCommand}"
+                                        Style="{StaticResource OnlyMVolumeButton}"
+                                        ToolTip="{Binding MuteButtonToolTip}">
+                                        <materialDesign:PackIcon Kind="{Binding VolumeIconKind}" Style="{StaticResource OnlyMVolumeIcon}" />
+                                    </Button>
+
+                                    <Slider
+                                        Grid.Column="1"
+                                        Margin="4,0,0,0"
+                                        AutomationProperties.HelpText="{Binding VolumeToolTip}"
+                                        AutomationProperties.Name="{x:Static resx:Resources.VOLUME}"
+                                        Style="{StaticResource OnlyMVolumeSlider}"
+                                        ToolTip="{Binding VolumeToolTip}"
+                                        Value="{Binding Volume, Mode=TwoWay}" />
+
+                                    <!--  Fixed-width label: '65%' below 100%, 'Muted' at 0, hidden at 100%  -->
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        Width="38"
+                                        Margin="6,0,0,0"
+                                        AutomationProperties.Name="{Binding VolumeToolTip}"
+                                        Style="{StaticResource OnlyMVolumeLabel}"
+                                        Text="{Binding VolumeLabel}"
+                                        ToolTip="{Binding VolumeToolTip}" />
+                                </Grid>
+                            </Grid>
+
+                            <Button
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Command="{Binding UnhideCommand}"
+                                Content="{x:Static resx:Resources.UNHIDE}"
+                                Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                                Visibility="{Binding Path=IsUnhideButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </Grid>
 
                         <Button
                             Grid.Column="1"

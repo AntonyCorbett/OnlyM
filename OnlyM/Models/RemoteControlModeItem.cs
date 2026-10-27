@@ -1,4 +1,4 @@
-using OnlyM.Core.Services.Options;
+﻿using OnlyM.Core.Services.Options;
 
 namespace OnlyM.Models;
 

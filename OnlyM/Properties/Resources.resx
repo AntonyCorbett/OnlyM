@@ -737,11 +737,19 @@
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_PIN" xml:space="preserve">
-    <value>Remote control PIN (4 digits, blank for none)</value>
+    <value>Remote control PIN (4-8 digits; at least 6 in Cloudflare mode; blank for none in Local mode)</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_PIN_INVALID" xml:space="preserve">
-    <value>The PIN must be exactly 4 digits (required in Cloudflare mode)</value>
+    <value>The PIN must be 4-8 digits</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_PIN_TOO_SHORT_CLOUDFLARE" xml:space="preserve">
+    <value>Cloudflare mode needs a PIN of 6-8 digits</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_TUNNEL_PIN_TOO_SHORT" xml:space="preserve">
+    <value>Cloudflare tunnel not started: the PIN must be at least 6 digits. Enter a longer PIN in Settings.</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_INSTALL_CLOUDFLARED" xml:space="preserve">
@@ -756,12 +764,40 @@
     <value>Installing Cloudflare tunnel...</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
-  <data name="RESTART_REMOTE_CONTROL" xml:space="preserve">
-    <value>Please restart OnlyM after changing the remote control port.</value>
-    <comment>See Settings =&gt; Remote Control</comment>
-  </data>
   <data name="VOLUME" xml:space="preserve">
     <value>Volume</value>
     <comment>Volume slider on the operator page</comment>
+  </data>
+  <data name="VOLUME_PERCENT" xml:space="preserve">
+    <value>Volume {0}%</value>
+    <comment>Volume tooltip at 100%; {0} is the percentage</comment>
+  </data>
+  <data name="VOLUME_PERCENT_REDUCED" xml:space="preserve">
+    <value>Volume {0}% - media will play quieter</value>
+    <comment>Volume tooltip below 100%; {0} is the percentage</comment>
+  </data>
+  <data name="VOLUME_PERCENT_SHORT" xml:space="preserve">
+    <value>{0}%</value>
+    <comment>Volume level label next to the operator volume slider; {0} is the percentage</comment>
+  </data>
+  <data name="VOLUME_MUTED" xml:space="preserve">
+    <value>Muted</value>
+    <comment>Volume tooltip when the volume is 0</comment>
+  </data>
+  <data name="VOLUME_MUTE" xml:space="preserve">
+    <value>Mute</value>
+    <comment>Accessible name of the volume button when it will mute</comment>
+  </data>
+  <data name="VOLUME_UNMUTE" xml:space="preserve">
+    <value>Unmute</value>
+    <comment>Accessible name of the volume button when it will unmute</comment>
+  </data>
+  <data name="VOLUME_CLICK_TO_MUTE" xml:space="preserve">
+    <value>Click to mute</value>
+    <comment>Second line of the volume button tooltip</comment>
+  </data>
+  <data name="VOLUME_CLICK_TO_UNMUTE" xml:space="preserve">
+    <value>Click to unmute (restores {0}%)</value>
+    <comment>Second line of the volume button tooltip when muted; {0} is the restored percentage</comment>
   </data>
 </root>
