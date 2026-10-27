@@ -19,6 +19,7 @@ namespace OnlyM.Tests;
 /// mute toggle / restore, icon thresholds, tooltips and sync with changes made elsewhere
 /// (e.g. the HTTP remote, which sets IOptionsService.Volume directly).
 /// </summary>
+[Collection(OperatorViewModelCollection.Name)]
 public sealed class OperatorViewModelVolumeTests : IDisposable
 {
     private readonly Mock<IOptionsService> _optionsMock = new();

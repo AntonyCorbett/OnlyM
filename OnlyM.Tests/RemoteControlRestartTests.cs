@@ -19,6 +19,7 @@ namespace OnlyM.Tests;
 /// Only the port, the mode and the enabled state may restart the remote control listener (and with it the Cloudflare
 /// tunnel, which gets a new URL). Display options such as the remote volume control must apply live.
 /// </summary>
+[Collection(OperatorViewModelCollection.Name)]
 public sealed class RemoteControlRestartTests : IDisposable
 {
     private readonly Mock<IOptionsService> _optionsMock = new();

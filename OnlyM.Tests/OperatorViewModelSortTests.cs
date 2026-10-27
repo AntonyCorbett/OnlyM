@@ -23,6 +23,7 @@ namespace OnlyM.Tests;
 ///   - IsManualSortMode
 ///   - MoveMediaItem
 /// </summary>
+[Collection(OperatorViewModelCollection.Name)]
 public sealed class OperatorViewModelSortTests : IDisposable
 {
     // ── Mocks ──────────────────────────────────────────────────────────────
