@@ -845,6 +845,177 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Position must be a number of seconds (0 or more).
+        /// </summary>
+        public static string REMOTE_CONTROL_API_BAD_POSITION {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_BAD_POSITION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume must be 0-100.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_BAD_VOLUME {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_BAD_VOLUME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This item can&apos;t be scrubbed.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_CANT_SCRUB {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_CANT_SCRUB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not start &quot;{0}&quot;.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_COULD_NOT_START {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_COULD_NOT_START", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forbidden.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_FORBIDDEN {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_FORBIDDEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid id.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_INVALID_ID {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_INVALID_ID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Media item not found.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_ITEM_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_ITEM_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not move to the next slide.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_NEXT_SLIDE_FAILED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_NEXT_SLIDE_FAILED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No media items.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_NO_MEDIA_ITEMS {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_NO_MEDIA_ITEMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not found.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing is playing.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_NOTHING_PLAYING {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_NOTHING_PLAYING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause to scrub.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_PAUSE_TO_SCRUB {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_PAUSE_TO_SCRUB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIN required.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_PIN_REQUIRED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_PIN_REQUIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not move to the previous slide.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_PREVIOUS_SLIDE_FAILED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_PREVIOUS_SLIDE_FAILED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Position seeking is turned off in OnlyM&apos;s settings.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_SEEKING_OFF {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_SEEKING_OFF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The current item did not stop in time.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_STOP_TIMEOUT {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_STOP_TIMEOUT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thumbnail not available.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_THUMBNAIL_NOT_AVAILABLE {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_THUMBNAIL_NOT_AVAILABLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thumbnail not found.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_THUMBNAIL_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_THUMBNAIL_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume control is disabled.
+        /// </summary>
+        public static string REMOTE_CONTROL_API_VOLUME_DISABLED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_API_VOLUME_DISABLED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CREATE FIREWALL EXCEPTION.
         /// </summary>
         public static string REMOTE_CONTROL_CREATE_FIREWALL {
@@ -1070,6 +1241,15 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to cloudflared not found - click &apos;Install Cloudflare tunnel&apos; below.
+        /// </summary>
+        public static string REMOTE_CONTROL_TUNNEL_CLOUDFLARED_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_TUNNEL_CLOUDFLARED_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connected: {0}.
         /// </summary>
         public static string REMOTE_CONTROL_TUNNEL_CONNECTED {
@@ -1079,186 +1259,6 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Position must be a number of seconds (0 or more).
-        /// </summary>
-        public static string REMOTE_CONTROL_API_BAD_POSITION {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_BAD_POSITION", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Nothing is playing.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_NOTHING_PLAYING {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_NOTHING_PLAYING", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This item can&apos;t be scrubbed.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_CANT_SCRUB {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_CANT_SCRUB", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Position seeking is turned off in OnlyM&apos;s settings.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_SEEKING_OFF {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_SEEKING_OFF", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pause to scrub.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_PAUSE_TO_SCRUB {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_PAUSE_TO_SCRUB", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Forbidden.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_FORBIDDEN {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_FORBIDDEN", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PIN required.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_PIN_REQUIRED {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_PIN_REQUIRED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Volume control is disabled.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_VOLUME_DISABLED {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_VOLUME_DISABLED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Not found.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_NOT_FOUND {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_NOT_FOUND", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid id.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_INVALID_ID {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_INVALID_ID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Media item not found.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_ITEM_NOT_FOUND {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_ITEM_NOT_FOUND", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The current item did not stop in time.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_STOP_TIMEOUT {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_STOP_TIMEOUT", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not start &quot;{0}&quot;.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_COULD_NOT_START {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_COULD_NOT_START", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No media items.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_NO_MEDIA_ITEMS {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_NO_MEDIA_ITEMS", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not move to the next slide.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_NEXT_SLIDE_FAILED {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_NEXT_SLIDE_FAILED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not move to the previous slide.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_PREVIOUS_SLIDE_FAILED {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_PREVIOUS_SLIDE_FAILED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Volume must be 0-100.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_BAD_VOLUME {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_BAD_VOLUME", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Thumbnail not available.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_THUMBNAIL_NOT_AVAILABLE {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_THUMBNAIL_NOT_AVAILABLE", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Thumbnail not found.
-        /// </summary>
-        public static string REMOTE_CONTROL_API_THUMBNAIL_NOT_FOUND {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_API_THUMBNAIL_NOT_FOUND", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to cloudflared not found - click &apos;Install Cloudflare tunnel&apos; below.
-        /// </summary>
-        public static string REMOTE_CONTROL_TUNNEL_CLOUDFLARED_NOT_FOUND {
-            get {
-                return ResourceManager.GetString("REMOTE_CONTROL_TUNNEL_CLOUDFLARED_NOT_FOUND", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to cloudflared exited unexpectedly (code {0}).
         /// </summary>
         public static string REMOTE_CONTROL_TUNNEL_EXITED {
@@ -1266,7 +1266,7 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("REMOTE_CONTROL_TUNNEL_EXITED", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to No public URL from cloudflared after {0} seconds.
         /// </summary>
@@ -1275,7 +1275,7 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("REMOTE_CONTROL_TUNNEL_NO_URL", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Cloudflare tunnel not started: the PIN must be at least 6 digits. Enter a longer PIN in Settings..
         /// </summary>
