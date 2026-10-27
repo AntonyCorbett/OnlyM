@@ -699,75 +699,6 @@
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="{x:Static resx:Resources.SECTION_MISC}" Style="{StaticResource SettingsGroupBoxStyle}">
-                <StackPanel Orientation="Vertical">
-
-                    <TextBlock
-                        Margin="0,0,0,15"
-                        FontSize="12"
-                        Style="{StaticResource MiscNotesStyle}"
-                        Text="{Binding AppVersionStr}" />
-
-                    <DatePicker
-                        Name="LocaleDatePicker"
-                        Width="420"
-                        Margin="0,0,0,10"
-                        HorizontalAlignment="Left"
-                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.CURRENT_DATE}"
-                        IsEnabled="{Binding IsMediaInactive}"
-                        SelectedDate="{Binding MediaCalendarDate}"
-                        SelectedDateFormat="Long"
-                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
-
-                    <CheckBox
-                        Content="{x:Static resx:Resources.ON_TOP}"
-                        IsChecked="{Binding AlwaysOnTop, Mode=TwoWay}"
-                        Style="{StaticResource SettingsCheckBoxStyle}" />
-
-                    <ComboBox
-                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.LOGGING_LEVEL}"
-                        materialDesign:HintAssist.IsFloating="True"
-                        DisplayMemberPath="Name"
-                        ItemsSource="{Binding LoggingLevels}"
-                        SelectedValue="{Binding LogEventLevel, Mode=TwoWay}"
-                        SelectedValuePath="Level"
-                        Style="{StaticResource SettingsComboBoxStyle}" />
-
-                    <ComboBox
-                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.APP_MODE}"
-                        materialDesign:HintAssist.IsFloating="True"
-                        DisplayMemberPath="Name"
-                        ItemsSource="{Binding AppModes}"
-                        SelectedValue="{Binding AppMode, Mode=TwoWay}"
-                        SelectedValuePath="Mode"
-                        Style="{StaticResource SettingsComboBoxStyle}" />
-
-                    <DockPanel>
-                        <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
-                            Margin="0,0,6,0"
-                            VerticalAlignment="Center"
-                            Kind="Translate" />
-                        <ComboBox
-                            Width="390"
-                            materialDesign:HintAssist.Hint="{x:Static resx:Resources.LANGUAGE}"
-                            materialDesign:HintAssist.IsFloating="True"
-                            DisplayMemberPath="LanguageName"
-                            ItemsSource="{Binding Languages}"
-                            SelectedValue="{Binding LanguageId, Mode=TwoWay}"
-                            SelectedValuePath="LanguageId"
-                            Style="{StaticResource SettingsComboBoxStyle}" />
-                    </DockPanel>
-
-                    <TextBlock
-                        Style="{StaticResource MiscNotesStyle}"
-                        Text="{x:Static resx:Resources.RESTART_LANGUAGE}"
-                        TextWrapping="Wrap" />
-
-                </StackPanel>
-            </GroupBox>
-
             <GroupBox Header="{x:Static resx:Resources.SECTION_REMOTE_CONTROL}" Style="{StaticResource SettingsGroupBoxStyle}">
                 <StackPanel Orientation="Vertical">
 
@@ -886,6 +817,75 @@
                         Content="{Binding InstallCloudflaredButtonText, Mode=OneWay}"
                         Style="{StaticResource MaterialDesignRaisedLightButton}"
                         Visibility="{Binding InstallCloudflaredVisibility, Mode=OneWay}" />
+
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="{x:Static resx:Resources.SECTION_MISC}" Style="{StaticResource SettingsGroupBoxStyle}">
+                <StackPanel Orientation="Vertical">
+
+                    <TextBlock
+                        Margin="0,0,0,15"
+                        FontSize="12"
+                        Style="{StaticResource MiscNotesStyle}"
+                        Text="{Binding AppVersionStr}" />
+
+                    <DatePicker
+                        Name="LocaleDatePicker"
+                        Width="420"
+                        Margin="0,0,0,10"
+                        HorizontalAlignment="Left"
+                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.CURRENT_DATE}"
+                        IsEnabled="{Binding IsMediaInactive}"
+                        SelectedDate="{Binding MediaCalendarDate}"
+                        SelectedDateFormat="Long"
+                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
+
+                    <CheckBox
+                        Content="{x:Static resx:Resources.ON_TOP}"
+                        IsChecked="{Binding AlwaysOnTop, Mode=TwoWay}"
+                        Style="{StaticResource SettingsCheckBoxStyle}" />
+
+                    <ComboBox
+                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.LOGGING_LEVEL}"
+                        materialDesign:HintAssist.IsFloating="True"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding LoggingLevels}"
+                        SelectedValue="{Binding LogEventLevel, Mode=TwoWay}"
+                        SelectedValuePath="Level"
+                        Style="{StaticResource SettingsComboBoxStyle}" />
+
+                    <ComboBox
+                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.APP_MODE}"
+                        materialDesign:HintAssist.IsFloating="True"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding AppModes}"
+                        SelectedValue="{Binding AppMode, Mode=TwoWay}"
+                        SelectedValuePath="Mode"
+                        Style="{StaticResource SettingsComboBoxStyle}" />
+
+                    <DockPanel>
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Margin="0,0,6,0"
+                            VerticalAlignment="Center"
+                            Kind="Translate" />
+                        <ComboBox
+                            Width="390"
+                            materialDesign:HintAssist.Hint="{x:Static resx:Resources.LANGUAGE}"
+                            materialDesign:HintAssist.IsFloating="True"
+                            DisplayMemberPath="LanguageName"
+                            ItemsSource="{Binding Languages}"
+                            SelectedValue="{Binding LanguageId, Mode=TwoWay}"
+                            SelectedValuePath="LanguageId"
+                            Style="{StaticResource SettingsComboBoxStyle}" />
+                    </DockPanel>
+
+                    <TextBlock
+                        Style="{StaticResource MiscNotesStyle}"
+                        Text="{x:Static resx:Resources.RESTART_LANGUAGE}"
+                        TextWrapping="Wrap" />
 
                 </StackPanel>
             </GroupBox>
