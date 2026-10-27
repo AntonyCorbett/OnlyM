@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -121,7 +121,7 @@
     <value>OnlyM verzija programa: {0}</value>
     <comment>See Settings =&gt; Images. Please retain the "{0}" - it's a placeholder for the version number</comment>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
   <data name="blank" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\blank.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -679,5 +679,257 @@
   </data>
   <data name="SHOW_SORT_MODE_TOGGLE_BUTTON" xml:space="preserve">
     <value>Show toggle button</value>
+  </data>
+  <data name="SECTION_REMOTE_CONTROL" xml:space="preserve">
+    <value>REMOTE CONTROL</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_PORT" xml:space="preserve">
+    <value>Remote control port</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_ADDRESS" xml:space="preserve">
+    <value>Open the remote control from another device at:</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_ENABLED" xml:space="preserve">
+    <value>Enable remote control</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_MODE" xml:space="preserve">
+    <value>Remote control mode</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_MODE_CLOUDFLARE" xml:space="preserve">
+    <value>Internet (Cloudflare Quick Tunnel)</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_MODE_LOCAL" xml:space="preserve">
+    <value>Local network</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_STATUS_NOT_RUNNING" xml:space="preserve">
+    <value>Remote control could not start. See the log for details.</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_STATUS_OFF" xml:space="preserve">
+    <value>Remote control is off.</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_STATUS_TUNNEL_STARTING" xml:space="preserve">
+    <value>Starting Cloudflare tunnel...</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_TUNNEL_WAITING_URL" xml:space="preserve">
+    <value>Waiting for public URL...</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_TUNNEL_CONNECTED" xml:space="preserve">
+    <value>Connected: {0}</value>
+    <comment>See Settings =&gt; Remote Control. {0} is the public tunnel URL</comment>
+  </data>
+  <data name="REMOTE_CONTROL_USING_CLOUDFLARED" xml:space="preserve">
+    <value>Using cloudflared: {0}</value>
+    <comment>See Settings =&gt; Remote Control. {0} is the path of cloudflared.exe</comment>
+  </data>
+  <data name="REMOTE_CONTROL_RETRY" xml:space="preserve">
+    <value>RETRY</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_PIN" xml:space="preserve">
+    <value>Remote control PIN</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_PIN_INVALID" xml:space="preserve">
+    <value>The PIN must be 4-8 digits</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_PIN_TOO_SHORT_CLOUDFLARE" xml:space="preserve">
+    <value>Cloudflare mode needs a PIN of 6-8 digits</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_TUNNEL_PIN_TOO_SHORT" xml:space="preserve">
+    <value>Cloudflare tunnel not started: the PIN must be at least 6 digits. Enter a longer PIN in Settings.</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_INSTALL_CLOUDFLARED" xml:space="preserve">
+    <value>INSTALL CLOUDFLARE TUNNEL</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_INSTALL_CLOUDFLARED_FAILED" xml:space="preserve">
+    <value>Install failed - see the OnlyM log for details</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_INSTALLING_CLOUDFLARED" xml:space="preserve">
+    <value>INSTALLING CLOUDFLARE TUNNEL...</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="VOLUME" xml:space="preserve">
+    <value>Volume</value>
+    <comment>Volume slider on the operator page</comment>
+  </data>
+  <data name="VOLUME_PERCENT" xml:space="preserve">
+    <value>Volume {0}%</value>
+    <comment>Volume tooltip at 100%; {0} is the percentage</comment>
+  </data>
+  <data name="VOLUME_PERCENT_REDUCED" xml:space="preserve">
+    <value>Volume {0}% - media will play quieter</value>
+    <comment>Volume tooltip below 100%; {0} is the percentage</comment>
+  </data>
+  <data name="VOLUME_PERCENT_SHORT" xml:space="preserve">
+    <value>{0}%</value>
+    <comment>Volume level label next to the operator volume slider; {0} is the percentage</comment>
+  </data>
+  <data name="VOLUME_MUTED" xml:space="preserve">
+    <value>Muted</value>
+    <comment>Volume tooltip when the volume is 0</comment>
+  </data>
+  <data name="VOLUME_MUTE" xml:space="preserve">
+    <value>Mute</value>
+    <comment>Accessible name of the volume button when it will mute</comment>
+  </data>
+  <data name="VOLUME_UNMUTE" xml:space="preserve">
+    <value>Unmute</value>
+    <comment>Accessible name of the volume button when it will unmute</comment>
+  </data>
+  <data name="VOLUME_CLICK_TO_MUTE" xml:space="preserve">
+    <value>Click to mute</value>
+    <comment>Second line of the volume button tooltip</comment>
+  </data>
+  <data name="VOLUME_CLICK_TO_UNMUTE" xml:space="preserve">
+    <value>Click to unmute (restores {0}%)</value>
+    <comment>Second line of the volume button tooltip when muted; {0} is the restored percentage</comment>
+  </data>
+  <data name="REMOTE_CONTROL_PIN_HELP" xml:space="preserve">
+    <value>4-8 digits; at least 6 in Cloudflare mode; blank for none in Local mode</value>
+    <comment>See Settings =&gt; Remote Control (helper text under the PIN box)</comment>
+  </data>
+  <data name="REMOTE_CONTROL_LOCALHOST_ONLY" xml:space="preserve">
+    <value>Localhost only - other devices can't connect (http://localhost:{0}/). Click 'Create firewall exception' to allow network access.</value>
+    <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
+  </data>
+  <data name="REMOTE_CONTROL_PORT_IN_USE" xml:space="preserve">
+    <value>Port {0} is already in use, choose another port</value>
+    <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
+  </data>
+  <data name="REMOTE_CONTROL_CREATE_FIREWALL" xml:space="preserve">
+    <value>CREATE FIREWALL EXCEPTION</value>
+    <comment>See Settings =&gt; Remote Control (button)</comment>
+  </data>
+  <data name="REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP" xml:space="preserve">
+    <value>Creates a Windows Firewall rule and a URL reservation for the current port so other devices on your network can connect, then restarts the remote. You will be asked for administrator permission once. If you change the port later, run this again (the old port's rule and reservation are removed).</value>
+    <comment>See Settings =&gt; Remote Control (tooltip of the firewall button)</comment>
+  </data>
+  <data name="REMOTE_CONTROL_FIREWALL_DONE" xml:space="preserve">
+    <value>Network access enabled for port {0}.</value>
+    <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
+  </data>
+  <data name="REMOTE_CONTROL_FIREWALL_STILL_LOCALHOST" xml:space="preserve">
+    <value>Firewall exception created for port {0}, but the remote is still localhost only. See the log for details.</value>
+    <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
+  </data>
+  <data name="REMOTE_CONTROL_FIREWALL_FAILED" xml:space="preserve">
+    <value>Could not create the firewall exception. Make sure you approve the administrator prompt.</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_FIREWALL_ERROR" xml:space="preserve">
+    <value>Could not create the firewall exception. Make sure you approve the administrator prompt, or create the rule manually.</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_SHOW_VOLUME" xml:space="preserve">
+    <value>Allow volume control from the remote</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="SHOW_VOLUME_CONTROL" xml:space="preserve">
+    <value>Show volume control in toolbar</value>
+    <comment>See Settings =&gt; Video and Audio. When off, the volume is kept at 100%</comment>
+  </data>
+  <data name="REMOTE_CONTROL_TUNNEL_NO_URL" xml:space="preserve">
+    <value>No public URL from cloudflared after {0} seconds</value>
+    <comment>See Settings =&gt; Remote Control. {0} is the number of seconds</comment>
+  </data>
+  <data name="REMOTE_CONTROL_TUNNEL_CLOUDFLARED_NOT_FOUND" xml:space="preserve">
+    <value>cloudflared not found - click 'Install Cloudflare tunnel' below</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_TUNNEL_EXITED" xml:space="preserve">
+    <value>cloudflared exited unexpectedly (code {0})</value>
+    <comment>See Settings =&gt; Remote Control. {0} is the process exit code</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_BAD_POSITION" xml:space="preserve">
+    <value>Position must be a number of seconds (0 or more)</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_NOTHING_PLAYING" xml:space="preserve">
+    <value>Nothing is playing</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_CANT_SCRUB" xml:space="preserve">
+    <value>This item can't be scrubbed</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_SEEKING_OFF" xml:space="preserve">
+    <value>Position seeking is turned off in OnlyM's settings</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_PAUSE_TO_SCRUB" xml:space="preserve">
+    <value>Pause to scrub</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_FORBIDDEN" xml:space="preserve">
+    <value>Forbidden</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_PIN_REQUIRED" xml:space="preserve">
+    <value>PIN required</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_VOLUME_DISABLED" xml:space="preserve">
+    <value>Volume control is disabled</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_NOT_FOUND" xml:space="preserve">
+    <value>Not found</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_INVALID_ID" xml:space="preserve">
+    <value>Invalid id</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_ITEM_NOT_FOUND" xml:space="preserve">
+    <value>Media item not found</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_STOP_TIMEOUT" xml:space="preserve">
+    <value>The current item did not stop in time</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_COULD_NOT_START" xml:space="preserve">
+    <value>Could not start "{0}"</value>
+    <comment>Error shown on the remote control web page. {0} is the media item title</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_NO_MEDIA_ITEMS" xml:space="preserve">
+    <value>No media items</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_NEXT_SLIDE_FAILED" xml:space="preserve">
+    <value>Could not move to the next slide</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_PREVIOUS_SLIDE_FAILED" xml:space="preserve">
+    <value>Could not move to the previous slide</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_BAD_VOLUME" xml:space="preserve">
+    <value>Volume must be 0-100</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_THUMBNAIL_NOT_AVAILABLE" xml:space="preserve">
+    <value>Thumbnail not available</value>
+    <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="REMOTE_CONTROL_API_THUMBNAIL_NOT_FOUND" xml:space="preserve">
+    <value>Thumbnail not found</value>
+    <comment>Error shown on the remote control web page.</comment>
   </data>
 </root>
