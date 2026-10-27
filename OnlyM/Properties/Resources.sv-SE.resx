@@ -713,183 +713,187 @@
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_STATUS_OFF" xml:space="preserve">
-    <value>Remote control is off.</value>
+    <value>Fjärrstyrningen är avstängd.</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_STATUS_TUNNEL_STARTING" xml:space="preserve">
-    <value>Starting Cloudflare tunnel...</value>
+    <value>Startar Cloudflare tunnel...</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_TUNNEL_WAITING_URL" xml:space="preserve">
-    <value>Waiting for public URL...</value>
+    <value>Väntar på offentlig URL...</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_TUNNEL_CONNECTED" xml:space="preserve">
-    <value>Connected: {0}</value>
+    <value>Ansluten: {0}</value>
     <comment>See Settings =&gt; Remote Control. {0} is the public tunnel URL</comment>
   </data>
   <data name="REMOTE_CONTROL_USING_CLOUDFLARED" xml:space="preserve">
-    <value>Using cloudflared: {0}</value>
+    <value>Använder cloudflared: {0}</value>
     <comment>See Settings =&gt; Remote Control. {0} is the path of cloudflared.exe</comment>
   </data>
   <data name="REMOTE_CONTROL_RETRY" xml:space="preserve">
-    <value>RETRY</value>
+    <value>FÖRSÖK IGEN</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_PIN" xml:space="preserve">
-    <value>Remote control PIN</value>
+    <value>PIN-kod för fjärrstyrning</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_PIN_INVALID" xml:space="preserve">
-    <value>The PIN must be 4-8 digits</value>
+    <value>PIN-koden måste vara 4-8 siffror</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_PIN_TOO_SHORT_CLOUDFLARE" xml:space="preserve">
-    <value>Cloudflare mode needs a PIN of 6-8 digits</value>
+    <value>Cloudflare-läget behöver en PIN-kod på 6-8 siffror</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_TUNNEL_PIN_TOO_SHORT" xml:space="preserve">
-    <value>Cloudflare tunnel not started: the PIN must be at least 6 digits. Enter a longer PIN in Settings.</value>
+    <value>Cloudflare-tunneln startas inte: PIN-koden måste vara minst 6 siffror. Ange en längre PIN-kod i Inställningar.</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_INSTALL_CLOUDFLARED" xml:space="preserve">
-    <value>INSTALL CLOUDFLARE TUNNEL</value>
+    <value>INSTALLERA CLOUDFLARE TUNNEL</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_INSTALL_CLOUDFLARED_FAILED" xml:space="preserve">
-    <value>Install failed - see the OnlyM log for details</value>
+    <value>Installationen misslyckades - se OnlyM-loggen för detaljer</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_INSTALLING_CLOUDFLARED" xml:space="preserve">
-    <value>INSTALLING CLOUDFLARE TUNNEL...</value>
+    <value>INSTALLERAR CLOUDFLARE TUNNEL...</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="VOLUME" xml:space="preserve">
-    <value>Volume</value>
+    <value>Volym</value>
     <comment>Volume slider on the operator page</comment>
   </data>
   <data name="VOLUME_PERCENT" xml:space="preserve">
-    <value>Volume {0}%</value>
-    <comment>Volume tooltip at 100%; {0} is the percentage</comment>
-  </data>
-  <data name="VOLUME_PERCENT_REDUCED" xml:space="preserve">
-    <value>Volume {0}% - media will play quieter</value>
-    <comment>Volume tooltip below 100%; {0} is the percentage</comment>
+    <value>Volym {0}%</value>
+    <comment>Volume tooltip; {0} is the percentage</comment>
   </data>
   <data name="VOLUME_PERCENT_SHORT" xml:space="preserve">
     <value>{0}%</value>
     <comment>Volume level label next to the operator volume slider; {0} is the percentage</comment>
   </data>
   <data name="VOLUME_MUTED" xml:space="preserve">
-    <value>Muted</value>
+    <value>Ljudlös</value>
     <comment>Volume tooltip when the volume is 0</comment>
   </data>
   <data name="VOLUME_MUTE" xml:space="preserve">
-    <value>Mute</value>
+    <value>Ljudlös</value>
     <comment>Accessible name of the volume button when it will mute</comment>
   </data>
   <data name="VOLUME_UNMUTE" xml:space="preserve">
-    <value>Unmute</value>
+    <value>Ljud på</value>
     <comment>Accessible name of the volume button when it will unmute</comment>
   </data>
   <data name="VOLUME_CLICK_TO_MUTE" xml:space="preserve">
-    <value>Click to mute</value>
+    <value>Klicka för ljudlös</value>
     <comment>Second line of the volume button tooltip</comment>
   </data>
   <data name="VOLUME_CLICK_TO_UNMUTE" xml:space="preserve">
-    <value>Click to unmute (restores {0}%)</value>
+    <value>Klicka för ljud på (återställer {0}%)</value>
     <comment>Second line of the volume button tooltip when muted; {0} is the restored percentage</comment>
   </data>
   <data name="REMOTE_CONTROL_PIN_HELP" xml:space="preserve">
-    <value>4-8 digits; at least 6 in Cloudflare mode; blank for none in Local mode</value>
+    <value>4-8 siffror; minst 6 i Cloudflare-läget. Lämna tomt för inget i lokalt läge</value>
     <comment>See Settings =&gt; Remote Control (helper text under the PIN box)</comment>
   </data>
   <data name="REMOTE_CONTROL_LOCALHOST_ONLY" xml:space="preserve">
-    <value>Localhost only - other devices can't connect (http://localhost:{0}/). Click 'Create firewall exception' to allow network access.</value>
+    <value>Endast Localhost - andra enheter kan inte ansluta (http://localhost:{0}/). Klicka på Skapa brandväggsundantag för att tillåta nätverksåtkomst.</value>
     <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
   </data>
   <data name="REMOTE_CONTROL_PORT_IN_USE" xml:space="preserve">
-    <value>Port {0} is already in use, choose another port</value>
+    <value>Port {0} används redan, välj en annan port</value>
     <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
   </data>
   <data name="REMOTE_CONTROL_CREATE_FIREWALL" xml:space="preserve">
-    <value>CREATE FIREWALL EXCEPTION</value>
+    <value>SKAPA BRANDVÄGGSUNDANTAG</value>
     <comment>See Settings =&gt; Remote Control (button)</comment>
   </data>
-  <data name="REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP" xml:space="preserve">
-    <value>Creates a Windows Firewall rule and a URL reservation for the current port so other devices on your network can connect, then restarts the remote. You will be asked for administrator permission once. If you change the port later, run this again (the old port's rule and reservation are removed).</value>
-    <comment>See Settings =&gt; Remote Control (tooltip of the firewall button)</comment>
+  <data name="REMOTE_CONTROL_CREATE_FIREWALL_NOTE" xml:space="preserve">
+    <value>För att låta andra enheter på din nätverksanslutning ansluta behöver OnlyM ett undantag för Windows brandvägg för denna port. Du kommer att bli tillfrågad om administratörsbehörighet. Om du ändrar porten senare, behöver detta göras igen.</value>
+    <comment>See Settings =&gt; Remote Control (note shown above the firewall button)</comment>
   </data>
   <data name="REMOTE_CONTROL_FIREWALL_DONE" xml:space="preserve">
-    <value>Network access enabled for port {0}.</value>
+    <value>Nätverksåtkomst aktiverad för port {0}.</value>
     <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
   </data>
   <data name="REMOTE_CONTROL_FIREWALL_STILL_LOCALHOST" xml:space="preserve">
-    <value>Firewall exception created for port {0}, but the remote is still localhost only. See the log for details.</value>
+    <value>Brandväggsundantag skapas för port {0}, men fjärrstyrningen är fortfarande localhost endast. Se loggen för detaljer.</value>
     <comment>See Settings =&gt; Remote Control; {0} is the port</comment>
   </data>
   <data name="REMOTE_CONTROL_FIREWALL_FAILED" xml:space="preserve">
-    <value>Could not create the firewall exception. Make sure you approve the administrator prompt.</value>
+    <value>Det gick inte att skapa ett undantag från brandväggen. Kontrollera att du godkänner administratörsfrågan.</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_FIREWALL_ERROR" xml:space="preserve">
-    <value>Could not create the firewall exception. Make sure you approve the administrator prompt, or create the rule manually.</value>
+    <value>Det gick inte att skapa ett undantag från brandväggen. Kontrollera att du godkänner administratörsfrågan, eller skapar den manuellt.</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
+  <data name="REMOTE_CONTROL_COPY_URL" xml:space="preserve">
+    <value>Kopiera länk</value>
+    <comment>See Settings =&gt; Remote Control. Tooltip on the button that copies the remote control URL</comment>
+  </data>
+  <data name="REMOTE_CONTROL_URL_COPIED" xml:space="preserve">
+    <value>Länk kopierades till urklipp</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_SHOW_VOLUME" xml:space="preserve">
-    <value>Allow volume control from the remote</value>
+    <value>Tillåt volymkontroll från fjärrstyrningen</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="SHOW_VOLUME_CONTROL" xml:space="preserve">
-    <value>Show volume control in toolbar</value>
+    <value>Visa volymkontrollen i verktygsfältet</value>
     <comment>See Settings =&gt; Video and Audio. When off, the volume is kept at 100%</comment>
   </data>
   <data name="REMOTE_CONTROL_TUNNEL_NO_URL" xml:space="preserve">
-    <value>No public URL from cloudflared after {0} seconds</value>
+    <value>Ingen publik URL från cloudflared efter {0} sekunder</value>
     <comment>See Settings =&gt; Remote Control. {0} is the number of seconds</comment>
   </data>
   <data name="REMOTE_CONTROL_TUNNEL_CLOUDFLARED_NOT_FOUND" xml:space="preserve">
-    <value>cloudflared not found - click 'Install Cloudflare tunnel' below</value>
+    <value>cloudflared hittades inte - klicka på "Installera Cloudflare tunnel" nedan</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_TUNNEL_EXITED" xml:space="preserve">
-    <value>cloudflared exited unexpectedly (code {0})</value>
+    <value>cloudflared avslutades oväntat (kod {0})</value>
     <comment>See Settings =&gt; Remote Control. {0} is the process exit code</comment>
   </data>
   <data name="REMOTE_CONTROL_API_BAD_POSITION" xml:space="preserve">
-    <value>Position must be a number of seconds (0 or more)</value>
+    <value>Positionen måste vara ett antal sekunder (0 eller mer)</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_NOTHING_PLAYING" xml:space="preserve">
-    <value>Nothing is playing</value>
+    <value>Inget spelas</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_CANT_SCRUB" xml:space="preserve">
-    <value>This item can't be scrubbed</value>
+    <value>Detta objekt kan inte spolas</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_SEEKING_OFF" xml:space="preserve">
-    <value>Position seeking is turned off in OnlyM's settings</value>
+    <value>Positionssökning är avstängd i OnlyM:s inställningar</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_PAUSE_TO_SCRUB" xml:space="preserve">
-    <value>Pause to scrub</value>
+    <value>Pausa för att spola</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_FORBIDDEN" xml:space="preserve">
-    <value>Forbidden</value>
+    <value>Otillåtet</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_PIN_REQUIRED" xml:space="preserve">
-    <value>PIN required</value>
+    <value>PIN-kod krävs</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_VOLUME_DISABLED" xml:space="preserve">
-    <value>Volume control is disabled</value>
+    <value>Volymkontrollen är inaktiverad</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_NOT_FOUND" xml:space="preserve">
-    <value>Not found</value>
+    <value>Hittades inte</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_INVALID_ID" xml:space="preserve">
@@ -897,39 +901,39 @@
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_ITEM_NOT_FOUND" xml:space="preserve">
-    <value>Media item not found</value>
+    <value>Medieobjektet hittades inte</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_STOP_TIMEOUT" xml:space="preserve">
-    <value>The current item did not stop in time</value>
+    <value>Det aktuella objektet slutade inte i tid</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_COULD_NOT_START" xml:space="preserve">
-    <value>Could not start "{0}"</value>
+    <value>Kunde inte starta "{0}"</value>
     <comment>Error shown on the remote control web page. {0} is the media item title</comment>
   </data>
   <data name="REMOTE_CONTROL_API_NO_MEDIA_ITEMS" xml:space="preserve">
-    <value>No media items</value>
+    <value>Inga medieobjekt</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_NEXT_SLIDE_FAILED" xml:space="preserve">
-    <value>Could not move to the next slide</value>
+    <value>Kunde inte flytta till nästa bild</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_PREVIOUS_SLIDE_FAILED" xml:space="preserve">
-    <value>Could not move to the previous slide</value>
+    <value>Kunde inte flytta till föregående bild</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_BAD_VOLUME" xml:space="preserve">
-    <value>Volume must be 0-100</value>
+    <value>Volymen måste vara 0-100</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_THUMBNAIL_NOT_AVAILABLE" xml:space="preserve">
-    <value>Thumbnail not available</value>
+    <value>Miniatyrbild är inte tillgänglig</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_THUMBNAIL_NOT_FOUND" xml:space="preserve">
-    <value>Thumbnail not found</value>
+    <value>Miniatyrbild hittades inte</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
 </root>
