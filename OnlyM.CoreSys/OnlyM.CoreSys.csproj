@@ -8,12 +8,10 @@
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors>;NU1605</WarningsAsErrors>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors>;NU1605</WarningsAsErrors>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
@@ -24,7 +22,7 @@
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
     <PackageReference Include="PhotoSauce.MagicScaler" Version="0.15.0" />
     <PackageReference Include="Serilog" Version="4.3.1" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.2.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

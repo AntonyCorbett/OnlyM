@@ -45,10 +45,6 @@ public interface IRemoteControlService
     /// </summary>
     void RetryTunnel();
 
-    void Start(string? prefix = null);
-
-    void Stop();
-
     /// <summary>
     /// Starts or stops the listener and tunnel to match the current options.
     /// </summary>

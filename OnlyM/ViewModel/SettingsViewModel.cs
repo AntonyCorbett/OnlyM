@@ -180,7 +180,9 @@ internal sealed class SettingsViewModel : ObservableObject
             }
 
             var path = CloudflareTunnel.LocateCloudflared();
+#pragma warning disable CA1863
             return path == null ? null : string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_USING_CLOUDFLARED, path);
+#pragma warning restore CA1863
         }
     }
 
@@ -383,7 +385,9 @@ internal sealed class SettingsViewModel : ObservableObject
                     case TunnelState.WaitingForUrl:
                         return Properties.Resources.REMOTE_CONTROL_TUNNEL_WAITING_URL;
                     case TunnelState.Connected:
+#pragma warning disable CA1863
                         return string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_TUNNEL_CONNECTED, _remoteControlService.TunnelUrl);
+#pragma warning restore CA1863
                     case TunnelState.Failed:
                         return _remoteControlService.TunnelError ?? Properties.Resources.REMOTE_CONTROL_STATUS_NOT_RUNNING;
                     default:

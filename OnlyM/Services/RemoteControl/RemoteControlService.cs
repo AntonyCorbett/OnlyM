@@ -10,12 +10,12 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Serilog;
 using OnlyM.Core.Services.Media;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Utils;
 using OnlyM.Models;
 using OnlyM.ViewModel;
+using Serilog;
 
 namespace OnlyM.Services.RemoteControl;
 
@@ -229,7 +229,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
         return new
         {
             id = m.Id.ToString(),
-            name = m.Title ?? Path.GetFileNameWithoutExtension(m.FilePath ?? ""),
+            name = m.Title ?? Path.GetFileNameWithoutExtension(m.FilePath ?? string.Empty),
             type = m.MediaType?.Classification.ToString() ?? "Unknown",
             durationSeconds = m.DurationDeciseconds / 10.0,
             isActive = m.IsMediaActive,
@@ -681,10 +681,10 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
         // No CORS headers: the remote page is served from this listener, so all its calls are same-origin.
         try
         {
-            var path = req.Url?.AbsolutePath.TrimEnd('/') ?? "";
+            var path = req.Url?.AbsolutePath.TrimEnd('/') ?? string.Empty;
 
             // Serve HTML remote control page at root
-            if ((path == "" || path == "/" || path == "/remote") && req.HttpMethod == "GET")
+            if ((path.Length == 0 || path == "/" || path == "/remote") && req.HttpMethod == "GET")
             {
                 await ServeHtmlPage(res);
                 return;
@@ -1294,7 +1294,9 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         if (!started)
         {
             res.StatusCode = 409;
+#pragma warning disable CA1863
             await Ok(res, new { error = string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_API_COULD_NOT_START, name) });
+#pragma warning restore CA1863
             return;
         }
 
@@ -1384,7 +1386,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             }
             else
             {
-                index = ((activeIndex + step) % items.Count + items.Count) % items.Count;
+                index = (((activeIndex + step) % items.Count) + items.Count) % items.Count;
             }
 
             return items[index].Id;

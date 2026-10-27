@@ -1,0 +1,7 @@
+﻿<Project>
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Keep NuGet vulnerability audit warnings as warnings so a newly published advisory doesn't break the build -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
+  </PropertyGroup>
+</Project>

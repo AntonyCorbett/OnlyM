@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Serilog;
@@ -109,6 +109,33 @@ internal sealed partial class CloudflareTunnel : IDisposable
         return found.Contains(Path.DirectorySeparatorChar, StringComparison.Ordinal) ? found : null;
     }
 
+    public void Start(int port)
+    {
+        lock (_lifecycleLock)
+        {
+            StartCore(port);
+        }
+    }
+
+    public void Stop()
+    {
+        lock (_lifecycleLock)
+        {
+            StopCore();
+        }
+    }
+
+    public void Dispose()
+    {
+        Stop();
+        _timeoutTimer?.Dispose();
+        if (_job != IntPtr.Zero)
+        {
+            CloseHandle(_job);
+            _job = IntPtr.Zero;
+        }
+    }
+
     /// <summary>
     /// Locates cloudflared.exe: the per-user install folder first, then PATH (including the persisted
     /// machine/user PATH, which may be newer than this process's copy), then common install locations.
@@ -166,33 +193,6 @@ internal sealed partial class CloudflareTunnel : IDisposable
         var found = candidates.FirstOrDefault(File.Exists);
         Log.Logger.Debug("cloudflared location: {Path}", found ?? "(not found, relying on PATH)");
         return found ?? "cloudflared";
-    }
-
-    public void Start(int port)
-    {
-        lock (_lifecycleLock)
-        {
-            StartCore(port);
-        }
-    }
-
-    public void Stop()
-    {
-        lock (_lifecycleLock)
-        {
-            StopCore();
-        }
-    }
-
-    public void Dispose()
-    {
-        Stop();
-        _timeoutTimer?.Dispose();
-        if (_job != IntPtr.Zero)
-        {
-            CloseHandle(_job);
-            _job = IntPtr.Zero;
-        }
     }
 
     private void StartCore(int port)
@@ -357,8 +357,10 @@ internal sealed partial class CloudflareTunnel : IDisposable
             _timeoutTimer?.Dispose();
             _timeoutTimer = null;
             State = TunnelState.Failed;
+#pragma warning disable CA1863
             Error = string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_TUNNEL_EXITED, code) +
                     (string.IsNullOrEmpty(_lastLine) ? string.Empty : $": {_lastLine}");
+#pragma warning restore CA1863
         }
 
         Log.Logger.Error("cloudflared exited unexpectedly with code {Code}; last output: {Line}", code, _lastLine);
@@ -378,8 +380,10 @@ internal sealed partial class CloudflareTunnel : IDisposable
             _timeoutTimer?.Dispose();
             _timeoutTimer = null;
             State = TunnelState.Failed;
+#pragma warning disable CA1863
             Error = string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_TUNNEL_NO_URL, UrlTimeout.TotalSeconds.ToString("0", CultureInfo.CurrentCulture)) +
                     (string.IsNullOrEmpty(_lastLine) ? string.Empty : $": {_lastLine}");
+#pragma warning restore CA1863
         }
 
         Log.Logger.Error("cloudflared gave no public URL within {Seconds} s; killing it. Last output: {Line}", UrlTimeout.TotalSeconds, _lastLine);
@@ -439,7 +443,7 @@ internal sealed partial class CloudflareTunnel : IDisposable
         }
     }
 
-#pragma warning disable SA1201, SA1202, SA1310, SA1307, SA1600, SA1602
+#pragma warning disable SA1201, SA1202, SA1203, SA1310, SA1307, SA1600, SA1602
     private const uint JobObjectLimitKillOnJobClose = 0x2000;
     private const int JobObjectExtendedLimitInformationClass = 9;
 
@@ -490,5 +494,5 @@ internal sealed partial class CloudflareTunnel : IDisposable
 
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern bool CloseHandle(IntPtr hObject);
-#pragma warning restore SA1201, SA1202, SA1310, SA1307, SA1600, SA1602
+#pragma warning restore SA1201, SA1202, SA1203, SA1310, SA1307, SA1600, SA1602
 }
