@@ -85,6 +85,16 @@ public sealed class OptionsService : IOptionsService
 
     public event EventHandler? ShowFreezeCommandChangedEvent;
 
+    public event EventHandler? VolumeChangedEvent;
+
+    public event EventHandler? ShowVolumeControlChangedEvent;
+
+    public event EventHandler? ShowRemoteVolumeControlChangedEvent;
+
+    public event EventHandler? RemoteControlChangedEvent;
+
+    public event EventHandler? RemoteControlPinChangedEvent;
+
     public event EventHandler? ShowMediaItemCountBadgeChangedEvent;
 
     public event EventHandler? MagnifierChangedEvent;
@@ -107,6 +117,71 @@ public sealed class OptionsService : IOptionsService
     {
         get => _options.Value.MetaDataParallelism;
         set => _options.Value.MetaDataParallelism = value;
+    }
+
+    public int RemoteControlPort
+    {
+        get => _options.Value.RemoteControlPort;
+        set => _options.Value.RemoteControlPort = value;
+    }
+
+    public bool RemoteControlEnabled
+    {
+        get => _options.Value.RemoteControlEnabled;
+        set
+        {
+            if (_options.Value.RemoteControlEnabled != value)
+            {
+                _options.Value.RemoteControlEnabled = value;
+                RemoteControlChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public RemoteControlMode RemoteControlMode
+    {
+        get => _options.Value.RemoteControlMode;
+        set
+        {
+            if (_options.Value.RemoteControlMode != value)
+            {
+                _options.Value.RemoteControlMode = value;
+                RemoteControlChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public string? RemoteControlPin
+    {
+        get => _options.Value.RemoteControlPin;
+        set
+        {
+            var pin = string.IsNullOrEmpty(value) ? null : value;
+            if (pin != null && !Options.IsValidRemoteControlPin(pin))
+            {
+                return;
+            }
+
+            if (_options.Value.RemoteControlPin != pin)
+            {
+                _options.Value.RemoteControlPin = pin;
+                RemoteControlPinChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public int Volume
+    {
+        get => _options.Value.Volume;
+        set
+        {
+            var volume = Math.Clamp(value, 0, 100);
+            if (_options.Value.Volume != volume)
+            {
+                _options.Value.Volume = volume;
+                VolumeChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
     }
 
     public string? AppWindowPlacement
@@ -195,6 +270,38 @@ public sealed class OptionsService : IOptionsService
             if (_options.Value.AllowVideoScrubbing != value)
             {
                 _options.Value.AllowVideoScrubbing = value;
+            }
+        }
+    }
+
+    public bool ShowVolumeControl
+    {
+        get => _options.Value.ShowVolumeControl;
+        set
+        {
+            if (_options.Value.ShowVolumeControl != value)
+            {
+                _options.Value.ShowVolumeControl = value;
+                ShowVolumeControlChangedEvent?.Invoke(this, EventArgs.Empty);
+
+                if (!value)
+                {
+                    // No hidden volume: with the control hidden, playback is always at 100%
+                    Volume = 100;
+                }
+            }
+        }
+    }
+
+    public bool ShowRemoteVolumeControl
+    {
+        get => _options.Value.ShowRemoteVolumeControl;
+        set
+        {
+            if (_options.Value.ShowRemoteVolumeControl != value)
+            {
+                _options.Value.ShowRemoteVolumeControl = value;
+                ShowRemoteVolumeControlChangedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }

@@ -4,8 +4,7 @@ REM Run from dev command line
 
 VERIFY ON
 
-D:
-cd \ProjectsPersonal\OnlyM
+cd /d "%~dp0"
 rd OnlyM\bin /q /s
 rd OnlyMSlideManager\bin /q /s
 rd OnlyMMirror\OnlyM /q /s
@@ -41,8 +40,12 @@ IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
 ECHO Copying VCRTL items into delivery
-xcopy VCRTL\*.* OnlyM\bin\Release\net10.0-windows\publish /q
-IF %ERRORLEVEL% NEQ 0 goto ERROR
+IF EXIST VCRTL (
+  xcopy VCRTL\*.* OnlyM\bin\Release\net10.0-windows\publish /q
+  IF ERRORLEVEL 1 goto ERROR
+) ELSE (
+  ECHO VCRTL folder not found, skipping
+)
 
 ECHO.
 ECHO Removing unwanted language files
@@ -79,7 +82,13 @@ rd OnlyM\bin\Release\net10.0-windows\publish\tr /q /s
 
 ECHO.
 ECHO Creating installer
-"D:\Program Files (x86)\Inno Setup 6\iscc" Installer\onlymsetup.iss
+SET "ISCC_EXE="
+FOR %%P IN ("%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe" "%ProgramFiles%\Inno Setup 6\ISCC.exe" "%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe" "D:\Program Files (x86)\Inno Setup 6\ISCC.exe") DO IF EXIST %%P SET "ISCC_EXE=%%~P"
+IF NOT DEFINED ISCC_EXE (
+  ECHO Inno Setup 6 not found. Install it with: winget install JRSoftware.InnoSetup
+  goto ERROR
+)
+"%ISCC_EXE%" Installer\OnlyMSetup.iss
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.

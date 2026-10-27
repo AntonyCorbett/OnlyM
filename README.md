@@ -1,4 +1,4 @@
-# OnlyM
+﻿# OnlyM
 
 A Windows Media player using C# and WPF. Designed for media playback. The emphasis is on ease-of-use above advanced function. Please report any problems in the Project Issues section.
 
@@ -17,6 +17,10 @@ If you just want to install the application, please download the [OnlyMSetup.exe
 ### Documentation
 
 See the [wiki](https://github.com/AntonyCorbett/OnlyM/wiki) for basic instructions and for information on where to get further help.
+
+### Remote Control (optional)
+
+OnlyM can optionally provide a simple HTTP remote (Local LAN or Cloudflare Quick Tunnel) with a browser page, QR code, and optional PIN (default port 8517). See [docs/RemoteControl.md](docs/RemoteControl.md) for details. The feature is off by default.
 
 ### Discussions
 

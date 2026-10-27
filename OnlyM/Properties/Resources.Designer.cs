@@ -836,6 +836,96 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CREATE FIREWALL EXCEPTION.
+        /// </summary>
+        public static string REMOTE_CONTROL_CREATE_FIREWALL {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_CREATE_FIREWALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a Windows Firewall rule and a URL reservation for the current port so other devices on your network can connect, then restarts the remote. You will be asked for administrator permission once. If you change the port later, run this again (the old port&apos;s rule and reservation are removed)..
+        /// </summary>
+        public static string REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network access enabled for port {0}..
+        /// </summary>
+        public static string REMOTE_CONTROL_FIREWALL_DONE {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_FIREWALL_DONE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not create the firewall exception. Make sure you approve the administrator prompt, or create the rule manually..
+        /// </summary>
+        public static string REMOTE_CONTROL_FIREWALL_ERROR {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_FIREWALL_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not create the firewall exception. Make sure you approve the administrator prompt..
+        /// </summary>
+        public static string REMOTE_CONTROL_FIREWALL_FAILED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_FIREWALL_FAILED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firewall exception created for port {0}, but the remote is still localhost only. See the log for details..
+        /// </summary>
+        public static string REMOTE_CONTROL_FIREWALL_STILL_LOCALHOST {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_FIREWALL_STILL_LOCALHOST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Localhost only - other devices can&apos;t connect (http://localhost:{0}/). Click &apos;Create firewall exception&apos; to allow network access..
+        /// </summary>
+        public static string REMOTE_CONTROL_LOCALHOST_ONLY {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_LOCALHOST_ONLY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4-8 digits; at least 6 in Cloudflare mode; blank for none in Local mode.
+        /// </summary>
+        public static string REMOTE_CONTROL_PIN_HELP {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_PIN_HELP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port {0} is already in use, choose another port.
+        /// </summary>
+        public static string REMOTE_CONTROL_PORT_IN_USE {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_PORT_IN_USE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow volume control from the remote.
+        /// </summary>
+        public static string REMOTE_CONTROL_SHOW_VOLUME {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_SHOW_VOLUME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rendering engine.
         /// </summary>
         public static string RENDERING_ENGINE {
@@ -1030,6 +1120,15 @@ namespace OnlyM.Properties {
         public static string SHOW_SUBTITLES {
             get {
                 return ResourceManager.GetString("SHOW_SUBTITLES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show volume control in toolbar.
+        /// </summary>
+        public static string SHOW_VOLUME_CONTROL {
+            get {
+                return ResourceManager.GetString("SHOW_VOLUME_CONTROL", resourceCulture);
             }
         }
         
@@ -1381,6 +1480,275 @@ namespace OnlyM.Properties {
         public static string YES {
             get {
                 return ResourceManager.GetString("YES", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to REMOTE CONTROL.
+        /// </summary>
+        public static string SECTION_REMOTE_CONTROL {
+            get {
+                return ResourceManager.GetString("SECTION_REMOTE_CONTROL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote control port.
+        /// </summary>
+        public static string REMOTE_CONTROL_PORT {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_PORT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open the remote control from another device at:.
+        /// </summary>
+        public static string REMOTE_CONTROL_ADDRESS {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_ADDRESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSTALL CLOUDFLARE TUNNEL.
+        /// </summary>
+        public static string REMOTE_CONTROL_INSTALL_CLOUDFLARED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_INSTALL_CLOUDFLARED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install failed - see the OnlyM log for details.
+        /// </summary>
+        public static string REMOTE_CONTROL_INSTALL_CLOUDFLARED_FAILED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_INSTALL_CLOUDFLARED_FAILED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSTALLING CLOUDFLARE TUNNEL....
+        /// </summary>
+        public static string REMOTE_CONTROL_INSTALLING_CLOUDFLARED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_INSTALLING_CLOUDFLARED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote control PIN.
+        /// </summary>
+        public static string REMOTE_CONTROL_PIN {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_PIN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The PIN must be 4-8 digits.
+        /// </summary>
+        public static string REMOTE_CONTROL_PIN_INVALID {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_PIN_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloudflare mode needs a PIN of 6-8 digits.
+        /// </summary>
+        public static string REMOTE_CONTROL_PIN_TOO_SHORT_CLOUDFLARE {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_PIN_TOO_SHORT_CLOUDFLARE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloudflare tunnel not started: the PIN must be at least 6 digits. Enter a longer PIN in Settings..
+        /// </summary>
+        public static string REMOTE_CONTROL_TUNNEL_PIN_TOO_SHORT {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_TUNNEL_PIN_TOO_SHORT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable remote control.
+        /// </summary>
+        public static string REMOTE_CONTROL_ENABLED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_ENABLED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote control mode.
+        /// </summary>
+        public static string REMOTE_CONTROL_MODE {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_MODE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internet (Cloudflare Quick Tunnel).
+        /// </summary>
+        public static string REMOTE_CONTROL_MODE_CLOUDFLARE {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_MODE_CLOUDFLARE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local network.
+        /// </summary>
+        public static string REMOTE_CONTROL_MODE_LOCAL {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_MODE_LOCAL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote control could not start. See the log for details..
+        /// </summary>
+        public static string REMOTE_CONTROL_STATUS_NOT_RUNNING {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_STATUS_NOT_RUNNING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote control is off..
+        /// </summary>
+        public static string REMOTE_CONTROL_STATUS_OFF {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_STATUS_OFF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting Cloudflare tunnel....
+        /// </summary>
+        public static string REMOTE_CONTROL_STATUS_TUNNEL_STARTING {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_STATUS_TUNNEL_STARTING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for public URL....
+        /// </summary>
+        public static string REMOTE_CONTROL_TUNNEL_WAITING_URL {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_TUNNEL_WAITING_URL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connected: {0}.
+        /// </summary>
+        public static string REMOTE_CONTROL_TUNNEL_CONNECTED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_TUNNEL_CONNECTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retry.
+        /// </summary>
+        public static string REMOTE_CONTROL_USING_CLOUDFLARED {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_USING_CLOUDFLARED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RETRY.
+        /// </summary>
+        public static string REMOTE_CONTROL_RETRY {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_RETRY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume.
+        /// </summary>
+        public static string VOLUME {
+            get {
+                return ResourceManager.GetString("VOLUME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume {0}%.
+        /// </summary>
+        public static string VOLUME_PERCENT {
+            get {
+                return ResourceManager.GetString("VOLUME_PERCENT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume {0}% - media will play quieter.
+        /// </summary>
+        public static string VOLUME_PERCENT_REDUCED {
+            get {
+                return ResourceManager.GetString("VOLUME_PERCENT_REDUCED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}%.
+        /// </summary>
+        public static string VOLUME_PERCENT_SHORT {
+            get {
+                return ResourceManager.GetString("VOLUME_PERCENT_SHORT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Muted.
+        /// </summary>
+        public static string VOLUME_MUTED {
+            get {
+                return ResourceManager.GetString("VOLUME_MUTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mute.
+        /// </summary>
+        public static string VOLUME_MUTE {
+            get {
+                return ResourceManager.GetString("VOLUME_MUTE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmute.
+        /// </summary>
+        public static string VOLUME_UNMUTE {
+            get {
+                return ResourceManager.GetString("VOLUME_UNMUTE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to mute.
+        /// </summary>
+        public static string VOLUME_CLICK_TO_MUTE {
+            get {
+                return ResourceManager.GetString("VOLUME_CLICK_TO_MUTE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to unmute (restores {0}%).
+        /// </summary>
+        public static string VOLUME_CLICK_TO_UNMUTE {
+            get {
+                return ResourceManager.GetString("VOLUME_CLICK_TO_UNMUTE", resourceCulture);
             }
         }
     }

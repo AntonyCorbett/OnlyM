@@ -29,6 +29,11 @@ internal interface IMediaElement
 
     bool IsPaused { get; }
 
+    /// <summary>
+    /// Gets or sets the volume (0.0 - 1.0).
+    /// </summary>
+    double Volume { get; set; }
+
     Guid MediaItemId { get; set; }
 
     FrameworkElement FrameworkElement { get; }

@@ -26,6 +26,7 @@ using OnlyM.Services.HiddenMediaItems;
 using OnlyM.Services.MediaChanging;
 using OnlyM.Services.Pages;
 using OnlyM.Services.PdfOptions;
+using OnlyM.Services.RemoteControl;
 using OnlyM.Services.StartOffsetStorage;
 using OnlyM.Services.WebBrowser;
 using OnlyM.ViewModel;
@@ -71,6 +72,16 @@ public partial class App
 
     protected override void OnExit(ExitEventArgs e)
     {
+        try
+        {
+            // stops the listener and kills cloudflared (if running)
+            (Ioc.Default.GetService<IRemoteControlService>() as IDisposable)?.Dispose();
+        }
+        catch (InvalidOperationException)
+        {
+            // services not configured (e.g. another instance was running)
+        }
+
         SentrySdk.Close();
         _appMutex?.Dispose();
         Log.Logger.Information("==== Exit ====");
@@ -87,6 +98,9 @@ public partial class App
             ConfigureLogger();
             ConfigureServices();
             Ioc.Default.GetRequiredService<IDarkModeService>();
+
+            // Start the remote control (HTTP listener, plus Cloudflare tunnel if selected) when enabled in settings
+            Ioc.Default.GetRequiredService<IRemoteControlService>().ApplySettings();
         }
 
         if (!_successCefSharp)
@@ -131,6 +145,7 @@ public partial class App
         serviceCollection.AddSingleton<IDialogService, DialogService>();
         serviceCollection.AddSingleton<IStartOffsetStorageService, StartOffsetStorageService>();
         serviceCollection.AddSingleton<IDarkModeService, DarkModeService>();
+        serviceCollection.AddSingleton<IRemoteControlService, RemoteControlService>();
 
         // view models.
         serviceCollection.AddSingleton<StartOffsetViewModel>();

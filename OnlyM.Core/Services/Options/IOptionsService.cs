@@ -52,6 +52,16 @@ public interface IOptionsService
 
     event EventHandler ShowFreezeCommandChangedEvent;
 
+    event EventHandler VolumeChangedEvent;
+
+    event EventHandler ShowVolumeControlChangedEvent;
+
+    event EventHandler ShowRemoteVolumeControlChangedEvent;
+
+    event EventHandler RemoteControlChangedEvent;
+
+    event EventHandler RemoteControlPinChangedEvent;
+
     event EventHandler ShowMediaItemCountBadgeChangedEvent;
 
     event EventHandler MagnifierChangedEvent;
@@ -67,6 +77,16 @@ public interface IOptionsService
     bool ShouldPurgeBrowserCacheOnStartup { get; set; }
 
     int MetaDataParallelism { get; set; }
+
+    int RemoteControlPort { get; set; }
+
+    bool RemoteControlEnabled { get; set; }
+
+    RemoteControlMode RemoteControlMode { get; set; }
+
+    string? RemoteControlPin { get; set; }
+
+    int Volume { get; set; }
 
     string? AppWindowPlacement { get; set; }
 
@@ -85,6 +105,17 @@ public interface IOptionsService
     bool AllowVideoScrubbing { get; set; }
 
     bool ShowFreezeCommand { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the operator toolbar shows the volume control. Turning it off resets
+    /// <see cref="Volume"/> to 100.
+    /// </summary>
+    bool ShowVolumeControl { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the remote control page offers volume control.
+    /// </summary>
+    bool ShowRemoteVolumeControl { get; set; }
 
     bool ShowMediaItemCountBadge { get; set; }
 

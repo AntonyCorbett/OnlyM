@@ -28,6 +28,12 @@ internal sealed class MediaElementUnoSquare : IMediaElement
         _mediaElement.MessageLogged += HandleMessageLogged;
     }
 
+    public double Volume
+    {
+        get => _mediaElement.Volume;
+        set => _mediaElement.Volume = value;
+    }
+
     public event EventHandler<OnlyMMediaOpenedEventArgs>? MediaOpened;
 
     public event EventHandler<OnlyMMediaClosedEventArgs>? MediaClosed;
