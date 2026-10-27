@@ -72,9 +72,9 @@ public sealed class OperatorViewModelVolumeTests : IDisposable
 
     [Theory]
     [InlineData(100, "Volume 100%", "100%", false)]
-    [InlineData(99, "Volume 99% - media will play quieter", "99%", false)]
-    [InlineData(65, "Volume 65% - media will play quieter", "65%", false)]
-    [InlineData(1, "Volume 1% - media will play quieter", "1%", false)]
+    [InlineData(99, "Volume 99%", "99%", false)]
+    [InlineData(65, "Volume 65%", "65%", false)]
+    [InlineData(1, "Volume 1%", "1%", false)]
     [InlineData(0, "Muted", "0%", true)]
     public void ToolTipAndLabel_ReflectVolume(int volume, string toolTip, string label, bool muted)
     {

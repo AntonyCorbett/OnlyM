@@ -62,7 +62,7 @@ When on, a speaker button sits in the bottom toolbar of the main OnlyM window (n
 - **Speaker button.** The icon shows the current level: muted (0%, dimmed icon), low (1-33%), medium (34-66%) or high (67-100%). Click it to open a small popup with a mute button, a slider and the level; click outside the popup to close it.
 - **Mute button.** Click it (or Tab to it and press Space/Enter) to mute; click it again to restore the previous level.
 - **Slider.** Drag or click the slider, or focus it and use the arrow keys (5% steps) or Page Up/Page Down (10% steps). The percentage is shown while dragging, and in the tooltip.
-- **Level label.** Shows the level, e.g. "60%", or "0%" when muted. The tooltip reads e.g. "Volume 60% - media will play quieter", or "Muted".
+- **Level label.** Shows the level, e.g. "60%", or "0%" when muted. The tooltip reads e.g. "Volume 60%", or "Muted".
 - **How mute works.** Mute simply sets the volume to 0, so it is saved like any other volume setting and the remote's `/api/status` reports `volume: 0`. Setting the volume above 0 from anywhere (the slider, or the remote) unmutes. The level that unmute restores is kept in memory only: it is the last level that was held for at least a second before the volume went to 0, so dragging the slider down to 0 restores the level before the drag. If OnlyM is started while muted, unmute restores 100%.
 
 ## Security notes

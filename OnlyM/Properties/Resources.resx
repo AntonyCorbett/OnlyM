@@ -770,11 +770,7 @@
   </data>
   <data name="VOLUME_PERCENT" xml:space="preserve">
     <value>Volume {0}%</value>
-    <comment>Volume tooltip at 100%; {0} is the percentage</comment>
-  </data>
-  <data name="VOLUME_PERCENT_REDUCED" xml:space="preserve">
-    <value>Volume {0}% - media will play quieter</value>
-    <comment>Volume tooltip below 100%; {0} is the percentage</comment>
+    <comment>Volume tooltip; {0} is the percentage</comment>
   </data>
   <data name="VOLUME_PERCENT_SHORT" xml:space="preserve">
     <value>{0}%</value>

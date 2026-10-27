@@ -1700,15 +1700,6 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Volume {0}% - media will play quieter.
-        /// </summary>
-        public static string VOLUME_PERCENT_REDUCED {
-            get {
-                return ResourceManager.GetString("VOLUME_PERCENT_REDUCED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0}%.
         /// </summary>
         public static string VOLUME_PERCENT_SHORT {

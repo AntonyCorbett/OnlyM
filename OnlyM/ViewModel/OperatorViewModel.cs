@@ -349,7 +349,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             return Properties.Resources.VOLUME_MUTED;
         }
 
-        return FormatPercent(volume < 100 ? Properties.Resources.VOLUME_PERCENT_REDUCED : Properties.Resources.VOLUME_PERCENT, volume);
+        return FormatPercent(Properties.Resources.VOLUME_PERCENT, volume);
     }
 
     internal void SortMediaItems()
