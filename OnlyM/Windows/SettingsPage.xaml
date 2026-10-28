@@ -733,6 +733,7 @@
                     <CheckBox
                         Content="{x:Static resx:Resources.REMOTE_CONTROL_SHOW_VOLUME}"
                         IsChecked="{Binding ShowRemoteVolumeControl, Mode=TwoWay}"
+                        IsEnabled="{Binding ShowVolumeControl, Mode=OneWay}"
                         Style="{StaticResource SettingsCheckBoxStyle}" />
 
                     <TextBlock
