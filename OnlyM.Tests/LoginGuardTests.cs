@@ -248,4 +248,69 @@ public sealed class LoginGuardTests
         Assert.Equal(LoginGuard.Block.None, guard.Check(ClientKeys.For(IPAddress.Parse("2a04:4e41:84:1::1")), out _));
         Assert.Equal(0, guard.Global.FailureCount);
     }
+
+    [Fact]
+    public void AttemptRecordsWrongAndCorrectPins()
+    {
+        var guard = new LoginGuard(() => _now);
+        var keys = ClientKeys.For(IPAddress.Parse("192.0.2.7"));
+
+        var wrong = guard.Attempt(keys, () => false);
+        Assert.Equal(LoginGuard.Block.None, wrong.Block);
+        Assert.False(wrong.Correct);
+        Assert.Equal(4, wrong.Failure.AttemptsLeft);
+
+        var right = guard.Attempt(keys, () => true);
+        Assert.True(right.Correct);
+
+        // A correct PIN resets the client's bucket
+        Assert.Equal(4, guard.Attempt(keys, () => false).Failure.AttemptsLeft);
+    }
+
+    [Fact]
+    public void AttemptDoesNotCheckThePinWhileLockedOut()
+    {
+        var guard = new LoginGuard(() => _now);
+        var keys = ClientKeys.For(IPAddress.Parse("192.0.2.7"));
+        for (var i = 0; i < 5; i++)
+        {
+            guard.Attempt(keys, () => false);
+        }
+
+        var checkedPin = false;
+        var blocked = guard.Attempt(keys, () => checkedPin = true);
+        Assert.Equal(LoginGuard.Block.Client, blocked.Block);
+        Assert.Equal(TimeSpan.FromSeconds(60), blocked.RetryAfter);
+        Assert.False(checkedPin);
+    }
+
+    [Fact]
+    public void ConcurrentAttemptsCannotExceedTheClientLimit()
+    {
+        var guard = new LoginGuard(() => _now);
+        var keys = ClientKeys.For(IPAddress.Parse("192.0.2.7"));
+        var pinChecks = 0;
+        const int threadCount = 16;
+        using var start = new Barrier(threadCount);
+
+        // Dedicated threads, not the thread pool: blocking pool threads on the barrier starves other tests
+        var threads = Enumerable.Range(0, threadCount).Select(_ => new Thread(() =>
+        {
+            start.SignalAndWait();
+            for (var i = 0; i < 10; i++)
+            {
+                guard.Attempt(keys, () =>
+                {
+                    Interlocked.Increment(ref pinChecks);
+                    Thread.SpinWait(1000); // widen the window a check-then-record race would need
+                    return false;
+                });
+            }
+        })).ToList();
+
+        threads.ForEach(t => t.Start());
+        threads.ForEach(t => t.Join());
+
+        Assert.Equal(5, pinChecks);
+    }
 }
