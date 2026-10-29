@@ -770,11 +770,7 @@
   </data>
   <data name="VOLUME_PERCENT" xml:space="preserve">
     <value>Volume {0}%</value>
-    <comment>Volume tooltip at 100%; {0} is the percentage</comment>
-  </data>
-  <data name="VOLUME_PERCENT_REDUCED" xml:space="preserve">
-    <value>Volume {0}% - média irá tocar mais baixo</value>
-    <comment>Volume tooltip below 100%; {0} is the percentage</comment>
+    <comment>Volume tooltip; {0} is the percentage</comment>
   </data>
   <data name="VOLUME_PERCENT_SHORT" xml:space="preserve">
     <value>{0}%</value>
@@ -816,9 +812,9 @@
     <value>CRIAR EXCEÇÃO DE FIREWALL</value>
     <comment>See Settings =&gt; Remote Control (button)</comment>
   </data>
-  <data name="REMOTE_CONTROL_CREATE_FIREWALL_TOOLTIP" xml:space="preserve">
-    <value>Cria uma regra de Firewall do Windows e uma reserva de URL para a porta atual para que outros dispositivos na sua rede possam conectar-se, depois reinicia o remoto. Será solicitada a permissão de administrador uma vez. Se mudar a porta mais tarde, execute novamente (a regra e reserva da porta antiga são removidas).</value>
-    <comment>See Settings =&gt; Remote Control (tooltip of the firewall button)</comment>
+  <data name="REMOTE_CONTROL_CREATE_FIREWALL_NOTE" xml:space="preserve">
+    <value>Para permitir que outros dispositivos na sua rede se conectem, o OnlyM precisa de uma exceção de Firewall do Windows para esta porta. Será solicitada a permissão do administrador. Se mudar a porta mais tarde, faça isso novamente.</value>
+    <comment>See Settings =&gt; Remote Control (note shown above the firewall button)</comment>
   </data>
   <data name="REMOTE_CONTROL_FIREWALL_DONE" xml:space="preserve">
     <value>Acesso de rede ativado para a porta {0}.</value>
@@ -836,6 +832,14 @@
     <value>Não foi possível criar a exceção de firewall. Certifique-se de aprovar o prompt de administrador ou criar a regra manualmente.</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
+  <data name="REMOTE_CONTROL_COPY_URL" xml:space="preserve">
+    <value>Copy link</value>
+    <comment>See Settings =&gt; Remote Control. Tooltip on the button that copies the remote control URL</comment>
+  </data>
+  <data name="REMOTE_CONTROL_URL_COPIED" xml:space="preserve">
+    <value>Link copied to clipboard</value>
+    <comment>See Settings =&gt; Remote Control</comment>
+  </data>
   <data name="REMOTE_CONTROL_SHOW_VOLUME" xml:space="preserve">
     <value>Permitir controlo de volume pelo controlo remoto</value>
     <comment>See Settings =&gt; Remote Control</comment>
@@ -845,91 +849,91 @@
     <comment>See Settings =&gt; Video and Audio. When off, the volume is kept at 100%</comment>
   </data>
   <data name="REMOTE_CONTROL_TUNNEL_NO_URL" xml:space="preserve">
-    <value>No public URL from cloudflared after {0} seconds</value>
+    <value>Sem URL pública da cloudflared após {0} segundos</value>
     <comment>See Settings =&gt; Remote Control. {0} is the number of seconds</comment>
   </data>
   <data name="REMOTE_CONTROL_TUNNEL_CLOUDFLARED_NOT_FOUND" xml:space="preserve">
-    <value>cloudflared not found - click 'Install Cloudflare tunnel' below</value>
+    <value>cloudflared não foi encontrado - clique em 'Instalar túnel Cloudflare' abaixo</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_TUNNEL_EXITED" xml:space="preserve">
-    <value>cloudflared exited unexpectedly (code {0})</value>
+    <value>cloudflared fechou de forma inesperada (código {0})</value>
     <comment>See Settings =&gt; Remote Control. {0} is the process exit code</comment>
   </data>
   <data name="REMOTE_CONTROL_API_BAD_POSITION" xml:space="preserve">
-    <value>Position must be a number of seconds (0 or more)</value>
+    <value>A posição deve ser um número de segundos (0 ou mais)</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_NOTHING_PLAYING" xml:space="preserve">
-    <value>Nothing is playing</value>
+    <value>Nada está a ser reproduzido</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_CANT_SCRUB" xml:space="preserve">
-    <value>This item can't be scrubbed</value>
+    <value>Este item não pode ser percorrido</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_SEEKING_OFF" xml:space="preserve">
-    <value>Position seeking is turned off in OnlyM's settings</value>
+    <value>Selecionar posição está desativado nas configurações do OnlyM</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_PAUSE_TO_SCRUB" xml:space="preserve">
-    <value>Pause to scrub</value>
+    <value>Pausar para selecionar posição</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_FORBIDDEN" xml:space="preserve">
-    <value>Forbidden</value>
+    <value>Não permitido</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_PIN_REQUIRED" xml:space="preserve">
-    <value>PIN required</value>
+    <value>PIN obrigatório</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_VOLUME_DISABLED" xml:space="preserve">
-    <value>Volume control is disabled</value>
+    <value>Controlo de volume desativado</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_NOT_FOUND" xml:space="preserve">
-    <value>Not found</value>
+    <value>Não encontrado</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_INVALID_ID" xml:space="preserve">
-    <value>Invalid id</value>
+    <value>Id inválido</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_ITEM_NOT_FOUND" xml:space="preserve">
-    <value>Media item not found</value>
+    <value>Item de média não encontrado</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_STOP_TIMEOUT" xml:space="preserve">
-    <value>The current item did not stop in time</value>
+    <value>O item atual não terminou no tempo</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_COULD_NOT_START" xml:space="preserve">
-    <value>Could not start "{0}"</value>
+    <value>Não foi possível iniciar "{0}"</value>
     <comment>Error shown on the remote control web page. {0} is the media item title</comment>
   </data>
   <data name="REMOTE_CONTROL_API_NO_MEDIA_ITEMS" xml:space="preserve">
-    <value>No media items</value>
+    <value>Sem itens de média</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_NEXT_SLIDE_FAILED" xml:space="preserve">
-    <value>Could not move to the next slide</value>
+    <value>Não foi possível mover para o próximo slide</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_PREVIOUS_SLIDE_FAILED" xml:space="preserve">
-    <value>Could not move to the previous slide</value>
+    <value>Não foi possível mover para o slide anterior</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_BAD_VOLUME" xml:space="preserve">
-    <value>Volume must be 0-100</value>
+    <value>O volume deve ser 0-100</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_THUMBNAIL_NOT_AVAILABLE" xml:space="preserve">
-    <value>Thumbnail not available</value>
+    <value>Miniatura não disponível</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
   <data name="REMOTE_CONTROL_API_THUMBNAIL_NOT_FOUND" xml:space="preserve">
-    <value>Thumbnail not found</value>
+    <value>Miniatura não encontrada</value>
     <comment>Error shown on the remote control web page.</comment>
   </data>
 </root>
