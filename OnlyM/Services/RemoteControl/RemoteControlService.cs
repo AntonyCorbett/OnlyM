@@ -182,6 +182,18 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     }
 
     /// <summary>
+    /// Gets a value indicating whether the remote may show and change the volume. Both "Allow volume control from the
+    /// remote" and the operator's "Show volume control in toolbar" must be on, so the remote never sets a volume that
+    /// the operator has no control to see or undo.
+    /// </summary>
+    /// <param name="optionsService">The options service.</param>
+    /// <returns>True if the remote volume control is allowed.</returns>
+    internal static bool IsRemoteVolumeEnabled(IOptionsService optionsService)
+    {
+        return optionsService.ShowRemoteVolumeControl && optionsService.ShowVolumeControl;
+    }
+
+    /// <summary>
     /// Builds the /api/status reply. The slide fields are null unless the active item is a slideshow
     /// (currentSlideIndex is 0-based). canSeek follows the operator's position slider
     /// (<see cref="MediaItem.IsSliderVisible"/>): audio/video, scrubbing allowed in Settings, and paused.
@@ -768,9 +780,9 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
                     }
                     else if ((path.StartsWith("/api/volume/", StringComparison.Ordinal) || path == "/api/mute") && req.HttpMethod == "POST")
                     {
-                        if (!_optionsService.ShowRemoteVolumeControl)
+                        if (!IsRemoteVolumeEnabled(_optionsService))
                         {
-                            // The remote volume control is turned off in Settings
+                            // The remote volume control (or the operator's volume control) is turned off in Settings
                             res.StatusCode = 403;
                             await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_VOLUME_DISABLED });
                         }
@@ -1228,7 +1240,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         var status = await OnUi(() => BuildStatus(
             _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive),
             _optionsService.Volume,
-            _optionsService.ShowRemoteVolumeControl));
+            IsRemoteVolumeEnabled(_optionsService)));
 
         await Ok(res, status);
     }

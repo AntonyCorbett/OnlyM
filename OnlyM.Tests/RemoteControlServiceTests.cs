@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
+using Moq;
 using OnlyM.Core.Models;
+using OnlyM.Core.Services.Options;
 using OnlyM.Models;
 using OnlyM.Services.RemoteControl;
 
@@ -265,6 +267,20 @@ public sealed class RemoteControlServiceTests
         Assert.Equal("Announcements", json.RootElement.GetProperty("name").GetString());
         Assert.Equal("Slideshow", json.RootElement.GetProperty("type").GetString());
         Assert.Equal(OnlyM.Properties.Resources.CONTAINS_1_SLIDE, singleJson.RootElement.GetProperty("subtitle").GetString());
+    }
+
+    [Theory]
+    [InlineData(true, true, true)]
+    [InlineData(true, false, false)] // operator volume control hidden: no invisible volume changes from the remote
+    [InlineData(false, true, false)]
+    [InlineData(false, false, false)]
+    public void IsRemoteVolumeEnabled_NeedsBothOptions(bool showRemoteVolume, bool showOperatorVolume, bool expected)
+    {
+        var options = new Mock<IOptionsService>();
+        options.SetupGet(x => x.ShowRemoteVolumeControl).Returns(showRemoteVolume);
+        options.SetupGet(x => x.ShowVolumeControl).Returns(showOperatorVolume);
+
+        Assert.Equal(expected, RemoteControlService.IsRemoteVolumeEnabled(options.Object));
     }
 
     [Fact]
