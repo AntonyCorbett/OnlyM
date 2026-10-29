@@ -833,11 +833,11 @@
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_COPY_URL" xml:space="preserve">
-    <value>Copy link</value>
+    <value>Copiar ligação</value>
     <comment>See Settings =&gt; Remote Control. Tooltip on the button that copies the remote control URL</comment>
   </data>
   <data name="REMOTE_CONTROL_URL_COPIED" xml:space="preserve">
-    <value>Link copied to clipboard</value>
+    <value>Ligação copiada para a área de transferência</value>
     <comment>See Settings =&gt; Remote Control</comment>
   </data>
   <data name="REMOTE_CONTROL_SHOW_VOLUME" xml:space="preserve">
