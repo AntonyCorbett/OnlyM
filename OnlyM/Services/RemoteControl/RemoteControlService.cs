@@ -926,14 +926,18 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   .volpop span { min-width: 3em; text-align: right; }
   .volpop button { min-width: 0; padding: 8px 10px; font-size: 0.95rem; }
   .now { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding: 10px; background: #222; border-radius: 8px; }
-  .now img { width: 96px; height: 54px; object-fit: cover; background: #000; border-radius: 4px; }
+  /* Fixed-size frame (outlined so the space reads as the preview even when empty) and fixed-height text rows,
+     so the sticky header doesn't change height as media starts, stops or switches between seekable and not */
+  .now .thumb { flex: 0 0 auto; width: 96px; height: 54px; box-sizing: border-box; border: 1px solid #3a3a3a; border-radius: 4px; background: #000; overflow: hidden; }
+  .now .thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .now .info { flex: 1 1 auto; min-width: 0; }
-  .now .label { font-size: 0.75rem; color: #9a9; text-transform: uppercase; letter-spacing: 0.05em; }
-  .now .title { font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .now .bar { height: 4px; background: #444; border-radius: 2px; margin-top: 6px; overflow: hidden; }
+  .now .label { font-size: 0.75rem; line-height: 1.3; min-height: 1.3em; color: #9a9; text-transform: uppercase; letter-spacing: 0.05em; }
+  .now .title { font-size: 1.05rem; line-height: 1.3; min-height: 1.3em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .now .pos { height: 30px; display: flex; flex-direction: column; justify-content: center; }
+  .now .bar { height: 4px; background: #444; border-radius: 2px; overflow: hidden; }
   .now .bar div { height: 100%; width: 0; background: #0a7; }
-  .now .time { font-size: 0.75rem; color: #aaa; margin-top: 3px; }
-  .now .seek { display: block; width: 100%; margin: 6px 0 0; height: 24px; accent-color: #0a7; }
+  .now .time { font-size: 0.75rem; line-height: 1.3; min-height: 1.3em; color: #aaa; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .now .seek { display: block; width: 100%; margin: 0; height: 24px; accent-color: #0a7; }
   [hidden] { display: none !important; }
   #pinOverlay { display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10; align-items: center; justify-content: center; }
   #pinOverlay .box { background: #222; padding: 20px; border-radius: 10px; text-align: center; }
@@ -958,12 +962,14 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
 <h1>OnlyM Remote</h1>
 <header>
 <div class="now">
-  <img id="nowImg" alt="" style="visibility:hidden">
+  <div class="thumb"><img id="nowImg" alt="" style="visibility:hidden"></div>
   <div class="info">
     <div class="label" id="nowLabel">Loading...</div>
     <div class="title" id="nowTitle"></div>
-    <div class="bar" id="nowBarWrap" style="display:none"><div id="nowBar"></div></div>
-    <input class="seek" type="range" id="seek" min="0" max="0" step="0.1" value="0" aria-label="Position" hidden>
+    <div class="pos">
+      <div class="bar" id="nowBarWrap" style="display:none"><div id="nowBar"></div></div>
+      <input class="seek" type="range" id="seek" min="0" max="0" step="0.1" value="0" aria-label="Position" hidden>
+    </div>
     <div class="time" id="nowTime"></div>
   </div>
 </div>
