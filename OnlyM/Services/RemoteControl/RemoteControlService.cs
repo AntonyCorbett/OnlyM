@@ -914,7 +914,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   .media-grid { display: flex; flex-direction: column; gap: 8px; }
   .media-item { display: flex; align-items: center; gap: 10px; background: #222; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; }
   .media-item.active { border-color: #0a7; }
-  .media-item img { flex: 0 0 auto; width: 120px; height: 68px; object-fit: cover; background: #000; }
+  .media-item img { flex: 0 0 auto; width: 120px; height: 68px; object-fit: contain; background: #000; }
   .media-item .text { flex: 1 1 auto; min-width: 0; padding: 6px 8px; }
   .media-item .name { font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .media-item .sub { font-size: 0.8rem; color: #aaa; margin-top: 2px; }
@@ -929,7 +929,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   /* Fixed-size frame (outlined so the space reads as the preview even when empty) and fixed-height text rows,
      so the sticky header doesn't change height as media starts, stops or switches between seekable and not */
   .now .thumb { flex: 0 0 auto; width: 96px; height: 54px; box-sizing: border-box; border: 1px solid #3a3a3a; border-radius: 4px; background: #000; overflow: hidden; }
-  .now .thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .now .thumb img { display: block; width: 100%; height: 100%; object-fit: contain; }
   .now .info { flex: 1 1 auto; min-width: 0; }
   .now .label { font-size: 0.75rem; line-height: 1.3; min-height: 1.3em; color: #9a9; text-transform: uppercase; letter-spacing: 0.05em; }
   .now .title { font-size: 1.05rem; line-height: 1.3; min-height: 1.3em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
