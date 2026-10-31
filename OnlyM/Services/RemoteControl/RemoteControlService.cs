@@ -1010,8 +1010,17 @@ function showLocked() {
   $('nowTime').textContent = '';
   $('nowBarWrap').style.display = 'none';
 }
+function timeoutSignal(ms) {
+  if (AbortSignal.timeout) {
+    return AbortSignal.timeout(ms);
+  }
+  const c = new AbortController();
+  setTimeout(() => c.abort(), ms);
+  return c.signal;
+}
 async function call(path, opts) {
-  const r = await fetch(path, opts);
+  // A hung request would otherwise hold one of the browser's few connections to the listener for minutes
+  const r = await fetch(path, { signal: timeoutSignal(10000), ...opts });
   if (r.status === 401) { showPin(); throw new Error('PIN required'); }
   return r;
 }
@@ -1157,7 +1166,8 @@ async function api(path) {
     }
     return false;
   }
-  setTimeout(refreshAll, 200);
+  // Commands don't change the media list, so a prompt status poll is enough (it also restarts the poll schedule)
+  setTimeout(restartPolling, 200);
   return ok;
 }
 function renderList(activeId) {
@@ -1258,37 +1268,95 @@ function renderPosition(status) {
   s.value = status.positionSeconds;
   showSeekTime(status.positionSeconds);
 }
+function showConnectionLost(e) {
+  $('nowLabel').textContent = 'Connection lost';
+  $('nowTitle').textContent = e.name === 'TimeoutError' || e.name === 'AbortError' ? 'Request timed out' : e.message;
+}
+// Status polling: only pollLoop requests /api/status, one request at a time (so replies can't pile up or arrive
+// out of order), every 500 ms while the position is moving and 2 s otherwise, backing off to 5 s while the
+// listener can't be reached, and stopped while the page is hidden. Call restartPolling for a prompt update.
+const POLL_MS = 500, IDLE_POLL_MS = 2000, MAX_POLL_MS = 5000;
+let pollFailures = 0;
+let pollFast = false;
+let polling = false;
+let pollAgain = false; // restartPolling was called while a poll was in flight
+let pollTimer = null;
 async function pollStatus() {
+  if (locked) {
+    return;
+  }
   try {
-    if (locked) {
-      return;
-    }
-    const status = await (await call('/api/status')).json();
+    const status = await (await call('/api/status', { signal: timeoutSignal(4000) })).json();
+    pollFailures = 0;
+    pollFast = !!status.isPlaying && status.durationSeconds > 0;
     renderStatus(status);
   } catch (e) {
+    pollFailures++;
     if (locked) { showLocked(); return; }
-    $('nowLabel').textContent = 'Connection lost';
-    $('nowTitle').textContent = e.message;
+    showConnectionLost(e);
   }
 }
-async function refreshAll() {
+function pollDelay() {
+  if (pollFailures > 0) {
+    return Math.min(MAX_POLL_MS, POLL_MS * 2 ** pollFailures);
+  }
+  return pollFast ? POLL_MS : IDLE_POLL_MS;
+}
+async function pollLoop() {
+  pollTimer = null;
+  if (document.hidden) {
+    return; // visibilitychange restarts it
+  }
+  if (polling) {
+    pollAgain = true; // the reply in flight may predate whatever prompted this, so poll again once it lands
+    return;
+  }
+  polling = true;
   try {
-    if (locked) {
-      return;
-    }
-    media = await (await call('/api/media')).json();
-    lastActiveId = undefined; // force list redraw
     await pollStatus();
+  } finally {
+    polling = false;
+  }
+  if (!document.hidden && pollTimer === null) {
+    pollTimer = setTimeout(pollLoop, pollAgain ? 0 : pollDelay());
+  }
+  pollAgain = false;
+}
+function restartPolling() {
+  clearTimeout(pollTimer);
+  pollTimer = setTimeout(pollLoop, 0);
+}
+let mediaJson = '';
+let mediaLoading = false;
+async function refreshAll() {
+  if (locked || document.hidden || mediaLoading) {
+    return;
+  }
+  mediaLoading = true;
+  try {
+    const text = await (await call('/api/media')).text();
+    if (text !== mediaJson) {
+      mediaJson = text;
+      media = JSON.parse(text);
+      lastActiveId = undefined; // force list redraw (only when the list changed, so thumbnails aren't reloaded)
+    }
   } catch (e) {
     if (locked) { showLocked(); return; }
-    $('nowLabel').textContent = 'Connection lost';
-    $('nowTitle').textContent = e.message;
+    showConnectionLost(e);
+  } finally {
+    mediaLoading = false;
+    restartPolling(); // also starts polling on page load and after unlocking, even if the list didn't load
   }
 }
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    refreshAll();
+    restartPolling(); // in case refreshAll skipped because a list request is still in flight
+  }
+});
 initVolume();
 initSeek();
-refreshAll();
-setInterval(pollStatus, 500);   // what's playing, position, volume
+refreshAll();                    // media list, then starts status polling (what's playing, position, volume)
 setInterval(refreshAll, 10000);  // media list (rarely changes)
 </script>
 </body>
