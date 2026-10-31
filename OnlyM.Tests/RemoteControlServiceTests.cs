@@ -360,6 +360,124 @@ public sealed class RemoteControlServiceTests
         Assert.Equal(items[expectedIndex].Id, RemoteControlService.FindRelativeItem(items, step));
     }
 
+    [Theory]
+    [InlineData("{\"pin\":\"123456\"}", "application/json", "123456")]
+    [InlineData("{\"pin\":123456}", "application/json", "123456")]
+    [InlineData("pin=123456", "application/x-www-form-urlencoded", "123456")]
+    [InlineData("{\"pin\":true}", "application/json", null)]
+    [InlineData("{\"pin\":null}", "application/json", null)]
+    [InlineData("{\"pin\":{}}", "application/json", null)]
+    [InlineData("{\"pin\":[1]}", "application/json", null)]
+    [InlineData("[]", "application/json", null)]
+    [InlineData("\"123456\"", "application/json", null)]
+    [InlineData("42", "application/json", null)]
+    [InlineData("{", "application/json", null)]
+    [InlineData("{}", null, null)]
+    public void ParsePin_MalformedBodiesGiveNull(string body, string? contentType, string? expected)
+    {
+        // Null is a wrong PIN (a failed attempt), not an exception that bypasses the login guard
+        Assert.Equal(expected, RemoteControlService.ParsePin(body, contentType));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void SelectPrimaryActive_PrefersAudioUnderAnImage(bool audioFirst)
+    {
+        var image = CreateMedia(MediaClassification.Image, active: true, paused: false);
+        var audio = CreateMedia(MediaClassification.Audio, active: true, paused: true);
+        var idle = CreateMedia(MediaClassification.Video, active: false, paused: false);
+        List<MediaItem> items = audioFirst ? [idle, audio, image] : [idle, image, audio];
+
+        Assert.Same(audio, RemoteControlService.SelectPrimaryActive(items));
+        Assert.Same(image, RemoteControlService.SelectNavigationAnchor(items));
+    }
+
+    [Fact]
+    public void SelectPrimaryActive_OtherwiseFirstActive()
+    {
+        var slideshow = CreateSlideshow(0, 3, loop: false);
+        var audio = CreateMedia(MediaClassification.Audio, active: true, paused: false);
+        var idle = CreateMedia(MediaClassification.Image, active: false, paused: false);
+
+        Assert.Same(slideshow, RemoteControlService.SelectPrimaryActive([idle, slideshow]));
+        Assert.Same(audio, RemoteControlService.SelectNavigationAnchor([idle, audio]));
+        Assert.Null(RemoteControlService.SelectPrimaryActive([idle]));
+        Assert.Null(RemoteControlService.SelectNavigationAnchor([idle]));
+    }
+
+    [Fact]
+    public void FindRelativeItem_StepsFromTheImageNotTheBackgroundAudio()
+    {
+        var audio = CreateMedia(MediaClassification.Audio, active: true, paused: false);
+        var image = CreateMedia(MediaClassification.Image, active: true, paused: false);
+        var next = CreateMedia(MediaClassification.Image, active: false, paused: false);
+        audio.IsVisible = image.IsVisible = next.IsVisible = true;
+
+        Assert.Equal(next.Id, RemoteControlService.FindRelativeItem([audio, image, next], 1));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void GetItemsToStop_NewAudioStopsPlayingAudioButLeavesTheImage(bool imageFirst)
+    {
+        var image = CreateMedia(MediaClassification.Image, active: true, paused: false);
+        var audio = CreateMedia(MediaClassification.Audio, active: true, paused: false);
+        var newAudio = CreateMedia(MediaClassification.Audio, active: false, paused: false);
+        List<MediaItem> items = imageFirst ? [image, audio, newAudio] : [audio, image, newAudio];
+
+        Assert.Equal([audio.Id], RemoteControlService.GetItemsToStop(items, newAudio));
+    }
+
+    [Fact]
+    public void GetItemsToStop_FollowsOperatorRules()
+    {
+        var image = CreateMedia(MediaClassification.Image, active: true, paused: false);
+        var audio = CreateMedia(MediaClassification.Audio, active: true, paused: false);
+        var video = CreateMedia(MediaClassification.Video, active: true, paused: false);
+        var rolling = CreateSlideshow(0, 3, loop: false);
+        rolling.IsRollingSlideshow = true;
+        var newImage = CreateMedia(MediaClassification.Image, active: false, paused: false);
+        var newVideo = CreateMedia(MediaClassification.Video, active: false, paused: false);
+        var newAudio = CreateMedia(MediaClassification.Audio, active: false, paused: false);
+
+        // An image replaces an image itself and plays over audio
+        Assert.Empty(RemoteControlService.GetItemsToStop([image, audio, newImage], newImage));
+
+        // Video stops audio; the image stays until the video replaces it
+        Assert.Equal([audio.Id], RemoteControlService.GetItemsToStop([image, audio, newVideo], newVideo));
+
+        // Nothing starts while a video plays
+        Assert.Equal([video.Id], RemoteControlService.GetItemsToStop([video, newImage], newImage));
+
+        // Only audio can start while a rolling slideshow runs
+        Assert.Equal([rolling.Id], RemoteControlService.GetItemsToStop([rolling, newImage], newImage));
+        Assert.Empty(RemoteControlService.GetItemsToStop([rolling, newAudio], newAudio));
+
+        // The target itself is never stopped
+        Assert.Empty(RemoteControlService.GetItemsToStop([audio], audio));
+    }
+
+    [Fact]
+    public void BuildStatus_ListsAllActiveItems()
+    {
+        var image = CreateMedia(MediaClassification.Image, active: true, paused: false);
+        var audio = CreateMedia(MediaClassification.Audio, active: true, paused: false);
+
+        using var json = Parse(RemoteControlService.BuildStatus(audio, 50, volumeEnabled: true, [image.Id, audio.Id]));
+        using var single = Parse(RemoteControlService.BuildStatus(audio, 50, volumeEnabled: true));
+        using var none = Parse(RemoteControlService.BuildStatus(null, 50, volumeEnabled: true));
+
+        Assert.Equal(audio.Id.ToString(), json.RootElement.GetProperty("currentItemId").GetString());
+        Assert.Equal(25, json.RootElement.GetProperty("positionSeconds").GetDouble());
+        Assert.Equal(
+            [image.Id.ToString(), audio.Id.ToString()],
+            json.RootElement.GetProperty("activeItemIds").EnumerateArray().Select(e => e.GetString()!).ToArray());
+        Assert.Equal(1, single.RootElement.GetProperty("activeItemIds").GetArrayLength());
+        Assert.Equal(0, none.RootElement.GetProperty("activeItemIds").GetArrayLength());
+    }
+
     [Fact]
     public void FindRelativeItem_ReturnsNullWhenNothingIsVisible()
     {

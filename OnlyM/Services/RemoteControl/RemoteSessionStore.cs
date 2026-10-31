@@ -18,6 +18,7 @@ internal sealed class RemoteSessionStore
     private readonly Dictionary<string, Session> _sessions = new(StringComparer.Ordinal);
     private readonly Func<DateTime> _utcNow;
     private readonly int _maxSessions;
+    private long _generation;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RemoteSessionStore"/> class.
@@ -55,14 +56,48 @@ internal sealed class RemoteSessionStore
     }
 
     /// <summary>
+    /// Gets the current generation. <see cref="Clear"/> starts a new one, so a login that read it before
+    /// checking the PIN can tell (via <see cref="TryCreate"/>) that the PIN changed while it was being checked.
+    /// </summary>
+    public long Generation
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _generation;
+            }
+        }
+    }
+
+    /// <summary>
     /// Creates a session and returns its (random, 256-bit) token.
     /// </summary>
     /// <returns>The session token as a hex string.</returns>
     public string Create()
     {
+        lock (_lock)
+        {
+            return TryCreate(_generation)!;
+        }
+    }
+
+    /// <summary>
+    /// Creates a session, unless the store has been cleared since <paramref name="generation"/> was read
+    /// (e.g. the PIN changed while a login with the old PIN was in progress).
+    /// </summary>
+    /// <param name="generation">The <see cref="Generation"/> read before the PIN was checked.</param>
+    /// <returns>The session token as a hex string, or null if the generation is out of date.</returns>
+    public string? TryCreate(long generation)
+    {
         var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
         lock (_lock)
         {
+            if (generation != _generation)
+            {
+                return null;
+            }
+
             var now = _utcNow();
             PruneExpired(now);
             while (_sessions.Count >= _maxSessions)
@@ -108,6 +143,7 @@ internal sealed class RemoteSessionStore
         lock (_lock)
         {
             _sessions.Clear();
+            _generation++;
         }
     }
 

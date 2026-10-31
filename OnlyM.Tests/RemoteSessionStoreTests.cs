@@ -21,6 +21,23 @@ public sealed class RemoteSessionStoreTests
     }
 
     [Fact]
+    public void LoginStartedBeforeClear_CreatesNoSession()
+    {
+        // A login checked against the old PIN must not survive a PIN change (which clears the store)
+        var store = new RemoteSessionStore(() => _now);
+        var generation = store.Generation;
+
+        store.Clear();
+
+        Assert.Null(store.TryCreate(generation));
+        Assert.Equal(0, store.Count);
+
+        var token = store.TryCreate(store.Generation);
+        Assert.NotNull(token);
+        Assert.True(store.TryValidate(token));
+    }
+
+    [Fact]
     public void IdleSessionExpires()
     {
         var store = new RemoteSessionStore(() => _now);

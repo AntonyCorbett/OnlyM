@@ -240,10 +240,11 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     internal static Guid? FindRelativeItem(IReadOnlyList<MediaItem> items, int step)
     {
         var count = items.Count;
+        var anchor = SelectNavigationAnchor(items);
         var start = -1;
         for (var i = 0; i < count; i++)
         {
-            if (items[i].IsMediaActive)
+            if (ReferenceEquals(items[i], anchor))
             {
                 start = i;
                 break;
@@ -269,22 +270,153 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     }
 
     /// <summary>
+    /// Reads the PIN from a login body: JSON (<c>{"pin":"123456"}</c>, the PIN may also be a number) or form-encoded
+    /// (<c>pin=123456</c>). Anything else, including JSON of the wrong shape, gives null, which the caller treats
+    /// as a wrong PIN (so it counts as a failed attempt).
+    /// </summary>
+    /// <param name="body">The request body.</param>
+    /// <param name="contentType">The request's Content-Type, if any.</param>
+    /// <returns>The PIN, or null if the body has none.</returns>
+    internal static string? ParsePin(string body, string? contentType)
+    {
+        try
+        {
+            if (contentType?.Contains("json", StringComparison.OrdinalIgnoreCase) == true || body.TrimStart().StartsWith('{'))
+            {
+                using var doc = JsonDocument.Parse(body);
+                if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                    !doc.RootElement.TryGetProperty("pin", out var p))
+                {
+                    return null;
+                }
+
+                return p.ValueKind switch
+                {
+                    JsonValueKind.String => p.GetString(),
+                    JsonValueKind.Number => p.GetRawText(),
+                    _ => null,
+                };
+            }
+
+            foreach (var pair in body.Split('&'))
+            {
+                var kv = pair.Split('=', 2);
+                if (kv.Length == 2 && kv[0] == "pin")
+                {
+                    return WebUtility.UrlDecode(kv[1]);
+                }
+            }
+        }
+        catch (JsonException)
+        {
+            // fall through
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Gets the active item that the now-playing card, Pause and Seek act on. OnlyM can play audio while an image,
+    /// slideshow or web page is showing, so the playing audio/video wins (only one of those can be active);
+    /// otherwise it is the first active item.
+    /// </summary>
+    /// <param name="items">The operator's media list.</param>
+    /// <returns>The item, or null if nothing is active.</returns>
+    internal static MediaItem? SelectPrimaryActive(IEnumerable<MediaItem> items)
+    {
+        MediaItem? first = null;
+        foreach (var m in items)
+        {
+            if (!m.IsMediaActive)
+            {
+                continue;
+            }
+
+            if (m.HasDuration)
+            {
+                return m;
+            }
+
+            first ??= m;
+        }
+
+        return first;
+    }
+
+    /// <summary>
+    /// Gets the active item that Next/Previous step from (and whose slides they change): the item on screen
+    /// (anything but audio), so background audio doesn't take over the clicker; otherwise the active audio.
+    /// </summary>
+    /// <param name="items">The operator's media list.</param>
+    /// <returns>The item, or null if nothing is active.</returns>
+    internal static MediaItem? SelectNavigationAnchor(IEnumerable<MediaItem> items)
+    {
+        MediaItem? first = null;
+        foreach (var m in items)
+        {
+            if (!m.IsMediaActive)
+            {
+                continue;
+            }
+
+            if (m.MediaType?.Classification != Core.Models.MediaClassification.Audio)
+            {
+                return m;
+            }
+
+            first ??= m;
+        }
+
+        return first;
+    }
+
+    /// <summary>
+    /// Gets the active items that must be stopped before <paramref name="target"/> can start. These are the
+    /// same rules the operator window applies (OperatorViewModel.CanStartMedia): video/audio can't start while
+    /// video/audio is active, and nothing can start while a video plays. Also, only audio can start while a
+    /// rolling slideshow runs.
+    /// </summary>
+    /// <param name="items">The operator's media list.</param>
+    /// <param name="target">The item to start.</param>
+    /// <returns>The ids of the items to stop, in list order.</returns>
+    internal static List<Guid> GetItemsToStop(IEnumerable<MediaItem> items, MediaItem? target)
+    {
+        var targetType = target?.MediaType?.Classification;
+        var targetIsAv = targetType is Core.Models.MediaClassification.Video or Core.Models.MediaClassification.Audio;
+
+        return items
+            .Where(m => m.IsMediaActive && m.Id != target?.Id)
+            .Where(m =>
+            {
+                var type = m.MediaType?.Classification;
+                return type == Core.Models.MediaClassification.Video ||
+                       (type == Core.Models.MediaClassification.Audio && targetIsAv) ||
+                       (m.IsRollingSlideshow && targetType != Core.Models.MediaClassification.Audio);
+            })
+            .Select(m => m.Id)
+            .ToList();
+    }
+
+    /// <summary>
     /// Builds the /api/status reply. The slide fields are null unless the active item is a slideshow
     /// (currentSlideIndex is 0-based). canSeek follows the operator's position slider
     /// (<see cref="MediaItem.IsSliderVisible"/>): audio/video, scrubbing allowed in Settings, and paused.
     /// </summary>
-    /// <param name="active">The active media item, or null if nothing is playing.</param>
+    /// <param name="active">The primary active media item (see <see cref="SelectPrimaryActive"/>), or null if nothing is playing.</param>
     /// <param name="volume">The current volume.</param>
     /// <param name="volumeEnabled">Whether the remote shows the volume control.</param>
+    /// <param name="activeItemIds">All active items (e.g. an image and the audio playing with it); defaults to just <paramref name="active"/>.</param>
     /// <returns>The reply object, serialised as JSON.</returns>
-    internal static object BuildStatus(MediaItem? active, int volume, bool volumeEnabled)
+    internal static object BuildStatus(MediaItem? active, int volume, bool volumeEnabled, IEnumerable<Guid>? activeItemIds = null)
     {
         var isSlideshow = active?.IsSlideshow == true;
+        activeItemIds ??= active != null ? [active.Id] : [];
         return new
         {
             isPlaying = active != null && !active.IsPaused,
             isPaused = active?.IsPaused ?? false,
             currentItemId = active?.Id.ToString(),
+            activeItemIds = activeItemIds.Select(id => id.ToString()).ToList(),
             positionSeconds = (active?.PlaybackPositionDeciseconds ?? 0) / 10.0,
             durationSeconds = (active?.DurationDeciseconds ?? 0) / 10.0,
             canSeek = active?.IsSliderVisible == true,
@@ -605,6 +737,9 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
             return;
         }
 
+        // Read before the PIN: if the PIN changes (clearing the sessions) while this login is checked against
+        // the old one, no session is created
+        var generation = _sessions.Generation;
         var pin = ParsePin(body, req.ContentType);
         var expected = _optionsService.RemoteControlPin;
         var client = GetClientKeys(req);
@@ -647,7 +782,15 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
             return;
         }
 
-        var token = _sessions.Create();
+        var token = _sessions.TryCreate(generation);
+        if (token == null)
+        {
+            Log.Logger.Information("Remote control login from {Client} refused: the PIN changed during login", client);
+            res.StatusCode = 401;
+            await Ok(res, new { error = "wrong" });
+            return;
+        }
+
         res.Headers.Add("Set-Cookie", $"{SessionCookieName}={token}; Path=/; HttpOnly; SameSite=Strict");
         Log.Logger.Information("Remote control login from {Client}", client);
         await Ok(res);
@@ -659,38 +802,6 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
         res.StatusCode = 429;
         res.Headers.Add("Retry-After", retryAfter.ToString(System.Globalization.CultureInfo.InvariantCulture));
         await Ok(res, new { error = "locked", retryAfter });
-    }
-
-    private static string? ParsePin(string body, string? contentType)
-    {
-        try
-        {
-            if (contentType?.Contains("json", StringComparison.OrdinalIgnoreCase) == true || body.TrimStart().StartsWith('{'))
-            {
-                using var doc = JsonDocument.Parse(body);
-                if (doc.RootElement.TryGetProperty("pin", out var p))
-                {
-                    return p.ValueKind == JsonValueKind.Number ? p.GetRawText() : p.GetString();
-                }
-
-                return null;
-            }
-
-            foreach (var pair in body.Split('&'))
-            {
-                var kv = pair.Split('=', 2);
-                if (kv.Length == 2 && kv[0] == "pin")
-                {
-                    return WebUtility.UrlDecode(kv[1]);
-                }
-            }
-        }
-        catch (JsonException)
-        {
-            // fall through
-        }
-
-        return null;
     }
 
     /// <summary>
@@ -1306,9 +1417,9 @@ async function api(path) {
   setTimeout(restartPolling, 200);
   return ok;
 }
-function renderList(activeId) {
+function renderList(activeIds) {
   $('grid').innerHTML = media.map(m => `
-    <div class="media-item ${m.id === activeId ? 'active' : ''}" onclick="api('/api/play/${m.id}')">
+    <div class="media-item ${activeIds.includes(m.id) ? 'active' : ''}" onclick="api('/api/play/${m.id}')">
       <img src="/api/thumbnails/${m.id}" alt="" onerror="this.style.visibility='hidden'">
       <div class="text">
         <div class="name">${esc(m.name || m.id)}</div>
@@ -1365,9 +1476,12 @@ function renderStatus(status) {
     showVolume(status.volume);
   }
 
-  if (status.currentItemId !== lastActiveId) {
-    lastActiveId = status.currentItemId;
-    renderList(lastActiveId);
+  // e.g. an image and the audio playing with it are both highlighted
+  const activeIds = status.activeItemIds || (status.currentItemId ? [status.currentItemId] : []);
+  const activeKey = activeIds.join(',');
+  if (activeKey !== lastActiveId) {
+    lastActiveId = activeKey;
+    renderList(activeIds);
   }
 }
 function renderPosition(status) {
@@ -1524,9 +1638,10 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
     private async Task Status(HttpListenerResponse res)
     {
         var status = await OnUi(() => BuildStatus(
-            _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive),
+            SelectPrimaryActive(_operatorViewModel.MediaItems),
             _optionsService.Volume,
-            IsRemoteVolumeEnabled(_optionsService)));
+            IsRemoteVolumeEnabled(_optionsService),
+            _operatorViewModel.MediaItems.Where(m => m.IsMediaActive).Select(m => m.Id).ToList()));
 
         await Ok(res, status);
     }
@@ -1553,45 +1668,32 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
 
     /// <summary>
     /// Starts an item the way an operator would: the operator window won't start video/audio while
-    /// video/audio is playing (or anything while a video plays), so the active item is stopped first.
-    /// Replies 409 with a message if the item could not be started.
+    /// video/audio is playing (or anything while a video plays), so the active items in the way are stopped
+    /// first (see <see cref="GetItemsToStop"/>). Replies 409 with a message if the item could not be started.
     /// </summary>
     private async Task StartItem(Guid id, HttpListenerResponse res)
     {
-        (Guid? activeId, bool mustStop, string name) = await OnUi(() =>
+        (bool alreadyActive, List<Guid> toStop, string name) = await OnUi(() =>
         {
             var target = _operatorViewModel.MediaItems.FirstOrDefault(m => m.Id == id);
-            var active = _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive);
-            var activeType = active?.MediaType?.Classification;
-            var targetType = target?.MediaType?.Classification;
-            var targetIsAv = targetType is Core.Models.MediaClassification.Video or Core.Models.MediaClassification.Audio;
-            // The operator window won't start anything but audio while a rolling slideshow runs, so stop that too
-            var stop = active != null && active.Id != id &&
-                       (activeType == Core.Models.MediaClassification.Video ||
-                        (activeType == Core.Models.MediaClassification.Audio && targetIsAv) ||
-                        (active.IsRollingSlideshow && targetType != Core.Models.MediaClassification.Audio));
-            return (active?.Id, stop, target?.Title ?? id.ToString());
+            return (
+                target?.IsMediaActive == true,
+                GetItemsToStop(_operatorViewModel.MediaItems, target),
+                target?.Title ?? id.ToString());
         });
 
         // Playing the item that is already active would toggle it off, so ignore it.
-        if (activeId == id)
+        if (alreadyActive)
         {
             await Ok(res, new { success = true, id, alreadyActive = true });
             return;
         }
 
-        if (mustStop && activeId is { } stopId)
+        if (!await StopItems(toStop))
         {
-            await OnUiAsync(() => _operatorViewModel.MediaControlCommand1.ExecuteAsync(stopId));
-            var stopped = await WaitUntil(
-                () => !_operatorViewModel.MediaItems.Any(m => m.IsMediaChanging || (m.Id == stopId && m.IsMediaActive)),
-                TimeSpan.FromSeconds(5));
-            if (!stopped)
-            {
-                res.StatusCode = 409;
-                await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_STOP_TIMEOUT });
-                return;
-            }
+            res.StatusCode = 409;
+            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_STOP_TIMEOUT });
+            return;
         }
 
         await OnUiAsync(() => _operatorViewModel.MediaControlCommand1.ExecuteAsync(id));
@@ -1629,16 +1731,45 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         }
     }
 
+    /// <summary>
+    /// Stops the items one at a time, waiting for each stop to finish, because the operator's
+    /// start/stop command is ignored while media is changing.
+    /// </summary>
+    /// <param name="ids">The items to stop.</param>
+    /// <returns>False if an item didn't stop in time.</returns>
+    private async Task<bool> StopItems(IReadOnlyList<Guid> ids)
+    {
+        foreach (var stopId in ids)
+        {
+            var stillActive = await OnUi(() => _operatorViewModel.MediaItems.Any(m => m.Id == stopId && m.IsMediaActive));
+            if (!stillActive)
+            {
+                continue;
+            }
+
+            await OnUiAsync(() => _operatorViewModel.MediaControlCommand1.ExecuteAsync(stopId));
+            var stopped = await WaitUntil(
+                () => !_operatorViewModel.MediaItems.Any(m => m.IsMediaChanging || (m.Id == stopId && m.IsMediaActive)),
+                TimeSpan.FromSeconds(5));
+            if (!stopped)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private async Task StopCurrent(HttpListenerResponse res)
     {
-        await OnUiAsync(async () =>
+        // Stops everything that is active, e.g. an image and the audio playing with it
+        var active = await OnUi(() => _operatorViewModel.MediaItems.Where(m => m.IsMediaActive).Select(m => m.Id).ToList());
+        if (!await StopItems(active))
         {
-            var active = _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive);
-            if (active != null)
-            {
-                await _operatorViewModel.MediaControlCommand1.ExecuteAsync(active.Id);
-            }
-        });
+            res.StatusCode = 409;
+            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_STOP_TIMEOUT });
+            return;
+        }
 
         await Ok(res);
     }
@@ -1647,8 +1778,9 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
     {
         await OnUiAsync(async () =>
         {
-            var active = _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive);
-            if (active != null)
+            // Pause is for audio/video only
+            var active = SelectPrimaryActive(_operatorViewModel.MediaItems);
+            if (active is { HasDuration: true })
             {
                 await _operatorViewModel.MediaControlPauseCommand.ExecuteAsync(active.Id);
             }
@@ -1667,7 +1799,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         // then move on to the next/previous media item.
         var slide = await OnUi(() =>
         {
-            var active = _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive);
+            var active = SelectNavigationAnchor(_operatorViewModel.MediaItems);
             return ShouldChangeSlide(active, step) ? (Id: active!.Id, Index: active.CurrentSlideshowIndex) : ((Guid Id, int Index)?)null;
         });
 
@@ -1742,7 +1874,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         // paused" is on, and either way playback resumes from the new position.
         var (statusCode, error, positionSeconds) = await OnUi(() =>
         {
-            var active = _operatorViewModel.MediaItems.FirstOrDefault(m => m.IsMediaActive);
+            var active = SelectPrimaryActive(_operatorViewModel.MediaItems);
             var plan = PlanSeek(active, secondsText);
             if (plan.StatusCode == 200)
             {
