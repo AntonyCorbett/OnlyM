@@ -446,6 +446,18 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     }
 
     /// <summary>
+    /// Gets a value indicating whether the remote may open a full-screen preview of the item: images, video and
+    /// slideshows only. Not audio (only a generic icon), or web items (web links and PDFs).
+    /// </summary>
+    /// <param name="m">The media item.</param>
+    /// <returns>True if the item can be previewed.</returns>
+    internal static bool CanPreview(MediaItem m) =>
+        m.FilePath != null &&
+        (m.MediaType?.Classification is Core.Models.MediaClassification.Image
+            or Core.Models.MediaClassification.Video
+            or Core.Models.MediaClassification.Slideshow);
+
+    /// <summary>
     /// Builds one /api/media entry. Slideshows also get slideCount and the operator card's localised
     /// "(contains n slides)" text as subtitle (both null for other media, and subtitle null until the slides are counted).
     /// </summary>
@@ -463,6 +475,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
             isActive = m.IsMediaActive,
             isPaused = m.IsPaused,
             hasThumbnail = m.FilePath != null,
+            canPreview = CanPreview(m),
             slideCount,
             subtitle = slideCount > 0 ? MediaItem.GetSlideCountText(slideCount.Value, m.IsRollingSlideshow) : null,
         };
@@ -1308,7 +1321,7 @@ function initVolume() {
   });
 }
 function canPreview(m) {
-  return !!m && m.hasThumbnail && m.type !== 'Audio'; // audio only has a generic icon
+  return !!m && !!m.canPreview; // decided by the server: images, video and slideshows only
 }
 function openPreview(id) {
   const m = media.find(x => x.id === id);
@@ -1948,7 +1961,8 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
 
     /// <summary>
     /// Serves a phone-screen-sized copy of an image item for the remote's full-screen preview. Other media types
-    /// (and images that can't be resized) get their ordinary thumbnail.
+    /// (and images that can't be resized) get their ordinary thumbnail. Items that can't be previewed
+    /// (see <see cref="CanPreview"/>) get 404.
     /// </summary>
     private async Task ServePreview(string idStr, HttpListenerRequest req, HttpListenerResponse res)
     {
@@ -1959,11 +1973,21 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             return;
         }
 
-        var (filePath, classification) = await OnUi(() =>
+        var (allowed, filePath, classification) = await OnUi(() =>
         {
             var item = RemoteItems.FirstOrDefault(m => m.Id == id);
-            return (item?.FilePath, item?.MediaType?.Classification ?? Core.Models.MediaClassification.Unknown);
+            return (
+                item != null && CanPreview(item),
+                item?.FilePath,
+                item?.MediaType?.Classification ?? Core.Models.MediaClassification.Unknown);
         });
+
+        if (!allowed)
+        {
+            res.StatusCode = 404;
+            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_ITEM_NOT_FOUND });
+            return;
+        }
 
         if (filePath == null || classification != Core.Models.MediaClassification.Image || !File.Exists(filePath))
         {

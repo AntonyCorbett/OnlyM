@@ -284,6 +284,35 @@ public sealed class RemoteControlServiceTests
         Assert.Equal(expected, RemoteControlService.IsRemoteVolumeEnabled(options.Object));
     }
 
+    [Theory]
+    [InlineData(MediaClassification.Image, "photo.jpg", true)]
+    [InlineData(MediaClassification.Video, "clip.mp4", true)]
+    [InlineData(MediaClassification.Slideshow, "slides.omslide", true)]
+    [InlineData(MediaClassification.Audio, "song.mp3", false)] // only a generic icon
+    [InlineData(MediaClassification.Web, "notes.pdf", false)]
+    [InlineData(MediaClassification.Web, "NOTES.PDF", false)]
+    [InlineData(MediaClassification.Web, "example.url", false)] // web link
+    [InlineData(MediaClassification.Unknown, "file.xyz", false)]
+    public void CanPreview_OnlyImagesVideoAndSlideshows(MediaClassification classification, string fileName, bool expected)
+    {
+        var item = new MediaItem
+        {
+            Id = Guid.NewGuid(),
+            MediaType = new SupportedMediaType { Classification = classification },
+            FilePath = Path.Combine("C:\\media", fileName),
+        };
+
+        Assert.Equal(expected, RemoteControlService.CanPreview(item));
+        using var json = Parse(RemoteControlService.BuildMediaEntry(item));
+        Assert.Equal(expected, json.RootElement.GetProperty("canPreview").GetBoolean());
+    }
+
+    [Fact]
+    public void CanPreview_NotWithoutAFile()
+    {
+        Assert.False(RemoteControlService.CanPreview(CreateMedia(MediaClassification.Image, active: false, paused: false)));
+    }
+
     [Fact]
     public void BuildMediaEntry_OtherMedia_HasNoSlideCount()
     {
