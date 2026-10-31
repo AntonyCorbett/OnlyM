@@ -816,6 +816,18 @@
     <value>To let other devices on your network connect, OnlyM needs a Windows Firewall exception for this port. You will be asked for administrator permission. If you change the port later, do this again.</value>
     <comment>See Settings =&gt; Remote Control (note shown above the firewall button)</comment>
   </data>
+  <data name="REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS" xml:space="preserve">
+    <value>Also allow on public networks</value>
+    <comment>See Settings =&gt; Remote Control (check box above the firewall button)</comment>
+  </data>
+  <data name="REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS_NOTE" xml:space="preserve">
+    <value>Applies when you next click 'Create firewall exception'. Anyone on a public network (e.g. venue or hotel Wi-Fi) can then reach the remote page, so set a PIN.</value>
+    <comment>See Settings =&gt; Remote Control (note below the 'Also allow on public networks' check box)</comment>
+  </data>
+  <data name="REMOTE_CONTROL_PUBLIC_NETWORK_WARNING" xml:space="preserve">
+    <value>Windows treats '{0}' as a public network, so its firewall blocks phones and other devices on it. On a trusted network, set it to Private (Windows Settings &gt; Network &amp; internet). Otherwise tick 'Also allow on public networks' and click 'Create firewall exception'.</value>
+    <comment>See Settings =&gt; Remote Control; {0} is the network name (or several, comma separated)</comment>
+  </data>
   <data name="REMOTE_CONTROL_FIREWALL_DONE" xml:space="preserve">
     <value>Network access enabled for port {0}.</value>
     <comment>See Settings =&gt; Remote Control; {0} is the port</comment>

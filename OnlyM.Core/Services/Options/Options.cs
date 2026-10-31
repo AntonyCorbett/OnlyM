@@ -78,6 +78,12 @@ public sealed class Options
 
     public bool RemoteControlEnabled { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the remote control firewall exception also covers networks Windows
+    /// treats as Public (it covers Private networks only by default). Off by default.
+    /// </summary>
+    public bool RemoteControlAllowPublicNetworks { get; set; }
+
     public RemoteControlMode RemoteControlMode { get; set; } = RemoteControlMode.Local;
 
     /// <summary>

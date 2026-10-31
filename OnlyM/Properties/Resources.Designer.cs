@@ -843,7 +843,25 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("REMOTE_CONTROL_ADDRESS", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Also allow on public networks.
+        /// </summary>
+        public static string REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Applies when you next click &apos;Create firewall exception&apos;. Anyone on a public network (e.g. venue or hotel Wi-Fi) can then reach the remote page, so set a PIN..
+        /// </summary>
+        public static string REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS_NOTE {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS_NOTE", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Position must be a number of seconds (0 or more).
         /// </summary>
@@ -1203,7 +1221,16 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("REMOTE_CONTROL_PORT_IN_USE", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Windows treats &apos;{0}&apos; as a public network, so its firewall blocks phones and other devices on it. On a trusted network, set it to Private (Windows Settings &gt; Network &amp; internet). Otherwise tick &apos;Also allow on public networks&apos; and click &apos;Create firewall exception&apos;..
+        /// </summary>
+        public static string REMOTE_CONTROL_PUBLIC_NETWORK_WARNING {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_PUBLIC_NETWORK_WARNING", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to RETRY.
         /// </summary>

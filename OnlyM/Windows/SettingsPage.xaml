@@ -798,8 +798,29 @@
 
                     <TextBlock
                         Margin="0,10,0,0"
+                        FontWeight="SemiBold"
+                        Style="{StaticResource MiscNotesStyle}"
+                        Text="{Binding RemoteControlPublicNetworkWarning, Mode=OneWay}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding RemoteControlPublicNetworkWarningVisibility, Mode=OneWay}" />
+
+                    <TextBlock
+                        Margin="0,10,0,0"
                         Style="{StaticResource MiscNotesStyle}"
                         Text="{x:Static resx:Resources.REMOTE_CONTROL_CREATE_FIREWALL_NOTE}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}" />
+
+                    <CheckBox
+                        Content="{x:Static resx:Resources.REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS}"
+                        IsChecked="{Binding RemoteControlAllowPublicNetworks, Mode=TwoWay}"
+                        Style="{StaticResource SettingsCheckBoxStyle}"
+                        Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}" />
+
+                    <TextBlock
+                        Margin="0,0,0,0"
+                        Style="{StaticResource MiscNotesStyle}"
+                        Text="{x:Static resx:Resources.REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS_NOTE}"
                         TextWrapping="Wrap"
                         Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}" />
 

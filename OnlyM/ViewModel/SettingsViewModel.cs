@@ -135,6 +135,15 @@ internal sealed class SettingsViewModel : ObservableObject
             ? System.Windows.Visibility.Visible
             : System.Windows.Visibility.Collapsed;
 
+    /// <summary>
+    /// Gets the warning shown when a connected network is Public and the firewall exception doesn't cover Public
+    /// networks (so phones on it can't connect), or null.
+    /// </summary>
+    public string? RemoteControlPublicNetworkWarning { get; private set; }
+
+    public System.Windows.Visibility RemoteControlPublicNetworkWarningVisibility =>
+        RemoteControlPublicNetworkWarning == null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+
     public System.Windows.Visibility InstallCloudflaredVisibility =>
         _optionsService.RemoteControlEnabled &&
         _optionsService.RemoteControlMode == RemoteControlMode.Cloudflare &&
@@ -1001,6 +1010,23 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether 'Create firewall exception' also opens the port on Public networks
+    /// (default off: Private networks only).
+    /// </summary>
+    public bool RemoteControlAllowPublicNetworks
+    {
+        get => _optionsService.RemoteControlAllowPublicNetworks;
+        set
+        {
+            if (_optionsService.RemoteControlAllowPublicNetworks != value)
+            {
+                _optionsService.RemoteControlAllowPublicNetworks = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public bool ShowFreezeCommand
     {
         get => _optionsService.ShowFreezeCommand;
@@ -1557,7 +1583,34 @@ internal sealed class SettingsViewModel : ObservableObject
             IsMediaActive = _activeMediaItemsService.Any();
             OnPropertyChanged(nameof(IsAutoSortMode));
             OnPropertyChanged(nameof(IsManualSortMode));
+            RefreshPublicNetworkWarning(); // e.g. the network was switched to Private in Windows Settings
         }
+    }
+
+    private void RefreshPublicNetworkWarning()
+    {
+        RemoteControlPublicNetworkWarning = GetPublicNetworkWarning();
+        OnPropertyChanged(nameof(RemoteControlPublicNetworkWarning));
+        OnPropertyChanged(nameof(RemoteControlPublicNetworkWarningVisibility));
+    }
+
+    private string? GetPublicNetworkWarning()
+    {
+        if (!_optionsService.RemoteControlEnabled || _optionsService.RemoteControlMode != RemoteControlMode.Local)
+        {
+            return null;
+        }
+
+        var publicNetworks = NetworkFirewallInfo.GetConnectedPublicNetworks();
+        if (publicNetworks.Count == 0 ||
+            NetworkFirewallInfo.CoversPublic(NetworkFirewallInfo.GetFirewallRuleProfiles(FirewallRuleName(_optionsService.RemoteControlPort))))
+        {
+            return null;
+        }
+
+#pragma warning disable CA1863
+        return string.Format(CultureInfo.CurrentCulture, Properties.Resources.REMOTE_CONTROL_PUBLIC_NETWORK_WARNING, string.Join(", ", publicNetworks));
+#pragma warning restore CA1863
     }
 
     private void HandleSortModeChangedEvent(object? sender, EventArgs e)
@@ -1613,6 +1666,7 @@ internal sealed class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(InstallCloudflaredButtonText));
         OnPropertyChanged(nameof(CloudflaredPathText));
         OnPropertyChanged(nameof(CloudflaredPathVisibility));
+        RefreshPublicNetworkWarning();
     }
 
     private async Task InstallCloudflaredAsync()
@@ -1660,7 +1714,11 @@ internal sealed class SettingsViewModel : ObservableObject
 
         try
         {
-            Serilog.Log.Logger.Information("Creating firewall exception and URL reservation for port {Port} (removing old port {OldPort})", port, oldPort);
+            Serilog.Log.Logger.Information(
+                "Creating firewall exception (public networks: {AllowPublic}) and URL reservation for port {Port} (removing old port {OldPort})",
+                _optionsService.RemoteControlAllowPublicNetworks,
+                port,
+                oldPort);
 
             // One elevated cmd (one UAC prompt): delete existing rule/reservation first so repeated clicks
             // do not create duplicates, remove those of a previous port, then add the rule and the reservation.
@@ -1672,7 +1730,10 @@ internal sealed class SettingsViewModel : ObservableObject
             }
 
             steps.AddRange(DeleteRemoteControlAccessCommands(port));
-            var add = $"netsh advfirewall firewall add rule name=\"{FirewallRuleName(port)}\" dir=in action=allow protocol=TCP localport={port} profile=private && " +
+
+            // Private networks only unless the user opts in: Windows marks venue and hotel Wi-Fi as Public
+            var profile = _optionsService.RemoteControlAllowPublicNetworks ? "private,public" : "private";
+            var add = $"netsh advfirewall firewall add rule name=\"{FirewallRuleName(port)}\" dir=in action=allow protocol=TCP localport={port} profile={profile} && " +
                       $"netsh http add urlacl url=http://+:{port}/ sddl=\"D:(A;;GX;;;WD)\"";
 
             var psi = new System.Diagnostics.ProcessStartInfo("cmd.exe")

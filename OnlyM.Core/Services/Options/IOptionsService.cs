@@ -82,6 +82,8 @@ public interface IOptionsService
 
     bool RemoteControlEnabled { get; set; }
 
+    bool RemoteControlAllowPublicNetworks { get; set; }
+
     RemoteControlMode RemoteControlMode { get; set; }
 
     string? RemoteControlPin { get; set; }

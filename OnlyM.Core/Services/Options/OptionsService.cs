@@ -138,6 +138,12 @@ public sealed class OptionsService : IOptionsService
         }
     }
 
+    public bool RemoteControlAllowPublicNetworks
+    {
+        get => _options.Value.RemoteControlAllowPublicNetworks;
+        set => _options.Value.RemoteControlAllowPublicNetworks = value;
+    }
+
     public RemoteControlMode RemoteControlMode
     {
         get => _options.Value.RemoteControlMode;

@@ -367,5 +367,29 @@ public sealed class RemoteControlServiceTests
         Assert.Null(RemoteControlService.FindRelativeItem([new MediaItem { Id = Guid.NewGuid(), IsVisible = false }], 1));
     }
 
+    [Theory]
+    [InlineData(new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }, "image/png")]
+    [InlineData(new byte[] { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61 }, "image/gif")]
+    [InlineData(new byte[] { 0x42, 0x4D, 0x00, 0x00 }, "image/bmp")]
+    [InlineData(new byte[] { 0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50 }, "image/webp")]
+    [InlineData(new byte[] { 0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x41, 0x56, 0x45 }, "image/jpeg")] // RIFF but not WebP
+    [InlineData(new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 }, "image/jpeg")]
+    [InlineData(new byte[] { 0x89 }, "image/jpeg")] // too short to be anything else
+    public void GetImageContentType_FromSignature(byte[] bytes, string expected)
+    {
+        Assert.Equal(expected, RemoteControlService.GetImageContentType(bytes));
+    }
+
+    [Theory]
+    [InlineData(null, false)] // no rule (or unreadable)
+    [InlineData(NetworkFirewallInfo.FirewallProfilePrivate, false)]
+    [InlineData(NetworkFirewallInfo.FirewallProfilePrivate | NetworkFirewallInfo.FirewallProfilePublic, true)]
+    [InlineData(NetworkFirewallInfo.FirewallProfileDomain | NetworkFirewallInfo.FirewallProfilePrivate, false)]
+    [InlineData(int.MaxValue, true)] // NET_FW_PROFILE2_ALL ("Any")
+    public void NetworkFirewallInfo_CoversPublic(int? profiles, bool expected)
+    {
+        Assert.Equal(expected, NetworkFirewallInfo.CoversPublic(profiles));
+    }
+
     private static JsonDocument Parse(object status) => JsonDocument.Parse(RemoteControlService.SerializeJson(status));
 }
