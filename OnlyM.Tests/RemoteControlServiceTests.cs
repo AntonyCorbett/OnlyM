@@ -484,6 +484,14 @@ public sealed class RemoteControlServiceTests
         Assert.Equal([rolling.Id], RemoteControlService.GetItemsToStop([rolling, newImage], newImage));
         Assert.Empty(RemoteControlService.GetItemsToStop([rolling, newAudio], newAudio));
 
+        // Only audio can start while a web page or PDF is showing
+        var web = CreateMedia(MediaClassification.Web, active: true, paused: false);
+        var newWeb = CreateMedia(MediaClassification.Web, active: false, paused: false);
+        Assert.Equal([web.Id], RemoteControlService.GetItemsToStop([web, newImage], newImage));
+        Assert.Equal([web.Id], RemoteControlService.GetItemsToStop([web, newVideo], newVideo));
+        Assert.Equal([web.Id], RemoteControlService.GetItemsToStop([web, newWeb], newWeb));
+        Assert.Empty(RemoteControlService.GetItemsToStop([web, newAudio], newAudio));
+
         // The target itself is never stopped
         Assert.Empty(RemoteControlService.GetItemsToStop([audio], audio));
     }

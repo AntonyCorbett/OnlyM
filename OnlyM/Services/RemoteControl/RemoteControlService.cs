@@ -374,7 +374,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     /// Gets the active items that must be stopped before <paramref name="target"/> can start. These are the
     /// same rules the operator window applies (OperatorViewModel.CanStartMedia): video/audio can't start while
     /// video/audio is active, and nothing can start while a video plays. Also, only audio can start while a
-    /// rolling slideshow runs.
+    /// rolling slideshow or a web item (web page or PDF) is showing (OperatorViewModel.ChangePlayButtonEnabledStatus).
     /// </summary>
     /// <param name="items">The operator's media list.</param>
     /// <param name="target">The item to start.</param>
@@ -391,7 +391,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
                 var type = m.MediaType?.Classification;
                 return type == Core.Models.MediaClassification.Video ||
                        (type == Core.Models.MediaClassification.Audio && targetIsAv) ||
-                       (m.IsRollingSlideshow && targetType != Core.Models.MediaClassification.Audio);
+                       ((m.IsRollingSlideshow || m.IsWeb) && targetType != Core.Models.MediaClassification.Audio);
             })
             .Select(m => m.Id)
             .ToList();
