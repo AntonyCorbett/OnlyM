@@ -33,7 +33,7 @@ The feature is **off by default**.
 Open the URL (or scan the QR code) in a browser on another device.
 
 The page shows:
-- Current media list with thumbnails (a slideshow also shows its slide count, e.g. "(contains 6 slides)", in OnlyM's language)
+- Current media list with thumbnails (a slideshow also shows its slide count, e.g. "(contains 6 slides)", in OnlyM's language). Items hidden on the operator page are left out: the remote doesn't list them, **Next** / **Previous** skip them, and `/api/play/{id}` and `/api/thumbnails/{id}` return HTTP 404 for them
 - Play / Stop / Next / Previous
 - A speaker button next to the transport buttons (only if both **Allow volume control from the remote** (Remote Control section) and **Show volume control in toolbar** (video and audio section) are ticked in Settings; both are off by default). Its icon shows the level (muted, low, medium, high, with the same thresholds as the operator's volume button). Tap it for a small pop-over with a mute/unmute button, a slider and the level; tap outside it or press Escape to close it. When either option is off the button is hidden, `/api/status` sends `volumeEnabled: false`, and `/api/volume` and `/api/mute` return HTTP 403. The remote option needs the operator's volume control so that the remote can never set a volume (or mute) that the operator can't see; while **Show volume control in toolbar** is off, the remote checkbox is greyed out and the volume stays at 100%
 - Current status (for a slideshow: "Slide 3 of 8")

@@ -10,6 +10,8 @@ internal sealed class LoginGuard
 {
     public const int Prefix48MaxFailures = 12;
 
+    private readonly object _attemptLock = new();
+
     public LoginGuard(Func<DateTime>? utcNow = null)
     {
         Clients = new LoginThrottle(utcNow);
@@ -29,6 +31,35 @@ internal sealed class LoginGuard
     public LoginThrottle Prefixes { get; }
 
     public GlobalLoginBackstop Global { get; }
+
+    /// <summary>
+    /// Runs one login attempt as a single step: checks the limits, verifies the PIN and records the outcome
+    /// under one lock. Requests are handled in parallel, so with separate <see cref="Check"/> and
+    /// <see cref="RegisterFailure"/> calls a burst of simultaneous attempts could all pass the check before
+    /// the first failure was recorded, and so get more guesses than the limits allow.
+    /// </summary>
+    /// <param name="keys">The client's throttling keys.</param>
+    /// <param name="isCorrect">Verifies the PIN; only called when no limit blocks the attempt. Must be fast.</param>
+    /// <returns>The outcome of the attempt.</returns>
+    public AttemptResult Attempt(ClientKeys keys, Func<bool> isCorrect)
+    {
+        lock (_attemptLock)
+        {
+            var block = Check(keys, out var wait);
+            if (block != Block.None)
+            {
+                return new AttemptResult(block, wait, false, default);
+            }
+
+            if (isCorrect())
+            {
+                RegisterSuccess(keys);
+                return new AttemptResult(Block.None, TimeSpan.Zero, true, default);
+            }
+
+            return new AttemptResult(Block.None, TimeSpan.Zero, false, RegisterFailure(keys));
+        }
+    }
 
     /// <summary>
     /// Checks whether a login attempt from the client may go ahead (call before checking the PIN).
@@ -85,5 +116,33 @@ internal sealed class LoginGuard
         Clients.Clear();
         Prefixes.Clear();
         Global.Clear();
+    }
+
+    internal readonly struct AttemptResult
+    {
+        public AttemptResult(Block block, TimeSpan retryAfter, bool correct, LoginThrottle.FailureResult failure)
+        {
+            Block = block;
+            RetryAfter = retryAfter;
+            Correct = correct;
+            Failure = failure;
+        }
+
+        /// <summary>
+        /// Gets the limit that refused the attempt (the PIN was not checked), or <see cref="LoginGuard.Block.None"/>.
+        /// </summary>
+        public Block Block { get; }
+
+        /// <summary>
+        /// Gets the suggested wait when <see cref="Block"/> is set.
+        /// </summary>
+        public TimeSpan RetryAfter { get; }
+
+        public bool Correct { get; }
+
+        /// <summary>
+        /// Gets the recorded failure for a wrong PIN.
+        /// </summary>
+        public LoginThrottle.FailureResult Failure { get; }
     }
 }

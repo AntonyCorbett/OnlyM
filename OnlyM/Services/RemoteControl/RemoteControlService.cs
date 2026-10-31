@@ -24,6 +24,9 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     private const string SessionCookieName = "onlym_session";
     private const string CfConnectingIpHeader = "CF-Connecting-IP";
 
+    // Far more than a login body needs ({"pin":"12345678"} or pin=12345678)
+    private const int MaxLoginBodyBytes = 1024;
+
     // Win32 errors from HttpListener.Start when another program already uses the port:
     // ERROR_SHARING_VIOLATION (a non-http.sys listener) and ERROR_ALREADY_EXISTS (another http.sys registration).
     private const int ErrorSharingViolation = 32;
@@ -191,6 +194,70 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     internal static bool IsRemoteVolumeEnabled(IOptionsService optionsService)
     {
         return optionsService.ShowRemoteVolumeControl && optionsService.ShowVolumeControl;
+    }
+
+    /// <summary>
+    /// Reads a request body of at most <paramref name="maxBytes"/> bytes.
+    /// </summary>
+    /// <param name="stream">The request body.</param>
+    /// <param name="encoding">The body's encoding.</param>
+    /// <param name="maxBytes">The size limit.</param>
+    /// <returns>The body, or null if it is larger than the limit (the rest is not read).</returns>
+    internal static async Task<string?> ReadLimitedAsync(Stream stream, Encoding encoding, int maxBytes)
+    {
+        // One spare byte tells "exactly at the limit" from "over it"
+        var buffer = new byte[maxBytes + 1];
+        var total = 0;
+        while (total < buffer.Length)
+        {
+            var read = await stream.ReadAsync(buffer.AsMemory(total));
+            if (read == 0)
+            {
+                break;
+            }
+
+            total += read;
+        }
+
+        return total > maxBytes ? null : encoding.GetString(buffer, 0, total);
+    }
+
+    /// <summary>
+    /// Finds the item that Next (<paramref name="step"/> +1) or Previous (-1) moves to, wrapping around the list.
+    /// Items the operator has hidden are skipped, even when the active item is itself hidden.
+    /// </summary>
+    /// <param name="items">The operator's media list, in display order.</param>
+    /// <param name="step">+1 or -1.</param>
+    /// <returns>The target item's id, or null if no item is visible.</returns>
+    internal static Guid? FindRelativeItem(IReadOnlyList<MediaItem> items, int step)
+    {
+        var count = items.Count;
+        var start = -1;
+        for (var i = 0; i < count; i++)
+        {
+            if (items[i].IsMediaActive)
+            {
+                start = i;
+                break;
+            }
+        }
+
+        if (start < 0)
+        {
+            // Nothing active: Next starts at the top of the list, Previous at the bottom
+            start = step > 0 ? -1 : count;
+        }
+
+        for (var i = 1; i <= count; i++)
+        {
+            var index = (((start + (i * step)) % count) + count) % count;
+            if (items[index].IsVisible)
+            {
+                return items[index].Id;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -488,38 +555,44 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
 
     private async Task Login(HttpListenerRequest req, HttpListenerResponse res)
     {
-        string body;
-        using (var reader = new StreamReader(req.InputStream, req.ContentEncoding ?? Encoding.UTF8))
+        // Unauthenticated and reachable through the tunnel, so the body is capped (the PIN is at most 8 digits)
+        var body = req.ContentLength64 > MaxLoginBodyBytes
+            ? null
+            : await ReadLimitedAsync(req.InputStream, req.ContentEncoding ?? Encoding.UTF8, MaxLoginBodyBytes);
+        if (body == null)
         {
-            body = await reader.ReadToEndAsync();
+            res.StatusCode = 413;
+            await Ok(res, new { error = "too large" });
+            return;
         }
 
         var pin = ParsePin(body, req.ContentType);
         var expected = _optionsService.RemoteControlPin;
         var client = GetClientKeys(req);
 
-        var block = _loginGuard.Check(client, out var wait);
-        if (block != LoginGuard.Block.None)
+        var attempt = _loginGuard.Attempt(
+            client,
+            () => string.IsNullOrEmpty(expected) ||
+                  (pin != null && CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(pin), Encoding.UTF8.GetBytes(expected))));
+        if (attempt.Block != LoginGuard.Block.None)
         {
-            if (block == LoginGuard.Block.Global)
+            if (attempt.Block == LoginGuard.Block.Global)
             {
                 Log.Logger.Warning(
                     "Remote control: global wrong-PIN budget used up ({Count} in {Minutes} minutes); login from {Client} refused, retry in {Seconds} s",
                     _loginGuard.Global.Budget,
                     _loginGuard.Global.Window.TotalMinutes,
                     client,
-                    Math.Ceiling(wait.TotalSeconds));
+                    Math.Ceiling(attempt.RetryAfter.TotalSeconds));
             }
 
-            await Locked(res, wait);
+            await Locked(res, attempt.RetryAfter);
             return;
         }
 
-        var correct = string.IsNullOrEmpty(expected) ||
-                      (pin != null && CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(pin), Encoding.UTF8.GetBytes(expected)));
-        if (!correct)
+        if (!attempt.Correct)
         {
-            var result = _loginGuard.RegisterFailure(client);
+            var result = attempt.Failure;
             if (result.LockedOut)
             {
                 Log.Logger.Warning(
@@ -535,7 +608,6 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
             return;
         }
 
-        _loginGuard.RegisterSuccess(client);
         var token = _sessions.Create();
         res.Headers.Add("Set-Cookie", $"{SessionCookieName}={token}; Path=/; HttpOnly; SameSite=Strict");
         Log.Logger.Information("Remote control login from {Client}", client);
@@ -1228,9 +1300,15 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
         await res.OutputStream.WriteAsync(buf);
     }
 
+    /// <summary>
+    /// Gets the items the remote may list, play and show thumbnails for: those the operator has not hidden.
+    /// UI thread only.
+    /// </summary>
+    private IEnumerable<MediaItem> RemoteItems => _operatorViewModel.MediaItems.Where(m => m.IsVisible);
+
     private async Task ListMedia(HttpListenerResponse res)
     {
-        var items = await OnUi(() => _operatorViewModel.MediaItems.Select(BuildMediaEntry).ToList());
+        var items = await OnUi(() => RemoteItems.Select(BuildMediaEntry).ToList());
 
         await Ok(res, items);
     }
@@ -1254,7 +1332,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             return;
         }
 
-        var exists = await OnUi(() => _operatorViewModel.MediaItems.Any(m => m.Id == id));
+        var exists = await OnUi(() => RemoteItems.Any(m => m.Id == id));
         if (!exists)
         {
             res.StatusCode = 404;
@@ -1391,27 +1469,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             return;
         }
 
-        var targetId = await OnUi(() =>
-        {
-            var items = _operatorViewModel.MediaItems.ToList();
-            if (items.Count == 0)
-            {
-                return (Guid?)null;
-            }
-
-            var activeIndex = items.FindIndex(m => m.IsMediaActive);
-            int index;
-            if (activeIndex < 0)
-            {
-                index = step > 0 ? 0 : items.Count - 1;
-            }
-            else
-            {
-                index = (((activeIndex + step) % items.Count) + items.Count) % items.Count;
-            }
-
-            return items[index].Id;
-        });
+        var targetId = await OnUi(() => FindRelativeItem(_operatorViewModel.MediaItems, step));
 
         if (targetId == null)
         {
@@ -1507,7 +1565,7 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
 
         var (filePath, classification) = await OnUi(() =>
         {
-            var item = _operatorViewModel.MediaItems.FirstOrDefault(m => m.Id == id);
+            var item = RemoteItems.FirstOrDefault(m => m.Id == id);
             return (item?.FilePath, item?.MediaType?.Classification ?? Core.Models.MediaClassification.Unknown);
         });
 

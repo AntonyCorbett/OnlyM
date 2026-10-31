@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using Moq;
 using OnlyM.Core.Models;
 using OnlyM.Core.Services.Options;
@@ -319,6 +320,52 @@ public sealed class RemoteControlServiceTests
         CurrentSlideshowIndex = index,
         SlideshowLoop = loop,
     };
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1024)]
+    public async Task ReadLimitedAsync_ReturnsBodyUpToTheLimit(int size)
+    {
+        var text = new string('7', size);
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+
+        Assert.Equal(text, await RemoteControlService.ReadLimitedAsync(stream, Encoding.UTF8, 1024));
+    }
+
+    [Fact]
+    public async Task ReadLimitedAsync_ReturnsNullOverTheLimitWithoutReadingItAll()
+    {
+        using var stream = new MemoryStream(new byte[100_000]);
+
+        Assert.Null(await RemoteControlService.ReadLimitedAsync(stream, Encoding.UTF8, 1024));
+        Assert.Equal(1025, stream.Position);
+    }
+
+    [Theory]
+    [InlineData(-1, 1, 0)] // nothing active: Next starts at the top
+    [InlineData(-1, -1, 3)] // nothing active: Previous starts at the bottom
+    [InlineData(0, 1, 2)] // skips hidden item 1
+    [InlineData(2, -1, 0)]
+    [InlineData(3, 1, 0)] // wraps around
+    [InlineData(1, 1, 2)] // the active item is hidden: still steps from its position
+    [InlineData(1, -1, 0)]
+    public void FindRelativeItem_SkipsHiddenItems(int activeIndex, int step, int expectedIndex)
+    {
+        var items = Enumerable.Range(0, 4).Select(i => new MediaItem { Id = Guid.NewGuid(), IsVisible = i != 1 }).ToList();
+        if (activeIndex >= 0)
+        {
+            items[activeIndex].IsMediaActive = true;
+        }
+
+        Assert.Equal(items[expectedIndex].Id, RemoteControlService.FindRelativeItem(items, step));
+    }
+
+    [Fact]
+    public void FindRelativeItem_ReturnsNullWhenNothingIsVisible()
+    {
+        Assert.Null(RemoteControlService.FindRelativeItem([], 1));
+        Assert.Null(RemoteControlService.FindRelativeItem([new MediaItem { Id = Guid.NewGuid(), IsVisible = false }], 1));
+    }
 
     private static JsonDocument Parse(object status) => JsonDocument.Parse(RemoteControlService.SerializeJson(status));
 }
