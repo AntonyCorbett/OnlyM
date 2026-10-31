@@ -516,6 +516,42 @@ public sealed class RemoteControlServiceTests
     }
 
     [Fact]
+    public void BuildStatus_AudioBehindASlideshow_ReportsTheAudioPositionAndTheSlide()
+    {
+        var slideshow = CreateSlideshow(2, 8, loop: false);
+        var audio = CreateMedia(MediaClassification.Audio, active: true, paused: false);
+        List<MediaItem> items = [slideshow, audio];
+
+        Assert.Same(slideshow, RemoteControlService.SelectScreenItem(items));
+
+        using var json = Parse(RemoteControlService.BuildStatus(
+            RemoteControlService.SelectPrimaryActive(items), 50, volumeEnabled: true, [slideshow.Id, audio.Id], RemoteControlService.SelectScreenItem(items)));
+        var root = json.RootElement;
+
+        Assert.Equal(audio.Id.ToString(), root.GetProperty("currentItemId").GetString());
+        Assert.Equal(slideshow.Id.ToString(), root.GetProperty("screenItemId").GetString());
+        Assert.Equal(25, root.GetProperty("positionSeconds").GetDouble());
+        Assert.Equal(2, root.GetProperty("currentSlideIndex").GetInt32());
+        Assert.Equal(8, root.GetProperty("slideCount").GetInt32());
+    }
+
+    [Fact]
+    public void BuildStatus_ScreenItem_DefaultsToTheActiveItemUnlessAudio()
+    {
+        var image = CreateMedia(MediaClassification.Image, active: true, paused: false);
+        var audio = CreateMedia(MediaClassification.Audio, active: true, paused: false);
+
+        using var imageOnly = Parse(RemoteControlService.BuildStatus(image, 50, volumeEnabled: true));
+        using var audioOnly = Parse(RemoteControlService.BuildStatus(audio, 50, volumeEnabled: true));
+        using var none = Parse(RemoteControlService.BuildStatus(null, 50, volumeEnabled: true));
+
+        Assert.Equal(image.Id.ToString(), imageOnly.RootElement.GetProperty("screenItemId").GetString());
+        Assert.Equal(JsonValueKind.Null, audioOnly.RootElement.GetProperty("screenItemId").ValueKind);
+        Assert.Equal(JsonValueKind.Null, none.RootElement.GetProperty("screenItemId").ValueKind);
+        Assert.Null(RemoteControlService.SelectScreenItem([audio]));
+    }
+
+    [Fact]
     public void FindRelativeItem_ReturnsNullWhenNothingIsVisible()
     {
         Assert.Null(RemoteControlService.FindRelativeItem([], 1));

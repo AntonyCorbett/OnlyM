@@ -398,33 +398,52 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     }
 
     /// <summary>
-    /// Builds the /api/status reply. The slide fields are null unless the active item is a slideshow
-    /// (currentSlideIndex is 0-based). canSeek follows the operator's position slider
+    /// Gets the active item showing on the media window: anything but audio. Null if nothing is showing
+    /// (e.g. only audio is playing).
+    /// </summary>
+    /// <param name="items">The operator's media list.</param>
+    /// <returns>The item, or null.</returns>
+    internal static MediaItem? SelectScreenItem(IEnumerable<MediaItem> items) =>
+        items.FirstOrDefault(m => m.IsMediaActive && m.MediaType?.Classification != Core.Models.MediaClassification.Audio);
+
+    /// <summary>
+    /// Builds the /api/status reply. The playback fields (paused, position, duration, canSeek) describe
+    /// <paramref name="active"/>; screenItemId and the slide fields describe the item on the media window, so an
+    /// audio item playing over a slideshow still reports the slide position. The slide fields are null unless that
+    /// item is a slideshow (currentSlideIndex is 0-based). canSeek follows the operator's position slider
     /// (<see cref="MediaItem.IsSliderVisible"/>): audio/video, scrubbing allowed in Settings, and paused.
     /// </summary>
     /// <param name="active">The primary active media item (see <see cref="SelectPrimaryActive"/>), or null if nothing is playing.</param>
     /// <param name="volume">The current volume.</param>
     /// <param name="volumeEnabled">Whether the remote shows the volume control.</param>
     /// <param name="activeItemIds">All active items (e.g. an image and the audio playing with it); defaults to just <paramref name="active"/>.</param>
+    /// <param name="screen">The item on the media window (see <see cref="SelectScreenItem"/>); defaults to <paramref name="active"/> unless that is audio.</param>
     /// <returns>The reply object, serialised as JSON.</returns>
-    internal static object BuildStatus(MediaItem? active, int volume, bool volumeEnabled, IEnumerable<Guid>? activeItemIds = null)
+    internal static object BuildStatus(
+        MediaItem? active,
+        int volume,
+        bool volumeEnabled,
+        IEnumerable<Guid>? activeItemIds = null,
+        MediaItem? screen = null)
     {
-        var isSlideshow = active?.IsSlideshow == true;
         activeItemIds ??= active != null ? [active.Id] : [];
+        screen ??= active?.MediaType?.Classification == Core.Models.MediaClassification.Audio ? null : active;
+        var slides = screen?.IsSlideshow == true ? screen : null;
         return new
         {
             isPlaying = active != null && !active.IsPaused,
             isPaused = active?.IsPaused ?? false,
             currentItemId = active?.Id.ToString(),
+            screenItemId = screen?.Id.ToString(),
             activeItemIds = activeItemIds.Select(id => id.ToString()).ToList(),
             positionSeconds = (active?.PlaybackPositionDeciseconds ?? 0) / 10.0,
             durationSeconds = (active?.DurationDeciseconds ?? 0) / 10.0,
             canSeek = active?.IsSliderVisible == true,
             volume,
             volumeEnabled,
-            currentSlideIndex = isSlideshow ? active!.CurrentSlideshowIndex : (int?)null,
-            slideCount = isSlideshow ? active!.SlideshowCount : (int?)null,
-            isRolling = isSlideshow ? active!.IsRollingSlideshow : (bool?)null,
+            currentSlideIndex = slides?.CurrentSlideshowIndex,
+            slideCount = slides?.SlideshowCount,
+            isRolling = slides?.IsRollingSlideshow,
         };
     }
 
@@ -1116,7 +1135,11 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   .now .pos { height: 30px; display: flex; flex-direction: column; justify-content: center; }
   .now .bar { height: 4px; background: #444; border-radius: 2px; overflow: hidden; }
   .now .bar div { height: 100%; width: 0; background: #0a7; }
-  .now .time { font-size: 0.75rem; line-height: 1.3; min-height: 1.3em; color: #aaa; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .now .time { display: flex; gap: 6px; font-size: 0.75rem; line-height: 1.3; min-height: 1.3em; color: #aaa; margin-top: 3px; white-space: nowrap; }
+  /* The text (type, slide, the audio playing behind the screen item) gives way first; the clock always shows */
+  .now .time .sub { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .now .time .clock { flex: 0 0 auto; }
+  .now .time svg { width: 1.1em; height: 1.1em; vertical-align: -0.2em; fill: currentColor; }
   .now .seek { display: block; width: 100%; margin: 0; height: 24px; accent-color: #0a7; }
   [hidden] { display: none !important; }
   #pinOverlay { display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10; align-items: center; justify-content: center; }
@@ -1158,7 +1181,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
       <div class="bar" id="nowBarWrap" style="display:none"><div id="nowBar"></div></div>
       <input class="seek" type="range" id="seek" min="0" max="0" step="0.1" value="0" aria-label="Position" hidden>
     </div>
-    <div class="time" id="nowTime"></div>
+    <div class="time"><span class="sub" id="nowSub"></span><span class="clock" id="nowClock"></span></div>
   </div>
 </div>
 <div class="controls">
@@ -1203,7 +1226,8 @@ function showPin() {
 function showLocked() {
   $('nowLabel').textContent = 'Locked';
   $('nowTitle').textContent = 'PIN required';
-  $('nowTime').textContent = '';
+  setSub('');
+  $('nowClock').textContent = '';
   $('nowBarWrap').style.display = 'none';
 }
 function timeoutSignal(ms) {
@@ -1376,8 +1400,14 @@ function initPreview() {
   });
 }
 function showSeekTime(pos) {
-  $('nowTime').textContent = fmt(pos) + ' / ' + fmt(lastDuration);
+  $('nowClock').textContent = fmt(pos) + ' / ' + fmt(lastDuration);
 }
+// The text before the clock; html is already escaped (it may hold the music note icon)
+function setSub(html) {
+  const sub = $('nowSub');
+  if (sub.dataset.html !== html) { sub.dataset.html = html; sub.innerHTML = html; }
+}
+const NOTE_ICON = icon('<path d="M8 6h1.5v11.5H8zM18 4h1.5v11.5H18zM8 6l11.5-2v2.5L8 8.5z"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="15.5" r="2.5"/>');
 function initSeek() {
   const s = $('seek');
   const endDrag = () => {
@@ -1443,9 +1473,16 @@ function renderList(activeIds) {
   `).join('');
 }
 function renderStatus(status) {
+  // item: what Pause and Seek act on (the audio/video if one plays). screen: what is on the media window, which
+  // Next/Previous act on. When audio plays behind an image, slideshow or web page, the card shows the screen item
+  // and the audio goes in the bottom row with its own time and progress.
   const item = media.find(m => m.id === status.currentItemId);
-  nowId = status.currentItemId || null;
-  $('nowThumb').classList.toggle('can-preview', canPreview(item));
+  const screenId = status.screenItemId || null;
+  const behind = !!screenId && !!status.currentItemId && screenId !== status.currentItemId;
+  const shownId = screenId || status.currentItemId || null;
+  const shown = media.find(m => m.id === shownId);
+  nowId = shownId;
+  $('nowThumb').classList.toggle('can-preview', canPreview(shown));
   const canPause = !!item && (item.type === 'Video' || item.type === 'Audio');
   $('pauseBtn').disabled = !canPause;
   const pb = $('pauseBtn');
@@ -1453,22 +1490,28 @@ function renderStatus(status) {
   pb.innerHTML = icon(showPlay ? '<path d="M7 5v14l12-7z"/>' : '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>');
   pb.title = pb.ariaLabel = showPlay ? 'Resume' : 'Pause';
 
-  if (status.currentItemId) {
-    $('nowLabel').textContent = status.isPaused ? 'Paused' : 'Now playing';
-    $('nowTitle').textContent = item?.name || status.currentItemId;
+  if (shownId) {
+    $('nowLabel').textContent = behind
+      ? (status.isPaused ? 'On screen · Sound paused' : 'On screen')
+      : (status.isPaused ? 'Paused' : 'Now playing');
+    $('nowTitle').textContent = shown?.name || shownId;
     const img = $('nowImg');
-    const src = '/api/thumbnails/' + status.currentItemId;
+    const src = '/api/thumbnails/' + shownId;
     if (img.dataset.src !== src) { img.dataset.src = src; img.src = src; }
     img.style.visibility = 'visible';
     img.onerror = () => img.style.visibility = 'hidden';
     renderPosition(status);
-    if (!(status.durationSeconds > 0)) {
-      $('nowTime').textContent = item?.type || '';
-    }
+    const parts = [];
     if (typeof status.slideCount === 'number' && status.slideCount > 0) {
       // e.g. "Slide 3 of 8" (currentSlideIndex is 0-based)
-      $('nowTime').textContent = (status.isRolling ? 'Rolling slide ' : 'Slide ') + (status.currentSlideIndex + 1) + ' of ' + status.slideCount;
+      parts.push((status.isRolling ? 'Rolling slide ' : 'Slide ') + (status.currentSlideIndex + 1) + ' of ' + status.slideCount);
     }
+    if (behind) {
+      parts.push(NOTE_ICON + ' ' + esc(item?.name || status.currentItemId));
+    } else if (!parts.length && !(status.durationSeconds > 0)) {
+      parts.push(esc(shown?.type || ''));
+    }
+    setSub(parts.join(' · '));
   } else {
     $('nowLabel').textContent = 'Stopped';
     $('nowTitle').textContent = 'Nothing playing';
@@ -1478,7 +1521,8 @@ function renderStatus(status) {
     $('seek').hidden = true;
     seekDragging = false;
     seekPending = null;
-    $('nowTime').textContent = '';
+    setSub('');
+    $('nowClock').textContent = '';
   }
 
   $('volBtn').hidden = !status.volumeEnabled;
@@ -1504,6 +1548,7 @@ function renderPosition(status) {
   if (!(duration > 0)) {
     $('nowBarWrap').style.display = 'none';
     s.hidden = true;
+    $('nowClock').textContent = '';
     return;
   }
   if (!status.canSeek) {
@@ -1513,7 +1558,7 @@ function renderPosition(status) {
     s.hidden = true;
     $('nowBarWrap').style.display = '';
     $('nowBar').style.width = Math.min(100, 100 * status.positionSeconds / duration) + '%';
-    $('nowTime').textContent = fmt(status.positionSeconds) + ' / ' + fmt(duration);
+    $('nowClock').textContent = fmt(status.positionSeconds) + ' / ' + fmt(duration);
     return;
   }
   $('nowBarWrap').style.display = 'none';
@@ -1654,7 +1699,8 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             SelectPrimaryActive(_operatorViewModel.MediaItems),
             _optionsService.Volume,
             IsRemoteVolumeEnabled(_optionsService),
-            _operatorViewModel.MediaItems.Where(m => m.IsMediaActive).Select(m => m.Id).ToList()));
+            _operatorViewModel.MediaItems.Where(m => m.IsMediaActive).Select(m => m.Id).ToList(),
+            SelectScreenItem(_operatorViewModel.MediaItems)));
 
         await Ok(res, status);
     }
