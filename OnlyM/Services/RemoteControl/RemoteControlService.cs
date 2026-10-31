@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using OnlyM.Core.Services.Media;
 using OnlyM.Core.Services.Options;
 using OnlyM.Core.Utils;
+using OnlyM.CoreSys;
 using OnlyM.Models;
 using OnlyM.ViewModel;
 using Serilog;
@@ -32,6 +33,10 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     private const int ErrorSharingViolation = 32;
     private const int ErrorAlreadyExists = 183;
 
+    // Full-screen preview: sharp on a phone at 3x pixel density, a few hundred KB as JPEG
+    private const int PreviewMaxPixelDimension = 1600;
+    private const int PreviewCacheSize = 4;
+
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     private readonly CloudflareTunnel _tunnel = new();
@@ -43,6 +48,8 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     private readonly OperatorViewModel _operatorViewModel;
     private readonly IThumbnailService _thumbnailService;
     private readonly IOptionsService _optionsService;
+    private readonly SemaphoreSlim _previewGate = new(1, 1);
+    private readonly List<(string Path, long LastChanged, byte[] Bytes)> _previewCache = [];
     private HttpListener? _listener;
     private CancellationTokenSource? _listenCts;
     private volatile bool _running;
@@ -140,6 +147,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     {
         Stop();
         _tunnel.Dispose();
+        _previewGate.Dispose();
     }
 
     public void Start(string? prefix = null)
@@ -375,6 +383,37 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     internal static bool IsAddressInUse(int errorCode) => errorCode is ErrorSharingViolation or ErrorAlreadyExists;
 
     internal static string SerializeJson(object data) => JsonSerializer.Serialize(data, JsonOptions);
+
+    /// <summary>
+    /// Gets the media type of encoded image bytes from their signature (resizing keeps the source format, e.g. PNG
+    /// stays PNG, and WebP is decoded to BMP), defaulting to JPEG.
+    /// </summary>
+    internal static string GetImageContentType(byte[] bytes)
+    {
+        if (bytes.Length >= 4 && bytes[0] == 0x89 && bytes[1] == (byte)'P' && bytes[2] == (byte)'N' && bytes[3] == (byte)'G')
+        {
+            return "image/png";
+        }
+
+        if (bytes.Length >= 3 && bytes[0] == (byte)'G' && bytes[1] == (byte)'I' && bytes[2] == (byte)'F')
+        {
+            return "image/gif";
+        }
+
+        if (bytes.Length >= 2 && bytes[0] == (byte)'B' && bytes[1] == (byte)'M')
+        {
+            return "image/bmp";
+        }
+
+        if (bytes.Length >= 12 &&
+            bytes[0] == (byte)'R' && bytes[1] == (byte)'I' && bytes[2] == (byte)'F' && bytes[3] == (byte)'F' &&
+            bytes[8] == (byte)'W' && bytes[9] == (byte)'E' && bytes[10] == (byte)'B' && bytes[11] == (byte)'P')
+        {
+            return "image/webp";
+        }
+
+        return "image/jpeg";
+    }
 
     private void StartCore(string? prefix)
     {
@@ -872,6 +911,10 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
                         var idStr = path["/api/thumbnails/".Length..];
                         await ServeThumbnail(idStr, res);
                     }
+                    else if (path.StartsWith("/api/preview/", StringComparison.Ordinal) && req.HttpMethod == "GET")
+                    {
+                        await ServePreview(path["/api/preview/".Length..], req, res);
+                    }
                     else
                     {
                         res.StatusCode = 404;
@@ -918,6 +961,15 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   .media-item .text { flex: 1 1 auto; min-width: 0; padding: 6px 8px; }
   .media-item .name { font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .media-item .sub { font-size: 0.8rem; color: #aaa; margin-top: 2px; }
+  .media-item .pv { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; min-width: 0; width: 44px; height: 44px; margin-right: 6px; padding: 0; background: transparent; color: #999; }
+  .media-item .pv:active { background: #333; color: #fff; }
+  .media-item .pv svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  /* Full-screen preview: the image fills the screen above a bar with the name, Play and Close */
+  #preview { display: flex; flex-direction: column; position: fixed; inset: 0; z-index: 8; background: #000; }
+  #previewImg { flex: 1 1 auto; min-height: 0; width: 100%; object-fit: contain; }
+  #preview .pvbar { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #111; }
+  #preview .pvbar .name { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #preview .pvbar button { font-size: 1.1rem; }
   button:disabled { opacity: 0.4; cursor: default; }
   .controls { position: relative; }
   .controls > button { flex: 1 1 0; min-width: 44px; max-width: 96px; padding-left: 0; padding-right: 0; }
@@ -930,6 +982,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
      so the sticky header doesn't change height as media starts, stops or switches between seekable and not */
   .now .thumb { flex: 0 0 auto; width: 96px; height: 54px; box-sizing: border-box; border: 1px solid #3a3a3a; border-radius: 4px; background: #000; overflow: hidden; }
   .now .thumb img { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .now .thumb.can-preview { cursor: zoom-in; }
   .now .info { flex: 1 1 auto; min-width: 0; }
   .now .label { font-size: 0.75rem; line-height: 1.3; min-height: 1.3em; color: #9a9; text-transform: uppercase; letter-spacing: 0.05em; }
   .now .title { font-size: 1.05rem; line-height: 1.3; min-height: 1.3em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -959,10 +1012,18 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     <div id="pinMsg"></div>
   </form>
 </div>
+<div id="preview" role="dialog" aria-modal="true" aria-label="Preview" hidden>
+  <img id="previewImg" alt="">
+  <div class="pvbar">
+    <div class="name" id="previewName"></div>
+    <button class="primary" id="previewPlay" type="button">Play</button>
+    <button id="previewClose" type="button" title="Close" aria-label="Close">&#x2715;</button>
+  </div>
+</div>
 <h1>OnlyM Remote</h1>
 <header>
 <div class="now">
-  <div class="thumb"><img id="nowImg" alt="" style="visibility:hidden"></div>
+  <div class="thumb" id="nowThumb"><img id="nowImg" alt="" style="visibility:hidden"></div>
   <div class="info">
     <div class="label" id="nowLabel">Loading...</div>
     <div class="title" id="nowTitle"></div>
@@ -997,6 +1058,8 @@ let seekDragEnd = null;
 let seekPending = null; // { value, until }: position sent on release, shown until the server reports it
 let lastDuration = 0;
 let lastActiveId = null;
+let nowId = null; // the item showing on the media window
+let previewId = null; // the item in the full-screen preview, if open
 const $ = id => document.getElementById(id);
 let locked = false;
 
@@ -1121,6 +1184,61 @@ function initVolume() {
     }
   });
 }
+function canPreview(m) {
+  return !!m && m.hasThumbnail && m.type !== 'Audio'; // audio only has a generic icon
+}
+function openPreview(id) {
+  const m = media.find(x => x.id === id);
+  if (!canPreview(m)) {
+    return;
+  }
+  previewId = id;
+  $('previewName').textContent = m.name || id;
+  const img = $('previewImg');
+  img.style.visibility = 'hidden'; // not the previous item's image while this one loads
+  img.onload = () => img.style.visibility = 'visible';
+  img.src = '/api/thumbnails/' + id; // usually cached, so shows at once (scaled up) until the sharp copy arrives
+  if (m.type === 'Image') {
+    const full = new Image();
+    full.onload = () => { if (previewId === id) { img.src = full.src; } };
+    full.src = '/api/preview/' + id;
+  }
+  $('preview').hidden = false;
+  if (!history.state?.preview) {
+    history.pushState({ preview: true }, ''); // so the phone's Back button closes the preview
+  }
+}
+function hidePreview() {
+  previewId = null;
+  $('preview').hidden = true;
+  $('previewImg').removeAttribute('src');
+}
+function closePreview() {
+  if (history.state?.preview) {
+    history.back(); // popstate hides it
+  } else {
+    hidePreview();
+  }
+}
+function initPreview() {
+  if (history.state?.preview) {
+    history.replaceState(null, ''); // reloaded while a preview was open
+  }
+  window.addEventListener('popstate', () => { if (previewId) { hidePreview(); } });
+  $('previewImg').addEventListener('click', closePreview);
+  $('previewClose').addEventListener('click', closePreview);
+  $('previewPlay').addEventListener('click', () => {
+    const id = previewId;
+    closePreview();
+    api('/api/play/' + id);
+  });
+  $('nowThumb').addEventListener('click', () => { if (nowId) { openPreview(nowId); } });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && previewId) {
+      closePreview();
+    }
+  });
+}
 function showSeekTime(pos) {
   $('nowTime').textContent = fmt(pos) + ' / ' + fmt(lastDuration);
 }
@@ -1184,11 +1302,14 @@ function renderList(activeId) {
         <div class="name">${esc(m.name || m.id)}</div>
         ${m.subtitle ? `<div class="sub">${esc(m.subtitle)}</div>` : ''}
       </div>
+      ${canPreview(m) ? `<button class="pv" type="button" onclick="event.stopPropagation(); openPreview('${m.id}')" title="Preview" aria-label="Preview"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>` : ''}
     </div>
   `).join('');
 }
 function renderStatus(status) {
   const item = media.find(m => m.id === status.currentItemId);
+  nowId = status.currentItemId || null;
+  $('nowThumb').classList.toggle('can-preview', canPreview(item));
   const canPause = !!item && (item.type === 'Video' || item.type === 'Audio');
   $('pauseBtn').disabled = !canPause;
   const pb = $('pauseBtn');
@@ -1362,6 +1483,7 @@ document.addEventListener('visibilitychange', () => {
 });
 initVolume();
 initSeek();
+initPreview();
 refreshAll();                    // media list, then starts status polling (what's playing, position, volume)
 setInterval(refreshAll, 10000);  // media list (rarely changes)
 </script>
@@ -1677,6 +1799,100 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             Log.Logger.Error(ex, "Thumbnail generation failed for {Id}", id);
             res.StatusCode = 500;
             await Ok(res, new { error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Serves a phone-screen-sized copy of an image item for the remote's full-screen preview. Other media types
+    /// (and images that can't be resized) get their ordinary thumbnail.
+    /// </summary>
+    private async Task ServePreview(string idStr, HttpListenerRequest req, HttpListenerResponse res)
+    {
+        if (!Guid.TryParse(idStr, out var id))
+        {
+            res.StatusCode = 400;
+            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_INVALID_ID });
+            return;
+        }
+
+        var (filePath, classification) = await OnUi(() =>
+        {
+            var item = RemoteItems.FirstOrDefault(m => m.Id == id);
+            return (item?.FilePath, item?.MediaType?.Classification ?? Core.Models.MediaClassification.Unknown);
+        });
+
+        if (filePath == null || classification != Core.Models.MediaClassification.Image || !File.Exists(filePath))
+        {
+            await ServeThumbnail(idStr, res);
+            return;
+        }
+
+        var lastChanged = File.GetLastWriteTimeUtc(filePath).Ticks;
+
+        // Revalidated on each open (the file may be edited), which costs a 304 rather than the image
+        var etag = "\"" + lastChanged.ToString("x", CultureInfo.InvariantCulture) + "\"";
+        if (req.Headers["If-None-Match"] == etag)
+        {
+            res.Headers.Add("ETag", etag);
+            res.StatusCode = 304;
+            return;
+        }
+
+        var bytes = await GetPreviewBytes(filePath, lastChanged);
+        if (bytes == null)
+        {
+            await ServeThumbnail(idStr, res); // no ETag, so the next open tries the preview again
+            return;
+        }
+
+        res.Headers.Add("Cache-Control", "private, no-cache");
+        res.Headers.Add("ETag", etag);
+        res.ContentType = GetImageContentType(bytes);
+        res.ContentLength64 = bytes.Length;
+        await res.OutputStream.WriteAsync(bytes);
+    }
+
+    private async Task<byte[]?> GetPreviewBytes(string filePath, long lastChanged)
+    {
+        // One at a time: decoding large photos is CPU- and memory-hungry in this 32-bit process, and a user flicking
+        // through previews shouldn't queue up parallel decodes. The gate also guards _previewCache.
+        await _previewGate.WaitAsync();
+        try
+        {
+            var cached = _previewCache.Find(p => p.Path == filePath && p.LastChanged == lastChanged);
+            if (cached.Bytes != null)
+            {
+                return cached.Bytes;
+            }
+
+            byte[]? bytes;
+            try
+            {
+                bytes = GraphicsUtils.CreateThumbnailOfImage(filePath, PreviewMaxPixelDimension);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Preview generation failed for {Path}", filePath);
+                return null;
+            }
+
+            if (bytes == null || bytes.Length == 0)
+            {
+                return null;
+            }
+
+            _previewCache.RemoveAll(p => p.Path == filePath);
+            _previewCache.Add((filePath, lastChanged, bytes));
+            if (_previewCache.Count > PreviewCacheSize)
+            {
+                _previewCache.RemoveAt(0);
+            }
+
+            return bytes;
+        }
+        finally
+        {
+            _previewGate.Release();
         }
     }
 
