@@ -126,7 +126,9 @@
                 <Setter Property="Foreground" Value="{DynamicResource OnlyMNavBarForeground}" />
             </Style>
 
+            <!--  Foreground set here rather than inherited: the PopupBox's internal toggle button does not pass its Foreground through  -->
             <Style x:Key="OnlyMVolumeIcon" TargetType="{x:Type materialDesign:PackIcon}">
+                <Setter Property="Foreground" Value="{DynamicResource OnlyMNavBarForeground}" />
                 <Setter Property="Width" Value="30" />
                 <Setter Property="Height" Value="30" />
                 <Style.Triggers>
