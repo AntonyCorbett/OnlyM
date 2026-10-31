@@ -796,41 +796,52 @@
                         Style="{StaticResource MaterialDesignRaisedLightButton}"
                         Visibility="{Binding RetryTunnelVisibility, Mode=OneWay}" />
 
-                    <TextBlock
-                        Margin="0,10,0,0"
-                        FontWeight="SemiBold"
-                        Style="{StaticResource MiscNotesStyle}"
-                        Text="{Binding RemoteControlPublicNetworkWarning, Mode=OneWay}"
-                        TextWrapping="Wrap"
-                        Visibility="{Binding RemoteControlPublicNetworkWarningVisibility, Mode=OneWay}" />
+                    <!--  Firewall exception (Local mode): explanation, optional public-network option, then the button  -->
+                    <Border
+                        Margin="0,12,0,0"
+                        Padding="10"
+                        BorderBrush="{DynamicResource MaterialDesignDivider}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}">
+                        <StackPanel Orientation="Vertical">
 
-                    <TextBlock
-                        Margin="0,10,0,0"
-                        Style="{StaticResource MiscNotesStyle}"
-                        Text="{x:Static resx:Resources.REMOTE_CONTROL_CREATE_FIREWALL_NOTE}"
-                        TextWrapping="Wrap"
-                        Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}" />
+                            <TextBlock FontWeight="SemiBold" Text="{x:Static resx:Resources.REMOTE_CONTROL_NETWORK_ACCESS}" />
 
-                    <CheckBox
-                        Content="{x:Static resx:Resources.REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS}"
-                        IsChecked="{Binding RemoteControlAllowPublicNetworks, Mode=TwoWay}"
-                        Style="{StaticResource SettingsCheckBoxStyle}"
-                        Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}" />
+                            <TextBlock
+                                Margin="0,6,0,8"
+                                Style="{StaticResource MiscNotesStyle}"
+                                Text="{x:Static resx:Resources.REMOTE_CONTROL_CREATE_FIREWALL_NOTE}"
+                                TextWrapping="Wrap" />
 
-                    <TextBlock
-                        Margin="0,0,0,0"
-                        Style="{StaticResource MiscNotesStyle}"
-                        Text="{x:Static resx:Resources.REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS_NOTE}"
-                        TextWrapping="Wrap"
-                        Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}" />
+                            <TextBlock
+                                Margin="0,0,0,6"
+                                FontWeight="SemiBold"
+                                Style="{StaticResource MiscNotesStyle}"
+                                Text="{Binding RemoteControlPublicNetworkWarning, Mode=OneWay}"
+                                TextWrapping="Wrap"
+                                Visibility="{Binding RemoteControlPublicNetworkWarningVisibility, Mode=OneWay}" />
 
-                    <Button
-                        Margin="0,10,0,0"
-                        HorizontalAlignment="Left"
-                        Command="{Binding CreateFirewallExceptionCommand}"
-                        Content="{x:Static resx:Resources.REMOTE_CONTROL_CREATE_FIREWALL}"
-                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                        Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}" />
+                            <StackPanel Orientation="Vertical" Visibility="{Binding RemoteControlAllowPublicNetworksVisibility, Mode=OneWay}">
+                                <CheckBox
+                                    Content="{x:Static resx:Resources.REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS}"
+                                    IsChecked="{Binding RemoteControlAllowPublicNetworks, Mode=TwoWay}"
+                                    Style="{StaticResource SettingsCheckBoxStyle}" />
+
+                                <TextBlock
+                                    Margin="24,0,0,6"
+                                    Style="{StaticResource MiscNotesStyle}"
+                                    Text="{x:Static resx:Resources.REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS_NOTE}"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+
+                            <Button
+                                HorizontalAlignment="Left"
+                                Command="{Binding CreateFirewallExceptionCommand}"
+                                Content="{x:Static resx:Resources.REMOTE_CONTROL_CREATE_FIREWALL}"
+                                Style="{StaticResource MaterialDesignRaisedLightButton}" />
+                        </StackPanel>
+                    </Border>
 
                     <Button
                         Margin="0,10,0,0"

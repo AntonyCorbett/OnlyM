@@ -1167,7 +1167,16 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("REMOTE_CONTROL_MODE_LOCAL", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Network access.
+        /// </summary>
+        public static string REMOTE_CONTROL_NETWORK_ACCESS {
+            get {
+                return ResourceManager.GetString("REMOTE_CONTROL_NETWORK_ACCESS", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Remote control PIN.
         /// </summary>

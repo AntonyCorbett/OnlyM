@@ -144,6 +144,16 @@ internal sealed class SettingsViewModel : ObservableObject
     public System.Windows.Visibility RemoteControlPublicNetworkWarningVisibility =>
         RemoteControlPublicNetworkWarning == null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
 
+    /// <summary>
+    /// Gets the visibility of the 'Include public networks in the firewall exception' option: only shown when it matters (a Public
+    /// network is connected) or when it is already ticked, to keep the panel simple.
+    /// </summary>
+    public System.Windows.Visibility RemoteControlAllowPublicNetworksVisibility =>
+        CreateFirewallExceptionVisibility == System.Windows.Visibility.Visible &&
+        (RemoteControlPublicNetworkWarning != null || _optionsService.RemoteControlAllowPublicNetworks)
+            ? System.Windows.Visibility.Visible
+            : System.Windows.Visibility.Collapsed;
+
     public System.Windows.Visibility InstallCloudflaredVisibility =>
         _optionsService.RemoteControlEnabled &&
         _optionsService.RemoteControlMode == RemoteControlMode.Cloudflare &&
@@ -1592,6 +1602,7 @@ internal sealed class SettingsViewModel : ObservableObject
         RemoteControlPublicNetworkWarning = GetPublicNetworkWarning();
         OnPropertyChanged(nameof(RemoteControlPublicNetworkWarning));
         OnPropertyChanged(nameof(RemoteControlPublicNetworkWarningVisibility));
+        OnPropertyChanged(nameof(RemoteControlAllowPublicNetworksVisibility));
     }
 
     private string? GetPublicNetworkWarning()
