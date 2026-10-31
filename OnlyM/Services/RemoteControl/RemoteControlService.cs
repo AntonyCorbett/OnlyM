@@ -972,7 +972,10 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   #preview .pvbar button { font-size: 1.1rem; }
   button:disabled { opacity: 0.4; cursor: default; }
   .controls { position: relative; }
-  .controls > button { flex: 1 1 0; min-width: 44px; max-width: 96px; padding-left: 0; padding-right: 0; }
+  .controls > button { flex: 1 1 0; min-width: 44px; max-width: 96px; padding-left: 0; padding-right: 0; display: flex; align-items: center; justify-content: center; }
+  /* SVG icons rather than symbol characters, which iOS draws as emoji on their own grey tiles */
+  .controls > button svg { width: 24px; height: 24px; fill: currentColor; }
+  .controls > button svg .s { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .volpop { position: absolute; right: 0; top: 100%; margin-top: 6px; z-index: 6; display: flex; align-items: center; gap: 10px; width: min(340px, calc(100vw - 24px)); box-sizing: border-box; padding: 10px 12px; background: #222; border: 1px solid #444; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.6); }
   .volpop input { flex: 1 1 auto; min-width: 0; accent-color: #0a7; height: 28px; }
   .volpop span { min-width: 3em; text-align: right; }
@@ -1035,12 +1038,12 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
   </div>
 </div>
 <div class="controls">
-  <button class="primary" onclick="api('/api/previous')" title="Previous" aria-label="Previous">&#x23EE;</button>
-  <button class="primary" id="pauseBtn" onclick="api('/api/pause')" title="Pause" aria-label="Pause">&#x23F8;</button>
-  <button class="primary" onclick="api('/api/stop')" title="Stop" aria-label="Stop">&#x23F9;</button>
-  <button class="primary" onclick="api('/api/next')" title="Next" aria-label="Next">&#x23ED;</button>
-  <button id="volBtn" title="Volume" aria-label="Volume" aria-haspopup="true" aria-expanded="false" aria-controls="volPop" hidden>&#x1F50A;</button>
-  <button onclick="refreshAll()" title="Refresh" aria-label="Refresh">&#x27F3;</button>
+  <button class="primary" onclick="api('/api/previous')" title="Previous" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+  <button class="primary" id="pauseBtn" onclick="api('/api/pause')" title="Pause" aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button>
+  <button class="primary" onclick="api('/api/stop')" title="Stop" aria-label="Stop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg></button>
+  <button class="primary" onclick="api('/api/next')" title="Next" aria-label="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+  <button id="volBtn" title="Volume" aria-label="Volume" aria-haspopup="true" aria-expanded="false" aria-controls="volPop" hidden></button>
+  <button onclick="refreshAll()" title="Refresh" aria-label="Refresh"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="s" d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5"/></svg></button>
   <div class="volpop" id="volPop" role="group" aria-label="Volume" hidden>
     <button id="muteBtn" type="button">Mute</button>
     <input type="range" id="vol" min="0" max="100" step="5" aria-label="Volume level">
@@ -1146,14 +1149,23 @@ function fmt(sec) {
   const m = Math.floor(sec / 60), s = sec % 60;
   return m + ':' + String(s).padStart(2, '0');
 }
+function icon(paths) {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true">' + paths + '</svg>';
+}
 function volIcon(level) {
   // Same thresholds as the operator's volume button: muted, then low / medium / high
-  return level <= 0 ? '\u{1F507}' : level <= 33 ? '\u{1F508}' : level <= 66 ? '\u{1F509}' : '\u{1F50A}';
+  const speaker = '<path d="M3 9h4l5-4v14l-5-4H3z"/>';
+  const near = '<path class="s" d="M15.5 9a4 4 0 0 1 0 6"/>';
+  const far = '<path class="s" d="M18.5 6a8.5 8.5 0 0 1 0 12"/>';
+  return icon(level <= 0 ? speaker + '<path class="s" d="M16 9.5l5 5M21 9.5l-5 5"/>'
+    : level <= 33 ? speaker
+    : level <= 66 ? speaker + near
+    : speaker + near + far);
 }
 function showVolume(level) {
   $('vol').value = level;
   $('volText').textContent = level + '%';
-  $('volBtn').textContent = volIcon(level);
+  $('volBtn').innerHTML = volIcon(level);
   $('muteBtn').textContent = level <= 0 ? 'Unmute' : 'Mute';
 }
 function setVolPop(open) {
@@ -1314,7 +1326,7 @@ function renderStatus(status) {
   $('pauseBtn').disabled = !canPause;
   const pb = $('pauseBtn');
   const showPlay = !!status.isPaused;
-  pb.innerHTML = showPlay ? '&#x25B6;' : '&#x23F8;';
+  pb.innerHTML = icon(showPlay ? '<path d="M7 5v14l12-7z"/>' : '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>');
   pb.title = pb.ariaLabel = showPlay ? 'Resume' : 'Pause';
 
   if (status.currentItemId) {
