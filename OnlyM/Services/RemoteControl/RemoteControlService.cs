@@ -1316,10 +1316,22 @@ function showVolume(level) {
   $('volBtn').innerHTML = volIcon(level);
   $('muteBtn').textContent = level <= 0 ? 'Unmute' : 'Mute';
 }
+function placeVolPop() {
+  // Centre the pop-over under its button (the buttons stop growing on wide screens, so the row's right edge
+  // can be far from it), kept within the controls row
+  const pop = $('volPop');
+  const btn = $('volBtn');
+  const maxLeft = Math.max(0, pop.parentElement.clientWidth - pop.offsetWidth);
+  const left = btn.offsetLeft + (btn.offsetWidth - pop.offsetWidth) / 2;
+  pop.style.left = Math.min(Math.max(0, left), maxLeft) + 'px';
+  pop.style.right = 'auto';
+}
 function setVolPop(open) {
   $('volPop').hidden = !open;
   $('volBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
-  if (!open) {
+  if (open) {
+    placeVolPop();
+  } else {
     volDragging = false;
   }
 }
@@ -1335,6 +1347,11 @@ function initVolume() {
   document.addEventListener('pointerdown', e => {
     if (!$('volPop').hidden && !$('volPop').contains(e.target) && !$('volBtn').contains(e.target)) {
       setVolPop(false);
+    }
+  });
+  window.addEventListener('resize', () => {
+    if (!$('volPop').hidden) {
+      placeVolPop();
     }
   });
   document.addEventListener('keydown', e => {
