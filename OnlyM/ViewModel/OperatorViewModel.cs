@@ -1083,7 +1083,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             return;
         }
 
-        if (FileUtils.SafeDeleteFile(mediaItem.FilePath))
+        if (FileUtils.SafeRecycleFile(mediaItem.FilePath))
         {
             mediaItem.IsCommandPanelOpen = false;
         }
