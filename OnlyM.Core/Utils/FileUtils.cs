@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
+using Microsoft.VisualBasic.FileIO;
 using Serilog;
 
 namespace OnlyM.Core.Utils;
@@ -128,6 +129,26 @@ public static class FileUtils
         }
         catch (Exception)
         {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Sends a file to the Windows Recycle Bin so that it can be restored if deleted by mistake.
+    /// If the file is on a drive that has no Recycle Bin (e.g. a network share), Windows deletes it permanently.
+    /// </summary>
+    /// <param name="path">Full path of the file.</param>
+    /// <returns>True if the file was deleted.</returns>
+    public static bool SafeRecycleFile(string path)
+    {
+        try
+        {
+            FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not send file to Recycle Bin: {Path}", path);
             return false;
         }
     }
