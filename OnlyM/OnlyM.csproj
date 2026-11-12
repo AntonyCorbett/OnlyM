@@ -147,4 +147,56 @@
   <ItemGroup>
     <PackageReference Update="chromiumembeddedframework.runtime.win-arm64" Version="147.0.10" />
   </ItemGroup>
+
+  <!--
+    OnlyM is a 32-bit process. Without the IMAGE_FILE_LARGE_ADDRESS_AWARE flag it is limited to
+    2 GB of address space, which is exhausted when decoding/rendering 4K video (OutOfMemoryException
+    in MediaContext.CompleteRender). Setting the flag gives 4 GB on 64-bit Windows. The SDK has no
+    property for this on the apphost, so patch the PE header of the generated apphost directly.
+    Hooking _CreateAppHost covers both build and publish output (both copy from the intermediate apphost).
+  -->
+  <UsingTask TaskName="SetLargeAddressAware" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <ExecutablePath ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        if (!File.Exists(ExecutablePath))
+        {
+            Log.LogWarning("SetLargeAddressAware: file not found: " + ExecutablePath);
+            return true;
+        }
+
+        const ushort LargeAddressAware = 0x0020;
+        using (var fs = new FileStream(ExecutablePath, FileMode.Open, FileAccess.ReadWrite))
+        using (var reader = new BinaryReader(fs))
+        using (var writer = new BinaryWriter(fs))
+        {
+            fs.Position = 0x3C;
+            int peOffset = reader.ReadInt32();
+            fs.Position = peOffset;
+            if (reader.ReadUInt32() != 0x00004550)
+            {
+                Log.LogError("SetLargeAddressAware: invalid PE signature in " + ExecutablePath);
+                return false;
+            }
+
+            long characteristicsOffset = peOffset + 4 + 18;
+            fs.Position = characteristicsOffset;
+            ushort characteristics = reader.ReadUInt16();
+            if ((characteristics & LargeAddressAware) == 0)
+            {
+                fs.Position = characteristicsOffset;
+                writer.Write((ushort)(characteristics | LargeAddressAware));
+                Log.LogMessage(MessageImportance.High, "SetLargeAddressAware: flag set on " + ExecutablePath);
+            }
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="SetAppHostLargeAddressAware" AfterTargets="_CreateAppHost" Condition="'$(AppHostIntermediatePath)' != ''">
+    <SetLargeAddressAware ExecutablePath="$(AppHostIntermediatePath)" />
+  </Target>
 </Project>
