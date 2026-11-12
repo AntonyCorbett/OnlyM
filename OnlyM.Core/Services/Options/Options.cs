@@ -44,6 +44,7 @@ public sealed class Options
         AllowVideoPositionSeeking = true;
         PermanentBackdrop = true;
         ConfirmVideoStop = false;
+        UseHardwareVideoDecoding = true;
         MaxItemCount = DefaultMaxItemCount;
         MagnifierZoomLevel = DefaultMagnifierZoomLevel;
         BrowserZoomLevelIncrement = DefaultBrowserZoomLevelIncrement;
@@ -136,6 +137,12 @@ public sealed class Options
     public Size MediaWindowSize { get; set; }
 
     public RenderingMethod RenderingMethod { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the Ffmpeg rendering engine may use
+    /// GPU (D3D11VA / DXVA2) video decoding. Falls back to software decoding when unavailable.
+    /// </summary>
+    public bool UseHardwareVideoDecoding { get; set; }
 
     [JsonIgnore]
     public DateTime OperatingDate { get; set; }

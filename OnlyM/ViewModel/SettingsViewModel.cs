@@ -974,6 +974,23 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the Ffmpeg engine may use GPU video decoding (default on).
+    /// Takes effect the next time a video is opened.
+    /// </summary>
+    public bool UseHardwareVideoDecoding
+    {
+        get => _optionsService.UseHardwareVideoDecoding;
+        set
+        {
+            if (_optionsService.UseHardwareVideoDecoding != value)
+            {
+                _optionsService.UseHardwareVideoDecoding = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public bool AllowVideoPause
     {
         get => _optionsService.AllowVideoPause;

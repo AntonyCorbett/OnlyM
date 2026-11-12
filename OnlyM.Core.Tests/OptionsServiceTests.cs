@@ -644,6 +644,37 @@ public class OptionsServiceTests
         Assert.NotEqual(8096, options.RemoteControlPort);
     }
 
+    [Fact]
+    public void Options_HardwareVideoDecoding_DefaultsOn()
+    {
+        Assert.True(new Options().UseHardwareVideoDecoding);
+    }
+
+    [Fact]
+    public void Options_HardwareVideoDecoding_OnWhenMissingFromExistingSettings()
+    {
+        // settings files written by earlier versions don't contain the property
+        var options = Newtonsoft.Json.JsonConvert.DeserializeObject<Options>("{ \"AlwaysOnTop\": false }");
+
+        Assert.NotNull(options);
+        Assert.True(options.UseHardwareVideoDecoding);
+    }
+
+    [Fact]
+    public void UseHardwareVideoDecoding_GetSet_Works()
+    {
+        var originalValue = _service.UseHardwareVideoDecoding;
+        try
+        {
+            _service.UseHardwareVideoDecoding = !originalValue;
+            Assert.Equal(!originalValue, _service.UseHardwareVideoDecoding);
+        }
+        finally
+        {
+            _service.UseHardwareVideoDecoding = originalValue;
+        }
+    }
+
     [Theory]
     [InlineData(false, 40, 100)]
     [InlineData(false, 0, 100)]

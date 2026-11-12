@@ -104,6 +104,8 @@ public interface IOptionsService
 
     bool ConfirmVideoStop { get; set; }
 
+    bool UseHardwareVideoDecoding { get; set; }
+
     bool AllowVideoScrubbing { get; set; }
 
     bool ShowFreezeCommand { get; set; }

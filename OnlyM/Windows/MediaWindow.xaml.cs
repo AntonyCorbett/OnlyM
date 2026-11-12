@@ -734,7 +734,7 @@ public sealed partial class MediaWindow : IDisposable
         switch (_optionsService.RenderingMethod)
         {
             case RenderingMethod.Ffmpeg:
-                _videoElement = new MediaElementUnoSquare(VideoElementFfmpeg);
+                _videoElement = new MediaElementUnoSquare(VideoElementFfmpeg, _optionsService);
                 break;
 
             case RenderingMethod.MediaFoundation:

@@ -256,6 +256,18 @@ public sealed class OptionsService : IOptionsService
         }
     }
 
+    public bool UseHardwareVideoDecoding
+    {
+        get => _options.Value.UseHardwareVideoDecoding;
+        set
+        {
+            if (_options.Value.UseHardwareVideoDecoding != value)
+            {
+                _options.Value.UseHardwareVideoDecoding = value;
+            }
+        }
+    }
+
     public bool ConfirmVideoStop
     {
         get => _options.Value.ConfirmVideoStop;

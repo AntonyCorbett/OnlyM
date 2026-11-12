@@ -519,6 +519,11 @@
                         Style="{StaticResource SettingsComboBoxStyle}" />
 
                     <CheckBox
+                        Content="{x:Static resx:Resources.USE_HW_VIDEO_DECODING}"
+                        IsChecked="{Binding UseHardwareVideoDecoding, Mode=TwoWay}"
+                        Style="{StaticResource SettingsCheckBoxStyle}" />
+
+                    <CheckBox
                         Content="{x:Static resx:Resources.SHOW_SUBTITLES}"
                         IsChecked="{Binding ShowVideoSubtitles, Mode=TwoWay}"
                         Style="{StaticResource SettingsCheckBoxStyle}" />

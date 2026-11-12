@@ -1662,7 +1662,16 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("USE_CMD_PANEL", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Use hardware (GPU) video decoding with the Ffmpeg engine.
+        /// </summary>
+        public static string USE_HW_VIDEO_DECODING {
+            get {
+                return ResourceManager.GetString("USE_HW_VIDEO_DECODING", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Use embedded thumbnails where available.
         /// </summary>
