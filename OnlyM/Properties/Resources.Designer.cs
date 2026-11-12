@@ -843,25 +843,25 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("REMOTE_CONTROL_ADDRESS", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Also allow on public networks.
+        ///   Looks up a localized string similar to Include public networks in the firewall exception.
         /// </summary>
         public static string REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS {
             get {
                 return ResourceManager.GetString("REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Applies when you next click &apos;Create firewall exception&apos;. Anyone on a public network (e.g. venue or hotel Wi-Fi) can then reach the remote page, so set a PIN..
+        ///   Looks up a localized string similar to Tick this, then click the button below - ticking alone does not change the firewall. Anyone on a public network (e.g. venue or hotel Wi-Fi) can then reach the remote page, so set a PIN..
         /// </summary>
         public static string REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS_NOTE {
             get {
                 return ResourceManager.GetString("REMOTE_CONTROL_ALLOW_PUBLIC_NETWORKS_NOTE", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Position must be a number of seconds (0 or more).
         /// </summary>
@@ -1052,7 +1052,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To let other devices on your network connect, OnlyM needs a Windows Firewall exception for this port. You will be asked for administrator permission. If you change the port later, do this again..
+        ///   Looks up a localized string similar to To let phones and other devices connect, Windows Firewall must allow this port. Click the button below and approve the administrator prompt. Do this again if you change the port..
         /// </summary>
         public static string REMOTE_CONTROL_CREATE_FIREWALL_NOTE {
             get {
@@ -1133,7 +1133,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Localhost only - other devices can&apos;t connect (http://localhost:{0}/). Click &apos;Create firewall exception&apos; to allow network access..
+        ///   Looks up a localized string similar to Localhost only - other devices can&apos;t connect yet (http://localhost:{0}/)..
         /// </summary>
         public static string REMOTE_CONTROL_LOCALHOST_ONLY {
             get {
@@ -1167,7 +1167,7 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("REMOTE_CONTROL_MODE_LOCAL", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Network access.
         /// </summary>
@@ -1176,7 +1176,7 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("REMOTE_CONTROL_NETWORK_ACCESS", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Remote control PIN.
         /// </summary>
@@ -1230,16 +1230,16 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("REMOTE_CONTROL_PORT_IN_USE", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Windows treats &apos;{0}&apos; as a public network, so its firewall blocks phones and other devices on it. On a trusted network, set it to Private (Windows Settings &gt; Network &amp; internet). Otherwise tick &apos;Also allow on public networks&apos; and click &apos;Create firewall exception&apos;..
+        ///   Looks up a localized string similar to Windows treats &apos;{0}&apos; as a public network, so the firewall blocks devices on it. If you trust this network, set it to Private in Windows Settings &gt; Network &amp; internet. Otherwise use the option below..
         /// </summary>
         public static string REMOTE_CONTROL_PUBLIC_NETWORK_WARNING {
             get {
                 return ResourceManager.GetString("REMOTE_CONTROL_PUBLIC_NETWORK_WARNING", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to RETRY.
         /// </summary>
@@ -1662,7 +1662,7 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("USE_CMD_PANEL", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Use hardware (GPU) video decoding with the Ffmpeg engine.
         /// </summary>
@@ -1671,7 +1671,7 @@ namespace OnlyM.Properties {
                 return ResourceManager.GetString("USE_HW_VIDEO_DECODING", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Use embedded thumbnails where available.
         /// </summary>
