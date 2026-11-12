@@ -19,6 +19,7 @@ using OnlyM.Core.Utils;
 using OnlyM.CoreSys;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.EventTracking;
+using OnlyM.MediaElementAdaption;
 using OnlyM.Models;
 using OnlyM.PubSubMessages;
 using OnlyM.Services.DragAndDrop;
@@ -111,6 +112,8 @@ internal sealed class MainViewModel : ObservableObject
         }
 
         SanityChecks();
+
+        StartHardwareDecoderCheck();
     }
 
     // commands...
@@ -430,6 +433,19 @@ internal sealed class MainViewModel : ObservableObject
         //      than or equal to 9.0.
         var renderingTier = RenderCapability.Tier >> 16;
         return renderingTier == 0;
+    }
+
+    private void StartHardwareDecoderCheck()
+    {
+        // Check which GPU decoding device (D3D11VA / DXVA2) can be created, shortly after
+        // startup and off the UI thread, so the first video doesn't wait for it. Skipped when
+        // it can't be used; if settings change later the check runs when a video is opened.
+        if (_optionsService.RenderingMethod == RenderingMethod.Ffmpeg &&
+            _optionsService.UseHardwareVideoDecoding &&
+            RenderOptions.ProcessRenderMode != RenderMode.SoftwareOnly)
+        {
+            HardwareDecoderProbe.CheckInBackground(TimeSpan.FromSeconds(5));
+        }
     }
 
     private void HandleCopyingFilesProgressEvent(object? sender, FilesCopyProgressEventArgs e) =>

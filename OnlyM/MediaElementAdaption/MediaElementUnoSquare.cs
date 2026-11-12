@@ -127,9 +127,9 @@ internal sealed class MediaElementUnoSquare : IMediaElement
     private static HardwareDeviceInfo? SelectHardwareDevice(IReadOnlyList<HardwareDeviceInfo>? devices)
     {
         // The list contains the devices the FFmpeg build supports for this codec, not
-        // necessarily what this PC supports. If the device can't be created, or the GPU can't
-        // decode this format, FFME/FFmpeg fall back to software decoding.
-        // D3D11VA is preferred (Windows 10+); DXVA2 is used only if D3D11VA isn't offered.
+        // necessarily what this PC supports, so use the device type that HardwareDecoderProbe
+        // found can be created here: D3D11VA, else DXVA2 (older WDDM 1.1 drivers), else none.
+        // If the GPU can't decode this particular format, FFmpeg falls back to software.
         // CUDA (unsupported for 32-bit apps by current NVIDIA drivers) and QSV (Intel only)
         // are deliberately not used.
         if (devices == null)
@@ -137,8 +137,13 @@ internal sealed class MediaElementUnoSquare : IMediaElement
             return null;
         }
 
-        return devices.FirstOrDefault(d => d.DeviceType == AVHWDeviceType.AV_HWDEVICE_TYPE_D3D11VA)
-               ?? devices.FirstOrDefault(d => d.DeviceType == AVHWDeviceType.AV_HWDEVICE_TYPE_DXVA2);
+        var availableDeviceType = HardwareDecoderProbe.AvailableDeviceType;
+        if (availableDeviceType == AVHWDeviceType.AV_HWDEVICE_TYPE_NONE)
+        {
+            return null;
+        }
+
+        return devices.FirstOrDefault(d => d.DeviceType == availableDeviceType);
     }
 
     // set when OnlyM runs with --nogpu or has no usable GPU (WPF rendering tier 0)
@@ -163,7 +168,7 @@ internal sealed class MediaElementUnoSquare : IMediaElement
             var device = SelectHardwareDevice(videoStream.HardwareDevices);
             if (device == null)
             {
-                Serilog.Log.Logger.Debug("No supported hardware decoder for codec {Codec}", videoStream.CodecName);
+                Serilog.Log.Logger.Debug("No usable hardware decoder for codec {Codec}", videoStream.CodecName);
                 return;
             }
 
