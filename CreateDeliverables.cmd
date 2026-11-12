@@ -17,6 +17,11 @@ dotnet publish OnlyM\OnlyM.csproj -p:PublishProfile=FolderProfile -c:Release
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 ECHO.
+ECHO Checking OnlyM.exe is large address aware
+CALL :CheckLargeAddressAware OnlyM\bin\Release\net10.0-windows\publish\OnlyM.exe
+IF %ERRORLEVEL% NEQ 0 goto ERROR
+
+ECHO.
 ECHO Publishing OnlyMSlideManager
 dotnet publish OnlyMSlideManager\OnlyMSlideManager.csproj -p:PublishProfile=FolderProfile -c:Release
 IF %ERRORLEVEL% NEQ 0 goto ERROR
@@ -98,6 +103,16 @@ powershell Compress-Archive -Path OnlyM\bin\Release\net10.0-windows\publish\* -D
 IF %ERRORLEVEL% NEQ 0 goto ERROR
 
 goto SUCCESS
+
+:CheckLargeAddressAware
+REM Verifies the IMAGE_FILE_LARGE_ADDRESS_AWARE flag (0x20) in the PE header of %1.
+REM Without it the 32-bit process is limited to 2 GB and 4K video can run out of memory.
+IF NOT EXIST "%~1" (
+    ECHO File not found: "%~1"
+    EXIT /B 1
+)
+powershell -NoProfile -Command "$b = [IO.File]::ReadAllBytes('%~1'); $pe = [BitConverter]::ToInt32($b, 0x3C); $c = [BitConverter]::ToUInt16($b, $pe + 22); if ($c -band 0x20) { Write-Host 'Large address aware: YES'; exit 0 } else { Write-Host 'Large address aware: NO - %~nx1 is limited to 2 GB'; exit 1 }"
+EXIT /B %ERRORLEVEL%
 
 :FindMSBuild
 SET "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
