@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using OnlyM.Core.Extensions;
@@ -54,6 +55,7 @@ public class MediaItem : ObservableObject
     private PdfViewStyle _pdfViewStyle = PdfViewStyle.Default;
     private string _chosenPdfPage = "1";
     private bool _isBeingDragged;
+    private bool _isRemovedFromList;
 
     public event EventHandler? PlaybackPositionChangedEvent;
 
@@ -70,6 +72,16 @@ public class MediaItem : ObservableObject
     public bool IsBlankScreen { get; init; }
 
     public int MetaDataRetryCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item has been removed from the media list (e.g. because the
+    /// media folder changed). The metadata queue skips such items. Read from background threads.
+    /// </summary>
+    public bool IsRemovedFromList
+    {
+        get => Volatile.Read(ref _isRemovedFromList);
+        set => Volatile.Write(ref _isRemovedFromList, value);
+    }
 
     public bool UseMirror
     {

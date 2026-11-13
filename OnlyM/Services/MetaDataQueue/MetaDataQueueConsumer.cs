@@ -87,6 +87,14 @@ internal sealed class MetaDataQueueConsumer
                 }
 
                 _producer.ItemDequeued(nextItem);
+
+                if (nextItem.IsRemovedFromList)
+                {
+                    // e.g. the media folder changed before this item was processed.
+                    TryRaiseAllItemsCompleted();
+                    continue;
+                }
+
                 ResetAllItemsCompletedFlag();
 
                 Interlocked.Increment(ref _inProgressCount);
@@ -101,7 +109,11 @@ internal sealed class MetaDataQueueConsumer
                     {
                         await PopulateThumbnailAndMetaDataAsync(nextItem);
 
-                        if (!IsPopulated(nextItem))
+                        if (nextItem.IsRemovedFromList)
+                        {
+                            Log.Logger.Debug("Item removed from list during processing {Path}", nextItem.FilePath);
+                        }
+                        else if (!IsPopulated(nextItem))
                         {
                             ReplaceInQueue(nextItem);
                         }
@@ -170,7 +182,7 @@ internal sealed class MetaDataQueueConsumer
             .ContinueWith(
                 _ =>
                 {
-                    if (_cancellationToken.IsCancellationRequested)
+                    if (ShouldAbandon(mediaItem))
                     {
                         return;
                     }
@@ -205,23 +217,26 @@ internal sealed class MetaDataQueueConsumer
         }
     }
 
+    private bool ShouldAbandon(MediaItem mediaItem) =>
+        _cancellationToken.IsCancellationRequested || mediaItem.IsRemovedFromList;
+
     private async Task PopulateThumbnailAndMetaDataAsync(MediaItem mediaItem)
     {
-        if (_cancellationToken.IsCancellationRequested)
+        if (ShouldAbandon(mediaItem))
         {
             return;
         }
 
         await PopulateSlideDataAsync(mediaItem);
 
-        if (_cancellationToken.IsCancellationRequested)
+        if (ShouldAbandon(mediaItem))
         {
             return;
         }
 
         await PopulateThumbnailAsync(mediaItem);
 
-        if (_cancellationToken.IsCancellationRequested)
+        if (ShouldAbandon(mediaItem))
         {
             return;
         }

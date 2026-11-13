@@ -1672,7 +1672,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
                 foreach (var item in itemsToRemove)
                 {
-                    MediaItems.Remove(item);
+                    RemoveMediaItem(item);
                 }
 
                 foreach (var item in itemsToAdd)
@@ -1780,8 +1780,16 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     {
         while (MediaItems.Count > _optionsService.MaxItemCount)
         {
-            MediaItems.RemoveAt(MediaItems.Count - 1);
+            RemoveMediaItem(MediaItems[^1]);
         }
+    }
+
+    private void RemoveMediaItem(MediaItem item)
+    {
+        // stops the metadata queue spending time on items that are no longer shown
+        // (e.g. the rest of the old folder after the media folder is changed mid-load).
+        item.IsRemovedFromList = true;
+        MediaItems.Remove(item);
     }
 
     private bool InsertExternalDropItems(ExternalDropCompletedMessage drop)
@@ -2082,14 +2090,14 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private async Task AutoRotateImageIfRequiredAsync(MediaItem item)
     {
-        if (item.MediaType?.Classification != MediaClassification.Image)
+        if (item.MediaType?.Classification != MediaClassification.Image || item.IsRemovedFromList)
         {
             return;
         }
 
         var rotated = await Task.Run(() => GraphicsUtils.AutoRotateIfRequired(item.FilePath));
 
-        if (!rotated)
+        if (!rotated || item.IsRemovedFromList)
         {
             return;
         }
