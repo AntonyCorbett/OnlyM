@@ -377,7 +377,7 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open media folder.
+        ///   Looks up a localized string similar to Show media folder.
         /// </summary>
         public static string FOLDER {
             get {
@@ -2002,6 +2002,177 @@ namespace OnlyM.Properties {
         public static string YES {
             get {
                 return ResourceManager.GetString("YES", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Folder not found.
+        /// </summary>
+        public static string FOLDER_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("FOLDER_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show media list menu.
+        /// </summary>
+        public static string SHOW_MEDIA_LIST_MENU {
+            get {
+                return ResourceManager.GetString("SHOW_MEDIA_LIST_MENU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Media list menu.
+        /// </summary>
+        public static string MEDIA_LIST_MENU {
+            get {
+                return ResourceManager.GetString("MEDIA_LIST_MENU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add files....
+        /// </summary>
+        public static string MENU_ADD_FILES {
+            get {
+                return ResourceManager.GetString("MENU_ADD_FILES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string MENU_REFRESH {
+            get {
+                return ResourceManager.GetString("MENU_REFRESH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent folders.
+        /// </summary>
+        public static string MENU_RECENT_FOLDERS {
+            get {
+                return ResourceManager.GetString("MENU_RECENT_FOLDERS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show media folder.
+        /// </summary>
+        public static string MENU_OPEN_FOLDER {
+            get {
+                return ResourceManager.GetString("MENU_OPEN_FOLDER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide all.
+        /// </summary>
+        public static string MENU_HIDE_ALL {
+            get {
+                return ResourceManager.GetString("MENU_HIDE_ALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unhide all.
+        /// </summary>
+        public static string MENU_UNHIDE_ALL {
+            get {
+                return ResourceManager.GetString("MENU_UNHIDE_ALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete hidden items....
+        /// </summary>
+        public static string MENU_DELETE_HIDDEN {
+            get {
+                return ResourceManager.GetString("MENU_DELETE_HIDDEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete all....
+        /// </summary>
+        public static string MENU_DELETE_ALL {
+            get {
+                return ResourceManager.GetString("MENU_DELETE_ALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add media files.
+        /// </summary>
+        public static string ADD_FILES_TITLE {
+            get {
+                return ResourceManager.GetString("ADD_FILES_TITLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Media files.
+        /// </summary>
+        public static string MEDIA_FILES_FILTER {
+            get {
+                return ResourceManager.GetString("MEDIA_FILES_FILTER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All files.
+        /// </summary>
+        public static string ALL_FILES_FILTER {
+            get {
+                return ResourceManager.GetString("ALL_FILES_FILTER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move all {0} media files to the Recycle Bin?.
+        /// </summary>
+        public static string CONFIRM_DELETE_ALL {
+            get {
+                return ResourceManager.GetString("CONFIRM_DELETE_ALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the {0} hidden media files to the Recycle Bin?.
+        /// </summary>
+        public static string CONFIRM_DELETE_HIDDEN {
+            get {
+                return ResourceManager.GetString("CONFIRM_DELETE_HIDDEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Items currently being shown will not be deleted..
+        /// </summary>
+        public static string CONFIRM_DELETE_ACTIVE_SKIPPED {
+            get {
+                return ResourceManager.GetString("CONFIRM_DELETE_ACTIVE_SKIPPED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} files moved to the Recycle Bin.
+        /// </summary>
+        public static string FILES_DELETED {
+            get {
+                return ResourceManager.GetString("FILES_DELETED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} files could not be deleted.
+        /// </summary>
+        public static string SOME_FILES_NOT_DELETED {
+            get {
+                return ResourceManager.GetString("SOME_FILES_NOT_DELETED", resourceCulture);
             }
         }
     }

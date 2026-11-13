@@ -185,7 +185,7 @@
     <comment>Tooltip for the main page, Settings button when it has been disabled by command-line option.</comment>
   </data>
   <data name="FOLDER" xml:space="preserve">
-    <value>Open media folder</value>
+    <value>Show media folder</value>
     <comment>Tooltip on the main page Folder button</comment>
   </data>
   <data name="FOLDER_DISABLED" xml:space="preserve">
@@ -955,5 +955,79 @@
   <data name="REMOTE_CONTROL_API_THUMBNAIL_NOT_FOUND" xml:space="preserve">
     <value>Thumbnail not found</value>
     <comment>Error shown on the remote control web page.</comment>
+  </data>
+  <data name="SHOW_MEDIA_LIST_MENU" xml:space="preserve">
+    <value>Show media list menu</value>
+  </data>
+  <data name="MEDIA_LIST_MENU" xml:space="preserve">
+    <value>Media list menu</value>
+    <comment>Tooltip for the menu button at the top of the Operator page</comment>
+  </data>
+  <data name="MENU_ADD_FILES" xml:space="preserve">
+    <value>Add files...</value>
+    <comment>Media list menu item</comment>
+  </data>
+  <data name="MENU_REFRESH" xml:space="preserve">
+    <value>Refresh</value>
+    <comment>Media list menu item - rescans the media folder</comment>
+  </data>
+  <data name="MENU_RECENT_FOLDERS" xml:space="preserve">
+    <value>Recent folders</value>
+    <comment>Media list menu item</comment>
+  </data>
+  <data name="MENU_OPEN_FOLDER" xml:space="preserve">
+    <value>Show media folder</value>
+    <comment>Media list menu item - opens the media folder in File Explorer</comment>
+  </data>
+  <data name="MENU_HIDE_ALL" xml:space="preserve">
+    <value>Hide all</value>
+    <comment>Media list menu item</comment>
+  </data>
+  <data name="MENU_UNHIDE_ALL" xml:space="preserve">
+    <value>Unhide all</value>
+    <comment>Media list menu item</comment>
+  </data>
+  <data name="MENU_DELETE_HIDDEN" xml:space="preserve">
+    <value>Delete hidden items...</value>
+    <comment>Media list menu item</comment>
+  </data>
+  <data name="MENU_DELETE_ALL" xml:space="preserve">
+    <value>Delete all...</value>
+    <comment>Media list menu item</comment>
+  </data>
+  <data name="ADD_FILES_TITLE" xml:space="preserve">
+    <value>Add media files</value>
+    <comment>Title of the file picker opened by 'Add files...'</comment>
+  </data>
+  <data name="MEDIA_FILES_FILTER" xml:space="preserve">
+    <value>Media files</value>
+    <comment>File type filter in the 'Add files...' file picker</comment>
+  </data>
+  <data name="ALL_FILES_FILTER" xml:space="preserve">
+    <value>All files</value>
+    <comment>File type filter in the 'Add files...' file picker</comment>
+  </data>
+  <data name="CONFIRM_DELETE_ALL" xml:space="preserve">
+    <value>Move all {0} media files to the Recycle Bin?</value>
+    <comment>{0} is the number of files</comment>
+  </data>
+  <data name="CONFIRM_DELETE_HIDDEN" xml:space="preserve">
+    <value>Move the {0} hidden media files to the Recycle Bin?</value>
+    <comment>{0} is the number of files</comment>
+  </data>
+  <data name="CONFIRM_DELETE_ACTIVE_SKIPPED" xml:space="preserve">
+    <value>Items currently being shown will not be deleted.</value>
+    <comment>Shown in the delete confirmation dialog</comment>
+  </data>
+  <data name="FILES_DELETED" xml:space="preserve">
+    <value>{0} files moved to the Recycle Bin</value>
+    <comment>{0} is the number of files</comment>
+  </data>
+  <data name="SOME_FILES_NOT_DELETED" xml:space="preserve">
+    <value>{0} files could not be deleted</value>
+    <comment>{0} is the number of files</comment>
+  </data>
+  <data name="FOLDER_NOT_FOUND" xml:space="preserve">
+    <value>Folder not found</value>
   </data>
 </root>

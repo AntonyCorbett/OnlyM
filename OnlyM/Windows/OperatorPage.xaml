@@ -500,38 +500,152 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ToggleButton
+        <StackPanel
             Grid.Row="0"
-            Width="32"
-            Height="32"
-            Margin="8,6,0,2"
             HorizontalAlignment="Left"
-            AutomationProperties.Name="{x:Static resx:Resources.SORT_MODE}"
-            IsChecked="{Binding IsManualSortMode, Mode=TwoWay}"
-            Visibility="{Binding ShowSortModeToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <ToggleButton.Style>
-                <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
-                    <Setter Property="ToolTip" Value="{x:Static resx:Resources.SORT_MODE_AUTO_TOOLTIP}" />
-                    <Style.Triggers>
-                        <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="ToolTip" Value="{x:Static resx:Resources.SORT_MODE_MANUAL_TOOLTIP}" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ToggleButton.Style>
-            <ToggleButton.Content>
-                <materialDesign:PackIcon
-                    Width="24"
-                    Height="24"
-                    Kind="SortAlphabeticalAscending" />
-            </ToggleButton.Content>
-            <materialDesign:ToggleButtonAssist.OnContent>
-                <materialDesign:PackIcon
-                    Width="24"
-                    Height="24"
-                    Kind="Drag" />
-            </materialDesign:ToggleButtonAssist.OnContent>
-        </ToggleButton>
+            Orientation="Horizontal">
+
+            <!--  Media list menu (optional, see Settings): actions that apply to the whole media list / folder  -->
+            <Menu
+                Margin="4,6,0,2"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                Visibility="{Binding ShowMediaListMenu, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <MenuItem
+                    x:Name="MediaListMenuItem"
+                    Height="32"
+                    Padding="6,0"
+                    AutomationProperties.Name="{x:Static resx:Resources.MEDIA_LIST_MENU}"
+                    SubmenuOpened="MediaListMenuItem_SubmenuOpened"
+                    ToolTip="{x:Static resx:Resources.MEDIA_LIST_MENU}">
+                    <MenuItem.Header>
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="DotsVertical" />
+                    </MenuItem.Header>
+
+                    <MenuItem Command="{Binding AddFilesCommand}" Header="{x:Static resx:Resources.MENU_ADD_FILES}">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="FilePlusOutline" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Command="{Binding RefreshCommand}" Header="{x:Static resx:Resources.MENU_REFRESH}">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="Refresh" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <Separator />
+
+                    <MenuItem
+                        Header="{x:Static resx:Resources.MENU_RECENT_FOLDERS}"
+                        ItemsSource="{Binding RecentMediaFolders}"
+                        Visibility="{Binding ShowRecentFolders, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="FolderClockOutline" />
+                        </MenuItem.Icon>
+                        <MenuItem.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource MaterialDesignMenuItem}" TargetType="MenuItem">
+                                <!--  The tick is drawn in the header: the Material Design menu item doesn't show IsChecked for non-checkable items  -->
+                                <Setter Property="Header" Value="{Binding}" />
+                                <Setter Property="HeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate DataType="{x:Type models:RecentFolderMenuItem}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <materialDesign:PackIcon
+                                                    x:Name="CurrentFolderTick"
+                                                    Width="16"
+                                                    Height="16"
+                                                    Margin="0,0,8,0"
+                                                    VerticalAlignment="Center"
+                                                    Kind="Check"
+                                                    Visibility="Hidden" />
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding Path}" />
+                                            </StackPanel>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                                    <Setter TargetName="CurrentFolderTick" Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="AutomationProperties.Name" Value="{Binding Path}" />
+                                <Setter Property="Command" Value="{Binding Command}" />
+                                <Setter Property="CommandParameter" Value="{Binding Path}" />
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                    </MenuItem>
+
+                    <MenuItem Command="{Binding OpenMediaFolderCommand}" Header="{x:Static resx:Resources.MENU_OPEN_FOLDER}">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="FolderOpenOutline" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <Separator />
+
+                    <MenuItem Command="{Binding HideAllCommand}" Header="{x:Static resx:Resources.MENU_HIDE_ALL}">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="EyeOffOutline" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Command="{Binding UnhideAllCommand}" Header="{x:Static resx:Resources.MENU_UNHIDE_ALL}">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="EyeOutline" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <Separator />
+
+                    <MenuItem Command="{Binding DeleteHiddenCommand}" Header="{x:Static resx:Resources.MENU_DELETE_HIDDEN}">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="DeleteSweepOutline" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Command="{Binding DeleteAllCommand}" Header="{x:Static resx:Resources.MENU_DELETE_ALL}">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="DeleteForeverOutline" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+
+            <ToggleButton
+                Width="32"
+                Height="32"
+                Margin="8,6,0,2"
+                AutomationProperties.Name="{x:Static resx:Resources.SORT_MODE}"
+                IsChecked="{Binding IsManualSortMode, Mode=TwoWay}"
+                Visibility="{Binding ShowSortModeToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ToggleButton.Style>
+                    <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                        <Setter Property="ToolTip" Value="{x:Static resx:Resources.SORT_MODE_AUTO_TOOLTIP}" />
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="ToolTip" Value="{x:Static resx:Resources.SORT_MODE_MANUAL_TOOLTIP}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+                <ToggleButton.Content>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="SortAlphabeticalAscending" />
+                </ToggleButton.Content>
+                <materialDesign:ToggleButtonAssist.OnContent>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="Drag" />
+                </materialDesign:ToggleButtonAssist.OnContent>
+            </ToggleButton>
+        </StackPanel>
 
         <!--  Media item count badge - shown once the list is non-empty; highlighted when the configured maximum is reached  -->
         <!--  Right margin (22) = scrollbar width (18, see MainWindow's ScrollBar style) + card margin (4) so the badge's right edge lines up with the cards' right edge  -->

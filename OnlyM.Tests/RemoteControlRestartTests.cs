@@ -1,10 +1,12 @@
 ﻿using Moq;
+using OnlyM.Core.Services.CommandLine;
 using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Media;
 using OnlyM.Core.Services.Monitors;
 using OnlyM.Core.Services.Options;
 using OnlyM.CoreSys.Services.Snackbar;
 using OnlyM.Services.Dialogs;
+using OnlyM.Services.DragAndDrop;
 using OnlyM.Services.FrozenVideoItems;
 using OnlyM.Services.HiddenMediaItems;
 using OnlyM.Services.MediaChanging;
@@ -59,7 +61,9 @@ public sealed class RemoteControlRestartTests : IDisposable
             new Mock<IFrozenVideosService>().Object,
             new Mock<IPdfOptionsService>().Object,
             new Mock<ISnackbarService>().Object,
-            new Mock<IDialogService>().Object);
+            new Mock<IDialogService>().Object,
+            new Mock<IDragAndDropService>().Object,
+            new Mock<ICommandLineService>().Object);
     }
 
     public void Dispose() => _operatorViewModel.Dispose();

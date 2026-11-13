@@ -2,12 +2,14 @@
 using System.Windows.Threading;
 using Moq;
 using OnlyM.Core.Models;
+using OnlyM.Core.Services.CommandLine;
 using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Media;
 using OnlyM.Core.Services.Options;
 using OnlyM.Models;
 using OnlyM.PubSubMessages;
 using OnlyM.Services.Dialogs;
+using OnlyM.Services.DragAndDrop;
 using OnlyM.Services.FrozenVideoItems;
 using OnlyM.Services.HiddenMediaItems;
 using OnlyM.Services.MediaChanging;
@@ -76,7 +78,9 @@ public sealed class OperatorViewModelSortTests : IDisposable
             new Mock<IFrozenVideosService>().Object,
             new Mock<IPdfOptionsService>().Object,
             _snackbarMock.Object,
-            new Mock<IDialogService>().Object);
+            new Mock<IDialogService>().Object,
+            new Mock<IDragAndDropService>().Object,
+            new Mock<ICommandLineService>().Object);
 
         _optionsMock.SetupGet(x => x.RecentlyUsedMediaFolders).Returns([]);
         _settings = new SettingsViewModel(

@@ -97,6 +97,8 @@ public sealed class OptionsService : IOptionsService
 
     public event EventHandler? ShowMediaItemCountBadgeChangedEvent;
 
+    public event EventHandler? ShowMediaListMenuChangedEvent;
+
     public event EventHandler? MagnifierChangedEvent;
 
     public event EventHandler? BrowserChangedEvent;
@@ -333,6 +335,19 @@ public sealed class OptionsService : IOptionsService
             {
                 _options.Value.ShowFreezeCommand = value;
                 ShowFreezeCommandChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public bool ShowMediaListMenu
+    {
+        get => _options.Value.ShowMediaListMenu;
+        set
+        {
+            if (_options.Value.ShowMediaListMenu != value)
+            {
+                _options.Value.ShowMediaListMenu = value;
+                ShowMediaListMenuChangedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }

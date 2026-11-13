@@ -130,6 +130,8 @@ public sealed class Options
 
     public bool ShowMediaItemCountBadge { get; set; }
 
+    public bool ShowMediaListMenu { get; set; }
+
     public string? MediaMonitorId { get; set; }
 
     public bool MediaWindowed { get; set; }
@@ -266,6 +268,19 @@ public sealed class Options
             {
                 RecentlyUsedMediaFolders.RemoveAt(n);
             }
+        }
+
+        // The constructor's call to Sanitize seeds the list with the default folder, and Json.NET
+        // then appends the saved folders to that same list, so it can hold duplicates (e.g. the
+        // default folder twice). Keep the first occurrence of each folder.
+        var distinctFolders = RecentlyUsedMediaFolders
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (distinctFolders.Count != RecentlyUsedMediaFolders.Count)
+        {
+            RecentlyUsedMediaFolders.Clear();
+            RecentlyUsedMediaFolders.AddRange(distinctFolders);
         }
 
         // media calendar date is always set to today

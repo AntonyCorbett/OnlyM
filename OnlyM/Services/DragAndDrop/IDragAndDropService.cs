@@ -12,5 +12,10 @@ internal interface IDragAndDropService
 
     void Paste();
 
+    /// <summary>
+    /// Copies the specified files into the media folder (as if they had been dropped onto the media list).
+    /// </summary>
+    void AddFiles(string[] files);
+
     void Drop(IDataObject data, int targetIndex, string? targetFilePath);
 }

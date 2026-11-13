@@ -105,7 +105,12 @@ internal sealed class SettingsViewModel : ObservableObject
 
         _pageService.NavigationEvent += HandleNavigationEvent;
         _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
-        _optionsService.MediaFolderChangedEvent += (_, _) => ResetManualOrderCommand.NotifyCanExecuteChanged();
+        _optionsService.MediaFolderChangedEvent += (_, _) =>
+        {
+            // the folder can also be changed from the Operator page's media list menu.
+            OnPropertyChanged(nameof(MediaFolder));
+            ResetManualOrderCommand.NotifyCanExecuteChanged();
+        };
 
         InitCommands();
         WeakReferenceMessenger.Default.Register<ShutDownMessage>(this, OnShutDown);
@@ -1067,6 +1072,19 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
+    public bool ShowMediaListMenu
+    {
+        get => _optionsService.ShowMediaListMenu;
+        set
+        {
+            if (_optionsService.ShowMediaListMenu != value)
+            {
+                _optionsService.ShowMediaListMenu = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public bool ShowMediaItemCountBadge
     {
         get => _optionsService.ShowMediaItemCountBadge;
@@ -1903,6 +1921,9 @@ internal sealed class SettingsViewModel : ObservableObject
         if (result == CommonFileDialogResult.Ok)
         {
             _recentlyUsedMediaFolders.Add(dialog.FileName);
+
+            // keep the options in step so the Operator page's "Recent folders" menu is current.
+            _optionsService.RecentlyUsedMediaFolders = _recentlyUsedMediaFolders.GetFolders().ToList();
             MediaFolder = dialog.FileName;
             OnPropertyChanged(nameof(RecentMediaFolders));
         }

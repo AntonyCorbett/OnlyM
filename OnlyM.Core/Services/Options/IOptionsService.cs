@@ -64,6 +64,8 @@ public interface IOptionsService
 
     event EventHandler ShowMediaItemCountBadgeChangedEvent;
 
+    event EventHandler ShowMediaListMenuChangedEvent;
+
     event EventHandler MagnifierChangedEvent;
 
     event EventHandler BrowserChangedEvent;
@@ -122,6 +124,8 @@ public interface IOptionsService
     bool ShowRemoteVolumeControl { get; set; }
 
     bool ShowMediaItemCountBadge { get; set; }
+
+    bool ShowMediaListMenu { get; set; }
 
     int MaxItemCount { get; set; }
 

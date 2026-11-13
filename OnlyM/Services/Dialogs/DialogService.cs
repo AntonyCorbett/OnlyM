@@ -26,5 +26,18 @@ internal sealed class DialogService : IDialogService
         return dc.Result;
     }
 
+    public async Task<bool> ConfirmAsync(string message, string? detail, string confirmText)
+    {
+        _isDialogVisible = true;
+
+        var dialog = new ConfirmDialog(message, detail, confirmText, Properties.Resources.DLG_CANCEL);
+
+        var result = await DialogHost.Show(
+            dialog,
+            (object _, DialogClosingEventArgs args) => _isDialogVisible = false);
+
+        return result is true;
+    }
+
     public bool IsDialogVisible() => _isDialogVisible;
 }

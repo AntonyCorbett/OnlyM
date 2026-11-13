@@ -73,6 +73,14 @@ internal sealed class DragAndDropService : IDragAndDropService
         }
     }
 
+    public void AddFiles(string[] files)
+    {
+        if (files.Length > 0)
+        {
+            _ = CopyAsync(new DataObject(DataFormats.FileDrop, files));
+        }
+    }
+
     public void Drop(IDataObject data, int targetIndex, string? targetFilePath) =>
         _ = CopyAsync(data, targetIndex, targetFilePath);
 

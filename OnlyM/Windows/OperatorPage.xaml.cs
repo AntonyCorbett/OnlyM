@@ -80,6 +80,15 @@ public partial class OperatorPage
         _ => LogicalTreeHelper.GetParent(source),
     };
 
+    private void MediaListMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
+    {
+        // raised for nested sub-menus too (e.g. Recent folders) - only refresh for the top-level menu.
+        if (ReferenceEquals(e.OriginalSource, MediaListMenuItem) && DataContext is OperatorViewModel vm)
+        {
+            vm.RefreshMediaListMenu();
+        }
+    }
+
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         _mediaListScrollViewer = FindDescendant<ScrollViewer>(OperatorMediaList);

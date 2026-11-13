@@ -14,6 +14,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using MaterialDesignThemes.Wpf;
 using OnlyM.Core.Models;
+using OnlyM.Core.Services.CommandLine;
 using OnlyM.Core.Services.Database;
 using OnlyM.Core.Services.Media;
 using OnlyM.Core.Services.Options;
@@ -25,6 +26,7 @@ using OnlyM.MediaElementAdaption;
 using OnlyM.Models;
 using OnlyM.PubSubMessages;
 using OnlyM.Services.Dialogs;
+using OnlyM.Services.DragAndDrop;
 using OnlyM.Services.FrozenVideoItems;
 using OnlyM.Services.HiddenMediaItems;
 using OnlyM.Services.MediaChanging;
@@ -62,6 +64,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private readonly IActiveMediaItemsService _activeMediaItemsService;
     private readonly ISnackbarService _snackbarService;
     private readonly IDialogService _dialogService;
+    private readonly IDragAndDropService _dragAndDropService;
+    private readonly ICommandLineService _commandLineService;
 
     private readonly MetaDataQueueProducer _metaDataProducer = new();
     private readonly CancellationTokenSource _metaDataCancellationTokenSource = new();
@@ -96,7 +100,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         IFrozenVideosService frozenVideosService,
         IPdfOptionsService pdfOptionsService,
         ISnackbarService snackbarService,
-        IDialogService dialogService)
+        IDialogService dialogService,
+        IDragAndDropService dragAndDropService,
+        ICommandLineService commandLineService)
     {
         _mediaProviderService = mediaProviderService;
         _mediaStatusChangingService = mediaStatusChangingService;
@@ -106,6 +112,8 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
         _snackbarService = snackbarService;
         _dialogService = dialogService;
+        _dragAndDropService = dragAndDropService;
+        _commandLineService = commandLineService;
 
         _activeMediaItemsService = activeMediaItemsService;
         _frozenVideosService = frozenVideosService;
@@ -132,6 +140,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.RenderingMethodChangedEvent += HandleRenderingMethodChangedEvent;
         _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
         _optionsService.ShowSortModeToggleButtonChangedEvent += HandleShowSortModeToggleButtonChangedEvent;
+        _optionsService.ShowMediaListMenuChangedEvent += HandleShowMediaListMenuChangedEvent;
         _optionsService.VolumeChangedEvent += HandleVolumeChangedEvent;
         _optionsService.ShowVolumeControlChangedEvent += HandleShowVolumeControlChangedEvent;
         _currentVolume = _optionsService.Volume;
@@ -208,6 +217,41 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     public RelayCommand<Guid?> EnterStartOffsetEditModeCommand { get; private set; } = null!;
 
     public RelayCommand ToggleMuteCommand { get; private set; } = null!;
+
+    public RelayCommand AddFilesCommand { get; private set; } = null!;
+
+    public RelayCommand RefreshCommand { get; private set; } = null!;
+
+    public RelayCommand<string?> SelectRecentFolderCommand { get; private set; } = null!;
+
+    public RelayCommand OpenMediaFolderCommand { get; private set; } = null!;
+
+    public RelayCommand HideAllCommand { get; private set; } = null!;
+
+    public RelayCommand UnhideAllCommand { get; private set; } = null!;
+
+    public AsyncRelayCommand DeleteHiddenCommand { get; private set; } = null!;
+
+    public AsyncRelayCommand DeleteAllCommand { get; private set; } = null!;
+
+    /// <summary>
+    /// Gets a value indicating whether the media list menu (top of the Operator page) is shown (option, default off).
+    /// </summary>
+    public bool ShowMediaListMenu => _optionsService.ShowMediaListMenu;
+
+    /// <summary>
+    /// Gets a value indicating whether the media list menu offers "Recent folders". Not when the media folder is
+    /// fixed on the command line, or when Settings are disabled (changing folder is a settings change).
+    /// </summary>
+    public bool ShowRecentFolders => !_optionsService.IsCommandLineMediaFolderSpecified() && !_commandLineService.NoSettings;
+
+    public IReadOnlyList<RecentFolderMenuItem> RecentMediaFolders =>
+        _optionsService.RecentlyUsedMediaFolders
+            .Select(x => new RecentFolderMenuItem(
+                x,
+                string.Equals(x, _optionsService.MediaFolder, StringComparison.OrdinalIgnoreCase),
+                SelectRecentFolderCommand))
+            .ToArray();
 
     public int Volume
     {
@@ -308,6 +352,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     {
         _optionsService.SortModeChangedEvent -= HandleSortModeChangedEvent;
         _optionsService.ShowSortModeToggleButtonChangedEvent -= HandleShowSortModeToggleButtonChangedEvent;
+        _optionsService.ShowMediaListMenuChangedEvent -= HandleShowMediaListMenuChangedEvent;
         _optionsService.VolumeChangedEvent -= HandleVolumeChangedEvent;
         _optionsService.ShowVolumeControlChangedEvent -= HandleShowVolumeControlChangedEvent;
         if (_sortModeTimer != null)
@@ -367,6 +412,43 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
         SortMediaItemsAuto();
     }
+
+    /// <summary>
+    /// Called when the media list menu is about to open, so that item enabled states and the
+    /// recent folders list reflect the current state of the media list.
+    /// </summary>
+    internal void RefreshMediaListMenu()
+    {
+        OnPropertyChanged(nameof(ShowRecentFolders));
+        OnPropertyChanged(nameof(RecentMediaFolders));
+
+        AddFilesCommand.NotifyCanExecuteChanged();
+        RefreshCommand.NotifyCanExecuteChanged();
+        SelectRecentFolderCommand.NotifyCanExecuteChanged();
+        OpenMediaFolderCommand.NotifyCanExecuteChanged();
+        HideAllCommand.NotifyCanExecuteChanged();
+        UnhideAllCommand.NotifyCanExecuteChanged();
+        DeleteHiddenCommand.NotifyCanExecuteChanged();
+        DeleteAllCommand.NotifyCanExecuteChanged();
+    }
+
+    /// <summary>
+    /// Gets the items that "Hide all" hides: visible file-based items that are not currently being shown.
+    /// </summary>
+    internal List<MediaItem> GetHideableItems() =>
+        MediaItems
+            .Where(x => x.FilePath != null && !x.IsBlankScreen && x.IsVisible && !x.IsMediaActive && !x.IsMediaChanging)
+            .ToList();
+
+    /// <summary>
+    /// Gets the items that "Delete all" (or "Delete hidden items") sends to the Recycle Bin. Items currently
+    /// being shown are never included.
+    /// </summary>
+    internal List<MediaItem> GetDeletableItems(bool hiddenOnly) =>
+        MediaItems
+            .Where(x => x.FilePath != null && !x.IsBlankScreen && !x.IsMediaActive && !x.IsMediaChanging &&
+                        (!hiddenOnly || !x.IsVisible))
+            .ToList();
 
     internal void QueueExternalDrop(ExternalDropCompletedMessage message) =>
         _pendingExternalDrops.Add(message);
@@ -464,6 +546,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private void HandleShowSortModeToggleButtonChangedEvent(object? sender, EventArgs e) =>
         OnPropertyChanged(nameof(ShowSortModeToggleButton));
+
+    private void HandleShowMediaListMenuChangedEvent(object? sender, EventArgs e) =>
+        OnPropertyChanged(nameof(ShowMediaListMenu));
 
     private void HandleSortModeChangedEvent(object? sender, EventArgs e)
     {
@@ -859,6 +944,15 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         EnterStartOffsetEditModeCommand = new RelayCommand<Guid?>(EnterStartOffsetEditMode);
 
         ToggleMuteCommand = new RelayCommand(ToggleMute);
+
+        AddFilesCommand = new RelayCommand(AddFiles, IsMediaFolderAvailable);
+        RefreshCommand = new RelayCommand(LoadMediaItems, IsMediaFolderAvailable);
+        SelectRecentFolderCommand = new RelayCommand<string?>(SelectRecentFolder, CanSelectRecentFolder);
+        OpenMediaFolderCommand = new RelayCommand(OpenMediaFolder, CanOpenMediaFolder);
+        HideAllCommand = new RelayCommand(HideAll, () => GetHideableItems().Count > 0);
+        UnhideAllCommand = new RelayCommand(_hiddenMediaItemsService.UnhideAllMediaItems, _hiddenMediaItemsService.SomeHiddenMediaItems);
+        DeleteHiddenCommand = new AsyncRelayCommand(DeleteHiddenAsync, () => GetDeletableItems(hiddenOnly: true).Count > 0);
+        DeleteAllCommand = new AsyncRelayCommand(DeleteAllAsync, () => GetDeletableItems(hiddenOnly: false).Count > 0);
     }
 
     private async Task ResetManualOrderAsync()
@@ -1092,6 +1186,167 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             _snackbarService.EnqueueWithOk(Properties.Resources.CANNOT_DELETE_FILE, Properties.Resources.OK);
         }
     }
+
+    private bool IsMediaFolderAvailable() => Directory.Exists(_optionsService.MediaFolder);
+
+    private bool CanOpenMediaFolder() => !_commandLineService.NoFolder && IsMediaFolderAvailable();
+
+    private void OpenMediaFolder()
+    {
+        if (!CanOpenMediaFolder())
+        {
+            return;
+        }
+
+        var psi = new ProcessStartInfo
+        {
+            FileName = _optionsService.MediaFolder,
+            UseShellExecute = true,
+        };
+
+        Process.Start(psi);
+    }
+
+    private void AddFiles()
+    {
+        if (!IsMediaFolderAvailable())
+        {
+            return;
+        }
+
+        var extensions = _mediaProviderService.GetSupportedMediaTypes()
+            .Select(x => x.FileExtension)
+            .Where(x => !string.IsNullOrEmpty(x))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Select(x => $"*{x}");
+
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Title = Properties.Resources.ADD_FILES_TITLE,
+            Multiselect = true,
+            CheckFileExists = true,
+            Filter = $"{Properties.Resources.MEDIA_FILES_FILTER}|{string.Join(';', extensions)}|{Properties.Resources.ALL_FILES_FILTER}|*.*",
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            // unsupported files are ignored (and reported) by the copy, as with drag-and-drop.
+            _dragAndDropService.AddFiles(dialog.FileNames);
+        }
+    }
+
+    // the current folder stays enabled (it is shown ticked) - selecting it does nothing.
+    private bool CanSelectRecentFolder(string? folder) =>
+        ShowRecentFolders &&
+        !string.IsNullOrEmpty(folder) &&
+        !_activeMediaItemsService.Any() &&
+        !_mediaStatusChangingService.IsMediaStatusChanging();
+
+    private void SelectRecentFolder(string? folder)
+    {
+        if (folder == null ||
+            !CanSelectRecentFolder(folder) ||
+            string.Equals(folder, _optionsService.MediaFolder, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        if (!Directory.Exists(folder))
+        {
+            _snackbarService.EnqueueWithOk(Properties.Resources.FOLDER_NOT_FOUND, Properties.Resources.OK);
+            return;
+        }
+
+        _optionsService.MediaFolder = folder;
+
+        // the folder changed event only flags a pending reload (applied when returning from
+        // the Settings page). We are already on the Operator page, so load now.
+        _pendingLoadMediaItems = false;
+        LoadMediaItems();
+    }
+
+    private void HideAll()
+    {
+        var items = GetHideableItems();
+
+        using (new ObservableCollectionSuppression<MediaItem>(MediaItems))
+        {
+            foreach (var item in items)
+            {
+                item.IsCommandPanelOpen = false;
+                item.IsVisible = false;
+                _hiddenMediaItemsService.Add(item.FilePath!);
+            }
+        }
+    }
+
+    private Task DeleteHiddenAsync() =>
+        DeleteItemsAsync(hiddenOnly: true, Properties.Resources.CONFIRM_DELETE_HIDDEN);
+
+    private Task DeleteAllAsync() =>
+        DeleteItemsAsync(hiddenOnly: false, Properties.Resources.CONFIRM_DELETE_ALL);
+
+    private async Task DeleteItemsAsync(bool hiddenOnly, string confirmMessageFormat)
+    {
+        try
+        {
+            var items = GetDeletableItems(hiddenOnly);
+            if (items.Count == 0 || _dialogService.IsDialogVisible())
+            {
+                return;
+            }
+
+            var someActiveSkipped = MediaItems.Any(x =>
+                x.FilePath != null && !x.IsBlankScreen && (x.IsMediaActive || x.IsMediaChanging) && (!hiddenOnly || !x.IsVisible));
+
+            var confirmed = await _dialogService.ConfirmAsync(
+                FormatCount(confirmMessageFormat, items.Count),
+                someActiveSkipped ? Properties.Resources.CONFIRM_DELETE_ACTIVE_SKIPPED : null,
+                Properties.Resources.DELETE);
+
+            if (!confirmed)
+            {
+                return;
+            }
+
+            // media may have started while the dialog was open - re-check.
+            var paths = items
+                .Where(x => !x.IsMediaActive && !x.IsMediaChanging)
+                .Select(x => x.FilePath!)
+                .ToArray();
+
+            var deleted = await Task.Run(() => paths.Where(FileUtils.SafeRecycleFile).ToArray());
+
+            foreach (var path in deleted)
+            {
+                _hiddenMediaItemsService.Remove(path);
+            }
+
+            var failedCount = paths.Length - deleted.Length;
+            if (failedCount > 0)
+            {
+                _snackbarService.EnqueueWithOk(
+                    FormatCount(Properties.Resources.SOME_FILES_NOT_DELETED, failedCount), Properties.Resources.OK);
+            }
+            else
+            {
+                _snackbarService.EnqueueReplacingCurrent(FormatCount(Properties.Resources.FILES_DELETED, deleted.Length));
+            }
+
+            // the folder watcher will also notice, but don't rely on it (e.g. network folders).
+            LoadMediaItems();
+        }
+        catch (Exception ex)
+        {
+            EventTracker.Error(ex, "Deleting media items");
+            Log.Logger.Error(ex, "Error deleting media items");
+        }
+    }
+
+#pragma warning disable CA1863
+    private static string FormatCount(string format, int count) =>
+        string.Format(CultureInfo.CurrentCulture, format, count);
+#pragma warning restore CA1863
 
     private bool IsVideoOrAudio(MediaItem mediaItem) =>
         mediaItem.MediaType?.Classification == MediaClassification.Audio ||
