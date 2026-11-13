@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -163,6 +164,50 @@ public static class FileUtils
         {
             Log.Logger.Error(ex, "Could not send file to Recycle Bin: {Path}", path);
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Gets the subtitle (.srt) file that sits alongside a video (OnlyM generates these on first play), provided
+    /// no other video in the same folder shares its base name (e.g. "talk.mp4" and "talk.mov" both use "talk.srt").
+    /// Call this after the video itself has been deleted so the leftover subtitle file can be removed too.
+    /// </summary>
+    /// <param name="videoFilePath">Full path of the (deleted) video file.</param>
+    /// <param name="videoFileExtensions">Extensions of all supported video types, e.g. ".mp4".</param>
+    /// <returns>The subtitle file path, or null if there is none or it is still needed by another video.</returns>
+    public static string? GetOrphanedSubtitleFilePath(string videoFilePath, IEnumerable<string> videoFileExtensions)
+    {
+        try
+        {
+            var folder = Path.GetDirectoryName(videoFilePath);
+            if (string.IsNullOrEmpty(folder))
+            {
+                return null;
+            }
+
+            var baseName = Path.GetFileNameWithoutExtension(videoFilePath);
+            var srtFile = Path.Combine(folder, baseName + ".srt");
+            if (!File.Exists(srtFile))
+            {
+                return null;
+            }
+
+            foreach (var extension in videoFileExtensions)
+            {
+                var siblingVideo = Path.Combine(folder, baseName + extension);
+                if (File.Exists(siblingVideo) &&
+                    !string.Equals(siblingVideo, videoFilePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    return null;
+                }
+            }
+
+            return srtFile;
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Error(ex, "Could not check for subtitle file: {Path}", videoFilePath);
+            return null;
         }
     }
 

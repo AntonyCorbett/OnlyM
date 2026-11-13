@@ -1177,7 +1177,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             return;
         }
 
-        if (FileUtils.SafeRecycleFile(mediaItem.FilePath))
+        if (RecycleMediaFile(mediaItem.FilePath, mediaItem.IsVideo, GetVideoFileExtensions()))
         {
             mediaItem.IsCommandPanelOpen = false;
         }
@@ -1186,6 +1186,36 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             _snackbarService.EnqueueWithOk(Properties.Resources.CANNOT_DELETE_FILE, Properties.Resources.OK);
         }
     }
+
+    /// <summary>
+    /// Sends a media file to the Recycle Bin. For a video, its generated subtitle (.srt) file goes too, unless
+    /// another video in the folder still uses it. A failure to remove the subtitle file is only logged.
+    /// </summary>
+    private static bool RecycleMediaFile(string path, bool isVideo, IReadOnlyCollection<string> videoExtensions)
+    {
+        if (!FileUtils.SafeRecycleFile(path))
+        {
+            return false;
+        }
+
+        if (isVideo)
+        {
+            var srtFile = FileUtils.GetOrphanedSubtitleFilePath(path, videoExtensions);
+            if (srtFile != null)
+            {
+                FileUtils.SafeRecycleFile(srtFile);
+            }
+        }
+
+        return true;
+    }
+
+    private string[] GetVideoFileExtensions() =>
+        _mediaProviderService.GetSupportedMediaTypes()
+            .Where(x => x.Classification == MediaClassification.Video && !string.IsNullOrEmpty(x.FileExtension))
+            .Select(x => x.FileExtension!)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
 
     private bool IsMediaFolderAvailable() => Directory.Exists(_optionsService.MediaFolder);
 
@@ -1310,19 +1340,24 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             }
 
             // media may have started while the dialog was open - re-check.
-            var paths = items
+            var files = items
                 .Where(x => !x.IsMediaActive && !x.IsMediaChanging)
-                .Select(x => x.FilePath!)
+                .Select(x => (Path: x.FilePath!, x.IsVideo))
                 .ToArray();
 
-            var deleted = await Task.Run(() => paths.Where(FileUtils.SafeRecycleFile).ToArray());
+            var videoExtensions = GetVideoFileExtensions();
+
+            var deleted = await Task.Run(() => files
+                .Where(x => RecycleMediaFile(x.Path, x.IsVideo, videoExtensions))
+                .Select(x => x.Path)
+                .ToArray());
 
             foreach (var path in deleted)
             {
                 _hiddenMediaItemsService.Remove(path);
             }
 
-            var failedCount = paths.Length - deleted.Length;
+            var failedCount = files.Length - deleted.Length;
             if (failedCount > 0)
             {
                 _snackbarService.EnqueueWithOk(
