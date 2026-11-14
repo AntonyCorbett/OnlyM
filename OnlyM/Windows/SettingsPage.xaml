@@ -11,7 +11,7 @@
     Background="{DynamicResource MaterialDesignPaper}"
     DataContext="{Binding Settings, Mode=OneWay, Source={StaticResource Locator}}"
     FontFamily="{DynamicResource MaterialDesignFont}"
-    TextElement.FontSize="15"
+    TextElement.FontSize="14"
     TextElement.FontWeight="Regular"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     TextOptions.TextFormattingMode="Ideal"
@@ -28,8 +28,10 @@
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="MiscNotesStyle" TargetType="{x:Type TextBlock}">
-                <Setter Property="Foreground" Value="{DynamicResource PrimaryHueDarkBrush}" />
-                <Setter Property="FontSize" Value="11" />
+                <!--  Secondary but still readable: these notes carry warnings (firewall, restart required)  -->
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="Opacity" Value="0.72" />
+                <Setter Property="FontSize" Value="12" />
                 <Setter Property="Margin" Value="0,10,0,10" />
             </Style>
 
@@ -42,26 +44,88 @@
             </Style>
 
             <Style x:Key="SettingsMarginStackPanelStyle" TargetType="{x:Type StackPanel}">
-                <Setter Property="Margin" Value="10,0,0,0" />
-                <Setter Property="Height" Value="45" />
+                <Setter Property="Margin" Value="4,0,0,0" />
+                <Setter Property="Height" Value="40" />
                 <Setter Property="Orientation" Value="Horizontal" />
             </Style>
 
+            <!--  Action buttons: quiet outlined buttons, sized to their text  -->
             <Style
                 x:Key="SettingsButtonStyle"
-                BasedOn="{StaticResource MaterialDesignRaisedLightButton}"
+                BasedOn="{StaticResource MaterialDesignOutlinedButton}"
                 TargetType="{x:Type Button}">
                 <Setter Property="Margin" Value="0,5,0,5" />
-                <Setter Property="Width" Value="250" />
+                <Setter Property="MinWidth" Value="120" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="Padding" Value="14,0" />
+                <Setter Property="FontSize" Value="13" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}" />
+                <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="4" />
+            </Style>
+
+            <Style
+                x:Key="SettingsIconButtonStyle"
+                BasedOn="{StaticResource SettingsButtonStyle}"
+                TargetType="{x:Type Button}">
+                <Setter Property="MinWidth" Value="0" />
+                <Setter Property="Width" Value="40" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <!--  Fixed-size presets (360p...1080p): outlined chips; the current size (Tag=True) is shown selected  -->
+            <Style x:Key="SettingsSizePresetButtonStyle" TargetType="{x:Type Button}">
+                <Setter Property="MinWidth" Value="64" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="Padding" Value="12,0" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border
+                                x:Name="Bg"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bg" Property="Background" Value="{DynamicResource MaterialDesignDivider}" />
+                                </Trigger>
+                                <!--  Whole row is disabled unless 'Fixed size' is chosen  -->
+                                <DataTrigger Binding="{Binding MediaWindowFixed}" Value="False">
+                                    <Setter Property="Opacity" Value="0.4" />
+                                </DataTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="True">
+                        <Setter Property="Cursor" Value="Arrow" />
+                        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidBrush}" />
+                        <Setter Property="BorderThickness" Value="2" />
+                    </DataTrigger>
+                </Style.Triggers>
             </Style>
 
             <Style
                 x:Key="SettingsComboBoxStyle"
                 BasedOn="{StaticResource MaterialDesignComboBox}"
                 TargetType="{x:Type ComboBox}">
-                <Setter Property="Margin" Value="0,5,0,7" />
-                <Setter Property="Width" Value="420" />
+                <Setter Property="Margin" Value="0,4,0,8" />
+                <Setter Property="Width" Value="416" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="materialDesign:ComboBoxAssist.ClassicMode" Value="true" />
             </Style>
@@ -70,30 +134,66 @@
                 x:Key="SettingsCheckBoxStyle"
                 BasedOn="{StaticResource MaterialDesignCheckBox}"
                 TargetType="{x:Type CheckBox}">
-                <Setter Property="Margin" Value="0,5,0,5" />
+                <Setter Property="Margin" Value="0,4,0,4" />
             </Style>
             <Style
                 x:Key="SettingsRadioButtonStyle"
                 BasedOn="{StaticResource MaterialDesignRadioButton}"
                 TargetType="{x:Type RadioButton}">
-                <Setter Property="Margin" Value="0,5,0,5" />
+                <Setter Property="Margin" Value="0,4,0,4" />
             </Style>
 
-            <Style
-                x:Key="SettingsGroupBoxStyle"
-                BasedOn="{StaticResource MaterialDesignGroupBox}"
-                TargetType="{x:Type GroupBox}">
+            <!--  Settings section: flat card with hairline border and a small caption (purple accent mark)  -->
+            <Style x:Key="SettingsGroupBoxStyle" TargetType="{x:Type GroupBox}">
                 <Setter Property="Width" Value="450" />
-                <Setter Property="Margin" Value="10,6" />
-                <Setter Property="Padding" Value="10" />
+                <Setter Property="Margin" Value="6" />
+                <Setter Property="Padding" Value="16,2,16,14" />
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignCardBackground}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type GroupBox}">
+                            <Border
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                                <DockPanel>
+                                    <StackPanel
+                                        Margin="16,14,16,6"
+                                        DockPanel.Dock="Top"
+                                        Orientation="Horizontal">
+                                        <Border
+                                            Width="3"
+                                            Height="14"
+                                            Margin="0,0,8,0"
+                                            VerticalAlignment="Center"
+                                            Background="{DynamicResource PrimaryHueMidBrush}"
+                                            CornerRadius="1.5" />
+                                        <ContentPresenter
+                                            VerticalAlignment="Center"
+                                            ContentSource="Header"
+                                            RecognizesAccessKey="True"
+                                            TextElement.FontSize="12"
+                                            TextElement.FontWeight="SemiBold"
+                                            TextElement.Foreground="{DynamicResource MaterialDesignBody}" />
+                                    </StackPanel>
+                                    <ContentPresenter Margin="{TemplateBinding Padding}" />
+                                </DockPanel>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <Style
                 x:Key="SettingsTextBoxStyle"
                 BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}"
                 TargetType="{x:Type TextBox}">
-                <Setter Property="Margin" Value="0,5,0,5" />
-                <Setter Property="Width" Value="420" />
+                <Setter Property="Margin" Value="0,4,0,6" />
+                <Setter Property="Width" Value="416" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
             </Style>
 
@@ -115,7 +215,7 @@
                 BasedOn="{StaticResource MaterialDesignSlider}"
                 TargetType="{x:Type Slider}">
                 <Setter Property="Margin" Value="0,3,0,3" />
-                <Setter Property="Width" Value="420" />
+                <Setter Property="Width" Value="416" />
                 <Setter Property="Minimum" Value="0.3" />
                 <Setter Property="Maximum" Value="1.0" />
                 <Setter Property="SmallChange" Value="0.1" />
@@ -130,7 +230,7 @@
                 BasedOn="{StaticResource MaterialDesignSlider}"
                 TargetType="{x:Type Slider}">
                 <Setter Property="Margin" Value="0,0,0,3" />
-                <Setter Property="Width" Value="420" />
+                <Setter Property="Width" Value="416" />
                 <Setter Property="Minimum" Value="0.1" />
                 <Setter Property="Maximum" Value="1.0" />
                 <Setter Property="SmallChange" Value="0.1" />
@@ -144,7 +244,7 @@
                 BasedOn="{StaticResource MaterialDesignSlider}"
                 TargetType="{x:Type Slider}">
                 <Setter Property="Margin" Value="0,0,0,3" />
-                <Setter Property="Width" Value="420" />
+                <Setter Property="Width" Value="416" />
                 <Setter Property="Minimum" Value="0" />
                 <Setter Property="Maximum" Value="5" />
                 <Setter Property="SmallChange" Value="0.5" />
@@ -158,7 +258,7 @@
                 BasedOn="{StaticResource MaterialDesignDiscreteSlider}"
                 TargetType="{x:Type Slider}">
                 <Setter Property="Margin" Value="0,0,0,3" />
-                <Setter Property="Width" Value="420" />
+                <Setter Property="Width" Value="416" />
                 <Setter Property="Minimum" Value="{Binding MinMirrorZoom}" />
                 <Setter Property="Maximum" Value="{Binding MaxMirrorZoom}" />
                 <Setter Property="SmallChange" Value="0.1" />
@@ -184,7 +284,7 @@
     </UserControl.Triggers>
 
     <ScrollViewer PanningMode="VerticalOnly" VerticalScrollBarVisibility="Auto">
-        <WrapPanel Orientation="Horizontal">
+        <WrapPanel Margin="6" Orientation="Horizontal">
             <GroupBox Header="{x:Static resx:Resources.SECTION_DISPLAY}" Style="{StaticResource SettingsGroupBoxStyle}">
                 <StackPanel Orientation="Vertical">
 
@@ -237,33 +337,37 @@
                             </StackPanel>
                         </RadioButton>
                         <StackPanel
-                            Margin="20,0,0,0"
+                            Margin="30,2,0,6"
                             IsEnabled="{Binding MediaWindowFixed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                             Orientation="Horizontal">
                             <Button
                                 Command="{Binding Set360PSizeCommand}"
                                 Content="360p"
                                 IsEnabled="{Binding Is360PSize, Converter={StaticResource InvertBooleanConverter}}"
-                                Style="{StaticResource MaterialDesignRaisedLightButton}" />
+                                Style="{StaticResource SettingsSizePresetButtonStyle}"
+                                Tag="{Binding Is360PSize}" />
                             <Button
-                                Margin="10,0,0,0"
+                                Margin="6,0,0,0"
                                 Command="{Binding Set480PSizeCommand}"
                                 Content="480p"
                                 IsEnabled="{Binding Is480PSize, Converter={StaticResource InvertBooleanConverter}}"
-                                Style="{StaticResource MaterialDesignRaisedLightButton}" />
+                                Style="{StaticResource SettingsSizePresetButtonStyle}"
+                                Tag="{Binding Is480PSize}" />
                             <Button
-                                Margin="10,0,0,0"
+                                Margin="6,0,0,0"
                                 Command="{Binding Set720PSizeCommand}"
                                 Content="720p"
-                                FontWeight="Bold"
+                                FontWeight="SemiBold"
                                 IsEnabled="{Binding Is720PSize, Converter={StaticResource InvertBooleanConverter}}"
-                                Style="{StaticResource MaterialDesignRaisedLightButton}" />
+                                Style="{StaticResource SettingsSizePresetButtonStyle}"
+                                Tag="{Binding Is720PSize}" />
                             <Button
-                                Margin="10,0,0,0"
+                                Margin="6,0,0,0"
                                 Command="{Binding Set1080PSizeCommand}"
                                 Content="1080p"
                                 IsEnabled="{Binding Is1080PSize, Converter={StaticResource InvertBooleanConverter}}"
-                                Style="{StaticResource MaterialDesignRaisedLightButton}" />
+                                Style="{StaticResource SettingsSizePresetButtonStyle}"
+                                Tag="{Binding Is1080PSize}" />
                         </StackPanel>
                     </StackPanel>
 
@@ -291,7 +395,7 @@
 
                     <StackPanel Orientation="Horizontal">
                         <ComboBox
-                            Width="376"
+                            Width="368"
                             materialDesign:HintAssist.Hint="{x:Static resx:Resources.MEDIA_FOLDER}"
                             materialDesign:HintAssist.IsFloating="True"
                             IsEnabled="{Binding IsMediaInactive}"
@@ -301,11 +405,11 @@
                             Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource InverseBoolToVisConverter}}" />
 
                         <Button
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Command="{Binding OpenMediaFolderCommand}"
-                            Content="{materialDesign:PackIcon FolderOpen}"
+                            Content="{materialDesign:PackIcon FolderOpenOutline}"
                             IsEnabled="{Binding IsMediaInactive}"
-                            Style="{StaticResource MaterialDesignRaisedLightButton}"
+                            Style="{StaticResource SettingsIconButtonStyle}"
                             Visibility="{Binding Path=IsMediaFolderOverriden, Converter={StaticResource InverseBoolToVisConverter}}" />
 
                     </StackPanel>
@@ -337,11 +441,11 @@
 
 
                     <Border
-                        Margin="0,10,0,0"
-                        Padding="10,10"
-                        BorderBrush="LightGray"
+                        Margin="0,10,0,6"
+                        Padding="12,10"
+                        BorderBrush="{DynamicResource MaterialDesignDivider}"
                         BorderThickness="1"
-                        CornerRadius="4">
+                        CornerRadius="6">
                         <StackPanel Orientation="Vertical">
                             <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Text="{x:Static resx:Resources.SORT_MODE}" />
                             <StackPanel Margin="0,4,0,2" Orientation="Horizontal">
@@ -575,9 +679,10 @@
 
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderLeft" />
 
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding VideoScreenLeftMargin, Mode=TwoWay}" />
@@ -585,9 +690,10 @@
 
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderTop" />
 
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding VideoScreenTopMargin, Mode=TwoWay}" />
@@ -595,18 +701,20 @@
 
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderRight" />
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding VideoScreenRightMargin, Mode=TwoWay}" />
                     </StackPanel>
 
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderBottom" />
 
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding VideoScreenBottomMargin, Mode=TwoWay}" />
@@ -619,9 +727,10 @@
 
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderLeft" />
 
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding ImageScreenLeftMargin, Mode=TwoWay}" />
@@ -630,9 +739,10 @@
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
 
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderTop" />
 
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding ImageScreenTopMargin, Mode=TwoWay}" />
@@ -641,9 +751,10 @@
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
 
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderRight" />
 
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding ImageScreenRightMargin, Mode=TwoWay}" />
@@ -651,9 +762,10 @@
 
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderBottom" />
 
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding ImageScreenBottomMargin, Mode=TwoWay}" />
@@ -666,9 +778,10 @@
 
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderLeft" />
 
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding WebScreenLeftMargin, Mode=TwoWay}" />
@@ -677,9 +790,10 @@
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
 
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderTop" />
 
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding WebScreenTopMargin, Mode=TwoWay}" />
@@ -688,9 +802,10 @@
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
 
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderRight" />
 
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding WebScreenRightMargin, Mode=TwoWay}" />
@@ -698,9 +813,10 @@
 
                     <StackPanel Style="{StaticResource SettingsMarginStackPanelStyle}">
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
+                            Width="20"
+                            Height="20"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="BorderBottom" />
 
                         <Slider Style="{StaticResource MarginsSliderStyle}" Value="{Binding WebScreenBottomMargin, Mode=TwoWay}" />
@@ -768,12 +884,31 @@
                     <StackPanel
                         Orientation="Horizontal"
                         Visibility="{Binding RemoteControlUrlVisibility, Mode=OneWay}">
+                        <materialDesign:PackIcon
+                            Width="18"
+                            Height="18"
+                            Margin="0,0,6,0"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource PrimaryHueMidBrush}"
+                            Kind="Web" />
                         <TextBlock
                             MaxWidth="390"
                             VerticalAlignment="Center"
-                            FontWeight="Bold"
+                            FontWeight="SemiBold"
                             TextWrapping="Wrap">
+                            <!--  Body-coloured link (readable in both themes), underlined only on hover  -->
                             <Hyperlink Command="{Binding OpenRemoteControlUrlCommand}">
+                                <Hyperlink.Style>
+                                    <Style TargetType="{x:Type Hyperlink}">
+                                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                                        <Setter Property="TextDecorations" Value="{x:Null}" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="TextDecorations" Value="Underline" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Hyperlink.Style>
                                 <Run Text="{Binding RemoteControlActiveUrl, Mode=OneWay}" />
                             </Hyperlink>
                         </TextBlock>
@@ -803,16 +938,16 @@
                         HorizontalAlignment="Left"
                         Command="{Binding RetryTunnelCommand}"
                         Content="{x:Static resx:Resources.REMOTE_CONTROL_RETRY}"
-                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Style="{StaticResource SettingsButtonStyle}"
                         Visibility="{Binding RetryTunnelVisibility, Mode=OneWay}" />
 
                     <!--  Firewall exception (Local mode): explanation, optional public-network option, then the button  -->
                     <Border
                         Margin="0,12,0,0"
-                        Padding="10"
+                        Padding="12,10"
                         BorderBrush="{DynamicResource MaterialDesignDivider}"
                         BorderThickness="1"
-                        CornerRadius="4"
+                        CornerRadius="6"
                         Visibility="{Binding CreateFirewallExceptionVisibility, Mode=OneWay}">
                         <StackPanel Orientation="Vertical">
 
@@ -849,7 +984,7 @@
                                 HorizontalAlignment="Left"
                                 Command="{Binding CreateFirewallExceptionCommand}"
                                 Content="{x:Static resx:Resources.REMOTE_CONTROL_CREATE_FIREWALL}"
-                                Style="{StaticResource MaterialDesignRaisedLightButton}" />
+                                Style="{StaticResource SettingsButtonStyle}" />
                         </StackPanel>
                     </Border>
 
@@ -858,7 +993,7 @@
                         HorizontalAlignment="Left"
                         Command="{Binding InstallCloudflaredCommand}"
                         Content="{Binding InstallCloudflaredButtonText, Mode=OneWay}"
-                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Style="{StaticResource SettingsButtonStyle}"
                         Visibility="{Binding InstallCloudflaredVisibility, Mode=OneWay}" />
 
                 </StackPanel>
@@ -875,7 +1010,7 @@
 
                     <DatePicker
                         Name="LocaleDatePicker"
-                        Width="420"
+                        Width="416"
                         Margin="0,0,0,10"
                         HorizontalAlignment="Left"
                         materialDesign:HintAssist.Hint="{x:Static resx:Resources.CURRENT_DATE}"
@@ -909,13 +1044,14 @@
 
                     <DockPanel>
                         <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
-                            Margin="0,0,6,0"
+                            Width="20"
+                            Height="20"
+                            Margin="0,0,8,0"
                             VerticalAlignment="Center"
+                            Foreground="{DynamicResource MaterialDesignBodyLight}"
                             Kind="Translate" />
                         <ComboBox
-                            Width="390"
+                            Width="388"
                             materialDesign:HintAssist.Hint="{x:Static resx:Resources.LANGUAGE}"
                             materialDesign:HintAssist.IsFloating="True"
                             DisplayMemberPath="LanguageName"
