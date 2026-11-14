@@ -53,7 +53,7 @@ internal sealed class DarkModeService : IDarkModeService
         if (handle != IntPtr.Zero)
         {
             SetTitleBarDarkMode(handle, ThemeState.IsDark);
-            var captionColor = ThemeState.IsDark ? (Color?)Color.FromRgb(0x37, 0x30, 0x4A) : null;
+            var captionColor = ThemeState.IsDark ? (Color?)Color.FromRgb(0x26, 0x26, 0x26) : null;
             SetCaptionBarColor(handle, captionColor);
         }
     }
@@ -104,21 +104,26 @@ internal sealed class DarkModeService : IDarkModeService
                 Application.Current.Resources["PrimaryHueDarkBrush"] = _originalDarkBrush;
             }
 
-            // Override the nav-bar background, which is hardcoded in MainWindow.xaml.
+            // Neutral command-bar colours (light defaults in App.xaml): a layer just off the page background.
             Application.Current.Resources["OnlyMNavBarBackground"] = new SolidColorBrush(
                 isDark
-                    ? Color.FromRgb(0x37, 0x30, 0x4A) // dark desaturated purple
-                    : Color.FromRgb(0xB3, 0x9D, 0xDB)); // DeepPurple 200
+                    ? Color.FromRgb(0x26, 0x26, 0x26)
+                    : Color.FromRgb(0xF3, 0xF3, 0xF3));
 
-            // Glyphs drawn directly on the nav bar (the volume control): near-white on the dark bar,
-            // DeepPurple 700 on the light bar (white on DeepPurple 200 is too low-contrast).
+            // Glyphs drawn directly on the command bar (icon buttons, volume control).
             Application.Current.Resources["OnlyMNavBarForeground"] = new SolidColorBrush(
                 isDark
-                    ? Color.FromRgb(0xF5, 0xF3, 0xFA) // near-white
-                    : Color.FromRgb(0x51, 0x2D, 0xA8)); // DeepPurple 700
+                    ? Color.FromRgb(0xF5, 0xF5, 0xF5) // near-white
+                    : Color.FromRgb(0x42, 0x42, 0x42)); // Grey 800
+
+            // Hairline between the media list and the command bar.
+            Application.Current.Resources["OnlyMNavBarBorder"] = new SolidColorBrush(
+                isDark
+                    ? Color.FromArgb(0x1F, 0xFF, 0xFF, 0xFF)
+                    : Color.FromArgb(0x1F, 0x00, 0x00, 0x00));
 
             // Apply dark/light title bar to every open window via the DWM API.
-            var captionColor = isDark ? (Color?)Color.FromRgb(0x37, 0x30, 0x4A) : null;
+            var captionColor = isDark ? (Color?)Color.FromRgb(0x26, 0x26, 0x26) : null;
             foreach (Window window in Application.Current.Windows)
             {
                 var handle = new WindowInteropHelper(window).Handle;

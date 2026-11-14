@@ -33,445 +33,582 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <!--  Secondary card actions (pause, slide navigation, command panel): quiet outlined buttons so Play/Stop stay the focal point  -->
+            <Style
+                x:Key="OnlyMSubtleButton"
+                BasedOn="{StaticResource MaterialDesignOutlinedButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="Height" Value="32" />
+                <Setter Property="Padding" Value="8,0" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}" />
+                <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="4" />
+            </Style>
+
+            <!--  Command panel (Delete / Hide): compact buttons that fit two rows inside the card  -->
+            <Style
+                x:Key="OnlyMPanelAccentButton"
+                BasedOn="{StaticResource MaterialDesignRaisedAccentButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="Height" Value="28" />
+                <Setter Property="Padding" Value="10,0" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="4" />
+                <Setter Property="materialDesign:ElevationAssist.Elevation" Value="Dp0" />
+            </Style>
+
+            <Style
+                x:Key="OnlyMPanelSubtleButton"
+                BasedOn="{StaticResource OnlyMSubtleButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="Height" Value="28" />
+                <Setter Property="Padding" Value="10,0" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
             <Style
                 x:Key="SlideshowButtonStyle"
-                BasedOn="{StaticResource MaterialDesignRaisedLightButton}"
+                BasedOn="{StaticResource OnlyMSubtleButton}"
                 TargetType="{x:Type Button}">
-                <Setter Property="Width" Value="70" />
+                <Setter Property="Width" Value="56" />
+                <Setter Property="Height" Value="Auto" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
+
+            <!--  Play / Stop: compact, flat round buttons (purple = ready to play, accent = playing)  -->
+            <Style
+                x:Key="OnlyMPlayButton"
+                BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="Width" Value="38" />
+                <Setter Property="Height" Value="38" />
+                <Setter Property="materialDesign:ElevationAssist.Elevation" Value="Dp0" />
+            </Style>
+
+            <Style
+                x:Key="OnlyMStopButton"
+                BasedOn="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="Width" Value="38" />
+                <Setter Property="Height" Value="38" />
+                <Setter Property="materialDesign:ElevationAssist.Elevation" Value="Dp0" />
+            </Style>
+
+            <!--  Thin rounded strip that opens / closes a card's command panel  -->
+            <Style x:Key="OnlyMDrawerTabButton" TargetType="{x:Type Button}">
+                <Setter Property="Width" Value="10" />
+                <Setter Property="Margin" Value="0,0,2,0" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignDivider}" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border
+                                x:Name="Bg"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="3">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bg" Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Bg" Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.35" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="OnlyMDrawerTabIcon" TargetType="{x:Type materialDesign:PackIcon}">
+                <Setter Property="Width" Value="12" />
+                <Setter Property="Height" Value="12" />
+            </Style>
+
+            <!--  Duration / playback time: colour comes from the item (active vs idle)  -->
+            <Style x:Key="OnlyMTimeText" TargetType="{x:Type TextBlock}">
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="FontWeight" Value="Medium" />
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
 
             <DataTemplate DataType="{x:Type models:MediaItem}">
-                <!--  Media Item Card  -->
+                <!--  Media Item Card: flat, hairline border; the border turns purple while the item is playing  -->
                 <materialDesign:Card
                     x:Name="TheCard"
-                    Height="124"
-                    Margin="4"
-                    Padding="4"
-                    materialDesign:ElevationAssist.Elevation="Dp1"
-                    materialDesign:ShadowAssist.ShadowEdges="All"
+                    Height="108"
+                    Margin="4,3"
+                    Padding="0"
+                    materialDesign:ElevationAssist.Elevation="Dp0"
+                    Background="{DynamicResource MaterialDesignCardBackground}"
+                    UniformCornerRadius="6"
                     Visibility="{Binding Path=IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                     <materialDesign:Card.Style>
                         <Style TargetType="materialDesign:Card">
                             <Setter Property="Opacity" Value="1" />
-                            <Setter Property="BorderBrush" Value="Transparent" />
-                            <Setter Property="BorderThickness" Value="0" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsBeingDragged}" Value="True">
                                     <Setter Property="Opacity" Value="0.45" />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource ValidationErrorBrush}" />
-                                    <Setter Property="BorderThickness" Value="4" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </materialDesign:Card.Style>
 
-                    <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding IsCommandPanelOpen, Mode=TwoWay}">
+                    <Border CornerRadius="6">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}" />
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="Padding" Value="5" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMediaActive}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidBrush}" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                        <Setter Property="Padding" Value="4" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsBeingDragged}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ValidationErrorBrush}" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                        <Setter Property="Padding" Value="4" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
 
-                        <!--  Command Panel  -->
-                        <materialDesign:DrawerHost.LeftDrawerContent>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="12" />
-                                </Grid.ColumnDefinitions>
+                        <!--  Flat panel in the card colour (the default drawer shadow spilled into the card padding as a dark line);  -->
+                        <!--  the overlay also uses the card colour so the card fades back instead of going near-black  -->
+                        <materialDesign:DrawerHost
+                            materialDesign:ElevationAssist.Elevation="Dp0"
+                            IsLeftDrawerOpen="{Binding IsCommandPanelOpen, Mode=TwoWay}"
+                            LeftDrawerBackground="{DynamicResource MaterialDesignCardBackground}"
+                            OverlayBackground="{DynamicResource MaterialDesignCardBackground}"
+                            UseLayoutRounding="True">
 
-                                <!--  Command Panel controls  -->
-                                <Grid Grid.Column="0" Margin="10,10,30,10">
+                            <!--  Command Panel  -->
+                            <materialDesign:DrawerHost.LeftDrawerContent>
+                                <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="1*" />
-                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="12" />
                                     </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="1*" />
-                                        <RowDefinition Height="1*" />
-                                    </Grid.RowDefinitions>
 
-                                    <Button
-                                        Grid.Row="0"
+                                    <!--  Command Panel controls  -->
+                                    <Grid
                                         Grid.Column="0"
-                                        Command="{Binding Path=DataContext.DeleteMediaItemCommand, ElementName=OnlyMOperatorPage}"
-                                        CommandParameter="{Binding Id}"
-                                        Content="{x:Static resx:Resources.DELETE}"
-                                        Style="{StaticResource MaterialDesignRaisedAccentButton}" />
+                                        Margin="10,4,16,4"
+                                        TextElement.FontSize="13">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" MinWidth="80" />
+                                            <ColumnDefinition Width="*" MaxWidth="220" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                        </Grid.RowDefinitions>
 
+                                        <Button
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Command="{Binding Path=DataContext.DeleteMediaItemCommand, ElementName=OnlyMOperatorPage}"
+                                            CommandParameter="{Binding Id}"
+                                            Content="{x:Static resx:Resources.DELETE}"
+                                            Style="{StaticResource OnlyMPanelAccentButton}" />
+
+                                        <Button
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            Command="{Binding Path=DataContext.HideMediaItemCommand, ElementName=OnlyMOperatorPage}"
+                                            CommandParameter="{Binding Id}"
+                                            Content="{x:Static resx:Resources.HIDE}"
+                                            Style="{StaticResource OnlyMPanelSubtleButton}" />
+
+                                        <CheckBox
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Margin="12,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Command="{Binding Path=DataContext.FreezeVideoCommand, ElementName=OnlyMOperatorPage}"
+                                            CommandParameter="{Binding Id}"
+                                            Content="{x:Static resx:Resources.FREEZE}"
+                                            IsChecked="{Binding PauseOnLastFrame, Mode=TwoWay}"
+                                            ToolTip="{x:Static resx:Resources.PAUSE_FINAL_FRAME}"
+                                            Visibility="{Binding ShouldDisplayFreezeCommand, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                        <ComboBox
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            Margin="12,0,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            materialDesign:HintAssist.Hint="{x:Static resx:Resources.PDF_VIEW}"
+                                            ItemsSource="{Binding PdfViewStyles}"
+                                            SelectedValue="{Binding ChosenPdfViewStyle}"
+                                            SelectedValuePath="Style"
+                                            Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                            Visibility="{Binding ShouldDisplayPdfViewCombo, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                        <TextBox
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Margin="12,0,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            materialDesign:HintAssist.Hint="{x:Static resx:Resources.PDF_PAGENUM}"
+                                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                            Text="{Binding ChosenPdfPage}"
+                                            Visibility="{Binding ShouldDisplayPdfPageTextBox, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    </Grid>
+
+                                    <!--  'Left' arrow button to close Command Panel  -->
                                     <Button
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        Command="{Binding Path=DataContext.HideMediaItemCommand, ElementName=OnlyMOperatorPage}"
+                                        Grid.Column="1"
+                                        Command="{Binding Path=DataContext.CloseCommandPanelCommand, ElementName=OnlyMOperatorPage}"
                                         CommandParameter="{Binding Id}"
-                                        Content="{x:Static resx:Resources.HIDE}"
-                                        Style="{StaticResource MaterialDesignRaisedLightButton}" />
+                                        Style="{StaticResource OnlyMDrawerTabButton}">
 
-                                    <CheckBox
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Margin="10,0,0,0"
-                                        Command="{Binding Path=DataContext.FreezeVideoCommand, ElementName=OnlyMOperatorPage}"
-                                        CommandParameter="{Binding Id}"
-                                        Content="{x:Static resx:Resources.FREEZE}"
-                                        IsChecked="{Binding PauseOnLastFrame, Mode=TwoWay}"
-                                        ToolTip="{x:Static resx:Resources.PAUSE_FINAL_FRAME}"
-                                        Visibility="{Binding ShouldDisplayFreezeCommand, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                        <materialDesign:PackIcon Kind="ChevronLeft" Style="{StaticResource OnlyMDrawerTabIcon}" />
+                                    </Button>
 
-                                    <ComboBox
-                                        Grid.Row="0"
+                                    <!--  Soft shadow just beyond the panel's right edge (right edge only: a full drawer shadow shows as a line under the panel)  -->
+                                    <Rectangle
                                         Grid.Column="1"
-                                        Margin="10,0,0,0"
-                                        HorizontalAlignment="Stretch"
-                                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.PDF_VIEW}"
-                                        ItemsSource="{Binding PdfViewStyles}"
-                                        SelectedValue="{Binding ChosenPdfViewStyle}"
-                                        SelectedValuePath="Style"
-                                        Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                        Visibility="{Binding ShouldDisplayPdfViewCombo, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                    <TextBox
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Margin="10,0,0,0"
-                                        HorizontalAlignment="Stretch"
-                                        materialDesign:HintAssist.Hint="{x:Static resx:Resources.PDF_PAGENUM}"
-                                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                        Text="{Binding ChosenPdfPage}"
-                                        Visibility="{Binding ShouldDisplayPdfPageTextBox, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                        Width="6"
+                                        Margin="0,0,-6,0"
+                                        HorizontalAlignment="Right"
+                                        IsHitTestVisible="False">
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                                                <GradientStop Offset="0" Color="#30000000" />
+                                                <GradientStop Offset="1" Color="#00000000" />
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
 
                                 </Grid>
+                            </materialDesign:DrawerHost.LeftDrawerContent>
+                            <!--  End of Command Panel  -->
 
-                                <!--  'Left' arrow button to close Command Panel  -->
+                            <!--  Media Card Body  -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="{Binding CommandPanelBtnColWidth}" />
+                                    <ColumnDefinition Width="{Binding Path=DataContext.ThumbnailColWidth, ElementName=OnlyMOperatorPage}" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="60" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--  'Right' arrow button to open Command Panel  -->
                                 <Button
-                                    Grid.Column="1"
-                                    Width="10"
-                                    Margin="0,0,2,0"
-                                    Padding="0"
-                                    HorizontalAlignment="Left"
-                                    Command="{Binding Path=DataContext.CloseCommandPanelCommand, ElementName=OnlyMOperatorPage}"
+                                    Grid.Column="0"
+                                    Command="{Binding Path=DataContext.OpenCommandPanelCommand, ElementName=OnlyMOperatorPage}"
                                     CommandParameter="{Binding Id}"
-                                    Style="{StaticResource MaterialDesignRaisedLightButton}">
+                                    IsEnabled="{Binding CommandPanelEnabled}"
+                                    Style="{StaticResource OnlyMDrawerTabButton}">
 
-                                    <materialDesign:PackIcon
-                                        Margin="-4,0,0,0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        Kind="ArrowLeft" />
+                                    <materialDesign:PackIcon Kind="ChevronRight" Style="{StaticResource OnlyMDrawerTabIcon}" />
                                 </Button>
 
-                            </Grid>
-                        </materialDesign:DrawerHost.LeftDrawerContent>
-                        <!--  End of Command Panel  -->
+                                <!--  Thumbnail  -->
+                                <Border Grid.Column="1" Background="Black">
+                                    <Grid>
+                                        <Image Source="{Binding ThumbnailImageSource}">
+                                            <Image.ToolTip>
+                                                <ToolTip
+                                                    HorizontalOffset="54"
+                                                    Placement="Center"
+                                                    Visibility="{Binding IsImagePopupEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                        <!--  Media Card Body  -->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="{Binding CommandPanelBtnColWidth}" />
-                                <ColumnDefinition Width="{Binding Path=DataContext.ThumbnailColWidth, ElementName=OnlyMOperatorPage}" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="100" />
-                            </Grid.ColumnDefinitions>
+                                                    <ToolTip.Template>
+                                                        <ControlTemplate>
+                                                            <Border
+                                                                Background="Black"
+                                                                BorderBrush="Black"
+                                                                BorderThickness="1">
+                                                                <Image
+                                                                    Width="320"
+                                                                    Height="180"
+                                                                    Source="{Binding ThumbnailImageSource}" />
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </ToolTip.Template>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
 
-                            <!--  'Right' arrow button to open Command Panel  -->
-                            <Button
-                                Grid.Column="0"
-                                Width="10"
-                                Margin="0,0,2,0"
-                                Padding="0"
-                                HorizontalAlignment="Left"
-                                Command="{Binding Path=DataContext.OpenCommandPanelCommand, ElementName=OnlyMOperatorPage}"
-                                CommandParameter="{Binding Id}"
-                                IsEnabled="{Binding CommandPanelEnabled}"
-                                Style="{StaticResource MaterialDesignRaisedLightButton}">
+                                        <!--  Media type badge  -->
+                                        <Border
+                                            Width="22"
+                                            Height="22"
+                                            Margin="4"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Background="{StaticResource OnlyMMediaTypeBadgeFill}"
+                                            BorderBrush="{StaticResource OnlyMMediaTypeBadgeStroke}"
+                                            BorderThickness="1"
+                                            CornerRadius="4">
+                                            <materialDesign:PackIcon
+                                                Width="16"
+                                                Height="16"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Foreground="{Binding IconBrush}"
+                                                Kind="{Binding IconName}" />
+                                        </Border>
 
-                                <materialDesign:PackIcon
-                                    Margin="-3,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Kind="ArrowRight" />
-                            </Button>
+                                        <Border
+                                            BorderBrush="Black"
+                                            BorderThickness="1"
+                                            ToolTip="{x:Static resx:Resources.WILL_PAUSE}"
+                                            Visibility="{Binding PauseOnLastFrame, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Image
+                                                Width="12"
+                                                HorizontalAlignment="Right"
+                                                Opacity="0.9"
+                                                Source="../Images/freeze2.png"
+                                                Stretch="Fill" />
+                                        </Border>
 
-                            <!--  Thumbnail  -->
-                            <Border
-                                Grid.Column="1"
-                                Margin="0,0,5,0"
-                                Background="Black"
-                                BorderBrush="Black"
-                                BorderThickness="1">
-                                <Grid>
-                                    <Image Source="{Binding ThumbnailImageSource}">
-                                        <Image.ToolTip>
-                                            <ToolTip
-                                                HorizontalOffset="54"
-                                                Placement="Center"
-                                                Visibility="{Binding IsImagePopupEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    </Grid>
+                                </Border>
+                                <!--  End of Thumbnail  -->
 
-                                                <ToolTip.Template>
-                                                    <ControlTemplate>
-                                                        <Border
-                                                            Background="Black"
-                                                            BorderBrush="Black"
-                                                            BorderThickness="1">
-                                                            <Image
-                                                                Width="320"
-                                                                Height="180"
-                                                                Source="{Binding ThumbnailImageSource}" />
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </ToolTip.Template>
-                                            </ToolTip>
-                                        </Image.ToolTip>
-                                    </Image>
+                                <!--  Main section of Card  -->
+                                <Grid Grid.Column="2" Margin="10,0,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="34" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
 
-                                    <Ellipse
-                                        Width="33"
-                                        Height="33"
-                                        Margin="3"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        Fill="{StaticResource OnlyMMediaTypeEllipseFill}"
-                                        Stroke="{StaticResource OnlyMMediaTypeEllipseStroke}" />
+                                    <!--  Media Title  -->
+                                    <StackPanel Grid.Row="0">
+                                        <TextBlock
+                                            FontSize="15"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource MaterialDesignBody}"
+                                            Text="{Binding Title, Mode=OneWay}"
+                                            TextTrimming="CharacterEllipsis" />
+                                        <TextBlock
+                                            FontSize="12"
+                                            Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                            Text="{Binding FileNameAsSubTitle, Mode=OneWay}"
+                                            TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                    <Grid Grid.Row="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="95" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
 
+                                        <!--  TextBlocks generally used to show media length and duration  -->
+
+                                        <TextBlock
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Foreground="{Binding DurationColorBrush}"
+                                            Style="{StaticResource OnlyMTimeText}"
+                                            Text="{Binding DurationString}"
+                                            Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                        <StackPanel
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            Orientation="Horizontal">
+
+                                            <TextBlock
+                                                Foreground="{Binding PlaybackTimeColorBrush}"
+                                                Style="{StaticResource OnlyMTimeText}"
+                                                Text="{Binding PlaybackTimeString}"
+                                                Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                            <Button
+                                                Width="22"
+                                                Height="17"
+                                                Margin="6,0,0,0"
+                                                Padding="0"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding Path=DataContext.EnterStartOffsetEditModeCommand, ElementName=OnlyMOperatorPage}"
+                                                CommandParameter="{Binding Id}"
+                                                IsEnabled="{Binding IsStartOffsetButtonEnabled}"
+                                                Style="{StaticResource MaterialDesignIconButton}"
+                                                ToolTip="{x:Static resx:Resources.SHOW_START_OFFSET_DLG}"
+                                                Visibility="{Binding Path=IsStartOffsetButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <materialDesign:PackIcon
+                                                    Width="16"
+                                                    Height="16"
+                                                    Kind="DotsHorizontal" />
+                                            </Button>
+
+                                        </StackPanel>
+
+                                        <!--  Pause button  -->
+                                        <Button
+                                            Grid.Row="0"
+                                            Grid.RowSpan="2"
+                                            Grid.Column="1"
+                                            Width="40"
+                                            Height="Auto"
+                                            Margin="5,0,0,0"
+                                            Padding="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Stretch"
+                                            Command="{Binding Path=DataContext.MediaControlPauseCommand, ElementName=OnlyMOperatorPage}"
+                                            CommandParameter="{Binding Id}"
+                                            Style="{StaticResource OnlyMSubtleButton}"
+                                            Visibility="{Binding Path=IsPauseButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                                            <materialDesign:PackIcon
+                                                Width="20"
+                                                Height="20"
+                                                HorizontalAlignment="Center"
+                                                Kind="{Binding PauseIconKind}" />
+                                        </Button>
+
+                                        <!--  Web and PDF Mirror button  -->
+                                        <CheckBox
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Checked="MirrorCheckBoxChecked"
+                                            Content="{x:Static resx:Resources.MIRROR}"
+                                            FontSize="13"
+                                            IsChecked="{Binding UseMirror, Mode=TwoWay}"
+                                            Style="{StaticResource MaterialDesignCheckBox}"
+                                            Tag="{Binding Id}"
+                                            Unchecked="MirrorCheckBoxUnchecked"
+                                            Visibility="{Binding Path=IsWebAndAllowMirror, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                        <!--  Slide Navigation buttons  -->
+                                        <StackPanel
+                                            Grid.Row="0"
+                                            Grid.RowSpan="2"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            Orientation="Horizontal">
+                                            <Button
+                                                Command="{Binding Path=DataContext.PreviousSlideCommand, ElementName=OnlyMOperatorPage}"
+                                                CommandParameter="{Binding Id}"
+                                                IsEnabled="{Binding IsPreviousSlideButtonEnabled}"
+                                                Style="{StaticResource SlideshowButtonStyle}"
+                                                Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                                                <materialDesign:PackIcon
+                                                    Width="20"
+                                                    Height="20"
+                                                    Kind="StepBackward" />
+
+                                            </Button>
+                                            <Button
+                                                Margin="6,0,0,0"
+                                                Command="{Binding Path=DataContext.NextSlideCommand, ElementName=OnlyMOperatorPage}"
+                                                CommandParameter="{Binding Id}"
+                                                IsEnabled="{Binding IsNextSlideButtonEnabled}"
+                                                Style="{StaticResource SlideshowButtonStyle}"
+                                                Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                                                <materialDesign:PackIcon
+                                                    Width="20"
+                                                    Height="20"
+                                                    Kind="StepForward" />
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                    <controls:PathTextBlock
+                                        Grid.Row="2"
+                                        Grid.ColumnSpan="2"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                        Path="{Binding MiscText}" />
+
+                                    <!--  Progress bar and Slider  -->
+                                    <ProgressBar
+                                        Grid.Row="2"
+                                        Height="3"
+                                        Margin="0,2,0,0"
+                                        VerticalAlignment="Center"
+                                        Background="{DynamicResource MaterialDesignDivider}"
+                                        BorderThickness="0"
+                                        Maximum="{Binding DurationDeciseconds}"
+                                        Visibility="{Binding Path=HasDurationAndIsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Value="{Binding PlaybackPositionDeciseconds, Mode=OneWay}" />
+                                    <Slider
+                                        Grid.Row="2"
+                                        Margin="0,8,0,0"
+                                        LargeChange="300"
+                                        Maximum="{Binding DurationDeciseconds}"
+                                        Orientation="Horizontal"
+                                        SmallChange="10"
+                                        TickFrequency="1"
+                                        Visibility="{Binding Path=IsSliderVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Value="{Binding PlaybackPositionDeciseconds, Mode=TwoWay}">
+                                        <Slider.LayoutTransform>
+                                            <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                                        </Slider.LayoutTransform>
+                                    </Slider>
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                        Text="{Binding SlideshowProgressString}"
+                                        Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                </Grid>
+
+                                <!--  Spinner as media is being prepared  -->
+                                <ProgressBar
+                                    Grid.Column="3"
+                                    IsIndeterminate="True"
+                                    Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                    Visibility="{Binding Path=IsPreparingMedia, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Value="0" />
+
+                                <!--  Start and Stop buttons  -->
+                                <Button
+                                    Grid.Column="3"
+                                    Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
+                                    CommandParameter="{Binding Id}"
+                                    IsEnabled="{Binding IsPlayButtonEnabled}"
+                                    Style="{StaticResource OnlyMPlayButton}"
+                                    Visibility="{Binding Path=IsPlayButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <materialDesign:PackIcon
                                         Width="24"
                                         Height="24"
-                                        Margin="7"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        Foreground="{Binding IconBrush}"
-                                        Kind="{Binding IconName}" />
+                                        Kind="Play" />
+                                </Button>
 
-                                    <Border
-                                        BorderBrush="Black"
-                                        BorderThickness="1"
-                                        ToolTip="{x:Static resx:Resources.WILL_PAUSE}"
-                                        Visibility="{Binding PauseOnLastFrame, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <Image
-                                            Width="12"
-                                            HorizontalAlignment="Right"
-                                            Opacity="0.9"
-                                            Source="../Images/freeze2.png"
-                                            Stretch="Fill" />
-                                    </Border>
-
-                                </Grid>
-                            </Border>
-                            <!--  End of Thumbnail  -->
-
-                            <!--  Main section of Card  -->
-                            <Grid Grid.Column="2" Margin="10,0,0,0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="36" />
-                                    <RowDefinition Height="28" />
-                                </Grid.RowDefinitions>
-
-                                <!--  Media Title  -->
-                                <TextBlock Grid.Row="0">
-                                    <TextBlock
-                                        Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                                        Text="{Binding Title, Mode=OneWay}"
-                                        TextTrimming="CharacterEllipsis" />
-                                    <LineBreak />
-                                    <TextBlock
-                                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                                        Text="{Binding FileNameAsSubTitle, Mode=OneWay}"
-                                        TextTrimming="CharacterEllipsis" />
-                                </TextBlock>
-                                <Grid Grid.Row="1">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="1*" />
-                                        <RowDefinition Height="1*" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="95" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <!--  TextBlocks generally used to show media length and duration  -->
-
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        Grid.Column="0"
-                                        Foreground="{Binding DurationColorBrush}"
-                                        Style="{StaticResource MaterialDesignBody2TextBlock}"
-                                        Text="{Binding DurationString}"
-                                        Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                    <StackPanel
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        Orientation="Horizontal">
-
-                                        <TextBlock
-                                            Foreground="{Binding PlaybackTimeColorBrush}"
-                                            Style="{StaticResource MaterialDesignBody2TextBlock}"
-                                            Text="{Binding PlaybackTimeString}"
-                                            Visibility="{Binding Path=HasDuration, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                        <Button
-                                            Margin="10,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            Command="{Binding Path=DataContext.EnterStartOffsetEditModeCommand, ElementName=OnlyMOperatorPage}"
-                                            CommandParameter="{Binding Id}"
-                                            IsEnabled="{Binding IsStartOffsetButtonEnabled}"
-                                            Style="{StaticResource MaterialDesignFlatButton}"
-                                            ToolTip="{x:Static resx:Resources.SHOW_START_OFFSET_DLG}"
-                                            Visibility="{Binding Path=IsStartOffsetButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                            <materialDesign:PackIcon
-                                                Width="18"
-                                                Height="18"
-                                                Margin="-13,-13,0,0"
-                                                Kind="DotsHorizontal" />
-                                        </Button>
-
-                                    </StackPanel>
-
-                                    <!--  Pause button  -->
-                                    <Button
-                                        Grid.Row="0"
-                                        Grid.RowSpan="2"
-                                        Grid.Column="1"
-                                        Width="45"
-                                        Margin="5,0,0,0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Stretch"
-                                        Command="{Binding Path=DataContext.MediaControlPauseCommand, ElementName=OnlyMOperatorPage}"
-                                        CommandParameter="{Binding Id}"
-                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                                        Visibility="{Binding Path=IsPauseButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-
-                                        <materialDesign:PackIcon
-                                            Width="24"
-                                            Height="24"
-                                            HorizontalAlignment="Center"
-                                            Kind="{Binding PauseIconKind}" />
-                                    </Button>
-
-                                    <!--  Web and PDF Mirror button  -->
-                                    <CheckBox
-                                        Grid.Row="0"
-                                        Grid.Column="0"
-                                        Grid.ColumnSpan="2"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        Checked="MirrorCheckBoxChecked"
-                                        Content="{x:Static resx:Resources.MIRROR}"
-                                        FontSize="14"
-                                        IsChecked="{Binding UseMirror, Mode=TwoWay}"
-                                        Style="{StaticResource MaterialDesignCheckBox}"
-                                        Tag="{Binding Id}"
-                                        Unchecked="MirrorCheckBoxUnchecked"
-                                        Visibility="{Binding Path=IsWebAndAllowMirror, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                    <!--  Slide Navigation buttons  -->
-                                    <StackPanel
-                                        Grid.Row="0"
-                                        Grid.RowSpan="2"
-                                        Grid.Column="0"
-                                        Grid.ColumnSpan="2"
-                                        Orientation="Horizontal">
-                                        <Button
-                                            Command="{Binding Path=DataContext.PreviousSlideCommand, ElementName=OnlyMOperatorPage}"
-                                            CommandParameter="{Binding Id}"
-                                            IsEnabled="{Binding IsPreviousSlideButtonEnabled}"
-                                            Style="{StaticResource SlideshowButtonStyle}"
-                                            Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
-
-                                            <materialDesign:PackIcon
-                                                Width="24"
-                                                Height="24"
-                                                Kind="StepBackward" />
-
-                                        </Button>
-                                        <Button
-                                            Margin="6,0,0,0"
-                                            Command="{Binding Path=DataContext.NextSlideCommand, ElementName=OnlyMOperatorPage}"
-                                            CommandParameter="{Binding Id}"
-                                            IsEnabled="{Binding IsNextSlideButtonEnabled}"
-                                            Style="{StaticResource SlideshowButtonStyle}"
-                                            Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}">
-
-                                            <materialDesign:PackIcon
-                                                Width="24"
-                                                Height="24"
-                                                Kind="StepForward" />
-                                        </Button>
-                                    </StackPanel>
-                                </Grid>
-                                <controls:PathTextBlock
-                                    Grid.Row="2"
-                                    Grid.ColumnSpan="2"
-                                    FontSize="12"
-                                    Path="{Binding MiscText}" />
-
-                                <!--  Progress bar and Slider  -->
-                                <ProgressBar
-                                    Grid.Row="2"
-                                    Margin="0,2,0,0"
-                                    Maximum="{Binding DurationDeciseconds}"
-                                    Visibility="{Binding Path=HasDurationAndIsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    Value="{Binding PlaybackPositionDeciseconds, Mode=OneWay}" />
-                                <Slider
-                                    Grid.Row="2"
-                                    Margin="0,10,0,0"
-                                    LargeChange="300"
-                                    Maximum="{Binding DurationDeciseconds}"
-                                    Orientation="Horizontal"
-                                    SmallChange="10"
-                                    TickFrequency="1"
-                                    Visibility="{Binding Path=IsSliderVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    Value="{Binding PlaybackPositionDeciseconds, Mode=TwoWay}">
-                                    <Slider.LayoutTransform>
-                                        <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
-                                    </Slider.LayoutTransform>
-                                </Slider>
-                                <TextBlock
-                                    Grid.Row="2"
-                                    VerticalAlignment="Bottom"
-                                    FontSize="12"
-                                    Text="{Binding SlideshowProgressString}"
-                                    Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <Button
+                                    Grid.Column="3"
+                                    Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
+                                    CommandParameter="{Binding Id}"
+                                    Style="{StaticResource OnlyMStopButton}"
+                                    Visibility="{Binding Path=IsStopButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <materialDesign:PackIcon
+                                        Width="22"
+                                        Height="22"
+                                        Kind="Stop" />
+                                </Button>
                             </Grid>
+                            <!--  End of Media Card Body  -->
 
-                            <!--  Spinner as media is being prepared  -->
-                            <ProgressBar
-                                Grid.Column="3"
-                                IsIndeterminate="True"
-                                Style="{StaticResource MaterialDesignCircularProgressBar}"
-                                Visibility="{Binding Path=IsPreparingMedia, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Value="0" />
-
-                            <!--  Start and Stop buttons  -->
-                            <Button
-                                Grid.Column="3"
-                                Width="50"
-                                Height="50"
-                                Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
-                                CommandParameter="{Binding Id}"
-                                IsEnabled="{Binding IsPlayButtonEnabled}"
-                                Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
-                                Visibility="{Binding Path=IsPlayButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <materialDesign:PackIcon
-                                    Width="40"
-                                    Height="40"
-                                    Kind="Play" />
-                            </Button>
-
-                            <Button
-                                Grid.Column="3"
-                                Width="50"
-                                Height="50"
-                                Command="{Binding Path=DataContext.MediaControlCommand1, ElementName=OnlyMOperatorPage}"
-                                CommandParameter="{Binding Id}"
-                                Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
-                                Visibility="{Binding Path=IsStopButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <materialDesign:PackIcon
-                                    Width="40"
-                                    Height="40"
-                                    Kind="Stop" />
-                            </Button>
-                        </Grid>
-                        <!--  End of Media Card Body  -->
-
-                    </materialDesign:DrawerHost>
+                        </materialDesign:DrawerHost>
+                    </Border>
                 </materialDesign:Card>
                 <!--  End of Media Item Card  -->
 
@@ -623,12 +760,28 @@
                 IsChecked="{Binding IsManualSortMode, Mode=TwoWay}"
                 Visibility="{Binding ShowSortModeToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ToggleButton.Style>
+                    <!--  Neutral in automatic sort mode; purple only while manual (drag) sorting is on  -->
                     <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
                         <Setter Property="ToolTip" Value="{x:Static resx:Resources.SORT_MODE_AUTO_TOOLTIP}" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                        <Setter Property="materialDesign:ElevationAssist.Elevation" Value="Dp0" />
                         <Style.Triggers>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter Property="ToolTip" Value="{x:Static resx:Resources.SORT_MODE_MANUAL_TOOLTIP}" />
+                                <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
                             </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource MaterialDesignDivider}" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                    <Condition Property="IsChecked" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" Value="{DynamicResource PrimaryHueDarkBrush}" />
+                            </MultiTrigger>
                         </Style.Triggers>
                     </Style>
                 </ToggleButton.Style>
@@ -648,10 +801,10 @@
         </StackPanel>
 
         <!--  Media item count badge - shown once the list is non-empty; highlighted when the configured maximum is reached  -->
-        <!--  Right margin (22) = scrollbar width (18, see MainWindow's ScrollBar style) + card margin (4) so the badge's right edge lines up with the cards' right edge  -->
+        <!--  Right margin (16) = scrollbar width (12, see MainWindow's ScrollBar style) + card margin (4) so the badge's right edge lines up with the cards' right edge  -->
         <Border
             Grid.Row="0"
-            Margin="0,6,22,2"
+            Margin="0,6,16,2"
             Padding="8,1"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"

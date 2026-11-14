@@ -22,7 +22,7 @@ public class MediaItem : ObservableObject
 
     private static readonly SolidColorBrush GreenBrush = new(Colors.DarkGreen);
     private static readonly SolidColorBrush BlackBrush = new(Colors.Black);
-    private static readonly SolidColorBrush GrayBrush = new(Colors.DarkGray);
+    private static readonly SolidColorBrush GrayBrush = new(Color.FromRgb(0x75, 0x75, 0x75)); // Gray 600: readable on white (DarkGray was ~2.3:1)
 
     // Dark-mode variants: DarkGreen and Black are near-invisible on a dark surface.
     private static readonly SolidColorBrush DarkModeGreenBrush = new(Color.FromRgb(0x4C, 0xAF, 0x50)); // Material Green 500

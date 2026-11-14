@@ -46,8 +46,9 @@
                                     Height="Auto"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
+                                    Margin="3,2"
                                     Background="{TemplateBinding Background}"
-                                    CornerRadius="8" />
+                                    CornerRadius="3" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
@@ -56,15 +57,16 @@
             <!--  ScrollBars  -->
             <Style TargetType="{x:Type ScrollBar}">
                 <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
-                <Setter Property="Foreground" Value="#FFE8E3F3" />
+                <!--  Neutral translucent thumb that reads on both light and dark backgrounds  -->
+                <Setter Property="Foreground" Value="#66888888" />
                 <Setter Property="Background" Value="Transparent" />
-                <Setter Property="Width" Value="18" />
+                <Setter Property="Width" Value="12" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ScrollBar}">
                             <Grid
                                 x:Name="GridRoot"
-                                Width="18"
+                                Width="12"
                                 Background="{TemplateBinding Background}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="0.00001*" />
@@ -120,17 +122,34 @@
                 x:Key="OnlyMVolumeButton"
                 BasedOn="{StaticResource MaterialDesignIconButton}"
                 TargetType="{x:Type Button}">
-                <Setter Property="Width" Value="40" />
-                <Setter Property="Height" Value="40" />
+                <Setter Property="Width" Value="36" />
+                <Setter Property="Height" Value="36" />
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="Foreground" Value="{DynamicResource OnlyMNavBarForeground}" />
+            </Style>
+
+            <!--  Command bar buttons: flat icon buttons in the neutral glyph colour  -->
+            <Style
+                x:Key="OnlyMCommandBarButton"
+                BasedOn="{StaticResource MaterialDesignIconButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="Width" Value="36" />
+                <Setter Property="Height" Value="36" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Foreground" Value="{DynamicResource OnlyMNavBarForeground}" />
+            </Style>
+
+            <Style x:Key="OnlyMCommandBarIcon" TargetType="{x:Type materialDesign:PackIcon}">
+                <Setter Property="Width" Value="22" />
+                <Setter Property="Height" Value="22" />
             </Style>
 
             <!--  Foreground set here rather than inherited: the PopupBox's internal toggle button does not pass its Foreground through  -->
             <Style x:Key="OnlyMVolumeIcon" TargetType="{x:Type materialDesign:PackIcon}">
                 <Setter Property="Foreground" Value="{DynamicResource OnlyMNavBarForeground}" />
-                <Setter Property="Width" Value="30" />
-                <Setter Property="Height" Value="30" />
+                <Setter Property="Width" Value="22" />
+                <Setter Property="Height" Value="22" />
                 <Style.Triggers>
                     <!--  Muted: dimmed VolumeOff icon (the tooltip says "Muted")  -->
                     <DataTrigger Binding="{Binding IsMuted}" Value="True">
@@ -268,7 +287,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="74" />
+                <RowDefinition Height="52" />
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
@@ -281,27 +300,14 @@
                     Visibility="{Binding Path=ShowDragAndDropHint, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                 <materialDesign:Snackbar MessageQueue="{Binding TheSnackbarMessageQueue}" />
-
-                <Rectangle Height="4" VerticalAlignment="Top">
-                    <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                            <GradientStop Offset="0" Color="#72000000" />
-                            <GradientStop Offset="1" Color="#00000000" />
-                        </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-
-                <Rectangle Height="4" VerticalAlignment="Bottom">
-                    <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                            <GradientStop Offset="0" Color="#00000000" />
-                            <GradientStop Offset="1" Color="#72000000" />
-                        </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
             </Grid>
 
-            <Border Grid.Row="1" Background="{DynamicResource OnlyMNavBarBackground}">
+            <!--  Command bar: compact and neutral, separated from the media list by a hairline  -->
+            <Border
+                Grid.Row="1"
+                Background="{DynamicResource OnlyMNavBarBackground}"
+                BorderBrush="{DynamicResource OnlyMNavBarBorder}"
+                BorderThickness="0,1,0,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -314,27 +320,24 @@
                         IsIndeterminate="True"
                         Visibility="{Binding Path=ShowProgressBar, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                    <ContentControl Grid.Row="1" Padding="10" VerticalAlignment="Stretch">
+                    <ContentControl Grid.Row="1" VerticalAlignment="Center">
                     <Grid Margin="10,0,10,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="40" />
                         </Grid.ColumnDefinitions>
 
                         <Button
                             Grid.Column="0"
                             HorizontalAlignment="Left"
                             Command="{Binding GotoOperatorCommand}"
-                            Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                            Style="{StaticResource OnlyMCommandBarButton}"
                             ToolTip="{x:Static resx:Resources.MEDIA_PAGE}"
                             Visibility="{Binding Path=IsSettingsPageActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <materialDesign:PackIcon
-                                Width="24"
-                                Height="24"
-                                Kind="Backburger" />
+                            <materialDesign:PackIcon Kind="Backburger" Style="{StaticResource OnlyMCommandBarIcon}" />
                         </Button>
 
                         <StackPanel
@@ -346,7 +349,7 @@
                             <!--  with mute, slider and level. Operator page only, and only when 'Show volume control' is on (Settings)  -->
                             <!--  Sits on the left, apart from the round FAB buttons, since it is a different form  -->
                             <Grid
-                                Margin="0,0,16,0"
+                                Margin="0,0,12,0"
                                 VerticalAlignment="Center"
                                 Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <materialDesign:PopupBox
@@ -399,6 +402,10 @@
                             </Grid>
 
                             <Button
+                                Height="30"
+                                VerticalAlignment="Center"
+                                materialDesign:ButtonAssist.CornerRadius="4"
+                                materialDesign:ElevationAssist.Elevation="Dp0"
                                 Command="{Binding UnhideCommand}"
                                 Content="{x:Static resx:Resources.UNHIDE}"
                                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
@@ -408,53 +415,43 @@
                         <Button
                             Grid.Column="1"
                             Command="{Binding LaunchReleasePageCommand}"
-                            Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                            Foreground="{DynamicResource PrimaryHueMidBrush}"
+                            Style="{StaticResource OnlyMCommandBarButton}"
                             ToolTip="{x:Static resx:Resources.NEW_VERSION}"
                             Visibility="{Binding Path=ShowNewVersionButton, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <materialDesign:PackIcon
-                                Width="24"
-                                Height="24"
-                                Kind="Download" />
+                            <!--  The one coloured glyph on the bar, so an available update stands out  -->
+                            <materialDesign:PackIcon Kind="Download" Style="{StaticResource OnlyMCommandBarIcon}" />
                         </Button>
 
                         <Button
                             Grid.Column="2"
                             Command="{Binding LaunchMediaFolderCommand}"
                             IsEnabled="{Binding Path=IsFolderEnabled}"
-                            Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                            Style="{StaticResource OnlyMCommandBarButton}"
                             ToolTip="{Binding FolderHint}"
                             ToolTipService.ShowOnDisabled="True"
                             Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <materialDesign:PackIcon
-                                Width="24"
-                                Height="24"
-                                Kind="FolderOpen" />
+                            <materialDesign:PackIcon Kind="FolderOpenOutline" Style="{StaticResource OnlyMCommandBarIcon}" />
                         </Button>
 
                         <Button
                             Grid.Column="3"
                             Command="{Binding LaunchHelpPageCommand}"
-                            Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                            Style="{StaticResource OnlyMCommandBarButton}"
                             ToolTip="{x:Static resx:Resources.DISPLAY_HELP}"
                             Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <materialDesign:PackIcon
-                                Width="24"
-                                Height="24"
-                                Kind="Help" />
+                            <materialDesign:PackIcon Kind="HelpCircleOutline" Style="{StaticResource OnlyMCommandBarIcon}" />
                         </Button>
 
                         <Button
                             Grid.Column="4"
                             Command="{Binding GotoSettingsCommand}"
                             IsEnabled="{Binding Path=IsSettingsEnabled}"
-                            Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                            Style="{StaticResource OnlyMCommandBarButton}"
                             ToolTip="{Binding SettingsHint}"
                             ToolTipService.ShowOnDisabled="True"
                             Visibility="{Binding Path=IsOperatorPageActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <materialDesign:PackIcon
-                                Width="24"
-                                Height="24"
-                                Kind="Settings" />
+                            <materialDesign:PackIcon Kind="CogOutline" Style="{StaticResource OnlyMCommandBarIcon}" />
                         </Button>
                     </Grid>
 

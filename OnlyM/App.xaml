@@ -13,11 +13,16 @@
                 xmlns:vm="clr-namespace:OnlyM.ViewModel"
                 x:Key="Locator"
                 d:IsDataSource="True" />
-            <SolidColorBrush x:Key="OnlyMNavBarBackground" Color="#FFB39DDB" />
-            <!--  Glyphs drawn directly on the nav bar (volume control); DarkModeService swaps it with the background  -->
-            <SolidColorBrush x:Key="OnlyMNavBarForeground" Color="#FF512DA8" />
-            <SolidColorBrush x:Key="OnlyMMediaTypeEllipseStroke" Color="#FF512DA8" />
-            <SolidColorBrush x:Key="OnlyMMediaTypeEllipseFill" Color="#FAFAFA" />
+            <!--  Bottom command bar: neutral layer colour (DarkModeService swaps these brushes for dark mode)  -->
+            <SolidColorBrush x:Key="OnlyMNavBarBackground" Color="#FFF3F3F3" />
+            <!--  Glyphs drawn directly on the command bar (icon buttons, volume control)  -->
+            <SolidColorBrush x:Key="OnlyMNavBarForeground" Color="#FF424242" />
+            <!--  Hairline separating the command bar from the media list  -->
+            <SolidColorBrush x:Key="OnlyMNavBarBorder" Color="#1F000000" />
+            <SolidColorBrush x:Key="OnlyMMediaTypeBadgeStroke" Color="#33000000" />
+            <SolidColorBrush x:Key="OnlyMMediaTypeBadgeFill" Color="#F2FFFFFF" />
+            <!--  Windows 11 UI font (falls back to Segoe UI on Windows 10)  -->
+            <FontFamily x:Key="MaterialDesignFont">Segoe UI Variable Text, Segoe UI</FontFamily>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />

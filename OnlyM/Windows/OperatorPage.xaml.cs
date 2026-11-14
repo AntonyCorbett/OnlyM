@@ -134,7 +134,7 @@ public partial class OperatorPage
 
         vm.ThumbnailColWidth = e.NewSize.Width switch
         {
-            >= 500 => 180,
+            >= 500 => 170,
             >= 400 => 100,
             _ => 46
         };
