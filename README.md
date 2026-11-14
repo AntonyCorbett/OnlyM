@@ -1,8 +1,8 @@
 ﻿# OnlyM
 
-A Windows Media player using C# and WPF. Designed for media playback. The emphasis is on ease-of-use above advanced function. Please report any problems in the Project Issues section.
+A Windows Media player using C# and WPF. Designed for media playback. The emphasis is on ease of use over advanced functionality. Please report any problems in the Project Issues section.
 
-![Main Window](http://cv8.org.uk/soundbox/OnlyM/Images/MainWindow.png)
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/dbdef681-ff71-4774-9275-bc0018d90128" />
 
 ### System Requirements
 
@@ -24,8 +24,8 @@ OnlyM can optionally provide a simple HTTP remote (Local LAN or Cloudflare Quick
 
 ### Discussions
 
-Use the [Discussions](https://github.com/AntonyCorbett/OnlyM/discussions) area to ask for help, etc. Please limit discussions to those of a technical nature.
+Use the [Discussions](https://github.com/AntonyCorbett/OnlyM/discussions) area to ask for help, etc. Please limit discussions to technical matters.
 
 ### License, etc
 
-OnlyM is Copyright &copy; 2018, 2026 Antony Corbett and other contributors under the [MIT license](LICENSE). The FFMpeg libraries are used under the GNU General Public License version 3 (a copy of which is in the FFMpeg folder). AutoMapper (Jimmy Bogard et al) is used under the MIT License. Unosquare FFME is used under the Microsoft public license. MaterialDesign themes (James Willock, Mulholland Software and Contributors) is used under the MIT license. TagLib.Sharp (Brian Nickel, Gabriel Burt, et al) is used under the GNU Lesser General Public License version 2.1. Serilog is used under the Apache License Version 2.0, January 2004. WPF Extended Toolkit Community Edition (Xceed) is used under the Micrsoft Public Licence. NAudio (Mark Heath) is used under the Microsoft Public License.
+OnlyM is Copyright &copy; 2018, 2026 Antony Corbett and other contributors under the [MIT license](LICENSE). The FFmpeg libraries are used under the GNU General Public License version 3 (a copy of which is in the FFmpeg folder). AutoMapper (Jimmy Bogard et al.) is used under the MIT License. Unosquare FFME is licensed under the Microsoft Public License. MaterialDesign themes (James Willock, Mulholland Software and Contributors) are used under the MIT license. TagLib.Sharp (Brian Nickel, Gabriel Burt, et al) is used under the GNU Lesser General Public License version 2.1. Serilog is used under the Apache License Version 2.0, January 2004. WPF Extended Toolkit Community Edition (Xceed) is used under the Microsoft Public License. NAudio (Mark Heath) is used under the Microsoft Public License.
