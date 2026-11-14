@@ -283,7 +283,7 @@
         <CommandBinding Command="ApplicationCommands.Paste" Executed="OnPaste" />
     </Window.CommandBindings>
 
-    <materialDesign:DialogHost>
+    <materialDesign:DialogHost DialogContentUniformCornerRadius="8">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />

@@ -4,7 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    MaxWidth="420"
+    MinWidth="320"
+    MaxWidth="440"
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     TextElement.FontSize="13"
@@ -14,29 +15,29 @@
     TextOptions.TextRenderingMode="Auto">
 
     <!--  Simple yes/no confirmation. DialogHost.Show returns the CommandParameter of the button pressed (true/false)  -->
-    <StackPanel Margin="20" Orientation="Vertical">
+    <StackPanel Margin="24,20,24,20" Orientation="Vertical">
         <TextBlock
             x:Name="MessageTextBlock"
-            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+            FontSize="16"
+            FontWeight="SemiBold"
             TextWrapping="Wrap" />
 
         <TextBlock
             x:Name="DetailTextBlock"
             Margin="0,8,0,0"
-            Opacity="0.7"
+            Opacity="0.72"
             TextWrapping="Wrap"
             Visibility="Collapsed" />
 
         <StackPanel
-            Margin="0,20,0,0"
+            Margin="0,24,0,0"
             HorizontalAlignment="Right"
             Orientation="Horizontal">
+            <!--  Primary action: the one filled button  -->
             <Button
                 x:Name="ConfirmButton"
-                MinWidth="110"
-                Margin="0,0,10,0"
-                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                Style="{StaticResource MaterialDesignRaisedAccentButton}">
+                Style="{StaticResource OnlyMDialogPrimaryButton}"
+                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
                 <Button.CommandParameter>
                     <system:Boolean>True</system:Boolean>
                 </Button.CommandParameter>
@@ -44,11 +45,11 @@
 
             <Button
                 x:Name="CancelButton"
-                MinWidth="110"
+                Margin="8,0,0,0"
                 Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                 IsCancel="True"
                 IsDefault="True"
-                Style="{StaticResource MaterialDesignRaisedLightButton}">
+                Style="{StaticResource OnlyMDialogSecondaryButton}">
                 <Button.CommandParameter>
                     <system:Boolean>False</system:Boolean>
                 </Button.CommandParameter>

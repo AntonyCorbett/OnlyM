@@ -5,10 +5,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:OnlyM"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     d1p1:Ignorable="d"
     StartupUri="Windows/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
             <vm:ViewModelLocator
                 xmlns:vm="clr-namespace:OnlyM.ViewModel"
                 x:Key="Locator"
@@ -23,12 +31,78 @@
             <SolidColorBrush x:Key="OnlyMMediaTypeBadgeFill" Color="#F2FFFFFF" />
             <!--  Windows 11 UI font (falls back to Segoe UI on Windows 10)  -->
             <FontFamily x:Key="MaterialDesignFont">Segoe UI Variable Text, Segoe UI</FontFamily>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+            <!--  Dialog buttons: one filled primary action, the rest outlined and neutral  -->
+            <Style
+                x:Key="OnlyMDialogPrimaryButton"
+                BasedOn="{StaticResource MaterialDesignRaisedButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="MinWidth" Value="88" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="Padding" Value="16,0" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="4" />
+                <Setter Property="materialDesign:ElevationAssist.Elevation" Value="Dp0" />
+            </Style>
+
+            <Style
+                x:Key="OnlyMDialogSecondaryButton"
+                BasedOn="{StaticResource MaterialDesignOutlinedButton}"
+                TargetType="{x:Type Button}">
+                <Setter Property="MinWidth" Value="88" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="Padding" Value="16,0" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}" />
+                <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="4" />
+            </Style>
+
+            <!--
+                Tooltips: small Fluent-style flyout (layer colour, hairline border, 4px corners, soft shadow).
+                Tooltips that define their own Template (e.g. the thumbnail preview) are unaffected.
+            -->
+            <Style TargetType="{x:Type ToolTip}">
+                <Setter Property="HasDropShadow" Value="False" />
+                <Setter Property="Placement" Value="Top" />
+                <Setter Property="VerticalOffset" Value="-2" />
+                <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontWeight" Value="Regular" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignCardBackground}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}" />
+                <Setter Property="Padding" Value="8,5" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToolTip}">
+                            <!--  Margin leaves room inside the popup for the shadow  -->
+                            <Border
+                                MaxWidth="360"
+                                Margin="6"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="4">
+                                <Border.Effect>
+                                    <DropShadowEffect
+                                        BlurRadius="8"
+                                        Direction="270"
+                                        Opacity="0.18"
+                                        ShadowDepth="2" />
+                                </Border.Effect>
+                                <ContentPresenter>
+                                    <ContentPresenter.Resources>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="TextWrapping" Value="Wrap" />
+                                        </Style>
+                                    </ContentPresenter.Resources>
+                                </ContentPresenter>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
