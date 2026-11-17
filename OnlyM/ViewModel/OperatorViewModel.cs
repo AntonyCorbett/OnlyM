@@ -72,6 +72,9 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     private readonly Lock _orderPersistLock = new();
     private readonly List<ExternalDropCompletedMessage> _pendingExternalDrops = [];
 
+    // Paths of items played this session; keyed by path so the flag survives list refreshes and folder changes.
+    private readonly HashSet<string> _playedItemPaths = new(StringComparer.OrdinalIgnoreCase);
+
     private MetaDataQueueConsumer? _metaDataConsumer;
     private string? _blankScreenImagePath;
     private bool _pendingLoadMediaItems;
@@ -141,6 +144,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.SortModeChangedEvent += HandleSortModeChangedEvent;
         _optionsService.ShowSortModeToggleButtonChangedEvent += HandleShowSortModeToggleButtonChangedEvent;
         _optionsService.ShowMediaListMenuChangedEvent += HandleShowMediaListMenuChangedEvent;
+        _optionsService.ShowPlayedIndicatorsChangedEvent += HandleShowPlayedIndicatorsChangedEvent;
         _optionsService.VolumeChangedEvent += HandleVolumeChangedEvent;
         _optionsService.ShowVolumeControlChangedEvent += HandleShowVolumeControlChangedEvent;
         _currentVolume = _optionsService.Volume;
@@ -233,6 +237,16 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
     public AsyncRelayCommand DeleteHiddenCommand { get; private set; } = null!;
 
     public AsyncRelayCommand DeleteAllCommand { get; private set; } = null!;
+
+    public RelayCommand ResetPlayedCommand { get; private set; } = null!;
+
+    public RelayCommand<Guid?> ClearPlayedCommand { get; private set; } = null!;
+
+    public bool ShowPlayedIndicators => _optionsService.ShowPlayedIndicators;
+
+    public bool HasPlayedItems => MediaItems.Any(x => x.IsPlayed);
+
+    public bool IsResetPlayedButtonVisible => ShowPlayedIndicators && HasPlayedItems;
 
     /// <summary>
     /// Gets a value indicating whether the media list menu (top of the Operator page) is shown (option, default off).
@@ -353,6 +367,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         _optionsService.SortModeChangedEvent -= HandleSortModeChangedEvent;
         _optionsService.ShowSortModeToggleButtonChangedEvent -= HandleShowSortModeToggleButtonChangedEvent;
         _optionsService.ShowMediaListMenuChangedEvent -= HandleShowMediaListMenuChangedEvent;
+        _optionsService.ShowPlayedIndicatorsChangedEvent -= HandleShowPlayedIndicatorsChangedEvent;
         _optionsService.VolumeChangedEvent -= HandleVolumeChangedEvent;
         _optionsService.ShowVolumeControlChangedEvent -= HandleShowVolumeControlChangedEvent;
         if (_sortModeTimer != null)
@@ -430,6 +445,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         UnhideAllCommand.NotifyCanExecuteChanged();
         DeleteHiddenCommand.NotifyCanExecuteChanged();
         DeleteAllCommand.NotifyCanExecuteChanged();
+        ResetPlayedCommand.NotifyCanExecuteChanged();
     }
 
     /// <summary>
@@ -549,6 +565,19 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
 
     private void HandleShowMediaListMenuChangedEvent(object? sender, EventArgs e) =>
         OnPropertyChanged(nameof(ShowMediaListMenu));
+
+    private void HandleShowPlayedIndicatorsChangedEvent(object? sender, EventArgs e)
+    {
+        var show = _optionsService.ShowPlayedIndicators;
+
+        foreach (var item in MediaItems)
+        {
+            item.ShowPlayedIndicator = show;
+        }
+
+        OnPropertyChanged(nameof(ShowPlayedIndicators));
+        OnPlayedItemsChanged();
+    }
 
     private void HandleSortModeChangedEvent(object? sender, EventArgs e)
     {
@@ -904,6 +933,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 mediaItem.IsMediaChanging = false;
                 mediaItem.IsPaused = false;
                 _mediaStatusChangingService.RemoveChangingItem(mediaItem.Id);
+                MarkAsPlayed(mediaItem);
                 break;
 
             case MediaChange.Stopped:
@@ -953,6 +983,71 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         UnhideAllCommand = new RelayCommand(_hiddenMediaItemsService.UnhideAllMediaItems, _hiddenMediaItemsService.SomeHiddenMediaItems);
         DeleteHiddenCommand = new AsyncRelayCommand(DeleteHiddenAsync, () => GetDeletableItems(hiddenOnly: true).Count > 0);
         DeleteAllCommand = new AsyncRelayCommand(DeleteAllAsync, () => GetDeletableItems(hiddenOnly: false).Count > 0);
+        ResetPlayedCommand = new RelayCommand(ResetPlayed, () => HasPlayedItems);
+        ClearPlayedCommand = new RelayCommand<Guid?>(ClearPlayed);
+    }
+
+    private void MarkAsPlayed(MediaItem mediaItem)
+    {
+        if (mediaItem.IsBlankScreen || mediaItem.FilePath == null || mediaItem.IsPlayed)
+        {
+            return;
+        }
+
+        _playedItemPaths.Add(mediaItem.FilePath);
+        mediaItem.IsPlayed = true;
+        OnPlayedItemsChanged();
+    }
+
+    private void ClearPlayed(Guid? mediaItemId)
+    {
+        if (mediaItemId == null)
+        {
+            return;
+        }
+
+        var mediaItem = GetMediaItem(mediaItemId.Value);
+        if (mediaItem == null || !mediaItem.IsPlayed)
+        {
+            return;
+        }
+
+        if (mediaItem.FilePath != null)
+        {
+            _playedItemPaths.Remove(mediaItem.FilePath);
+        }
+
+        mediaItem.IsPlayed = false;
+        OnPlayedItemsChanged();
+    }
+
+    private void ResetPlayed()
+    {
+        _playedItemPaths.Clear();
+
+        foreach (var item in MediaItems)
+        {
+            item.IsPlayed = false;
+        }
+
+        OnPlayedItemsChanged();
+    }
+
+    private void ApplyPlayedFlags()
+    {
+        foreach (var item in MediaItems)
+        {
+            item.IsPlayed = !item.IsBlankScreen && item.FilePath != null && _playedItemPaths.Contains(item.FilePath);
+        }
+
+        OnPlayedItemsChanged();
+    }
+
+    private void OnPlayedItemsChanged()
+    {
+        OnPropertyChanged(nameof(HasPlayedItems));
+        OnPropertyChanged(nameof(IsResetPlayedButtonVisible));
+        ResetPlayedCommand.NotifyCanExecuteChanged();
     }
 
     private async Task ResetManualOrderAsync()
@@ -1693,6 +1788,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
                 ApplyExternalDrops(completedDrops);
             }
 
+            ApplyPlayedFlags();
             ChangePlayButtonEnabledStatus();
             Log.Logger.Debug("Completed loading media items");
         }
@@ -1790,6 +1886,11 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
         // (e.g. the rest of the old folder after the media folder is changed mid-load).
         item.IsRemovedFromList = true;
         MediaItems.Remove(item);
+
+        if (item.IsPlayed)
+        {
+            OnPlayedItemsChanged();
+        }
     }
 
     private bool InsertExternalDropItems(ExternalDropCompletedMessage drop)
@@ -1841,6 +1942,7 @@ internal sealed class OperatorViewModel : ObservableObject, IDisposable
             Id = Guid.NewGuid(),
             AllowFreezeCommand = _optionsService.ShowFreezeCommand,
             CommandPanelVisible = _optionsService.ShowMediaItemCommandPanel,
+            ShowPlayedIndicator = _optionsService.ShowPlayedIndicators,
             FilePath = file.FullPath,
             IsVisible = true,
             LastChanged = file.LastChanged,

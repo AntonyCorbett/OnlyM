@@ -1086,6 +1086,19 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
+    public bool ShowPlayedIndicators
+    {
+        get => _optionsService.ShowPlayedIndicators;
+        set
+        {
+            if (_optionsService.ShowPlayedIndicators != value)
+            {
+                _optionsService.ShowPlayedIndicators = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public bool ShowMediaItemCountBadge
     {
         get => _optionsService.ShowMediaItemCountBadge;

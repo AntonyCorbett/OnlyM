@@ -500,6 +500,12 @@
                         IsChecked="{Binding ShowMediaListMenu, Mode=TwoWay}"
                         Style="{StaticResource SettingsCheckBoxStyle}" />
 
+                    <CheckBox
+                        Content="{x:Static resx:Resources.SHOW_PLAYED_INDICATORS}"
+                        IsChecked="{Binding ShowPlayedIndicators, Mode=TwoWay}"
+                        Style="{StaticResource SettingsCheckBoxStyle}"
+                        ToolTip="{x:Static resx:Resources.SHOW_PLAYED_INDICATORS_TOOLTIP}" />
+
                     <Button
                         Margin="0,10,0,0"
                         Command="{Binding PurgeThumbnailCacheCommand}"

@@ -365,6 +365,45 @@
                                                 Kind="{Binding IconName}" />
                                         </Border>
 
+                                        <!--  'Played' badge: shown once the item has been played this session; click to clear it  -->
+                                        <Button
+                                            Width="22"
+                                            Height="22"
+                                            Margin="4"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Bottom"
+                                            AutomationProperties.Name="{x:Static resx:Resources.PLAYED_INDICATOR_TOOLTIP}"
+                                            Command="{Binding Path=DataContext.ClearPlayedCommand, ElementName=OnlyMOperatorPage}"
+                                            CommandParameter="{Binding Id}"
+                                            Cursor="Hand"
+                                            Focusable="False"
+                                            ToolTip="{x:Static resx:Resources.PLAYED_INDICATOR_TOOLTIP}"
+                                            Visibility="{Binding IsPlayedIndicatorVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border
+                                                        x:Name="PlayedBadge"
+                                                        Background="{StaticResource OnlyMMediaTypeBadgeFill}"
+                                                        BorderBrush="{StaticResource OnlyMMediaTypeBadgeStroke}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="11">
+                                                        <materialDesign:PackIcon
+                                                            Width="16"
+                                                            Height="16"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            Foreground="#2E7D32"
+                                                            Kind="Check" />
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="PlayedBadge" Property="Opacity" Value="0.75" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+
                                         <Border
                                             BorderBrush="Black"
                                             BorderThickness="1"
@@ -736,6 +775,17 @@
                         </MenuItem.Icon>
                     </MenuItem>
 
+                    <Separator Visibility="{Binding ShowPlayedIndicators, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                    <MenuItem
+                        Command="{Binding ResetPlayedCommand}"
+                        Header="{x:Static resx:Resources.MENU_RESET_PLAYED}"
+                        Visibility="{Binding ShowPlayedIndicators, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="PlaylistRemove" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
                     <Separator />
 
                     <MenuItem Command="{Binding DeleteHiddenCommand}" Header="{x:Static resx:Resources.MENU_DELETE_HIDDEN}">
@@ -798,6 +848,24 @@
                         Kind="Drag" />
                 </materialDesign:ToggleButtonAssist.OnContent>
             </ToggleButton>
+
+            <!--  Reset 'played' indicators: always reachable (the media list menu is optional), shown only while some items are marked as played  -->
+            <Button
+                Width="32"
+                Height="32"
+                Margin="8,6,0,2"
+                Padding="0"
+                AutomationProperties.Name="{x:Static resx:Resources.MENU_RESET_PLAYED}"
+                Command="{Binding ResetPlayedCommand}"
+                Foreground="{DynamicResource MaterialDesignBody}"
+                Style="{StaticResource MaterialDesignIconButton}"
+                ToolTip="{x:Static resx:Resources.MENU_RESET_PLAYED}"
+                Visibility="{Binding IsResetPlayedButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <materialDesign:PackIcon
+                    Width="22"
+                    Height="22"
+                    Kind="PlaylistRemove" />
+            </Button>
         </StackPanel>
 
         <!--  Media item count badge - shown once the list is non-empty; highlighted when the configured maximum is reached  -->

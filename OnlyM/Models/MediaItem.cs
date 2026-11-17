@@ -56,6 +56,8 @@ public class MediaItem : ObservableObject
     private string _chosenPdfPage = "1";
     private bool _isBeingDragged;
     private bool _isRemovedFromList;
+    private bool _isPlayed;
+    private bool _showPlayedIndicator;
 
     public event EventHandler? PlaybackPositionChangedEvent;
 
@@ -82,6 +84,40 @@ public class MediaItem : ObservableObject
         get => Volatile.Read(ref _isRemovedFromList);
         set => Volatile.Write(ref _isRemovedFromList, value);
     }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the item has been played (displayed) during this session.
+    /// Shown as a small indicator on the card to help the operator choose the next item.
+    /// </summary>
+    public bool IsPlayed
+    {
+        get => _isPlayed;
+        set
+        {
+            if (SetProperty(ref _isPlayed, value))
+            {
+                OnPropertyChanged(nameof(IsPlayedIndicatorVisible));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the 'played' indicator feature is enabled (see Settings).
+    /// <see cref="IsPlayed"/> is recorded regardless.
+    /// </summary>
+    public bool ShowPlayedIndicator
+    {
+        get => _showPlayedIndicator;
+        set
+        {
+            if (SetProperty(ref _showPlayedIndicator, value))
+            {
+                OnPropertyChanged(nameof(IsPlayedIndicatorVisible));
+            }
+        }
+    }
+
+    public bool IsPlayedIndicatorVisible => IsPlayed && ShowPlayedIndicator;
 
     public bool UseMirror
     {

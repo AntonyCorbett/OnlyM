@@ -99,6 +99,8 @@ public sealed class OptionsService : IOptionsService
 
     public event EventHandler? ShowMediaListMenuChangedEvent;
 
+    public event EventHandler? ShowPlayedIndicatorsChangedEvent;
+
     public event EventHandler? MagnifierChangedEvent;
 
     public event EventHandler? BrowserChangedEvent;
@@ -348,6 +350,19 @@ public sealed class OptionsService : IOptionsService
             {
                 _options.Value.ShowMediaListMenu = value;
                 ShowMediaListMenuChangedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public bool ShowPlayedIndicators
+    {
+        get => _options.Value.ShowPlayedIndicators;
+        set
+        {
+            if (_options.Value.ShowPlayedIndicators != value)
+            {
+                _options.Value.ShowPlayedIndicators = value;
+                ShowPlayedIndicatorsChangedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }

@@ -959,6 +959,14 @@
   <data name="SHOW_MEDIA_LIST_MENU" xml:space="preserve">
     <value>Show media list menu</value>
   </data>
+  <data name="SHOW_PLAYED_INDICATORS" xml:space="preserve">
+    <value>Show 'played' indicators</value>
+    <comment>Settings check box - shows a small indicator on media items that have already been played</comment>
+  </data>
+  <data name="SHOW_PLAYED_INDICATORS_TOOLTIP" xml:space="preserve">
+    <value>Mark each media item once it has been played, to help choose the next item</value>
+    <comment>Tooltip for the 'Show played indicators' settings check box</comment>
+  </data>
   <data name="MEDIA_LIST_MENU" xml:space="preserve">
     <value>Media list menu</value>
     <comment>Tooltip for the menu button at the top of the Operator page</comment>
@@ -986,6 +994,14 @@
   <data name="MENU_UNHIDE_ALL" xml:space="preserve">
     <value>Unhide all</value>
     <comment>Media list menu item</comment>
+  </data>
+  <data name="MENU_RESET_PLAYED" xml:space="preserve">
+    <value>Reset played indicators</value>
+    <comment>Media list menu item - clears the 'played' indicator from all media items</comment>
+  </data>
+  <data name="PLAYED_INDICATOR_TOOLTIP" xml:space="preserve">
+    <value>Played (click to clear)</value>
+    <comment>Tooltip on the small indicator shown on a media item that has already been played</comment>
   </data>
   <data name="MENU_DELETE_HIDDEN" xml:space="preserve">
     <value>Delete hidden items...</value>

@@ -755,6 +755,24 @@ namespace OnlyM.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset played indicators.
+        /// </summary>
+        public static string MENU_RESET_PLAYED {
+            get {
+                return ResourceManager.GetString("MENU_RESET_PLAYED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Played (click to clear).
+        /// </summary>
+        public static string PLAYED_INDICATOR_TOOLTIP {
+            get {
+                return ResourceManager.GetString("PLAYED_INDICATOR_TOOLTIP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unhide all.
         /// </summary>
         public static string MENU_UNHIDE_ALL {
@@ -1708,6 +1726,24 @@ namespace OnlyM.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Show &apos;played&apos; indicators.
+        /// </summary>
+        public static string SHOW_PLAYED_INDICATORS {
+            get {
+                return ResourceManager.GetString("SHOW_PLAYED_INDICATORS", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mark each media item once it has been played, to help choose the next item.
+        /// </summary>
+        public static string SHOW_PLAYED_INDICATORS_TOOLTIP {
+            get {
+                return ResourceManager.GetString("SHOW_PLAYED_INDICATORS_TOOLTIP", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Adjust start time.
         /// </summary>

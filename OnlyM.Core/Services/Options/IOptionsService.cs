@@ -66,6 +66,8 @@ public interface IOptionsService
 
     event EventHandler ShowMediaListMenuChangedEvent;
 
+    event EventHandler ShowPlayedIndicatorsChangedEvent;
+
     event EventHandler MagnifierChangedEvent;
 
     event EventHandler BrowserChangedEvent;
@@ -126,6 +128,8 @@ public interface IOptionsService
     bool ShowMediaItemCountBadge { get; set; }
 
     bool ShowMediaListMenu { get; set; }
+
+    bool ShowPlayedIndicators { get; set; }
 
     int MaxItemCount { get; set; }
 

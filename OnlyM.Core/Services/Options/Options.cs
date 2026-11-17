@@ -132,6 +132,8 @@ public sealed class Options
 
     public bool ShowMediaListMenu { get; set; }
 
+    public bool ShowPlayedIndicators { get; set; }
+
     public string? MediaMonitorId { get; set; }
 
     public bool MediaWindowed { get; set; }
