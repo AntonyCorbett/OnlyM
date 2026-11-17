@@ -48,6 +48,8 @@ internal interface IPageService
 
     void GotoSettingsPage();
 
+    void PrepareSettingsPage();
+
     FrameworkElement? GetPage(string? pageName);
 
     Task StartMedia(MediaItem mediaItemToStart, IReadOnlyCollection<MediaItem>? currentMediaItems, bool startFromPaused);

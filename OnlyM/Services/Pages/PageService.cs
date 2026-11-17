@@ -126,6 +126,34 @@ internal sealed class PageService : IDisposable, IPageService
         OnNavigationEvent(new NavigationEventArgs { PageName = SettingsPageName });
     }
 
+    public void PrepareSettingsPage()
+    {
+        // The Settings page is large and creating it (parsing, data binding, applying templates)
+        // takes a noticeable time on the UI thread. If that happens when the user first clicks the
+        // Settings button whilst a video is playing, the playback stutters (frames are presented via
+        // the UI thread). So we create and lay it out ahead of time when the app is idle.
+        System.Windows.Application.Current?.Dispatcher.BeginInvoke(
+            System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+            () =>
+            {
+                try
+                {
+                    if (_settingsPage.IsValueCreated)
+                    {
+                        return;
+                    }
+
+                    var page = _settingsPage.Value;
+                    page.Measure(new Size(1000, double.PositiveInfinity));
+                    page.Arrange(new Rect(page.DesiredSize));
+                }
+                catch (Exception ex)
+                {
+                    Log.Logger.Warning(ex, "Could not prepare settings page");
+                }
+            });
+    }
+
     public FrameworkElement? GetPage(string? pageName)
     {
         if (pageName == null)

@@ -68,6 +68,7 @@ internal sealed class SettingsViewModel : ObservableObject
     private string? _qrCodeUrl;
     private System.Windows.Media.Imaging.BitmapImage? _remoteControlQrCode;
     private int? _previousRemoteControlPort;
+    private int _publicNetworkWarningRequestId;
 
     public SettingsViewModel(
         IPageService pageService,
@@ -1632,9 +1633,30 @@ internal sealed class SettingsViewModel : ObservableObject
         }
     }
 
-    private void RefreshPublicNetworkWarning()
+    private async void RefreshPublicNetworkWarning()
     {
-        RemoteControlPublicNetworkWarning = GetPublicNetworkWarning();
+        // The network list and firewall queries are synchronous COM calls that can take a noticeable time. Run them
+        // off the UI thread so they don't stall the dispatcher (and hence any video playing in the media window).
+        var requestId = ++_publicNetworkWarningRequestId;
+
+        string? warning;
+        try
+        {
+            warning = await Task.Run(GetPublicNetworkWarning);
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Logger.Warning(ex, "Could not check public network status");
+            warning = null;
+        }
+
+        if (requestId != _publicNetworkWarningRequestId)
+        {
+            // a newer refresh has been requested since.
+            return;
+        }
+
+        RemoteControlPublicNetworkWarning = warning;
         OnPropertyChanged(nameof(RemoteControlPublicNetworkWarning));
         OnPropertyChanged(nameof(RemoteControlPublicNetworkWarningVisibility));
         OnPropertyChanged(nameof(RemoteControlAllowPublicNetworksVisibility));

@@ -94,6 +94,7 @@ internal sealed class MainViewModel : ObservableObject
         GraphicsUtils.HeicCodecMissingDetected += HandleMissingCodec;
 
         _pageService.GotoOperatorPage();
+        _pageService.PrepareSettingsPage();
 
         dragAndDropService.CopyingFilesProgressEvent += HandleCopyingFilesProgressEvent;
 
