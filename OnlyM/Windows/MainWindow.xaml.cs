@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -39,6 +40,8 @@ public partial class MainWindow
             {
                 // IOC not configured (design time, early shutdown, or failed startup). Leave fields null.
             }
+
+            PositionOnPrimaryDisplayIfFirstRun();
         }
     }
 
@@ -72,6 +75,29 @@ public partial class MainWindow
             SaveWindowPos();
             WeakReferenceMessenger.Default.Send(new ShutDownMessage());
         }
+    }
+
+    private void PositionOnPrimaryDisplayIfFirstRun()
+    {
+        // With no saved placement, Windows may open the main window on the display OnlyM was
+        // launched from (e.g. a secondary display's taskbar). The default media monitor is never
+        // the primary display, so centring on the primary keeps the main window clear of the
+        // full-screen media window.
+        try
+        {
+            if (!string.IsNullOrEmpty(Ioc.Default.GetService<IOptionsService>()?.AppWindowPlacement))
+            {
+                return;
+            }
+        }
+        catch (System.InvalidOperationException)
+        {
+            return;
+        }
+
+        var workArea = SystemParameters.WorkArea; // primary display, in DIPs
+        Left = workArea.Left + Math.Max(0, (workArea.Width - Width) / 2);
+        Top = workArea.Top + Math.Max(0, (workArea.Height - Height) / 2);
     }
 
     private void AdjustMainWindowPositionAndSize()

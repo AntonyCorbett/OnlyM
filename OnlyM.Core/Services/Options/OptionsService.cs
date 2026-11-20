@@ -977,10 +977,13 @@ public sealed class OptionsService : IOptionsService
     {
         var result = new Options();
 
-        // first time launched so set the monitor to the first one we find
+        // first time launched so set the media monitor to a secondary display if there is one.
+        // Never default to the primary display, otherwise the (topmost, full-screen) media window
+        // covers the operator window - on a single-display PC the user is left with a black screen.
         var monitorService = Ioc.Default.GetService<IMonitorsService>() ?? throw new NotSupportedException("Could not get monitor service!");
 
-        result.MediaMonitorId = monitorService.GetSystemMonitors().First().MonitorId;
+        result.MediaMonitorId = monitorService.GetSystemMonitors()
+            .FirstOrDefault(x => x.Monitor is { Primary: false })?.MonitorId;
 
         WriteOptions(result);
 
