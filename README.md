@@ -22,6 +22,8 @@ See the [wiki](https://github.com/AntonyCorbett/OnlyM/wiki) for basic instructio
 
 OnlyM can optionally provide a simple HTTP remote (Local LAN or Cloudflare Quick Tunnel) with a browser page, QR code, and optional PIN (default port 8517). See the [Remote Control](https://github.com/AntonyCorbett/OnlyM/wiki/Remote-Control) wiki page for details. The feature is off by default.
 
+Apps are also available for iOS and Android. See [OnlyM Remote](https://onlym.app/)
+
 ### Discussions
 
 Use the [Discussions](https://github.com/AntonyCorbett/OnlyM/discussions) area to ask for help, etc. Please limit discussions to technical matters.
