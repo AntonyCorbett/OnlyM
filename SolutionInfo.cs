@@ -8,4 +8,4 @@ using System.Resources;
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en-GB")]
 
-[assembly: AssemblyVersion("2.7.0.11")]
+[assembly: AssemblyVersion("2.7.0.12")]
