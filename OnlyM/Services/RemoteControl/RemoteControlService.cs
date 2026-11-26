@@ -1187,7 +1187,7 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
 <div class="controls">
   <button class="primary" onclick="api('/api/previous')" title="Previous" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
   <button class="primary" id="pauseBtn" onclick="api('/api/pause')" title="Pause" aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button>
-  <button class="primary" onclick="api('/api/stop')" title="Stop" aria-label="Stop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg></button>
+  <button class="primary" id="stopBtn" onclick="api('/api/stop')" disabled title="Stop" aria-label="Stop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg></button>
   <button class="primary" onclick="api('/api/next')" title="Next" aria-label="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
   <button id="volBtn" title="Volume" aria-label="Volume" aria-haspopup="true" aria-expanded="false" aria-controls="volPop" hidden></button>
   <button onclick="refreshAll()" title="Refresh" aria-label="Refresh"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="s" d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5"/></svg></button>
@@ -1506,6 +1506,9 @@ function renderStatus(status) {
   const showPlay = !!status.isPaused;
   pb.innerHTML = icon(showPlay ? '<path d="M7 5v14l12-7z"/>' : '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>');
   pb.title = pb.ariaLabel = showPlay ? 'Resume' : 'Pause';
+  // Nothing to stop unless something is active (or on screen)
+  const hasActive = !!shownId || (status.activeItemIds || []).length > 0;
+  $('stopBtn').disabled = !hasActive;
 
   if (shownId) {
     $('nowLabel').textContent = behind
