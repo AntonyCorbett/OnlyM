@@ -444,6 +444,50 @@ public sealed class RemoteControlServiceTests
         audio.IsVisible = image.IsVisible = next.IsVisible = true;
 
         Assert.Equal(next.Id, RemoteControlService.FindRelativeItem([audio, image, next], 1));
+        Assert.Empty(RemoteControlService.PlanRelativeMove([audio, image, next], 1).ToClose);
+    }
+
+    [Theory]
+    [InlineData(MediaClassification.Image, false)] // the new image replaces the old one on screen
+    [InlineData(MediaClassification.Audio, true)] // nothing replaces the image, so it is closed
+    public void PlanRelativeMove_NextStepsPastTheAudioBelowTheImage(MediaClassification nextType, bool closesImage)
+    {
+        var image = CreateMedia(MediaClassification.Image, active: true, paused: false);
+        var audio = CreateMedia(MediaClassification.Audio, active: true, paused: false);
+        var next = CreateMedia(nextType, active: false, paused: false);
+        image.IsVisible = audio.IsVisible = next.IsVisible = true;
+
+        var (targetId, toClose) = RemoteControlService.PlanRelativeMove([image, audio, next], 1);
+
+        Assert.Equal(next.Id, targetId);
+        Assert.Equal(closesImage ? [image.Id, audio.Id] : [audio.Id], toClose);
+    }
+
+    [Fact]
+    public void PlanRelativeMove_PreviousStepsPastTheAudioAboveTheImage()
+    {
+        var previous = CreateMedia(MediaClassification.Image, active: false, paused: false);
+        var audio = CreateMedia(MediaClassification.Audio, active: true, paused: false);
+        var image = CreateMedia(MediaClassification.Image, active: true, paused: false);
+        previous.IsVisible = audio.IsVisible = image.IsVisible = true;
+
+        var (targetId, toClose) = RemoteControlService.PlanRelativeMove([previous, audio, image], -1);
+
+        Assert.Equal(previous.Id, targetId);
+        Assert.Equal([audio.Id], toClose);
+    }
+
+    [Fact]
+    public void PlanRelativeMove_EverythingActiveFallsBackToTheNextItem()
+    {
+        var image = CreateMedia(MediaClassification.Image, active: true, paused: false);
+        var audio = CreateMedia(MediaClassification.Audio, active: true, paused: false);
+        image.IsVisible = audio.IsVisible = true;
+
+        var (targetId, toClose) = RemoteControlService.PlanRelativeMove([image, audio], 1);
+
+        Assert.Equal(audio.Id, targetId);
+        Assert.Empty(toClose);
     }
 
     [Theory]

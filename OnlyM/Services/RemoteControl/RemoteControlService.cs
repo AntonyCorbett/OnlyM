@@ -237,7 +237,20 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
     /// <param name="items">The operator's media list, in display order.</param>
     /// <param name="step">+1 or -1.</param>
     /// <returns>The target item's id, or null if no item is visible.</returns>
-    internal static Guid? FindRelativeItem(IReadOnlyList<MediaItem> items, int step)
+    internal static Guid? FindRelativeItem(IReadOnlyList<MediaItem> items, int step) =>
+        PlanRelativeMove(items, step).TargetId;
+
+    /// <summary>
+    /// Plans Next (<paramref name="step"/> +1) or Previous (-1): the item to start (see <see cref="FindRelativeItem"/>)
+    /// and the active items to close first. Active items next to the anchor in the direction of travel (e.g. the MP3
+    /// playing just below the image on screen) are stepped over rather than landed on, which would do nothing; the
+    /// move then closes them and the anchor, so the presentation moves on past all of them. Active items that aren't
+    /// stepped over (e.g. background audio further up the list) are left to <see cref="GetItemsToStop"/>.
+    /// </summary>
+    /// <param name="items">The operator's media list, in display order.</param>
+    /// <param name="step">+1 or -1.</param>
+    /// <returns>The target item's id (null if no item is visible) and the ids of the items to close, in list order.</returns>
+    internal static (Guid? TargetId, List<Guid> ToClose) PlanRelativeMove(IReadOnlyList<MediaItem> items, int step)
     {
         var count = items.Count;
         var anchor = SelectNavigationAnchor(items);
@@ -257,16 +270,47 @@ internal sealed class RemoteControlService : IRemoteControlService, IDisposable
             start = step > 0 ? -1 : count;
         }
 
+        MediaItem? firstVisible = null;
+        var steppedOver = new List<MediaItem>();
         for (var i = 1; i <= count; i++)
         {
-            var index = (((start + (i * step)) % count) + count) % count;
-            if (items[index].IsVisible)
+            var item = items[(((start + (i * step)) % count) + count) % count];
+            if (!item.IsVisible)
             {
-                return items[index].Id;
+                continue;
             }
+
+            firstVisible ??= item;
+            if (item.IsMediaActive && !ReferenceEquals(item, anchor))
+            {
+                steppedOver.Add(item);
+                continue;
+            }
+
+            if (ReferenceEquals(item, anchor))
+            {
+                // Wrapped back round: everything else visible is active
+                break;
+            }
+
+            if (steppedOver.Count == 0)
+            {
+                return (item.Id, []);
+            }
+
+            // Close the items being left. A screen item is replaced anyway when the target is shown on screen
+            // too, so leave it for a direct transition; audio has nothing to replace what's on screen.
+            if (anchor != null && item.MediaType?.Classification == Core.Models.MediaClassification.Audio)
+            {
+                steppedOver.Add(anchor);
+            }
+
+            var toClose = steppedOver.ToHashSet();
+            return (item.Id, items.Where(toClose.Contains).Select(m => m.Id).ToList());
         }
 
-        return null;
+        // Nothing inactive to move to: fall back to the next visible item
+        return (firstVisible?.Id, []);
     }
 
     /// <summary>
@@ -1888,12 +1932,20 @@ setInterval(refreshAll, 10000);  // media list (rarely changes)
             return;
         }
 
-        var targetId = await OnUi(() => FindRelativeItem(_operatorViewModel.MediaItems, step));
+        var (targetId, toClose) = await OnUi(() => PlanRelativeMove(_operatorViewModel.MediaItems, step));
 
         if (targetId == null)
         {
             res.StatusCode = 409;
             await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_NO_MEDIA_ITEMS });
+            return;
+        }
+
+        // e.g. the image and the MP3 below it, so Next moves on past both
+        if (!await StopItems(toClose))
+        {
+            res.StatusCode = 409;
+            await Ok(res, new { error = Properties.Resources.REMOTE_CONTROL_API_STOP_TIMEOUT });
             return;
         }
 
